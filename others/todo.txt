@@ -1,0 +1,9 @@
+Done:
+x remove "MOBILE"
+
+
+
+
+Pending:
+- refactor window dimension
+- fullscreen with overlay
