@@ -24,12 +24,22 @@ const AppInner = () => {
         <>
             <CssBaseline />
             {!authLoading && !authError && (
-                <Box>
-                    <GameBar barPosition="top" twitchExtensionJWT={authToken} />
-                    <VotingSystem />
-                    <MiniMap />
-                    <Notifications />
-                    {/* <WarMachineStats /> */}
+                <Box sx={{ position: 'relative', height: 900, width: 1600, backgroundColor: 'red' }}>
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        frameBorder="0"
+                        allowFullScreen
+                        src="https://watch-test-am.supremacy.game:/WebRTCAppEE/play.html?name=332524196830677408897509"
+                    ></iframe>
+
+                    <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
+                        <GameBar barPosition="top" twitchExtensionJWT={authToken} />
+                        <VotingSystem />
+                        <MiniMap />
+                        <Notifications />
+                        {/* <WarMachineStats /> */}
+                    </Box>
                 </Box>
             )}
         </>
