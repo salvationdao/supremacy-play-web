@@ -9,7 +9,7 @@ export const TextAlert = ({ data }: { data: string }) => {
                 sx={{
                     width: 300,
                     px: 1.2,
-                    py: 0.5,
+                    py: 1,
                     backgroundColor: colors.darkNavy,
                 }}
             >
