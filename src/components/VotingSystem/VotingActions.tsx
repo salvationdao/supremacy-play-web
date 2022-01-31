@@ -26,7 +26,7 @@ export const VotingActions = () => {
         >
             <Slide in={isVoting} direction="right">
                 <Box>
-                    <ClipThing border={{ isFancy: true, borderThickness: '2px' }} clipSize="10px">
+                    <ClipThing border={{ isFancy: true, borderThickness: '3px' }} clipSize="10px">
                         <Box
                             sx={{ backgroundColor: theme.factionTheme.background, pl: 0.3, pr: 1.3, pt: 1.2, pb: 1.4 }}
                         >

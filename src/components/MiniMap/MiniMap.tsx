@@ -68,7 +68,7 @@ export const MiniMap = () => {
                     <ClipThing
                         border={{
                             isFancy: true,
-                            borderThickness: '2px',
+                            borderThickness: '3px',
                             borderColor: isTargetting ? winner.factionAbility.colour : theme.factionTheme.primary,
                         }}
                     >

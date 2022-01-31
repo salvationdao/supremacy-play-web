@@ -178,11 +178,11 @@ export const SecondVote = ({ data, notiID }: { data: Vote; notiID: string }) => 
 
     return (
         <Box>
-            <ClipThing border={{ isFancy: true, borderColor: colour, borderThickness: '1.5px' }} clipSize="6px">
+            <ClipThing border={{ isFancy: true, borderColor: colour, borderThickness: '2px' }} clipSize="6px">
                 <Box sx={{ width: 360, backgroundColor: colors.darkNavy }}>
                     <Stack direction="row" sx={{ minHeight: 75 }}>
                         <ClipThing
-                            border={{ isFancy: true, borderColor: colour, borderThickness: '1px' }}
+                            border={{ isFancy: true, borderColor: colour, borderThickness: '2px' }}
                             clipSize="6px"
                             fillHeight
                             sx={{ height: 'unset' }}
