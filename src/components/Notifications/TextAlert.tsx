@@ -4,7 +4,7 @@ import { colors } from '../../theme/theme'
 
 export const TextAlert = ({ data }: { data: string }) => {
     return (
-        <ClipThing border={{ isFancy: true }} clipSize="5px">
+        <ClipThing border={{ isFancy: true, borderThickness: '2px' }} clipSize="5px">
             <Box
                 sx={{
                     width: 300,

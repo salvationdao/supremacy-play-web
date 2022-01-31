@@ -6,10 +6,15 @@ import { useNotifications } from '../../containers/notifications'
 import { colors } from '../../theme/theme'
 import { useTheme } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
+import { useDimension } from '../../containers'
 
 export const Notifications = () => {
     const { notifications } = useNotifications()
     const theme = useTheme<Theme>()
+    const {
+        iframeDimensions: { height },
+    } = useDimension()
+
     const notificationsJsx = notifications
         .filter((n) => !!n)
         .sort((n1, n2) =>
@@ -60,7 +65,7 @@ export const Notifications = () => {
                     sx={{
                         flex: 1,
                         // 45vh, 8px gap above, 7px gap bottom
-                        maxHeight: 'calc(45vh - 8px - 7px)',
+                        maxHeight: `calc(${0.45 * height}px - 8px - 7px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
                         pl: 1,
