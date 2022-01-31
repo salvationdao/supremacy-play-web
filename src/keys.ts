@@ -1,7 +1,7 @@
 enum HubKey {
     Welcome = 'WELCOME',
     UserSubscribe = 'USER:SUBSCRIBE',
-    AuthJWT = 'TWITCH:JWT:AUTH',
+    AuthSessionIDGet = 'AUTH:SESSION:ID:GET',
 
     SubmitFirstVote = 'TWITCH:FACTION:ABILITY:FIRST:VOTE',
     SubmitSecondVote = 'TWITCH:FACTION:ABILITY:SECOND:VOTE',
