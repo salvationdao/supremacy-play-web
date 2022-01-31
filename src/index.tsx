@@ -2,10 +2,12 @@ import ReactDOM from 'react-dom'
 import { Theme } from '@mui/material/styles'
 import {
     AuthProvider,
+    DimensionProvider,
     GameProvider,
     SnackBarProvider,
     SocketProvider,
     useAuth,
+    useDimension,
     WarMachinesProvider,
 } from './containers'
 import { Box, CssBaseline, ThemeProvider } from '@mui/material'
@@ -19,12 +21,15 @@ import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
 
 const AppInner = () => {
     const { authToken, authLoading, authError } = useAuth()
+    const {
+        iframeDimensions: { width, height },
+    } = useDimension()
 
     return (
         <>
             <CssBaseline />
             {!authLoading && !authError && (
-                <Box sx={{ position: 'relative', height: '100vh', width: '100vw', backgroundColor: 'red' }}>
+                <Box sx={{ position: 'relative', height, width, backgroundColor: 'red' }}>
                     <iframe
                         width="100%"
                         height="100%"
@@ -67,9 +72,11 @@ const App = () => {
                             <GameProvider>
                                 <NotificationsProvider>
                                     <WarMachinesProvider>
-                                        <SnackBarProvider>
-                                            <AppInner />
-                                        </SnackBarProvider>
+                                        <DimensionProvider>
+                                            <SnackBarProvider>
+                                                <AppInner />
+                                            </SnackBarProvider>
+                                        </DimensionProvider>
                                     </WarMachinesProvider>
                                 </NotificationsProvider>
                             </GameProvider>

@@ -1,7 +1,7 @@
 import { Box, Slide, Stack, Typography } from '@mui/material'
 import { ClipThing, FactionAbilityItem } from '..'
 import { UI_OPACITY } from '../../constants'
-import { useGame } from '../../containers'
+import { useDimension, useGame } from '../../containers'
 import { colors } from '../../theme/theme'
 import { useTheme } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
@@ -10,6 +10,9 @@ import { useMemo } from 'react'
 export const VotingActions = () => {
     const { battleState, factionAbilities } = useGame()
     const theme = useTheme<Theme>()
+    const {
+        iframeDimensions: { height },
+    } = useDimension()
     const isVoting = useMemo(() => battleState?.phase == 'FIRST_VOTE' || battleState?.phase == 'TIE', [battleState])
 
     return (
@@ -38,7 +41,7 @@ export const VotingActions = () => {
                                 sx={{
                                     flex: 1,
                                     // 50vh, 8px gap bottom, 65px gap above, 45px title height
-                                    maxHeight: 'calc(50vh - 8px - 65px - 45px)',
+                                    maxHeight: `calc(${0.5 * height}px - 8px - 65px - 45px)`,
                                     overflowY: 'auto',
                                     overflowX: 'hidden',
                                     pl: 1,
