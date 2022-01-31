@@ -86,7 +86,6 @@ export const GameContainer = createContainer(() => {
                 if (!payload) return
                 setMap(payload.gameMap)
                 setWarMachines(payload.warMachines)
-                console.log(payload)
             } catch (e) {
                 console.log(e)
             }
