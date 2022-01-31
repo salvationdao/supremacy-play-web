@@ -6,13 +6,6 @@ interface UpdateThemeContextProps {
 }
 export const UpdateTheme = React.createContext({} as UpdateThemeContextProps)
 
-export interface TwitchAuth {
-    channelId: string
-    clientId: string
-    userId: string
-    token: string
-}
-
 export interface User {
     id: string
     factionID: string

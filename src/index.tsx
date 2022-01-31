@@ -18,18 +18,14 @@ import { theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
 
 const AppInner = () => {
-    const { authLoading, authError } = useAuth()
-    const { token, isVisible, setExtensionType } = useTwitch()
-    useEffect(() => {
-        setExtensionType('OVERLAY')
-    }, [])
+    const { authToken, authLoading, authError } = useAuth()
 
     return (
         <>
             <CssBaseline />
-            {!authLoading && !authError && isVisible && (
+            {!authLoading && !authError && (
                 <Box>
-                    <GameBar barPosition="top" twitchExtensionJWT={token} />
+                    <GameBar barPosition="top" twitchExtensionJWT={authToken} />
                     <VotingSystem />
                     <MiniMap />
                     <Notifications />

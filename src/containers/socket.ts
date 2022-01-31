@@ -91,7 +91,7 @@ const UseWebsocket = (): WebSocketProperties => {
 
         if (LOG_API_CALLS) {
             console.log(
-                `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TWITCH UI REQUEST: "${key}"`,
+                `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE REQUEST: "${key}"`,
                 'background: #D1E5FF; color: #000000',
             )
             console.log({
@@ -110,7 +110,7 @@ const UseWebsocket = (): WebSocketProperties => {
 
                 if (LOG_API_CALLS) {
                     console.log(
-                        `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TWITCH UI RESPONSE: "${key}"`,
+                        `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE RESPONSE: "${key}"`,
                         'background: #FFD5C7; color: #000000',
                     )
                     console.log(result)
@@ -149,7 +149,7 @@ const UseWebsocket = (): WebSocketProperties => {
 
             if (LOG_API_CALLS) {
                 console.log(
-                    `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TWITCH UI REQUEST (${
+                    `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE REQUEST (${
                         listenOnly ? 'LISTEN' : 'SUBSCRIPTION'
                     }): "${key}"`,
                     'background: #D1E5FF; color: #000000',
@@ -164,7 +164,7 @@ const UseWebsocket = (): WebSocketProperties => {
             const callback2 = (payload: T) => {
                 if (LOG_API_CALLS && !disableLog) {
                     console.log(
-                        `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TWITCH UI RESPONSE (${
+                        `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE RESPONSE (${
                             listenOnly ? 'LISTEN' : 'SUBSCRIPTION'
                         }): "${key}"`,
                         'background: #FFD5C7; color: #000000',

@@ -34,12 +34,15 @@ export interface NotificationResponse {
 
 export const GameContainer = createContainer(() => {
     const { state, subscribe } = useWebsocket()
-    const { userID, factionID } = useAuth()
+    const { user } = useAuth()
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [factionAbilities, setFactionAbilities] = useState<FactionAbility[]>()
     const [battleState, setBattleState] = useState<TwitchEventResponse | undefined>()
     const [winner, setWinner] = useState<VoteWinnerResponse>()
+
+    const userID = user?.id
+    const factionID = user?.factionID
 
     // Faction abilities
     useEffect(() => {
