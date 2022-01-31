@@ -2,10 +2,12 @@ import ReactDOM from 'react-dom'
 import { Theme } from '@mui/material/styles'
 import {
     AuthProvider,
+    DimensionProvider,
     GameProvider,
     SnackBarProvider,
     SocketProvider,
     useAuth,
+    useDimension,
     WarMachinesProvider,
 } from './containers'
 import { Box, CssBaseline, ThemeProvider } from '@mui/material'
@@ -19,12 +21,15 @@ import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
+    const {
+        iframeDimensions: { width, height },
+    } = useDimension()
 
     return (
         <>
             <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <Box sx={{ position: 'relative', height: 900, width: 1600, backgroundColor: 'red' }}>
+                <Box sx={{ position: 'relative', height, width, backgroundColor: 'red' }}>
                     <iframe
                         width="100%"
                         height="100%"
@@ -34,7 +39,7 @@ const AppInner = () => {
                     ></iframe>
 
                     <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                        <GameBar barPosition="top" gameserverSessionID={gameserverSessionID} />
+                        <GameBar opacity={0.9} barPosition="top" gameserverSessionID={gameserverSessionID} />
                         <VotingSystem />
                         <MiniMap />
                         <Notifications />
@@ -67,9 +72,11 @@ const App = () => {
                             <GameProvider>
                                 <NotificationsProvider>
                                     <WarMachinesProvider>
-                                        <SnackBarProvider>
-                                            <AppInner />
-                                        </SnackBarProvider>
+                                        <DimensionProvider>
+                                            <SnackBarProvider>
+                                                <AppInner />
+                                            </SnackBarProvider>
+                                        </DimensionProvider>
                                     </WarMachinesProvider>
                                 </NotificationsProvider>
                             </GameProvider>

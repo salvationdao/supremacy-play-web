@@ -4,11 +4,14 @@ import { colors } from '../../theme/theme'
 import { WarMachineItem } from './WarMachineItem'
 import { Theme } from '@mui/material/styles'
 import { useTheme } from '@mui/styles'
-import { useWarMachines } from '../../containers'
+import { useDimension, useWarMachines } from '../../containers'
 
 export const WarMachineStats = () => {
     const theme = useTheme<Theme>()
     const { warMachinesSub } = useWarMachines()
+    const {
+        iframeDimensions: { width },
+    } = useDimension()
 
     if (!warMachinesSub || warMachinesSub.length <= 0) return null
 
@@ -30,7 +33,7 @@ export const WarMachineStats = () => {
                         sx={{
                             flex: 1,
                             // 100vw, 18px each side
-                            maxWidth: 'calc(100vw - (2 * 18px))',
+                            maxWidth: `calc(${width}px - (2 * 18px))`,
                             overflowY: 'hidden',
                             overflowX: 'auto',
                             direction: 'ltr',

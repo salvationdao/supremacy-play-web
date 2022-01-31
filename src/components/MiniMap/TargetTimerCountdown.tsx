@@ -46,12 +46,15 @@ export const TargetTimerCountdown = ({
             direction="row"
             spacing={1}
             sx={{
-                postiion: 'absolute',
-                top: 3,
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
                 px: 1.4,
                 py: 0.6,
-                backgroundColor: theme.factionTheme.background,
+                backgroundColor: `${theme.factionTheme.background}99`,
                 borderRadius: 0.5,
+                zIndex: 9,
             }}
         >
             <Typography variant="body1" sx={{ span: { lineHeight: 1, fontWeight: 'fontWeightBold', color: colour } }}>

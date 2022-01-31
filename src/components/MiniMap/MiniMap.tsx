@@ -5,11 +5,13 @@ import { colors } from '../../theme/theme'
 import { Theme } from '@mui/material/styles'
 import ZoomOutMapOutlinedIcon from '@mui/icons-material/ZoomOutMapOutlined'
 import ZoomInMapOutlinedIcon from '@mui/icons-material/ZoomInMapOutlined'
-import { useToggle, useWindowDimensions } from '../../hooks'
-import { useGame } from '../../containers'
+import { useToggle } from '../../hooks'
+import { useDimension, useGame } from '../../containers'
 
 export const MiniMap = () => {
-    const { width, height } = useWindowDimensions()
+    const {
+        iframeDimensions: { width, height },
+    } = useDimension()
     const theme = useTheme<Theme>()
     const { map, winner, battleState } = useGame()
     const [enlarged, toggleEnlarged] = useToggle()
@@ -68,7 +70,7 @@ export const MiniMap = () => {
                     <ClipThing
                         border={{
                             isFancy: true,
-                            borderThickness: '2px',
+                            borderThickness: '3px',
                             borderColor: isTargetting ? winner.factionAbility.colour : theme.factionTheme.primary,
                         }}
                     >
