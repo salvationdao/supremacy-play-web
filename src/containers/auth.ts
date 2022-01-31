@@ -15,13 +15,10 @@ export const AuthContainer = createContainer(() => {
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useWebsocket()
     const [user, setUser] = useState<User>()
-    const [authToken, setAuthToken] = useState<string>(
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDM2NzgxNjgsIm9wYXF1ZV91c2VyX2lkIjoiVTc1MDE4NTAyOSIsInJvbGUiOiJicm9hZGNhc3RlciIsInB1YnN1Yl9wZXJtcyI6eyJsaXN0ZW4iOlsiYnJvYWRjYXN0IiwiZ2xvYmFsIl0sInNlbmQiOlsiYnJvYWRjYXN0Il19LCJjaGFubmVsX2lkIjoiNzUwMTg1MDI5IiwidXNlcl9pZCI6Ijc1MDE4NTAyOSIsImlhdCI6MTY0MzU5MTc2OH0.4riP1o1wNZt3hsq3YOBv6ohjs_n79Bnc-KSAzXwCoCk',
-    )
+    const [gameserverSessionID, setGameserverSessionID] = useState<string>('')
 
-    const [authLoading, setAuthJWTLoading] = useState(true)
-    const [authJWTDone, setAuthJWTDone] = useState(false)
-    const [authError, setAuthJWTError] = useState()
+    const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
+    const [authSessionIDGetError, setAuthSessionIDGetError] = useState()
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
@@ -38,26 +35,25 @@ export const AuthContainer = createContainer(() => {
     }, [subscribe])
 
     useEffect(() => {
-        if (state !== WebSocket.OPEN || user || !authToken) return
+        if (state !== WebSocket.OPEN || user || gameserverSessionID) return
         ;(async () => {
             try {
-                setAuthJWTLoading(true)
-                const resp = await send<boolean, TokenLoginRequest>(HubKey.AuthJWT, { twitchToken: authToken })
-                setAuthJWTDone(resp)
+                setAuthSessionIDGetLoading(true)
+                const resp = await send<string, null>(HubKey.AuthSessionIDGet)
+                setGameserverSessionID(resp)
             } catch (e: any) {
-                setAuthJWTError(e)
+                setAuthSessionIDGetError(e)
             } finally {
-                setAuthJWTLoading(false)
+                setAuthSessionIDGetLoading(false)
             }
         })()
-    }, [authToken, send, state])
+    }, [gameserverSessionID, send, state])
 
     return {
         user,
-        authToken,
-        authLoading,
-        authError,
-        authJWTDone,
+        gameserverSessionID,
+        authSessionIDGetLoading,
+        authSessionIDGetError,
     }
 })
 

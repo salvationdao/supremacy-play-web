@@ -18,12 +18,12 @@ import { theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
 
 const AppInner = () => {
-    const { authToken, authLoading, authError } = useAuth()
+    const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
 
     return (
         <>
             <CssBaseline />
-            {!authLoading && !authError && (
+            {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <Box sx={{ position: 'relative', height: 900, width: 1600, backgroundColor: 'red' }}>
                     <iframe
                         width="100%"
@@ -34,7 +34,7 @@ const AppInner = () => {
                     ></iframe>
 
                     <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                        <GameBar barPosition="top" twitchExtensionJWT={authToken} />
+                        <GameBar barPosition="top" gameserverSessionID={gameserverSessionID} />
                         <VotingSystem />
                         <MiniMap />
                         <Notifications />
