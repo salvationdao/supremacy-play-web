@@ -24,7 +24,7 @@ export const WarMachineStats = () => {
                 transform: 'translateX(-50%)',
                 zIndex: 15,
                 overflow: 'hidden',
-                opacity: UI_OPACITY,
+                filter: 'drop-shadow(0 3px 3px #00000020)',
             }}
         >
             <Slide in={true} direction="up">

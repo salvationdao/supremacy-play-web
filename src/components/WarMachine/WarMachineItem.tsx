@@ -58,7 +58,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                     justifyContent="flex-end"
                     sx={{
                         flex: 1,
-                        ml: -2.4,
+                        ml: -2.5,
                         mb: '-2.5px',
                         height: 78.4,
                         borderBottomStyle: 'solid',
@@ -86,7 +86,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             </Box>
 
                             <Box>
-                                <BoxSlanted clipSlantSize="4.2px" sx={{ ml: -0.6, width: '100%', height: 12 }}>
+                                <BoxSlanted clipSlantSize="4.2px" sx={{ ml: -0.5, width: '100%', height: 12 }}>
                                     <BoxSlanted
                                         clipSlantSize="4.2px"
                                         sx={{
@@ -113,7 +113,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
 
                     <Stack
                         justifyContent="center"
-                        sx={{ pl: 2.2, pr: 3.4, py: 0.7, height: 33, backgroundColor: '#00000050' }}
+                        sx={{ pl: 2.2, pr: 3.4, py: 0.7, height: 33, backgroundColor: '#00000095' }}
                     >
                         <Typography
                             variant="caption"
