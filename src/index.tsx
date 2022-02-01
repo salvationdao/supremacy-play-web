@@ -29,14 +29,14 @@ const AppInner = () => {
         <>
             <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <Box sx={{ position: 'relative', height, width, backgroundColor: '#000000' }}>
-                    <iframe
+                <Box sx={{ position: 'relative', height, width, backgroundColor: '#A657AE' }}>
+                    {/* <iframe
                         width="100%"
                         height="100%"
                         frameBorder="0"
                         allowFullScreen
                         src="https://watch-test-am.supremacy.game:/WebRTCAppEE/play.html?name=332524196830677408897509"
-                    ></iframe>
+                    ></iframe> */}
 
                     <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
                         <GameBar opacity={0.94} barPosition="top" gameserverSessionID={gameserverSessionID} />

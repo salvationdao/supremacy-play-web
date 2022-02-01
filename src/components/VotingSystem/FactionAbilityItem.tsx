@@ -1,4 +1,4 @@
-import { Box, CardMedia, Stack, Typography } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import { useCallback } from 'react'
 import { ClipThing, FancyButton } from '..'
 import { SvgSupToken } from '../../assets'
@@ -89,17 +89,17 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
                             clipSize="6px"
                             fillHeight
                         >
-                            <Stack
-                                alignItems="center"
-                                justifyContent="center"
+                            <Box
                                 sx={{
                                     backgroundColor: theme.factionTheme.background,
                                     height: '100%',
                                     width: 61,
+                                    backgroundImage: `url(${imageUrl})`,
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundPosition: 'center',
+                                    backgroundSize: 'cover',
                                 }}
-                            >
-                                <CardMedia component="img" alt={label} height="100%" image={imageUrl} />
-                            </Stack>
+                            />
                         </ClipThing>
 
                         <Stack
@@ -111,7 +111,7 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
                                 variant="body1"
                                 sx={{
                                     fontWeight: 'fontWeightBold',
-                                    fontFamily: 'Nostromo Regular Black',
+                                    fontFamily: 'Nostromo Regular Medium',
                                     color: colour,
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',

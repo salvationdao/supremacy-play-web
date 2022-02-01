@@ -21,7 +21,8 @@ export interface FactionThemeColor {
 export interface Faction {
     id: string
     label: string
-    imageUrl: string
+    logoUrl: string
+    backgroundUrl: string
     theme: FactionThemeColor
 }
 

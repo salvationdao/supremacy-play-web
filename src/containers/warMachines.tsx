@@ -20,7 +20,7 @@ export const WarMachinesContainer = createContainer(() => {
 
     // War machine for the map (subscription)
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<WarMachineState[] | undefined>(
             HubKey.SubWarMachinesState,
             (payload) => {
@@ -40,7 +40,7 @@ export const WarMachinesContainer = createContainer(() => {
         )
     }, [state, subscribe, user])
 
-    // War machine JSX for the map
+    // Generate war machine JSX for the map
     useEffect(() => {
         if (!warMachinesSub || warMachinesSub.length <= 0 || !map) return
 
