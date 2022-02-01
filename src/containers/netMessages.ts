@@ -1,7 +1,6 @@
 import { NetMessageType, NetMessageTick } from '../types'
 
 export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; payload: unknown } | undefined => {
-    console.log(new Uint8Array(buffer))
     const dv = new DataView(buffer)
     const type = dv.getUint8(0) as NetMessageType
 
@@ -14,9 +13,9 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 const offset = 2 + c * 13
 
                 const participantID = dv.getUint8(offset)
-                const x = dv.getUint32(offset + 1, false)
-                const y = dv.getUint32(offset + 5, false)
-                const rotation = dv.getUint32(offset + 9, false)
+                const x = dv.getInt32(offset + 1, false)
+                const y = dv.getInt32(offset + 5, false)
+                const rotation = dv.getInt32(offset + 9, false)
 
                 payload.warmachines.push({
                     participantID,
@@ -27,7 +26,6 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                     rotation,
                 })
             }
-            console.log(payload)
             return { type, payload }
         }
     }
