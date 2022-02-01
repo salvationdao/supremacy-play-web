@@ -53,7 +53,7 @@ export const Notifications = () => {
         <Stack
             sx={{
                 position: 'absolute',
-                bottom: 150,
+                bottom: 138,
                 left: 10,
                 zIndex: 15,
                 overflow: 'hidden',
