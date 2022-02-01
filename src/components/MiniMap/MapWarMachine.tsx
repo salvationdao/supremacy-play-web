@@ -29,7 +29,7 @@ export const MapWarMachine = ({ warMachine }: { warMachine: WarMachineState; map
             >
                 <SvgMapWarMachine fill={primaryColor} size="17px" />
             </Box>
-            <Typography sx={{ mt: 0.4, color: primaryColor, fontWeight: 'fontWeightBold' }}>{name}</Typography>
+            <Typography sx={{ mt: 0.4, color: primaryColor }}>{name}</Typography>
         </Stack>
     )
 }
