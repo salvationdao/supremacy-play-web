@@ -72,7 +72,7 @@ export const BattleTopMessage = () => {
         <Box
             sx={{
                 position: 'absolute',
-                top: 115,
+                top: 125,
                 left: '50%',
                 transform: 'translateX(-50%)',
                 zIndex: 15,
