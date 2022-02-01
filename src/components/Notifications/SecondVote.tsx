@@ -64,10 +64,7 @@ const VotingButton = ({ data, isAgreed }: { data: Vote; isAgreed: boolean }) => 
             onClick={onVote}
         >
             <Stack alignItems="center" direction="row" spacing={0.3}>
-                <Typography
-                    variant="caption"
-                    sx={{ lineHeight: 1, fontWeight: 'fontWeightBold', fontFamily: 'Nostromo Regular Medium' }}
-                >
+                <Typography variant="caption" sx={{ lineHeight: 1, fontWeight: 'fontWeightBold' }}>
                     {`${isAgreed ? 'ACCEPT' : 'REJECT'} ( `}
                 </Typography>
                 <SvgSupToken size="13px" />

@@ -33,7 +33,7 @@ export const WarMachinesContainer = createContainer(() => {
         })
     }, [state, subscribeNetMessage, user])
 
-    // War machine JSX for the map
+    // Generate war machine JSX for the map
     useEffect(() => {
         if (!warMachinesSub || warMachinesSub.length <= 0 || !map) return
 

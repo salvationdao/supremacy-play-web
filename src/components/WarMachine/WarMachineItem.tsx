@@ -4,8 +4,6 @@ import { WarMachineState } from '../../types'
 import { ClipThing } from '..'
 import { colors } from '../../theme/theme'
 
-const defaultClipSlantSize = '8px'
-
 interface BoxSlantedProps extends BoxProps {
     clipSize?: string
     clipSlantSize?: string
@@ -26,88 +24,117 @@ const BoxSlanted: React.FC<BoxSlantedProps> = ({ children, clipSize = '0px', cli
 }
 
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
-    const { tokenID, faction, name, imageUrl, healthMax, shieldMax, health, shield } = warMachine
+    const { tokenID, faction, name, imageUrl, maxHitPoint, maxShield, remainingHitPoints, remainingShield } = warMachine
     const {
         label,
-        imageUrl: factionImageUrl,
+        logoUrl: factionLogoUrl,
         theme: { primary },
     } = faction
 
     return (
-        <BoxSlanted
-            clipSlantSize={defaultClipSlantSize}
-            sx={{
-                borderBottomWidth: '1.5px',
-                borderBottomColor: primary,
-            }}
-        >
-            <Stack direction="row" alignItems="center">
+        <BoxSlanted clipSlantSize="20px">
+            <Stack direction="row" alignItems="center" sx={{ width: 225 }}>
                 <ClipThing
-                    clipSize="7px"
-                    clipSlantSize={defaultClipSlantSize}
-                    border={{ isFancy: false, borderColor: primary, borderThickness: '1.5px' }}
+                    clipSize="8px"
+                    clipSlantSize="20px"
+                    border={{ isFancy: false, borderColor: primary, borderThickness: '2.5px' }}
+                    sx={{ zIndex: 2 }}
                 >
-                    <Stack
-                        alignItems="center"
-                        justifyContent="center"
+                    <Box
                         sx={{
-                            height: '100%',
-                            width: 61,
+                            width: 92,
+                            height: 76,
+                            overflow: 'hidden',
+                            backgroundColor: primary,
+                            backgroundImage: `url(${imageUrl})`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
                         }}
-                    >
-                        <CardMedia component="img" alt={name} height="100%" image={imageUrl} />
-                    </Stack>
+                    />
                 </ClipThing>
 
-                <Stack>
-                    <Stack direction="row" spacing={0.4}>
-                        <Box>
-                            <BoxSlanted clipSlantSize={defaultClipSlantSize} sx={{ width: 25, height: 9 }}>
-                                <Box
-                                    sx={{
-                                        width: `${(health / healthMax) * 100}%`,
-                                        height: '100%',
-                                        backgroundColor: colors.health,
-                                    }}
-                                />
-                            </BoxSlanted>
+                <Stack
+                    justifyContent="flex-end"
+                    sx={{
+                        flex: 1,
+                        ml: -2.5,
+                        mb: '-2.5px',
+                        height: 78.4,
+                        borderBottomStyle: 'solid',
+                        borderBottomWidth: '2.5px',
+                        borderBottomColor: primary,
+                        zIndex: 1,
+                    }}
+                >
+                    <Stack alignItems="center" direction="row" spacing={1.1} sx={{ flex: 1, pl: 3, pr: 1.4 }}>
+                        <Stack justifyContent="center" spacing={0.5} sx={{ flex: 1, height: '100%' }}>
+                            <Box>
+                                <BoxSlanted
+                                    clipSlantSize="4.2px"
+                                    sx={{ width: '100%', height: 12, backgroundColor: '#FFFFFF30' }}
+                                >
+                                    <BoxSlanted
+                                        clipSlantSize="4.2px"
+                                        sx={{
+                                            width: `${(remainingHitPoints / maxHitPoint) * 100}%`,
+                                            height: '100%',
+                                            backgroundColor: colors.health,
+                                        }}
+                                    />
+                                </BoxSlanted>
+                            </Box>
 
-                            <BoxSlanted clipSlantSize={defaultClipSlantSize} sx={{ width: 25, height: 9 }}>
-                                <Box
-                                    sx={{
-                                        width: `${(shieldMax / shield) * 100}%`,
-                                        height: '100%',
-                                        backgroundColor: colors.shield,
-                                    }}
-                                />
-                            </BoxSlanted>
-                        </Box>
-
-                        <Stack
-                            alignItems="center"
-                            justifyContent="center"
-                            sx={{
-                                height: '100%',
-                                width: 16,
-                            }}
-                        >
-                            <CardMedia component="img" alt={label} height="100%" image={factionImageUrl} />
+                            <Box>
+                                <BoxSlanted clipSlantSize="4.2px" sx={{ ml: -0.5, width: '100%', height: 12 }}>
+                                    <BoxSlanted
+                                        clipSlantSize="4.2px"
+                                        sx={{
+                                            width: `${(remainingShield / maxShield) * 100}%`,
+                                            height: '100%',
+                                            backgroundColor: colors.shield,
+                                        }}
+                                    />
+                                </BoxSlanted>
+                            </Box>
                         </Stack>
+
+                        <Box
+                            sx={{
+                                width: 26,
+                                height: 26,
+                                backgroundImage: `url(${factionLogoUrl})`,
+                                backgroundRepeat: 'no-repeat',
+                                backgroundPosition: 'center',
+                                backgroundSize: 'cover',
+                            }}
+                        />
                     </Stack>
 
-                    <Box sx={{ px: 2, py: 1, backgroundColor: '#00000025' }}>
+                    <Stack
+                        justifyContent="center"
+                        sx={{ pl: 2.2, pr: 3.4, py: 0.7, height: 33, backgroundColor: '#00000095' }}
+                    >
                         <Typography
                             variant="caption"
                             sx={{
+                                color: '#FFFFFF',
+                                lineHeight: 1,
                                 fontWeight: 'fontWeightBold',
-                                overflow: 'hidden',
+                                fontFamily: 'Nostromo Regular Black',
+
                                 textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                whiteSpace: 'normal',
+                                display: '-webkit-box',
+                                overflowWrap: 'anywhere',
+                                WebkitBoxOrient: 'vertical',
+                                WebkitLineClamp: 2,
                             }}
                         >
                             {name}
                         </Typography>
-                    </Box>
+                    </Stack>
                 </Stack>
             </Stack>
         </BoxSlanted>

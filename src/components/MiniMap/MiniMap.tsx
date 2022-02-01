@@ -27,7 +27,7 @@ export const MiniMap = () => {
 
     useEffect(() => {
         if (enlarged) {
-            setDimensions({ width: width - 17, height: height - 76 })
+            setDimensions({ width: width - 23, height: height - 76 })
         } else {
             setDimensions({ width: 230, height: 200 })
         }
@@ -60,7 +60,7 @@ export const MiniMap = () => {
             sx={{
                 position: 'absolute',
                 top: 65,
-                right: 7,
+                right: 10,
                 zIndex: 32,
                 filter: 'drop-shadow(0 3px 3px #00000050)',
             }}

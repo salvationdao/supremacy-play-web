@@ -21,7 +21,8 @@ export interface FactionThemeColor {
 export interface Faction {
     id: string
     label: string
-    imageUrl: string
+    logoUrl: string
+    backgroundUrl: string
     theme: FactionThemeColor
 }
 
@@ -48,12 +49,12 @@ export interface WarMachineState {
     faction: Faction
     name: string
     imageUrl: string
-    healthMax: number
-    shieldMax: number
+    maxHitPoint: number
+    maxShield: number
 
     // Updated in subscription
-    health: number
-    shield: number
+    remainingHitPoints: number
+    remainingShield: number
     position: Vector2i
     rotation: number
 }

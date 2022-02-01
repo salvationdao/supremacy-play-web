@@ -24,7 +24,7 @@ export const WarMachineStats = () => {
                 transform: 'translateX(-50%)',
                 zIndex: 15,
                 overflow: 'hidden',
-                opacity: UI_OPACITY,
+                filter: 'drop-shadow(0 3px 3px #00000020)',
             }}
         >
             <Slide in={true} direction="up">
@@ -33,13 +33,14 @@ export const WarMachineStats = () => {
                         sx={{
                             flex: 1,
                             // 100vw, 18px each side
-                            maxWidth: `calc(${width}px - (2 * 18px))`,
+                            maxWidth: `calc(${width}px - (2 * 40px))`,
                             overflowY: 'hidden',
                             overflowX: 'auto',
                             direction: 'ltr',
                             scrollbarWidth: 'none',
+                            pb: 1.3,
                             '::-webkit-scrollbar': {
-                                width: 4,
+                                height: 4,
                             },
                             '::-webkit-scrollbar-track': {
                                 boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
@@ -53,7 +54,7 @@ export const WarMachineStats = () => {
                         }}
                     >
                         <Box sx={{ direction: 'ltr' }}>
-                            <Stack spacing={3} direction="row" alignItems="center">
+                            <Stack spacing={5} direction="row" alignItems="center">
                                 {warMachinesSub.map((m) => (
                                     <Box key={m.tokenID}>
                                         <WarMachineItem warMachine={m} />

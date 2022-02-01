@@ -53,8 +53,8 @@ export const Notifications = () => {
         <Stack
             sx={{
                 position: 'absolute',
-                bottom: 10,
-                left: 7,
+                bottom: 138,
+                left: 10,
                 zIndex: 15,
                 overflow: 'hidden',
                 opacity: UI_OPACITY,
@@ -64,8 +64,9 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        // 45vh, 8px gap above, 7px gap bottom
-                        maxHeight: `calc(${0.45 * height}px - 8px - 7px)`,
+                        // 100vh, 2 x 8px gap above, 150px gap bottom
+                        // Voting action: 288px total height, 65px above it
+                        maxHeight: `calc(${height}px - 8px - 150px - 8px - 288px - 65px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
                         pl: 1,
