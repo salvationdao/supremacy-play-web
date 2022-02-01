@@ -83,6 +83,7 @@ export const BattleTopMessage = () => {
                     <Typography
                         variant="h5"
                         sx={{
+                            textAlign: 'center',
                             fontWeight: 'fontWeightBold',
                             fontFamily: 'Nostromo Regular Black',
                             color: '#FFFFFF',

@@ -29,8 +29,8 @@ export const WarMachinesContainer = createContainer(() => {
                     prev?.map((wm) => {
                         const updates = payload.find((x) => x.tokenID === wm.tokenID)
                         if (!updates) return wm
-                        const { position, rotation, health, shield } = updates
-                        return { ...wm, position, rotation, health, shield }
+                        const { position, rotation, remainHitPoint, remainShield } = updates
+                        return { ...wm, position, rotation, remainHitPoint, remainShield }
                     }),
                 )
             },

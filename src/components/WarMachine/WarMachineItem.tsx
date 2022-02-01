@@ -26,7 +26,7 @@ const BoxSlanted: React.FC<BoxSlantedProps> = ({ children, clipSize = '0px', cli
 }
 
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
-    const { tokenID, faction, name, imageUrl, healthMax, shieldMax, health, shield } = warMachine
+    const { tokenID, faction, name, imageUrl, maxHitPoint, maxShield, remainHitPoint, remainShield } = warMachine
     const {
         label,
         imageUrl: factionImageUrl,
@@ -65,7 +65,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             <BoxSlanted clipSlantSize={defaultClipSlantSize} sx={{ width: 25, height: 9 }}>
                                 <Box
                                     sx={{
-                                        width: `${(health / healthMax) * 100}%`,
+                                        width: `${(remainHitPoint / maxHitPoint) * 100}%`,
                                         height: '100%',
                                         backgroundColor: colors.health,
                                     }}
@@ -75,7 +75,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             <BoxSlanted clipSlantSize={defaultClipSlantSize} sx={{ width: 25, height: 9 }}>
                                 <Box
                                     sx={{
-                                        width: `${(shieldMax / shield) * 100}%`,
+                                        width: `${(remainShield / maxShield) * 100}%`,
                                         height: '100%',
                                         backgroundColor: colors.shield,
                                     }}
