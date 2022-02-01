@@ -35,7 +35,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
 
     return (
         <BoxSlanted clipSlantSize={defaultClipSlantSize}>
-            <Stack direction="row" alignItems="center" sx={{ width: 200 }}>
+            <Stack direction="row" alignItems="center" sx={{ width: 220 }}>
                 <ClipThing
                     clipSize="8px"
                     clipSlantSize={defaultClipSlantSize}
@@ -45,7 +45,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                     <Box
                         sx={{
                             width: 80,
-                            height: 60,
+                            height: 80,
                             overflow: 'hidden',
                             backgroundColor: primary,
                             backgroundImage: `url(${factionLogoUrl})`,
@@ -104,7 +104,10 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                         </Stack>
                     </Stack>
 
-                    <Box sx={{ pl: 2.2, pr: 4, py: 0.7, backgroundColor: '#00000025' }}>
+                    <Stack
+                        justifyContent="center"
+                        sx={{ pl: 2.2, pr: 3.4, py: 0.7, height: 33, backgroundColor: '#00000025' }}
+                    >
                         <Typography
                             variant="caption"
                             sx={{
@@ -112,14 +115,19 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                                 lineHeight: 1,
                                 fontWeight: 'fontWeightBold',
                                 fontFamily: 'Nostromo Regular Black',
-                                overflow: 'hidden',
+
                                 textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                whiteSpace: 'normal',
+                                display: '-webkit-box',
+                                overflowWrap: 'anywhere',
+                                WebkitBoxOrient: 'vertical',
+                                WebkitLineClamp: 2,
                             }}
                         >
                             {name}
                         </Typography>
-                    </Box>
+                    </Stack>
                 </Stack>
             </Stack>
         </BoxSlanted>

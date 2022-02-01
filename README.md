@@ -3,3 +3,9 @@
 ```
 npm start
 ```
+
+```
+NINJA_NPM_TOKEN=[get from BitWarden]
+REACT_APP_GAME_SERVER_HOST=[game server address]
+REACT_APP_PASSPORT_SERVER_HOST=[passport server address]
+```
