@@ -27,10 +27,11 @@ export const WarMachinesContainer = createContainer(() => {
                 if (!payload) return
                 setWarMachinesSub((prev) =>
                     prev?.map((wm) => {
-                        const updates = payload.find((x) => x.tokenID === wm.tokenID)
-                        if (!updates) return wm
-                        const { position, rotation, health, shield } = updates
-                        return { ...wm, position, rotation, health, shield }
+                        return wm
+                        //     const updates = payload.find((x) => x.tokenID === wm.tokenID)
+                        //     if (!updates) return wm
+                        //     const { position, rotation, health, shield } = updates
+                        //     return { ...wm, position, rotation, health, shield }
                     }),
                 )
             },
