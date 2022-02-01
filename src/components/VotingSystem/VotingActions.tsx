@@ -20,7 +20,7 @@ export const VotingActions = () => {
             sx={{
                 position: 'absolute',
                 top: 65,
-                left: 7,
+                left: 10,
                 zIndex: 14,
                 overflow: 'hidden',
                 opacity: UI_OPACITY,
@@ -40,8 +40,8 @@ export const VotingActions = () => {
                             <Box
                                 sx={{
                                     flex: 1,
-                                    // 50vh, 8px gap bottom, 65px gap above, 45px title height
-                                    maxHeight: `calc(${0.5 * height}px - 8px - 65px - 45px)`,
+                                    // 280px total height, 24px title height
+                                    maxHeight: `calc(288px - 24px)`,
                                     overflowY: 'auto',
                                     overflowX: 'hidden',
                                     pl: 1,

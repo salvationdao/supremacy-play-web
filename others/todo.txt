@@ -9,4 +9,5 @@ Pending:
 - fullscreen with overlay
 - video player controls
 - fix map on too big screen
+- iframe dimension onresize
 
