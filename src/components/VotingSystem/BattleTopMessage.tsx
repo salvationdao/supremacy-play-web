@@ -72,7 +72,7 @@ export const BattleTopMessage = () => {
         <Box
             sx={{
                 position: 'absolute',
-                top: 115,
+                top: 125,
                 left: '50%',
                 transform: 'translateX(-50%)',
                 zIndex: 15,
@@ -83,7 +83,9 @@ export const BattleTopMessage = () => {
                     <Typography
                         variant="h5"
                         sx={{
+                            textAlign: 'center',
                             fontWeight: 'fontWeightBold',
+                            fontFamily: 'Nostromo Regular Black',
                             color: '#FFFFFF',
                             filter: 'drop-shadow(0 3px 3px #00000020)',
                         }}

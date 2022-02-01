@@ -1,4 +1,4 @@
-import { Box, CardMedia, Stack, Typography } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import { useCallback } from 'react'
 import { ClipThing, FancyButton } from '..'
 import { SvgSupToken } from '../../assets'
@@ -83,23 +83,23 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
         <Box>
             <ClipThing border={{ isFancy: true, borderColor: colour, borderThickness: '1.5px' }} clipSize="6px">
                 <Box sx={{ backgroundColor: colors.darkNavy }}>
-                    <Stack direction="row" sx={{ height: 65, minWidth: 180 }}>
+                    <Stack direction="row" sx={{ height: 67, minWidth: 180 }}>
                         <ClipThing
                             border={{ isFancy: true, borderColor: colour, borderThickness: '1px' }}
                             clipSize="6px"
                             fillHeight
                         >
-                            <Stack
-                                alignItems="center"
-                                justifyContent="center"
+                            <Box
                                 sx={{
                                     backgroundColor: theme.factionTheme.background,
                                     height: '100%',
                                     width: 61,
+                                    backgroundImage: `url(${imageUrl})`,
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundPosition: 'center',
+                                    backgroundSize: 'cover',
                                 }}
-                            >
-                                <CardMedia component="img" alt={label} height="100%" image={imageUrl} />
-                            </Stack>
+                            />
                         </ClipThing>
 
                         <Stack
@@ -111,6 +111,7 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
                                 variant="body1"
                                 sx={{
                                     fontWeight: 'fontWeightBold',
+                                    fontFamily: 'Nostromo Regular Medium',
                                     color: colour,
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
