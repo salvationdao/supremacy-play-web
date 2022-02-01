@@ -39,7 +39,7 @@ const AppInner = () => {
                     ></iframe>
 
                     <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                        <GameBar opacity={0.9} barPosition="top" twitchExtensionJWT={authToken} />
+                        <GameBar opacity={0.94} barPosition="top" twitchExtensionJWT={authToken} />
                         <VotingSystem />
                         <MiniMap />
                         <Notifications />
