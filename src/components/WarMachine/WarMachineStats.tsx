@@ -33,7 +33,7 @@ export const WarMachineStats = () => {
                         sx={{
                             flex: 1,
                             // 100vw, 18px each side
-                            maxWidth: `calc(${width}px - (2 * 20px))`,
+                            maxWidth: `calc(${width}px - (2 * 30px))`,
                             overflowY: 'hidden',
                             overflowX: 'auto',
                             direction: 'ltr',
