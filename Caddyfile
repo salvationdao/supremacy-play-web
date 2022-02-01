@@ -1,0 +1,35 @@
+# passport web
+http://localhost:5003 {
+	log {
+		output discard
+	}
+	reverse_proxy * localhost:3000
+	reverse_proxy /api/* localhost:8086
+}
+
+# twitch extension
+http://localhost:8081 {
+	log {
+		output discard
+	}
+	reverse_proxy * localhost:8082
+	reverse_proxy /api/* localhost:8084
+}
+
+# game bar
+http://localhost:5004 {
+  log {
+    output discard
+  }
+  reverse_proxy * localhost:3000
+  reverse_proxy /api/* localhost:8086
+}
+
+# stream site
+http://localhost:5005 {
+  log {
+    output discard
+  }
+  reverse_proxy * localhost:3002
+  reverse_proxy /api/* localhost:8084
+}
