@@ -84,6 +84,7 @@ export const BattleTopMessage = () => {
                         variant="h5"
                         sx={{
                             fontWeight: 'fontWeightBold',
+                            fontFamily: 'Nostromo Regular Black',
                             color: '#FFFFFF',
                             filter: 'drop-shadow(0 3px 3px #00000020)',
                         }}

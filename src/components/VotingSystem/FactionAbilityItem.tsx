@@ -83,7 +83,7 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
         <Box>
             <ClipThing border={{ isFancy: true, borderColor: colour, borderThickness: '1.5px' }} clipSize="6px">
                 <Box sx={{ backgroundColor: colors.darkNavy }}>
-                    <Stack direction="row" sx={{ height: 65, minWidth: 180 }}>
+                    <Stack direction="row" sx={{ height: 67, minWidth: 180 }}>
                         <ClipThing
                             border={{ isFancy: true, borderColor: colour, borderThickness: '1px' }}
                             clipSize="6px"
@@ -111,6 +111,7 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
                                 variant="body1"
                                 sx={{
                                     fontWeight: 'fontWeightBold',
+                                    fontFamily: 'Nostromo Regular Black',
                                     color: colour,
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
