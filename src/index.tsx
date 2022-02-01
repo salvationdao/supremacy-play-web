@@ -29,7 +29,7 @@ const AppInner = () => {
         <>
             <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <Box sx={{ position: 'relative', height, width, backgroundColor: 'red' }}>
+                <Box sx={{ position: 'relative', height, width, backgroundColor: '#A657AE' }}>
                     <iframe
                         width="100%"
                         height="100%"
@@ -39,7 +39,7 @@ const AppInner = () => {
                     ></iframe>
 
                     <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                        <GameBar opacity={0.9} barPosition="top" gameserverSessionID={gameserverSessionID} />
+                        <GameBar opacity={0.94} barPosition="top" gameserverSessionID={gameserverSessionID} />
                         <VotingSystem />
                         <MiniMap />
                         <Notifications />

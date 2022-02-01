@@ -4,7 +4,7 @@ import { WarMachineState } from '../../types'
 import { ClipThing } from '..'
 import { colors } from '../../theme/theme'
 
-const defaultClipSlantSize = '8px'
+const defaultClipSlantSize = '18px'
 
 interface BoxSlantedProps extends BoxProps {
     clipSize?: string
@@ -26,46 +26,55 @@ const BoxSlanted: React.FC<BoxSlantedProps> = ({ children, clipSize = '0px', cli
 }
 
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
-    const { tokenID, faction, name, imageUrl, healthMax, shieldMax, health, shield } = warMachine
+    const { tokenID, faction, name, imageUrl, maxHitPoint, maxShield, remainHitPoint, remainShield } = warMachine
     const {
         label,
-        imageUrl: factionImageUrl,
+        logoUrl: factionLogoUrl,
         theme: { primary },
     } = faction
 
     return (
-        <BoxSlanted
-            clipSlantSize={defaultClipSlantSize}
-            sx={{
-                borderBottomWidth: '1.5px',
-                borderBottomColor: primary,
-            }}
-        >
-            <Stack direction="row" alignItems="center">
+        <BoxSlanted clipSlantSize={defaultClipSlantSize}>
+            <Stack direction="row" alignItems="center" sx={{ width: 220 }}>
                 <ClipThing
-                    clipSize="7px"
+                    clipSize="8px"
                     clipSlantSize={defaultClipSlantSize}
                     border={{ isFancy: false, borderColor: primary, borderThickness: '1.5px' }}
+                    sx={{ zIndex: 2 }}
                 >
-                    <Stack
-                        alignItems="center"
-                        justifyContent="center"
+                    <Box
                         sx={{
-                            height: '100%',
-                            width: 61,
+                            width: 80,
+                            height: 80,
+                            overflow: 'hidden',
+                            backgroundColor: primary,
+                            backgroundImage: `url(${factionLogoUrl})`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
                         }}
-                    >
-                        <CardMedia component="img" alt={name} height="100%" image={imageUrl} />
-                    </Stack>
+                    />
                 </ClipThing>
 
-                <Stack>
+                <Stack
+                    justifyContent="flex-end"
+                    sx={{
+                        flex: 1,
+                        ml: -2.4,
+                        mb: '-1.5px',
+                        height: 60,
+                        borderBottomStyle: 'solid',
+                        borderBottomWidth: '2px',
+                        borderBottomColor: primary,
+                        zIndex: 1,
+                    }}
+                >
                     <Stack direction="row" spacing={0.4}>
                         <Box>
                             <BoxSlanted clipSlantSize={defaultClipSlantSize} sx={{ width: 25, height: 9 }}>
                                 <Box
                                     sx={{
-                                        width: `${(health / healthMax) * 100}%`,
+                                        width: `${(remainHitPoint / maxHitPoint) * 100}%`,
                                         height: '100%',
                                         backgroundColor: colors.health,
                                     }}
@@ -75,7 +84,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             <BoxSlanted clipSlantSize={defaultClipSlantSize} sx={{ width: 25, height: 9 }}>
                                 <Box
                                     sx={{
-                                        width: `${(shieldMax / shield) * 100}%`,
+                                        width: `${(remainShield / maxShield) * 100}%`,
                                         height: '100%',
                                         backgroundColor: colors.shield,
                                     }}
@@ -91,23 +100,34 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                                 width: 16,
                             }}
                         >
-                            <CardMedia component="img" alt={label} height="100%" image={factionImageUrl} />
+                            <CardMedia component="img" alt={label} height="100%" image={factionLogoUrl} />
                         </Stack>
                     </Stack>
 
-                    <Box sx={{ px: 2, py: 1, backgroundColor: '#00000025' }}>
+                    <Stack
+                        justifyContent="center"
+                        sx={{ pl: 2.2, pr: 3.4, py: 0.7, height: 33, backgroundColor: '#00000025' }}
+                    >
                         <Typography
                             variant="caption"
                             sx={{
+                                color: '#FFFFFF',
+                                lineHeight: 1,
                                 fontWeight: 'fontWeightBold',
-                                overflow: 'hidden',
+                                fontFamily: 'Nostromo Regular Black',
+
                                 textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                whiteSpace: 'normal',
+                                display: '-webkit-box',
+                                overflowWrap: 'anywhere',
+                                WebkitBoxOrient: 'vertical',
+                                WebkitLineClamp: 2,
                             }}
                         >
                             {name}
                         </Typography>
-                    </Box>
+                    </Stack>
                 </Stack>
             </Stack>
         </BoxSlanted>

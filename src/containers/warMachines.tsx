@@ -20,7 +20,7 @@ export const WarMachinesContainer = createContainer(() => {
 
     // War machine for the map (subscription)
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<WarMachineState[] | undefined>(
             HubKey.SubWarMachinesState,
             (payload) => {
@@ -29,8 +29,8 @@ export const WarMachinesContainer = createContainer(() => {
                     prev?.map((wm) => {
                         const updates = payload.find((x) => x.tokenID === wm.tokenID)
                         if (!updates) return wm
-                        const { position, rotation, health, shield } = updates
-                        return { ...wm, position, rotation, health, shield }
+                        const { position, rotation, remainHitPoint, remainShield } = updates
+                        return { ...wm, position, rotation, remainHitPoint, remainShield }
                     }),
                 )
             },
@@ -40,7 +40,7 @@ export const WarMachinesContainer = createContainer(() => {
         )
     }, [state, subscribe, user])
 
-    // War machine JSX for the map
+    // Generate war machine JSX for the map
     useEffect(() => {
         if (!warMachinesSub || warMachinesSub.length <= 0 || !map) return
 

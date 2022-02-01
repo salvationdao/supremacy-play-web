@@ -7,9 +7,9 @@ export const TextAlert = ({ data }: { data: string }) => {
         <ClipThing border={{ isFancy: true, borderThickness: '2px' }} clipSize="5px">
             <Box
                 sx={{
-                    width: 300,
+                    width: 360,
                     px: 1.2,
-                    py: 0.5,
+                    py: 1,
                     backgroundColor: colors.darkNavy,
                 }}
             >

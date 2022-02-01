@@ -172,7 +172,7 @@ export const InteractiveMap = ({
                 }}
             >
                 <Box sx={{ cursor: 'move' }}>
-                    <MapWarMachines />
+                    {/* <MapWarMachines /> */}
 
                     {selectionIcon}
 
