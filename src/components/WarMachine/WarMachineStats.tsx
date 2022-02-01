@@ -33,7 +33,7 @@ export const WarMachineStats = () => {
                         sx={{
                             flex: 1,
                             // 100vw, 18px each side
-                            maxWidth: `calc(${width}px - (2 * 30px))`,
+                            maxWidth: `calc(${width}px - (2 * 40px))`,
                             overflowY: 'hidden',
                             overflowX: 'auto',
                             direction: 'ltr',
@@ -54,12 +54,7 @@ export const WarMachineStats = () => {
                         }}
                     >
                         <Box sx={{ direction: 'ltr' }}>
-                            <Stack spacing={4} direction="row" alignItems="center">
-                                {warMachinesSub.map((m) => (
-                                    <Box key={m.tokenID}>
-                                        <WarMachineItem warMachine={m} />
-                                    </Box>
-                                ))}
+                            <Stack spacing={5} direction="row" alignItems="center">
                                 {warMachinesSub.map((m) => (
                                     <Box key={m.tokenID}>
                                         <WarMachineItem warMachine={m} />

@@ -29,7 +29,7 @@ const AppInner = () => {
         <>
             <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <Box sx={{ position: 'relative', height, width, backgroundColor: '#A657AE' }}>
+                <Box sx={{ position: 'relative', height, width, backgroundColor: '#000000' }}>
                     <iframe
                         width="100%"
                         height="100%"
@@ -43,7 +43,7 @@ const AppInner = () => {
                         <VotingSystem />
                         <MiniMap />
                         <Notifications />
-                        {/* <WarMachineStats /> */}
+                        <WarMachineStats />
                     </Box>
                 </Box>
             )}
