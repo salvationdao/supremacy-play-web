@@ -32,6 +32,7 @@ Pending:
 - video player controls
 - iframe dimension onresize
 - kill notification
+- mech stat death
 
 
 

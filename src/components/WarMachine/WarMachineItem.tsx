@@ -88,7 +88,10 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             </Box>
 
                             <Box>
-                                <BoxSlanted clipSlantSize="4.2px" sx={{ ml: -0.5, width: '100%', height: 12 }}>
+                                <BoxSlanted
+                                    clipSlantSize="4.2px"
+                                    sx={{ ml: -0.5, width: '100%', height: 12, backgroundColor: '#FFFFFF30' }}
+                                >
                                     <BoxSlanted
                                         clipSlantSize="4.2px"
                                         sx={{
