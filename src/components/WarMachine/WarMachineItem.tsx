@@ -69,7 +69,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                         zIndex: 1,
                     }}
                 >
-                    <Stack alignItems="center" direction="row" spacing={1.1} sx={{ flex: 1, pl: 3, pr: 1.4 }}>
+                    <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: 1, pl: 3, pr: 2.2 }}>
                         <Stack justifyContent="center" spacing={0.5} sx={{ flex: 1, height: '100%' }}>
                             <Box>
                                 <BoxSlanted
