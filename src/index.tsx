@@ -18,7 +18,7 @@ import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
-import { PASSPORT_SERVER_HOSTNAME } from './constants'
+import { PASSPORT_SERVER_HOSTNAME, STREAM_SITE } from './constants'
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
@@ -31,13 +31,7 @@ const AppInner = () => {
             <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <Box sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
-                    <iframe
-                        width="100%"
-                        height="100%"
-                        frameBorder="0"
-                        allowFullScreen
-                        src="https://watch-test-am.supremacy.game:/WebRTCAppEE/play.html?name=332524196830677408897509"
-                    ></iframe>
+                    <iframe width="100%" height="100%" frameBorder="0" allowFullScreen src={STREAM_SITE}></iframe>
 
                     <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
                         <GameBar
