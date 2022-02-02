@@ -19,6 +19,7 @@ import { mergeDeep } from './helpers'
 import { theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
 import { PASSPORT_SERVER_HOSTNAME, STREAM_SITE } from './constants'
+import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
@@ -43,6 +44,7 @@ const AppInner = () => {
                         <VotingSystem />
                         <MiniMap />
                         <Notifications />
+                        <LiveVotingChart />
                         <WarMachineStats />
                     </Box>
                 </Box>

@@ -75,6 +75,7 @@ export interface Map {
 export enum NetMessageType {
     Default,
     Tick,
+    LiveVoting,
 }
 
 export interface NetMessageTickWarMachine {
