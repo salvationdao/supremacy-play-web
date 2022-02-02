@@ -1,13 +1,43 @@
-Done:
+actions:
+x text change blue effect for 0.3s
+x particle effect when votes come in and second cote
+x notification dot
+x faction color themes
+x fix map image over
+x take out channel points and use SUP
+x overlay and mobile map drag boundaries (mini and target map)
+x remove fetching library
+x hide mini map when no map
+x selection icon flash when contirm
+x dont show time if zero at start
+x no more viewpoints
+x fix other state container re-rendering issue
+	x useRef more
+x second vote button position change
+x test the faction primary and background colors
+x case where twitch not logged in
+x take out bottom bar
+x reuse minimap full screen target
+x mech stats at the bottom
+x make overlay responsive
 x remove "MOBILE"
 x refactor window dimension
 x fix map on too big screen
+x fullscreen with overlay
 
 
 
 
 Pending:
-- fullscreen with overlay
 - video player controls
 - iframe dimension onresize
+- kill notification
+
+
+
+future nice to have:
+- hotkeys to buttons
+- map follows where the action is
+- improve notification styles (for the map select, reject counters etc.)
+
 
