@@ -24,7 +24,7 @@ const BoxSlanted: React.FC<BoxSlantedProps> = ({ children, clipSize = '0px', cli
 }
 
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
-    const { tokenID, faction, name, imageUrl, maxHitPoint, maxShield, remainingHitPoints, remainingShield } = warMachine
+    const { tokenID, faction, name, imageUrl, maxHealth, maxShield, health, shield } = warMachine
     const {
         label,
         logoUrl: factionLogoUrl,
@@ -32,7 +32,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
     } = faction
 
     return (
-        <BoxSlanted clipSlantSize="20px">
+        <BoxSlanted clipSlantSize="20px" key={`WarMachineItem-${tokenID}`}>
             <Stack direction="row" alignItems="center" sx={{ width: 225 }}>
                 <ClipThing
                     clipSize="8px"
@@ -79,7 +79,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                                     <BoxSlanted
                                         clipSlantSize="4.2px"
                                         sx={{
-                                            width: `${(remainingHitPoints / maxHitPoint) * 100}%`,
+                                            width: `${(health / maxHealth) * 100}%`,
                                             height: '100%',
                                             backgroundColor: colors.health,
                                         }}
@@ -92,7 +92,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                                     <BoxSlanted
                                         clipSlantSize="4.2px"
                                         sx={{
-                                            width: `${(remainingShield / maxShield) * 100}%`,
+                                            width: `${(shield / maxShield) * 100}%`,
                                             height: '100%',
                                             backgroundColor: colors.shield,
                                         }}

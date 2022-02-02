@@ -50,12 +50,12 @@ export interface WarMachineState {
     faction: Faction
     name: string
     imageUrl: string
-    maxHitPoint: number
+    maxHealth: number
     maxShield: number
 
     // Updated in subscription
-    remainingHitPoints: number
-    remainingShield: number
+    health: number
+    shield: number
     position: Vector2i
     rotation: number
 }
@@ -79,9 +79,11 @@ export enum NetMessageType {
 }
 
 export interface NetMessageTickWarMachine {
-    participantID: number
-    position: Vector2i
-    rotation: number
+    participantID?: number
+    position?: Vector2i
+    rotation?: number
+    health?: number
+    shield?: number
 }
 
 export interface NetMessageTick {

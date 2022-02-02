@@ -305,6 +305,7 @@ const UseWebsocket = (): WebSocketProperties => {
                 setState(WebSocket.CONNECTING)
                 setTimeout(() => {
                     webSocket.current = new WebSocket(`${protocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
+                    webSocket.current.binaryType = 'arraybuffer'
                     setupWS(webSocket.current)
                     resolve(undefined)
                 }, 2000)
@@ -322,6 +323,7 @@ const UseWebsocket = (): WebSocketProperties => {
 
     useEffect(() => {
         webSocket.current = new WebSocket(`${protocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
+        webSocket.current.binaryType = 'arraybuffer'
         setupWS(webSocket.current)
 
         return () => {
