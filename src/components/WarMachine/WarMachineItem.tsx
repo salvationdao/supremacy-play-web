@@ -24,15 +24,15 @@ const BoxSlanted: React.FC<BoxSlantedProps> = ({ children, clipSize = '0px', cli
 }
 
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
-    const { tokenID, faction, name, imageUrl, maxHitPoint, maxShield, remainingHitPoints, remainingShield } = warMachine
+    const { tokenID, faction, name, imageUrl, maxHealth, maxShield, health, shield } = warMachine
     const {
         label,
         logoUrl: factionLogoUrl,
-        theme: { primary },
+        theme: { primary, background },
     } = faction
 
     return (
-        <BoxSlanted clipSlantSize="20px">
+        <BoxSlanted clipSlantSize="20px" key={`WarMachineItem-${tokenID}`}>
             <Stack direction="row" alignItems="center" sx={{ width: 225 }}>
                 <ClipThing
                     clipSize="8px"
@@ -59,15 +59,17 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                     sx={{
                         flex: 1,
                         ml: -2.5,
-                        mb: '-2.5px',
+                        mb: '-2.3px',
                         height: 78.4,
                         borderBottomStyle: 'solid',
                         borderBottomWidth: '2.5px',
                         borderBottomColor: primary,
+
+                        backgroundColor: '#00000056',
                         zIndex: 1,
                     }}
                 >
-                    <Stack alignItems="center" direction="row" spacing={1.1} sx={{ flex: 1, pl: 3, pr: 1.4 }}>
+                    <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: 1, pl: 3, pr: 2.2 }}>
                         <Stack justifyContent="center" spacing={0.5} sx={{ flex: 1, height: '100%' }}>
                             <Box>
                                 <BoxSlanted
@@ -77,7 +79,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                                     <BoxSlanted
                                         clipSlantSize="4.2px"
                                         sx={{
-                                            width: `${(remainingHitPoints / maxHitPoint) * 100}%`,
+                                            width: `${(health / maxHealth) * 100}%`,
                                             height: '100%',
                                             backgroundColor: colors.health,
                                         }}
@@ -86,11 +88,14 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             </Box>
 
                             <Box>
-                                <BoxSlanted clipSlantSize="4.2px" sx={{ ml: -0.5, width: '100%', height: 12 }}>
+                                <BoxSlanted
+                                    clipSlantSize="4.2px"
+                                    sx={{ ml: -0.5, width: '100%', height: 12, backgroundColor: '#FFFFFF30' }}
+                                >
                                     <BoxSlanted
                                         clipSlantSize="4.2px"
                                         sx={{
-                                            width: `${(remainingShield / maxShield) * 100}%`,
+                                            width: `${(shield / maxShield) * 100}%`,
                                             height: '100%',
                                             backgroundColor: colors.shield,
                                         }}
@@ -106,14 +111,14 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                                 backgroundImage: `url(${factionLogoUrl})`,
                                 backgroundRepeat: 'no-repeat',
                                 backgroundPosition: 'center',
-                                backgroundSize: 'cover',
+                                backgroundSize: 'contain',
                             }}
                         />
                     </Stack>
 
                     <Stack
                         justifyContent="center"
-                        sx={{ pl: 2.2, pr: 3.4, py: 0.7, height: 33, backgroundColor: '#00000095' }}
+                        sx={{ pl: 2.2, pr: 3.4, py: 0.7, height: 33, backgroundColor: `${background}95` }}
                     >
                         <Typography
                             variant="caption"

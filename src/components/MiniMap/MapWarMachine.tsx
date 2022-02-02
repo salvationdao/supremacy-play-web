@@ -2,8 +2,8 @@ import { Box, Stack, Typography } from '@mui/material'
 import { SvgMapWarMachine } from '../../assets'
 import { Map, WarMachineState } from '../../types'
 
-export const MapWarMachine = ({ warMachine }: { warMachine: WarMachineState; map: Map }) => {
-    const { tokenID, faction, name, remainingHitPoints, position, rotation } = warMachine
+export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
+    const { tokenID, faction, name, health, position, rotation } = warMachine
 
     if (!position) return null
 
@@ -17,8 +17,10 @@ export const MapWarMachine = ({ warMachine }: { warMachine: WarMachineState; map
             sx={{
                 position: 'absolute',
                 pointerEvents: 'none',
-                opacity: remainingHitPoints <= 0 ? '0.2' : 'unset',
-                transform: `translate(-50%, -50%) translate3d(${position.x}px, ${position.y}px, 0)`,
+                opacity: health <= 0 ? '0.2' : 'unset',
+                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * map.scale}px, ${
+                    (position.y - map.top) * map.scale
+                }px, 0)`,
                 transition: 'transform 0.2s linear',
                 zIndex: 5,
             }}
@@ -31,7 +33,9 @@ export const MapWarMachine = ({ warMachine }: { warMachine: WarMachineState; map
             >
                 <SvgMapWarMachine fill={primaryColor} size="17px" />
             </Box>
-            <Typography sx={{ mt: 0.4, color: primaryColor }}>{name}</Typography>
+            <Typography sx={{ mt: 0.4, color: primaryColor, opacity: health <= 0 ? '0.2' : 'unset' }}>
+                {name}
+            </Typography>
         </Stack>
     )
 }

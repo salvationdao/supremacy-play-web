@@ -22,13 +22,19 @@ export const WarMachinesContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage || !user) return
         return subscribeNetMessage<NetMessageTick | undefined>(NetMessageType.Tick, (payload) => {
             if (!payload) return
-            console.log(payload)
+
             setWarMachinesSub((prev) =>
                 prev?.map((wm) => {
                     const updates = payload.warmachines.find((x) => x.participantID === wm.participantID)
                     if (!updates) return wm
-                    const { position, rotation } = updates
-                    return { ...wm, position, rotation }
+                    const { position, rotation, health, shield } = updates
+                    return {
+                        ...wm,
+                        position: position || wm.position,
+                        rotation: rotation === undefined ? wm.rotation : rotation,
+                        health: health === undefined ? wm.health : health,
+                        shield: shield == undefined ? wm.shield : shield,
+                    }
                 }),
             )
         })

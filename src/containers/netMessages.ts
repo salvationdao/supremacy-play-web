@@ -1,4 +1,4 @@
-import { NetMessageType, NetMessageTick } from '../types'
+import { NetMessageType, NetMessageTick, NetMessageTickWarMachine } from '../types'
 
 export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; payload: unknown } | undefined => {
     const dv = new DataView(buffer)
@@ -9,22 +9,38 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
             const payload: NetMessageTick = { warmachines: [] }
 
             const count = dv.getUint8(1)
+            let offset = 2
             for (let c = 0; c < count; c++) {
-                const offset = 2 + c * 13
+                const warmachineUpdate: NetMessageTickWarMachine = {}
 
-                const participantID = dv.getUint8(offset)
-                const x = dv.getInt32(offset + 1, false)
-                const y = dv.getInt32(offset + 5, false)
-                const rotation = dv.getInt32(offset + 9, false)
+                warmachineUpdate.participantID = dv.getUint8(offset)
+                offset++
 
-                payload.warmachines.push({
-                    participantID,
-                    position: {
-                        x,
-                        y,
-                    },
-                    rotation,
-                })
+                // Get Sync byte (tells us which data was updated for this warmachine)
+                const syncByte = dv.getUint8(offset)
+                offset++
+
+                // Position + Yaw
+                if (syncByte >= 100) {
+                    const x = dv.getInt32(offset, false)
+                    offset += 4
+                    const y = dv.getInt32(offset, false)
+                    offset += 4
+                    warmachineUpdate.position = { x, y }
+                    warmachineUpdate.rotation = dv.getInt32(offset, false)
+                    offset += 4
+                }
+                // Health
+                if (syncByte == 1 || syncByte == 11 || syncByte == 101 || syncByte == 111) {
+                    warmachineUpdate.health = dv.getInt32(offset, false)
+                    offset += 4
+                }
+                // Shield
+                if (syncByte == 10 || syncByte == 11 || syncByte == 110 || syncByte == 111) {
+                    warmachineUpdate.shield = dv.getInt32(offset, false)
+                    offset += 4
+                }
+                payload.warmachines.push(warmachineUpdate)
             }
             return { type, payload }
         }

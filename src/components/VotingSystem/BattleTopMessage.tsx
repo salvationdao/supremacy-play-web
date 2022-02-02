@@ -55,7 +55,7 @@ export const BattleTopMessage = () => {
     const doSentence = () => {
         switch (battleState?.phase) {
             case 'FIRST_VOTE':
-                setSentence(`Voting phase ends in ${timeRemain}s...`)
+                setSentence(`Voting phase ends in ${timeRemain} sec...`)
                 break
 
             case 'TIE':
@@ -63,7 +63,7 @@ export const BattleTopMessage = () => {
                 break
 
             case 'VOTE_COOLDOWN':
-                setSentence(`Voting phase starts in ${timeRemain}s...`)
+                setSentence(`Voting phase starts in ${timeRemain} sec...`)
                 break
         }
     }
