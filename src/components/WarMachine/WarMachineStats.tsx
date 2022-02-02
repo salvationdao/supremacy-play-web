@@ -1,5 +1,4 @@
 import { Box, Slide, Stack } from '@mui/material'
-import { UI_OPACITY } from '../../constants'
 import { colors } from '../../theme/theme'
 import { WarMachineItem } from './WarMachineItem'
 import { Theme } from '@mui/material/styles'

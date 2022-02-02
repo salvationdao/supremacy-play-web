@@ -5,7 +5,7 @@ import { Map, WarMachineState } from '../../types'
 export const MapWarMachine = ({ warMachine }: { warMachine: WarMachineState; map: Map }) => {
     const { tokenID, faction, name, remainingHitPoints, position, rotation } = warMachine
 
-    if (!position) return <></>
+    if (!position) return null
 
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
 

@@ -77,11 +77,12 @@ export enum NetMessageType {
     Tick,
 }
 
-export interface NetMessageTick {
-    warmachines: NetMessageTickWarMachine[]
-}
 export interface NetMessageTickWarMachine {
     participantID: number
     position: Vector2i
     rotation: number
+}
+
+export interface NetMessageTick {
+    warmachines: NetMessageTickWarMachine[]
 }
