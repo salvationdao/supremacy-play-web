@@ -30,7 +30,7 @@ const AppInner = () => {
         <>
             <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <Box sx={{ position: 'relative', height, width, backgroundColor: '#000000' }}>
+                <Box sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
                     <iframe
                         width="100%"
                         height="100%"
