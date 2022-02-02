@@ -108,7 +108,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                                 backgroundImage: `url(${factionLogoUrl})`,
                                 backgroundRepeat: 'no-repeat',
                                 backgroundPosition: 'center',
-                                backgroundSize: 'cover',
+                                backgroundSize: 'contain',
                             }}
                         />
                     </Stack>
