@@ -18,6 +18,7 @@ import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
+import { PASSPORT_SERVER_HOSTNAME } from './constants'
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
@@ -39,7 +40,12 @@ const AppInner = () => {
                     ></iframe>
 
                     <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                        <GameBar opacity={0.94} barPosition="top" gameserverSessionID={gameserverSessionID} />
+                        <GameBar
+                            opacity={0.94}
+                            barPosition="top"
+                            gameserverSessionID={gameserverSessionID}
+                            serverHost={PASSPORT_SERVER_HOSTNAME}
+                        />
                         <VotingSystem />
                         <MiniMap />
                         <Notifications />

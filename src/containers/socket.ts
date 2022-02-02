@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createContainer } from 'unstated-next'
-import { API_ENDPOINT_HOSTNAME, LOG_API_CALLS } from '../constants'
+import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from '../constants'
 import { useDebounce } from '../hooks/useDebounce'
 import HubKey from '../keys'
 
@@ -273,7 +273,7 @@ const UseWebsocket = (): WebSocketProperties => {
             return new Promise(function (resolve, reject) {
                 setState(WebSocket.CONNECTING)
                 setTimeout(() => {
-                    webSocket.current = new WebSocket(`${protocol()}://${API_ENDPOINT_HOSTNAME}/api/ws`)
+                    webSocket.current = new WebSocket(`${protocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
                     setupWS(webSocket.current)
                     resolve(undefined)
                 }, 2000)
@@ -290,7 +290,7 @@ const UseWebsocket = (): WebSocketProperties => {
     }
 
     useEffect(() => {
-        webSocket.current = new WebSocket(`${protocol()}://${API_ENDPOINT_HOSTNAME}/api/ws`)
+        webSocket.current = new WebSocket(`${protocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
         setupWS(webSocket.current)
 
         return () => {
