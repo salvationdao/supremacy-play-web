@@ -43,6 +43,7 @@ export interface Vector2i {
 }
 
 export interface WarMachineState {
+    // One off fetch on inital load
     tokenID: string
     participantID: number
     factionID: string

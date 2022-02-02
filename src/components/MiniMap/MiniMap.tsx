@@ -80,8 +80,9 @@ export const MiniMap = () => {
                                 boxShadow: 1,
                                 width: dimensions.width,
                                 height: dimensions.height,
-                                backgroundColor: colors.darkNavy,
+                                // backgroundColor: colors.darkNavy,
                                 transition: 'all .2s',
+                                background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
                             }}
                         >
                             <IconButton

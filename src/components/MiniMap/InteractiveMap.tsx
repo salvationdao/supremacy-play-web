@@ -59,6 +59,7 @@ export const InteractiveMap = ({
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
     const lastPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
+    const prevDimension = useRef<{ width: number; height: number }>({ width: 0, height: 0 })
 
     useEffect(() => {
         setSelection(undefined)
@@ -130,9 +131,21 @@ export const InteractiveMap = ({
         if (!map) return
 
         lastPos.current = {
-            x: Math.max(lastPos.current.x, -(map.width - windowDimension.width)),
-            y: Math.max(lastPos.current.y, -(map.height - windowDimension.height)),
+            x:
+                windowDimension.width <= map.width && prevDimension.current.width > map.width
+                    ? 0
+                    : windowDimension.width <= map.width
+                    ? Math.max(lastPos.current.x, -(map.width - windowDimension.width))
+                    : (windowDimension.width - map.width) / 2,
+            y:
+                windowDimension.height <= map.height && prevDimension.current.height > map.height
+                    ? 0
+                    : windowDimension.height <= map.height
+                    ? Math.max(lastPos.current.y, -(map.height - windowDimension.height))
+                    : (windowDimension.height - map.height) / 2,
         }
+
+        prevDimension.current = windowDimension
         toggleRefresh()
     }, [windowDimension])
 
@@ -160,13 +173,19 @@ export const InteractiveMap = ({
                     }, 50)
 
                     lastPos.current = {
-                        x: Math.max(data.x),
-                        y: Math.max(data.y),
+                        x: data.x,
+                        y: data.y,
                     }
                 }}
                 bounds={{
-                    top: -(map.height - windowDimension.height),
-                    left: -(map.width - windowDimension.width),
+                    top:
+                        windowDimension.height <= map.height
+                            ? -(map.height - windowDimension.height)
+                            : (windowDimension.height - map.height) / 2,
+                    left:
+                        windowDimension.width <= map.width
+                            ? -(map.width - windowDimension.width)
+                            : (windowDimension.width - map.width) / 2,
                     right: 0,
                     bottom: 0,
                 }}

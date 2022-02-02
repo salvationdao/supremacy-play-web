@@ -28,7 +28,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
     const {
         label,
         logoUrl: factionLogoUrl,
-        theme: { primary },
+        theme: { primary, background },
     } = faction
 
     return (
@@ -59,11 +59,13 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                     sx={{
                         flex: 1,
                         ml: -2.5,
-                        mb: '-2.5px',
+                        mb: '-2.3px',
                         height: 78.4,
                         borderBottomStyle: 'solid',
                         borderBottomWidth: '2.5px',
                         borderBottomColor: primary,
+
+                        backgroundColor: '#00000056',
                         zIndex: 1,
                     }}
                 >
@@ -113,7 +115,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
 
                     <Stack
                         justifyContent="center"
-                        sx={{ pl: 2.2, pr: 3.4, py: 0.7, height: 33, backgroundColor: '#00000095' }}
+                        sx={{ pl: 2.2, pr: 3.4, py: 0.7, height: 33, backgroundColor: `${background}95` }}
                     >
                         <Typography
                             variant="caption"
