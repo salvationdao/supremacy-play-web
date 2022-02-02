@@ -33,7 +33,9 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
             >
                 <SvgMapWarMachine fill={primaryColor} size="17px" />
             </Box>
-            <Typography sx={{ mt: 0.4, color: primaryColor }}>{name}</Typography>
+            <Typography sx={{ mt: 0.4, color: primaryColor, opacity: health <= 0 ? '0.2' : 'unset' }}>
+                {name}
+            </Typography>
         </Stack>
     )
 }

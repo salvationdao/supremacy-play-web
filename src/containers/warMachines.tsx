@@ -31,9 +31,9 @@ export const WarMachinesContainer = createContainer(() => {
                     return {
                         ...wm,
                         position: position || wm.position,
-                        rotation: rotation || wm.rotation,
-                        health: health || wm.health,
-                        shield: shield || wm.shield,
+                        rotation: rotation === undefined ? wm.rotation : rotation,
+                        health: health === undefined ? wm.health : health,
+                        shield: shield == undefined ? wm.shield : shield,
                     }
                 }),
             )
