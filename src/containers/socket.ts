@@ -3,6 +3,8 @@ import { createContainer } from 'unstated-next'
 import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from '../constants'
 import { useDebounce } from '../hooks/useDebounce'
 import HubKey from '../keys'
+import { NetMessageType } from '../types'
+import { parseNetMessage } from './netMessages'
 
 // websocket message struct
 interface MessageData {
@@ -60,6 +62,7 @@ interface WebSocketProperties {
         listenOnly?: boolean,
         disableLog?: boolean,
     ) => () => void
+    subscribeNetMessage: <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => () => void
     onReconnect: () => void
 }
 
@@ -207,6 +210,22 @@ const UseWebsocket = (): WebSocketProperties => {
         }
     }, [setOutgoing])
 
+    const subscribeNetMessage = useMemo(() => {
+        return <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => {
+            if (subs.current[netMessageType]) {
+                subs.current[netMessageType].push(callback)
+            } else {
+                subs.current[netMessageType] = [callback]
+            }
+
+            return () => {
+                const i = subs.current[netMessageType].indexOf(callback)
+                if (i === -1) return
+                subs.current[netMessageType].splice(i, 1)
+            }
+        }
+    }, [])
+
     const sendOutgoingMessages = useCallback(() => {
         if (outgoing.length === 0) return
         if (!webSocket.current) throw new Error('no websocket')
@@ -235,6 +254,18 @@ const UseWebsocket = (): WebSocketProperties => {
                 ws.close()
             }
             ws.onmessage = (message) => {
+                // Binary Message?
+                if (message.data instanceof ArrayBuffer) {
+                    const parsedNetMessage = parseNetMessage(message.data)
+                    if (parsedNetMessage === undefined) return
+                    if (subs.current[parsedNetMessage.type]) {
+                        for (const callback of subs.current[parsedNetMessage.type]) {
+                            callback(parsedNetMessage.payload)
+                        }
+                    }
+                    return
+                }
+
                 const msgData: MessageData = JSON.parse(message.data, dp)
                 // Use network sub menu to see payloads traveling between client and server
                 // https://stackoverflow.com/a/5757171
@@ -302,7 +333,7 @@ const UseWebsocket = (): WebSocketProperties => {
         if (webSocket.current) sendOutgoingMessages()
     }, [webSocket, sendOutgoingMessages])
 
-    return { send: send.current, state, connect, subscribe, onReconnect: sendOutgoingMessages }
+    return { send: send.current, state, connect, subscribe, subscribeNetMessage, onReconnect: sendOutgoingMessages }
 }
 
 const WebsocketContainer = createContainer(UseWebsocket)

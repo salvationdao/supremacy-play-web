@@ -37,14 +37,14 @@ export interface FactionAbility {
     cooldownDurationSecond: number
 }
 
-export interface Vector3i {
+export interface Vector2i {
     x: number
     y: number
-    z: number
 }
 
 export interface WarMachineState {
     tokenID: string
+    participantID: number
     factionID: string
     faction: Faction
     name: string
@@ -53,9 +53,9 @@ export interface WarMachineState {
     maxShield: number
 
     // Updated in subscription
-    remainHitPoint: number
-    remainShield: number
-    position: Vector3i
+    remainingHitPoints: number
+    remainingShield: number
+    position: Vector2i
     rotation: number
 }
 
@@ -70,4 +70,18 @@ export interface Map {
     left: number
     scale: number
     disabledCells: number[]
+}
+
+export enum NetMessageType {
+    Default,
+    Tick,
+}
+
+export interface NetMessageTick {
+    warmachines: NetMessageTickWarMachine[]
+}
+export interface NetMessageTickWarMachine {
+    participantID: number
+    position: Vector2i
+    rotation: number
 }

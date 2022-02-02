@@ -3,7 +3,9 @@ import { SvgMapWarMachine } from '../../assets'
 import { Map, WarMachineState } from '../../types'
 
 export const MapWarMachine = ({ warMachine }: { warMachine: WarMachineState; map: Map }) => {
-    const { tokenID, faction, name, remainHitPoint, position, rotation } = warMachine
+    const { tokenID, faction, name, remainingHitPoints, position, rotation } = warMachine
+
+    if (!position) return <></>
 
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
 
@@ -15,7 +17,7 @@ export const MapWarMachine = ({ warMachine }: { warMachine: WarMachineState; map
             sx={{
                 position: 'absolute',
                 pointerEvents: 'none',
-                opacity: remainHitPoint <= 0 ? '0.2' : 'unset',
+                opacity: remainingHitPoints <= 0 ? '0.2' : 'unset',
                 transform: `translate(-50%, -50%) translate3d(${position.x}px, ${position.y}px, 0)`,
                 transition: 'transform 0.2s linear',
                 zIndex: 5,
