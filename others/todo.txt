@@ -24,6 +24,9 @@ x remove "MOBILE"
 x refactor window dimension
 x fix map on too big screen
 x fullscreen with overlay
+x mech stat death
+x target map open too big
+x also show hp / shield in mini map and death skull
 
 
 
@@ -32,7 +35,6 @@ Pending:
 - video player controls
 - iframe dimension onresize
 - kill notification
-- mech stat death
 
 
 

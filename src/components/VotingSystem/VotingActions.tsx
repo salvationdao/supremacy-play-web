@@ -1,11 +1,11 @@
 import { Box, Slide, Stack, Typography } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { useTheme } from '@mui/styles'
+import { useMemo } from 'react'
 import { ClipThing, FactionAbilityItem } from '..'
 import { UI_OPACITY } from '../../constants'
 import { useDimension, useGame } from '../../containers'
 import { colors } from '../../theme/theme'
-import { useTheme } from '@mui/styles'
-import { Theme } from '@mui/material/styles'
-import { useMemo } from 'react'
 
 export const VotingActions = () => {
     const { battleState, factionAbilities } = useGame()
@@ -65,7 +65,7 @@ export const VotingActions = () => {
                                     <Stack spacing={1.3}>
                                         {factionAbilities &&
                                             factionAbilities.map((a) => (
-                                                <Box key={a.id}>
+                                                <Box key={`${a.id}-${a.supsCost}`}>
                                                     <FactionAbilityItem a={a} />
                                                 </Box>
                                             ))}

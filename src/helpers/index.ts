@@ -61,5 +61,5 @@ export const getRandomArbitrary = (min: number, max: number): number => {
 
 export const supFormatter = (num: BigNumber): string => {
     // sups have 18 decimal places, divide by 1,000,000,000,000,000,000
-    return num.dividedBy(new BigNumber('1000000000000000000')).toFixed(0)
+    return num.dividedBy(new BigNumber('1000000000000000000')).toFixed()
 }

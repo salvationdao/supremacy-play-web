@@ -5,7 +5,7 @@ import { Theme } from '@mui/material/styles'
 
 export interface ClipThingProps {
     clipSize?: string
-    clipSlantSize? : string
+    clipSlantSize?: string
     border?:
         | {
               borderThickness?: string
@@ -28,7 +28,16 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     fillHeight,
 }) => {
     const theme = useTheme<Theme>()
-    const clipStyles: any = {
+
+    const innerClipStyles: any = {
+        height: fillHeight ? '100%' : 'fit-content',
+        lineHeight: 1,
+        clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${clipSize}) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, ${
+            clipSlantSize != '0px' ? '2px' : '0%'
+        } calc(100% - ${clipSize}))`,
+    }
+
+    const outerClipStyles: any = {
         height: fillHeight ? '100%' : 'fit-content',
         lineHeight: 1,
         clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${clipSize}) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, 0% calc(100% - ${clipSize}))`,
@@ -59,14 +68,14 @@ export const ClipThing: React.FC<ClipThingProps> = ({
         <Box
             sx={{
                 ...borderStyles,
-                ...clipStyles,
+                ...outerClipStyles,
                 ...sx,
             }}
         >
             <Box
                 sx={{
                     ...innerSx,
-                    ...clipStyles,
+                    ...innerClipStyles,
                 }}
             >
                 {children}

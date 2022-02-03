@@ -3,6 +3,7 @@ import { Box, BoxProps, CardMedia, Stack, Typography } from '@mui/material'
 import { WarMachineState } from '../../types'
 import { ClipThing } from '..'
 import { colors } from '../../theme/theme'
+import { SvgSkull } from '../../assets'
 
 interface BoxSlantedProps extends BoxProps {
     clipSize?: string
@@ -31,6 +32,8 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
         theme: { primary, background },
     } = faction
 
+    const isAlive = health > 0
+
     return (
         <BoxSlanted clipSlantSize="20px" key={`WarMachineItem-${tokenID}`}>
             <Stack direction="row" alignItems="center" sx={{ width: 225 }}>
@@ -51,7 +54,20 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             backgroundPosition: 'center',
                             backgroundSize: 'cover',
                         }}
-                    />
+                    >
+                        <Stack
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{
+                                px: 3.3,
+                                width: '100%',
+                                height: '100%',
+                                background: 'linear-gradient(#00000090, #000000)',
+                            }}
+                        >
+                            {!isAlive && <SvgSkull fill="#FFFFFF" size="100%" />}
+                        </Stack>
+                    </Box>
                 </ClipThing>
 
                 <Stack
@@ -66,6 +82,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                         borderBottomColor: primary,
 
                         backgroundColor: '#00000056',
+                        opacity: isAlive ? 1 : 0.7,
                         zIndex: 1,
                     }}
                 >
@@ -79,9 +96,9 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                                     <BoxSlanted
                                         clipSlantSize="4.2px"
                                         sx={{
-                                            width: `${(health / maxHealth) * 100}%`,
+                                            width: `${(shield / maxShield) * 100}%`,
                                             height: '100%',
-                                            backgroundColor: colors.health,
+                                            backgroundColor: colors.shield,
                                         }}
                                     />
                                 </BoxSlanted>
@@ -95,9 +112,9 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                                     <BoxSlanted
                                         clipSlantSize="4.2px"
                                         sx={{
-                                            width: `${(shield / maxShield) * 100}%`,
+                                            width: `${(health / maxHealth) * 100}%`,
                                             height: '100%',
-                                            backgroundColor: colors.shield,
+                                            backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
                                         }}
                                     />
                                 </BoxSlanted>

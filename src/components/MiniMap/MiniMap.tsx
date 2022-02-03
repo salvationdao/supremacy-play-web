@@ -27,7 +27,8 @@ export const MiniMap = () => {
 
     useEffect(() => {
         if (enlarged) {
-            setDimensions({ width: width - 23, height: height - 76 })
+            // Height: 76 is just vertical spacing, and 125 is the height of the bottom mech stats
+            setDimensions({ width: Math.min(width - 23, 900), height: Math.min(height - 76 - 125, 650) })
         } else {
             setDimensions({ width: 230, height: 200 })
         }
