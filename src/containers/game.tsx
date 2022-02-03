@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createContainer } from 'unstated-next'
+import { NullUUID } from '../constants'
 import HubKey from '../keys'
 import { BattleState, Faction, FactionAbility, Map, WarMachineState } from '../types'
 import { useAuth } from './auth'
@@ -50,13 +51,15 @@ export const GameContainer = createContainer(() => {
 
     // Faction abilities
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === '') return
+        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
+            return
         return subscribe<FactionAbility[]>(HubKey.SubFactionAbilities, (payload) => setFactionAbilities(payload), null)
     }, [state, subscribe, userID, factionID])
 
     // voting stage (the phases)
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === '') return
+        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
+            return
         return subscribe<TwitchEventResponse | undefined>(
             HubKey.SubFactionStage,
             (payload) => {

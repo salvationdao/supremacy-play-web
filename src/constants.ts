@@ -6,3 +6,4 @@ export const UI_OPACITY = 0.93
 export const NOTIFICATION_TIME = 10000
 export const NOTIFICATION_LINGER = 400
 export const MaxLiveVotingDataLength = 60
+export const NullUUID = '00000000-0000-0000-0000-000000000000'
