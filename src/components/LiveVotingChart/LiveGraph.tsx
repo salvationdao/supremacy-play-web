@@ -34,6 +34,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
         return subscribeNetMessage<string | undefined>(NetMessageType.LiveVoting, (payload) => {
             if (!payload) return
+            console.log(payload)
             const rawData = new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000')).toNumber()
             setLiveVotingData((lvd) => {
                 if (lvd.length > maxLiveVotingDataLength) {
