@@ -40,23 +40,15 @@ export interface LiveVotingData {
 }
 
 export const GameContainer = createContainer(() => {
-    const { state, subscribe, subscribeNetMessage } = useWebsocket()
+    const { state, subscribe } = useWebsocket()
     const { user } = useAuth()
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [factionAbilities, setFactionAbilities] = useState<FactionAbility[]>()
     const [battleState, setBattleState] = useState<TwitchEventResponse | undefined>()
     const [winner, setWinner] = useState<VoteWinnerResponse>()
-    const [liveVotingData, setLiveVotingData] = useState<LiveVotingData[]>([])
     const userID = user?.id
     const factionID = user?.factionID
-
-    // initialize live voting data
-    useEffect(() => {
-        const zeroArray: LiveVotingData[] = []
-        for (let i = 0; i < MaxLiveVotingDataLength; i++) zeroArray.push({ rawData: 0, smoothData: 0 })
-        setLiveVotingData(zeroArray)
-    }, [])
 
     // Faction abilities
     useEffect(() => {
@@ -121,42 +113,12 @@ export const GameContainer = createContainer(() => {
         )
     }, [state, subscribe, userID])
 
-    // live voting data
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<string | undefined>(NetMessageType.LiveVoting, (payload) => {
-            if (!payload) return
-            const rawData = new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000')).toNumber()
-            setLiveVotingData((lvd) => {
-                if (lvd.length === MaxLiveVotingDataLength) lvd.shift()
-                // get latest two data
-                const latestData: number[] = [rawData]
-                if (lvd.length >= 2) {
-                    latestData.concat(lvd[lvd.length - 1].rawData, lvd[lvd.length - 2].rawData)
-                } else if (lvd.length === 1) {
-                    latestData.concat(lvd[lvd.length - 1].rawData, 0)
-                } else {
-                    latestData.concat(0, 0)
-                }
-
-                let sum = 0
-                latestData.forEach((d) => {
-                    sum += d
-                })
-                const smoothData = sum / 3
-
-                return lvd.concat({ rawData, smoothData })
-            })
-        })
-    }, [state, subscribeNetMessage])
-
     return {
         battleState,
         factionAbilities,
         winner,
         map,
         warMachines,
-        liveVotingData,
     }
 })
 

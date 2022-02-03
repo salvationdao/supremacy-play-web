@@ -1,21 +1,73 @@
-import { IconButton, Stack, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import * as React from 'react'
-import { MaxLiveVotingDataLength } from '../../constants'
-import { useGame } from '../../containers'
-import RemoveIcon from '@mui/icons-material/Remove'
+import { useWebsocket } from '../../containers'
+import { NetMessageType } from '../../types'
+import BigNumber from 'bignumber.js'
 
 const DefaultLargestVoteValue = 20
 
-export const LiveGraph = () => {
-    const canvasRef = React.useRef<HTMLCanvasElement>(null)
-    const { liveVotingData } = useGame()
+interface LiveGraphProps {
+    maxHeightPx: number
+    maxWidthPx: number
+    maxLiveVotingDataLength: number
+}
 
-    const [hideGraph, setHideGraph] = React.useState(false)
+interface LiveVotingData {
+    rawData: number
+    smoothData: number
+}
+
+export const LiveGraph = (props: LiveGraphProps) => {
+    const { maxHeightPx, maxWidthPx, maxLiveVotingDataLength } = props
+
+    const canvasRef = React.useRef<HTMLCanvasElement>(null)
+
+    const { state, subscribeNetMessage } = useWebsocket()
+    const [liveVotingData, setLiveVotingData] = React.useState<LiveVotingData[]>([])
+
+    React.useEffect(() => {
+        const zeroArray: LiveVotingData[] = []
+        for (let i = 0; i < maxLiveVotingDataLength; i++) zeroArray.push({ rawData: 0, smoothData: 0 })
+        setLiveVotingData(zeroArray)
+    }, [])
+
+    // live voting data
+    React.useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
+        return subscribeNetMessage<string | undefined>(NetMessageType.LiveVoting, (payload) => {
+            if (!payload) return
+            const rawData = new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000')).toNumber()
+            setLiveVotingData((lvd) => {
+                if (lvd.length > maxLiveVotingDataLength) {
+                    for (let i = 0; i <= lvd.length - maxLiveVotingDataLength; i++) {
+                        lvd.shift()
+                    }
+                }
+
+                // get latest two data
+                const latestData: number[] = [rawData]
+                if (lvd.length >= 2) {
+                    latestData.concat(lvd[lvd.length - 1].rawData, lvd[lvd.length - 2].rawData)
+                } else if (lvd.length === 1) {
+                    latestData.concat(lvd[lvd.length - 1].rawData, 0)
+                } else {
+                    latestData.concat(0, 0)
+                }
+
+                let sum = 0
+                latestData.forEach((d) => {
+                    sum += d
+                })
+                const smoothData = sum / 3
+
+                return lvd.concat({ rawData, smoothData })
+            })
+        })
+    }, [state, subscribeNetMessage])
 
     const [maxSupsValue, setMaxSupsValue] = React.useState<number>(DefaultLargestVoteValue)
-
     const [currentSpike, setCurrentLargestValue] = React.useState(0)
-
+    // draw live graph
     React.useEffect(() => {
         // calculate largest piece of data
         let largest = 0
@@ -32,7 +84,11 @@ export const LiveGraph = () => {
         setMaxSupsValue(largest)
 
         const canvas: HTMLCanvasElement = canvasRef.current
+
+        canvas.width = maxWidthPx - 100
+
         const context = canvasRef.current.getContext('2d')
+
         if (context) {
             context.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -48,7 +104,6 @@ export const LiveGraph = () => {
             // draw X and Y axis
             context.moveTo(GRAPH_RIGHT, GRAPH_BOTTOM)
             context.lineTo(GRAPH_LEFT, GRAPH_BOTTOM)
-            context.lineTo(GRAPH_LEFT, GRAPH_TOP)
             context.stroke()
 
             // draw raw voting data
@@ -62,7 +117,7 @@ export const LiveGraph = () => {
             liveVotingData.forEach((lvd, i) => {
                 if (i === 0) return
                 context.lineTo(
-                    (GRAPH_WIDTH * (i + 1)) / MaxLiveVotingDataLength + GRAPH_LEFT,
+                    (GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT,
                     GRAPH_HEIGHT * (1 - lvd.rawData / largest) + GRAPH_TOP,
                 )
             })
@@ -70,30 +125,21 @@ export const LiveGraph = () => {
             // actually draw the graph
             context.stroke()
         }
-    }, [liveVotingData, setMaxSupsValue])
+    }, [liveVotingData, setMaxSupsValue, canvasRef.current])
 
     return (
         <>
-            <Stack justifyContent="space-between" alignItems="center" direction="row">
-                <Typography sx={{ ml: 0, mb: 0, fontWeight: 'fontWeightBold', fontSize: 18 }}>
-                    Live Voting Chart
-                </Typography>
-                <IconButton aria-label="minimize" onClick={() => setHideGraph((hg) => !hg)}>
-                    <RemoveIcon color="primary" />
-                </IconButton>
-            </Stack>
-            <Typography sx={{ marginTop: 0, fontWeight: 'fontWeightBold', fontSize: 12 }}>
-                {hideGraph ? `Current Spike: ${currentSpike}` : `${maxSupsValue} SUPS`}
+            <Typography margin={0} sx={{ ml: 0, mb: 0, fontWeight: 'fontWeightBold', fontSize: 15 }}>
+                Live SUPS Spend
             </Typography>
-            {!hideGraph && (
-                <canvas
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                    }}
-                    ref={canvasRef}
-                />
-            )}
+            <canvas
+                style={{
+                    width: `${maxWidthPx - 30}px`,
+                    height: `${maxHeightPx - 60}px`,
+                    marginTop: 0,
+                }}
+                ref={canvasRef}
+            />
         </>
     )
 }
