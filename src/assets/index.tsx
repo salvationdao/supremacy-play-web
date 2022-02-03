@@ -1,5 +1,6 @@
 import MapWarMachine from '!react-svg-loader!./svg/MapWarMachine.svg'
 import Skull from '!react-svg-loader!./svg/Skull.svg'
+import MapSkull from '!react-svg-loader!./svg/MapSkull.svg'
 import SupToken from '!react-svg-loader!./svg/SupToken.svg'
 import CampaignSharpIcon from '@mui/icons-material/CampaignSharp'
 import FlagSharpIcon from '@mui/icons-material/FlagSharp'
@@ -14,7 +15,7 @@ interface SvgWrapperProps extends BoxProps {
     fill?: string
 }
 
-export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, ...props }) => {
+export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, ...props }: SvgWrapperProps) => {
     return (
         <Box
             sx={{
@@ -48,6 +49,12 @@ export const SvgSyndicateFlag: React.VoidFunctionComponent<SvgWrapperProps> = (p
 export const SvgSkull: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Skull />
+    </SvgWrapper>
+)
+
+export const SvgMapSkull: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MapSkull />
     </SvgWrapper>
 )
 

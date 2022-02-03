@@ -36,6 +36,7 @@ const GridCell = styled('td', {
 }))
 
 const MapWarMachines = () => {
+    // This reduces amount of re-renders if put into parent all together
     const { mapWarMachines } = useWarMachines()
     return <>{mapWarMachines}</>
 }
