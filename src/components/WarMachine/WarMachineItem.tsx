@@ -55,18 +55,20 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             backgroundSize: 'cover',
                         }}
                     >
-                        <Stack
-                            alignItems="center"
-                            justifyContent="center"
-                            sx={{
-                                px: 3.3,
-                                width: '100%',
-                                height: '100%',
-                                background: 'linear-gradient(#00000090, #000000)',
-                            }}
-                        >
-                            {!isAlive && <SvgSkull fill="#FFFFFF" size="100%" />}
-                        </Stack>
+                        {!isAlive && (
+                            <Stack
+                                alignItems="center"
+                                justifyContent="center"
+                                sx={{
+                                    px: 3.3,
+                                    width: '100%',
+                                    height: '100%',
+                                    background: 'linear-gradient(#00000090, #000000)',
+                                }}
+                            >
+                                <SvgSkull fill="#FFFFFF" size="100%" />
+                            </Stack>
+                        )}
                     </Box>
                 </ClipThing>
 
