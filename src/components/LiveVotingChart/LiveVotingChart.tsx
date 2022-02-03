@@ -34,38 +34,71 @@ export const LiveVotingChart = () => {
     )
 
     const [startDragging, setStartDragging] = useState(false)
-    const [startResizeLF, SetStartResizeLF] = useState(false)
-    const [startResizeTD, SetStartResizeTD] = useState(false)
+    const [startResizeRowLeft, SetStartResizeRowLeft] = useState(false)
+    const [startResizeRowRight, SetStartResizeRowRight] = useState(false)
+    const [startResizeColBottom, SetStartResizeColBottom] = useState(false)
+    const [startResizeColTop, SetStartResizeColTop] = useState(false)
     const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 
     useEffect(() => {
-        if (!startDragging && !startResizeLF && !startResizeTD) return
+        if (!startDragging && !startResizeRowLeft && !startResizeRowRight && !startResizeColBottom) return
 
-        if (startResizeLF) {
+        if (startResizeRowLeft) {
             const xMove = mousePosition.x - position.x
             const currentWidth = chartSize.width + xMove
 
             if (currentWidth > LiveVotingChartMaxWidth || currentWidth < LiveVotingChartMinWidth) {
                 setStartDragging(false)
-                SetStartResizeLF(false)
+                SetStartResizeRowLeft(false)
                 const maxDataLength = Math.floor(chartSize.width / 5)
                 setMaxLiveVotingDataLength(maxDataLength)
                 localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
                 localStorage.setItem('liveVotingWidth', chartSize.width.toString())
             } else {
-                setChartSize((cs) => ({ ...cs, width: cs.width + xMove }))
+                setChartSize((cs) => ({ ...cs, width: currentWidth }))
                 setMousePosition(position)
             }
-        } else if (startResizeTD) {
+        } else if (startResizeRowRight) {
+            const xMove = mousePosition.x - position.x
+            const currentWidth = chartSize.width - xMove
+
+            if (currentWidth > LiveVotingChartMaxWidth || currentWidth < LiveVotingChartMinWidth) {
+                setStartDragging(false)
+                SetStartResizeRowRight(false)
+                const maxDataLength = Math.floor(chartSize.width / 5)
+                setMaxLiveVotingDataLength(maxDataLength)
+                localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
+                localStorage.setItem('liveVotingWidth', chartSize.width.toString())
+                localStorage.setItem('liveChatRightVal', rightValue.toString())
+            } else {
+                setRightValue((rv) => rv + xMove)
+                setChartSize((cs) => ({ ...cs, width: currentWidth }))
+                setMousePosition(position)
+            }
+        } else if (startResizeColBottom) {
             const yMove = mousePosition.y - position.y
             const currentHeight = chartSize.height - yMove
 
             if (currentHeight > LiveVotingChartMaxHeight || currentHeight < LiveVotingChartMinHeight) {
                 setStartDragging(false)
-                SetStartResizeTD(false)
+                SetStartResizeColBottom(false)
                 localStorage.setItem('liveVotingHeight', chartSize.height.toString())
             } else {
-                setChartSize((cs) => ({ ...cs, height: cs.height - yMove }))
+                setChartSize((cs) => ({ ...cs, height: currentHeight }))
+                setMousePosition(position)
+            }
+        } else if (startResizeColTop) {
+            const yMove = mousePosition.y - position.y
+            const currentHeight = chartSize.height + yMove
+
+            if (currentHeight > LiveVotingChartMaxHeight || currentHeight < LiveVotingChartMinHeight) {
+                setStartDragging(false)
+                SetStartResizeColBottom(false)
+                localStorage.setItem('liveVotingHeight', chartSize.height.toString())
+                localStorage.setItem('liveChatTopVal', topValue.toString())
+            } else {
+                setTopValue((tv) => tv - yMove)
+                setChartSize((cs) => ({ ...cs, height: currentHeight }))
                 setMousePosition(position)
             }
         } else if (startDragging) {
@@ -78,7 +111,7 @@ export const LiveVotingChart = () => {
 
             setMousePosition(position)
         }
-    }, [position, startResizeLF, startDragging])
+    }, [position])
 
     return (
         <Stack
@@ -111,20 +144,27 @@ export const LiveVotingChart = () => {
                         maxWidth: '1440px',
                     }}
                 >
-                    <VerticalBar
+                    <VerticalBarLeft
                         height={chartSize.height}
-                        top={0}
-                        left={0}
-                        SetStartResizeLF={SetStartResizeLF}
-                        currentWidth={chartSize.width}
+                        SetStartResize={SetStartResizeRowLeft}
+                        width={chartSize.width}
                         setMaxLiveVotingDataLength={setMaxLiveVotingDataLength}
                     />
-                    <HorizontalBar
+                    <VerticalBarRight
+                        height={chartSize.height}
+                        SetStartResize={SetStartResizeRowRight}
                         width={chartSize.width}
-                        bottom={0}
-                        left={0}
-                        SetStartResizeTD={SetStartResizeTD}
-                        currentHeight={chartSize.height}
+                        setMaxLiveVotingDataLength={setMaxLiveVotingDataLength}
+                    />
+                    <HorizontalBarBottom
+                        width={chartSize.width}
+                        SetStartResize={SetStartResizeColBottom}
+                        height={chartSize.height}
+                    />
+                    <HorizontalBarTop
+                        width={chartSize.width}
+                        SetStartResize={SetStartResizeColTop}
+                        height={chartSize.height}
                     />
 
                     <Box width="100%" height="100%">
@@ -175,7 +215,7 @@ export const LiveVotingChart = () => {
                                 >
                                     <Box sx={{ direction: 'ltr', width: '100%', height: '100%' }}>
                                         <Stack spacing={1.3} sx={{ width: '100%', height: '100%' }}>
-                                            {startResizeLF || startResizeTD ? (
+                                            {startResizeRowLeft || startResizeRowRight || startResizeColBottom ? (
                                                 <div />
                                             ) : (
                                                 <LiveGraph
@@ -196,58 +236,13 @@ export const LiveVotingChart = () => {
     )
 }
 
-interface VerticalBarProps {
-    height: number
-    top: number
-    left: number
-    SetStartResizeLF: React.Dispatch<React.SetStateAction<boolean>>
-    currentWidth: number
-    setMaxLiveVotingDataLength: React.Dispatch<React.SetStateAction<number>>
-}
-
-const VerticalBar = ({
-    height,
-    top,
-    left,
-    currentWidth,
-    SetStartResizeLF,
-    setMaxLiveVotingDataLength,
-}: VerticalBarProps) => {
-    return (
-        <div
-            style={{
-                height: `${height}px`,
-                width: '4px',
-                backgroundColor: 'transparent',
-                position: 'absolute',
-                top,
-                left,
-                cursor: 'col-resize',
-                zIndex: 100,
-            }}
-            onMouseDown={() => {
-                SetStartResizeLF(true)
-            }}
-            onMouseUp={() => {
-                SetStartResizeLF(false)
-                const maxDataLength = Math.floor(currentWidth / 5)
-                setMaxLiveVotingDataLength(maxDataLength)
-                localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
-                localStorage.setItem('liveVotingWidth', currentWidth.toString())
-            }}
-        />
-    )
-}
-
-interface HorizontalBarProps {
+interface ResizeBarProps {
     width: number
-    currentHeight: number
-    bottom: number
-    left: number
-    SetStartResizeTD: React.Dispatch<React.SetStateAction<boolean>>
+    height: number
+    SetStartResize: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const HorizontalBar = ({ width, currentHeight, bottom, left, SetStartResizeTD }: HorizontalBarProps) => {
+const HorizontalBarBottom = ({ width, height, SetStartResize }: ResizeBarProps) => {
     return (
         <div
             style={{
@@ -255,17 +250,99 @@ const HorizontalBar = ({ width, currentHeight, bottom, left, SetStartResizeTD }:
                 width: `${width}px`,
                 backgroundColor: 'transparent',
                 position: 'absolute',
-                bottom,
-                left,
+                bottom: 0,
+                left: 0,
                 cursor: 'row-resize',
                 zIndex: 100,
             }}
             onMouseDown={() => {
-                SetStartResizeTD(true)
+                SetStartResize(true)
             }}
             onMouseUp={() => {
-                SetStartResizeTD(false)
-                localStorage.setItem('liveVotingHeight', currentHeight.toString())
+                SetStartResize(false)
+                localStorage.setItem('liveVotingHeight', height.toString())
+            }}
+        />
+    )
+}
+
+const HorizontalBarTop = ({ width, height, SetStartResize }: ResizeBarProps) => {
+    return (
+        <div
+            style={{
+                height: '5px',
+                width: `${width}px`,
+                backgroundColor: 'transparent',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                cursor: 'row-resize',
+                zIndex: 100,
+            }}
+            onMouseDown={() => {
+                SetStartResize(true)
+            }}
+            onMouseUp={() => {
+                SetStartResize(false)
+                localStorage.setItem('liveVotingHeight', height.toString())
+            }}
+        />
+    )
+}
+
+interface VerticalBarProps extends ResizeBarProps {
+    setMaxLiveVotingDataLength: React.Dispatch<React.SetStateAction<number>>
+}
+
+const VerticalBarLeft = ({ height, width, SetStartResize, setMaxLiveVotingDataLength }: VerticalBarProps) => {
+    return (
+        <div
+            style={{
+                height: `${height}px`,
+                width: '4px',
+                backgroundColor: 'transparent',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                cursor: 'col-resize',
+                zIndex: 100,
+            }}
+            onMouseDown={() => {
+                SetStartResize(true)
+            }}
+            onMouseUp={() => {
+                SetStartResize(false)
+                const maxDataLength = Math.floor(width / 5)
+                setMaxLiveVotingDataLength(maxDataLength)
+                localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
+                localStorage.setItem('liveVotingWidth', width.toString())
+            }}
+        />
+    )
+}
+
+const VerticalBarRight = ({ height, width, SetStartResize, setMaxLiveVotingDataLength }: VerticalBarProps) => {
+    return (
+        <div
+            style={{
+                height: `${height}px`,
+                width: '4px',
+                backgroundColor: 'transparent',
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                cursor: 'col-resize',
+                zIndex: 100,
+            }}
+            onMouseDown={() => {
+                SetStartResize(true)
+            }}
+            onMouseUp={() => {
+                SetStartResize(false)
+                const maxDataLength = Math.floor(width / 5)
+                setMaxLiveVotingDataLength(maxDataLength)
+                localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
+                localStorage.setItem('liveVotingWidth', width.toString())
             }}
         />
     )

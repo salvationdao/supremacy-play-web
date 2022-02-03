@@ -34,7 +34,6 @@ export const LiveGraph = (props: LiveGraphProps) => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
         return subscribeNetMessage<string | undefined>(NetMessageType.LiveVoting, (payload) => {
             if (!payload) return
-            console.log(payload)
             const rawData = new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000')).toNumber()
             setLiveVotingData((lvd) => {
                 if (lvd.length > maxLiveVotingDataLength) {
@@ -66,17 +65,14 @@ export const LiveGraph = (props: LiveGraphProps) => {
 
     // draw live graph
     React.useEffect(() => {
+        if (!liveVotingData || liveVotingData.length === 0 || !canvasRef.current) return
         // calculate largest piece of data
-        let largest = 0
+        let largest = 1
         liveVotingData.forEach((lvd) => {
             if (lvd.rawData > largest) {
                 largest = lvd.rawData
             }
         })
-
-        if (!liveVotingData || liveVotingData.length === 0 || !canvasRef.current) return
-
-        if (largest < 0) largest = 0
 
         const canvas: HTMLCanvasElement = canvasRef.current
 
