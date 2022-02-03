@@ -40,6 +40,14 @@ export const LiveVotingChart = () => {
     const [startResizeColTop, SetStartResizeColTop] = useState(false)
     const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 
+    const clearTriggers = () => {
+        setStartDragging(false)
+        SetStartResizeColTop(false)
+        SetStartResizeRowLeft(false)
+        SetStartResizeRowRight(false)
+        SetStartResizeColBottom(false)
+    }
+
     useEffect(() => {
         if (!startDragging && !startResizeRowLeft && !startResizeRowRight && !startResizeColBottom) return
 
@@ -48,8 +56,7 @@ export const LiveVotingChart = () => {
             const currentWidth = chartSize.width + xMove
 
             if (currentWidth > LiveVotingChartMaxWidth || currentWidth < LiveVotingChartMinWidth) {
-                setStartDragging(false)
-                SetStartResizeRowLeft(false)
+                clearTriggers()
                 const maxDataLength = Math.floor(chartSize.width / 5)
                 setMaxLiveVotingDataLength(maxDataLength)
                 localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
@@ -63,8 +70,7 @@ export const LiveVotingChart = () => {
             const currentWidth = chartSize.width - xMove
 
             if (currentWidth > LiveVotingChartMaxWidth || currentWidth < LiveVotingChartMinWidth) {
-                setStartDragging(false)
-                SetStartResizeRowRight(false)
+                clearTriggers()
                 const maxDataLength = Math.floor(chartSize.width / 5)
                 setMaxLiveVotingDataLength(maxDataLength)
                 localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
@@ -80,8 +86,7 @@ export const LiveVotingChart = () => {
             const currentHeight = chartSize.height - yMove
 
             if (currentHeight > LiveVotingChartMaxHeight || currentHeight < LiveVotingChartMinHeight) {
-                setStartDragging(false)
-                SetStartResizeColBottom(false)
+                clearTriggers()
                 localStorage.setItem('liveVotingHeight', chartSize.height.toString())
             } else {
                 setChartSize((cs) => ({ ...cs, height: currentHeight }))
@@ -92,8 +97,7 @@ export const LiveVotingChart = () => {
             const currentHeight = chartSize.height + yMove
 
             if (currentHeight > LiveVotingChartMaxHeight || currentHeight < LiveVotingChartMinHeight) {
-                setStartDragging(false)
-                SetStartResizeColBottom(false)
+                clearTriggers()
                 localStorage.setItem('liveVotingHeight', chartSize.height.toString())
                 localStorage.setItem('liveChatTopVal', topValue.toString())
             } else {
