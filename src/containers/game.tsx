@@ -32,6 +32,11 @@ export interface NotificationResponse {
     data: string | Vote
 }
 
+export interface LiveVotingData {
+    rawData: number
+    smoothData: number
+}
+
 export const GameContainer = createContainer(() => {
     const { state, subscribe } = useWebsocket()
     const { user } = useAuth()
@@ -40,7 +45,6 @@ export const GameContainer = createContainer(() => {
     const [factionAbilities, setFactionAbilities] = useState<FactionAbility[]>([])
     const [battleState, setBattleState] = useState<TwitchEventResponse | undefined>()
     const [winner, setWinner] = useState<VoteWinnerResponse>()
-
     const userID = user?.id
     const factionID = user?.factionID
 
