@@ -1,4 +1,4 @@
-import { Box, Slide, Stack, Theme, Typography } from '@mui/material'
+import { Box, Slide, Stack, Theme } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useState } from 'react'
 import { MaxLiveVotingDataLength, UI_OPACITY } from '../../constants'
