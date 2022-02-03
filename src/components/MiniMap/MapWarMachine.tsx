@@ -1,15 +1,25 @@
 import { Box, Stack } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { SvgMapWarMachine, SvgMapSkull } from '../../assets'
 import { colors } from '../../theme/theme'
 import { Map, WarMachineState } from '../../types'
 
 export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
-    const { tokenID, faction, name, maxHealth, maxShield, health, shield, position, rotation } = warMachine
+    const { tokenID, faction, name, maxHealth, maxShield, health, shield, position } = warMachine
+    const newRotation = warMachine.rotation + 90
 
     if (!position) return null
 
     const isAlive = health > 0
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
+
+    const [rot, setRot] = useState(newRotation)
+    const [prevRotation, setPrevRotation] = useState(newRotation)
+    useEffect(() => {
+        const r = closestAngle(prevRotation, newRotation)
+        setRot(r)
+        setPrevRotation(r)
+    }, [newRotation])
 
     return (
         <Stack
@@ -29,7 +39,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
             <Box sx={{ position: 'relative' }}>
                 <Box
                     sx={{
-                        transform: `rotate3d(0, 0, 1, ${-rotation + 90}deg)`,
+                        transform: `rotate3d(0, 0, 1, ${rot}deg)`,
                         transition: 'transform 0.2s linear',
                     }}
                 >
@@ -43,7 +53,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                                 position: 'absolute',
                                 top: -6,
                                 left: '50%',
-                                transform: `translate(-50%, 0) rotate3d(0, 0, 1, -${-rotation + 90}deg)`,
+                                transform: `translate(-50%, 0) rotate3d(0, 0, 1, -${rot}deg)`,
                             }}
                         />
                     )}
@@ -111,3 +121,5 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
         </Stack>
     )
 }
+
+const closestAngle = (from: number, to: number) => from + ((((to - from) % 360) + 540) % 360) - 180;
