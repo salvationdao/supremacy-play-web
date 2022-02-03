@@ -33,6 +33,8 @@ Pending:
 - iframe dimension onresize
 - kill notification
 - mech stat death
+- target map open too big
+- also show hp / shield in mini map
 
 
 

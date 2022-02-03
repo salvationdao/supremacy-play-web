@@ -5,7 +5,7 @@ import { Theme } from '@mui/material/styles'
 
 export interface ClipThingProps {
     clipSize?: string
-    clipSlantSize? : string
+    clipSlantSize?: string
     border?:
         | {
               borderThickness?: string
@@ -28,6 +28,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     fillHeight,
 }) => {
     const theme = useTheme<Theme>()
+
     const clipStyles: any = {
         height: fillHeight ? '100%' : 'fit-content',
         lineHeight: 1,

@@ -4,6 +4,7 @@ import { colors } from '../theme/theme'
 
 import SupToken from '!react-svg-loader!./svg/SupToken.svg'
 import MapWarMachine from '!react-svg-loader!./svg/MapWarMachine.svg'
+import Skull from '!react-svg-loader!./svg/Skull.svg'
 import FlagSharpIcon from '@mui/icons-material/FlagSharp'
 import PersonSharpIcon from '@mui/icons-material/PersonSharp'
 import MapSharpIcon from '@mui/icons-material/MapSharp'
@@ -49,6 +50,12 @@ export const SvgSupToken = ({ size, fill, sx }: { size?: string; fill?: string; 
 export const SvgSyndicateFlag = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
     <SvgWrapper size={size} fill={fill} sx={sx}>
         <FlagSharpIcon />
+    </SvgWrapper>
+)
+
+export const SvgSkull = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
+    <SvgWrapper size={size} fill={fill} sx={sx}>
+        <Skull />
     </SvgWrapper>
 )
 
