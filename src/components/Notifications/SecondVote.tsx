@@ -26,6 +26,7 @@ const VotingButton = ({ data, isAgreed }: { data: Vote; isAgreed: boolean }) => 
     const { onWorldSups } = useWallet()
 
     const { faction, factionAbility, endTime } = data
+    const [focused, setFocused] = useState(false)
 
     const amount: BigNumber = new BigNumber(1000000000000000000)
 
@@ -62,17 +63,34 @@ const VotingButton = ({ data, isAgreed }: { data: Vote; isAgreed: boolean }) => 
             backgroundColor={isAgreed ? colors.green : colors.red}
             borderColor={isAgreed ? colors.green : colors.red}
             onClick={onVote}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
         >
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(0, 0, 0, .6)',
+                    color: 'white',
+                    opacity: focused ? 1 : 0,
+                    transition: 'opacity .2s ease-out',
+                    ':hover': {
+                        opacity: 1,
+                    },
+                }}
+            >
+                <SvgSupToken size="15px" />
+                {supFormatter(new BigNumber(factionAbility.supsCost))}
+            </Box>
             <Stack alignItems="center" direction="row" spacing={0.3}>
                 <Typography variant="caption" sx={{ lineHeight: 1, fontWeight: 'fontWeightBold' }}>
-                    {`${isAgreed ? 'ACCEPT' : 'REJECT'} ( `}
-                </Typography>
-                <SvgSupToken size="13px" />
-                <Typography
-                    variant="caption"
-                    sx={{ lineHeight: 1, fontWeight: 'fontWeightBold', fontFamily: 'Nostromo Regular Medium' }}
-                >
-                    {supFormatter(amount)} )
+                    {`${isAgreed ? 'ACCEPT' : 'REJECT'}`}
                 </Typography>
             </Stack>
         </FancyButton>
@@ -237,6 +255,18 @@ export const SecondVote = ({ data, notiID }: { data: Vote; notiID: string }) => 
                                 {`${factionName} wants to initiate `}
                                 <span>{`${label}`}</span>
                             </Typography>
+                            <Stack direction="row" alignItems="center" justifyContent="center">
+                                <Typography variant="body2" sx={{ color: 'grey !important', lineHeight: 1 }}>
+                                    1 vote
+                                </Typography>
+                                <Typography variant="body2" sx={{ mx: 0.3, lineHeight: 1 }}>
+                                    =
+                                </Typography>
+                                <SvgSupToken component="span" size="14px" fill={colors.yellow} />
+                                <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                    {supFormatter(new BigNumber(factionAbility.supsCost))}
+                                </Typography>
+                            </Stack>
 
                             <VotingBar notiID={notiID} factionID={factionID} endTime={endTime} />
 
