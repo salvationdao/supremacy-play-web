@@ -1,23 +1,43 @@
 import { Box, Slide, Stack, Theme, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { UI_OPACITY } from '../../constants'
 import { useDimension } from '../../containers'
+import { useMousePosition } from '../../hooks/useMousePosition'
 import { colors } from '../../theme/theme'
 import { ClipThing } from '../common/ClipThing'
 import { LiveGraph } from './LiveGraph'
+
+const parseString = (val: string | null, defaultVal: number): number => {
+    if (!val) return defaultVal
+
+    return parseInt(val)
+}
 
 export const LiveVotingChart = () => {
     const theme = useTheme<Theme>()
     const {
         iframeDimensions: { height },
     } = useDimension()
+    const position = useMousePosition()
+
+    const [topValue, setTopValue] = useState(parseString(localStorage.getItem('liveChatTopVal'), 500))
+    const [rightValue, setRightValue] = useState(parseString(localStorage.getItem('liveChatRightVal'), 10))
 
     const [startDragging, setStartDragging] = useState(false)
     const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 
-    const [topValue, setTopValue] = useState(500)
-    const [rightValue, setRightValue] = useState(10)
+    useEffect(() => {
+        if (!startDragging) return
+        // calc mouse movement
+        const xMove = mousePosition.x - position.x
+        const yMove = mousePosition.y - position.y
+
+        setRightValue((rv) => rv + xMove)
+        setTopValue((tv) => tv - yMove)
+
+        setMousePosition(position)
+    }, [position])
 
     return (
         <Stack
@@ -34,24 +54,15 @@ export const LiveVotingChart = () => {
                 <Box>
                     <ClipThing border={{ isFancy: true, borderThickness: '3px' }} clipSize="10px">
                         <div
-                            onMouseDown={(e) => {
+                            onMouseDown={() => {
                                 setStartDragging(true)
-                                setMousePosition({ x: e.pageX, y: e.pageY })
+                                setMousePosition(position)
                             }}
                             onMouseUp={() => {
                                 setStartDragging(false)
-                            }}
-                            onMouseMove={(e) => {
-                                if (!startDragging) return
-                                // x,y move
-                                const xMove = mousePosition.x - e.pageX
-                                const yMove = mousePosition.y - e.pageY
-
-                                setRightValue((rv) => rv + xMove)
-                                setTopValue((tv) => tv - yMove)
-
-                                // set new position
-                                setMousePosition({ x: e.pageX, y: e.pageY })
+                                // store current top
+                                localStorage.setItem('liveChatTopVal', topValue.toString())
+                                localStorage.setItem('liveChatRightVal', rightValue.toString())
                             }}
                         >
                             <Box
