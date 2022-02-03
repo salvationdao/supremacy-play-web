@@ -4,8 +4,6 @@ import { useWebsocket } from '../../containers'
 import { NetMessageType } from '../../types'
 import BigNumber from 'bignumber.js'
 
-const DefaultLargestVoteValue = 20
-
 interface LiveGraphProps {
     maxHeightPx: number
     maxWidthPx: number
@@ -65,8 +63,6 @@ export const LiveGraph = (props: LiveGraphProps) => {
         })
     }, [state, subscribeNetMessage])
 
-    const [maxSupsValue, setMaxSupsValue] = React.useState<number>(DefaultLargestVoteValue)
-    const [currentSpike, setCurrentLargestValue] = React.useState(0)
     // draw live graph
     React.useEffect(() => {
         // calculate largest piece of data
@@ -76,12 +72,10 @@ export const LiveGraph = (props: LiveGraphProps) => {
                 largest = lvd.rawData
             }
         })
-        setCurrentLargestValue(largest)
 
         if (!liveVotingData || liveVotingData.length === 0 || !canvasRef.current) return
 
-        if (largest < DefaultLargestVoteValue) largest = DefaultLargestVoteValue
-        setMaxSupsValue(largest)
+        if (largest < 0) largest = 0
 
         const canvas: HTMLCanvasElement = canvasRef.current
 
@@ -125,7 +119,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
             // actually draw the graph
             context.stroke()
         }
-    }, [liveVotingData, setMaxSupsValue, canvasRef.current])
+    }, [liveVotingData, canvasRef.current])
 
     return (
         <>

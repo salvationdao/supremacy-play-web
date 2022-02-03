@@ -2,7 +2,6 @@ import { Box, Slide, Stack, Theme, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useState } from 'react'
 import { MaxLiveVotingDataLength, UI_OPACITY } from '../../constants'
-import { useDimension } from '../../containers'
 import { useMousePosition } from '../../hooks/useMousePosition'
 import { colors } from '../../theme/theme'
 import { ClipThing } from '../common/ClipThing'
@@ -24,8 +23,8 @@ export const LiveVotingChart = () => {
     const position = useMousePosition()
 
     const [chartSize, setChartSize] = useState({
-        width: parseString(localStorage.getItem('liveVotingWidth'), 300),
-        height: parseString(localStorage.getItem('liveVotingHeight'), 200),
+        width: parseString(localStorage.getItem('liveVotingWidth'), LiveVotingChartMinWidth),
+        height: parseString(localStorage.getItem('liveVotingHeight'), LiveVotingChartMinHeight),
     })
 
     const [topValue, setTopValue] = useState(parseString(localStorage.getItem('liveChatTopVal'), 500))
