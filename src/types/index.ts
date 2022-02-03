@@ -1,5 +1,4 @@
-import React from 'react'
-import { Dispatch } from 'react'
+import React, { Dispatch } from 'react'
 
 interface UpdateThemeContextProps {
     updateTheme: Dispatch<React.SetStateAction<FactionThemeColor>>
@@ -35,6 +34,7 @@ export interface FactionAbility {
     imageUrl: string
     type: 'AIRSTRIKE' | 'NUKE' | 'HEALING'
     cooldownDurationSecond: number
+    supsCost: string // big int
 }
 
 export interface Vector2i {

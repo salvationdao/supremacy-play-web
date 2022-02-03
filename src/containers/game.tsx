@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { createContainer } from 'unstated-next'
 import HubKey from '../keys'
 import { BattleState, Faction, FactionAbility, Map, WarMachineState } from '../types'
-import { useWebsocket } from './socket'
 import { useAuth } from './auth'
+import { useWebsocket } from './socket'
 
 interface TwitchEventResponse {
     phase: BattleState
@@ -37,7 +37,7 @@ export const GameContainer = createContainer(() => {
     const { user } = useAuth()
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
-    const [factionAbilities, setFactionAbilities] = useState<FactionAbility[]>()
+    const [factionAbilities, setFactionAbilities] = useState<FactionAbility[]>([])
     const [battleState, setBattleState] = useState<TwitchEventResponse | undefined>()
     const [winner, setWinner] = useState<VoteWinnerResponse>()
 
@@ -47,11 +47,7 @@ export const GameContainer = createContainer(() => {
     // Faction abilities
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === '') return
-        return subscribe<FactionAbility[] | undefined>(
-            HubKey.SubFactionAbilities,
-            (payload) => setFactionAbilities(payload),
-            null,
-        )
+        return subscribe<FactionAbility[]>(HubKey.SubFactionAbilities, (payload) => setFactionAbilities(payload), null)
     }, [state, subscribe, userID, factionID])
 
     // voting stage (the phases)

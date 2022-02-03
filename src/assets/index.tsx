@@ -1,31 +1,24 @@
-import { ReactElement } from 'react'
-import { Stack } from '@mui/material'
-import { colors } from '../theme/theme'
-
-import SupToken from '!react-svg-loader!./svg/SupToken.svg'
 import MapWarMachine from '!react-svg-loader!./svg/MapWarMachine.svg'
 import Skull from '!react-svg-loader!./svg/Skull.svg'
-import FlagSharpIcon from '@mui/icons-material/FlagSharp'
-import PersonSharpIcon from '@mui/icons-material/PersonSharp'
-import MapSharpIcon from '@mui/icons-material/MapSharp'
+import SupToken from '!react-svg-loader!./svg/SupToken.svg'
 import CampaignSharpIcon from '@mui/icons-material/CampaignSharp'
+import FlagSharpIcon from '@mui/icons-material/FlagSharp'
+import MapSharpIcon from '@mui/icons-material/MapSharp'
+import PersonSharpIcon from '@mui/icons-material/PersonSharp'
 import WorkspacesSharpIcon from '@mui/icons-material/WorkspacesSharp'
-import { SxProps } from '@mui/system'
+import { Box, BoxProps } from '@mui/system'
+import { colors } from '../theme/theme'
 
-export const SvgWrapper = ({
-    children,
-    size,
-    fill,
-    sx,
-}: {
-    children: ReactElement
+interface SvgWrapperProps extends BoxProps {
     size?: string
     fill?: string
-    sx?: SxProps
-}) => {
+}
+
+export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, ...props }) => {
     return (
-        <Stack
+        <Box
             sx={{
+                display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 '& > svg': {
@@ -35,56 +28,55 @@ export const SvgWrapper = ({
                 },
                 ...sx,
             }}
-        >
-            {children}
-        </Stack>
+            {...props}
+        />
     )
 }
 
-export const SvgSupToken = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
-    <SvgWrapper size={size} fill={fill} sx={sx}>
+export const SvgSupToken: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
         <SupToken />
     </SvgWrapper>
 )
 
-export const SvgSyndicateFlag = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
-    <SvgWrapper size={size} fill={fill} sx={sx}>
+export const SvgSyndicateFlag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
         <FlagSharpIcon />
     </SvgWrapper>
 )
 
-export const SvgSkull = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
-    <SvgWrapper size={size} fill={fill} sx={sx}>
+export const SvgSkull: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
         <Skull />
     </SvgWrapper>
 )
 
-export const SvgUser = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
-    <SvgWrapper size={size} fill={fill} sx={sx}>
+export const SvgUser: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
         <PersonSharpIcon />
     </SvgWrapper>
 )
 
-export const SvgMapWarMachine = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
-    <SvgWrapper size={size} fill={fill} sx={sx}>
+export const SvgMapWarMachine: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
         <MapWarMachine />
     </SvgWrapper>
 )
 
-export const SvgMapSharpIcon = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
-    <SvgWrapper size={size} fill={fill} sx={sx}>
+export const SvgMapSharpIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
         <MapSharpIcon />
     </SvgWrapper>
 )
 
-export const SvgActivities = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
-    <SvgWrapper size={size} fill={fill} sx={sx}>
+export const SvgActivities: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
         <CampaignSharpIcon />
     </SvgWrapper>
 )
 
-export const SvgActions = ({ size, fill, sx }: { size?: string; fill?: string; sx?: SxProps }) => (
-    <SvgWrapper size={size} fill={fill} sx={sx}>
+export const SvgActions: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
         <WorkspacesSharpIcon />
     </SvgWrapper>
 )
