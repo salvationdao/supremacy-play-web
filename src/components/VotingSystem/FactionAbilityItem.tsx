@@ -93,6 +93,7 @@ const VotingButton = ({
                 <SvgSupToken size="15px" />
                 {supFormatter(totalCost)}
             </Box>
+
             <Stack alignItems="center" direction="row" spacing={0.3}>
                 <Typography
                     variant="caption"
@@ -140,15 +141,14 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
                         <Stack
                             spacing={1}
                             alignItems="flex-start"
-                            sx={{ backgroundColor: colors.darkNavy, px: 2, py: 1.2 }}
+                            sx={{ flex: 1, backgroundColor: colors.darkNavy, px: 2, py: 1.2 }}
                         >
-                            <Box
-                                sx={{
-                                    alignSelf: 'stretch',
-                                    display: 'flex',
-                                    alignItems: 'baseline',
-                                    justifyContent: 'space-between',
-                                }}
+                            <Stack
+                                spacing={1.2}
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                alignSelf="stretch"
                             >
                                 <Typography
                                     variant="body1"
@@ -164,39 +164,20 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
                                 >
                                     {label}
                                 </Typography>
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        display: 'flex',
-                                        fontWeight: 'fontWeightBold',
-                                        fontFamily: 'Nostromo Regular Medium',
-                                        color: 'white',
-                                        whiteSpace: 'nowrap',
-                                        '& > *:not(:last-child)': {
-                                            marginRight: '.3rem',
-                                        },
-                                    }}
-                                >
-                                    <Box
-                                        component="span"
-                                        sx={{
-                                            color: 'grey !important',
-                                        }}
-                                    >
+
+                                <Stack direction="row" alignItems="center" justifyContent="center">
+                                    <Typography variant="body2" sx={{ color: 'grey !important', lineHeight: 1 }}>
                                         1 vote
-                                    </Box>
-                                    <span>=</span>
-                                    <Box
-                                        component="span"
-                                        sx={{
-                                            display: 'flex',
-                                        }}
-                                    >
-                                        <SvgSupToken component="span" size="15px" />
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ mx: 0.3, lineHeight: 1 }}>
+                                        =
+                                    </Typography>
+                                    <SvgSupToken component="span" size="14px" fill={colors.yellow} />
+                                    <Typography variant="body2" sx={{ lineHeight: 1 }}>
                                         {supFormatter(new BigNumber(supsCost))}
-                                    </Box>
-                                </Typography>
-                            </Box>
+                                    </Typography>
+                                </Stack>
+                            </Stack>
 
                             <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: '100%' }}>
                                 <VotingButton factionAbilityID={id} color={colour} cost={new BigNumber(supsCost)} />
