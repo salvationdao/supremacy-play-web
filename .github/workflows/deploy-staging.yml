@@ -10,7 +10,12 @@ on:
   workflow_dispatch:
 
 env:
-  EXPORT_NAME: supremacy-stream-site
+  # hack to bypass node warning
+  CI: false
+  NINJA_NPM_TOKEN: ${{ secrets.NINJA_NPM_TOKEN }}
+  REACT_APP_GAME_SERVER_HOST: staging-api.supremacy.game
+  REACT_APP_PASSPORT_SERVER_HOST: staging-passport.xsyn.io
+  REACT_APP_STREAM_SITE: https://staging-watch-am.supremacy.game/WebRTCAppEE/play.html?name=719971571164514605608534
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -43,9 +48,9 @@ jobs:
       - name: Build web
         run: make build
 
-      # list deploy folder recursively
-      - name: List deploy dir
-        run: find deploy
+      # list build folder recursively
+      - name: List build dir
+        run: find build
 
       - name: Rsync to server
         run: make deploy-staging
