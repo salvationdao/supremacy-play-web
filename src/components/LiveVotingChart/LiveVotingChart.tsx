@@ -12,7 +12,6 @@ import { colors } from '../../theme/theme'
 import { LiveGraph } from './LiveGraph'
 
 const Padding = 10
-const DefaultPositionX = 50
 const DefaultPositionY = 282
 const DefaultSizeX = 270
 const DefaultSizeY = 90
@@ -23,7 +22,7 @@ export const LiveVotingChart = () => {
     const {
         iframeDimensions: { width, height },
     } = useDimension()
-    const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem('liveVotingPosX'), DefaultPositionX))
+    const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem('liveVotingPosX'), -1))
     const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem('liveVotingPosY'), DefaultPositionY))
     const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem('liveVotingSizeX'), DefaultSizeX))
     const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem('liveVotingSizeY'), DefaultSizeY))
@@ -34,7 +33,7 @@ export const LiveVotingChart = () => {
     useEffect(() => {
         // Use effect to set default position of the the chart, couldn't do it with the initial state thing as it
         // depends on variables that loads later like iframe width
-        if (curPosX != DefaultPositionX) return
+        if (curPosX >= 0) return
 
         const posX = parseString(localStorage.getItem('liveVotingPosX'), -1)
 
@@ -53,9 +52,10 @@ export const LiveVotingChart = () => {
         if (curPosY + size.height <= height - Padding && size.height >= DefaultSizeY) setCurHeight(size.height)
     }
 
+    if (curPosX < 0) return null
+
     return (
         <Stack
-            key={curPosX + curPosY}
             sx={{
                 position: 'absolute',
                 top: 0,
