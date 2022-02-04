@@ -24,9 +24,7 @@ interface VoteRequest {
 const VotingButton = ({ data, isAgreed }: { data: Vote; isAgreed: boolean }) => {
     const { send } = useWebsocket()
     const { onWorldSups } = useWallet()
-
     const { faction, factionAbility, endTime } = data
-    const [focused, setFocused] = useState(false)
 
     const amount: BigNumber = new BigNumber(1000000000000000000)
 
@@ -63,8 +61,6 @@ const VotingButton = ({ data, isAgreed }: { data: Vote; isAgreed: boolean }) => 
             backgroundColor={isAgreed ? colors.green : colors.red}
             borderColor={isAgreed ? colors.green : colors.red}
             onClick={onVote}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
         >
             <Box
                 sx={{
@@ -76,9 +72,9 @@ const VotingButton = ({ data, isAgreed }: { data: Vote; isAgreed: boolean }) => 
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: 'rgba(0, 0, 0, .6)',
+                    backgroundColor: 'rgba(0, 0, 0, .9)',
                     color: 'white',
-                    opacity: focused ? 1 : 0,
+                    opacity: 0,
                     transition: 'opacity .2s ease-out',
                     ':hover': {
                         opacity: 1,
@@ -88,9 +84,10 @@ const VotingButton = ({ data, isAgreed }: { data: Vote; isAgreed: boolean }) => 
                 <SvgSupToken size="15px" />
                 {supFormatter(new BigNumber(factionAbility.supsCost))}
             </Box>
+
             <Stack alignItems="center" direction="row" spacing={0.3}>
                 <Typography variant="caption" sx={{ lineHeight: 1, fontWeight: 'fontWeightBold' }}>
-                    {`${isAgreed ? 'ACCEPT' : 'REJECT'}`}
+                    {isAgreed ? 'ACCEPT' : 'REJECT'}
                 </Typography>
             </Stack>
         </FancyButton>
@@ -209,7 +206,7 @@ export const SecondVote = ({ data, notiID }: { data: Vote; notiID: string }) => 
                                     position: 'relative',
                                     backgroundColor: theme.factionTheme.background,
                                     height: '100%',
-                                    width: 75,
+                                    width: 92,
                                 }}
                             >
                                 <Box
@@ -235,7 +232,7 @@ export const SecondVote = ({ data, notiID }: { data: Vote; notiID: string }) => 
                                 </Box>
                                 <CardMedia
                                     component="img"
-                                    alt={'aaa'}
+                                    alt={label}
                                     height="100%"
                                     image={imageUrl}
                                     sx={{
@@ -255,7 +252,8 @@ export const SecondVote = ({ data, notiID }: { data: Vote; notiID: string }) => 
                                 {`${factionName} wants to initiate `}
                                 <span>{`${label}`}</span>
                             </Typography>
-                            <Stack direction="row" alignItems="center" justifyContent="center">
+
+                            <Stack direction="row" alignItems="center" justifyContent="center" sx={{ pb: 0.3 }}>
                                 <Typography variant="body2" sx={{ color: 'grey !important', lineHeight: 1 }}>
                                     1 vote
                                 </Typography>

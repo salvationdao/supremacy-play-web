@@ -33,11 +33,6 @@ export interface NotificationResponse {
     data: string | Vote
 }
 
-export interface LiveVotingData {
-    rawData: number
-    smoothData: number
-}
-
 export const GameContainer = createContainer(() => {
     const { state, subscribe } = useWebsocket()
     const { user } = useAuth()

@@ -21,7 +21,7 @@ export const WarMachineStats = () => {
                 bottom: 15,
                 left: '50%',
                 transform: 'translateX(-50%)',
-                zIndex: 15,
+                zIndex: 13,
                 overflow: 'hidden',
                 filter: 'drop-shadow(0 3px 3px #00000020)',
             }}

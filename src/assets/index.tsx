@@ -2,6 +2,8 @@ import MapWarMachine from '!react-svg-loader!./svg/MapWarMachine.svg'
 import Skull from '!react-svg-loader!./svg/Skull.svg'
 import MapSkull from '!react-svg-loader!./svg/MapSkull.svg'
 import SupToken from '!react-svg-loader!./svg/SupToken.svg'
+import Resize from '!react-svg-loader!./svg/Resize.svg'
+import Drag from '!react-svg-loader!./svg/Drag.svg'
 import CampaignSharpIcon from '@mui/icons-material/CampaignSharp'
 import FlagSharpIcon from '@mui/icons-material/FlagSharp'
 import MapSharpIcon from '@mui/icons-material/MapSharp'
@@ -85,5 +87,17 @@ export const SvgActivities: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgActions: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <WorkspacesSharpIcon />
+    </SvgWrapper>
+)
+
+export const SvgResizeArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Resize />
+    </SvgWrapper>
+)
+
+export const SvgDrag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Drag />
     </SvgWrapper>
 )

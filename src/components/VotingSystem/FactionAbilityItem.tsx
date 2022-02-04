@@ -32,8 +32,6 @@ const VotingButton = ({
     const { battleState } = useGame()
     const { onWorldSups } = useWallet()
 
-    const [focused, setFocused] = useState(false)
-
     const totalCost = cost.multipliedBy(multiplier)
 
     const isVotable =
@@ -68,8 +66,6 @@ const VotingButton = ({
             backgroundColor={color}
             borderColor={color}
             onClick={onVote}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
         >
             <Box
                 sx={{
@@ -81,9 +77,9 @@ const VotingButton = ({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: 'rgba(0, 0, 0, .6)',
+                    backgroundColor: 'rgba(0, 0, 0, .9)',
                     color: 'white',
-                    opacity: focused ? 1 : 0,
+                    opacity: 0,
                     transition: 'opacity .2s ease-out',
                     ':hover': {
                         opacity: 1,

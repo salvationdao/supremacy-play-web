@@ -32,12 +32,13 @@ export const colors = {
     green: '#30B07D',
     yellow: '#FFE200',
 
+    neonBlue: '#00FFFF',
     darkNeonBlue: '#176969',
     darkerNeonBlue: '#073339',
     darkNavy: '#101019',
 
     health: '#BFF600',
-    shield: '#00F7F7'
+    shield: '#00F7F7',
 }
 
 const factionTheme: FactionTheme = {

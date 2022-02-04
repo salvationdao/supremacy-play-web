@@ -19,6 +19,7 @@ import { mergeDeep } from './helpers'
 import { theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
 import { PASSPORT_SERVER_HOSTNAME, STREAM_SITE } from './constants'
+import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
 
 const AppInner = () => {
@@ -26,28 +27,32 @@ const AppInner = () => {
     const {
         iframeDimensions: { width, height },
     } = useDimension()
+    const handle = useFullScreenHandle()
 
     return (
         <>
             <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <Box sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
-                    <iframe width="100%" height="100%" frameBorder="0" allowFullScreen src={STREAM_SITE}></iframe>
+                <FullScreen handle={handle}>
+                    <Box sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
+                        <iframe width="100%" height="100%" frameBorder="0" allowFullScreen src={STREAM_SITE}></iframe>
+                        {/* <video width="100%" height="100%" autoPlay src={STREAM_SITE}></video> */}
 
-                    <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                        <GameBar
-                            opacity={0.94}
-                            barPosition="top"
-                            gameserverSessionID={gameserverSessionID}
-                            serverHost={PASSPORT_SERVER_HOSTNAME}
-                        />
-                        <VotingSystem />
-                        <MiniMap />
-                        <Notifications />
-                        <LiveVotingChart />
-                        <WarMachineStats />
+                        <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
+                            <GameBar
+                                opacity={0.94}
+                                barPosition="top"
+                                gameserverSessionID={gameserverSessionID}
+                                serverHost={PASSPORT_SERVER_HOSTNAME}
+                            />
+                            <VotingSystem />
+                            <MiniMap />
+                            <Notifications />
+                            <LiveVotingChart />
+                            <WarMachineStats />
+                        </Box>
                     </Box>
-                </Box>
+                </FullScreen>
             )}
         </>
     )

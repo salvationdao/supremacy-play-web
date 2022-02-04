@@ -1,353 +1,194 @@
-import { Box, Slide, Stack, Theme } from '@mui/material'
+import { Box, Fade, Stack, Theme, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import { useEffect, useState } from 'react'
-import { MaxLiveVotingDataLength, UI_OPACITY } from '../../constants'
-import { useMousePosition } from '../../hooks/useMousePosition'
+import { SyntheticEvent, useEffect, useState } from 'react'
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
+import { Resizable, ResizeCallbackData } from 'react-resizable'
+import { SvgDrag, SvgResizeArrow } from '../../assets'
+import { UI_OPACITY } from '../../constants'
+import { useDimension } from '../../containers'
+import { parseString } from '../../helpers'
+import { pulseEffect } from '../../theme/keyframes'
 import { colors } from '../../theme/theme'
-import { ClipThing } from '../common/ClipThing'
 import { LiveGraph } from './LiveGraph'
 
-const parseString = (val: string | null, defaultVal: number): number => {
-    if (!val) return defaultVal
-
-    return parseInt(val)
-}
-
-const LiveVotingChartMaxHeight = 288
-const LiveVotingChartMinHeight = 120
-const LiveVotingChartMaxWidth = 1000
-const LiveVotingChartMinWidth = 200
+const Padding = 10
+const DefaultPositionX = 50
+const DefaultPositionY = 282
+const DefaultSizeX = 270
+const DefaultSizeY = 90
+const DefaultMaxLiveVotingDataLength = 60
 
 export const LiveVotingChart = () => {
     const theme = useTheme<Theme>()
-    const position = useMousePosition()
-
-    const [chartSize, setChartSize] = useState({
-        width: parseString(localStorage.getItem('liveVotingWidth'), LiveVotingChartMinWidth),
-        height: parseString(localStorage.getItem('liveVotingHeight'), LiveVotingChartMinHeight),
-    })
-
-    const [topValue, setTopValue] = useState(parseString(localStorage.getItem('liveChatTopVal'), 500))
-    const [rightValue, setRightValue] = useState(parseString(localStorage.getItem('liveChatRightVal'), 10))
+    const {
+        iframeDimensions: { width, height },
+    } = useDimension()
+    const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem('liveVotingPosX'), DefaultPositionX))
+    const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem('liveVotingPosY'), DefaultPositionY))
+    const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem('liveVotingSizeX'), DefaultSizeX))
+    const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem('liveVotingSizeY'), DefaultSizeY))
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
-        parseString(localStorage.getItem('liveVotingDataMax'), MaxLiveVotingDataLength),
+        parseString(localStorage.getItem('liveVotingDataMax'), DefaultMaxLiveVotingDataLength),
     )
 
-    const [startDragging, setStartDragging] = useState(false)
-    const [startResizeRowLeft, SetStartResizeRowLeft] = useState(false)
-    const [startResizeRowRight, SetStartResizeRowRight] = useState(false)
-    const [startResizeColBottom, SetStartResizeColBottom] = useState(false)
-    const [startResizeColTop, SetStartResizeColTop] = useState(false)
-    const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
-
-    const clearTriggers = () => {
-        setStartDragging(false)
-        SetStartResizeColTop(false)
-        SetStartResizeRowLeft(false)
-        SetStartResizeRowRight(false)
-        SetStartResizeColBottom(false)
-    }
-
     useEffect(() => {
-        if (!startDragging && !startResizeRowLeft && !startResizeRowRight && !startResizeColBottom) return
+        // Use effect to set default position of the the chart, couldn't do it with the initial state thing as it
+        // depends on variables that loads later like iframe width
+        if (curPosX != DefaultPositionX) return
 
-        if (startResizeRowLeft) {
-            const xMove = mousePosition.x - position.x
-            const currentWidth = chartSize.width + xMove
+        const posX = parseString(localStorage.getItem('liveVotingPosX'), -1)
 
-            if (currentWidth > LiveVotingChartMaxWidth || currentWidth < LiveVotingChartMinWidth) {
-                clearTriggers()
-                const maxDataLength = Math.floor(chartSize.width / 5)
-                setMaxLiveVotingDataLength(maxDataLength)
-                localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
-                localStorage.setItem('liveVotingWidth', chartSize.width.toString())
-            } else {
-                setChartSize((cs) => ({ ...cs, width: currentWidth }))
-                setMousePosition(position)
-            }
-        } else if (startResizeRowRight) {
-            const xMove = mousePosition.x - position.x
-            const currentWidth = chartSize.width - xMove
-
-            if (currentWidth > LiveVotingChartMaxWidth || currentWidth < LiveVotingChartMinWidth) {
-                clearTriggers()
-                const maxDataLength = Math.floor(chartSize.width / 5)
-                setMaxLiveVotingDataLength(maxDataLength)
-                localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
-                localStorage.setItem('liveVotingWidth', chartSize.width.toString())
-                localStorage.setItem('liveChatRightVal', rightValue.toString())
-            } else {
-                setRightValue((rv) => rv + xMove)
-                setChartSize((cs) => ({ ...cs, width: currentWidth }))
-                setMousePosition(position)
-            }
-        } else if (startResizeColBottom) {
-            const yMove = mousePosition.y - position.y
-            const currentHeight = chartSize.height - yMove
-
-            if (currentHeight > LiveVotingChartMaxHeight || currentHeight < LiveVotingChartMinHeight) {
-                clearTriggers()
-                localStorage.setItem('liveVotingHeight', chartSize.height.toString())
-            } else {
-                setChartSize((cs) => ({ ...cs, height: currentHeight }))
-                setMousePosition(position)
-            }
-        } else if (startResizeColTop) {
-            const yMove = mousePosition.y - position.y
-            const currentHeight = chartSize.height + yMove
-
-            if (currentHeight > LiveVotingChartMaxHeight || currentHeight < LiveVotingChartMinHeight) {
-                clearTriggers()
-                localStorage.setItem('liveVotingHeight', chartSize.height.toString())
-                localStorage.setItem('liveChatTopVal', topValue.toString())
-            } else {
-                setTopValue((tv) => tv - yMove)
-                setChartSize((cs) => ({ ...cs, height: currentHeight }))
-                setMousePosition(position)
-            }
-        } else if (startDragging) {
-            // calc mouse movement
-            const xMove = mousePosition.x - position.x
-            const yMove = mousePosition.y - position.y
-
-            setRightValue((rv) => rv + xMove)
-            setTopValue((tv) => tv - yMove)
-
-            setMousePosition(position)
+        if (width > 0 && posX < 0 && curWidth > 0) {
+            setCurPosX(width - curWidth - Padding)
         }
-    }, [position])
+    }, [width, curWidth])
+
+    const onResize = (e: SyntheticEvent<Element, Event>, data: ResizeCallbackData) => {
+        const { size } = data
+        if (curPosX + size.width <= width - Padding && size.width >= DefaultSizeX) {
+            setMaxLiveVotingDataLength(size.width / 5)
+            setCurWidth(size.width)
+        }
+
+        if (curPosY + size.height <= height - Padding && size.height >= DefaultSizeY) setCurHeight(size.height)
+    }
 
     return (
         <Stack
+            key={curPosX + curPosY}
             sx={{
                 position: 'absolute',
-                top: topValue,
-                right: rightValue,
-                zIndex: 15,
-                overflow: 'hidden',
+                top: 0,
+                left: 0,
                 opacity: UI_OPACITY,
+                pointerEvents: 'none',
+                zIndex: 10,
+                filter: 'drop-shadow(0 3px 3px #00000050)',
             }}
         >
-            <Slide in={true} direction="left">
-                <div
-                    onMouseDown={() => {
-                        setStartDragging(true)
-                        setMousePosition(position)
-                    }}
-                    onMouseUp={() => {
-                        setStartDragging(false)
-                        // store current top
-                        localStorage.setItem('liveChatTopVal', topValue.toString())
-                        localStorage.setItem('liveChatRightVal', rightValue.toString())
-                    }}
-                    style={{
-                        width: `${chartSize.width}px`,
-                        height: `${chartSize.height}px`,
-                        position: 'relative',
-                        maxHeight: '288px',
-                        maxWidth: '1440px',
-                    }}
-                >
-                    <VerticalBarLeft
-                        height={chartSize.height}
-                        SetStartResize={SetStartResizeRowLeft}
-                        width={chartSize.width}
-                        setMaxLiveVotingDataLength={setMaxLiveVotingDataLength}
-                    />
-                    <VerticalBarRight
-                        height={chartSize.height}
-                        SetStartResize={SetStartResizeRowRight}
-                        width={chartSize.width}
-                        setMaxLiveVotingDataLength={setMaxLiveVotingDataLength}
-                    />
-                    <HorizontalBarBottom
-                        width={chartSize.width}
-                        SetStartResize={SetStartResizeColBottom}
-                        height={chartSize.height}
-                    />
-                    <HorizontalBarTop
-                        width={chartSize.width}
-                        SetStartResize={SetStartResizeColTop}
-                        height={chartSize.height}
-                    />
-
-                    <Box width="100%" height="100%">
-                        <ClipThing
-                            border={{ isFancy: true, borderThickness: '3px' }}
-                            sx={{ width: '100%', height: '100%' }}
-                            fillHeight
-                            clipSize="10px"
-                            innerSx={{ width: '100%', height: '100%' }}
-                        >
-                            <Box
-                                sx={{
-                                    backgroundColor: theme.factionTheme.background,
-                                    pl: 0.3,
-                                    pr: 1.3,
-                                    pt: 1.2,
-                                    pb: 1.4,
-                                    width: '100%',
-                                    height: '100%',
+            <Draggable
+                allowAnyClick
+                handle=".handle"
+                defaultPosition={{
+                    x: curPosX,
+                    y: curPosY,
+                }}
+                onStop={(e: DraggableEvent, data: DraggableData) => {
+                    setCurPosX(data.x)
+                    setCurPosY(data.y)
+                    localStorage.setItem('liveVotingPosX', data.x.toString())
+                    localStorage.setItem('liveVotingPosY', data.y.toString())
+                }}
+                bounds={{
+                    top: Padding,
+                    bottom: height - curHeight - Padding,
+                    left: Padding,
+                    right: width - curWidth - Padding,
+                }}
+            >
+                <Box sx={{ pointerEvents: 'all' }}>
+                    <Fade in={true}>
+                        <Box>
+                            <Resizable
+                                height={curHeight}
+                                width={curWidth}
+                                onResize={onResize}
+                                handle={() => (
+                                    <Box
+                                        sx={{
+                                            position: 'absolute',
+                                            bottom: 5,
+                                            right: 9,
+                                            cursor: 'nwse-resize',
+                                            opacity: 0.4,
+                                            ':hover': { opacity: 1 },
+                                        }}
+                                    >
+                                        <SvgResizeArrow size="13px" />
+                                    </Box>
+                                )}
+                                onResizeStop={(e: SyntheticEvent, data: ResizeCallbackData) => {
+                                    localStorage.setItem('liveVotingSizeX', data.size.width.toString())
+                                    localStorage.setItem('liveVotingSizeY', data.size.height.toString())
                                 }}
                             >
-                                <Box
+                                <Stack
                                     sx={{
-                                        flex: 1,
-                                        maxHeight: `calc(288px - 24px)`,
-                                        minHeight: 0,
-                                        minWidth: 0,
-                                        overflowY: 'auto',
-                                        overflowX: 'hidden',
-                                        width: '100%',
-                                        height: '100%',
-                                        pl: 1,
-                                        py: 0.2,
-                                        direction: 'rtl',
-                                        scrollbarWidth: 'none',
-                                        '::-webkit-scrollbar': {
-                                            width: 4,
-                                        },
-                                        '::-webkit-scrollbar-track': {
-                                            boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
-                                            borderRadius: 3,
-                                        },
-                                        '::-webkit-scrollbar-thumb': {
-                                            background: theme.factionTheme.primary,
-                                            borderRadius: 3,
-                                        },
+                                        position: 'relative',
+                                        width: curWidth,
+                                        height: curHeight,
+                                        resize: 'all',
+                                        overflow: 'auto',
+                                        backgroundColor: theme.factionTheme.background,
+                                        borderRadius: 0.5,
                                     }}
                                 >
-                                    <Box sx={{ direction: 'ltr', width: '100%', height: '100%' }}>
-                                        <Stack spacing={1.3} sx={{ width: '100%', height: '100%' }}>
-                                            {startResizeRowLeft || startResizeRowRight || startResizeColBottom ? (
-                                                <div />
-                                            ) : (
-                                                <LiveGraph
-                                                    maxWidthPx={chartSize.width}
-                                                    maxHeightPx={chartSize.height}
-                                                    maxLiveVotingDataLength={maxLiveVotingDataLength}
+                                    <Box sx={{ flex: 1, px: 1, pt: 1, pb: 0.6, width: '100%' }}>
+                                        <Box
+                                            key={maxLiveVotingDataLength}
+                                            sx={{
+                                                position: 'relative',
+                                                height: '100%',
+                                                px: 0.7,
+                                                pt: 2,
+                                                background: '#00000099',
+                                            }}
+                                        >
+                                            <Stack
+                                                direction="row"
+                                                alignItems="center"
+                                                justifyContent="center"
+                                                spacing={0.5}
+                                                sx={{
+                                                    position: 'absolute',
+                                                    top: 5,
+                                                    right: 7,
+                                                }}
+                                            >
+                                                <Box
+                                                    sx={{
+                                                        width: 7,
+                                                        height: 7,
+                                                        backgroundColor: colors.red,
+                                                        borderRadius: '50%',
+                                                        animation: `${pulseEffect} 3s infinite`,
+                                                    }}
                                                 />
-                                            )}
-                                        </Stack>
+                                                <Typography variant="caption" sx={{ lineHeight: 1 }}>
+                                                    Live
+                                                </Typography>
+                                            </Stack>
+
+                                            <LiveGraph
+                                                maxWidthPx={curWidth}
+                                                maxHeightPx={curHeight}
+                                                maxLiveVotingDataLength={maxLiveVotingDataLength}
+                                            />
+                                        </Box>
                                     </Box>
-                                </Box>
-                            </Box>
-                        </ClipThing>
-                    </Box>
-                </div>
-            </Slide>
+
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        justifyContent="flex-end"
+                                        sx={{ px: 1, pb: 0.3 }}
+                                    >
+                                        <Typography variant="caption" sx={{ mr: 'auto' }}>
+                                            SUPS SPENT
+                                        </Typography>
+                                        <Box
+                                            className="handle"
+                                            sx={{ cursor: 'move', mr: '20px', opacity: 0.4, ':hover': { opacity: 1 } }}
+                                        >
+                                            <SvgDrag size="13px" />
+                                        </Box>
+                                    </Stack>
+                                </Stack>
+                            </Resizable>
+                        </Box>
+                    </Fade>
+                </Box>
+            </Draggable>
         </Stack>
-    )
-}
-
-interface ResizeBarProps {
-    width: number
-    height: number
-    SetStartResize: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-const HorizontalBarBottom = ({ width, height, SetStartResize }: ResizeBarProps) => {
-    return (
-        <div
-            style={{
-                height: '5px',
-                width: `${width}px`,
-                backgroundColor: 'transparent',
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                cursor: 'row-resize',
-                zIndex: 100,
-            }}
-            onMouseDown={() => {
-                SetStartResize(true)
-            }}
-            onMouseUp={() => {
-                SetStartResize(false)
-                localStorage.setItem('liveVotingHeight', height.toString())
-            }}
-        />
-    )
-}
-
-const HorizontalBarTop = ({ width, height, SetStartResize }: ResizeBarProps) => {
-    return (
-        <div
-            style={{
-                height: '5px',
-                width: `${width}px`,
-                backgroundColor: 'transparent',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                cursor: 'row-resize',
-                zIndex: 100,
-            }}
-            onMouseDown={() => {
-                SetStartResize(true)
-            }}
-            onMouseUp={() => {
-                SetStartResize(false)
-                localStorage.setItem('liveVotingHeight', height.toString())
-            }}
-        />
-    )
-}
-
-interface VerticalBarProps extends ResizeBarProps {
-    setMaxLiveVotingDataLength: React.Dispatch<React.SetStateAction<number>>
-}
-
-const VerticalBarLeft = ({ height, width, SetStartResize, setMaxLiveVotingDataLength }: VerticalBarProps) => {
-    return (
-        <div
-            style={{
-                height: `${height}px`,
-                width: '4px',
-                backgroundColor: 'transparent',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                cursor: 'col-resize',
-                zIndex: 100,
-            }}
-            onMouseDown={() => {
-                SetStartResize(true)
-            }}
-            onMouseUp={() => {
-                SetStartResize(false)
-                const maxDataLength = Math.floor(width / 5)
-                setMaxLiveVotingDataLength(maxDataLength)
-                localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
-                localStorage.setItem('liveVotingWidth', width.toString())
-            }}
-        />
-    )
-}
-
-const VerticalBarRight = ({ height, width, SetStartResize, setMaxLiveVotingDataLength }: VerticalBarProps) => {
-    return (
-        <div
-            style={{
-                height: `${height}px`,
-                width: '4px',
-                backgroundColor: 'transparent',
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                cursor: 'col-resize',
-                zIndex: 100,
-            }}
-            onMouseDown={() => {
-                SetStartResize(true)
-            }}
-            onMouseUp={() => {
-                SetStartResize(false)
-                const maxDataLength = Math.floor(width / 5)
-                setMaxLiveVotingDataLength(maxDataLength)
-                localStorage.setItem('liveVotingDataMax', maxDataLength.toString())
-                localStorage.setItem('liveVotingWidth', width.toString())
-            }}
-        />
     )
 }

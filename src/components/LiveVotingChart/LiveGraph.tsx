@@ -1,8 +1,8 @@
-import { Typography } from '@mui/material'
-import * as React from 'react'
 import { useWebsocket } from '../../containers'
 import { NetMessageType } from '../../types'
 import BigNumber from 'bignumber.js'
+import { useEffect, useRef, useState } from 'react'
+import { colors } from '../../theme/theme'
 
 interface LiveGraphProps {
     maxHeightPx: number
@@ -16,21 +16,20 @@ interface LiveVotingData {
 }
 
 export const LiveGraph = (props: LiveGraphProps) => {
-    const { maxHeightPx, maxWidthPx, maxLiveVotingDataLength } = props
-
-    const canvasRef = React.useRef<HTMLCanvasElement>(null)
+    const { maxWidthPx, maxHeightPx, maxLiveVotingDataLength } = props
 
     const { state, subscribeNetMessage } = useWebsocket()
-    const [liveVotingData, setLiveVotingData] = React.useState<LiveVotingData[]>([])
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const [liveVotingData, setLiveVotingData] = useState<LiveVotingData[]>([])
 
-    React.useEffect(() => {
+    useEffect(() => {
         const zeroArray: LiveVotingData[] = []
         for (let i = 0; i < maxLiveVotingDataLength; i++) zeroArray.push({ rawData: 0, smoothData: 0 })
         setLiveVotingData(zeroArray)
     }, [])
 
-    // live voting data
-    React.useEffect(() => {
+    // Live voting data
+    useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
         return subscribeNetMessage<string | undefined>(NetMessageType.LiveVoting, (payload) => {
             if (!payload) return
@@ -42,7 +41,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
                     }
                 }
 
-                // get latest two data
+                // Get latest two data
                 const latestData: number[] = [rawData]
                 if (lvd.length >= 2) {
                     latestData.concat(lvd[lvd.length - 1].rawData, lvd[lvd.length - 2].rawData)
@@ -63,10 +62,10 @@ export const LiveGraph = (props: LiveGraphProps) => {
         })
     }, [state, subscribeNetMessage])
 
-    // draw live graph
-    React.useEffect(() => {
+    // Draw live graph
+    useEffect(() => {
         if (!liveVotingData || liveVotingData.length === 0 || !canvasRef.current) return
-        // calculate largest piece of data
+        // Calculate largest piece of data
         let largest = 1
         liveVotingData.forEach((lvd) => {
             if (lvd.rawData > largest) {
@@ -75,7 +74,6 @@ export const LiveGraph = (props: LiveGraphProps) => {
         })
 
         const canvas: HTMLCanvasElement = canvasRef.current
-
         canvas.width = maxWidthPx - 100
 
         const context = canvasRef.current.getContext('2d')
@@ -88,21 +86,21 @@ export const LiveGraph = (props: LiveGraphProps) => {
             const GRAPH_LEFT = 0
             const GRAPH_RIGHT = canvas.width
 
-            const GRAPH_HEIGHT = canvas.height
+            const GRAPH_HEIGHT = canvas.height - 18
             const GRAPH_WIDTH = canvas.width
 
             context.beginPath()
-            // draw X and Y axis
+            // Draw X and Y axis
             context.moveTo(GRAPH_RIGHT, GRAPH_BOTTOM)
             context.lineTo(GRAPH_LEFT, GRAPH_BOTTOM)
             context.stroke()
 
-            // draw raw voting data
+            // Draw raw voting data
             context.beginPath()
             context.lineJoin = 'round'
-            context.strokeStyle = 'white'
+            context.strokeStyle = colors.neonBlue
 
-            // add first point in the graph
+            // Add first point in the graph
             context.moveTo(GRAPH_LEFT, GRAPH_HEIGHT - (liveVotingData[0].rawData / largest) * GRAPH_HEIGHT + GRAPH_TOP)
 
             liveVotingData.forEach((lvd, i) => {
@@ -113,24 +111,21 @@ export const LiveGraph = (props: LiveGraphProps) => {
                 )
             })
 
-            // actually draw the graph
+            // Actually draw the graph
             context.stroke()
         }
     }, [liveVotingData, canvasRef.current])
 
     return (
-        <>
-            <Typography margin={0} sx={{ ml: 0, mb: 0, fontWeight: 'fontWeightBold', fontSize: 15 }}>
-                Live SUPS Spend
-            </Typography>
-            <canvas
-                style={{
-                    width: `${maxWidthPx - 30}px`,
-                    height: `${maxHeightPx - 60}px`,
-                    marginTop: 0,
-                }}
-                ref={canvasRef}
-            />
-        </>
+        <canvas
+            ref={canvasRef}
+            style={{
+                display: 'block',
+                width: `${maxWidthPx - 30}px`,
+                height: `${maxHeightPx - 60}px`,
+                padding: 0,
+                margin: 0,
+            }}
+        />
     )
 }

@@ -63,3 +63,9 @@ export const supFormatter = (num: BigNumber): string => {
     // sups have 18 decimal places, divide by 1,000,000,000,000,000,000
     return num.dividedBy(new BigNumber('1000000000000000000')).toFixed()
 }
+
+export const parseString = (val: string | null, defaultVal: number): number => {
+    if (!val) return defaultVal
+
+    return parseInt(val)
+}

@@ -1,12 +1,12 @@
 import { Box, Stack } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { SvgMapWarMachine, SvgMapSkull } from '../../assets'
 import { colors } from '../../theme/theme'
 import { Map, WarMachineState } from '../../types'
 
 export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
-    const { tokenID, faction, name, maxHealth, maxShield, health, shield, position } = warMachine
-    const newRotation = warMachine.rotation + 90
+    const { tokenID, faction, name, maxHealth, maxShield, health, shield, position, rotation } = warMachine
+    const newRotation = rotation + 90
 
     if (!position) return null
 
@@ -14,11 +14,12 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
 
     const [rot, setRot] = useState(newRotation)
-    const [prevRotation, setPrevRotation] = useState(newRotation)
+    const prevRotation = useRef(newRotation)
+
     useEffect(() => {
-        const r = closestAngle(prevRotation, newRotation)
+        const r = closestAngle(prevRotation.current, newRotation)
         setRot(r)
-        setPrevRotation(r)
+        prevRotation.current = r
     }, [newRotation])
 
     return (
@@ -122,4 +123,4 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
     )
 }
 
-const closestAngle = (from: number, to: number) => from + ((((to - from) % 360) + 540) % 360) - 180;
+const closestAngle = (from: number, to: number) => from + ((((to - from) % 360) + 540) % 360) - 180
