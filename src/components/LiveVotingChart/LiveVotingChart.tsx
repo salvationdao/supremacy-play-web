@@ -15,6 +15,7 @@ const Padding = 10
 const DefaultPositionY = 282
 const DefaultSizeX = 270
 const DefaultSizeY = 90
+const MaxSizeY = 150
 const DefaultMaxLiveVotingDataLength = 60
 
 export const LiveVotingChart = () => {
@@ -49,7 +50,8 @@ export const LiveVotingChart = () => {
             setCurWidth(size.width)
         }
 
-        if (curPosY + size.height <= height - Padding && size.height >= DefaultSizeY) setCurHeight(size.height)
+        if (curPosY + size.height <= height - Padding && size.height <= MaxSizeY && size.height >= DefaultSizeY)
+            setCurHeight(size.height)
     }
 
     if (curPosX < 0) return null
@@ -62,7 +64,7 @@ export const LiveVotingChart = () => {
                 left: 0,
                 opacity: UI_OPACITY,
                 pointerEvents: 'none',
-                zIndex: 10,
+                zIndex: 18,
                 filter: 'drop-shadow(0 3px 3px #00000050)',
             }}
         >

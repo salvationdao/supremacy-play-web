@@ -66,7 +66,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
     useEffect(() => {
         if (!liveVotingData || liveVotingData.length === 0 || !canvasRef.current) return
         // Calculate largest piece of data
-        let largest = 1
+        let largest = 0.1
         liveVotingData.forEach((lvd) => {
             if (lvd.rawData > largest) {
                 largest = lvd.rawData
