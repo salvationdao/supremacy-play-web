@@ -48,9 +48,9 @@ jobs:
       - name: Build web
         run: make build
 
-      # list deploy folder recursively
-      - name: List deploy dir
-        run: find deploy
+      # list build folder recursively
+      - name: List build dir
+        run: find build
 
       - name: Rsync to server
         run: make deploy-staging
