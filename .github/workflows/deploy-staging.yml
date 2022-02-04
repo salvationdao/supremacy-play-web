@@ -1,0 +1,51 @@
+name: build-deploy
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the ci branch
+  push:
+    branches: [staging]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  EXPORT_NAME: supremacy-stream-site
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # setup ssh connection requirements
+      - name: Setup SSH
+        run: |
+          mkdir ~/.ssh
+          echo -e "Host ${{ secrets.STAGING_SSH_HOST }}\n  User ${{ secrets.STAGING_SSH_USER }}\n  Port ${{ secrets.STAGING_SSH_PORT }}" >> ~/.ssh/config
+          echo '${{ secrets.STAGING_KNOWN_HOSTS }}' > ~/.ssh/known_hosts
+          echo '${{ secrets.STAGING_SSH_PKEY }}' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+      - name: Setup build env
+        run: |
+          echo whoami $(whoami)
+          echo pwd $(pwd)
+          echo home ${HOME}
+          mkdir -p deploy
+
+      - name: Build web
+        run: make build
+
+      # list deploy folder recursively
+      - name: List deploy dir
+        run: find deploy
+
+      - name: Rsync to server
+        run: make deploy-staging

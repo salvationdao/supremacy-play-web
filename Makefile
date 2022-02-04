@@ -14,7 +14,7 @@ build:
 	npm ci
 	npm run build
 
-.PHONY: deploy
+.PHONY: deploy-staging
 deploy:
 	rsync -av --delete build/* staging-watch.supremacy.game:/var/www/html
 
