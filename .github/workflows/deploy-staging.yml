@@ -38,7 +38,7 @@ jobs:
           echo whoami $(whoami)
           echo pwd $(pwd)
           echo home ${HOME}
-          mkdir -p deploy
+          mkdir -p build
 
       - name: Build web
         run: make build
