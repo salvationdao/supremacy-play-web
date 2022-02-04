@@ -29,6 +29,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # setup nodejs env
+      - name: Setup nodejs
+        uses: actions/setup-node@v2
+        with:
+            node-version: "14"
+
       # setup ssh connection requirements
       - name: Setup SSH
         run: |
