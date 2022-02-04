@@ -6,7 +6,17 @@ watch:
 
 .PHONY: install
 install:
-	 npm install
+	npm install
+
+.PHONY: build
+build:
+	rm -fr build
+	npm ci
+	npm run build
+
+.PHONY: deploy
+deploy:
+	rsync -av --delete build/* staging-watch.supremacy.game:/var/www/html
 
 .PHONY: init-linux
 init-linux: install
