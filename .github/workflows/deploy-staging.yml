@@ -38,15 +38,22 @@ jobs:
           echo '${{ secrets.STAGING_SSH_PKEY }}' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-      - name: Setup build env
-        run: |
-          echo whoami $(whoami)
-          echo pwd $(pwd)
-          echo home ${HOME}
-          mkdir -p build
+      # cache npm dependencies
+      # https://www.voorhoede.nl/en/blog/super-fast-npm-install-on-github-actions/
+      - name: Cache npm
+        id: cache
+        uses: actions/cache@v2
+        with:
+            path: ./node_modules
+            key: modules-${{ hashFiles('./package-lock.json') }}
+
+      # install npm dependencies
+      - name: Install npm packages
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
 
       - name: Build web
-        run: make build
+        run: npm run build
 
       # list build folder recursively
       - name: List build dir
