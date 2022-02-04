@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { GAME_SERVER_HOSTNAME } from '../constants'
 import { createContainer } from 'unstated-next'
 import { NullUUID } from '../constants'
 import HubKey from '../keys'
 import { BattleState, Faction, FactionAbility, Map, WarMachineState } from '../types'
 import { useAuth } from './auth'
 import { useWebsocket } from './socket'
+import { httpProtocol } from '.'
 
 interface TwitchEventResponse {
     phase: BattleState
@@ -78,7 +80,7 @@ export const GameContainer = createContainer(() => {
     useEffect(() => {
         ;(async () => {
             try {
-                const result = await fetch(`/api/game_settings`)
+                const result = await fetch(`${httpProtocol()}://${GAME_SERVER_HOSTNAME}/api/game_settings`)
                 const payload: GameSettingsResponse = await result.json()
 
                 if (!payload) return

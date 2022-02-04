@@ -1,7 +1,8 @@
 import moment from 'moment'
+import { GAME_SERVER_HOSTNAME } from '../constants'
 import { useEffect, useState } from 'react'
 import { createContainer } from 'unstated-next'
-import { useAuth, Vote } from '.'
+import { httpProtocol, useAuth, Vote } from '.'
 import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from '../constants'
 import { useArray } from '../hooks'
 import HubKey from '../keys'
@@ -52,7 +53,7 @@ export const NotificationsContainer = createContainer(() => {
     useEffect(() => {
         ;(async () => {
             try {
-                const result = await fetch(`/api/second_votes`)
+                const result = await fetch(`${httpProtocol()}://${GAME_SERVER_HOSTNAME}/api/second_votes`)
                 const payload: Vote[] = await result.json()
 
                 if (!payload) return

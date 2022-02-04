@@ -38,8 +38,12 @@ const DateParse = () => {
 
 const dp = DateParse()
 
-export function protocol() {
+export function wsProtocol() {
     return window.location.protocol.match(/^https/) ? 'wss' : 'ws'
+}
+
+export function httpProtocol() {
+    return window.location.protocol.match(/^https/) ? 'https' : 'http'
 }
 
 enum SocketState {
@@ -304,7 +308,7 @@ const UseWebsocket = (): WebSocketProperties => {
             return new Promise(function (resolve, reject) {
                 setState(WebSocket.CONNECTING)
                 setTimeout(() => {
-                    webSocket.current = new WebSocket(`${protocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
+                    webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
                     webSocket.current.binaryType = 'arraybuffer'
                     setupWS(webSocket.current)
                     resolve(undefined)
@@ -322,7 +326,7 @@ const UseWebsocket = (): WebSocketProperties => {
     }
 
     useEffect(() => {
-        webSocket.current = new WebSocket(`${protocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
+        webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
         webSocket.current.binaryType = 'arraybuffer'
         setupWS(webSocket.current)
 
