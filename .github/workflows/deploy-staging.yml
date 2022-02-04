@@ -10,6 +10,8 @@ on:
   workflow_dispatch:
 
 env:
+  # hack to bypass node warning
+  CI: false
   NINJA_NPM_TOKEN: ${{ secrets.NINJA_NPM_TOKEN }}
   REACT_APP_GAME_SERVER_HOST: staging-api.supremacy.game
   REACT_APP_PASSPORT_SERVER_HOST: staging-passport.xsyn.io
