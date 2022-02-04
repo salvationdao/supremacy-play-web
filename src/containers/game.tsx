@@ -80,7 +80,15 @@ export const GameContainer = createContainer(() => {
     useEffect(() => {
         ;(async () => {
             try {
-                const result = await fetch(`${httpProtocol()}://${GAME_SERVER_HOSTNAME}/api/game_settings`)
+                const result = await fetch(
+                    `${httpProtocol()}://${GAME_SERVER_HOSTNAME}/api/game_settings`,
+                    {
+                        method: "GET",
+                        mode: "cors",
+                        cache: "no-cache",
+                        credentials: "same-origin",
+                    },
+                )
                 const payload: GameSettingsResponse = await result.json()
 
                 if (!payload) return

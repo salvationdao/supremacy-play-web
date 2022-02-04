@@ -53,7 +53,15 @@ export const NotificationsContainer = createContainer(() => {
     useEffect(() => {
         ;(async () => {
             try {
-                const result = await fetch(`${httpProtocol()}://${GAME_SERVER_HOSTNAME}/api/second_votes`)
+                const result = await fetch(
+                    `${httpProtocol()}://${GAME_SERVER_HOSTNAME}/api/second_votes`,
+                    {
+                        method: "GET",
+                        mode: "cors",
+                        cache: "no-cache",
+                        credentials: "same-origin",
+                    },
+                )
                 const payload: Vote[] = await result.json()
 
                 if (!payload) return
