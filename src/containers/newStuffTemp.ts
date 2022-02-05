@@ -8,7 +8,7 @@ import { useAuth } from './auth'
 import { useWebsocket } from './socket'
 
 /**
- * A Container contain New Stuff
+ * A Container contain NEW STUFF
  */
 export const NewStuffTempContainer = createContainer(() => {
     const { state, send, subscribe, subscribeNetMessage } = useWebsocket()
