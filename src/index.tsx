@@ -21,6 +21,7 @@ import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
 import { PASSPORT_SERVER_HOSTNAME, STREAM_SITE } from './constants'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
+import { NewStuffTempProvider } from './containers/newStuffTemp'
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
@@ -75,19 +76,21 @@ const App = () => {
             <ThemeProvider theme={currentTheme}>
                 <SocketProvider>
                     <AuthProvider>
-                        <WalletProvider>
-                            <GameProvider>
-                                <NotificationsProvider>
-                                    <WarMachinesProvider>
-                                        <DimensionProvider>
-                                            <SnackBarProvider>
-                                                <AppInner />
-                                            </SnackBarProvider>
-                                        </DimensionProvider>
-                                    </WarMachinesProvider>
-                                </NotificationsProvider>
-                            </GameProvider>
-                        </WalletProvider>
+                        <NewStuffTempProvider>
+                            <WalletProvider>
+                                <GameProvider>
+                                    <NotificationsProvider>
+                                        <WarMachinesProvider>
+                                            <DimensionProvider>
+                                                <SnackBarProvider>
+                                                    <AppInner />
+                                                </SnackBarProvider>
+                                            </DimensionProvider>
+                                        </WarMachinesProvider>
+                                    </NotificationsProvider>
+                                </GameProvider>
+                            </WalletProvider>
+                        </NewStuffTempProvider>
                     </AuthProvider>
                 </SocketProvider>
             </ThemeProvider>

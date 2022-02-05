@@ -13,6 +13,7 @@ enum HubKey {
     SubSecondVoteTick = 'TWITCH:FACTION:SECOND:VOTE:UPDATED',
 
     // NEW STUFF
+    FactionVotePrice = 'FACTION:VOTE:PRICE',
     VoteAbilityRight = 'VOTE:ABILITY:RIGHT',
     AbilityLocationSelect = 'ABILITY:LOCATION:SELECT',
     SubGameNotification = 'GAME:NOTIFICATION',

@@ -35,6 +35,7 @@ export const NewStuffTempContainer = createContainer(() => {
                 throw new Error()
             }
         } catch (e) {
+            console.log(e)
             return false
         }
     }, [])
@@ -58,7 +59,10 @@ export const NewStuffTempContainer = createContainer(() => {
             return
         return subscribe<WarMachineState[]>(
             HubKey.SubFactionWarMachineQueueUpdated,
-            (payload) => setQueuingWarMachines(payload),
+            (payload) => {
+                if (!payload) return
+                setQueuingWarMachines(payload)
+            },
             null,
         )
     }, [state, subscribe, userID, factionID])
@@ -79,6 +83,24 @@ export const NewStuffTempContainer = createContainer(() => {
 
     // Current vote price
     const [currentFactionVotePrice, setCurrentFactionVotePrice] = useState<BigNumber>(new BigNumber('0'))
+
+    // Get very first faction vote price
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !userID || userID === NullUUID || !factionID || factionID === NullUUID) return
+        ;(async () => {
+            try {
+                const resp = await send<string>(HubKey.FactionVotePrice)
+                if (resp) {
+                    setCurrentFactionVotePrice(new BigNumber(resp).dividedBy(new BigNumber('1000000000000000000')))
+                }
+            } catch (e) {
+                console.log(e)
+                return false
+            }
+        })()
+    }, [send, state, userID, factionID])
+
+    // listen on current price change
     useEffect(() => {
         if (
             state !== WebSocket.OPEN ||
@@ -91,9 +113,7 @@ export const NewStuffTempContainer = createContainer(() => {
             return
         return subscribeNetMessage<string | undefined>(NetMessageType.VotePriceTick, (payload) => {
             if (!payload) return
-            const currentVotePice = new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000'))
-
-            setCurrentFactionVotePrice(currentVotePice)
+            setCurrentFactionVotePrice(new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000')))
         })
     }, [state, subscribeNetMessage, userID, factionID])
 
@@ -111,13 +131,18 @@ export const NewStuffTempContainer = createContainer(() => {
             return
         return subscribeNetMessage<string | undefined>(NetMessageType.VotePriceForecastTick, (payload) => {
             if (!payload) return
-            const nextVotePice = new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000'))
-
-            setFactionVotePriceIndicator(nextVotePice)
+            setFactionVotePriceIndicator(new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000')))
         })
     }, [state, subscribeNetMessage, userID, factionID])
 
-    return {}
+    return {
+        voteAbilityRight,
+        abilityCollection,
+        queuingWarMachines,
+        abilityRightVoteRatio,
+        currentFactionVotePrice,
+        factionVotePriceIndicator,
+    }
 })
 
 export const NewStuffTempProvider = NewStuffTempContainer.Provider
