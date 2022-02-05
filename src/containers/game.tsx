@@ -58,7 +58,7 @@ export const GameContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
             return
         return subscribe<TwitchEventResponse | undefined>(
-            HubKey.SubFactionStage,
+            HubKey.SubVoteStageUpdated,
             (payload) => {
                 setBattleState(payload)
             },
@@ -68,27 +68,25 @@ export const GameContainer = createContainer(() => {
 
     // Winner announcement
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '') return
+        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
+            return
         return subscribe<VoteWinnerResponse | undefined>(
-            HubKey.SubWinnerAnnouncement,
+            HubKey.SubVoteWinnerAnnouncement,
             (payload) => setWinner(payload),
             null,
         )
-    }, [state, subscribe, userID])
+    }, [state, subscribe, userID, factionID])
 
     // REST call for game settings
     useEffect(() => {
         ;(async () => {
             try {
-                const result = await fetch(
-                    `${httpProtocol()}://${GAME_SERVER_HOSTNAME}/api/game_settings`,
-                    {
-                        method: "GET",
-                        mode: "cors",
-                        cache: "no-cache",
-                        credentials: "same-origin",
-                    },
-                )
+                const result = await fetch(`${httpProtocol()}://${GAME_SERVER_HOSTNAME}/api/game_settings`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                })
                 const payload: GameSettingsResponse = await result.json()
 
                 if (!payload) return

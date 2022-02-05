@@ -44,10 +44,22 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
             }
             return { type, payload }
         }
-        case NetMessageType.LiveVoting: {
+        case NetMessageType.LiveVoting:
+        case NetMessageType.VotePriceTick:
+        case NetMessageType.VotePriceForecastTick: {
             const enc = new TextDecoder('utf-8')
             const arr = new Uint8Array(buffer)
             const payload = enc.decode(arr).substring(1)
+            return { type, payload }
+        }
+        case NetMessageType.AbilityRightRatioTick: {
+            const enc = new TextDecoder('utf-8')
+            const arr = new Uint8Array(buffer)
+            const payload = enc
+                .decode(arr)
+                .substring(1)
+                .split(',')
+                .map<number>((str) => parseInt(str))
             return { type, payload }
         }
     }

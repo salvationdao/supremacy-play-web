@@ -31,7 +31,7 @@ export const SelectionIcon = ({
     const onConfirm = async () => {
         try {
             confirmed.current = true
-            const resp = await send<boolean, MapSelectRequest>(HubKey.SubmitTargetMapLocation, {
+            const resp = await send<boolean, MapSelectRequest>(HubKey.AbilityLocationSelect, {
                 x: selection.x,
                 y: selection.y,
             })

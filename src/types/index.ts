@@ -25,17 +25,30 @@ export interface Faction {
     theme: FactionThemeColor
 }
 
-export type BattleState = 'FIRST_VOTE' | 'TIE' | 'VOTE_COOLDOWN' | 'LOCATION_SELECT' | 'HOLD'
+// NEW STUFF
+export type VotingState = 'HOLD' | 'VOTE_COOLDOWN' | 'VOTE_Ability_RIGHT' | 'NEXT_VOTE_WIN' | 'LOCATION_SELECT'
 
-export interface FactionAbility {
+// NEW STUFF
+export interface AbilityCollection {
     id: string
     label: string
     colour: string
     imageUrl: string
-    type: 'AIRSTRIKE' | 'NUKE' | 'HEALING'
     cooldownDurationSecond: number
-    supsCost: string // big int
 }
+
+export interface FactionAbility {
+    id: string
+    label: string
+    supsCost: string // big int
+    colour: string // SHOULD BE REMOVED
+    imageUrl: string // SHOULD BE REMOVED
+    type: 'AIRSTRIKE' | 'NUKE' | 'HEALING' // SHOULD BE REMOVED
+    cooldownDurationSecond: number // SHOULD BE REMOVED
+}
+
+// SHOULD BE REMOVED
+export type BattleState = 'FIRST_VOTE' | 'TIE' | 'VOTE_COOLDOWN' | 'LOCATION_SELECT' | 'HOLD'
 
 export interface Vector2i {
     x: number
@@ -77,6 +90,9 @@ export enum NetMessageType {
     Default,
     Tick,
     LiveVoting,
+    AbilityRightRatioTick,
+    VotePriceTick,
+    VotePriceForecastTick,
 }
 
 export interface NetMessageTickWarMachine {
