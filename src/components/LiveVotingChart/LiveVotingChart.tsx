@@ -14,8 +14,8 @@ import { LiveGraph } from './LiveGraph'
 const Padding = 10
 const DefaultPositionY = 282
 const DefaultSizeX = 270
-const DefaultSizeY = 90
-const MaxSizeY = 150
+const DefaultSizeY = 100
+const MaxSizeY = 100
 const DefaultMaxLiveVotingDataLength = 60
 
 export const LiveVotingChart = () => {
@@ -66,6 +66,9 @@ export const LiveVotingChart = () => {
                 pointerEvents: 'none',
                 zIndex: 18,
                 filter: 'drop-shadow(0 3px 3px #00000050)',
+                ':hover': {
+                    zIndex: 999,
+                },
             }}
         >
             <Draggable
@@ -101,7 +104,7 @@ export const LiveVotingChart = () => {
                                             position: 'absolute',
                                             bottom: 5,
                                             right: 9,
-                                            cursor: 'nwse-resize',
+                                            cursor: 'ew-resize',
                                             opacity: 0.4,
                                             ':hover': { opacity: 1 },
                                         }}

@@ -1,19 +1,18 @@
 import { Box, Slide, Stack, Typography } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { useTheme } from '@mui/styles'
-import { useMemo } from 'react'
-import { ClipThing, FactionAbilityItem } from '..'
+import { ClipThing, BattleAbilityItem } from '..'
+import { SvgSupToken } from '../../assets'
 import { UI_OPACITY } from '../../constants'
-import { useDimension, useGame } from '../../containers'
+import { useGame } from '../../containers'
 import { colors } from '../../theme/theme'
 
 export const VotingActions = () => {
-    const { battleState, factionAbilities } = useGame()
     const theme = useTheme<Theme>()
-    const {
-        iframeDimensions: { height },
-    } = useDimension()
-    const isVoting = useMemo(() => battleState?.phase == 'FIRST_VOTE' || battleState?.phase == 'TIE', [battleState])
+    const { factionVotePrice, votingState, battleAbility } = useGame()
+
+    const isVoting = votingState?.phase == 'VOTE_ABILITY_RIGHT' || votingState?.phase == 'NEXT_VOTE_WIN'
+    const isShowing = isVoting || votingState?.phase == 'VOTE_COOLDOWN'
 
     return (
         <Stack
@@ -27,21 +26,43 @@ export const VotingActions = () => {
                 filter: 'drop-shadow(0 3px 3px #00000050)',
             }}
         >
-            <Slide in={isVoting} direction="right">
+            <Slide in={isShowing} direction="right">
                 <Box>
                     <ClipThing border={{ isFancy: true, borderThickness: '3px' }} clipSize="10px">
                         <Box
                             sx={{ backgroundColor: theme.factionTheme.background, pl: 0.3, pr: 1.3, pt: 1.2, pb: 1.4 }}
                         >
-                            <Typography sx={{ ml: 1, mb: 1, fontWeight: 'fontWeightBold' }}>
-                                VOTE FOR AN ACTION:
-                            </Typography>
+                            <Stack
+                                spacing={1.2}
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                alignSelf="stretch"
+                                sx={{ ml: 1, mb: 1 }}
+                            >
+                                <Typography sx={{ fontWeight: 'fontWeightBold' }}>
+                                    {isVoting ? 'FIGHT FOR THE ACTION:' : 'NEXT ACTION:'}
+                                </Typography>
+
+                                <Stack direction="row" alignItems="center" justifyContent="center">
+                                    <Typography variant="body2" sx={{ color: 'grey !important', lineHeight: 1 }}>
+                                        1 vote
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ mx: 0.3, lineHeight: 1 }}>
+                                        =
+                                    </Typography>
+                                    <SvgSupToken component="span" size="14px" fill={colors.yellow} />
+                                    <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                        {factionVotePrice.toNumber()}
+                                    </Typography>
+                                </Stack>
+                            </Stack>
 
                             <Box
                                 sx={{
                                     flex: 1,
-                                    // 280px total height, 24px title height
-                                    maxHeight: `calc(288px - 24px)`,
+                                    // 180px total height, 24px title height
+                                    maxHeight: `calc(180px - 24px)`,
                                     overflowY: 'auto',
                                     overflowX: 'hidden',
                                     pl: 1,
@@ -63,12 +84,9 @@ export const VotingActions = () => {
                             >
                                 <Box sx={{ direction: 'ltr' }}>
                                     <Stack spacing={1.3}>
-                                        {factionAbilities &&
-                                            factionAbilities.map((a) => (
-                                                <Box key={`${a.id}-${a.supsCost}`}>
-                                                    <FactionAbilityItem a={a} />
-                                                </Box>
-                                            ))}
+                                        {battleAbility && (
+                                            <BattleAbilityItem battleAbility={battleAbility} isVoting={isVoting} />
+                                        )}
                                     </Stack>
                                 </Box>
                             </Box>

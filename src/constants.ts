@@ -1,4 +1,5 @@
 export const GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOST || 'localhost:8084'
+export const PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || 'http://localhost:5003'
 export const PASSPORT_SERVER_HOSTNAME = process.env.REACT_APP_PASSPORT_SERVER_HOST || 'localhost:8086'
 export const STREAM_SITE = process.env.REACT_APP_STREAM_SITE
 export const LOG_API_CALLS = true

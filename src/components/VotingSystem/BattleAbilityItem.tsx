@@ -2,49 +2,33 @@ import { Box, Stack, Typography } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { useTheme } from '@mui/styles'
 import { useWallet } from '@ninjasoftware/passport-gamebar'
-import BigNumber from 'bignumber.js'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ClipThing, FancyButton } from '..'
-import { SvgSupToken } from '../../assets'
+import { SvgCooldown, SvgSupToken } from '../../assets'
 import { useGame, useWebsocket } from '../../containers'
-import { supFormatter } from '../../helpers'
 import HubKey from '../../keys'
+import { zoomEffect } from '../../theme/keyframes'
 import { colors } from '../../theme/theme'
-import { FactionAbility } from '../../types'
+import { BattleAbility, NetMessageType } from '../../types'
 
 interface VoteRequest {
-    factionAbilityID: string
-    pointSpend: BigNumber
+    voteAmount: number // 1, 10, 100
 }
 
-const VotingButton = ({
-    factionAbilityID,
-    multiplier = 1,
-    cost,
-    color,
-}: {
-    factionAbilityID: string
-    multiplier?: number
-    cost: BigNumber
-    color: string
-}) => {
+const VotingButton = ({ voteAmount, color }: { voteAmount: number; color: string }) => {
     const { send } = useWebsocket()
-    const { battleState } = useGame()
+    const { votingState, factionVotePrice } = useGame()
     const { onWorldSups } = useWallet()
-
-    const totalCost = cost.multipliedBy(multiplier)
+    const totalCost = factionVotePrice.multipliedBy(voteAmount)
 
     const isVotable =
-        (battleState?.phase == 'FIRST_VOTE' || battleState?.phase == 'TIE') &&
+        (votingState?.phase == 'VOTE_ABILITY_RIGHT' || votingState?.phase == 'NEXT_VOTE_WIN') &&
         onWorldSups &&
-        onWorldSups.isGreaterThanOrEqualTo(totalCost)
+        onWorldSups.dividedBy(1000000000000000000).isGreaterThanOrEqualTo(totalCost)
 
     const onVote = useCallback(async () => {
         try {
-            const resp = await send<boolean, VoteRequest>(HubKey.SubmitFirstVote, {
-                factionAbilityID,
-                pointSpend: totalCost,
-            })
+            const resp = await send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
 
             if (resp) {
                 return true
@@ -61,7 +45,7 @@ const VotingButton = ({
             disabled={!isVotable}
             excludeCaret
             clipSize="4px"
-            sx={{ pt: 0.4, pb: 0.3, minWidth: 56 }}
+            sx={{ pt: 0.4, pb: 0.3, minWidth: 92 }}
             clipSx={{ flex: 1, position: 'relative' }}
             backgroundColor={color}
             borderColor={color}
@@ -87,7 +71,7 @@ const VotingButton = ({
                 }}
             >
                 <SvgSupToken size="15px" />
-                {supFormatter(totalCost)}
+                {totalCost.toFixed(6)}
             </Box>
 
             <Stack alignItems="center" direction="row" spacing={0.3}>
@@ -98,24 +82,91 @@ const VotingButton = ({
                         fontWeight: 'fontWeightBold',
                         fontFamily: 'Nostromo Regular Medium',
                         whiteSpace: 'nowrap',
+                        color: '#FFFFFF',
                     }}
                 >
-                    {`${multiplier} vote${multiplier === 1 ? '' : 's'}`}
+                    {`${voteAmount} vote${voteAmount === 1 ? '' : 's'}`}
                 </Typography>
             </Stack>
         </FancyButton>
     )
 }
 
-export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
-    const { id, label, colour, imageUrl, supsCost } = a
+const VotingBar = ({ isVoting }: { isVoting: boolean }) => {
+    const { state, subscribeNetMessage } = useWebsocket()
+    const { factionsColor } = useGame()
+
+    // Array order is (Red Mountain, Boston, Zaibatsu). [[colorArray], [ratioArray]]
+    const [voteRatio, setVoteRatio] = useState<[number, number, number]>([33, 33, 33])
+
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
+        return subscribeNetMessage<[number, number, number] | undefined>(
+            NetMessageType.AbilityRightRatioTick,
+            (payload) => {
+                if (!payload) return
+                setVoteRatio(payload)
+            },
+        )
+    }, [state, subscribeNetMessage])
+
+    const subBar = useCallback(
+        (color: string, ratio: number) => (
+            <Box
+                sx={{
+                    position: 'relative',
+                    width: isVoting ? `${ratio}%` : '33.33%',
+                    height: '100%',
+                    backgroundColor: color,
+                    transition: 'all .25s',
+                }}
+            >
+                <Typography
+                    key={ratio}
+                    variant="caption"
+                    sx={{
+                        position: 'absolute',
+                        top: -16,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        color,
+                        fontWeight: 'fontWeightBold',
+                        animation: `${zoomEffect} 300ms ease-out`,
+                    }}
+                >
+                    {Math.round(ratio)}%
+                </Typography>
+            </Box>
+        ),
+        [isVoting],
+    )
+
+    return (
+        <Box sx={{ width: '100%', px: 1.5, py: 1, pb: 1.2, backgroundColor: '#00000050', borderRadius: 1 }}>
+            <Stack
+                direction="row"
+                alignSelf="stretch"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ mt: 1.6, height: 5.5, px: 0.5 }}
+            >
+                {subBar(factionsColor?.redMountain || '#C24242', voteRatio[0])}
+                {subBar(factionsColor?.boston || '#428EC1', voteRatio[1])}
+                {subBar(factionsColor?.zaibatsu || '#FFFFFF', voteRatio[2])}
+            </Stack>
+        </Box>
+    )
+}
+
+export const BattleAbilityItem = ({ battleAbility, isVoting }: { battleAbility: BattleAbility; isVoting: boolean }) => {
+    const { label, colour, imageUrl, cooldownDurationSecond } = battleAbility
     const theme = useTheme<Theme>()
 
     return (
         <Box>
             <ClipThing border={{ isFancy: true, borderColor: colour, borderThickness: '1.5px' }} clipSize="6px">
                 <Box sx={{ backgroundColor: colors.darkNavy }}>
-                    <Stack direction="row" sx={{ height: 67, minWidth: 180 }}>
+                    <Stack direction="row" sx={{ height: 118, minWidth: 180 }}>
                         <ClipThing
                             border={{ isFancy: true, borderColor: colour, borderThickness: '1px' }}
                             clipSize="6px"
@@ -125,7 +176,7 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
                                 sx={{
                                     backgroundColor: theme.factionTheme.background,
                                     height: '100%',
-                                    width: 61,
+                                    width: 95,
                                     backgroundImage: `url(${imageUrl})`,
                                     backgroundRepeat: 'no-repeat',
                                     backgroundPosition: 'center',
@@ -161,34 +212,20 @@ export const FactionAbilityItem = ({ a }: { a: FactionAbility }) => {
                                     {label}
                                 </Typography>
 
-                                <Stack direction="row" alignItems="center" justifyContent="center">
-                                    <Typography variant="body2" sx={{ color: 'grey !important', lineHeight: 1 }}>
-                                        1 vote
-                                    </Typography>
-                                    <Typography variant="body2" sx={{ mx: 0.3, lineHeight: 1 }}>
-                                        =
-                                    </Typography>
-                                    <SvgSupToken component="span" size="14px" fill={colors.yellow} />
-                                    <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                        {supFormatter(new BigNumber(supsCost))}
+                                <Stack spacing={0.3} direction="row" alignItems="center" justifyContent="center">
+                                    <SvgCooldown component="span" size="13.2px" fill={'grey'} />
+                                    <Typography variant="body2" sx={{ lineHeight: 1, color: 'grey !important' }}>
+                                        {cooldownDurationSecond}s
                                     </Typography>
                                 </Stack>
                             </Stack>
 
+                            <VotingBar isVoting={isVoting} />
+
                             <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: '100%' }}>
-                                <VotingButton factionAbilityID={id} color={colour} cost={new BigNumber(supsCost)} />
-                                <VotingButton
-                                    factionAbilityID={id}
-                                    color={colour}
-                                    cost={new BigNumber(supsCost)}
-                                    multiplier={25}
-                                />
-                                <VotingButton
-                                    factionAbilityID={id}
-                                    color={colour}
-                                    cost={new BigNumber(supsCost)}
-                                    multiplier={100}
-                                />
+                                <VotingButton color={colour} voteAmount={1} />
+                                <VotingButton color={colour} voteAmount={25} />
+                                <VotingButton color={colour} voteAmount={100} />
                             </Stack>
                         </Stack>
                     </Stack>

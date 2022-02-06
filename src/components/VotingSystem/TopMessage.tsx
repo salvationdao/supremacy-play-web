@@ -4,15 +4,15 @@ import moment from 'moment'
 import { useGame } from '../../containers'
 import { useInterval } from '../../hooks'
 
-export const BattleTopMessage = () => {
-    const { battleState } = useGame()
-    const [sentence, setSentence] = useState<string>('')
+export const TopMessage = () => {
+    const { votingState } = useGame()
     const [isShowing, setIsShowing] = useState<boolean>(false)
+    const [sentence, setSentence] = useState<string>('')
     const [timeRemain, setTimeRemain] = useState<number>(0)
     const [delay, setDelay] = useState<number | null>(null)
 
     useEffect(() => {
-        const endTime = battleState?.endTime
+        const endTime = votingState?.endTime
 
         if (endTime) {
             setDelay(1000)
@@ -21,7 +21,7 @@ export const BattleTopMessage = () => {
             return
         }
         setDelay(null)
-    }, [battleState])
+    }, [votingState])
 
     useInterval(() => {
         setTimeRemain((t) => Math.max(t - 1, 0))
@@ -29,11 +29,11 @@ export const BattleTopMessage = () => {
     }, delay)
 
     useEffect(() => {
-        const endTime = battleState?.endTime
+        const endTime = votingState?.endTime
 
-        switch (battleState?.phase) {
-            case 'FIRST_VOTE':
-            case 'TIE':
+        switch (votingState?.phase) {
+            case 'VOTE_ABILITY_RIGHT':
+            case 'NEXT_VOTE_WIN':
             case 'VOTE_COOLDOWN':
                 if (endTime) {
                     const d = moment.duration(moment(endTime).diff(moment()))
@@ -50,20 +50,20 @@ export const BattleTopMessage = () => {
                 break
         }
         doSentence()
-    }, [battleState])
+    }, [votingState])
 
     const doSentence = () => {
-        switch (battleState?.phase) {
-            case 'FIRST_VOTE':
-                setSentence(`Voting phase ends in ${timeRemain} sec...`)
+        switch (votingState?.phase) {
+            case 'VOTE_ABILITY_RIGHT':
+                setSentence(`The voting phase ends in ${timeRemain} sec...`)
                 break
 
-            case 'TIE':
+            case 'NEXT_VOTE_WIN':
                 setSentence(`Next vote wins!`)
                 break
 
             case 'VOTE_COOLDOWN':
-                setSentence(`Voting phase starts in ${timeRemain} sec...`)
+                setSentence(`The next voting phase starts in ${timeRemain} sec...`)
                 break
         }
     }

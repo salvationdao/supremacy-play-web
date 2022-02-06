@@ -18,10 +18,9 @@ import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
-import { PASSPORT_SERVER_HOSTNAME, STREAM_SITE } from './constants'
+import { PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, STREAM_SITE } from './constants'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
-import { NewStuffTempProvider } from './containers/newStuffTemp'
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
@@ -44,7 +43,8 @@ const AppInner = () => {
                                 opacity={0.94}
                                 barPosition="top"
                                 gameserverSessionID={gameserverSessionID}
-                                serverHost={PASSPORT_SERVER_HOSTNAME}
+                                passportWeb={PASSPORT_WEB}
+                                passportServerHost={PASSPORT_SERVER_HOSTNAME}
                             />
                             <VotingSystem />
                             <MiniMap />
@@ -76,21 +76,19 @@ const App = () => {
             <ThemeProvider theme={currentTheme}>
                 <SocketProvider>
                     <AuthProvider>
-                        <NewStuffTempProvider>
-                            <WalletProvider>
-                                <GameProvider>
-                                    <NotificationsProvider>
-                                        <WarMachinesProvider>
-                                            <DimensionProvider>
-                                                <SnackBarProvider>
-                                                    <AppInner />
-                                                </SnackBarProvider>
-                                            </DimensionProvider>
-                                        </WarMachinesProvider>
-                                    </NotificationsProvider>
-                                </GameProvider>
-                            </WalletProvider>
-                        </NewStuffTempProvider>
+                        <WalletProvider>
+                            <GameProvider>
+                                <NotificationsProvider>
+                                    <WarMachinesProvider>
+                                        <DimensionProvider>
+                                            <SnackBarProvider>
+                                                <AppInner />
+                                            </SnackBarProvider>
+                                        </DimensionProvider>
+                                    </WarMachinesProvider>
+                                </NotificationsProvider>
+                            </GameProvider>
+                        </WalletProvider>
                     </AuthProvider>
                 </SocketProvider>
             </ThemeProvider>

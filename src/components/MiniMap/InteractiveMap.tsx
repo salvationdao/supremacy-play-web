@@ -5,7 +5,7 @@ import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { SelectionIcon } from '..'
 import { useGame, useWarMachines } from '../../containers'
 import { useToggle } from '../../hooks'
-import { FactionAbility, Map } from '../../types'
+import { BattleAbility, Map } from '../../types'
 
 export interface MapSelection {
     x: number
@@ -44,13 +44,13 @@ const MapWarMachines = () => {
 export const InteractiveMap = ({
     windowDimension,
     targeting,
-    factionAbility,
+    battleAbility,
     setSubmitted,
     confirmed,
 }: {
     windowDimension: { width: number; height: number }
     targeting?: boolean
-    factionAbility?: FactionAbility
+    battleAbility?: BattleAbility
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     confirmed?: MutableRefObject<boolean>
 }) => {
@@ -112,20 +112,19 @@ export const InteractiveMap = ({
     }, [targeting, map])
 
     const selectionIcon = useMemo(() => {
-        if (targeting && factionAbility && setSubmitted && confirmed) {
+        if (targeting && setSubmitted && confirmed) {
             return (
                 <SelectionIcon
                     key={selection && `column-${selection.y}-row-${selection.x}`}
                     selection={selection}
                     setSelection={setSelection}
-                    factionAbility={factionAbility}
                     setSubmitted={setSubmitted}
                     confirmed={confirmed}
                 />
             )
         }
         return <div />
-    }, [targeting, factionAbility, setSubmitted, selection])
+    }, [targeting, setSubmitted, selection])
 
     // When map is enlarged etc. This will keep the bounds valid
     useEffect(() => {

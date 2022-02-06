@@ -9,6 +9,7 @@ import FlagSharpIcon from '@mui/icons-material/FlagSharp'
 import MapSharpIcon from '@mui/icons-material/MapSharp'
 import PersonSharpIcon from '@mui/icons-material/PersonSharp'
 import WorkspacesSharpIcon from '@mui/icons-material/WorkspacesSharp'
+import AccessTimeSharpIcon from '@mui/icons-material/AccessTimeSharp'
 import { Box, BoxProps } from '@mui/system'
 import { colors } from '../theme/theme'
 
@@ -99,5 +100,11 @@ export const SvgResizeArrow: React.VoidFunctionComponent<SvgWrapperProps> = (pro
 export const SvgDrag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Drag />
+    </SvgWrapper>
+)
+
+export const SvgCooldown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <AccessTimeSharpIcon />
     </SvgWrapper>
 )

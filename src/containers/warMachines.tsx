@@ -17,7 +17,7 @@ export const WarMachinesContainer = createContainer(() => {
         setWarMachinesSub(warMachines)
     }, [warMachines])
 
-    // War machine for the map (subscription)
+    // Subscribe to war machine state
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage || !user) return
         return subscribeNetMessage<NetMessageTick | undefined>(NetMessageType.Tick, (payload) => {

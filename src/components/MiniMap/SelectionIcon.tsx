@@ -1,9 +1,9 @@
 import { Box, Typography, Zoom } from '@mui/material'
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import { FancyButton, MapSelection } from '..'
-import { useWebsocket } from '../../containers'
+import { useGame, useWebsocket } from '../../containers'
 import HubKey from '../../keys'
-import { FactionAbility } from '../../types'
+import { BattleAbility } from '../../types'
 
 interface MapSelectRequest {
     x: number
@@ -13,25 +13,23 @@ interface MapSelectRequest {
 export const SelectionIcon = ({
     selection,
     setSelection,
-    factionAbility,
     setSubmitted,
     confirmed,
 }: {
     selection: MapSelection | undefined
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
-    factionAbility: FactionAbility
     setSubmitted: Dispatch<SetStateAction<boolean>>
     confirmed: MutableRefObject<boolean>
 }) => {
     const { send } = useWebsocket()
 
     if (!selection) return null
-    const { colour, imageUrl } = factionAbility
+    const { battleAbility } = useGame()
 
     const onConfirm = async () => {
         try {
             confirmed.current = true
-            const resp = await send<boolean, MapSelectRequest>(HubKey.AbilityLocationSelect, {
+            const resp = await send<boolean, MapSelectRequest>(HubKey.SubmitAbilityLocationSelect, {
                 x: selection.x,
                 y: selection.y,
             })
@@ -45,6 +43,10 @@ export const SelectionIcon = ({
             confirmed.current = false
         }
     }
+
+    if (!battleAbility) return null
+
+    const { colour, imageUrl } = battleAbility
 
     return (
         <Box

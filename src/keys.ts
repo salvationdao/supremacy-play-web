@@ -1,26 +1,24 @@
 enum HubKey {
+    // Auth container
     Welcome = 'WELCOME',
     UserSubscribe = 'USER:SUBSCRIBE',
     AuthSessionIDGet = 'AUTH:SESSION:ID:GET',
 
+    // Game container
+    GetFactionsColor = 'FACTION:COLOUR',
+    GetFactionVotePrice = 'FACTION:VOTE:PRICE',
     SubGameSettings = 'GAME:SETTINGS:UPDATED',
-    SubWarMachinesState = 'WARMACHINE:UPDATED',
-
-    // SHOULD BE REMOVED
-    SubmitFirstVote = 'TWITCH:FACTION:ABILITY:FIRST:VOTE',
-    SubmitSecondVote = 'TWITCH:FACTION:ABILITY:SECOND:VOTE',
-    SubFactionAbilities = 'TWITCH:FACTION:ABILITY:UPDATED',
-    SubSecondVoteTick = 'TWITCH:FACTION:SECOND:VOTE:UPDATED',
-
-    // NEW STUFF
-    FactionVotePrice = 'FACTION:VOTE:PRICE',
-    VoteAbilityRight = 'VOTE:ABILITY:RIGHT',
-    AbilityLocationSelect = 'ABILITY:LOCATION:SELECT',
-    SubGameNotification = 'GAME:NOTIFICATION',
-    SubVoteWinnerAnnouncement = 'VOTE:WINNER:ANNOUNCEMENT',
-    SubVoteAbilityCollectionUpdated = 'VOTE:ABILITY:COLLECTION:UPDATED',
     SubVoteStageUpdated = 'VOTE:STAGE:UPDATED',
+    SubBattleAbility = 'VOTE:BATTLE:ABILITY:UPDATED',
+    SubVoteWinnerAnnouncement = 'VOTE:WINNER:ANNOUNCEMENT',
     SubFactionWarMachineQueueUpdated = 'FACTION:WAR:MACHINE:QUEUE:UPDATED',
+
+    // Notification container
+    SubGameNotification = 'GAME:NOTIFICATION',
+
+    // In components
+    SubmitVoteAbilityRight = 'VOTE:ABILITY:RIGHT',
+    SubmitAbilityLocationSelect = 'ABILITY:LOCATION:SELECT',
 }
 
 export default HubKey

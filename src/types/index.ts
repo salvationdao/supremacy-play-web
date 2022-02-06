@@ -25,30 +25,15 @@ export interface Faction {
     theme: FactionThemeColor
 }
 
-// NEW STUFF
-export type VotingState = 'HOLD' | 'VOTE_COOLDOWN' | 'VOTE_Ability_RIGHT' | 'NEXT_VOTE_WIN' | 'LOCATION_SELECT'
+export type VotingState = 'HOLD' | 'VOTE_COOLDOWN' | 'VOTE_ABILITY_RIGHT' | 'NEXT_VOTE_WIN' | 'LOCATION_SELECT'
 
-// NEW STUFF
-export interface AbilityCollection {
+export interface BattleAbility {
     id: string
     label: string
     colour: string
     imageUrl: string
     cooldownDurationSecond: number
 }
-
-export interface FactionAbility {
-    id: string
-    label: string
-    supsCost: string // big int
-    colour: string // SHOULD BE REMOVED
-    imageUrl: string // SHOULD BE REMOVED
-    type: 'AIRSTRIKE' | 'NUKE' | 'HEALING' // SHOULD BE REMOVED
-    cooldownDurationSecond: number // SHOULD BE REMOVED
-}
-
-// SHOULD BE REMOVED
-export type BattleState = 'FIRST_VOTE' | 'TIE' | 'VOTE_COOLDOWN' | 'LOCATION_SELECT' | 'HOLD'
 
 export interface Vector2i {
     x: number

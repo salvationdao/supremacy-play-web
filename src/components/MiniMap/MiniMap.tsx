@@ -13,7 +13,7 @@ export const MiniMap = () => {
         iframeDimensions: { width, height },
     } = useDimension()
     const theme = useTheme<Theme>()
-    const { map, winner, battleState } = useGame()
+    const { map, winner, setWinner, votingState } = useGame()
     const [enlarged, toggleEnlarged] = useToggle()
     const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
         width: 230,
@@ -45,16 +45,19 @@ export const MiniMap = () => {
     }, [winner])
 
     useEffect(() => {
-        if (winner && battleState?.phase == 'LOCATION_SELECT') toggleEnlarged(true)
-    }, [winner, battleState])
+        if (winner && votingState?.phase == 'LOCATION_SELECT') toggleEnlarged(true)
+    }, [winner, votingState])
 
     useEffect(() => {
-        if (timeReachZero || submitted) toggleEnlarged(false)
+        if (timeReachZero || submitted) {
+            toggleEnlarged(false)
+            setWinner(undefined)
+        }
     }, [timeReachZero, submitted])
 
     if (!map) return null
 
-    const isTargetting = winner && !timeReachZero && !submitted && battleState?.phase == 'LOCATION_SELECT'
+    const isTargetting = winner && !timeReachZero && !submitted && votingState?.phase == 'LOCATION_SELECT'
 
     return (
         <Box
@@ -107,7 +110,7 @@ export const MiniMap = () => {
 
                             {isTargetting && (
                                 <TargetTimerCountdown
-                                    factionAbility={winner.factionAbility}
+                                    battleAbility={winner.factionAbility}
                                     setTimeReachZero={setTimeReachZero}
                                     endTime={winner.endTime}
                                 />
@@ -117,7 +120,7 @@ export const MiniMap = () => {
                                 <InteractiveMap
                                     windowDimension={dimensions}
                                     targeting
-                                    factionAbility={winner.factionAbility}
+                                    battleAbility={winner.factionAbility}
                                     setSubmitted={setSubmitted}
                                     confirmed={confirmed}
                                 />

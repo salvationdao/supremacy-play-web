@@ -1,4 +1,4 @@
-import { BattleTopMessage, VotingActions } from '..'
+import { TopMessage, VotingActions } from '..'
 import { useAuth } from '../../containers'
 
 export const VotingSystem = () => {
@@ -7,7 +7,7 @@ export const VotingSystem = () => {
 
     return (
         <>
-            <BattleTopMessage />
+            <TopMessage />
             <VotingActions />
         </>
     )

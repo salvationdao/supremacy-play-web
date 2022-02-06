@@ -9,7 +9,7 @@
         "@mui/lab": "^5.0.0-alpha.53",
         "@mui/material": "^5.0.1",
         "@mui/styles": "^5.1.0",
-        "@ninjasoftware/passport-gamebar": "^0.6.12",
+        "@ninjasoftware/passport-gamebar": "^0.6.13",
         "bignumber.js": "^9.0.2",
         "core-js": "^3.5.0",
         "jsonwebtoken": "^8.5.1",

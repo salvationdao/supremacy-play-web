@@ -59,7 +59,7 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 .decode(arr)
                 .substring(1)
                 .split(',')
-                .map<number>((str) => parseInt(str))
+                .map<number>((str) => parseInt(str) / 10000)
             return { type, payload }
         }
     }
