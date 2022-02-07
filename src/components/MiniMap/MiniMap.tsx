@@ -120,7 +120,6 @@ export const MiniMap = () => {
                                 <InteractiveMap
                                     windowDimension={dimensions}
                                     targeting
-                                    battleAbility={winner.factionAbility}
                                     setSubmitted={setSubmitted}
                                     confirmed={confirmed}
                                 />

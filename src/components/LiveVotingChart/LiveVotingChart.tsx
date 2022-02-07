@@ -23,8 +23,8 @@ export const LiveVotingChart = () => {
     const {
         iframeDimensions: { width, height },
     } = useDimension()
-    const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem('liveVotingPosX'), -1))
-    const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem('liveVotingPosY'), DefaultPositionY))
+    const [curPosX, setCurPosX] = useState(-1)
+    const [curPosY, setCurPosY] = useState(-1)
     const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem('liveVotingSizeX'), DefaultSizeX))
     const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem('liveVotingSizeY'), DefaultSizeY))
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
@@ -32,16 +32,18 @@ export const LiveVotingChart = () => {
     )
 
     useEffect(() => {
-        // Use effect to set default position of the the chart, couldn't do it with the initial state thing as it
-        // depends on variables that loads later like iframe width
-        if (curPosX >= 0) return
+        let newPosX = parseString(localStorage.getItem('liveVotingPosX'), -1)
+        let newPosY = parseString(localStorage.getItem('liveVotingPosY'), DefaultPositionY)
 
-        const posX = parseString(localStorage.getItem('liveVotingPosX'), -1)
+        // Make sure live voting chart is inside iframe when page is resized etc.
+        newPosX = newPosX > 0 ? Math.min(newPosX, width - curWidth - Padding) : width - curWidth - Padding
+        newPosY = Math.min(newPosY, height - curHeight - Padding)
 
-        if (width > 0 && posX < 0 && curWidth > 0) {
-            setCurPosX(width - curWidth - Padding)
-        }
-    }, [width, curWidth])
+        setCurPosX(newPosX)
+        setCurPosY(newPosY)
+        localStorage.setItem('liveVotingPosX', newPosX.toString())
+        localStorage.setItem('liveVotingPosY', newPosY.toString())
+    }, [width, height, curWidth])
 
     const onResize = (e: SyntheticEvent<Element, Event>, data: ResizeCallbackData) => {
         const { size } = data
@@ -53,8 +55,6 @@ export const LiveVotingChart = () => {
         if (curPosY + size.height <= height - Padding && size.height <= MaxSizeY && size.height >= DefaultSizeY)
             setCurHeight(size.height)
     }
-
-    if (curPosX < 0) return null
 
     return (
         <Stack
@@ -74,7 +74,7 @@ export const LiveVotingChart = () => {
             <Draggable
                 allowAnyClick
                 handle=".handle"
-                defaultPosition={{
+                position={{
                     x: curPosX,
                     y: curPosY,
                 }}

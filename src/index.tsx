@@ -13,7 +13,6 @@ import {
 import { Box, CssBaseline, ThemeProvider } from '@mui/material'
 import { MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
 import { useEffect, useState } from 'react'
-import { NotificationsProvider } from './containers/notifications'
 import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { theme } from './theme/theme'
@@ -78,15 +77,13 @@ const App = () => {
                     <AuthProvider>
                         <WalletProvider>
                             <GameProvider>
-                                <NotificationsProvider>
-                                    <WarMachinesProvider>
-                                        <DimensionProvider>
-                                            <SnackBarProvider>
-                                                <AppInner />
-                                            </SnackBarProvider>
-                                        </DimensionProvider>
-                                    </WarMachinesProvider>
-                                </NotificationsProvider>
+                                <WarMachinesProvider>
+                                    <DimensionProvider>
+                                        <SnackBarProvider>
+                                            <AppInner />
+                                        </SnackBarProvider>
+                                    </DimensionProvider>
+                                </WarMachinesProvider>
                             </GameProvider>
                         </WalletProvider>
                     </AuthProvider>

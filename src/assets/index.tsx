@@ -10,6 +10,8 @@ import MapSharpIcon from '@mui/icons-material/MapSharp'
 import PersonSharpIcon from '@mui/icons-material/PersonSharp'
 import WorkspacesSharpIcon from '@mui/icons-material/WorkspacesSharp'
 import AccessTimeSharpIcon from '@mui/icons-material/AccessTimeSharp'
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { Box, BoxProps } from '@mui/system'
 import { colors } from '../theme/theme'
 
@@ -106,5 +108,17 @@ export const SvgDrag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => 
 export const SvgCooldown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <AccessTimeSharpIcon />
+    </SvgWrapper>
+)
+
+export const SvgPriceUpArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ArrowDropUpIcon />
+    </SvgWrapper>
+)
+
+export const SvgPriceDownArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ArrowDropDownIcon />
     </SvgWrapper>
 )

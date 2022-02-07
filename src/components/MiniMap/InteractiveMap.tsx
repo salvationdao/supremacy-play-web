@@ -44,13 +44,11 @@ const MapWarMachines = () => {
 export const InteractiveMap = ({
     windowDimension,
     targeting,
-    battleAbility,
     setSubmitted,
     confirmed,
 }: {
     windowDimension: { width: number; height: number }
     targeting?: boolean
-    battleAbility?: BattleAbility
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     confirmed?: MutableRefObject<boolean>
 }) => {

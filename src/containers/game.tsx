@@ -37,6 +37,7 @@ export const GameContainer = createContainer(() => {
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [factionVotePrice, setFactionVotePrice] = useState<BigNumber>(new BigNumber('0'))
+    const [prevFactionVotePrice, setPrevFactionVotePrice] = useState<BigNumber>(new BigNumber('0'))
     const [battleAbility, setBattleAbility] = useState<BattleAbility>()
     const [votingState, setVotingState] = useState<VtotingStateResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
@@ -105,7 +106,10 @@ export const GameContainer = createContainer(() => {
             return
         return subscribeNetMessage<string | undefined>(NetMessageType.VotePriceTick, (payload) => {
             if (!payload) return
-            setFactionVotePrice(new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000')))
+            setFactionVotePrice((prev) => {
+                setPrevFactionVotePrice(prev)
+                return new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000'))
+            })
         })
     }, [state, subscribeNetMessage, userID, factionID])
 
@@ -158,6 +162,7 @@ export const GameContainer = createContainer(() => {
         factionsColor,
         votingState,
         factionVotePrice,
+        prevFactionVotePrice,
         battleAbility,
         winner,
         setWinner,

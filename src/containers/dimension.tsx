@@ -15,7 +15,6 @@ export const DimensionContainer = createContainer(() => {
 
     return {
         iframeDimensions,
-        setIframeDimensions,
     }
 })
 

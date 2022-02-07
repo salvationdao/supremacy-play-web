@@ -4,10 +4,6 @@ import HubKey from '../keys'
 import { UpdateTheme, User } from '../types'
 import { useWebsocket } from './socket'
 
-interface TokenLoginRequest {
-    twitchToken: string
-}
-
 /**
  * A Container that handles Authorisation
  */

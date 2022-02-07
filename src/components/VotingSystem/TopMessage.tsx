@@ -87,6 +87,10 @@ export const TopMessage = () => {
                             fontWeight: 'fontWeightBold',
                             fontFamily: 'Nostromo Regular Black',
                             color: '#FFFFFF',
+                            userSelect: 'none',
+                            msUserSelect: 'none',
+                            MozUserSelect: 'none',
+                            WebkitUserSelect: 'none',
                             filter: 'drop-shadow(0 3px 3px #00000020)',
                         }}
                     >
