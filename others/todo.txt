@@ -32,6 +32,7 @@ x also show hp / shield in mini map and death skull
 
 
 Pending:
+- relocation notifications to right corner
 - video player controls
 - kill notification
 - iframe dimension onresize
