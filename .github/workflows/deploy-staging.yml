@@ -67,4 +67,4 @@ jobs:
         run: find build
 
       - name: Rsync to server
-        run: make deploy-staging
+        run: rsync -av --delete build/ staging-watch.supremacy.game:/var/www/html
