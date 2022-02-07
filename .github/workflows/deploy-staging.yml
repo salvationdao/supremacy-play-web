@@ -66,5 +66,6 @@ jobs:
       - name: List build dir
         run: find build
 
+      # use rsync directly cuz make deploy hides error/failure (github action shows a tick instead of fail)
       - name: Rsync to server
         run: rsync -av --delete build/ staging-watch.supremacy.game:/var/www/html
