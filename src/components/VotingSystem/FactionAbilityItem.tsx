@@ -4,12 +4,13 @@ import { Box, Fade, Stack, Typography } from '@mui/material'
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useState } from 'react'
 import { ClipThing, VotingButton } from '..'
-import { useGame, useWebsocket } from '../../containers'
+import { useAuth, useWebsocket } from '../../containers'
 import HubKey from '../../keys'
 import { zoomEffect } from '../../theme/keyframes'
 import { colors } from '../../theme/theme'
-import { FactionAbility, FactionAbilityTargetPrice } from '../../types'
+import { FactionAbility, FactionAbilityTargetPrice, NetMessageType } from '../../types'
 import { useToggle } from '../../hooks'
+import { NullUUID } from '../../constants'
 
 const ContributionBar = ({
     color,
@@ -69,33 +70,43 @@ interface FactionAbilityContributeRequest {
 
 interface FactionAbilityItemProps {
     factionAbility: FactionAbility
-    pricing: FactionAbilityTargetPrice
 }
 
-export const FactionAbilityItem = ({ factionAbility, pricing }: FactionAbilityItemProps) => {
-    const { send } = useWebsocket()
+export const FactionAbilityItem = ({ factionAbility }: FactionAbilityItemProps) => {
+    const { label, colour, imageUrl, id } = factionAbility
+    const { user } = useAuth()
+    const userID = user?.id
+    const factionID = user?.factionID
+    const { state, send, subscribeAbilityNetMessage } = useWebsocket()
     const theme = useTheme<Theme>()
+
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
     const [refresh, toggleRefresh] = useToggle()
+    const [supsCost, setSupsCost] = useState(new BigNumber('0'))
+    const [currentSups, setCurrentCost] = useState(new BigNumber('0'))
+    const [isVoting, setIsVoting] = useState(false)
 
-    const factionAbilityID = factionAbility.id
-    const currentSups = new BigNumber(pricing.currentSups).dividedBy('1000000000000000000')
-    const supsCost = new BigNumber(pricing.supsCost).dividedBy('1000000000000000000')
-    const shouldReset = pricing.shouldReset
-    const isVoting = supsCost.isGreaterThanOrEqualTo(currentSups)
+    const [factionAbilityTargetPrice, setFactionAbilityTargetPrice] = useState<FactionAbilityTargetPrice>()
 
     useEffect(() => {
-        if (shouldReset) {
+        if (!factionAbilityTargetPrice) return
+        const currentSups = new BigNumber(factionAbilityTargetPrice.currentSups).dividedBy('1000000000000000000')
+        const supsCost = new BigNumber(factionAbilityTargetPrice.supsCost).dividedBy('1000000000000000000')
+        setCurrentCost(currentSups)
+        setSupsCost(supsCost)
+        setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
+
+        if (factionAbilityTargetPrice.shouldReset) {
             setInitialTargetCost(supsCost)
             toggleRefresh()
         }
-    }, [shouldReset])
+    }, [factionAbilityTargetPrice])
 
     const onContribute = useCallback(
         (amount: number) => async () => {
             try {
                 const resp = await send<boolean, FactionAbilityContributeRequest>(HubKey.FactionAbilityContribute, {
-                    factionAbilityID,
+                    factionAbilityID: id,
                     amount: new BigNumber(amount),
                 })
 
@@ -111,7 +122,27 @@ export const FactionAbilityItem = ({ factionAbility, pricing }: FactionAbilityIt
         [],
     )
 
-    const { label, colour, imageUrl } = factionAbility
+    // Listen on current faction ability price change
+    useEffect(() => {
+        if (
+            state !== WebSocket.OPEN ||
+            !subscribeAbilityNetMessage ||
+            !userID ||
+            userID === '' ||
+            !factionID ||
+            factionID === NullUUID
+        )
+            return
+
+        return subscribeAbilityNetMessage<FactionAbilityTargetPrice | undefined>(
+            NetMessageType.FactionAbilityTargetPriceTick,
+            id,
+            (payload) => {
+                if (!payload) return
+                setFactionAbilityTargetPrice(payload)
+            },
+        )
+    }, [id, state, subscribeAbilityNetMessage, userID, factionID, setFactionAbilityTargetPrice])
 
     return (
         <Box key={refresh}>

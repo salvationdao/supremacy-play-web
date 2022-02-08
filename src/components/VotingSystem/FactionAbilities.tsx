@@ -5,17 +5,14 @@ import { useEffect, useState } from 'react'
 import { FactionAbilityItem } from '..'
 import { NullUUID } from '../../constants'
 import { useAuth, useWebsocket } from '../../containers'
-import { getObjectFromArrayByKey } from '../../helpers'
 import HubKey from '../../keys'
-import { FactionAbility, FactionAbilityTargetPrice, NetMessageType } from '../../types'
+import { FactionAbility } from '../../types'
 
 export const FactionAbilities = () => {
-    const { state, subscribe, subscribeNetMessage } = useWebsocket()
-    const { user } = useAuth()
+    const { state, subscribe } = useWebsocket()
     const theme = useTheme<Theme>()
     const [factionAbilities, setFactionAbilities] = useState<FactionAbility[]>()
-    const [factionAbilityTargetPrice, setFactionAbilityTargetPrice] = useState<FactionAbilityTargetPrice[]>([])
-
+    const { user } = useAuth()
     const userID = user?.id
     const factionID = user?.factionID
 
@@ -29,34 +26,7 @@ export const FactionAbilities = () => {
         )
     }, [subscribe, state, userID, factionID])
 
-    // Listen on current faction ability price change
-    useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !subscribeNetMessage ||
-            !userID ||
-            userID === '' ||
-            !factionID ||
-            factionID === NullUUID
-        )
-            return
-
-        return subscribeNetMessage<FactionAbilityTargetPrice[] | undefined>(
-            NetMessageType.FactionAbilityTargetPriceTick,
-            (payload) => {
-                if (!payload) return
-                setFactionAbilityTargetPrice(payload)
-            },
-        )
-    }, [state, subscribeNetMessage, userID, factionID])
-
-    if (
-        !factionAbilities ||
-        factionAbilities.length <= 0 ||
-        !factionAbilityTargetPrice ||
-        factionAbilityTargetPrice.length <= 0
-    )
-        return null
+    if (!factionAbilities || factionAbilities.length <= 0) return null
 
     return (
         <Fade in={true}>
@@ -68,10 +38,7 @@ export const FactionAbilities = () => {
                 <Stack spacing={1.3}>
                     {factionAbilities.map((fa) => (
                         <Box key={fa.id}>
-                            <FactionAbilityItem
-                                factionAbility={fa}
-                                pricing={getObjectFromArrayByKey(factionAbilityTargetPrice, fa.id, 'id')}
-                            />
+                            <FactionAbilityItem factionAbility={fa} />
                         </Box>
                     ))}
                 </Stack>

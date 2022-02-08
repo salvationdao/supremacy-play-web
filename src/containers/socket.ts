@@ -3,7 +3,7 @@ import { createContainer } from 'unstated-next'
 import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from '../constants'
 import { useDebounce } from '../hooks/useDebounce'
 import HubKey from '../keys'
-import { NetMessageType } from '../types'
+import { FactionAbilityTargetPrice, NetMessageType } from '../types'
 import { parseNetMessage } from './netMessages'
 
 // websocket message struct
@@ -67,6 +67,11 @@ interface WebSocketProperties {
         disableLog?: boolean,
     ) => () => void
     subscribeNetMessage: <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => () => void
+    subscribeAbilityNetMessage: <T>(
+        netMessageType: NetMessageType,
+        abilityID: string,
+        callback: (payload: T) => void,
+    ) => () => void
     onReconnect: () => void
 }
 
@@ -214,6 +219,29 @@ const UseWebsocket = (): WebSocketProperties => {
         }
     }, [setOutgoing])
 
+    const abilitySubs = useRef<{ [key: string]: { [abilityID: string]: SubscribeCallback[] } }>({})
+    const subscribeAbilityNetMessage = useMemo(() => {
+        return <T>(netMessageType: NetMessageType, abilityID: string, callback: (payload: T) => void) => {
+            if (abilitySubs.current[netMessageType]) {
+                if (abilitySubs.current[netMessageType][abilityID]) {
+                    abilitySubs.current[netMessageType][abilityID].push(callback)
+                } else {
+                    abilitySubs.current[netMessageType][abilityID] = [callback]
+                }
+            } else {
+                abilitySubs.current[netMessageType] = { [abilityID]: [callback] }
+            }
+
+            console.log('triggered', abilityID)
+
+            return () => {
+                const i = abilitySubs.current[netMessageType][abilityID].indexOf(callback)
+                if (i === -1) return
+                abilitySubs.current[netMessageType][abilityID].splice(i, 1)
+            }
+        }
+    }, [])
+
     const subscribeNetMessage = useMemo(() => {
         return <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => {
             if (subs.current[netMessageType]) {
@@ -262,7 +290,21 @@ const UseWebsocket = (): WebSocketProperties => {
                 if (message.data instanceof ArrayBuffer) {
                     const parsedNetMessage = parseNetMessage(message.data)
                     if (parsedNetMessage === undefined) return
-                    if (subs.current[parsedNetMessage.type]) {
+                    // parse faction ability net message individually
+                    if (parsedNetMessage.type === NetMessageType.FactionAbilityTargetPriceTick) {
+                        for (const data of parsedNetMessage.payload as FactionAbilityTargetPrice[]) {
+                            if (
+                                abilitySubs.current[NetMessageType.FactionAbilityTargetPriceTick] &&
+                                abilitySubs.current[NetMessageType.FactionAbilityTargetPriceTick][data.id]
+                            ) {
+                                for (const callback of abilitySubs.current[
+                                    NetMessageType.FactionAbilityTargetPriceTick
+                                ][data.id]) {
+                                    callback(data)
+                                }
+                            }
+                        }
+                    } else if (subs.current[parsedNetMessage.type]) {
                         for (const callback of subs.current[parsedNetMessage.type]) {
                             callback(parsedNetMessage.payload)
                         }
@@ -339,7 +381,15 @@ const UseWebsocket = (): WebSocketProperties => {
         if (webSocket.current) sendOutgoingMessages()
     }, [webSocket, sendOutgoingMessages])
 
-    return { send: send.current, state, connect, subscribe, subscribeNetMessage, onReconnect: sendOutgoingMessages }
+    return {
+        send: send.current,
+        state,
+        connect,
+        subscribe,
+        subscribeNetMessage,
+        subscribeAbilityNetMessage,
+        onReconnect: sendOutgoingMessages,
+    }
 }
 
 const WebsocketContainer = createContainer(UseWebsocket)
