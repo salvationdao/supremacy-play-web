@@ -75,7 +75,7 @@ export const Notifications = () => {
             sx={{
                 position: 'absolute',
                 bottom: 138,
-                left: 10,
+                right: 10,
                 zIndex: 15,
                 overflow: 'hidden',
                 opacity: UI_OPACITY,
@@ -85,14 +85,14 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        // 100vh, 2 x 8px gap above, 150px gap bottom
-                        // Voting action: 480px total height, 65px above it
-                        maxHeight: `calc(${height}px - 8px - 150px - 8px - 480px - 65px)`,
+                        // 100vh, 2 x 5px gap above, 150px gap bottom
+                        // mini map: 200px total height, 65px above it
+                        maxHeight: `calc(${height}px - 5px - 150px - 5px - 200px - 65px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
-                        pl: 1,
+                        pr: 1,
                         py: 0.2,
-                        direction: 'rtl',
+                        direction: 'ltr',
                         scrollbarWidth: 'none',
                         '::-webkit-scrollbar': {
                             width: 4,

@@ -69,3 +69,12 @@ export const parseString = (val: string | null, defaultVal: number): number => {
 
     return parseInt(val)
 }
+
+export const getObjectFromArrayByKey = (array: any[], idValue: string, idName = 'id') => {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i][idName] === idValue) {
+            return array[i]
+        }
+    }
+    return undefined
+}

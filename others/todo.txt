@@ -1,4 +1,4 @@
-actions:
+Done:
 x text change blue effect for 0.3s
 x particle effect when votes come in and second cote
 x notification dot
@@ -27,8 +27,10 @@ x fullscreen with overlay
 x mech stat death
 x target map open too big
 x also show hp / shield in mini map and death skull
-
-
+x notifications last longer before disappear
+x battle ability dont go away, stay there but opaque
+x top message to be within the action box
+x relocation notifications to right corner
 
 
 Pending:
@@ -37,9 +39,13 @@ Pending:
 - kill notification
 - iframe dimension onresize
 
+- user won notification color of faction
+- video controls ui
+- live view count: by faction and not logged in
+- move game bar outside of stream
 
 
-future nice to have:
+Future nice to have:
 - hotkeys to buttons
 - map follows where the action is
 - improve notification styles (for the map select, reject counters etc.)

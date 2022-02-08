@@ -5,7 +5,7 @@ import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { SelectionIcon } from '..'
 import { useGame, useWarMachines } from '../../containers'
 import { useToggle } from '../../hooks'
-import { BattleAbility, Map } from '../../types'
+import { BattleAbility, FactionAbility, Map } from '../../types'
 
 export interface MapSelection {
     x: number
@@ -42,11 +42,13 @@ const MapWarMachines = () => {
 }
 
 export const InteractiveMap = ({
+    factionAbility,
     windowDimension,
     targeting,
     setSubmitted,
     confirmed,
 }: {
+    factionAbility?: FactionAbility
     windowDimension: { width: number; height: number }
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
@@ -110,10 +112,11 @@ export const InteractiveMap = ({
     }, [targeting, map])
 
     const selectionIcon = useMemo(() => {
-        if (targeting && setSubmitted && confirmed) {
+        if (targeting && factionAbility && setSubmitted && confirmed) {
             return (
                 <SelectionIcon
                     key={selection && `column-${selection.y}-row-${selection.x}`}
+                    factionAbility={factionAbility}
                     selection={selection}
                     setSelection={setSelection}
                     setSubmitted={setSubmitted}

@@ -10,7 +10,7 @@ export const NotificationItem = ({ duration, children }: { duration: number; chi
     }, [])
 
     return (
-        <Slide in={isShowing} direction="right">
+        <Slide in={isShowing} direction="left">
             <Box sx={{ filter: 'drop-shadow(0 3px 3px #00000050)' }}>{children}</Box>
         </Slide>
     )

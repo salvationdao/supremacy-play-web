@@ -1,4 +1,4 @@
-import { NetMessageType, NetMessageTick, NetMessageTickWarMachine } from '../types'
+import { NetMessageType, NetMessageTick, NetMessageTickWarMachine, FactionAbilityTargetPrice } from '../types'
 
 export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; payload: unknown } | undefined => {
     const dv = new DataView(buffer)
@@ -60,6 +60,24 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 .substring(1)
                 .split(',')
                 .map<number>((str) => parseInt(str) / 10000)
+            return { type, payload }
+        }
+        case NetMessageType.FactionAbilityTargetPriceTick: {
+            const enc = new TextDecoder('utf-8')
+            const arr = new Uint8Array(buffer)
+            const payload = enc
+                .decode(arr)
+                .substring(1)
+                .split('|')
+                .map<FactionAbilityTargetPrice>((str) => {
+                    const strArr = str.split('_')
+                    return {
+                        id: strArr[0],
+                        supsCost: strArr[1],
+                        currentSups: strArr[2],
+                        shouldReset: strArr[3] == '1',
+                    }
+                })
             return { type, payload }
         }
     }

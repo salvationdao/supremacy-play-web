@@ -36,24 +36,28 @@ export const LiveVotingChart = () => {
         let newPosY = parseString(localStorage.getItem('liveVotingPosY'), DefaultPositionY)
 
         // Make sure live voting chart is inside iframe when page is resized etc.
-        newPosX = newPosX > 0 ? Math.min(newPosX, width - curWidth - Padding) : width - curWidth - Padding
-        newPosY = Math.min(newPosY, height - curHeight - Padding)
+        newPosX =
+            newPosX > 0 ? Math.max(Padding, Math.min(newPosX, width - curWidth - Padding)) : width - curWidth - Padding
+        newPosY = Math.max(Padding, Math.min(newPosY, height - curHeight - Padding))
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
         localStorage.setItem('liveVotingPosX', newPosX.toString())
         localStorage.setItem('liveVotingPosY', newPosY.toString())
+
+        onResize()
     }, [width, height, curWidth])
 
-    const onResize = (e: SyntheticEvent<Element, Event>, data: ResizeCallbackData) => {
-        const { size } = data
-        if (curPosX + size.width <= width - Padding && size.width >= DefaultSizeX) {
+    const onResize = (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
+        const { size } = data || { size: { width: curWidth, height: curHeight } }
+        if (size.width >= DefaultSizeX) {
             setMaxLiveVotingDataLength(size.width / 5)
-            setCurWidth(size.width)
+            setCurWidth(Math.min(width - 2 * Padding, size.width))
         }
 
-        if (curPosY + size.height <= height - Padding && size.height <= MaxSizeY && size.height >= DefaultSizeY)
-            setCurHeight(size.height)
+        if (size.height <= MaxSizeY && size.height >= DefaultSizeY) {
+            setCurHeight(Math.min(height - 2 * Padding, size.height))
+        }
     }
 
     return (
@@ -62,9 +66,9 @@ export const LiveVotingChart = () => {
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                opacity: UI_OPACITY,
                 pointerEvents: 'none',
                 zIndex: 18,
+                opacity: UI_OPACITY,
                 filter: 'drop-shadow(0 3px 3px #00000050)',
                 ':hover': {
                     zIndex: 999,

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import React, { Dispatch } from 'react'
 
 interface UpdateThemeContextProps {
@@ -33,6 +34,22 @@ export interface BattleAbility {
     colour: string
     imageUrl: string
     cooldownDurationSecond: number
+}
+
+export interface FactionAbility {
+    id: string
+    label: string
+    colour: string
+    imageUrl: string
+    supsCost: string
+    currentSups: string
+}
+
+export interface FactionAbilityTargetPrice {
+    id: string
+    supsCost: string
+    currentSups: string
+    shouldReset: boolean
 }
 
 export interface Vector2i {
@@ -78,6 +95,7 @@ export enum NetMessageType {
     AbilityRightRatioTick,
     VotePriceTick,
     VotePriceForecastTick,
+    FactionAbilityTargetPriceTick,
 }
 
 export interface NetMessageTickWarMachine {
