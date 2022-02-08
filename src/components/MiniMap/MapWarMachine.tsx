@@ -67,7 +67,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
-                            boxShadow: `0 0 20px 9px ${primaryColor}80`,
+                            boxShadow: `0 0 20px 9px ${primaryColor}90`,
                             zIndex: -1,
                         }}
                     />

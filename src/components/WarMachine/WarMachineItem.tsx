@@ -36,7 +36,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
 
     return (
         <BoxSlanted clipSlantSize="20px" key={`WarMachineItem-${tokenID}`}>
-            <Stack direction="row" alignItems="center" sx={{ width: 225, opacity: isAlive ? 1 : 0.8 }}>
+            <Stack direction="row" alignItems="center" sx={{ width: 225, opacity: isAlive ? 1 : 0.5 }}>
                 <ClipThing
                     clipSize="8px"
                     clipSlantSize="20px"
