@@ -1,6 +1,6 @@
 {
     "name": "supremacy-stream-site",
-    "version": "0.1.0",
+    "version": "0.0.3-rc.0",
     "private": true,
     "dependencies": {
         "@emotion/react": "^11.4.1",
@@ -9,7 +9,8 @@
         "@mui/lab": "^5.0.0-alpha.53",
         "@mui/material": "^5.0.1",
         "@mui/styles": "^5.1.0",
-        "@ninjasoftware/passport-gamebar": "^0.6.13",
+        "@sentry/react": "^6.17.6",
+        "@ninjasoftware/passport-gamebar": "^0.7.0",
         "bignumber.js": "^9.0.2",
         "core-js": "^3.5.0",
         "jsonwebtoken": "^8.5.1",

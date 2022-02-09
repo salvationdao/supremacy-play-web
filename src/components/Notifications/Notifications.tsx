@@ -9,8 +9,14 @@ import { useEffect } from 'react'
 import HubKey from '../../keys'
 import { useArray } from '../../hooks'
 
+// KILL: when a war machine is destroyed
+// LOCATION_SELECTING: user is choosing a target location on map
+// BATTLE_ABILITY: when a faction has initiated a battle ability
+// FACTION_ABILITY: when a faction has initiated a faction ability
+// WARMACHINE_ABILITY: when a faction has initiated a war machine ability
+// TEXT: generic notification with no styles, just text
 interface NotificationResponse {
-    type: 'KILL' | 'ACTION' | 'TEXT'
+    type: 'KILL' | 'LOCATION_SELECTING' | 'BATTLE_ABILITY' | 'WARMACHINE_ABILITY' | 'TEXT'
     data: string
 }
 
@@ -75,7 +81,7 @@ export const Notifications = () => {
             sx={{
                 position: 'absolute',
                 bottom: 138,
-                left: 10,
+                right: 10,
                 zIndex: 15,
                 overflow: 'hidden',
                 opacity: UI_OPACITY,
@@ -85,14 +91,14 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        // 100vh, 2 x 8px gap above, 150px gap bottom
-                        // Voting action: 480px total height, 65px above it
-                        maxHeight: `calc(${height}px - 8px - 150px - 8px - 480px - 65px)`,
+                        // 100vh, 2 x 5px gap above, 150px gap bottom
+                        // mini map: 200px total height, 65px above it
+                        maxHeight: `calc(${height}px - 5px - 150px - 5px - 200px - 65px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
-                        pl: 1,
+                        pr: 1,
                         py: 0.2,
-                        direction: 'rtl',
+                        direction: 'ltr',
                         scrollbarWidth: 'none',
                         '::-webkit-scrollbar': {
                             width: 4,

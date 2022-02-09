@@ -1,30 +1,74 @@
 import { Box, Stack } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { SvgMapWarMachine, SvgMapSkull } from '../../assets'
+import { NullUUID } from '../../constants'
+import { useAuth, useWebsocket } from '../../containers'
 import { colors } from '../../theme/theme'
-import { Map, WarMachineState } from '../../types'
+import { Map, Vector2i, WarMachineState } from '../../types'
 
 export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
-    const { tokenID, faction, name, maxHealth, maxShield, health, shield, position, rotation } = warMachine
-    const newRotation = rotation + 90
+    const { user } = useAuth()
+    const userID = user?.id
+    const factionID = user?.factionID
+    const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
 
-    if (!position) return null
+    const [health, setHealth] = useState<number>(0)
+    const [shield, setShield] = useState<number>(0)
+    const [position, sePosition] = useState<Vector2i>({ x: 0, y: 0 })
+    const [rotation, setRotation] = useState<number>(0)
+    const prevRotation = useRef(0)
+
+    const {
+        participantID,
+        faction,
+        name,
+        maxHealth,
+        maxShield,
+        health: initialHealth,
+        shield: initialShield,
+        position: initialPosition,
+        rotation: initialRotation,
+    } = warMachine
 
     const isAlive = health > 0
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
 
-    const [rot, setRot] = useState(newRotation)
-    const prevRotation = useRef(newRotation)
-
     useEffect(() => {
-        const r = closestAngle(prevRotation.current, newRotation)
-        setRot(r)
-        prevRotation.current = r
-    }, [newRotation])
+        setHealth(initialHealth)
+        setShield(initialShield)
+        sePosition(initialPosition)
+        setRotation(initialRotation)
+    }, [])
+
+    // Listen on current war machine changes
+    useEffect(() => {
+        if (
+            state !== WebSocket.OPEN ||
+            !subscribeWarMachineStatNetMessage ||
+            !userID ||
+            userID === '' ||
+            !factionID ||
+            factionID === NullUUID
+        )
+            return
+
+        return subscribeWarMachineStatNetMessage<WarMachineState | undefined>(participantID, (payload) => {
+            if (!payload) return
+            setHealth(payload.health)
+            setShield(payload.shield)
+            sePosition(payload.position)
+
+            const newRotation = closestAngle(prevRotation.current, payload.rotation + 90)
+            prevRotation.current = rotation
+            setRotation(newRotation)
+        })
+    }, [participantID, state, subscribeWarMachineStatNetMessage, userID, factionID])
+
+    if (!position) return null
 
     return (
         <Stack
-            key={`warMachine-${tokenID}`}
+            key={`warMachine-${participantID}`}
             alignItems="center"
             justifyContent="center"
             sx={{
@@ -40,7 +84,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
             <Box sx={{ position: 'relative' }}>
                 <Box
                     sx={{
-                        transform: `rotate3d(0, 0, 1, ${rot}deg)`,
+                        transform: `rotate3d(0, 0, 1, ${rotation}deg)`,
                         transition: 'transform 0.2s linear',
                     }}
                 >
@@ -54,7 +98,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                                 position: 'absolute',
                                 top: -6,
                                 left: '50%',
-                                transform: `translate(-50%, 0) rotate3d(0, 0, 1, -${rot}deg)`,
+                                transform: `translate(-50%, 0) rotate3d(0, 0, 1, -${rotation}deg)`,
                             }}
                         />
                     )}
@@ -67,7 +111,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
-                            boxShadow: `0 0 20px 9px ${primaryColor}80`,
+                            boxShadow: `0 0 20px 9px ${primaryColor}90`,
                             zIndex: -1,
                         }}
                     />

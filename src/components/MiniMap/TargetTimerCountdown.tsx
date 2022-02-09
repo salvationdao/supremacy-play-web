@@ -1,17 +1,17 @@
 import { Stack, Typography } from '@mui/material'
 import moment from 'moment'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { BattleAbility } from '../../types'
+import { FactionAbility } from '../../types'
 import { useTheme } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
 import { useInterval } from '../../hooks'
 
 export const TargetTimerCountdown = ({
-    battleAbility,
+    factionAbility,
     setTimeReachZero,
     endTime,
 }: {
-    battleAbility: BattleAbility
+    factionAbility: FactionAbility
     setTimeReachZero: Dispatch<SetStateAction<boolean>>
     endTime: Date
 }) => {
@@ -19,7 +19,7 @@ export const TargetTimerCountdown = ({
     const [timeRemain, setTimeRemain] = useState<number>(999)
     const [delay, setDelay] = useState<number | null>(null)
 
-    const { label, colour } = battleAbility
+    const { label, colour } = factionAbility
 
     useEffect(() => {
         if (endTime) {

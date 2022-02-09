@@ -3,7 +3,7 @@ import { createContainer } from 'unstated-next'
 import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from '../constants'
 import { useDebounce } from '../hooks/useDebounce'
 import HubKey from '../keys'
-import { NetMessageType } from '../types'
+import { FactionAbilityTargetPrice, NetMessageTick, NetMessageTickWarMachine, NetMessageType } from '../types'
 import { parseNetMessage } from './netMessages'
 
 // websocket message struct
@@ -67,6 +67,8 @@ interface WebSocketProperties {
         disableLog?: boolean,
     ) => () => void
     subscribeNetMessage: <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => () => void
+    subscribeAbilityNetMessage: <T>(abilityID: string, callback: (payload: T) => void) => () => void
+    subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
     onReconnect: () => void
 }
 
@@ -214,6 +216,42 @@ const UseWebsocket = (): WebSocketProperties => {
         }
     }, [setOutgoing])
 
+    // subscription function for Faction Ability only
+    const abilitySubs = useRef<{ [abilityID: string]: SubscribeCallback[] }>({})
+    const subscribeAbilityNetMessage = useMemo(() => {
+        return <T>(abilityID: string, callback: (payload: T) => void) => {
+            if (abilitySubs.current[abilityID]) {
+                abilitySubs.current[abilityID].push(callback)
+            } else {
+                abilitySubs.current[abilityID] = [callback]
+            }
+
+            return () => {
+                const i = abilitySubs.current[abilityID].indexOf(callback)
+                if (i === -1) return
+                abilitySubs.current[abilityID].splice(i, 1)
+            }
+        }
+    }, [])
+
+    // subscription function for War Machine Stat only
+    const warMachineStatSubs = useRef<{ [participantID: number]: SubscribeCallback[] }>({})
+    const subscribeWarMachineStatNetMessage = useMemo(() => {
+        return <T>(participantID: number, callback: (payload: T) => void) => {
+            if (warMachineStatSubs.current[participantID]) {
+                warMachineStatSubs.current[participantID].push(callback)
+            } else {
+                warMachineStatSubs.current[participantID] = [callback]
+            }
+
+            return () => {
+                const i = warMachineStatSubs.current[participantID].indexOf(callback)
+                if (i === -1) return
+                warMachineStatSubs.current[participantID].splice(i, 1)
+            }
+        }
+    }, [])
+
     const subscribeNetMessage = useMemo(() => {
         return <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => {
             if (subs.current[netMessageType]) {
@@ -262,7 +300,27 @@ const UseWebsocket = (): WebSocketProperties => {
                 if (message.data instanceof ArrayBuffer) {
                     const parsedNetMessage = parseNetMessage(message.data)
                     if (parsedNetMessage === undefined) return
-                    if (subs.current[parsedNetMessage.type]) {
+                    // parse faction ability net message individually
+                    if (parsedNetMessage.type === NetMessageType.FactionAbilityTargetPriceTick) {
+                        for (const data of parsedNetMessage.payload as FactionAbilityTargetPrice[]) {
+                            if (abilitySubs.current[data.id]) {
+                                for (const callback of abilitySubs.current[data.id]) {
+                                    callback(data)
+                                }
+                            }
+                        }
+                    } else if (parsedNetMessage.type === NetMessageType.Tick) {
+                        const parsed = parsedNetMessage.payload as NetMessageTick
+                        for (const data of parsed.warmachines) {
+                            if (data.participantID) {
+                                if (warMachineStatSubs.current[data.participantID]) {
+                                    for (const callback of warMachineStatSubs.current[data.participantID]) {
+                                        callback(data)
+                                    }
+                                }
+                            }
+                        }
+                    } else if (subs.current[parsedNetMessage.type]) {
                         for (const callback of subs.current[parsedNetMessage.type]) {
                             callback(parsedNetMessage.payload)
                         }
@@ -339,7 +397,16 @@ const UseWebsocket = (): WebSocketProperties => {
         if (webSocket.current) sendOutgoingMessages()
     }, [webSocket, sendOutgoingMessages])
 
-    return { send: send.current, state, connect, subscribe, subscribeNetMessage, onReconnect: sendOutgoingMessages }
+    return {
+        send: send.current,
+        state,
+        connect,
+        subscribe,
+        subscribeNetMessage,
+        subscribeAbilityNetMessage,
+        subscribeWarMachineStatNetMessage,
+        onReconnect: sendOutgoingMessages,
+    }
 }
 
 const WebsocketContainer = createContainer(UseWebsocket)

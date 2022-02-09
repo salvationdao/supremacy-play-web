@@ -35,6 +35,22 @@ export interface BattleAbility {
     cooldownDurationSecond: number
 }
 
+export interface FactionAbility {
+    id: string
+    label: string
+    colour: string
+    imageUrl: string
+    supsCost: string
+    currentSups: string
+}
+
+export interface FactionAbilityTargetPrice {
+    id: string
+    supsCost: string
+    currentSups: string
+    shouldReset: boolean
+}
+
 export interface Vector2i {
     x: number
     y: number
@@ -78,6 +94,7 @@ export enum NetMessageType {
     AbilityRightRatioTick,
     VotePriceTick,
     VotePriceForecastTick,
+    FactionAbilityTargetPriceTick,
 }
 
 export interface NetMessageTickWarMachine {

@@ -28,7 +28,7 @@ export const MiniMap = () => {
     useEffect(() => {
         if (enlarged) {
             // Height: 76 is just vertical spacing, and 125 is the height of the bottom mech stats
-            setDimensions({ width: Math.min(width - 23, 900), height: Math.min(height - 76 - 125, 650) })
+            setDimensions({ width: Math.min(width - 23, 1000), height: Math.min(height - 76 - 125, 700) })
         } else {
             setDimensions({ width: 230, height: 200 })
         }
@@ -63,7 +63,7 @@ export const MiniMap = () => {
         <Box
             sx={{
                 position: 'absolute',
-                top: 65,
+                top: 10,
                 right: 10,
                 zIndex: 32,
                 filter: 'drop-shadow(0 3px 3px #00000050)',
@@ -110,7 +110,7 @@ export const MiniMap = () => {
 
                             {isTargetting && (
                                 <TargetTimerCountdown
-                                    battleAbility={winner.factionAbility}
+                                    factionAbility={winner.factionAbility}
                                     setTimeReachZero={setTimeReachZero}
                                     endTime={winner.endTime}
                                 />
@@ -118,6 +118,7 @@ export const MiniMap = () => {
 
                             {isTargetting ? (
                                 <InteractiveMap
+                                    factionAbility={winner.factionAbility}
                                     windowDimension={dimensions}
                                     targeting
                                     setSubmitted={setSubmitted}

@@ -1,13 +1,13 @@
-import { Box, Fade, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { useGame } from '../../containers'
 import { useInterval } from '../../hooks'
+import { BattleAbility } from '../../types'
 
-export const TopMessage = () => {
+export const BattleAbilityCountdown = ({ battleAbility }: { battleAbility: BattleAbility }) => {
     const { votingState } = useGame()
-    const [isShowing, setIsShowing] = useState<boolean>(false)
-    const [sentence, setSentence] = useState<string>('')
+    const [sentence, setSentence] = useState<string>('Loading...')
     const [timeRemain, setTimeRemain] = useState<number>(0)
     const [delay, setDelay] = useState<number | null>(null)
 
@@ -38,15 +38,10 @@ export const TopMessage = () => {
                 if (endTime) {
                     const d = moment.duration(moment(endTime).diff(moment()))
                     setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
-                    setIsShowing(true)
                     setDelay(1000)
                     return
                 }
                 setDelay(null)
-                break
-
-            default:
-                setIsShowing(false)
                 break
         }
         doSentence()
@@ -55,49 +50,27 @@ export const TopMessage = () => {
     const doSentence = () => {
         switch (votingState?.phase) {
             case 'VOTE_ABILITY_RIGHT':
-                setSentence(`The voting phase ends in ${timeRemain} sec...`)
+                setSentence(`FIGHT FOR YOUR SYNDICATE (${timeRemain}s)`)
                 break
 
             case 'NEXT_VOTE_WIN':
-                setSentence(`Next vote wins!`)
+                setSentence(`FIGHT FOR YOUR SYNDICATE (NEXT VOTE WINS)`)
                 break
 
             case 'VOTE_COOLDOWN':
-                setSentence(`The next voting phase starts in ${timeRemain} sec...`)
+                setSentence(`UPCOMING ACTION (${timeRemain}s)`)
                 break
         }
     }
 
     return (
-        <Box
+        <Typography
             sx={{
-                position: 'absolute',
-                top: 125,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 15,
+                fontWeight: 'fontWeightBold',
+                color: battleAbility?.colour,
             }}
         >
-            <Fade in={isShowing}>
-                <Box>
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            textAlign: 'center',
-                            fontWeight: 'fontWeightBold',
-                            fontFamily: 'Nostromo Regular Black',
-                            color: '#FFFFFF',
-                            userSelect: 'none',
-                            msUserSelect: 'none',
-                            MozUserSelect: 'none',
-                            WebkitUserSelect: 'none',
-                            filter: 'drop-shadow(0 3px 3px #00000020)',
-                        }}
-                    >
-                        {sentence}
-                    </Typography>
-                </Box>
-            </Fade>
-        </Box>
+            {sentence}
+        </Typography>
     )
 }

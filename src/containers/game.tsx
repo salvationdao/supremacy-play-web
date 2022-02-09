@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
-import { GAME_SERVER_HOSTNAME } from '../constants'
 import { createContainer } from 'unstated-next'
 import { NullUUID } from '../constants'
 import HubKey from '../keys'
-import { VotingState, BattleAbility, Map, WarMachineState, NetMessageType } from '../types'
+import { VotingState, Map, WarMachineState, NetMessageType, FactionAbility } from '../types'
 import { useAuth } from './auth'
 import { useWebsocket } from './socket'
-import { httpProtocol } from '.'
 import BigNumber from 'bignumber.js'
 
 interface VtotingStateResponse {
@@ -20,7 +18,7 @@ export interface GameSettingsResponse {
 }
 
 interface WinnerAnnouncementResponse {
-    factionAbility: BattleAbility
+    factionAbility: FactionAbility
     endTime: Date
 }
 
@@ -38,7 +36,6 @@ export const GameContainer = createContainer(() => {
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [factionVotePrice, setFactionVotePrice] = useState<BigNumber>(new BigNumber('0'))
     const [prevFactionVotePrice, setPrevFactionVotePrice] = useState<BigNumber>(new BigNumber('0'))
-    const [battleAbility, setBattleAbility] = useState<BattleAbility>()
     const [votingState, setVotingState] = useState<VtotingStateResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [queuingWarMachines, setQueuingWarMachines] = useState<WarMachineState[]>([])
@@ -126,13 +123,6 @@ export const GameContainer = createContainer(() => {
         )
     }, [state, subscribe, userID, factionID])
 
-    // Subscribe to battle ability updates
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
-            return
-        return subscribe<BattleAbility>(HubKey.SubBattleAbility, (payload) => setBattleAbility(payload), null)
-    }, [state, subscribe, userID, factionID])
-
     // Subscribe on winner announcements
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
@@ -159,11 +149,10 @@ export const GameContainer = createContainer(() => {
     }, [state, subscribe, userID, factionID])
 
     return {
-        factionsColor,
         votingState,
+        factionsColor,
         factionVotePrice,
         prevFactionVotePrice,
-        battleAbility,
         winner,
         setWinner,
         map,
