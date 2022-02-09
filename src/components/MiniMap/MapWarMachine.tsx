@@ -18,27 +18,10 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
     const [rotation, setRotation] = useState<number>(0)
     const prevRotation = useRef(0)
 
-    const {
-        participantID,
-        faction,
-        name,
-        maxHealth,
-        maxShield,
-        health: initialHealth,
-        shield: initialShield,
-        position: initialPosition,
-        rotation: initialRotation,
-    } = warMachine
+    const { participantID, faction, name, maxHealth, maxShield } = warMachine
 
     const isAlive = health > 0
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
-
-    useEffect(() => {
-        setHealth(initialHealth)
-        setShield(initialShield)
-        sePosition(initialPosition)
-        setRotation(initialRotation)
-    }, [])
 
     // Listen on current war machine changes
     useEffect(() => {
@@ -54,15 +37,13 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
 
         return subscribeWarMachineStatNetMessage<WarMachineState | undefined>(participantID, (payload) => {
             if (!payload) return
-            if (payload.health) setHealth(payload.health)
-            if (payload.shield) setShield(payload.shield)
-            if (payload.position) sePosition(payload.position)
+            setHealth(payload.health)
+            setShield(payload.shield)
+            sePosition(payload.position)
 
-            if (payload.rotation) {
-                const newRotation = closestAngle(prevRotation.current, payload.rotation + 90)
-                prevRotation.current = rotation
-                setRotation(newRotation)
-            }
+            const newRotation = closestAngle(prevRotation.current, payload.rotation + 90)
+            prevRotation.current = rotation
+            setRotation(newRotation)
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage, userID, factionID])
 
