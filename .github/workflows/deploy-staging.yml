@@ -58,18 +58,22 @@ jobs:
           echo "REACT_APP_SENTRY_CURRENT_RELEASE_NAME=supremacy-supremacy_stream_site@$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
       - name: Build web
-        run: CI=false npm run build
+        run: CI=false BUILD_PATH='deploy/web' npm run build
+
+      - name: Add other files
+        run: |  
+          cp -r ./config ./deploy/.
 
       # list build folder recursively
       - name: List build dir
-        run: find build
+        run: find deploy
 
       - name: save artifact
         uses: actions/upload-artifact@v2
         if: ${{ !env.ACT }} # if running in local test environment
         with:
           name: supremacy-stream-site_${{env.TAG_NAME}}.tar.gz
-          path: ./build/
+          path: ./deploy/
 
       - name: Setup SSH
         run: |
@@ -81,8 +85,12 @@ jobs:
 
       - name: Rsync to server
         if: ${{ !env.ACT }} # if running in local test environment
-        run: rsync -av build/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}}
+        run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}}
 
       - name: Bring new version online
         if: ${{ !env.ACT }} # if running in local test environment
         run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}} /usr/share/supremacy/supremacy-stream-site_online'
+
+      - name: Reload nginx
+        if: ${{ !env.ACT }} # if running in local test environment
+        run: ssh staging-watch.supremacy.game 'nginx -t && nginx -s reload'
