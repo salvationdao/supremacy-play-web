@@ -86,4 +86,3 @@ jobs:
       - name: Bring new version online
         if: ${{ !env.ACT }} # if running in local test environment
         run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}} /usr/share/ninja_syndicate/supremacy-stream-site_online'
-
