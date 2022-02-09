@@ -93,4 +93,4 @@ jobs:
 
       - name: Reload nginx
         if: ${{ !env.ACT }} # if running in local test environment
-        run: ssh staging-watch.supremacy.game 'nginx -t && nginx -s reload'
+        run: ssh staging-watch.supremacy.game 'sudo nginx -t && sudo nginx -s reload'
