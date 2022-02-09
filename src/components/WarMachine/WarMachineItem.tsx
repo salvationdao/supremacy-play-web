@@ -1,9 +1,11 @@
-import React from 'react'
-import { Box, BoxProps, CardMedia, Stack, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Box, BoxProps, Stack, Typography } from '@mui/material'
 import { WarMachineState } from '../../types'
 import { ClipThing } from '..'
 import { colors } from '../../theme/theme'
 import { SvgSkull } from '../../assets'
+import { useAuth, useWebsocket } from '../../containers'
+import { NullUUID } from '../../constants'
 
 interface BoxSlantedProps extends BoxProps {
     clipSize?: string
@@ -25,17 +27,43 @@ const BoxSlanted: React.FC<BoxSlantedProps> = ({ children, clipSize = '0px', cli
 }
 
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
-    const { tokenID, faction, name, imageUrl, maxHealth, maxShield, health, shield } = warMachine
+    const { user } = useAuth()
+    const userID = user?.id
+    const factionID = user?.factionID
+    const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
+
+    const [health, setHealth] = useState<number>(0)
+    const [shield, setShield] = useState<number>(0)
+
+    const { participantID, faction, name, imageUrl, maxHealth, maxShield } = warMachine
     const {
-        label,
         logoUrl: factionLogoUrl,
         theme: { primary, background },
     } = faction
 
+    // Listen on current war machine changes
+    useEffect(() => {
+        if (
+            state !== WebSocket.OPEN ||
+            !subscribeWarMachineStatNetMessage ||
+            !userID ||
+            userID === '' ||
+            !factionID ||
+            factionID === NullUUID
+        )
+            return
+
+        return subscribeWarMachineStatNetMessage<WarMachineState | undefined>(participantID, (payload) => {
+            if (!payload) return
+            if (payload.health) setHealth(payload.health)
+            if (payload.shield) setShield(payload.shield)
+        })
+    }, [participantID, state, subscribeWarMachineStatNetMessage, userID, factionID])
+
     const isAlive = health > 0
 
     return (
-        <BoxSlanted clipSlantSize="20px" key={`WarMachineItem-${tokenID}`}>
+        <BoxSlanted clipSlantSize="20px" key={`WarMachineItem-${participantID}`}>
             <Stack direction="row" alignItems="center" sx={{ width: 225, opacity: isAlive ? 1 : 0.5 }}>
                 <ClipThing
                     clipSize="8px"

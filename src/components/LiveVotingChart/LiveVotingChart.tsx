@@ -12,7 +12,7 @@ import { colors } from '../../theme/theme'
 import { LiveGraph } from './LiveGraph'
 
 const Padding = 10
-const DefaultPositionY = 282
+const DefaultPositionY = 222
 const DefaultSizeX = 270
 const DefaultSizeY = 100
 const MaxSizeY = 100

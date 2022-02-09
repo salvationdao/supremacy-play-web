@@ -3,16 +3,16 @@ import { colors } from '../../theme/theme'
 import { WarMachineItem } from './WarMachineItem'
 import { Theme } from '@mui/material/styles'
 import { useTheme } from '@mui/styles'
-import { useDimension, useWarMachines } from '../../containers'
+import { useDimension, useGame } from '../../containers'
 
 export const WarMachineStats = () => {
     const theme = useTheme<Theme>()
-    const { warMachinesSub } = useWarMachines()
+    const { warMachines } = useGame()
     const {
         iframeDimensions: { width },
     } = useDimension()
 
-    if (!warMachinesSub || warMachinesSub.length <= 0) return null
+    if (!warMachines || warMachines.length <= 0) return null
 
     return (
         <Stack
@@ -54,9 +54,9 @@ export const WarMachineStats = () => {
                     >
                         <Box sx={{ direction: 'ltr' }}>
                             <Stack spacing={5} direction="row" alignItems="center">
-                                {warMachinesSub.map((m) => (
-                                    <Box key={m.tokenID}>
-                                        <WarMachineItem warMachine={m} />
+                                {warMachines.map((mw) => (
+                                    <Box key={mw.participantID}>
+                                        <WarMachineItem warMachine={mw} />
                                     </Box>
                                 ))}
                             </Stack>

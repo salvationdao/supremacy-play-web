@@ -3,7 +3,7 @@ import { createContainer } from 'unstated-next'
 import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from '../constants'
 import { useDebounce } from '../hooks/useDebounce'
 import HubKey from '../keys'
-import { FactionAbilityTargetPrice, NetMessageType } from '../types'
+import { FactionAbilityTargetPrice, NetMessageTick, NetMessageTickWarMachine, NetMessageType } from '../types'
 import { parseNetMessage } from './netMessages'
 
 // websocket message struct
@@ -67,11 +67,8 @@ interface WebSocketProperties {
         disableLog?: boolean,
     ) => () => void
     subscribeNetMessage: <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => () => void
-    subscribeAbilityNetMessage: <T>(
-        netMessageType: NetMessageType,
-        abilityID: string,
-        callback: (payload: T) => void,
-    ) => () => void
+    subscribeAbilityNetMessage: <T>(abilityID: string, callback: (payload: T) => void) => () => void
+    subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
     onReconnect: () => void
 }
 
@@ -219,25 +216,38 @@ const UseWebsocket = (): WebSocketProperties => {
         }
     }, [setOutgoing])
 
-    const abilitySubs = useRef<{ [key: string]: { [abilityID: string]: SubscribeCallback[] } }>({})
+    // subscription function for Faction Ability only
+    const abilitySubs = useRef<{ [abilityID: string]: SubscribeCallback[] }>({})
     const subscribeAbilityNetMessage = useMemo(() => {
-        return <T>(netMessageType: NetMessageType, abilityID: string, callback: (payload: T) => void) => {
-            if (abilitySubs.current[netMessageType]) {
-                if (abilitySubs.current[netMessageType][abilityID]) {
-                    abilitySubs.current[netMessageType][abilityID].push(callback)
-                } else {
-                    abilitySubs.current[netMessageType][abilityID] = [callback]
-                }
+        return <T>(abilityID: string, callback: (payload: T) => void) => {
+            if (abilitySubs.current[abilityID]) {
+                abilitySubs.current[abilityID].push(callback)
             } else {
-                abilitySubs.current[netMessageType] = { [abilityID]: [callback] }
+                abilitySubs.current[abilityID] = [callback]
             }
 
-            console.log('triggered', abilityID)
+            return () => {
+                const i = abilitySubs.current[abilityID].indexOf(callback)
+                if (i === -1) return
+                abilitySubs.current[abilityID].splice(i, 1)
+            }
+        }
+    }, [])
+
+    // subscription function for War Machine Stat only
+    const warMachineStatSubs = useRef<{ [participantID: number]: SubscribeCallback[] }>({})
+    const subscribeWarMachineStatNetMessage = useMemo(() => {
+        return <T>(participantID: number, callback: (payload: T) => void) => {
+            if (warMachineStatSubs.current[participantID]) {
+                warMachineStatSubs.current[participantID].push(callback)
+            } else {
+                warMachineStatSubs.current[participantID] = [callback]
+            }
 
             return () => {
-                const i = abilitySubs.current[netMessageType][abilityID].indexOf(callback)
+                const i = warMachineStatSubs.current[participantID].indexOf(callback)
                 if (i === -1) return
-                abilitySubs.current[netMessageType][abilityID].splice(i, 1)
+                warMachineStatSubs.current[participantID].splice(i, 1)
             }
         }
     }, [])
@@ -293,14 +303,20 @@ const UseWebsocket = (): WebSocketProperties => {
                     // parse faction ability net message individually
                     if (parsedNetMessage.type === NetMessageType.FactionAbilityTargetPriceTick) {
                         for (const data of parsedNetMessage.payload as FactionAbilityTargetPrice[]) {
-                            if (
-                                abilitySubs.current[NetMessageType.FactionAbilityTargetPriceTick] &&
-                                abilitySubs.current[NetMessageType.FactionAbilityTargetPriceTick][data.id]
-                            ) {
-                                for (const callback of abilitySubs.current[
-                                    NetMessageType.FactionAbilityTargetPriceTick
-                                ][data.id]) {
+                            if (abilitySubs.current[data.id]) {
+                                for (const callback of abilitySubs.current[data.id]) {
                                     callback(data)
+                                }
+                            }
+                        }
+                    } else if (parsedNetMessage.type === NetMessageType.Tick) {
+                        const parsed = parsedNetMessage.payload as NetMessageTick
+                        for (const data of parsed.warmachines) {
+                            if (data.participantID) {
+                                if (warMachineStatSubs.current[data.participantID]) {
+                                    for (const callback of warMachineStatSubs.current[data.participantID]) {
+                                        callback(data)
+                                    }
                                 }
                             }
                         }
@@ -388,6 +404,7 @@ const UseWebsocket = (): WebSocketProperties => {
         subscribe,
         subscribeNetMessage,
         subscribeAbilityNetMessage,
+        subscribeWarMachineStatNetMessage,
         onReconnect: sendOutgoingMessages,
     }
 }
