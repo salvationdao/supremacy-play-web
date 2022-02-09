@@ -8,7 +8,7 @@ import { useAuth, useWebsocket } from '../../containers'
 import HubKey from '../../keys'
 import { zoomEffect } from '../../theme/keyframes'
 import { colors } from '../../theme/theme'
-import { FactionAbility, FactionAbilityTargetPrice, NetMessageType } from '../../types'
+import { FactionAbility, FactionAbilityTargetPrice } from '../../types'
 import { useToggle } from '../../hooks'
 import { NullUUID } from '../../constants'
 
@@ -73,26 +73,44 @@ interface FactionAbilityItemProps {
 }
 
 export const FactionAbilityItem = ({ factionAbility }: FactionAbilityItemProps) => {
-    const { label, colour, imageUrl, id } = factionAbility
     const { user } = useAuth()
     const userID = user?.id
     const factionID = user?.factionID
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
     const theme = useTheme<Theme>()
 
-    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
+    const { label, colour, imageUrl, id } = factionAbility
     const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber('0'))
-    const [currentSups, setCurrentCost] = useState(new BigNumber('0'))
+    const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
+    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
     const [isVoting, setIsVoting] = useState(false)
 
     const [factionAbilityTargetPrice, setFactionAbilityTargetPrice] = useState<FactionAbilityTargetPrice>()
+
+    // Listen on current faction ability price change
+    useEffect(() => {
+        if (
+            state !== WebSocket.OPEN ||
+            !subscribeAbilityNetMessage ||
+            !userID ||
+            userID === '' ||
+            !factionID ||
+            factionID === NullUUID
+        )
+            return
+
+        return subscribeAbilityNetMessage<FactionAbilityTargetPrice | undefined>(id, (payload) => {
+            if (!payload) return
+            setFactionAbilityTargetPrice(payload)
+        })
+    }, [id, state, subscribeAbilityNetMessage, userID, factionID])
 
     useEffect(() => {
         if (!factionAbilityTargetPrice) return
         const currentSups = new BigNumber(factionAbilityTargetPrice.currentSups).dividedBy('1000000000000000000')
         const supsCost = new BigNumber(factionAbilityTargetPrice.supsCost).dividedBy('1000000000000000000')
-        setCurrentCost(currentSups)
+        setCurrentSups(currentSups)
         setSupsCost(supsCost)
         setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
 
@@ -121,28 +139,6 @@ export const FactionAbilityItem = ({ factionAbility }: FactionAbilityItemProps) 
         },
         [],
     )
-
-    // Listen on current faction ability price change
-    useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !subscribeAbilityNetMessage ||
-            !userID ||
-            userID === '' ||
-            !factionID ||
-            factionID === NullUUID
-        )
-            return
-
-        return subscribeAbilityNetMessage<FactionAbilityTargetPrice | undefined>(
-            NetMessageType.FactionAbilityTargetPriceTick,
-            id,
-            (payload) => {
-                if (!payload) return
-                setFactionAbilityTargetPrice(payload)
-            },
-        )
-    }, [id, state, subscribeAbilityNetMessage, userID, factionID, setFactionAbilityTargetPrice])
 
     return (
         <Box key={refresh}>

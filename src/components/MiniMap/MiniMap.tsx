@@ -63,7 +63,7 @@ export const MiniMap = () => {
         <Box
             sx={{
                 position: 'absolute',
-                top: 70,
+                top: 10,
                 right: 10,
                 zIndex: 32,
                 filter: 'drop-shadow(0 3px 3px #00000050)',

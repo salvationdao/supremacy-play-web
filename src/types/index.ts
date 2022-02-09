@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import React, { Dispatch } from 'react'
 
 interface UpdateThemeContextProps {

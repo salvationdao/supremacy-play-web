@@ -9,8 +9,14 @@ import { useEffect } from 'react'
 import HubKey from '../../keys'
 import { useArray } from '../../hooks'
 
+// KILL: when a war machine is destroyed
+// LOCATION_SELECTING: user is choosing a target location on map
+// BATTLE_ABILITY: when a faction has initiated a battle ability
+// FACTION_ABILITY: when a faction has initiated a faction ability
+// WARMACHINE_ABILITY: when a faction has initiated a war machine ability
+// TEXT: generic notification with no styles, just text
 interface NotificationResponse {
-    type: 'KILL' | 'ACTION' | 'TEXT'
+    type: 'KILL' | 'LOCATION_SELECTING' | 'BATTLE_ABILITY' | 'WARMACHINE_ABILITY' | 'TEXT'
     data: string
 }
 

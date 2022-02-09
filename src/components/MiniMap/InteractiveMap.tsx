@@ -2,10 +2,10 @@ import { Box, Stack } from '@mui/material'
 import { styled } from '@mui/system'
 import { Dispatch, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
-import { SelectionIcon } from '..'
-import { useGame, useWarMachines } from '../../containers'
+import { MapWarMachine, SelectionIcon } from '..'
+import { useGame } from '../../containers'
 import { useToggle } from '../../hooks'
-import { BattleAbility, FactionAbility, Map } from '../../types'
+import { FactionAbility, Map } from '../../types'
 
 export interface MapSelection {
     x: number
@@ -36,9 +36,19 @@ const GridCell = styled('td', {
 }))
 
 const MapWarMachines = () => {
-    // This reduces amount of re-renders if put into parent all together
-    const { mapWarMachines } = useWarMachines()
-    return <>{mapWarMachines}</>
+    const { warMachines, map } = useGame()
+
+    if (!map || !warMachines || warMachines.length <= 0) return null
+
+    return (
+        <>
+            {warMachines.map((mw) => (
+                <div key={mw.participantID}>
+                    <MapWarMachine warMachine={mw} map={map} />
+                </div>
+            ))}
+        </>
+    )
 }
 
 export const InteractiveMap = ({

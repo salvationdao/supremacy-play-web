@@ -31,18 +31,16 @@ x notifications last longer before disappear
 x battle ability dont go away, stay there but opaque
 x top message to be within the action box
 x relocation notifications to right corner
+x move game bar outside of stream
 
 
 Pending:
-- relocation notifications to right corner
-- video player controls
 - kill notification
 - iframe dimension onresize
 
 - user won notification color of faction
 - video controls ui
 - live view count: by faction and not logged in
-- move game bar outside of stream
 
 
 Future nice to have:

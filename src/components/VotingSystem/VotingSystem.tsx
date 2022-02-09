@@ -21,7 +21,7 @@ export const VotingSystem = () => {
         <Stack
             sx={{
                 position: 'absolute',
-                top: 70,
+                top: 10,
                 left: 10,
                 zIndex: 14,
                 overflow: 'hidden',
@@ -42,8 +42,8 @@ export const VotingSystem = () => {
                             <Box
                                 sx={{
                                     flex: 1,
-                                    // 100vh, 150px gap bottom, 70px gap above, 56px for the title
-                                    maxHeight: `calc(${height}px - 150px - 70px - 56px)`,
+                                    // 100vh, 150px gap bottom, 10px gap above, 56px for the title
+                                    maxHeight: `calc(${height}px - 150px - 10px - 56px)`,
                                     overflowY: 'auto',
                                     overflowX: 'hidden',
                                     pl: 1,
