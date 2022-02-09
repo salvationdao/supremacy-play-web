@@ -16,8 +16,8 @@ env:
   REACT_APP_GAME_SERVER_HOST: staging-api.supremacy.game
   REACT_APP_PASSPORT_WEB: https://staging-passport.xsyn.io
   REACT_APP_PASSPORT_SERVER_HOST: staging-passport.xsyn.io
-  REACT_APP_STREAM_SITE_SYD: https://staging-watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601
-  REACT_APP_STREAM_SITE: https://staging-watch-local-am.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513
+  REACT_APP_STREAM_SITE: https://staging-watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601
+  REACT_APP_STREAM_SITE_OFFICE: https://staging-watch-local-am.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
