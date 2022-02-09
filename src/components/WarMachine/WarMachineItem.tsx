@@ -35,25 +35,11 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
     const [health, setHealth] = useState<number>(0)
     const [shield, setShield] = useState<number>(0)
 
-    const {
-        participantID,
-        faction,
-        name,
-        imageUrl,
-        maxHealth,
-        maxShield,
-        health: initialHealth,
-        shield: initialShield,
-    } = warMachine
+    const { participantID, faction, name, imageUrl, maxHealth, maxShield } = warMachine
     const {
         logoUrl: factionLogoUrl,
         theme: { primary, background },
     } = faction
-
-    useEffect(() => {
-        setHealth(initialHealth)
-        setShield(initialShield)
-    }, [])
 
     // Listen on current war machine changes
     useEffect(() => {
@@ -69,8 +55,8 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
 
         return subscribeWarMachineStatNetMessage<WarMachineState | undefined>(participantID, (payload) => {
             if (!payload) return
-            if (payload.health) setHealth(payload.health)
-            if (payload.shield) setShield(payload.shield)
+            setHealth(payload.health)
+            setShield(payload.shield)
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage, userID, factionID])
 

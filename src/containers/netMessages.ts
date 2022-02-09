@@ -30,16 +30,14 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                     warmachineUpdate.rotation = dv.getInt32(offset, false)
                     offset += 4
                 }
+
                 // Health
-                if (syncByte == 1 || syncByte == 11 || syncByte == 101 || syncByte == 111) {
-                    warmachineUpdate.health = dv.getInt32(offset, false)
-                    offset += 4
-                }
+                warmachineUpdate.health = dv.getInt32(offset, false)
+                offset += 4
+
                 // Shield
-                if (syncByte == 10 || syncByte == 11 || syncByte == 110 || syncByte == 111) {
-                    warmachineUpdate.shield = dv.getInt32(offset, false)
-                    offset += 4
-                }
+                warmachineUpdate.shield = dv.getInt32(offset, false)
+                offset += 4
                 payload.warmachines.push(warmachineUpdate)
             }
             return { type, payload }
