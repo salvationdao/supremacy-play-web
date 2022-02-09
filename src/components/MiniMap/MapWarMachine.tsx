@@ -18,10 +18,27 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
     const [rotation, setRotation] = useState<number>(0)
     const prevRotation = useRef(0)
 
-    const { participantID, faction, name, maxHealth, maxShield } = warMachine
+    const {
+        participantID,
+        faction,
+        name,
+        maxHealth,
+        maxShield,
+        health: initialHealth,
+        shield: initialShield,
+        position: initialPosition,
+        rotation: initialRotation,
+    } = warMachine
 
     const isAlive = health > 0
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
+
+    useEffect(() => {
+        setHealth(initialHealth)
+        setShield(initialShield)
+        sePosition(initialPosition)
+        setRotation(initialRotation)
+    }, [])
 
     // Listen on current war machine changes
     useEffect(() => {

@@ -22,7 +22,7 @@ const ReUsedText = ({ caption, price, prevPrice }: { caption: string; price: num
                     variant="body1"
                     sx={{ lineHeight: 1, animation: `${zoomEffect(1.05)} 300ms ease-out` }}
                 >
-                    {price.toFixed(6)}
+                    {price.toFixed(10)}
                 </Typography>
 
                 {price > prevPrice ? (
