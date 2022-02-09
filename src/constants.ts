@@ -7,3 +7,17 @@ export const UI_OPACITY = 0.93
 export const NOTIFICATION_TIME = 20000
 export const NOTIFICATION_LINGER = 400
 export const NullUUID = '00000000-0000-0000-0000-000000000000'
+export const SENTRY_CONFIG = {
+    DSN: process.env.REACT_APP_SENTRY_DSN_FRONTEND,
+    RELEASE: process.env.REACT_APP_SENTRY_CURRENT_RELEASE_NAME,
+    ENVIRONMENT: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+    get SAMPLERATE(): number {
+        const rate = Number(process.env.REACT_APP_SENTRY_SAMPLERATE)
+
+        // Check rate is a number between 0 and 1
+        if (isNaN(rate) || rate > 1 || rate < 0) {
+            return 0.01
+        }
+        return rate
+    },
+}

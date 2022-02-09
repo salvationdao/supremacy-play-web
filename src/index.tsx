@@ -16,9 +16,27 @@ import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
-import { PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, STREAM_SITE } from './constants'
+import { PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, STREAM_SITE, SENTRY_CONFIG } from './constants'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
+import * as Sentry from '@sentry/react'
+
+if (SENTRY_CONFIG) {
+    // import { Integrations } from '@sentry/tracing'
+    // import { createBrowserHistory } from 'history'
+    // const history = createBrowserHistory()
+    Sentry.init({
+        dsn: SENTRY_CONFIG.DSN,
+        release: SENTRY_CONFIG.RELEASE,
+        environment: SENTRY_CONFIG.ENVIRONMENT,
+        // integrations: [
+        // new Integrations.BrowserTracing({
+        // routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+        // }),
+        // ],
+        tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
+    })
+}
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
