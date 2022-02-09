@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, BoxProps, Stack, Typography } from '@mui/material'
-import { WarMachineState } from '../../types'
+import { NetMessageTickWarMachine, WarMachineState } from '../../types'
 import { ClipThing } from '..'
 import { colors } from '../../theme/theme'
 import { SvgSkull } from '../../assets'
@@ -27,33 +27,19 @@ const BoxSlanted: React.FC<BoxSlantedProps> = ({ children, clipSize = '0px', cli
 }
 
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
+    const { participantID, faction, name, imageUrl, maxHealth, maxShield } = warMachine
     const { user } = useAuth()
     const userID = user?.id
     const factionID = user?.factionID
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
 
-    const [health, setHealth] = useState<number>(0)
-    const [shield, setShield] = useState<number>(0)
+    const [health, setHealth] = useState<number>(warMachine.health)
+    const [shield, setShield] = useState<number>(warMachine.shield)
 
-    const {
-        participantID,
-        faction,
-        name,
-        imageUrl,
-        maxHealth,
-        maxShield,
-        health: initialHealth,
-        shield: initialShield,
-    } = warMachine
     const {
         logoUrl: factionLogoUrl,
         theme: { primary, background },
     } = faction
-
-    useEffect(() => {
-        setHealth(initialHealth)
-        setShield(initialShield)
-    }, [])
 
     // Listen on current war machine changes
     useEffect(() => {
@@ -67,10 +53,9 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
         )
             return
 
-        return subscribeWarMachineStatNetMessage<WarMachineState | undefined>(participantID, (payload) => {
-            if (!payload) return
-            setHealth(payload.health)
-            setShield(payload.shield)
+        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
+            if (payload?.health !== undefined) setHealth(payload.health)
+            if (payload?.shield !== undefined) setShield(payload.shield)
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage, userID, factionID])
 

@@ -4,41 +4,23 @@ import { SvgMapWarMachine, SvgMapSkull } from '../../assets'
 import { NullUUID } from '../../constants'
 import { useAuth, useWebsocket } from '../../containers'
 import { colors } from '../../theme/theme'
-import { Map, Vector2i, WarMachineState } from '../../types'
+import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from '../../types'
 
 export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
+    const { participantID, faction, maxHealth, maxShield } = warMachine
     const { user } = useAuth()
     const userID = user?.id
     const factionID = user?.factionID
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
 
-    const [health, setHealth] = useState<number>(0)
-    const [shield, setShield] = useState<number>(0)
-    const [position, sePosition] = useState<Vector2i>({ x: 0, y: 0 })
-    const [rotation, setRotation] = useState<number>(0)
+    const [health, setHealth] = useState<number>(warMachine.health)
+    const [shield, setShield] = useState<number>(warMachine.shield)
+    const [position, sePosition] = useState<Vector2i>(warMachine.position)
+    const [rotation, setRotation] = useState<number>(warMachine.rotation)
     const prevRotation = useRef(0)
-
-    const {
-        participantID,
-        faction,
-        name,
-        maxHealth,
-        maxShield,
-        health: initialHealth,
-        shield: initialShield,
-        position: initialPosition,
-        rotation: initialRotation,
-    } = warMachine
 
     const isAlive = health > 0
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
-
-    useEffect(() => {
-        setHealth(initialHealth)
-        setShield(initialShield)
-        sePosition(initialPosition)
-        setRotation(initialRotation)
-    }, [])
 
     // Listen on current war machine changes
     useEffect(() => {
@@ -52,15 +34,15 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
         )
             return
 
-        return subscribeWarMachineStatNetMessage<WarMachineState | undefined>(participantID, (payload) => {
-            if (!payload) return
-            setHealth(payload.health)
-            setShield(payload.shield)
-            sePosition(payload.position)
-
-            const newRotation = closestAngle(prevRotation.current, payload.rotation + 90)
-            prevRotation.current = rotation
-            setRotation(newRotation)
+        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
+            if (payload?.health !== undefined) setHealth(payload.health)
+            if (payload?.shield !== undefined) setShield(payload.shield)
+            if (payload?.position !== undefined) sePosition(payload.position)
+            if (payload?.rotation !== undefined) {
+                const newRotation = closestAngle(prevRotation.current, payload.rotation + 90)
+                prevRotation.current = rotation
+                setRotation(newRotation)
+            }
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage, userID, factionID])
 
