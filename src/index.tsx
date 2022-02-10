@@ -16,7 +16,7 @@ import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
-import { PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, STREAM_SITE, SENTRY_CONFIG } from './constants'
+import { PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, STREAM_SITE, SENTRY_CONFIG, GAMEBAR_HEIGHT } from './constants'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
 import * as Sentry from '@sentry/react'
@@ -51,7 +51,7 @@ const AppInner = () => {
             {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <FullScreen handle={handle}>
                     <Stack sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
-                        <Box sx={{ position: 'relative', width: '100%', height: '61px' }}>
+                        <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT }}>
                             <GameBar
                                 opacity={0.94}
                                 barPosition="top"

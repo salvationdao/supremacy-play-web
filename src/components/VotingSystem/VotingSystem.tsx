@@ -2,18 +2,21 @@ import { Box, Divider, Slide, Stack } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { useTheme } from '@mui/styles'
 import { ClipThing, BattleAbility, Prices } from '..'
-import { UI_OPACITY } from '../../constants'
-import { useDimension } from '../../containers'
+import { GAMEBAR_HEIGHT, UI_OPACITY } from '../../constants'
+import { useDimension, useGame } from '../../containers'
 import { colors } from '../../theme/theme'
 import { useAuth } from '../../containers'
 import { FactionAbilities } from './FactionAbilities'
 
 export const VotingSystem = () => {
     const { user } = useAuth()
+    const { votingState } = useGame()
     const theme = useTheme<Theme>()
     const {
         iframeDimensions: { height },
     } = useDimension()
+
+    const isBattleStarted = votingState && votingState.phase !== 'HOLD' && votingState.phase !== 'MECH_WAIT_INTRO'
 
     if (!user || !user.faction) return null
 
@@ -27,10 +30,10 @@ export const VotingSystem = () => {
                 overflow: 'hidden',
                 opacity: UI_OPACITY,
                 filter: 'drop-shadow(0 3px 3px #00000050)',
-                minWidth: 457,
+                minWidth: 280,
             }}
         >
-            <Slide in={true} direction="right">
+            <Slide in={isBattleStarted} direction="right">
                 <Box>
                     <ClipThing border={{ isFancy: true, borderThickness: '3px' }} clipSize="10px">
                         <Box sx={{ backgroundColor: theme.factionTheme.background, pl: 0.9, pr: 2, pt: 1.8, pb: 2 }}>
@@ -42,11 +45,11 @@ export const VotingSystem = () => {
                             <Box
                                 sx={{
                                     flex: 1,
-                                    // 100vh, 150px gap bottom, 10px gap above, 56px for the title
-                                    maxHeight: `calc(${height}px - 150px - 10px - 56px)`,
+                                    // 100vh, 150px gap bottom, 10px gap above, 56px for the title, gamebar height
+                                    maxHeight: `calc(${height}px - 150px - 10px - 56px - ${GAMEBAR_HEIGHT}px)`,
                                     overflowY: 'auto',
                                     overflowX: 'hidden',
-                                    pl: 1,
+                                    pl: 1.5,
                                     py: 0.2,
                                     direction: 'rtl',
                                     scrollbarWidth: 'none',

@@ -7,10 +7,12 @@ import { useDimension, useGame } from '../../containers'
 
 export const WarMachineStats = () => {
     const theme = useTheme<Theme>()
-    const { warMachines } = useGame()
+    const { votingState, warMachines } = useGame()
     const {
         iframeDimensions: { width },
     } = useDimension()
+
+    const isBattleStarted = votingState && votingState.phase !== 'HOLD' && votingState.phase !== 'MECH_WAIT_INTRO'
 
     if (!warMachines || warMachines.length <= 0) return null
 
@@ -26,7 +28,7 @@ export const WarMachineStats = () => {
                 filter: 'drop-shadow(0 3px 3px #00000020)',
             }}
         >
-            <Slide in={true} direction="up">
+            <Slide in={isBattleStarted} direction="up">
                 <Box>
                     <Box
                         sx={{
@@ -55,7 +57,7 @@ export const WarMachineStats = () => {
                         <Box sx={{ direction: 'ltr' }}>
                             <Stack spacing={5} direction="row" alignItems="center">
                                 {warMachines.map((mw) => (
-                                    <Box key={mw.participantID}>
+                                    <Box key={`${mw.participantID} - ${mw.tokenID}`}>
                                         <WarMachineItem warMachine={mw} />
                                     </Box>
                                 ))}

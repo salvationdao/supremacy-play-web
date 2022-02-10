@@ -76,7 +76,7 @@ export const theme = createTheme({
         },
     },
     typography: {
-        htmlFontSize: 17,
+        htmlFontSize: 19,
         h1: {
             fontFamily: ['Nostromo Regular Black', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
         },

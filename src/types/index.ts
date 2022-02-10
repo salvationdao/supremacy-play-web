@@ -25,7 +25,13 @@ export interface Faction {
     theme: FactionThemeColor
 }
 
-export type VotingState = 'HOLD' | 'VOTE_COOLDOWN' | 'VOTE_ABILITY_RIGHT' | 'NEXT_VOTE_WIN' | 'LOCATION_SELECT'
+export type VotingState =
+    | 'HOLD'
+    | 'VOTE_COOLDOWN'
+    | 'VOTE_ABILITY_RIGHT'
+    | 'NEXT_VOTE_WIN'
+    | 'LOCATION_SELECT'
+    | 'MECH_WAIT_INTRO'
 
 export interface BattleAbility {
     id: string
