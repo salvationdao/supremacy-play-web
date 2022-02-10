@@ -75,13 +75,6 @@ jobs:
           name: supremacy-stream-site_${{env.TAG_NAME}}.tar.gz
           path: ./deploy/
 
-      - name: Install SentryCLI
-        run: |
-          sudo npm install -g @sentry/cli --unsafe-perm
-          sentry-cli --auth-token ${{ secrets.SENTRY_AUTH_TOKEN }}
-          sentry-cli releases ninja-software syndicate-passport-web new ${{ env.REACT_APP_SENTRY_CURRENT_RELEASE_NAME }}
-          sentry-cli releases ninja-software syndicate-passport-web files ${{ env.REACT_APP_SENTRY_CURRENT_RELEASE_NAME }} upload-sourcemaps --ext js --ext ts --ext map ./build/
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -101,6 +94,3 @@ jobs:
       - name: Reload nginx
         if: ${{ !env.ACT }} # if running in local test environment
         run: ssh staging-watch.supremacy.game 'sudo nginx -t && sudo nginx -s reload'
-
-      - name: Set sentry to released
-        run: sentry-cli releases ninja-software syndicate-passport-web finalize ${{ env.REACT_APP_SENTRY_CURRENT_RELEASE_NAME }}
