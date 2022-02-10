@@ -21,3 +21,4 @@ export const SENTRY_CONFIG = {
         return rate
     },
 }
+export const GAMEBAR_HEIGHT = 61

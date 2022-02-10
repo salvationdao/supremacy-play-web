@@ -3,6 +3,7 @@ import Skull from '!react-svg-loader!./svg/Skull.svg'
 import MapSkull from '!react-svg-loader!./svg/MapSkull.svg'
 import SupToken from '!react-svg-loader!./svg/SupToken.svg'
 import Resize from '!react-svg-loader!./svg/Resize.svg'
+import Applause from '!react-svg-loader!./svg/Applause.svg'
 import Drag from '!react-svg-loader!./svg/Drag.svg'
 import CampaignSharpIcon from '@mui/icons-material/CampaignSharp'
 import FlagSharpIcon from '@mui/icons-material/FlagSharp'
@@ -27,6 +28,7 @@ export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, ...props
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                pb: 0.3,
                 '& > svg': {
                     width: size || '20px',
                     height: size || '20px',
@@ -120,5 +122,11 @@ export const SvgPriceUpArrow: React.VoidFunctionComponent<SvgWrapperProps> = (pr
 export const SvgPriceDownArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ArrowDropDownIcon />
+    </SvgWrapper>
+)
+
+export const SvgApplause: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Applause />
     </SvgWrapper>
 )

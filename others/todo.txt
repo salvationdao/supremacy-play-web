@@ -37,6 +37,7 @@ x move game bar outside of stream
 Pending:
 - kill notification
 - iframe dimension onresize
+- make overlay components moveable
 
 - user won notification color of faction
 - video controls ui
