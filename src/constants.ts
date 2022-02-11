@@ -22,3 +22,4 @@ export const SENTRY_CONFIG = {
     },
 }
 export const GAMEBAR_HEIGHT = 61
+export const CONTROLS_HEIGHT = 30

@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material'
 import { NotificationItem, TextAlert } from '..'
-import { GAMEBAR_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from '../../constants'
+import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from '../../constants'
 import { colors } from '../../theme/theme'
 import { useTheme } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
@@ -91,9 +91,9 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        // 100vh, 2 x 5px gap above, 150px gap bottom
+                        // 100vh, 2 x 5px gap above, 150px gap bottom, gamebar height, controls height
                         // mini map: 230px total height
-                        maxHeight: `calc(${height}px - 5px - 5px - 150px - 230px - ${GAMEBAR_HEIGHT}px)`,
+                        maxHeight: `calc(${height}px - 5px - 5px - 150px - 230px - ${GAMEBAR_HEIGHT}px - ${CONTROLS_HEIGHT}px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
                         pr: 1,
