@@ -32,16 +32,16 @@ x battle ability dont go away, stay there but opaque
 x top message to be within the action box
 x relocation notifications to right corner
 x move game bar outside of stream
+x live view count: by faction and not logged in
+x user won notification color of faction
 
 
 Pending:
+- mech abilities
 - kill notification
+- video controls ui
 - iframe dimension onresize
 - make overlay components moveable
-
-- user won notification color of faction
-- video controls ui
-- live view count: by faction and not logged in
 
 
 Future nice to have:
