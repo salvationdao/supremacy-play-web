@@ -6,7 +6,7 @@ import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, UI_OPACITY } from '../../constants'
 import { useDimension, useGame } from '../../containers'
 import { colors } from '../../theme/theme'
 import { useAuth } from '../../containers'
-import { FactionAbilities } from './FactionAbilities'
+import { FactionAbilities } from './gameAbilities'
 
 export const VotingSystem = () => {
     const { user } = useAuth()

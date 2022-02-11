@@ -2,7 +2,7 @@ import {
     NetMessageType,
     NetMessageTick,
     NetMessageTickWarMachine,
-    FactionAbilityTargetPrice,
+    GameAbilityTargetPrice,
     ViewerLiveCount,
 } from '../types'
 
@@ -70,14 +70,14 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 .map<number>((str) => parseInt(str) / 10000)
             return { type, payload }
         }
-        case NetMessageType.FactionAbilityTargetPriceTick: {
+        case NetMessageType.GameAbilityTargetPriceTick: {
             const enc = new TextDecoder('utf-8')
             const arr = new Uint8Array(buffer)
             const payload = enc
                 .decode(arr)
                 .substring(1)
                 .split('|')
-                .map<FactionAbilityTargetPrice>((str) => {
+                .map<GameAbilityTargetPrice>((str) => {
                     const strArr = str.split('_')
                     return {
                         id: strArr[0],

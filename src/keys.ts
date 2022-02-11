@@ -20,8 +20,9 @@ enum HubKey {
     SubFactionAbilities = 'FACTION:ABILITIES:UPDATED',
     SubmitVoteAbilityRight = 'VOTE:ABILITY:RIGHT',
     SubmitAbilityLocationSelect = 'ABILITY:LOCATION:SELECT',
-    FactionAbilityContribute = 'FACTION:ABILITY:CONTRIBUTE',
+    GameAbilityContribute = 'GAME:ABILITY:CONTRIBUTE',
     SubWarMachineDestroyed = 'WAR:MACHINE:DESTROYED:UPDATED',
+    SubWarMachineAbilitiesUpdated = 'WAR:MACHINE:ABILITIES:UPDATED',
 }
 
 export default HubKey
