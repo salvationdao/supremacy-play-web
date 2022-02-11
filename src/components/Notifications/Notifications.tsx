@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material'
 import { NotificationItem, TextAlert } from '..'
-import { GAMEBAR_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from '../../constants'
+import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from '../../constants'
 import { colors } from '../../theme/theme'
 import { useTheme } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
@@ -16,7 +16,7 @@ import { useArray } from '../../hooks'
 // WARMACHINE_ABILITY: when a faction has initiated a war machine ability
 // TEXT: generic notification with no styles, just text
 interface NotificationResponse {
-    type: 'KILL' | 'LOCATION_SELECTING' | 'BATTLE_ABILITY' | 'WARMACHINE_ABILITY' | 'TEXT'
+    type: 'TEXT' | 'LOCATION_SELECT' | 'BATTLE_ABILITY' | 'FACTION_ABILITY' | 'WAR_MACHINE_ABILITY'
     data: string
 }
 
@@ -91,9 +91,9 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        // 100vh, 2 x 5px gap above, 150px gap bottom
-                        // mini map: 200px total height
-                        maxHeight: `calc(${height}px - 5px - 5px - 150px - 200px - ${GAMEBAR_HEIGHT}px)`,
+                        // 100vh, 2 x 5px gap above, 150px gap bottom, gamebar height, controls height
+                        // mini map: 230px total height
+                        maxHeight: `calc(${height}px - 5px - 5px - 150px - 230px - ${GAMEBAR_HEIGHT}px - ${CONTROLS_HEIGHT}px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
                         pr: 1,

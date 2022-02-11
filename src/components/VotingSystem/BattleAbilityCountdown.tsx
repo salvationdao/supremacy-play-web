@@ -1,11 +1,14 @@
 import { Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { Theme } from '@mui/material/styles'
+import { useTheme } from '@mui/styles'
 import moment from 'moment'
 import { useGame } from '../../containers'
 import { useInterval } from '../../hooks'
 import { BattleAbility } from '../../types'
 
 export const BattleAbilityCountdown = ({ battleAbility }: { battleAbility: BattleAbility }) => {
+    const theme = useTheme<Theme>()
     const { votingState } = useGame()
     const [sentence, setSentence] = useState<string>('Loading...')
     const [timeRemain, setTimeRemain] = useState<number>(0)
@@ -63,14 +66,5 @@ export const BattleAbilityCountdown = ({ battleAbility }: { battleAbility: Battl
         }
     }
 
-    return (
-        <Typography
-            sx={{
-                fontWeight: 'fontWeightBold',
-                color: battleAbility?.colour,
-            }}
-        >
-            {sentence}
-        </Typography>
-    )
+    return <Typography sx={{ color: theme.factionTheme.primary, fontWeight: 'fontWeightBold' }}>{sentence}</Typography>
 }

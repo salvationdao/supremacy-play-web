@@ -1,22 +1,47 @@
 import { Box, Fade, Stack, Theme, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import BigNumber from 'bignumber.js'
 import { SyntheticEvent, useEffect, useState } from 'react'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { Resizable, ResizeCallbackData } from 'react-resizable'
-import { SvgDrag, SvgResizeArrow } from '../../assets'
-import { UI_OPACITY } from '../../constants'
-import { useDimension } from '../../containers'
+import { SvgDrag, SvgResizeArrow, SvgSupToken } from '../../assets'
+import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, UI_OPACITY } from '../../constants'
+import { useDimension, useWebsocket } from '../../containers'
 import { parseString } from '../../helpers'
 import { pulseEffect } from '../../theme/keyframes'
 import { colors } from '../../theme/theme'
+import { NetMessageType } from '../../types'
 import { LiveGraph } from './LiveGraph'
 
 const Padding = 10
 const DefaultPositionY = 222
-const DefaultSizeX = 270
-const DefaultSizeY = 100
-const MaxSizeY = 100
-const DefaultMaxLiveVotingDataLength = 60
+const DefaultSizeX = 280
+const DefaultSizeY = 115
+const MaxSizeY = 115
+const DefaultMaxLiveVotingDataLength = 100
+
+const SpoilOfWarAmount = () => {
+    const { state, subscribeNetMessage } = useWebsocket()
+    const [spoilOfWarAmount, setSpoilOfWarAmount] = useState<string>('0')
+
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
+        return subscribeNetMessage<string | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {
+            if (!payload) return
+            setSpoilOfWarAmount(new BigNumber(payload).dividedBy('1000000000000000000').toFixed(6))
+        })
+    }, [state, subscribeNetMessage])
+
+    return (
+        <>
+            <Typography variant="body1" sx={{}}>
+                SPOILS OF WAR:&nbsp;
+            </Typography>
+            <SvgSupToken size="14px" fill={colors.yellow} />
+            <Typography variant="body1">{spoilOfWarAmount}</Typography>
+        </>
+    )
+}
 
 export const LiveVotingChart = () => {
     const theme = useTheme<Theme>()
@@ -38,7 +63,7 @@ export const LiveVotingChart = () => {
         // Make sure live voting chart is inside iframe when page is resized etc.
         newPosX =
             newPosX > 0 ? Math.max(Padding, Math.min(newPosX, width - curWidth - Padding)) : width - curWidth - Padding
-        newPosY = Math.max(Padding, Math.min(newPosY, height - curHeight - Padding))
+        newPosY = Math.max(Padding, Math.min(newPosY, height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT - curHeight - Padding))
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
@@ -90,7 +115,7 @@ export const LiveVotingChart = () => {
                 }}
                 bounds={{
                     top: Padding,
-                    bottom: height - curHeight - Padding,
+                    bottom: height - curHeight - Padding - GAMEBAR_HEIGHT - CONTROLS_HEIGHT,
                     left: Padding,
                     right: width - curWidth - Padding,
                 }}
@@ -106,7 +131,7 @@ export const LiveVotingChart = () => {
                                     <Box
                                         sx={{
                                             position: 'absolute',
-                                            bottom: 5,
+                                            bottom: 9.1,
                                             right: 9,
                                             cursor: 'ew-resize',
                                             opacity: 0.4,
@@ -132,7 +157,7 @@ export const LiveVotingChart = () => {
                                         borderRadius: 0.5,
                                     }}
                                 >
-                                    <Box sx={{ flex: 1, px: 1, pt: 1, pb: 0.6, width: '100%' }}>
+                                    <Box sx={{ flex: 1, px: 1, pt: 1, pb: 0.9, width: '100%' }}>
                                         <Box
                                             key={maxLiveVotingDataLength}
                                             sx={{
@@ -180,11 +205,17 @@ export const LiveVotingChart = () => {
                                         direction="row"
                                         alignItems="center"
                                         justifyContent="flex-end"
-                                        sx={{ px: 1, pb: 0.3 }}
+                                        sx={{ px: 1.3, pb: 0.7 }}
                                     >
-                                        <Typography variant="caption" sx={{ mr: 'auto' }}>
-                                            SUPS SPENT
-                                        </Typography>
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            sx={{ mr: 'auto' }}
+                                        >
+                                            <SpoilOfWarAmount />
+                                        </Stack>
+
                                         <Box
                                             className="handle"
                                             sx={{ cursor: 'move', mr: '20px', opacity: 0.4, ':hover': { opacity: 1 } }}
