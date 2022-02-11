@@ -16,7 +16,7 @@ export const VotingSystem = () => {
         iframeDimensions: { height },
     } = useDimension()
 
-    const isBattleStarted = votingState && votingState.phase !== 'HOLD' && votingState.phase !== 'MECH_WAIT_INTRO'
+    const isBattleStarted = votingState && votingState.phase !== 'HOLD' && votingState.phase !== 'WAIT_MECH_INTRO'
 
     if (!user || !user.faction) return null
 
@@ -49,7 +49,7 @@ export const VotingSystem = () => {
                                     maxHeight: `calc(${height}px - 150px - 10px - 56px - ${GAMEBAR_HEIGHT}px)`,
                                     overflowY: 'auto',
                                     overflowX: 'hidden',
-                                    pl: 1.5,
+                                    pl: 1.1,
                                     py: 0.2,
                                     direction: 'rtl',
                                     scrollbarWidth: 'none',

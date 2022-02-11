@@ -10,7 +10,7 @@ import {
     useDimension,
 } from './containers'
 import { Box, CssBaseline, Stack, ThemeProvider } from '@mui/material'
-import { MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
+import { LiveCounts, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
 import { useEffect, useState } from 'react'
 import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
@@ -73,6 +73,7 @@ const AppInner = () => {
                                 <VotingSystem />
                                 <MiniMap />
                                 <Notifications />
+                                <LiveCounts />
                                 <LiveVotingChart />
                                 <WarMachineStats />
                             </Box>

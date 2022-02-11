@@ -23,9 +23,9 @@ const ReUsedText = ({ caption, price, prevPrice }: { caption: string; price: Big
                 </Typography>
 
                 {price.isGreaterThan(prevPrice) ? (
-                    <SvgPriceUpArrow size="16px" fill={'#6fff4b'} />
+                    <SvgPriceUpArrow size="16px" fill={'#FF4A4A'} />
                 ) : (
-                    <SvgPriceDownArrow size="16px" fill={'#FF4A4A'} />
+                    <SvgPriceDownArrow size="16px" fill={'#6fff4b'} />
                 )}
             </Stack>
         </Stack>

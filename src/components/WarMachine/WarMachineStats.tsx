@@ -12,8 +12,6 @@ export const WarMachineStats = () => {
         iframeDimensions: { width },
     } = useDimension()
 
-    const isBattleStarted = votingState && votingState.phase !== 'HOLD' && votingState.phase !== 'MECH_WAIT_INTRO'
-
     if (!warMachines || warMachines.length <= 0) return null
 
     return (
@@ -28,7 +26,7 @@ export const WarMachineStats = () => {
                 filter: 'drop-shadow(0 3px 3px #00000020)',
             }}
         >
-            <Slide in={isBattleStarted} direction="up">
+            <Slide in={true} direction="up">
                 <Box>
                     <Box
                         sx={{

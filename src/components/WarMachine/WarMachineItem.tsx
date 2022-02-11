@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Box, BoxProps, Stack, Typography } from '@mui/material'
-import { NetMessageTickWarMachine, WarMachineState } from '../../types'
+import { NetMessageTickWarMachine, WarMachineDestroyedRecord, WarMachineState } from '../../types'
 import { ClipThing } from '..'
 import { colors } from '../../theme/theme'
 import { SvgSkull } from '../../assets'
 import { useAuth, useWebsocket } from '../../containers'
-import { NullUUID } from '../../constants'
+import { NullUUID, PASSPORT_WEB } from '../../constants'
+import HubKey from '../../keys'
 
 interface BoxSlantedProps extends BoxProps {
     clipSize?: string
@@ -28,36 +29,41 @@ const BoxSlanted: React.FC<BoxSlantedProps> = ({ children, clipSize = '0px', cli
 
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
     const { participantID, faction, name, imageUrl, maxHealth, maxShield } = warMachine
-    const { user } = useAuth()
-    const userID = user?.id
-    const factionID = user?.factionID
-    const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
+    const { state, subscribe, subscribeWarMachineStatNetMessage } = useWebsocket()
+    const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
 
     const {
-        logoUrl: factionLogoUrl,
+        logoBlobID: logoBlobID,
         theme: { primary, background },
     } = faction
 
     // Listen on current war machine changes
     useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !subscribeWarMachineStatNetMessage ||
-            !userID ||
-            userID === '' ||
-            !factionID ||
-            factionID === NullUUID
-        )
-            return
+        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
 
         return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
         })
-    }, [participantID, state, subscribeWarMachineStatNetMessage, userID, factionID])
+    }, [participantID, state, subscribeWarMachineStatNetMessage])
+
+    // Subscribe to battle ability updates
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<WarMachineDestroyedRecord>(
+            HubKey.SubWarMachineDestroyed,
+            (payload) => {
+                if (!payload) return
+                setWarMachineDestroyedRecord(payload)
+            },
+            {
+                participantID: warMachine.participantID,
+            },
+        )
+    }, [state, subscribe])
 
     const isAlive = health > 0
 
@@ -154,7 +160,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             sx={{
                                 width: 26,
                                 height: 26,
-                                backgroundImage: `url(${factionLogoUrl})`,
+                                backgroundImage: `url(${PASSPORT_WEB}/api/files/${logoBlobID})`,
                                 backgroundRepeat: 'no-repeat',
                                 backgroundPosition: 'center',
                                 backgroundSize: 'contain',

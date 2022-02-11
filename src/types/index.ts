@@ -7,6 +7,8 @@ export const UpdateTheme = React.createContext({} as UpdateThemeContextProps)
 
 export interface User {
     id: string
+    username: string
+    avatarID: string
     factionID: string
     faction: Faction
 }
@@ -20,8 +22,8 @@ export interface FactionThemeColor {
 export interface Faction {
     id: string
     label: string
-    logoUrl: string
-    backgroundUrl: string
+    logoBlobID: string
+    backgroundBlobID: string
     theme: FactionThemeColor
 }
 
@@ -31,7 +33,7 @@ export type VotingState =
     | 'VOTE_ABILITY_RIGHT'
     | 'NEXT_VOTE_WIN'
     | 'LOCATION_SELECT'
-    | 'MECH_WAIT_INTRO'
+    | 'WAIT_MECH_INTRO'
 
 export interface BattleAbility {
     id: string
@@ -93,6 +95,13 @@ export interface Map {
     disabledCells: number[]
 }
 
+export interface ViewerLiveCount {
+    RedMountain: number
+    Boston: number
+    Zaibatsu: number
+    Other: number
+}
+
 export enum NetMessageType {
     Default,
     Tick,
@@ -101,6 +110,8 @@ export enum NetMessageType {
     VotePriceTick,
     VotePriceForecastTick,
     FactionAbilityTargetPriceTick,
+    ViewerLiveCountTick,
+    SpoilOfWarTick,
 }
 
 export interface NetMessageTickWarMachine {
@@ -113,4 +124,17 @@ export interface NetMessageTickWarMachine {
 
 export interface NetMessageTick {
     warmachines: NetMessageTickWarMachine[]
+}
+
+export interface WarMachineDestroyedRecord {
+    destroyedWarMachine: WarMachineState
+    killedByWarMachine?: WarMachineState
+    killedBy?: string
+    damageRecords: DamageRecord[]
+}
+
+export interface DamageRecord {
+    amount: number
+    causedByWarMachine: WarMachineState
+    sourceName: string // weapon/ability name
 }

@@ -52,6 +52,7 @@ const ContributionBar = ({
                         height: '100%',
                         transition: 'all .25s',
                         backgroundColor: color || colors.neonBlue,
+                        zIndex: 5,
                     }}
                 />
 
@@ -62,6 +63,7 @@ const ContributionBar = ({
                         backgroundColor: colors.red,
                         height: 10,
                         width: 2,
+                        zIndex: 6,
                     }}
                 />
             </Stack>
