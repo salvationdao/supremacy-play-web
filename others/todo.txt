@@ -40,8 +40,8 @@ Pending:
 - mech abilities
 - kill notification
 - video controls ui
+- make overlay components moveable / toggleable
 - iframe dimension onresize
-- make overlay components moveable
 
 
 Future nice to have:

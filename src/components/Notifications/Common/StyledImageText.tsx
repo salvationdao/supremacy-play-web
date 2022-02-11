@@ -17,7 +17,11 @@ export const StyledImageText = ({ imageUrl, text, color }: { imageUrl?: string; 
                     }}
                 />
             )}
-            <Typography component="span" variant="body1" sx={{ fontWeight: 'fontWeightBold', color }}>
+            <Typography
+                component="span"
+                variant="body1"
+                sx={{ fontWeight: 'fontWeightBold', color, wordBreak: 'break-word' }}
+            >
                 {text}
             </Typography>
         </Box>
