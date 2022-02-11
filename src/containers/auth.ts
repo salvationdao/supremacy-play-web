@@ -47,6 +47,7 @@ export const AuthContainer = createContainer(() => {
 
     return {
         user,
+        userFactionID: user?.factionID,
         gameserverSessionID,
         authSessionIDGetLoading,
         authSessionIDGetError,

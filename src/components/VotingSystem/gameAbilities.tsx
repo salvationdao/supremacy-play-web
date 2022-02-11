@@ -11,7 +11,7 @@ import { GameAbility } from '../../types'
 export const FactionAbilities = () => {
     const { state, subscribe } = useWebsocket()
     const theme = useTheme<Theme>()
-    const [factionAbilities, setFactionAbilities] = useState<GameAbility[]>()
+    const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const { user } = useAuth()
     const userID = user?.id
     const factionID = user?.factionID
@@ -21,12 +21,12 @@ export const FactionAbilities = () => {
         if (state !== WebSocket.OPEN || !userID || userID === NullUUID || !factionID || factionID === NullUUID) return
         return subscribe<GameAbility[] | undefined>(
             HubKey.SubFactionAbilities,
-            (payload) => setFactionAbilities(payload),
+            (payload) => setGameAbilities(payload),
             null,
         )
     }, [subscribe, state, userID, factionID])
 
-    if (!factionAbilities || factionAbilities.length <= 0) return null
+    if (!gameAbilities || gameAbilities.length <= 0) return null
 
     return (
         <Fade in={true}>
@@ -36,7 +36,7 @@ export const FactionAbilities = () => {
                 </Typography>
 
                 <Stack spacing={1.3}>
-                    {factionAbilities.map((fa) => (
+                    {gameAbilities.map((fa) => (
                         <Box key={fa.id}>
                             <GameAbilityItem gameAbility={fa} />
                         </Box>

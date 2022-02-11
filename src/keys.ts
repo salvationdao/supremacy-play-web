@@ -22,6 +22,7 @@ enum HubKey {
     SubmitAbilityLocationSelect = 'ABILITY:LOCATION:SELECT',
     GameAbilityContribute = 'GAME:ABILITY:CONTRIBUTE',
     SubWarMachineDestroyed = 'WAR:MACHINE:DESTROYED:UPDATED',
+    SubWarMachineAbilitiesUpdated = 'WAR:MACHINE:ABILITIES:UPDATED',
 }
 
 export default HubKey
