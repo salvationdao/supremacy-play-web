@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { createContainer } from 'unstated-next'
 import { NullUUID } from '../constants'
 import HubKey from '../keys'
-import { VotingState, Map, WarMachineState, NetMessageType, FactionAbility } from '../types'
+import { VotingState, Map, WarMachineState, NetMessageType, GameAbility } from '../types'
 import { useAuth } from './auth'
 import { useWebsocket } from './socket'
 import BigNumber from 'bignumber.js'
@@ -18,7 +18,7 @@ export interface GameSettingsResponse {
 }
 
 interface WinnerAnnouncementResponse {
-    factionAbility: FactionAbility
+    gameAbility: GameAbility
     endTime: Date
 }
 

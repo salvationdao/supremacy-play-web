@@ -8,7 +8,7 @@ import { useAuth, useWebsocket } from '../../containers'
 import HubKey from '../../keys'
 import { zoomEffect } from '../../theme/keyframes'
 import { colors } from '../../theme/theme'
-import { FactionAbility, FactionAbilityTargetPrice } from '../../types'
+import { GameAbility, GameAbilityTargetPrice } from '../../types'
 import { useToggle } from '../../hooks'
 import { NullUUID } from '../../constants'
 import { SvgSupToken } from '../../assets'
@@ -83,30 +83,30 @@ const ContributionBar = ({
     )
 }
 
-interface FactionAbilityContributeRequest {
-    factionAbilityID: string
+interface GameAbilityContributeRequest {
+    gameAbilityID: string
     amount: BigNumber
 }
 
-interface FactionAbilityItemProps {
-    factionAbility: FactionAbility
+interface GameAbilityItemProps {
+    gameAbility: GameAbility
 }
 
-export const FactionAbilityItem = ({ factionAbility }: FactionAbilityItemProps) => {
+export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
     const { user } = useAuth()
     const userID = user?.id
     const factionID = user?.factionID
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
     const theme = useTheme<Theme>()
 
-    const { label, colour, imageUrl, id } = factionAbility
+    const { label, colour, imageUrl, id } = gameAbility
     const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber('0'))
     const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
     const [isVoting, setIsVoting] = useState(false)
 
-    const [factionAbilityTargetPrice, setFactionAbilityTargetPrice] = useState<FactionAbilityTargetPrice>()
+    const [gameAbilityTargetPrice, setGameAbilityTargetPrice] = useState<GameAbilityTargetPrice>()
 
     // Listen on current faction ability price change
     useEffect(() => {
@@ -120,31 +120,31 @@ export const FactionAbilityItem = ({ factionAbility }: FactionAbilityItemProps) 
         )
             return
 
-        return subscribeAbilityNetMessage<FactionAbilityTargetPrice | undefined>(id, (payload) => {
+        return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(id, (payload) => {
             if (!payload) return
-            setFactionAbilityTargetPrice(payload)
+            setGameAbilityTargetPrice(payload)
         })
     }, [id, state, subscribeAbilityNetMessage, userID, factionID])
 
     useEffect(() => {
-        if (!factionAbilityTargetPrice) return
-        const currentSups = new BigNumber(factionAbilityTargetPrice.currentSups).dividedBy('1000000000000000000')
-        const supsCost = new BigNumber(factionAbilityTargetPrice.supsCost).dividedBy('1000000000000000000')
+        if (!gameAbilityTargetPrice) return
+        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy('1000000000000000000')
+        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy('1000000000000000000')
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
         setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
 
-        if (factionAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
+        if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
             toggleRefresh()
         }
-    }, [factionAbilityTargetPrice])
+    }, [gameAbilityTargetPrice])
 
     const onContribute = useCallback(
         (amount: number) => async () => {
             try {
-                const resp = await send<boolean, FactionAbilityContributeRequest>(HubKey.FactionAbilityContribute, {
-                    factionAbilityID: id,
+                const resp = await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
+                    gameAbilityID: id,
                     amount: new BigNumber(amount),
                 })
 

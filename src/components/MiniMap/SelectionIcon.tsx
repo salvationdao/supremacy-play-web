@@ -3,7 +3,7 @@ import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import { FancyButton, MapSelection } from '..'
 import { useWebsocket } from '../../containers'
 import HubKey from '../../keys'
-import { FactionAbility } from '../../types'
+import { GameAbility } from '../../types'
 
 interface MapSelectRequest {
     x: number
@@ -12,13 +12,13 @@ interface MapSelectRequest {
 
 export const SelectionIcon = ({
     selection,
-    factionAbility,
+    gameAbility,
     setSelection,
     setSubmitted,
     confirmed,
 }: {
     selection: MapSelection | undefined
-    factionAbility: FactionAbility
+    gameAbility: GameAbility
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
     setSubmitted: Dispatch<SetStateAction<boolean>>
     confirmed: MutableRefObject<boolean>
@@ -45,9 +45,9 @@ export const SelectionIcon = ({
         }
     }
 
-    if (!factionAbility) return null
+    if (!gameAbility) return null
 
-    const { colour, imageUrl } = factionAbility
+    const { colour, imageUrl } = gameAbility
 
     return (
         <Box
