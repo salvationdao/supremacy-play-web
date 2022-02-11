@@ -75,7 +75,7 @@ export const MiniMap = () => {
                         border={{
                             isFancy: true,
                             borderThickness: '3px',
-                            borderColor: isTargetting ? winner.factionAbility.colour : theme.factionTheme.primary,
+                            borderColor: isTargetting ? winner.gameAbility.colour : theme.factionTheme.primary,
                         }}
                     >
                         <Box
@@ -110,7 +110,7 @@ export const MiniMap = () => {
 
                             {isTargetting && (
                                 <TargetTimerCountdown
-                                    factionAbility={winner.factionAbility}
+                                    gameAbility={winner.gameAbility}
                                     setTimeReachZero={setTimeReachZero}
                                     endTime={winner.endTime}
                                 />
@@ -118,7 +118,7 @@ export const MiniMap = () => {
 
                             {isTargetting ? (
                                 <InteractiveMap
-                                    factionAbility={winner.factionAbility}
+                                    gameAbility={winner.gameAbility}
                                     windowDimension={dimensions}
                                     targeting
                                     setSubmitted={setSubmitted}

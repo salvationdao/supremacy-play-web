@@ -43,7 +43,7 @@ export interface BattleAbility {
     cooldownDurationSecond: number
 }
 
-export interface FactionAbility {
+export interface GameAbility {
     id: string
     label: string
     colour: string
@@ -52,7 +52,7 @@ export interface FactionAbility {
     currentSups: string
 }
 
-export interface FactionAbilityTargetPrice {
+export interface GameAbilityTargetPrice {
     id: string
     supsCost: string
     currentSups: string
@@ -109,7 +109,7 @@ export enum NetMessageType {
     AbilityRightRatioTick,
     VotePriceTick,
     VotePriceForecastTick,
-    FactionAbilityTargetPriceTick,
+    GameAbilityTargetPriceTick,
     ViewerLiveCountTick,
     SpoilOfWarTick,
 }

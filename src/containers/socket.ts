@@ -3,7 +3,7 @@ import { createContainer } from 'unstated-next'
 import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from '../constants'
 import { useDebounce } from '../hooks/useDebounce'
 import HubKey from '../keys'
-import { FactionAbilityTargetPrice, NetMessageTick, NetMessageTickWarMachine, NetMessageType } from '../types'
+import { GameAbilityTargetPrice, NetMessageTick, NetMessageTickWarMachine, NetMessageType } from '../types'
 import { parseNetMessage } from './netMessages'
 
 // websocket message struct
@@ -301,8 +301,8 @@ const UseWebsocket = (): WebSocketProperties => {
                     const parsedNetMessage = parseNetMessage(message.data)
                     if (parsedNetMessage === undefined) return
                     // parse faction ability net message individually
-                    if (parsedNetMessage.type === NetMessageType.FactionAbilityTargetPriceTick) {
-                        for (const data of parsedNetMessage.payload as FactionAbilityTargetPrice[]) {
+                    if (parsedNetMessage.type === NetMessageType.GameAbilityTargetPriceTick) {
+                        for (const data of parsedNetMessage.payload as GameAbilityTargetPrice[]) {
                             if (abilitySubs.current[data.id]) {
                                 for (const callback of abilitySubs.current[data.id]) {
                                     callback(data)

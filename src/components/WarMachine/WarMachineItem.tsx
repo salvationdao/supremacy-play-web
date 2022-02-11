@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, BoxProps, Stack, Typography } from '@mui/material'
-import { NetMessageTickWarMachine, WarMachineDestroyedRecord, WarMachineState } from '../../types'
+import { GameAbility, NetMessageTickWarMachine, WarMachineDestroyedRecord, WarMachineState } from '../../types'
 import { ClipThing } from '..'
 import { colors } from '../../theme/theme'
 import { SvgSkull } from '../../assets'
@@ -31,12 +31,14 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
     const { participantID, faction, name, imageUrl, maxHealth, maxShield } = warMachine
     const { state, subscribe, subscribeWarMachineStatNetMessage } = useWebsocket()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
-
+    const { userFactionID } = useAuth()
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
+    const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
 
     const {
-        logoBlobID: logoBlobID,
+        id: warMachineFactionID,
+        logoBlobID,
         theme: { primary, background },
     } = faction
 
@@ -60,10 +62,30 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                 setWarMachineDestroyedRecord(payload)
             },
             {
-                participantID: warMachine.participantID,
+                participantID,
             },
         )
-    }, [state, subscribe])
+    }, [state, subscribe, participantID])
+
+    // Subscribe to war machine ability updates
+    useEffect(() => {
+        if (
+            state !== WebSocket.OPEN ||
+            !userFactionID ||
+            userFactionID === NullUUID ||
+            userFactionID !== warMachineFactionID
+        )
+            return
+        return subscribe<GameAbility[] | undefined>(
+            HubKey.SubWarMachineAbilitiesUpdated,
+            (payload) => {
+                if (payload) setGameAbilities(payload)
+            },
+            {
+                participantID,
+            },
+        )
+    }, [subscribe, state, userFactionID, participantID, warMachineFactionID])
 
     const isAlive = health > 0
 
