@@ -30,7 +30,7 @@ export const LiveCounts = () => {
 
     return (
         <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center">
-            <SvgUser size="10px" />
+            <SvgUser size="9px" />
             <Typography variant="body2">LIVE VIEWERS: </Typography>
 
             <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center">
