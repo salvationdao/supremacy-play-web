@@ -87,20 +87,17 @@ interface VoteRequest {
 
 export const BattleAbility = () => {
     const { state, send, subscribe } = useWebsocket()
-    const { user } = useAuth()
+    const { factionID } = useAuth()
     const { votingState, factionVotePrice } = useGame()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [fadeEffect, toggleFadeEffect] = useToggle()
 
-    const userID = user?.id
-    const factionID = user?.factionID
     const isVoting = votingState?.phase == 'VOTE_ABILITY_RIGHT' || votingState?.phase == 'NEXT_VOTE_WIN'
     const isCooldown = votingState?.phase == 'VOTE_COOLDOWN'
 
     // Subscribe to battle ability updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
-            return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe<BattleAbilityType>(
             HubKey.SubBattleAbility,
             (payload) => {
@@ -109,7 +106,7 @@ export const BattleAbility = () => {
             },
             null,
         )
-    }, [state, subscribe, userID, factionID])
+    }, [state, subscribe, factionID])
 
     const onVote = useCallback(
         (voteAmount: number) => async () => {

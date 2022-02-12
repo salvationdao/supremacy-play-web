@@ -8,9 +8,7 @@ import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from '../../
 
 export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
     const { participantID, faction, maxHealth, maxShield } = warMachine
-    const { user } = useAuth()
-    const userID = user?.id
-    const factionID = user?.factionID
+    const { factionID } = useAuth()
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
 
     const [health, setHealth] = useState<number>(warMachine.health)
@@ -24,14 +22,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
 
     // Listen on current war machine changes
     useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !subscribeWarMachineStatNetMessage ||
-            !userID ||
-            userID === '' ||
-            !factionID ||
-            factionID === NullUUID
-        )
+        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage || !factionID || factionID === NullUUID)
             return
 
         return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
@@ -44,7 +35,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                 setRotation(newRotation)
             }
         })
-    }, [participantID, state, subscribeWarMachineStatNetMessage, userID, factionID])
+    }, [participantID, state, subscribeWarMachineStatNetMessage, factionID])
 
     if (!position) return null
 

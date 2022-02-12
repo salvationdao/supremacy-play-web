@@ -30,7 +30,7 @@ interface FactionsColorResponse {
 
 export const GameContainer = createContainer(() => {
     const { state, send, subscribe, subscribeNetMessage } = useWebsocket()
-    const { user } = useAuth()
+    const { factionID } = useAuth()
     const [factionsColor, setFactionsColor] = useState<FactionsColorResponse>()
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
@@ -39,9 +39,6 @@ export const GameContainer = createContainer(() => {
     const [votingState, setVotingState] = useState<VtotingStateResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [queuingWarMachines, setQueuingWarMachines] = useState<WarMachineState[]>([])
-
-    const userID = user?.id
-    const factionID = user?.factionID
 
     // Subscribe for game settings
     useEffect(() => {
@@ -76,7 +73,7 @@ export const GameContainer = createContainer(() => {
 
     // Get very first faction vote price
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !userID || userID === NullUUID || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !factionID || factionID === NullUUID) return
         ;(async () => {
             try {
                 const resp = await send<string>(HubKey.GetFactionVotePrice)
@@ -88,19 +85,11 @@ export const GameContainer = createContainer(() => {
                 return false
             }
         })()
-    }, [send, state, userID, factionID])
+    }, [send, state, factionID])
 
     // Listen on current price change
     useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !subscribeNetMessage ||
-            !userID ||
-            userID === '' ||
-            !factionID ||
-            factionID === NullUUID
-        )
-            return
+        if (state !== WebSocket.OPEN || !subscribeNetMessage || !factionID || factionID === NullUUID) return
         return subscribeNetMessage<string | undefined>(NetMessageType.VotePriceTick, (payload) => {
             if (!payload) return
             setFactionVotePrice((prev) => {
@@ -108,12 +97,11 @@ export const GameContainer = createContainer(() => {
                 return new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000'))
             })
         })
-    }, [state, subscribeNetMessage, userID, factionID])
+    }, [state, subscribeNetMessage, factionID])
 
     // Subscirbe on current voting state
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
-            return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe<VtotingStateResponse | undefined>(
             HubKey.SubVoteStageUpdated,
             (payload) => {
@@ -121,23 +109,21 @@ export const GameContainer = createContainer(() => {
             },
             null,
         )
-    }, [state, subscribe, userID, factionID])
+    }, [state, subscribe, factionID])
 
     // Subscribe on winner announcements
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
-            return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe<WinnerAnnouncementResponse | undefined>(
             HubKey.SubVoteWinnerAnnouncement,
             (payload) => setWinner(payload),
             null,
         )
-    }, [state, subscribe, userID, factionID])
+    }, [state, subscribe, factionID])
 
     // Subscribe on war machine queue updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
-            return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe<WarMachineState[]>(
             HubKey.SubFactionWarMachineQueueUpdated,
             (payload) => {
@@ -146,7 +132,7 @@ export const GameContainer = createContainer(() => {
             },
             null,
         )
-    }, [state, subscribe, userID, factionID])
+    }, [state, subscribe, factionID])
 
     return {
         votingState,

@@ -93,9 +93,7 @@ interface GameAbilityItemProps {
 }
 
 export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
-    const { user } = useAuth()
-    const userID = user?.id
-    const factionID = user?.factionID
+    const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
     const theme = useTheme<Theme>()
 
@@ -110,21 +108,13 @@ export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
 
     // Listen on current faction ability price change
     useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !subscribeAbilityNetMessage ||
-            !userID ||
-            userID === '' ||
-            !factionID ||
-            factionID === NullUUID
-        )
-            return
+        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(id, (payload) => {
             if (!payload) return
             setGameAbilityTargetPrice(payload)
         })
-    }, [id, state, subscribeAbilityNetMessage, userID, factionID])
+    }, [id, state, subscribeAbilityNetMessage, factionID])
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
