@@ -88,11 +88,11 @@ interface GameAbilityContributeRequest {
     amount: BigNumber
 }
 
-interface FactionAbilityItemProps {
+interface WarMachineAbilityItemProps {
     gameAbility: GameAbility
 }
 
-export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => {
+export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProps) => {
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
     const theme = useTheme<Theme>()
@@ -154,17 +154,14 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
         <Box key={refresh}>
             <Fade in={true}>
                 <Box>
-                    <ClipThing
-                        // border={{ isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: '1.5px' }}
-                        clipSize="6px"
-                    >
+                    <ClipThing clipSize="6px" clipSlantSize="5px">
                         <Stack
-                            spacing={1}
+                            spacing={0.9}
                             alignItems="flex-start"
                             sx={{
                                 flex: 1,
                                 minWidth: 325,
-                                backgroundColor: `${colour || colors.darkNavy}12`,
+                                backgroundColor: colour ? `${colour}12` : `${colors.darkNavyBlue}80`,
                                 px: 2,
                                 pt: 1.6,
                                 pb: 1.6,
@@ -177,11 +174,11 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
+                                <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
                                     <Box
                                         sx={{
-                                            height: 18,
-                                            width: 18,
+                                            height: 17,
+                                            width: 17,
                                             backgroundImage: `url(${imageUrl})`,
                                             backgroundRepeat: 'no-repeat',
                                             backgroundPosition: 'center',
@@ -191,7 +188,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                         }}
                                     />
                                     <Typography
-                                        variant="body1"
+                                        variant="body2"
                                         sx={{
                                             lineHeight: 1,
                                             fontWeight: 'fontWeightBold',

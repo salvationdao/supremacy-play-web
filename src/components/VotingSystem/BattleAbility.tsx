@@ -4,6 +4,7 @@ import { BattleAbilityCountdown, ClipThing, VotingButton } from '..'
 import { SvgCooldown, SvgApplause } from '../../assets'
 import { NullUUID } from '../../constants'
 import { useAuth, useGame, useWebsocket } from '../../containers'
+import { shadeColor } from '../../helpers'
 import { useToggle } from '../../hooks'
 import HubKey from '../../keys'
 import { zoomEffect } from '../../theme/keyframes'
@@ -131,14 +132,14 @@ export const BattleAbility = () => {
 
     return (
         <Fade in={true}>
-            <Stack spacing={0.3}>
+            <Stack spacing={0.7}>
                 <BattleAbilityCountdown battleAbility={battleAbility} />
 
                 <Stack key={fadeEffect} spacing={1.3}>
                     <Fade in={true}>
                         <Box sx={{ opacity: isVoting ? 1 : 0.5 }}>
                             <ClipThing
-                                border={{ isFancy: true, borderColor: colour, borderThickness: '1.5px' }}
+                                // border={{ isFancy: true, borderColor: colour, borderThickness: '1.5px' }}
                                 clipSize="6px"
                             >
                                 <Stack
@@ -147,7 +148,7 @@ export const BattleAbility = () => {
                                     sx={{
                                         flex: 1,
                                         minWidth: 325,
-                                        backgroundColor: colors.darkNavy,
+                                        backgroundColor: `${colour || colors.darkNavy}12`,
                                         px: 2,
                                         pt: 1.4,
                                         pb: 1.6,

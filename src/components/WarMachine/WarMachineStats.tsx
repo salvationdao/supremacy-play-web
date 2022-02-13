@@ -38,24 +38,24 @@ export const WarMachineStats = () => {
                             overflowX: 'auto',
                             direction: 'ltr',
                             scrollbarWidth: 'none',
-                            pb: 1.3,
+                            pb: 1.5,
                             '::-webkit-scrollbar': {
                                 height: 4,
                             },
                             '::-webkit-scrollbar-track': {
-                                boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
+                                boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}50`,
                                 borderRadius: 3,
                             },
                             '::-webkit-scrollbar-thumb': {
-                                background: theme.factionTheme.primary,
+                                background: `${theme.factionTheme.primary}20`,
                                 borderRadius: 3,
                             },
                             transition: 'all .2s',
                         }}
                     >
                         <Box sx={{ direction: 'ltr' }}>
-                            <Stack spacing={4.55} direction="row" alignItems="center" justifyContent="center">
-                                <Stack spacing={5} direction="row" alignItems="center" justifyContent="center">
+                            <Stack spacing={3.8} direction="row" alignItems="center" justifyContent="flex-start">
+                                <Stack spacing={6.5} direction="row" alignItems="center" justifyContent="center">
                                     {warMachines
                                         .filter((wm) => wm.factionID == factionID)
                                         .map((wm) => (
@@ -65,7 +65,7 @@ export const WarMachineStats = () => {
                                         ))}
                                 </Stack>
 
-                                <Stack spacing={4} direction="row" alignItems="center" justifyContent="center">
+                                <Stack spacing={0} direction="row" alignItems="center" justifyContent="center">
                                     {warMachines
                                         .filter((wm) => wm.factionID != factionID)
                                         .map((wm) => (

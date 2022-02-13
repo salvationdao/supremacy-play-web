@@ -13,7 +13,7 @@ export const NotificationItem = ({ duration, children }: { duration: number; chi
 
     return (
         <Slide in={isShowing} direction="left">
-            <Box sx={{ width: 324, filter: 'drop-shadow(0 3px 3px #00000050)' }}>
+            <Box sx={{ width: 320, filter: 'drop-shadow(0 3px 3px #00000050)' }}>
                 <ClipThing clipSize="8px">
                     <Box
                         sx={{

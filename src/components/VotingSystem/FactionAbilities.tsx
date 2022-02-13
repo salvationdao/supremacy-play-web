@@ -28,7 +28,7 @@ export const FactionAbilities = () => {
 
     return (
         <Fade in={true}>
-            <Stack spacing={0.3}>
+            <Stack spacing={0.7}>
                 <Stack direction="row" spacing={0.6} alignItems="center">
                     <Box
                         sx={{
@@ -47,9 +47,9 @@ export const FactionAbilities = () => {
                 </Stack>
 
                 <Stack spacing={1.3}>
-                    {gameAbilities.map((fa) => (
-                        <Box key={fa.id}>
-                            <FactionAbilityItem gameAbility={fa} />
+                    {gameAbilities.map((ga) => (
+                        <Box key={ga.id}>
+                            <FactionAbilityItem gameAbility={ga} />
                         </Box>
                     ))}
                 </Stack>
