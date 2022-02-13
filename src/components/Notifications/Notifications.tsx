@@ -191,7 +191,7 @@ export const Notifications = () => {
         const locationSelectNoti5: NotificationResponse = {
             type: 'LOCATION_SELECT',
             data: {
-                type: 'CANCELLED_DISCONNECTED',
+                type: 'CANCELLED_DISCONNECT',
                 x: 7,
                 y: 5,
                 currentUser: {

@@ -42,9 +42,9 @@ const MapWarMachines = () => {
 
     return (
         <>
-            {warMachines.map((mw) => (
-                <div key={`${mw.participantID} - ${mw.tokenID}`}>
-                    <MapWarMachine warMachine={mw} map={map} />
+            {warMachines.map((wm) => (
+                <div key={`${wm.participantID} - ${wm.tokenID}`}>
+                    <MapWarMachine warMachine={wm} map={map} />
                 </div>
             ))}
         </>

@@ -6,13 +6,13 @@ import Resize from '!react-svg-loader!./svg/Resize.svg'
 import User from '!react-svg-loader!./svg/User.svg'
 import Applause from '!react-svg-loader!./svg/Applause.svg'
 import Fullscreen from '!react-svg-loader!./svg/Fullscreen.svg'
+import Unknown from '!react-svg-loader!./svg/Unknown.svg'
 import Volume from '!react-svg-loader!./svg/Volume.svg'
 import Settings from '!react-svg-loader!./svg/Settings.svg'
 import Drag from '!react-svg-loader!./svg/Drag.svg'
 import CampaignSharpIcon from '@mui/icons-material/CampaignSharp'
 import FlagSharpIcon from '@mui/icons-material/FlagSharp'
 import MapSharpIcon from '@mui/icons-material/MapSharp'
-import PersonSharpIcon from '@mui/icons-material/PersonSharp'
 import WorkspacesSharpIcon from '@mui/icons-material/WorkspacesSharp'
 import AccessTimeSharpIcon from '@mui/icons-material/AccessTimeSharp'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
@@ -150,5 +150,11 @@ export const SvgVolume: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgUser: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <User />
+    </SvgWrapper>
+)
+
+export const SvgBattleAbilityIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Unknown />
     </SvgWrapper>
 )

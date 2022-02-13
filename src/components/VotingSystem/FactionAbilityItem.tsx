@@ -88,11 +88,11 @@ interface GameAbilityContributeRequest {
     amount: BigNumber
 }
 
-interface GameAbilityItemProps {
+interface FactionAbilityItemProps {
     gameAbility: GameAbility
 }
 
-export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
+export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => {
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
     const theme = useTheme<Theme>()

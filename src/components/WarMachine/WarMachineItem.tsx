@@ -1,56 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import { Box, BoxProps, Stack, Typography } from '@mui/material'
-import { GameAbility, NetMessageTickWarMachine, WarMachineDestroyedRecord, WarMachineState } from '../../types'
-import { ClipThing } from '..'
-import { colors } from '../../theme/theme'
+import { useEffect, useState } from 'react'
+import { Box, Stack, Typography } from '@mui/material'
+import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from '../../types'
+import { BoxSlanted, ClipThing, HealthShieldBars } from '..'
 import { SvgSkull } from '../../assets'
 import { useAuth, useWebsocket } from '../../containers'
 import { NullUUID, PASSPORT_WEB } from '../../constants'
 import HubKey from '../../keys'
 
-interface BoxSlantedProps extends BoxProps {
-    clipSize?: string
-    clipSlantSize?: string
-}
-
-const BoxSlanted: React.FC<BoxSlantedProps> = ({ children, clipSize = '0px', clipSlantSize = '0px', sx, ...props }) => {
-    return (
-        <Box
-            {...props}
-            sx={{
-                ...sx,
-                clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${clipSize}) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, 0% calc(100% - ${clipSize}))`,
-            }}
-        >
-            {children}
-        </Box>
-    )
-}
-
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
-    const { participantID, faction, name, imageUrl, maxHealth, maxShield } = warMachine
-    const { state, subscribe, subscribeWarMachineStatNetMessage } = useWebsocket()
-    const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
-    const { userFactionID } = useAuth()
-    const [health, setHealth] = useState<number>(warMachine.health)
-    const [shield, setShield] = useState<number>(warMachine.shield)
+    const { participantID, faction, name, imageUrl } = warMachine
+    const { state, subscribe } = useWebsocket()
+    const { factionID } = useAuth()
+    const [isAlive, setIsAlive] = useState(true)
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
+    const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
 
     const {
         id: warMachineFactionID,
         logoBlobID,
         theme: { primary, background },
     } = faction
-
-    // Listen on current war machine changes
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
-
-        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
-            if (payload?.health !== undefined) setHealth(payload.health)
-            if (payload?.shield !== undefined) setShield(payload.shield)
-        })
-    }, [participantID, state, subscribeWarMachineStatNetMessage])
 
     // Subscribe to battle ability updates
     useEffect(() => {
@@ -69,12 +38,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
 
     // Subscribe to war machine ability updates
     useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !userFactionID ||
-            userFactionID === NullUUID ||
-            userFactionID !== warMachineFactionID
-        )
+        if (state !== WebSocket.OPEN || !factionID || factionID === NullUUID || factionID !== warMachineFactionID)
             return
         return subscribe<GameAbility[] | undefined>(
             HubKey.SubWarMachineAbilitiesUpdated,
@@ -85,12 +49,14 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                 participantID,
             },
         )
-    }, [subscribe, state, userFactionID, participantID, warMachineFactionID])
-
-    const isAlive = health > 0
+    }, [subscribe, state, factionID, participantID, warMachineFactionID])
 
     return (
-        <BoxSlanted clipSlantSize="20px" key={`WarMachineItem-${participantID}`}>
+        <BoxSlanted
+            clipSlantSize="20px"
+            key={`WarMachineItem-${participantID}`}
+            sx={{ transform: factionID == undefined || factionID == warMachine.factionID ? '' : 'scale(.9)' }}
+        >
             <Stack direction="row" alignItems="center" sx={{ width: 225, opacity: isAlive ? 1 : 0.5 }}>
                 <ClipThing
                     clipSize="8px"
@@ -144,39 +110,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                     }}
                 >
                     <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: 1, pl: 3, pr: 2.2 }}>
-                        <Stack justifyContent="center" spacing={0.5} sx={{ flex: 1, height: '100%' }}>
-                            <Box>
-                                <BoxSlanted
-                                    clipSlantSize="4.2px"
-                                    sx={{ width: '100%', height: 12, backgroundColor: '#FFFFFF30' }}
-                                >
-                                    <BoxSlanted
-                                        clipSlantSize="4.2px"
-                                        sx={{
-                                            width: `${(shield / maxShield) * 100}%`,
-                                            height: '100%',
-                                            backgroundColor: colors.shield,
-                                        }}
-                                    />
-                                </BoxSlanted>
-                            </Box>
-
-                            <Box>
-                                <BoxSlanted
-                                    clipSlantSize="4.2px"
-                                    sx={{ ml: -0.5, width: '100%', height: 12, backgroundColor: '#FFFFFF30' }}
-                                >
-                                    <BoxSlanted
-                                        clipSlantSize="4.2px"
-                                        sx={{
-                                            width: `${(health / maxHealth) * 100}%`,
-                                            height: '100%',
-                                            backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
-                                        }}
-                                    />
-                                </BoxSlanted>
-                            </Box>
-                        </Stack>
+                        <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} />
 
                         <Box
                             sx={{

@@ -15,7 +15,6 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
     const [shield, setShield] = useState<number>(warMachine.shield)
     const [position, sePosition] = useState<Vector2i>(warMachine.position)
     const [rotation, setRotation] = useState<number>(warMachine.rotation)
-    const prevRotation = useRef(0)
 
     const isAlive = health > 0
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
@@ -29,11 +28,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
-            if (payload?.rotation !== undefined) {
-                const newRotation = closestAngle(prevRotation.current, payload.rotation + 90)
-                prevRotation.current = rotation
-                setRotation(newRotation)
-            }
+            if (payload?.rotation !== undefined) setRotation((prev) => closestAngle(prev, payload.rotation || 0 + 90))
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage, factionID])
 

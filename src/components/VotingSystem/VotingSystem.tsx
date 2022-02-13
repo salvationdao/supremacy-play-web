@@ -1,12 +1,11 @@
 import { Box, Divider, Slide, Stack } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { useTheme } from '@mui/styles'
-import { ClipThing, BattleAbility, Prices } from '..'
+import { ClipThing, BattleAbility, Prices, FactionAbilities } from '..'
 import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, UI_OPACITY } from '../../constants'
 import { useDimension, useGame } from '../../containers'
 import { colors } from '../../theme/theme'
 import { useAuth } from '../../containers'
-import { FactionAbilities } from './gameAbilities'
 
 export const VotingSystem = () => {
     const { user } = useAuth()
