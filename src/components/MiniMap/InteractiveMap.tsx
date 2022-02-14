@@ -7,6 +7,10 @@ import { useGame } from '../../containers'
 import { useToggle } from '../../hooks'
 import { GameAbility, Map } from '../../types'
 
+// UseGesture Stuff
+import { animated, useSpring } from 'react-spring'
+import { useGesture, useDrag } from '@use-gesture/react'
+
 export interface MapSelection {
     x: number
     y: number
@@ -160,6 +164,63 @@ export const InteractiveMap = ({
         toggleRefresh()
     }, [windowDimension])
 
+    // ---------- Minimap - useGesture setup --------------
+    // Prevents map zooming from interfering with the browsers' accessibility zoom
+    document.addEventListener('gesturestart', (e) => e.preventDefault())
+    document.addEventListener('gesturechange', (e) => e.preventDefault())
+
+    const [style, api] = useSpring(() => ({
+        x: 0,
+        y: 0,
+        zoom: 0,
+        scale: 1,
+        wheel: 0,
+    }))
+
+    const bind = useGesture(
+        {
+            onDrag: ({ wheeling, cancel, down, offset: [x, y] }) => {
+                if (wheeling) return cancel()
+                api.start({ x, y, immediate: down })
+            },
+            onWheel: ({ offset: [, oy] }) => {
+                const factor = 0.1
+                const delta = oy / 120
+                const newScale = 1 + delta * factor
+
+                console.log(newScale)
+
+                // need to set x & y (origin of zoom)
+                // api.set({ wheel: oy, zoom: newScale })
+                api.set({ wheel: oy, scale: newScale, })
+            },
+        },
+
+        {
+            drag: {
+                bounds: () => {
+                    if (!map) return
+                    return {
+                        top:
+                            windowDimension.height <= map.height
+                                ? -(map.height - windowDimension.height)
+                                : (windowDimension.height - map.height) / 2,
+                        left:
+                            windowDimension.width <= map.width
+                                ? -(map.width - windowDimension.width)
+                                : (windowDimension.width - map.width) / 2,
+                        right: 0,
+                        bottom: 0,
+                    }
+                },
+
+            },
+            // wheel: {
+            //
+            // },
+        }
+    )
+
     if (!map) return null
 
     return (
@@ -172,35 +233,36 @@ export const InteractiveMap = ({
                 overflow: 'hidden',
             }}
         >
-            <Draggable
-                allowAnyClick
-                defaultPosition={lastPos.current}
-                onDrag={() => {
-                    if (!isDragging.current) isDragging.current = true
-                }}
-                onStop={(e: DraggableEvent, data: DraggableData) => {
-                    setTimeout(() => {
-                        isDragging.current = false
-                    }, 50)
+            {/*<Draggable*/}
+            {/*    allowAnyClick*/}
+            {/*    defaultPosition={lastPos.current}*/}
+            {/*    onDrag={() => {*/}
+            {/*        if (!isDragging.current) isDragging.current = true*/}
+            {/*    }}*/}
+            {/*    onStop={(e: DraggableEvent, data: DraggableData) => {*/}
+            {/*        setTimeout(() => {*/}
+            {/*            isDragging.current = false*/}
+            {/*        }, 50)*/}
 
-                    lastPos.current = {
-                        x: data.x,
-                        y: data.y,
-                    }
-                }}
-                bounds={{
-                    top:
-                        windowDimension.height <= map.height
-                            ? -(map.height - windowDimension.height)
-                            : (windowDimension.height - map.height) / 2,
-                    left:
-                        windowDimension.width <= map.width
-                            ? -(map.width - windowDimension.width)
-                            : (windowDimension.width - map.width) / 2,
-                    right: 0,
-                    bottom: 0,
-                }}
-            >
+            {/*        lastPos.current = {*/}
+            {/*            x: data.x,*/}
+            {/*            y: data.y,*/}
+            {/*        }*/}
+            {/*    }}*/}
+            {/*    bounds={{*/}
+            {/*        top:*/}
+            {/*            windowDimension.height <= map.height*/}
+            {/*                ? -(map.height - windowDimension.height)*/}
+            {/*                : (windowDimension.height - map.height) / 2,*/}
+            {/*        left:*/}
+            {/*            windowDimension.width <= map.width*/}
+            {/*                ? -(map.width - windowDimension.width)*/}
+            {/*                : (windowDimension.width - map.width) / 2,*/}
+            {/*        right: 0,*/}
+            {/*        bottom: 0,*/}
+            {/*    }}*/}
+            {/*>*/}
+            <animated.div {...bind()} style={style}>
                 <Box sx={{ cursor: 'move' }}>
                     <MapWarMachines />
 
@@ -215,9 +277,10 @@ export const InteractiveMap = ({
                             height: `${map.height}px`,
                             backgroundImage: `url(${map.imageUrl})`,
                         }}
-                    ></Box>
+                    />
                 </Box>
-            </Draggable>
+            </animated.div>
+            {/*</Draggable>*/}
         </Stack>
     )
 }

@@ -9,8 +9,9 @@
         "@mui/lab": "^5.0.0-alpha.53",
         "@mui/material": "^5.0.1",
         "@mui/styles": "^5.1.0",
-        "@sentry/react": "^6.17.6",
         "@ninjasoftware/passport-gamebar": "^0.8.0",
+        "@sentry/react": "^6.17.6",
+        "@use-gesture/react": "^10.2.6",
         "bignumber.js": "^9.0.2",
         "core-js": "^3.5.0",
         "jsonwebtoken": "^8.5.1",
@@ -21,6 +22,7 @@
         "react-draggable": "^4.4.4",
         "react-full-screen": "^1.1.0",
         "react-resizable": "^3.0.4",
+        "react-spring": "^9.4.3",
         "unstated-next": "^1.1.0"
     },
     "devDependencies": {
