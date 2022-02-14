@@ -1,5 +1,3 @@
-import { Theme } from '@mui/material/styles'
-import { useTheme } from '@mui/styles'
 import { Box, Fade, Stack, Typography } from '@mui/material'
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useState } from 'react'
@@ -60,9 +58,9 @@ const ContributionBar = ({
                     sx={{
                         position: 'absolute',
                         left: `${costPercent}%`,
-                        backgroundColor: colors.red,
                         height: 10,
                         width: 2,
+                        backgroundColor: colors.red,
                         zIndex: 6,
                     }}
                 />
@@ -88,16 +86,13 @@ interface GameAbilityContributeRequest {
     amount: BigNumber
 }
 
-interface GameAbilityItemProps {
+interface WarMachineAbilityItemProps {
     gameAbility: GameAbility
 }
 
-export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
-    const { user } = useAuth()
-    const userID = user?.id
-    const factionID = user?.factionID
+export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProps) => {
+    const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
-    const theme = useTheme<Theme>()
 
     const { label, colour, imageUrl, id } = gameAbility
     const [refresh, toggleRefresh] = useToggle()
@@ -110,21 +105,13 @@ export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
 
     // Listen on current faction ability price change
     useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !subscribeAbilityNetMessage ||
-            !userID ||
-            userID === '' ||
-            !factionID ||
-            factionID === NullUUID
-        )
-            return
+        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(id, (payload) => {
             if (!payload) return
             setGameAbilityTargetPrice(payload)
         })
-    }, [id, state, subscribeAbilityNetMessage, userID, factionID])
+    }, [id, state, subscribeAbilityNetMessage, factionID])
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
@@ -164,17 +151,14 @@ export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
         <Box key={refresh}>
             <Fade in={true}>
                 <Box>
-                    <ClipThing
-                        border={{ isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: '1.5px' }}
-                        clipSize="6px"
-                    >
+                    <ClipThing clipSize="6px" clipSlantSize="5px">
                         <Stack
-                            spacing={1}
+                            spacing={0.9}
                             alignItems="flex-start"
                             sx={{
                                 flex: 1,
                                 minWidth: 325,
-                                backgroundColor: colors.darkNavy,
+                                backgroundColor: colour ? `${colour}12` : `${colors.darkNavyBlue}80`,
                                 px: 2,
                                 pt: 1.6,
                                 pb: 1.6,
@@ -187,20 +171,21 @@ export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
+                                <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
                                     <Box
                                         sx={{
-                                            height: 18,
-                                            width: 18,
+                                            height: 17,
+                                            width: 17,
                                             backgroundImage: `url(${imageUrl})`,
                                             backgroundRepeat: 'no-repeat',
                                             backgroundPosition: 'center',
                                             backgroundSize: 'cover',
                                             backgroundColor: colour || '#030409',
+                                            mb: 0.3,
                                         }}
                                     />
                                     <Typography
-                                        variant="body1"
+                                        variant="body2"
                                         sx={{
                                             lineHeight: 1,
                                             fontWeight: 'fontWeightBold',
@@ -243,7 +228,7 @@ export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
                                         {supsCost.toFixed(2)}
                                     </Typography>
                                     <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
-                                        &nbsp;SUPS
+                                        &nbsp;SUP{supsCost.eq(1) ? '' : 'S'}
                                     </Typography>
                                 </Stack>
                             </Stack>

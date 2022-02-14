@@ -3,11 +3,12 @@ import { colors } from '../../theme/theme'
 import { WarMachineItem } from './WarMachineItem'
 import { Theme } from '@mui/material/styles'
 import { useTheme } from '@mui/styles'
-import { useDimension, useGame } from '../../containers'
+import { useAuth, useDimension, useGame } from '../../containers'
 
 export const WarMachineStats = () => {
     const theme = useTheme<Theme>()
-    const { votingState, warMachines } = useGame()
+    const { factionID } = useAuth()
+    const { warMachines } = useGame()
     const {
         iframeDimensions: { width },
     } = useDimension()
@@ -37,28 +38,44 @@ export const WarMachineStats = () => {
                             overflowX: 'auto',
                             direction: 'ltr',
                             scrollbarWidth: 'none',
-                            pb: 1.3,
+                            pb: 1.5,
                             '::-webkit-scrollbar': {
                                 height: 4,
                             },
                             '::-webkit-scrollbar-track': {
-                                boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
+                                boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}50`,
                                 borderRadius: 3,
                             },
                             '::-webkit-scrollbar-thumb': {
-                                background: theme.factionTheme.primary,
+                                background: `${theme.factionTheme.primary}20`,
                                 borderRadius: 3,
                             },
                             transition: 'all .2s',
                         }}
                     >
                         <Box sx={{ direction: 'ltr' }}>
-                            <Stack spacing={5} direction="row" alignItems="center">
-                                {warMachines.map((mw) => (
-                                    <Box key={`${mw.participantID} - ${mw.tokenID}`}>
-                                        <WarMachineItem warMachine={mw} />
-                                    </Box>
-                                ))}
+                            <Stack spacing={3.8} direction="row" alignItems="center" justifyContent="flex-start">
+                                <Stack spacing={6.5} direction="row" alignItems="center" justifyContent="center">
+                                    {warMachines
+                                        .filter((wm) => wm.factionID == factionID)
+                                        .map((wm) => (
+                                            <WarMachineItem
+                                                key={`${wm.participantID} - ${wm.tokenID}`}
+                                                warMachine={wm}
+                                            />
+                                        ))}
+                                </Stack>
+
+                                <Stack spacing={0} direction="row" alignItems="center" justifyContent="center">
+                                    {warMachines
+                                        .filter((wm) => wm.factionID != factionID)
+                                        .map((wm) => (
+                                            <WarMachineItem
+                                                key={`${wm.participantID} - ${wm.tokenID}`}
+                                                warMachine={wm}
+                                            />
+                                        ))}
+                                </Stack>
                             </Stack>
                         </Box>
                     </Box>

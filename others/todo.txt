@@ -38,6 +38,7 @@ x user won notification color of faction
 
 Pending:
 - mech abilities
+	- make current faction mechs show first, show smaller
 - kill notification
 - video controls ui
 - make overlay components moveable / toggleable

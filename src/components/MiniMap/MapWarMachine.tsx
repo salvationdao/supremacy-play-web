@@ -8,43 +8,29 @@ import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from '../../
 
 export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
     const { participantID, faction, maxHealth, maxShield } = warMachine
-    const { user } = useAuth()
-    const userID = user?.id
-    const factionID = user?.factionID
+    const { factionID } = useAuth()
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
     const [position, sePosition] = useState<Vector2i>(warMachine.position)
     const [rotation, setRotation] = useState<number>(warMachine.rotation)
-    const prevRotation = useRef(0)
 
     const isAlive = health > 0
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
 
     // Listen on current war machine changes
     useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !subscribeWarMachineStatNetMessage ||
-            !userID ||
-            userID === '' ||
-            !factionID ||
-            factionID === NullUUID
-        )
+        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage || !factionID || factionID === NullUUID)
             return
 
         return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
-            if (payload?.rotation !== undefined) {
-                const newRotation = closestAngle(prevRotation.current, payload.rotation + 90)
-                prevRotation.current = rotation
-                setRotation(newRotation)
-            }
+            if (payload?.rotation !== undefined) setRotation((prev) => closestAngle(prev, payload.rotation || 0 + 90))
         })
-    }, [participantID, state, subscribeWarMachineStatNetMessage, userID, factionID])
+    }, [participantID, state, subscribeWarMachineStatNetMessage, factionID])
 
     if (!position) return null
 

@@ -23,6 +23,7 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
                 color={faction.theme.primary}
                 imageUrl={warMachineImageUrl ? warMachineImageUrl : undefined}
             />
+            <StyledNormalText text="." />
         </Box>
     )
 }

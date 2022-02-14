@@ -191,7 +191,7 @@ export const Notifications = () => {
         const locationSelectNoti5: NotificationResponse = {
             type: 'LOCATION_SELECT',
             data: {
-                type: 'CANCELLED_DISCONNECTED',
+                type: 'CANCELLED_DISCONNECT',
                 x: 7,
                 y: 5,
                 currentUser: {
@@ -313,36 +313,28 @@ export const Notifications = () => {
             switch (n.type) {
                 case 'TEXT':
                     return (
-                        <Box key={n.notiID}>
-                            <NotificationItem duration={n.duration}>
-                                <TextAlert data={n.data} />
-                            </NotificationItem>
-                        </Box>
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <TextAlert data={n.data} />
+                        </NotificationItem>
                     )
                 case 'LOCATION_SELECT':
                     return (
-                        <Box key={n.notiID}>
-                            <NotificationItem duration={n.duration}>
-                                <LocationSelectAlert data={n.data} />
-                            </NotificationItem>
-                        </Box>
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <LocationSelectAlert data={n.data} />
+                        </NotificationItem>
                     )
                 case 'BATTLE_ABILITY':
                 case 'FACTION_ABILITY':
                     return (
-                        <Box key={n.notiID}>
-                            <NotificationItem duration={n.duration}>
-                                <BattleFactionAbilityAlert data={n.data} />
-                            </NotificationItem>
-                        </Box>
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <BattleFactionAbilityAlert data={n.data} />
+                        </NotificationItem>
                     )
                 case 'WAR_MACHINE_ABILITY':
                     return (
-                        <Box key={n.notiID}>
-                            <NotificationItem duration={n.duration}>
-                                <WarMachineAbilityAlert data={n.data} />
-                            </NotificationItem>
-                        </Box>
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <WarMachineAbilityAlert data={n.data} />
+                        </NotificationItem>
                     )
             }
         })

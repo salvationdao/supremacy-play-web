@@ -76,6 +76,7 @@ export const MiniMap = () => {
             <Slide in={true} direction="left">
                 <Box>
                     <ClipThing
+                        clipSize="10px"
                         border={{
                             isFancy: true,
                             borderThickness: '3px',

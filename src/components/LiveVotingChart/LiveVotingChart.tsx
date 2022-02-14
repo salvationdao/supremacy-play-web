@@ -183,6 +183,7 @@ export const LiveVotingChart = () => {
                                                     sx={{
                                                         width: 7,
                                                         height: 7,
+                                                        mb: 0.2,
                                                         backgroundColor: colors.red,
                                                         borderRadius: '50%',
                                                         animation: `${pulseEffect} 3s infinite`,

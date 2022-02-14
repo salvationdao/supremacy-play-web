@@ -87,20 +87,17 @@ interface VoteRequest {
 
 export const BattleAbility = () => {
     const { state, send, subscribe } = useWebsocket()
-    const { user } = useAuth()
+    const { factionID } = useAuth()
     const { votingState, factionVotePrice } = useGame()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [fadeEffect, toggleFadeEffect] = useToggle()
 
-    const userID = user?.id
-    const factionID = user?.factionID
     const isVoting = votingState?.phase == 'VOTE_ABILITY_RIGHT' || votingState?.phase == 'NEXT_VOTE_WIN'
     const isCooldown = votingState?.phase == 'VOTE_COOLDOWN'
 
     // Subscribe to battle ability updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || userID === '' || !factionID || factionID === NullUUID)
-            return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe<BattleAbilityType>(
             HubKey.SubBattleAbility,
             (payload) => {
@@ -109,7 +106,7 @@ export const BattleAbility = () => {
             },
             null,
         )
-    }, [state, subscribe, userID, factionID])
+    }, [state, subscribe, factionID])
 
     const onVote = useCallback(
         (voteAmount: number) => async () => {
@@ -134,14 +131,14 @@ export const BattleAbility = () => {
 
     return (
         <Fade in={true}>
-            <Stack spacing={0.3}>
+            <Stack spacing={0.7}>
                 <BattleAbilityCountdown battleAbility={battleAbility} />
 
                 <Stack key={fadeEffect} spacing={1.3}>
                     <Fade in={true}>
                         <Box sx={{ opacity: isVoting ? 1 : 0.5 }}>
                             <ClipThing
-                                border={{ isFancy: true, borderColor: colour, borderThickness: '1.5px' }}
+                                // border={{ isFancy: true, borderColor: colour, borderThickness: '1.5px' }}
                                 clipSize="6px"
                             >
                                 <Stack
@@ -150,7 +147,7 @@ export const BattleAbility = () => {
                                     sx={{
                                         flex: 1,
                                         minWidth: 325,
-                                        backgroundColor: colors.darkNavy,
+                                        backgroundColor: `${colour || colors.darkNavy}12`,
                                         px: 2,
                                         pt: 1.4,
                                         pb: 1.6,
@@ -199,7 +196,7 @@ export const BattleAbility = () => {
                                             alignItems="center"
                                             justifyContent="center"
                                         >
-                                            <SvgCooldown component="span" size="13.2px" fill={'grey'} />
+                                            <SvgCooldown component="span" size="13px" fill={'grey'} sx={{ mb: 0.2 }} />
                                             <Typography
                                                 variant="body2"
                                                 sx={{ lineHeight: 1, color: 'grey !important' }}
