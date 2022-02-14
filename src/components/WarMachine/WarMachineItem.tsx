@@ -215,15 +215,18 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                             </Box>
                         </BoxSlanted>
 
-                        {gameAbilities.map((ga, index) => (
-                            <SkillBar
-                                key={ga.id}
-                                index={index}
-                                gameAbility={ga}
-                                widthOverall={SKILL_BAR_WIDTH_OVERALL}
-                                width={SKILL_BAR_WIDTH}
-                            />
-                        ))}
+                        {gameAbilities
+                            .slice()
+                            .reverse()
+                            .map((ga, index) => (
+                                <SkillBar
+                                    key={ga.id}
+                                    index={index}
+                                    gameAbility={ga}
+                                    widthOverall={SKILL_BAR_WIDTH_OVERALL}
+                                    width={SKILL_BAR_WIDTH}
+                                />
+                            ))}
                     </>
                 )}
             </Stack>

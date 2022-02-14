@@ -228,7 +228,7 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
                                         {supsCost.toFixed(2)}
                                     </Typography>
                                     <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
-                                        &nbsp;SUPS
+                                        &nbsp;SUP{supsCost.eq(1) ? '' : 'S'}
                                     </Typography>
                                 </Stack>
                             </Stack>
