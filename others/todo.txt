@@ -43,6 +43,8 @@ Pending:
 - video controls ui
 - make overlay components moveable / toggleable
 - iframe dimension onresize
+- XX vs YY
+- fix map mech rotation issue
 
 
 Future nice to have:
