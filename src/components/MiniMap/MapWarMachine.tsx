@@ -1,14 +1,12 @@
 import { Box, Stack } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SvgMapWarMachine, SvgMapSkull } from '../../assets'
-import { NullUUID } from '../../constants'
-import { useAuth, useWebsocket } from '../../containers'
+import { useWebsocket } from '../../containers'
 import { colors } from '../../theme/theme'
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from '../../types'
 
 export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
     const { participantID, faction, maxHealth, maxShield } = warMachine
-    const { factionID } = useAuth()
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
 
     const [health, setHealth] = useState<number>(warMachine.health)
@@ -21,8 +19,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
 
     // Listen on current war machine changes
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage || !factionID || factionID === NullUUID)
-            return
+        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
 
         return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
@@ -30,7 +27,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
             if (payload?.position !== undefined) sePosition(payload.position)
             if (payload?.rotation !== undefined) setRotation((prev) => closestAngle(prev, payload.rotation || 0 + 90))
         })
-    }, [participantID, state, subscribeWarMachineStatNetMessage, factionID])
+    }, [participantID, state, subscribeWarMachineStatNetMessage])
 
     if (!position) return null
 
