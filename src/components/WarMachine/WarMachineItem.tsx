@@ -1,18 +1,20 @@
 import { useEffect, useState, useRef } from 'react'
-import { Box, ButtonBase, Stack, Typography } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from '../../types'
-import { BoxSlanted, ClipThing, HealthShieldBars, WarMachineAbilitiesPopover } from '..'
+import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, WarMachineAbilitiesPopover } from '..'
 import { SvgSkull } from '../../assets'
 import { useAuth, useWebsocket } from '../../containers'
 import { NullUUID, PASSPORT_WEB } from '../../constants'
 import HubKey from '../../keys'
 import { useToggle } from '../../hooks'
-import { colors } from '../../theme/theme'
 
 const HEIGHT = 76
 const WIDTH = 255
 const WM_IMAGE_WIDTH = 92
 const SKILLS_WIDTH = 42
+const ROTATION = 76.5
+const SKILL_BAR_WIDTH_OVERALL = 29
+const SKILL_BAR_WIDTH = 9
 
 export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
     const { participantID, faction, name, imageUrl } = warMachine
@@ -30,7 +32,8 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
         theme: { primary, secondary, background },
     } = faction
 
-    const isOwnFaction = factionID == undefined || factionID == warMachine.factionID
+    const isOwnFaction = factionID == warMachine.factionID
+    const numSkillBars = gameAbilities ? gameAbilities.length : 0
 
     // Subscribe to war machine ability updates
     useEffect(() => {
@@ -72,7 +75,11 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                 ref={popoverRef}
                 direction="row"
                 alignItems="center"
-                sx={{ width: isOwnFaction ? WIDTH : WIDTH - SKILLS_WIDTH, opacity: isAlive ? 1 : 0.5 }}
+                sx={{
+                    position: 'relative',
+                    width: isOwnFaction ? WIDTH + numSkillBars * SKILL_BAR_WIDTH : WIDTH - SKILLS_WIDTH,
+                    opacity: isAlive ? 1 : 0.5,
+                }}
             >
                 <ClipThing
                     clipSize="8px"
@@ -166,46 +173,58 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                 </Stack>
 
                 {gameAbilities && gameAbilities.length > 0 && (
-                    <BoxSlanted
-                        clipSlantSize="20px"
-                        onClick={togglePopoverOpen}
-                        sx={{
-                            position: 'relative',
-                            width: SKILLS_WIDTH,
-                            alignSelf: 'stretch',
-                            ml: -1.2,
-                            backgroundColor: primary,
-                            boxShadow: 3,
-                            cursor: 'pointer',
-                            transform: 'scale(.95)',
-                            ':hover #warMachineSkillsText': {
-                                letterSpacing: 2.3,
-                            },
-                            zIndex: 3,
-                        }}
-                    >
-                        <Box
+                    <>
+                        <BoxSlanted
+                            clipSlantSize="20px"
+                            onClick={togglePopoverOpen}
                             sx={{
-                                position: 'absolute',
-                                left: '50%',
-                                top: '50%',
-                                transform: `translate(-50%, -50%) rotate(-${75.5}deg)`,
+                                position: 'relative',
+                                width: SKILLS_WIDTH + numSkillBars * SKILL_BAR_WIDTH,
+                                alignSelf: 'stretch',
+                                ml: -1.2,
+                                backgroundColor: primary,
+                                boxShadow: 3,
+                                cursor: 'pointer',
+                                transform: 'scale(.95)',
+                                ':hover #warMachineSkillsText': {
+                                    letterSpacing: 2.3,
+                                },
+                                zIndex: 3,
                             }}
                         >
-                            <Typography
-                                id="warMachineSkillsText"
-                                variant="body1"
+                            <Box
                                 sx={{
-                                    fontWeight: 'fontWeightBold',
-                                    color: secondary,
-                                    letterSpacing: 1,
-                                    transition: 'all .2s',
+                                    position: 'absolute',
+                                    left: 22,
+                                    top: '50%',
+                                    transform: `translate(-50%, -50%) rotate(-${ROTATION}deg)`,
                                 }}
                             >
-                                SKILLS
-                            </Typography>
-                        </Box>
-                    </BoxSlanted>
+                                <Typography
+                                    id="warMachineSkillsText"
+                                    variant="body1"
+                                    sx={{
+                                        fontWeight: 'fontWeightBold',
+                                        color: secondary,
+                                        letterSpacing: 1,
+                                        transition: 'all .2s',
+                                    }}
+                                >
+                                    SKILLS
+                                </Typography>
+                            </Box>
+                        </BoxSlanted>
+
+                        {gameAbilities.map((ga, index) => (
+                            <SkillBar
+                                key={ga.id}
+                                index={index}
+                                gameAbility={ga}
+                                widthOverall={SKILL_BAR_WIDTH_OVERALL}
+                                width={SKILL_BAR_WIDTH}
+                            />
+                        ))}
+                    </>
                 )}
             </Stack>
 

@@ -51,7 +51,7 @@ export const WarMachineAbilitiesPopover = ({
                         borderColor: factionTheme.primary,
                     }}
                 >
-                    <Box sx={{ backgroundColor: factionTheme.background, px: 1.6, pt: 1.6, pb: 1.8 }}>
+                    <Box sx={{ backgroundColor: factionTheme.background, px: 1.6, pt: 1.6, pb: 1.6 }}>
                         <Stack spacing={0.9}>
                             <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: 1.1 }}>
                                 <Box

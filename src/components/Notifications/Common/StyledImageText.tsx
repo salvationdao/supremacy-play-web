@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material'
 
 export const StyledImageText = ({ imageUrl, text, color }: { imageUrl?: string; text: string; color: string }) => {
     return (
-        <Box sx={{ display: 'inline-block' }}>
+        <Box sx={{ display: 'inline' }}>
             {imageUrl && (
                 <Box
                     sx={{
@@ -22,7 +22,7 @@ export const StyledImageText = ({ imageUrl, text, color }: { imageUrl?: string; 
             <Typography
                 component="span"
                 variant="body1"
-                sx={{ fontWeight: 'fontWeightBold', color, wordBreak: 'break-word' }}
+                sx={{ display: 'inline', fontWeight: 'fontWeightBold', color, wordBreak: 'break-word' }}
             >
                 {text}
             </Typography>

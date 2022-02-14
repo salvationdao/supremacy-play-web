@@ -1,5 +1,3 @@
-import { Theme } from '@mui/material/styles'
-import { useTheme } from '@mui/styles'
 import { Box, Fade, Stack, Typography } from '@mui/material'
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useState } from 'react'
@@ -60,9 +58,9 @@ const ContributionBar = ({
                     sx={{
                         position: 'absolute',
                         left: `${costPercent}%`,
-                        backgroundColor: colors.red,
                         height: 10,
                         width: 2,
+                        backgroundColor: colors.red,
                         zIndex: 6,
                     }}
                 />
@@ -95,7 +93,6 @@ interface WarMachineAbilityItemProps {
 export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProps) => {
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
-    const theme = useTheme<Theme>()
 
     const { label, colour, imageUrl, id } = gameAbility
     const [refresh, toggleRefresh] = useToggle()

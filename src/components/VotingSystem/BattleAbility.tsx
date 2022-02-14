@@ -4,7 +4,6 @@ import { BattleAbilityCountdown, ClipThing, VotingButton } from '..'
 import { SvgCooldown, SvgApplause } from '../../assets'
 import { NullUUID } from '../../constants'
 import { useAuth, useGame, useWebsocket } from '../../containers'
-import { shadeColor } from '../../helpers'
 import { useToggle } from '../../hooks'
 import HubKey from '../../keys'
 import { zoomEffect } from '../../theme/keyframes'
@@ -197,7 +196,7 @@ export const BattleAbility = () => {
                                             alignItems="center"
                                             justifyContent="center"
                                         >
-                                            <SvgCooldown component="span" size="13.2px" fill={'grey'} />
+                                            <SvgCooldown component="span" size="13px" fill={'grey'} sx={{ mb: 0.2 }} />
                                             <Typography
                                                 variant="body2"
                                                 sx={{ lineHeight: 1, color: 'grey !important' }}

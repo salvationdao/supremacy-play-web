@@ -59,9 +59,10 @@ export const WarMachineStats = () => {
                                     {warMachines
                                         .filter((wm) => wm.factionID == factionID)
                                         .map((wm) => (
-                                            <Box key={`${wm.participantID} - ${wm.tokenID}`}>
-                                                <WarMachineItem warMachine={wm} />
-                                            </Box>
+                                            <WarMachineItem
+                                                key={`${wm.participantID} - ${wm.tokenID}`}
+                                                warMachine={wm}
+                                            />
                                         ))}
                                 </Stack>
 
@@ -69,9 +70,10 @@ export const WarMachineStats = () => {
                                     {warMachines
                                         .filter((wm) => wm.factionID != factionID)
                                         .map((wm) => (
-                                            <Box key={`${wm.participantID} - ${wm.tokenID}`}>
-                                                <WarMachineItem warMachine={wm} />
-                                            </Box>
+                                            <WarMachineItem
+                                                key={`${wm.participantID} - ${wm.tokenID}`}
+                                                warMachine={wm}
+                                            />
                                         ))}
                                 </Stack>
                             </Stack>

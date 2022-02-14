@@ -23,6 +23,7 @@ export const BattleFactionAbilityAlert = ({ data }: { data: BattleFactionAbility
                     user && user.faction.logoBlobID ? `${PASSPORT_WEB}/api/files/${user.faction.logoBlobID}` : undefined
                 }
             />
+            <StyledNormalText text="." />
         </Box>
     )
 }
