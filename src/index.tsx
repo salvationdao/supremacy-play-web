@@ -68,13 +68,13 @@ const AppInner = () => {
                         </Box>
 
                         <Box sx={{ flex: 1, position: 'relative' }}>
-                            {/* <iframe
+                            <iframe
                                 width="100%"
                                 height="100%"
                                 frameBorder="0"
                                 allowFullScreen
                                 src={STREAM_SITE}
-                            ></iframe> */}
+                            ></iframe>
 
                             <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
                                 <VotingSystem />
