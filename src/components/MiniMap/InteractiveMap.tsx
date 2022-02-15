@@ -185,25 +185,27 @@ export const InteractiveMap = ({
                 console.log(x, y)
                 api.start({ x, y, immediate: down })
             },
-            onWheel: ({ delta: [, deltaY] }) => {
+            onWheel: ({ delta: [, deltaY], initial: [iX, iY] }) => {
                 const factor = 0.1
                 const scale = style.scale.get()
                 const delta = deltaY * -0.01
                 const newScale = scale + delta * factor * scale
 
                 //Todo: Set the origin of the zoom
-                // y = 0
-                // x = 0
+                // Find the centre of the map
+                // y = -iY + windowDimension.height / 2
+                // x = -iX + windowDimension.width / 2
+                // y = iY
+                // x = iX
 
                 // Keeps the map within scale bounds
                 if (newScale >= 0.6 && 1 >= newScale) {
-                    api.set({ scale: newScale })
+                    api.start({ scale: newScale })
                 } else if (newScale >= 1) {
-                    api.set({ scale: 1 })
+                    api.start({ scale: 1 })
                 } else {
-                    api.set({ scale: 0.6 })
+                    api.start({ scale: 0.6 })
                 }
-
             },
         },
 
@@ -216,12 +218,11 @@ export const InteractiveMap = ({
                 bounds: () => {
                     if (!map) return
 
-
                     const scale = style.scale.get()
                     const mapHeight = scale * map.height
                     const mapWidth = scale * map.width
 
-                    console.log("width", mapWidth, " height", mapHeight)
+                    console.log('width', mapWidth, ' height', mapHeight)
 
                     return {
                         top:
@@ -235,6 +236,15 @@ export const InteractiveMap = ({
                         right: 0,
                         bottom: 0,
                     }
+                },
+            },
+            wheel: {
+                // set the initial position of map (middle of the map)
+                from: () => {
+                    console.log('wheel')
+                    const x = -style.x.get() + windowDimension.width / 2
+                    const y = style.y.get() + windowDimension.height / 2
+                    return [x, y]
                 },
             },
         },
