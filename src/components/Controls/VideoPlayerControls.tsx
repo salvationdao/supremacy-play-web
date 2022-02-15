@@ -25,16 +25,13 @@ export const VideoPlayerControls = (props: ControlsProps) => {
                         <SvgVolume size="14px" />
                     </IconButton>
                     <Slider
+                        size="small"
                         min={0}
                         max={1}
+                        step={0.1}
                         aria-label="Volume"
                         value={volume}
-                        // onChange={(e) => {
-                        //     setVolume(volume + 0.1)
-                        //     console.log('this is e', e)
-                        // }}
                         onChange={handleChange}
-                        step={0.1}
                     />
                 </Stack>
             </Box>
