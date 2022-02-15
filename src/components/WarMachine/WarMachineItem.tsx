@@ -8,15 +8,16 @@ import { NullUUID, PASSPORT_WEB } from '../../constants'
 import HubKey from '../../keys'
 import { useToggle } from '../../hooks'
 
+const WIDTH_WM_IMAGE = 92
+const WIDTH_CENTER = 142
+export const WIDTH_PER_SLANTED_BAR = 12
+export const WIDTH_PER_SLANTED_BAR_ACTUAL = 32
+const WIDTH_SKILL_BUTTON = 42
 const HEIGHT = 76
-const WIDTH = 255
-const WM_IMAGE_WIDTH = 92
-const SKILLS_WIDTH = 42
-const ROTATION = 76.5
-const SKILL_BAR_WIDTH_OVERALL = 29
-const SKILL_BAR_WIDTH = 9
 
-export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) => {
+const SKILL_BUTTON_TEXT_ROTATION = 76.5
+
+export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineState; scale: number }) => {
     const { participantID, faction, name, imageUrl } = warMachine
     const { state, subscribe } = useWebsocket()
     const { factionID } = useAuth()
@@ -25,6 +26,7 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
+    const [isExpanded, toggleIsExpanded] = useToggle(true)
 
     const {
         id: warMachineFactionID,
@@ -69,27 +71,49 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
         <BoxSlanted
             key={`WarMachineItem-${participantID}`}
             clipSlantSize="20px"
-            sx={{ transform: isOwnFaction ? '' : 'scale(.8)' }}
+            sx={{ transform: isOwnFaction ? '' : `scale(${scale})` }}
         >
             <Stack
                 ref={popoverRef}
                 direction="row"
-                alignItems="center"
+                alignItems="flex-end"
                 sx={{
                     position: 'relative',
-                    width: isOwnFaction ? WIDTH + numSkillBars * SKILL_BAR_WIDTH : WIDTH - SKILLS_WIDTH,
+                    width: isOwnFaction
+                        ? isExpanded
+                            ? WIDTH_WM_IMAGE + WIDTH_CENTER + WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR
+                            : WIDTH_WM_IMAGE +
+                              (2 * WIDTH_PER_SLANTED_BAR + 6) +
+                              (numSkillBars > 0 ? WIDTH_SKILL_BUTTON + WIDTH_PER_SLANTED_BAR / 2 - 1 : 0)
+                        : isExpanded
+                        ? WIDTH_WM_IMAGE + WIDTH_CENTER
+                        : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 6,
                     opacity: isAlive ? 1 : 0.5,
                 }}
             >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: 0,
+                        right: 0,
+                        left: 10,
+                        height: 3,
+                        backgroundColor: primary,
+                        zIndex: 9,
+                    }}
+                />
+
                 <ClipThing
                     clipSize="8px"
-                    clipSlantSize="20px"
-                    border={{ isFancy: false, borderColor: primary, borderThickness: '2.5px' }}
-                    sx={{ mb: '2.3px', zIndex: 2 }}
+                    clipSlantSize="18px"
+                    border={{ isFancy: false, borderColor: primary, borderThickness: '3px' }}
+                    sx={{ zIndex: 2 }}
+                    skipRightCorner={!isExpanded}
                 >
                     <Box
+                        onClick={toggleIsExpanded}
                         sx={{
-                            width: WM_IMAGE_WIDTH,
+                            width: WIDTH_WM_IMAGE,
                             height: HEIGHT,
                             overflow: 'hidden',
                             backgroundColor: primary,
@@ -116,119 +140,123 @@ export const WarMachineItem = ({ warMachine }: { warMachine: WarMachineState }) 
                     </Box>
                 </ClipThing>
 
-                <Stack
-                    justifyContent="flex-end"
-                    sx={{
-                        flex: 1,
-                        ml: -2.5,
-                        height: HEIGHT + 2.4,
-                        borderBottomStyle: 'solid',
-                        borderBottomWidth: '2.5px',
-                        borderBottomColor: primary,
-
-                        backgroundColor: '#00000056',
-                        opacity: isAlive ? 1 : 0.7,
-                        zIndex: 1,
-                    }}
-                >
-                    <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: 1, pl: 3, pr: 1.1 }}>
-                        <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} />
-
-                        <Box
-                            sx={{
-                                width: 26,
-                                height: 26,
-                                backgroundImage: `url(${PASSPORT_WEB}/api/files/${logoBlobID})`,
-                                backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'center',
-                                backgroundSize: 'contain',
-                            }}
-                        />
-                    </Stack>
-
+                <Stack direction="row" alignSelf="stretch" flex={1} sx={{ position: 'relative' }}>
                     <Stack
-                        justifyContent="center"
-                        sx={{ pl: 2.2, pr: 2.3, py: 0.7, height: 33, backgroundColor: `${background}95` }}
+                        justifyContent="flex-end"
+                        sx={{
+                            flex: 1,
+                            position: 'relative',
+                            alignSelf: 'stretch',
+                            ml: -2.5,
+
+                            backgroundColor: isExpanded ? '#00000056' : 'transparent',
+                            opacity: isAlive ? 1 : 0.7,
+                            zIndex: 1,
+                        }}
                     >
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: '#FFFFFF',
-                                lineHeight: 1,
-                                fontWeight: 'fontWeightBold',
-                                fontFamily: 'Nostromo Regular Black',
+                        {isExpanded ? (
+                            <>
+                                <Stack
+                                    alignItems="center"
+                                    direction="row"
+                                    spacing={1}
+                                    sx={{ flex: 1, pl: 3.5, pr: 2.1 }}
+                                >
+                                    <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} />
 
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                whiteSpace: 'normal',
-                                display: '-webkit-box',
-                                overflowWrap: 'anywhere',
-                                WebkitBoxOrient: 'vertical',
-                                WebkitLineClamp: 2,
-                            }}
-                        >
-                            {name}
-                        </Typography>
+                                    <Box
+                                        sx={{
+                                            width: 26,
+                                            height: 26,
+                                            backgroundImage: `url(${PASSPORT_WEB}/api/files/${logoBlobID})`,
+                                            backgroundRepeat: 'no-repeat',
+                                            backgroundPosition: 'center',
+                                            backgroundSize: 'contain',
+                                        }}
+                                    />
+                                </Stack>
+
+                                <Stack
+                                    justifyContent="center"
+                                    sx={{ pl: 2.2, pr: 2.3, py: 0.7, height: 33, backgroundColor: `${background}95` }}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: '#FFFFFF',
+                                            lineHeight: 1,
+                                            fontWeight: 'fontWeightBold',
+                                            fontFamily: 'Nostromo Regular Black',
+
+                                            textOverflow: 'ellipsis',
+                                            overflow: 'hidden',
+                                            whiteSpace: 'normal',
+                                            display: '-webkit-box',
+                                            overflowWrap: 'anywhere',
+                                            WebkitBoxOrient: 'vertical',
+                                            WebkitLineClamp: 2,
+                                        }}
+                                    >
+                                        {name}
+                                    </Typography>
+                                </Stack>
+                            </>
+                        ) : (
+                            <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} type="vertical" />
+                        )}
                     </Stack>
-                </Stack>
 
-                {gameAbilities && gameAbilities.length > 0 && (
-                    <>
-                        <BoxSlanted
-                            clipSlantSize="20px"
-                            onClick={togglePopoverOpen}
-                            sx={{
-                                position: 'relative',
-                                width: SKILLS_WIDTH + numSkillBars * SKILL_BAR_WIDTH,
-                                alignSelf: 'stretch',
-                                ml: -1.2,
-                                backgroundColor: primary,
-                                boxShadow: 3,
-                                cursor: 'pointer',
-                                transform: 'scale(.95)',
-                                ':hover #warMachineSkillsText': {
-                                    letterSpacing: 2.3,
-                                },
-                                zIndex: 3,
-                            }}
-                        >
-                            <Box
+                    {gameAbilities && gameAbilities.length > 0 && (
+                        <>
+                            <BoxSlanted
+                                clipSlantSize="20px"
+                                onClick={togglePopoverOpen}
                                 sx={{
-                                    position: 'absolute',
-                                    left: 22,
-                                    top: '50%',
-                                    transform: `translate(-50%, -50%) rotate(-${ROTATION}deg)`,
+                                    position: 'relative',
+                                    width: WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR,
+                                    alignSelf: 'stretch',
+                                    ml: -2.5,
+                                    backgroundColor: primary,
+                                    boxShadow: 3,
+                                    cursor: 'pointer',
+                                    ':hover #warMachineSkillsText': {
+                                        letterSpacing: 2.3,
+                                    },
+                                    zIndex: 3,
                                 }}
                             >
-                                <Typography
-                                    id="warMachineSkillsText"
-                                    variant="body1"
+                                <Box
                                     sx={{
-                                        fontWeight: 'fontWeightBold',
-                                        color: secondary,
-                                        letterSpacing: 1,
-                                        transition: 'all .2s',
+                                        position: 'absolute',
+                                        left: 22,
+                                        top: '50%',
+                                        transform: `translate(-50%, -50%) rotate(-${SKILL_BUTTON_TEXT_ROTATION}deg)`,
                                     }}
                                 >
-                                    SKILLS
-                                </Typography>
-                            </Box>
-                        </BoxSlanted>
+                                    <Typography
+                                        id="warMachineSkillsText"
+                                        variant="body1"
+                                        sx={{
+                                            fontWeight: 'fontWeightBold',
+                                            color: secondary,
+                                            letterSpacing: 1,
+                                            transition: 'all .2s',
+                                        }}
+                                    >
+                                        SKILLS
+                                    </Typography>
+                                </Box>
+                            </BoxSlanted>
 
-                        {gameAbilities
-                            .slice()
-                            .reverse()
-                            .map((ga, index) => (
-                                <SkillBar
-                                    key={ga.id}
-                                    index={index}
-                                    gameAbility={ga}
-                                    widthOverall={SKILL_BAR_WIDTH_OVERALL}
-                                    width={SKILL_BAR_WIDTH}
-                                />
-                            ))}
-                    </>
-                )}
+                            {gameAbilities
+                                .slice()
+                                .reverse()
+                                .map((ga, index) => (
+                                    <SkillBar key={ga.id} index={index} gameAbility={ga} />
+                                ))}
+                        </>
+                    )}
+                </Stack>
             </Stack>
 
             {gameAbilities && gameAbilities.length > 0 && (

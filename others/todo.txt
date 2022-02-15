@@ -34,17 +34,19 @@ x relocation notifications to right corner
 x move game bar outside of stream
 x live view count: by faction and not logged in
 x user won notification color of faction
+x mech abilities
+	x make current faction mechs show first, show smaller
 
 
 Pending:
-- mech abilities
-	- make current faction mechs show first, show smaller
 - kill notification
 - video controls ui
 - make overlay components moveable / toggleable
 - iframe dimension onresize
 - XX vs YY
 - fix map mech rotation issue
+- tutorial guide for new users
+- map show mech logo image instead
 
 
 Future nice to have:
