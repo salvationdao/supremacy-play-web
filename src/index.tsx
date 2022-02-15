@@ -9,9 +9,9 @@ import {
     useAuth,
     useDimension,
 } from './containers'
-import { Box, CssBaseline, Stack, ThemeProvider } from '@mui/material'
+import { Box, Button, CssBaseline, Stack, ThemeProvider } from '@mui/material'
 import { Controls, LiveCounts, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { colors, theme } from './theme/theme'
@@ -51,10 +51,16 @@ const AppInner = () => {
         iframeDimensions: { width, height },
     } = useDimension()
     const handle = useFullScreenHandle()
+    const elementRef = useRef<HTMLIFrameElement>(null)
+
+    useLayoutEffect(() => {
+        if (elementRef.current) {
+            console.log('holy shit wtf', elementRef.current) // { current: <h1_object> }
+        }
+    })
 
     return (
         <>
-            <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <FullScreen handle={handle}>
                     <Stack sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
@@ -69,6 +75,7 @@ const AppInner = () => {
 
                         <Box sx={{ flex: 1, position: 'relative' }}>
                             <iframe
+                                ref={elementRef}
                                 width="100%"
                                 height="100%"
                                 frameBorder="0"
@@ -93,7 +100,7 @@ const AppInner = () => {
                                 backgroundColor: colors.darkNavyBlue,
                             }}
                         >
-                            <Controls />
+                            <Controls screenHandler={handle} />
                         </Box>
                     </Stack>
                 </FullScreen>
