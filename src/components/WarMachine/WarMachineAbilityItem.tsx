@@ -158,7 +158,7 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
                             sx={{
                                 flex: 1,
                                 minWidth: 325,
-                                backgroundColor: colour ? `${colour}12` : `${colors.darkNavyBlue}80`,
+                                backgroundColor: colour ? `${colour}15` : `${colors.darkNavyBlue}80`,
                                 px: 2,
                                 pt: 1.6,
                                 pb: 1.6,

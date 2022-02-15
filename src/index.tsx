@@ -76,6 +76,9 @@ const AppInner = () => {
                                 src={STREAM_SITE}
                             ></iframe>
 
+                            {/* <Box sx={{ backgroundColor: '#622D93', width: '100%', height: '100%' }} /> */}
+                            {/* <Box sx={{ backgroundColor: '#000000', width: '100%', height: '100%' }} /> */}
+
                             <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
                                 <VotingSystem />
                                 <MiniMap />
