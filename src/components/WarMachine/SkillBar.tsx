@@ -7,7 +7,15 @@ import { useAuth, useWebsocket } from '../../containers'
 import { shadeColor } from '../../helpers'
 import { GameAbility, GameAbilityTargetPrice } from '../../types'
 
-export const SkillBar = ({ index, gameAbility }: { index: number; gameAbility: GameAbility }) => {
+export const SkillBar = ({
+    index,
+    gameAbility,
+    maxAbilityPriceMap,
+}: {
+    index: number
+    gameAbility: GameAbility
+    maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
+}) => {
     const { factionID } = useAuth()
     const { state, subscribeAbilityNetMessage } = useWebsocket()
 
@@ -40,6 +48,9 @@ export const SkillBar = ({ index, gameAbility }: { index: number; gameAbility: G
 
         if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
+
+            // cache max price for pop up
+            maxAbilityPriceMap.current.set(id, supsCost)
         }
     }, [gameAbilityTargetPrice])
 

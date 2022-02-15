@@ -7,7 +7,6 @@ import HubKey from '../../keys'
 import { zoomEffect } from '../../theme/keyframes'
 import { colors } from '../../theme/theme'
 import { GameAbility, GameAbilityTargetPrice } from '../../types'
-import { useToggle } from '../../hooks'
 import { NullUUID } from '../../constants'
 import { SvgSupToken } from '../../assets'
 
@@ -88,14 +87,15 @@ interface GameAbilityContributeRequest {
 
 interface WarMachineAbilityItemProps {
     gameAbility: GameAbility
+    maxAbilityPriceMap?: React.MutableRefObject<Map<string, BigNumber>>
 }
 
-export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProps) => {
+export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMachineAbilityItemProps) => {
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
 
     const { label, colour, imageUrl, id } = gameAbility
-    const [refresh, toggleRefresh] = useToggle()
+    // const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber('0'))
     const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
@@ -121,9 +121,17 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
         setSupsCost(supsCost)
         setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
 
-        if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
+        if (gameAbilityTargetPrice.shouldReset) {
             setInitialTargetCost(supsCost)
-            toggleRefresh()
+            return
+        }
+
+        if (initialTargetCost.isZero()) {
+            if (maxAbilityPriceMap) {
+                setInitialTargetCost(maxAbilityPriceMap.current.get(id) || supsCost)
+                return
+            }
+            setInitialTargetCost(supsCost)
         }
     }, [gameAbilityTargetPrice])
 
@@ -148,7 +156,7 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
     )
 
     return (
-        <Box key={refresh}>
+        <Box key={`${initialTargetCost}`}>
             <Fade in={true}>
                 <Box>
                     <ClipThing clipSize="6px" clipSlantSize="5px">

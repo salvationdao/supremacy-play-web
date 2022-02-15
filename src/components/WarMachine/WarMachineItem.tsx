@@ -7,6 +7,7 @@ import { useAuth, useWebsocket } from '../../containers'
 import { NullUUID, PASSPORT_WEB } from '../../constants'
 import HubKey from '../../keys'
 import { useToggle } from '../../hooks'
+import BigNumber from 'bignumber.js'
 
 const WIDTH_WM_IMAGE = 92
 const WIDTH_CENTER = 142
@@ -27,7 +28,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
     const [isExpanded, toggleIsExpanded] = useToggle(true)
-
+    const maxAbilityPriceMap = useRef<Map<string, BigNumber>>(new Map<string, BigNumber>())
     const {
         id: warMachineFactionID,
         logoBlobID,
@@ -252,7 +253,12 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                                 .slice()
                                 .reverse()
                                 .map((ga, index) => (
-                                    <SkillBar key={ga.id} index={index} gameAbility={ga} />
+                                    <SkillBar
+                                        key={ga.id}
+                                        index={index}
+                                        gameAbility={ga}
+                                        maxAbilityPriceMap={maxAbilityPriceMap}
+                                    />
                                 ))}
                         </>
                     )}
@@ -266,6 +272,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                     toggleOpen={togglePopoverOpen}
                     warMachine={warMachine}
                     gameAbilities={gameAbilities}
+                    maxAbilityPriceMap={maxAbilityPriceMap}
                 />
             )}
         </BoxSlanted>
