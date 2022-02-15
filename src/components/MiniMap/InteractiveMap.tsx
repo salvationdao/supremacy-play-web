@@ -9,7 +9,7 @@ import { GameAbility, Map } from '../../types'
 
 // UseGesture Stuff
 import { animated, useSpring } from 'react-spring'
-import { useGesture, useDrag } from '@use-gesture/react'
+import { useGesture } from '@use-gesture/react'
 
 export interface MapSelection {
     x: number
@@ -166,59 +166,78 @@ export const InteractiveMap = ({
 
     // ---------- Minimap - useGesture setup --------------
     // Prevents map zooming from interfering with the browsers' accessibility zoom
+    // https://developer.apple.com/documentation/webkitjs/gestureevent
     document.addEventListener('gesturestart', (e) => e.preventDefault())
     document.addEventListener('gesturechange', (e) => e.preventDefault())
 
     const [style, api] = useSpring(() => ({
         x: 0,
         y: 0,
-        zoom: 0,
         scale: 1,
         wheel: 0,
     }))
+    const mapRef = useRef<HTMLDivElement>(null)
 
     const bind = useGesture(
         {
             onDrag: ({ wheeling, cancel, down, offset: [x, y] }) => {
                 if (wheeling) return cancel()
+                console.log(x, y)
                 api.start({ x, y, immediate: down })
             },
-            onWheel: ({ offset: [, oy] }) => {
+            onWheel: ({ delta: [, deltaY] }) => {
                 const factor = 0.1
-                const delta = oy / 120
-                const newScale = 1 + delta * factor
+                const scale = style.scale.get()
+                const delta = deltaY * -0.01
+                const newScale = scale + delta * factor * scale
 
-                console.log(newScale)
+                //Todo: Set the origin of the zoom
+                // y = 0
+                // x = 0
 
-                // need to set x & y (origin of zoom)
-                // api.set({ wheel: oy, zoom: newScale })
-                api.set({ wheel: oy, scale: newScale, })
+                // Keeps the map within scale bounds
+                if (newScale >= 0.6 && 1 >= newScale) {
+                    api.set({ scale: newScale })
+                } else if (newScale >= 1) {
+                    api.set({ scale: 1 })
+                } else {
+                    api.set({ scale: 0.6 })
+                }
+
             },
         },
 
         {
             drag: {
+                // set the initial position of map
+                from: () => [style.x.get(), style.y.get()],
+
+                // set the bounds of the map
                 bounds: () => {
                     if (!map) return
+
+
+                    const scale = style.scale.get()
+                    const mapHeight = scale * map.height
+                    const mapWidth = scale * map.width
+
+                    console.log("width", mapWidth, " height", mapHeight)
+
                     return {
                         top:
-                            windowDimension.height <= map.height
-                                ? -(map.height - windowDimension.height)
-                                : (windowDimension.height - map.height) / 2,
+                            windowDimension.height <= mapHeight
+                                ? -(mapHeight - windowDimension.height)
+                                : (windowDimension.height - mapHeight) / 2,
                         left:
-                            windowDimension.width <= map.width
-                                ? -(map.width - windowDimension.width)
-                                : (windowDimension.width - map.width) / 2,
+                            windowDimension.width <= mapWidth
+                                ? -(mapWidth - windowDimension.width)
+                                : (windowDimension.width - mapWidth) / 2,
                         right: 0,
                         bottom: 0,
                     }
                 },
-
             },
-            // wheel: {
-            //
-            // },
-        }
+        },
     )
 
     if (!map) return null
@@ -227,42 +246,14 @@ export const InteractiveMap = ({
         <Stack
             key={String(refresh)}
             sx={{
-                position: 'relative',
+                position: 'absolute',
+                display: 'flex',
                 width: '100%',
                 height: '100%',
                 overflow: 'hidden',
             }}
         >
-            {/*<Draggable*/}
-            {/*    allowAnyClick*/}
-            {/*    defaultPosition={lastPos.current}*/}
-            {/*    onDrag={() => {*/}
-            {/*        if (!isDragging.current) isDragging.current = true*/}
-            {/*    }}*/}
-            {/*    onStop={(e: DraggableEvent, data: DraggableData) => {*/}
-            {/*        setTimeout(() => {*/}
-            {/*            isDragging.current = false*/}
-            {/*        }, 50)*/}
-
-            {/*        lastPos.current = {*/}
-            {/*            x: data.x,*/}
-            {/*            y: data.y,*/}
-            {/*        }*/}
-            {/*    }}*/}
-            {/*    bounds={{*/}
-            {/*        top:*/}
-            {/*            windowDimension.height <= map.height*/}
-            {/*                ? -(map.height - windowDimension.height)*/}
-            {/*                : (windowDimension.height - map.height) / 2,*/}
-            {/*        left:*/}
-            {/*            windowDimension.width <= map.width*/}
-            {/*                ? -(map.width - windowDimension.width)*/}
-            {/*                : (windowDimension.width - map.width) / 2,*/}
-            {/*        right: 0,*/}
-            {/*        bottom: 0,*/}
-            {/*    }}*/}
-            {/*>*/}
-            <animated.div {...bind()} style={style}>
+            <animated.div {...bind()} style={style} ref={mapRef}>
                 <Box sx={{ cursor: 'move' }}>
                     <MapWarMachines />
 
@@ -270,6 +261,7 @@ export const InteractiveMap = ({
 
                     {grid}
 
+                    {/* Map Image */}
                     <Box
                         sx={{
                             position: 'absolute',
@@ -280,7 +272,6 @@ export const InteractiveMap = ({
                     />
                 </Box>
             </animated.div>
-            {/*</Draggable>*/}
         </Stack>
     )
 }
