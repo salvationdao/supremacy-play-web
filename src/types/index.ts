@@ -1,3 +1,4 @@
+import { Event } from '@mui/icons-material'
 import React, { Dispatch } from 'react'
 
 interface UpdateThemeContextProps {
@@ -124,6 +125,28 @@ export interface NetMessageTickWarMachine {
 
 export interface NetMessageTick {
     warmachines: NetMessageTickWarMachine[]
+}
+
+export interface BattleEndDetail {
+    topSupsContributor: User // user who contribute the most sups
+    topSupsContributeFaction: Faction // faction which contribute the most sups
+    topApplauseContributor: User // user who contribute the most applause
+    mostFrequentAbilityExecutor: User // user who trigger ability most frequent
+    battleEvents: BattleEvent[]
+}
+
+export interface BattleEvent {
+    type: 'GAME_ABILITY' | 'WAR_MACHINE_DESTROYED'
+    createdAt: Date
+    event: GameAbility | WarMachineDestroyedRecord
+}
+
+export interface GameAbilityEvent {
+    ability: GameAbility
+    triggeredByUser?: User
+    x?: number
+    y?: number
+    triggeredOnWarMachine?: WarMachineState
 }
 
 export interface WarMachineDestroyedRecord {
