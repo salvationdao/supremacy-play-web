@@ -4,6 +4,9 @@ import { LiveCounts, VideoPlayerControls } from '..'
 
 export interface ControlsProps {
     screenHandler: FullScreenHandle
+    muteToggle: () => void
+    volume: number
+    setVolume: (v: number) => void
 }
 export const Controls = (props: ControlsProps) => {
     return (

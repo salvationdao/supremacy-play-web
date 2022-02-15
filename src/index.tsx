@@ -27,6 +27,7 @@ import {
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
 import * as Sentry from '@sentry/react'
+import ReactPlayer from 'react-player'
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -52,10 +53,13 @@ const AppInner = () => {
     } = useDimension()
     const handle = useFullScreenHandle()
     const elementRef = useRef<HTMLIFrameElement>(null)
+    const [isMute, setIsMute] = useState(true)
+    const [volume, setVolume] = useState(0.0)
 
     useLayoutEffect(() => {
         if (elementRef.current) {
             console.log('holy shit wtf', elementRef.current) // { current: <h1_object> }
+            // elementRef.current.set
         }
     })
 
@@ -76,13 +80,22 @@ const AppInner = () => {
                         <Box sx={{ flex: 1, position: 'relative' }}>
                             <iframe
                                 ref={elementRef}
-                                width="100%"
-                                height="100%"
+                                // width="100%"
+                                // height="100%"
                                 frameBorder="0"
                                 allowFullScreen
                                 src={STREAM_SITE}
                             ></iframe>
 
+                            <ReactPlayer
+                                volume={volume}
+                                playing
+                                muted={isMute}
+                                controls
+                                url={'https://www.youtube.com/watch?v=5qap5aO4i9A'}
+                                width="100%"
+                                height={'100%'}
+                            />
                             <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
                                 <VotingSystem />
                                 <MiniMap />
@@ -100,7 +113,14 @@ const AppInner = () => {
                                 backgroundColor: colors.darkNavyBlue,
                             }}
                         >
-                            <Controls screenHandler={handle} />
+                            <Controls
+                                volume={volume}
+                                setVolume={setVolume}
+                                muteToggle={() => {
+                                    setIsMute(!isMute)
+                                }}
+                                screenHandler={handle}
+                            />
                         </Box>
                     </Stack>
                 </FullScreen>
