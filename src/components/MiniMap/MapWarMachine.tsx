@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { SvgMapWarMachine, SvgMapSkull, GenericWarMachine } from '../../assets'
+import { SvgMapSkull, GenericWarMachine } from '../../assets'
 import { useWebsocket } from '../../containers'
 import { shadeColor } from '../../helpers'
 import { colors } from '../../theme/theme'
@@ -15,7 +15,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
     const [position, sePosition] = useState<Vector2i>(warMachine.position)
-    const [rotation, setRotation] = useState<number>(warMachine.rotation)
+    // const [rotation, setRotation] = useState<number>(warMachine.rotation)
 
     const isAlive = health > 0
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
@@ -28,7 +28,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
-            if (payload?.rotation !== undefined) setRotation((prev) => closestAngle(prev, payload.rotation || 0 + 90))
+            // if (payload?.rotation !== undefined) setRotation((prev) => closestAngle(prev, payload.rotation || 0 + 90))
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage])
 
@@ -113,106 +113,4 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
             )}
         </Stack>
     )
-
-    return (
-        <Stack
-            key={`warMachine-${participantID}`}
-            alignItems="center"
-            justifyContent="center"
-            sx={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * map.scale}px, ${
-                    (position.y - map.top) * map.scale
-                }px, 0)`,
-                transition: 'transform 0.2s linear',
-                zIndex: 5,
-            }}
-        >
-            <Box sx={{ position: 'relative' }}>
-                <Box
-                    sx={{
-                        transform: `rotate3d(0, 0, 1, ${rotation}deg)`,
-                        transition: 'transform 0.2s linear',
-                    }}
-                >
-                    <SvgMapWarMachine fill={primaryColor} size="17px" sx={{ opacity: isAlive ? 1 : 0.7, zIndex: 3 }} />
-
-                    {!isAlive && (
-                        <SvgMapSkull
-                            fill="#000000"
-                            size="15px"
-                            sx={{
-                                position: 'absolute',
-                                top: -6,
-                                left: '50%',
-                                transform: `translate(-50%, 0) rotate3d(0, 0, 1, -${rotation}deg)`,
-                            }}
-                        />
-                    )}
-                </Box>
-
-                {isAlive && (
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            boxShadow: `0 0 20px 9px ${primaryColor}90`,
-                            zIndex: -1,
-                        }}
-                    />
-                )}
-            </Box>
-
-            {isAlive && (
-                <Stack sx={{ mt: 0.7, width: 34 }} spacing={0.1}>
-                    <Box sx={{ width: '100%', height: 7, border: '1px solid #00000080' }}>
-                        <Box
-                            sx={{
-                                width: `${(shield / maxShield) * 100}%`,
-                                height: '100%',
-                                backgroundColor: colors.shield,
-                            }}
-                        />
-                    </Box>
-                    <Box sx={{ width: '100%', height: 7, border: '1px solid #00000080' }}>
-                        <Box
-                            sx={{
-                                width: `${(health / maxHealth) * 100}%`,
-                                height: '100%',
-                                backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
-                            }}
-                        />
-                    </Box>
-                </Stack>
-            )}
-
-            {/* <Box sx={{ mt: 0.5 }}>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: primaryColor,
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                        lineHeight: 1.1,
-                        maxWidth: 70,
-
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        whiteSpace: 'normal',
-                        display: '-webkit-box',
-                        overflowWrap: 'anywhere',
-                        WebkitBoxOrient: 'vertical',
-                        WebkitLineClamp: 2,
-                    }}
-                >
-                    {name}aaaaaaaaaaaaaaaaaaa
-                </Typography>
-            </Box> */}
-        </Stack>
-    )
 }
-
-const closestAngle = (from: number, to: number) => from + ((((to - from) % 360) + 540) % 360) - 180

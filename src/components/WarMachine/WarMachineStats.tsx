@@ -71,7 +71,7 @@ export const WarMachineStats = () => {
                         sx={{ px: 5, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
                     >
                         <ScrollContainer>
-                            <Stack spacing={3.2} direction="row" alignItems="center" justifyContent="center">
+                            <Stack spacing={1.5} direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
                                         key={`${wm.participantID} - ${wm.tokenID}`}
