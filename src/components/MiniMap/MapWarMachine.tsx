@@ -1,13 +1,16 @@
 import { Box, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { SvgMapWarMachine, SvgMapSkull } from '../../assets'
+import { SvgMapWarMachine, SvgMapSkull, GenericWarMachine } from '../../assets'
 import { useWebsocket } from '../../containers'
+import { shadeColor } from '../../helpers'
 import { colors } from '../../theme/theme'
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from '../../types'
 
 export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
-    const { participantID, faction, maxHealth, maxShield } = warMachine
+    const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
+
+    const wmImageUrl = imageUrl || GenericWarMachine
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
@@ -30,6 +33,86 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
     }, [participantID, state, subscribeWarMachineStatNetMessage])
 
     if (!position) return null
+
+    return (
+        <Stack
+            key={`warMachine-${participantID}`}
+            alignItems="center"
+            justifyContent="center"
+            sx={{
+                position: 'absolute',
+                pointerEvents: 'none',
+                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * map.scale}px, ${
+                    (position.y - map.top) * map.scale
+                }px, 0)`,
+                transition: 'transform 0.2s linear',
+                zIndex: isAlive ? 5 : 4,
+            }}
+        >
+            <Box
+                sx={{
+                    position: 'relative',
+                    width: 25,
+                    height: 25,
+                    overflow: 'hidden',
+                    backgroundColor: primaryColor,
+                    backgroundImage: `url(${wmImageUrl})`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover',
+                    border: `${primaryColor} solid 1px`,
+                    borderRadius: 1,
+                    boxShadow: isAlive ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70` : 'none',
+                }}
+            >
+                {!isAlive && (
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            width: '100%',
+                            height: '100%',
+                            background: 'linear-gradient(#00000040, #00000090)',
+                        }}
+                    >
+                        <SvgMapSkull
+                            fill="#000000"
+                            size="13px"
+                            sx={{
+                                position: 'absolute',
+                                top: '52%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                            }}
+                        />
+                    </Stack>
+                )}
+            </Box>
+
+            {isAlive && (
+                <Stack sx={{ mt: 0.2, width: 34 }} spacing={0.1}>
+                    <Box sx={{ width: '100%', height: 7, border: '1px solid #00000080' }}>
+                        <Box
+                            sx={{
+                                width: `${(shield / maxShield) * 100}%`,
+                                height: '100%',
+                                backgroundColor: colors.shield,
+                            }}
+                        />
+                    </Box>
+                    <Box sx={{ width: '100%', height: 7, border: '1px solid #00000080' }}>
+                        <Box
+                            sx={{
+                                width: `${(health / maxHealth) * 100}%`,
+                                height: '100%',
+                                backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
+                            }}
+                        />
+                    </Box>
+                </Stack>
+            )}
+        </Stack>
+    )
 
     return (
         <Stack
