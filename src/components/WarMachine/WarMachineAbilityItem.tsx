@@ -7,7 +7,6 @@ import HubKey from '../../keys'
 import { zoomEffect } from '../../theme/keyframes'
 import { colors } from '../../theme/theme'
 import { GameAbility, GameAbilityTargetPrice } from '../../types'
-import { useToggle } from '../../hooks'
 import { NullUUID } from '../../constants'
 import { SvgSupToken } from '../../assets'
 
@@ -88,17 +87,20 @@ interface GameAbilityContributeRequest {
 
 interface WarMachineAbilityItemProps {
     gameAbility: GameAbility
+    maxAbilityPriceMap?: React.MutableRefObject<Map<string, BigNumber>>
 }
 
-export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProps) => {
+export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMachineAbilityItemProps) => {
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
 
     const { label, colour, imageUrl, id } = gameAbility
-    const [refresh, toggleRefresh] = useToggle()
+    // const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber('0'))
     const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
-    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
+    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
+        maxAbilityPriceMap?.current.get(id) || new BigNumber('0'),
+    )
     const [isVoting, setIsVoting] = useState(false)
 
     const [gameAbilityTargetPrice, setGameAbilityTargetPrice] = useState<GameAbilityTargetPrice>()
@@ -123,7 +125,6 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
 
         if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
-            toggleRefresh()
         }
     }, [gameAbilityTargetPrice])
 
@@ -148,7 +149,7 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
     )
 
     return (
-        <Box key={refresh}>
+        <Box key={`${initialTargetCost}`}>
             <Fade in={true}>
                 <Box>
                     <ClipThing clipSize="6px" clipSlantSize="5px">
@@ -158,7 +159,7 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
                             sx={{
                                 flex: 1,
                                 minWidth: 325,
-                                backgroundColor: colour ? `${colour}12` : `${colors.darkNavyBlue}80`,
+                                backgroundColor: colour ? `${colour}15` : `${colors.darkNavyBlue}80`,
                                 px: 2,
                                 pt: 1.6,
                                 pb: 1.6,
