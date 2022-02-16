@@ -16,7 +16,7 @@ import { useEffect } from 'react'
 import HubKey from '../../keys'
 import { useArray } from '../../hooks'
 
-const SPAWN_TEST_NOTIFICATIONS = true
+const SPAWN_TEST_NOTIFICATIONS = false
 
 /*
 KILL: when a war machine is destroyed
