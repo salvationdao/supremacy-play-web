@@ -23,6 +23,8 @@ export const HealthShieldBars = ({
     const healthPercent = (health / maxHealth) * 100
     const shieldPercent = (shield / maxShield) * 100
 
+    useEffect(() => checkIfAlive())
+
     // Listen on current war machine changes
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
@@ -30,18 +32,21 @@ export const HealthShieldBars = ({
         return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
             if (payload?.health !== undefined) {
                 setHealth(payload.health)
-
-                if (payload.health <= 0) {
-                    setIsAlive(false)
-                    alreadySetAlive.current = false
-                } else if (!alreadySetAlive.current) {
-                    setIsAlive(true)
-                    alreadySetAlive.current = true
-                }
+                checkIfAlive()
             }
             if (payload?.shield !== undefined) setShield(payload.shield)
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage])
+
+    const checkIfAlive = () => {
+        if (health <= 0) {
+            setIsAlive(false)
+            alreadySetAlive.current = false
+        } else if (!alreadySetAlive.current) {
+            setIsAlive(true)
+            alreadySetAlive.current = true
+        }
+    }
 
     if (type == 'vertical') {
         return (

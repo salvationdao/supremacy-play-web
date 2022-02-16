@@ -219,7 +219,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                         <>
                             <BoxSlanted
                                 clipSlantSize="20px"
-                                onClick={togglePopoverOpen}
+                                onClick={isAlive ? togglePopoverOpen : null}
                                 sx={{
                                     position: 'relative',
                                     width: WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR,
@@ -229,7 +229,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                                     boxShadow: 3,
                                     cursor: 'pointer',
                                     ':hover #warMachineSkillsText': {
-                                        letterSpacing: 2.3,
+                                        letterSpacing: isAlive ? 2.3 : 1,
                                     },
                                     zIndex: 3,
                                 }}

@@ -45,7 +45,6 @@ Pending:
 - iframe dimension onresize
 - XX vs YY
 - fix map mech rotation issue
-- tutorial guide for new users
 - map show mech logo image instead
 
 
@@ -53,5 +52,6 @@ Future nice to have:
 - hotkeys to buttons
 - map follows where the action is
 - improve notification styles (for the map select, reject counters etc.)
+- tutorial guide for new users
 
 
