@@ -46,7 +46,7 @@ const SpoilOfWarAmount = () => {
 export const LiveVotingChart = () => {
     const theme = useTheme<Theme>()
     const {
-        iframeDimensions: { width, height },
+        streamDimensions: { width, height },
     } = useDimension()
     const [curPosX, setCurPosX] = useState(-1)
     const [curPosY, setCurPosY] = useState(-1)

@@ -11,7 +11,7 @@ import { CONTROLS_HEIGHT } from '../../constants'
 
 export const MiniMap = () => {
     const {
-        iframeDimensions: { width, height },
+        streamDimensions: { width, height },
     } = useDimension()
     const theme = useTheme<Theme>()
     const { map, winner, setWinner, votingState } = useGame()

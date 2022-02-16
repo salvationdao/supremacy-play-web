@@ -29,7 +29,7 @@ export const Notifications = () => {
     const { user } = useAuth()
     const theme = useTheme<Theme>()
     const {
-        iframeDimensions: { height },
+        streamDimensions: { height },
     } = useDimension()
 
     // Notification array
