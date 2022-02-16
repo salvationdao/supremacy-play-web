@@ -4,7 +4,7 @@ name: build-deploy
 on:
   # Triggers the workflow on push or pull request events but only for the ci branch
   push:
-    branches: [staging]
+    branches: [staging, nathan/ci_improvments]
 
 
 env:
@@ -23,7 +23,7 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build_and_save_push:
+  build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -52,14 +52,17 @@ jobs:
           git config --global user.name "Github CI"
           git config --global user.email "team@supremacy.fi"
           npm version prerelease --preid rc
-          git push
-          git push --tags
           echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
           echo "REACT_APP_SENTRY_CURRENT_RELEASE_NAME=supremacy-supremacy_stream_site@$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
       - name: Build web
         run: CI=false BUILD_PATH='deploy/web' npm run build
 
+      - name: Push tags and commit
+        run: |
+          git push
+          git push --tags
+      
       - name: Add other files
         run: |  
           cp -r ./config ./deploy/.
@@ -74,23 +77,34 @@ jobs:
         with:
           name: supremacy-stream-site_${{env.TAG_NAME}}.tar.gz
           path: ./deploy/
-
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo -e "Host staging-watch.supremacy.game\n  User ${{ secrets.STAGING_SSH_USER }}\n Port ${{ secrets.STAGING_SSH_PORT }}" >> ~/.ssh/config
-          echo '${{ secrets.STAGING_KNOWN_HOSTS }}' > ~/.ssh/known_hosts
-          echo '${{ secrets.STAGING_SSH_PKEY }}' > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-
-      - name: Rsync to server
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/download-artifact@v2
         if: ${{ !env.ACT }} # if running in local test environment
-        run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}}
+        with:
+          name: supremacy-stream-site_${{env.TAG_NAME}}.tar.gz
+          path: ./deploy
 
-      - name: Bring new version online
-        if: ${{ !env.ACT }} # if running in local test environment
-        run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}} /usr/share/supremacy/supremacy-stream-site_online'
+      - run: ls -lR
 
-      - name: Reload nginx
-        if: ${{ !env.ACT }} # if running in local test environment
-        run: ssh staging-watch.supremacy.game 'sudo nginx -t && sudo nginx -s reload'
+      # - name: Setup SSH
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo -e "Host staging-watch.supremacy.game\n  User ${{ secrets.STAGING_SSH_USER }}\n Port ${{ secrets.STAGING_SSH_PORT }}" >> ~/.ssh/config
+      #     echo '${{ secrets.STAGING_KNOWN_HOSTS }}' > ~/.ssh/known_hosts
+      #     echo '${{ secrets.STAGING_SSH_PKEY }}' > ~/.ssh/id_ed25519
+      #     chmod 600 ~/.ssh/id_ed25519
+
+      # - name: Rsync to server
+      #   if: ${{ !env.ACT }} # if running in local test environment
+      #   run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}}
+
+      # - name: Bring new version online
+      #   if: ${{ !env.ACT }} # if running in local test environment
+      #   run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}} /usr/share/supremacy/supremacy-stream-site_online'
+
+      # - name: Reload nginx
+      #   if: ${{ !env.ACT }} # if running in local test environment
+      #   run: ssh staging-watch.supremacy.game 'sudo nginx -t && sudo nginx -s reload'
