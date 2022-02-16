@@ -38,6 +38,8 @@ STAGING_SSH_USER
 
 3. Set up ssh config using the deployment target secrets.
 
-4. Rsync the files to `/usr/share/ninja_syndicate/passport-web_${{env.GITVERSION}}`
+4. Rsync the files to `/usr/share/supremacy/supremacy-stream-site_${{env.GITVERSION}}`
 
-5. Update the `passport-web_online` symbolic link to the new version
+5. Update the `supremacy-stream-site_online` symbolic link to the new version
+
+6. Test nginx and reload

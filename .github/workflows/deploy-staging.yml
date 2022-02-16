@@ -1,4 +1,4 @@
-name: build-deploy
+name: Staging Deployment
 
 # Controls when the workflow will run
 on:
