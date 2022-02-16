@@ -2,7 +2,7 @@ import { MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useWebsocket } from '../../containers/socket'
 import { useStream } from '../../containers/stream'
-import { getDistanceFromLatLonInKm } from '../../helpers'
+import { getDistanceFromLatLonInKm, getObjectFromArrayByKey } from '../../helpers'
 import HubKey from '../../keys'
 import { colors } from '../../theme/theme'
 import { Stream } from '../../types'
@@ -60,16 +60,24 @@ export const StreamSelect = () => {
                     return a.distance > b.distance ? 1 : -1
                 })
 
-                setStreamOptions(newStreamOptions.slice(0, MAX_OPTIONS))
+                SetNewStreamOptions(newStreamOptions)
             })
         }
-        setStreamOptions(newStreamOptions.slice(0, MAX_OPTIONS))
+
+        SetNewStreamOptions(newStreamOptions)
     }, [streams])
 
-    // If there is no current stream selected then pick the first (best) option in streamOptions
-    useEffect(() => {
+    const SetNewStreamOptions = (newStreamOptions: Stream[]) => {
+        // Include our current selection if not already in the list
+        const temp = newStreamOptions.slice(0, MAX_OPTIONS)
+        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.id, 'id')) {
+            newStreamOptions[newStreamOptions.length - 1] = currentStream
+        }
+        setStreamOptions(temp)
+
+        // If there is no current stream selected then pick the first (best) option in streamOptions
         if (!currentStream && streamOptions && streamOptions.length > 0) setCurrentStream(streamOptions[0])
-    }, [streamOptions])
+    }
 
     return (
         <Stack direction="row" spacing={0.3} alignItems="center">

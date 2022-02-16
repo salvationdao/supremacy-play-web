@@ -1,18 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { createContainer } from 'unstated-next'
 import { Stream } from '../types'
 
 export const StreamContainer = createContainer(() => {
-    const [currentStream, setCurrentStream] = useState<Stream>(
-        localStorage.getItem('streamServer') && localStorage.getItem('streamServer') != 'undefined'
-            ? JSON.parse(localStorage.getItem('streamServer') || '{}')
-            : undefined,
-    )
-
-    // Save user selection to local storage
-    useEffect(() => {
-        if (currentStream) localStorage.setItem('streamServer', JSON.stringify(currentStream))
-    }, [currentStream])
+    const [currentStream, setCurrentStream] = useState<Stream>()
 
     return {
         currentStream,
