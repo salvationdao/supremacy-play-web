@@ -8,7 +8,7 @@ interface BattleFactionAbilityAlertProps {
     ability: BattleAbility
 }
 
-export const BattleFactionAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertProps }) => {
+export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertProps }) => {
     const { user, ability } = data
     const { label, colour, imageUrl } = ability
 
