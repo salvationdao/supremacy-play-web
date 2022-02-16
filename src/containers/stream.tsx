@@ -3,7 +3,14 @@ import { createContainer } from 'unstated-next'
 import { Stream } from '../types'
 
 export const StreamContainer = createContainer(() => {
-    const [currentStream, setCurrentStream] = useState<Stream>()
+    const [currentStream, setCurrentStream] = useState<Stream>(
+        localStorage.getItem('streamServer') ? JSON.parse(localStorage.getItem('streamServer') || '{}') : undefined,
+    )
+
+    // Save user selection to local storage
+    useEffect(() => {
+        localStorage.setItem('streamServer', JSON.stringify(currentStream))
+    }, [currentStream])
 
     return {
         currentStream,

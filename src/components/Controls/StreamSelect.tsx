@@ -1,85 +1,75 @@
-import { Menu, MenuItem, Select, Stack, Typography } from '@mui/material'
+import { MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { SocketState, useWebsocket } from '../../containers/socket'
+import { useWebsocket } from '../../containers/socket'
 import { useStream } from '../../containers/stream'
+import { getDistanceFromLatLonInKm } from '../../helpers'
 import HubKey from '../../keys'
 import { colors } from '../../theme/theme'
 import { Stream } from '../../types'
 
+const MAX_OPTIONS = 7
+
 export const StreamSelect = () => {
     const { state, subscribe } = useWebsocket()
     const { currentStream, setCurrentStream } = useStream()
-    const [streamArray, setStreamArray] = useState<Stream[]>([])
+    const [streams, setStreams] = useState<Stream[]>([])
+    const [streamOptions, setStreamOptions] = useState<Stream[]>([])
 
+    // Subscribe to list of streams
     useEffect(() => {
-        if (state !== SocketState.OPEN) return
-        return subscribe<Stream[]>(HubKey.StreamList, (streamArray) => {
-            if (!streamArray || streamArray.length <= 0) return
-
-            // Sorting if the stream is full and stream is online
-            const availableStreamsArr = streamArray.filter((x) => {
-                return x.usersNow < x.userMax && x.status === 'online'
-            })
-
-            // Getting random selection (max of 7 servers) to not overwhelm user
-            const arr: Stream[] = []
-            for (let i = 0; i < 7; i++) {
-                const index = Math.floor(Math.random() * availableStreamsArr.length)
-                const randomStream = availableStreamsArr[index]
-                arr.push(randomStream)
-                // Take out stream from array of options, to not repeat option
-                availableStreamsArr.splice(index, 1)
-            }
-            setStreamArray(arr)
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<Stream[]>(HubKey.GetStreamList, (payload) => {
+            if (!payload) return
+            setStreams(payload)
         })
-    }, [])
+    }, [state, subscribe])
 
-    // Setting the closest server out of the 7 randomly chosen available and online servers to be default
+    // Build stream options for the drop down
     useEffect(() => {
-        const arr: Stream[] = []
-        streamArray.map((x) => {
-            if (!navigator.geolocation) return
-            // Only runs once, despite having dependency on
-            if (currentStream) return
+        if (!streams || streams.length <= 0) return
 
-            let dist: number
+        // Filter for servers that have capacity and is onlnine
+        const availStreams = streams.filter((x) => {
+            return x.usersNow < x.userMax && x.status === 'online'
+        })
+
+        if (availStreams.length <= 0) return
+
+        // Reduce the list of options so it's not too many for the user
+        // By default its sorted by quietest servers first
+        const quietestStreams = availStreams.sort((a, b) => (a.usersNow / a.userMax > b.usersNow / b.userMax ? 1 : -1))
+        let newStreamOptions = quietestStreams
+
+        // If we have access to user's location, then choose servers that are closest to user
+        if (navigator.geolocation) {
+            const closestStreams: Stream[] = []
             navigator.geolocation.watchPosition((position) => {
-                // Get distance between user and server
-                const userLat = position.coords.latitude
-                const userLong = position.coords.longitude
-
-                const radlat1 = (Math.PI * x.latitude) / 180
-                const radlat2 = (Math.PI * userLat) / 180
-                const theta = x.longitude - userLong
-                const radtheta = (Math.PI * theta) / 180
-                dist =
-                    Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta)
-                if (dist > 1) {
-                    dist = 1
-                }
-                dist = Math.acos(dist)
-                dist = (dist * 180) / Math.PI
-                dist = dist * 60 * 1.1515
-
-                // Setting a new stream with distance
-                const distStream = { ...x, distance: dist }
-
-                // Pushing stream with distance to new array
-                arr.push(distStream)
-
-                // Filtering if it already exists,
-                const sortedClosestStreamArr = arr.filter((e, i) => arr.findIndex((a) => a.id === e.id) === i)
-
-                // Sorting by distance to user
-                sortedClosestStreamArr.sort((a, b) => {
-                    if (!a.distance || !b.distance) return 0
-                    return a.distance > b.distance ? 1 : b.distance > a.distance ? -1 : 0
+                availStreams.map((x) => {
+                    // Get distance between user and server
+                    const userLat = position.coords.latitude
+                    const userLong = position.coords.longitude
+                    const serverLat = x.latitude
+                    const serverLong = x.longitude
+                    const distance = getDistanceFromLatLonInKm(userLat, userLong, serverLat, serverLong)
+                    closestStreams.push({ ...x, distance })
                 })
 
-                setCurrentStream(sortedClosestStreamArr[0])
+                newStreamOptions = closestStreams.sort((a, b) => {
+                    if (!a.distance || !b.distance) return 0
+                    return a.distance > b.distance ? 1 : -1
+                })
+
+                setStreamOptions(newStreamOptions.slice(0, MAX_OPTIONS))
             })
-        })
-    }, [streamArray])
+        } else {
+            setStreamOptions(newStreamOptions.slice(0, MAX_OPTIONS))
+        }
+    }, [streams])
+
+    // If there is no current stream selected then pick the first (best) option in streamOptions
+    useEffect(() => {
+        if (!currentStream && streamOptions && streamOptions.length > 0) setCurrentStream(streamOptions[0])
+    }, [streamOptions])
 
     return (
         <Stack direction="row" spacing={0.3} alignItems="center">
@@ -113,7 +103,7 @@ export const StreamSelect = () => {
                     },
                 }}
             >
-                {streamArray.map((x) => {
+                {streamOptions.reverse().map((x) => {
                     return (
                         <MenuItem
                             key={x.id}
