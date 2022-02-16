@@ -25,7 +25,7 @@ enum HubKey {
     SubWarMachineDestroyed = 'WAR:MACHINE:DESTROYED:UPDATED',
     SubWarMachineAbilitiesUpdated = 'WAR:MACHINE:ABILITIES:UPDATED',
 
-    //stream
+    // Stream
     StreamList = 'STREAMLIST:SUBSCRIBE',
 }
 

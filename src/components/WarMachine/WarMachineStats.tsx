@@ -3,9 +3,13 @@ import { colors } from '../../theme/theme'
 import { WarMachineItem } from './WarMachineItem'
 import { Theme } from '@mui/material/styles'
 import { useTheme } from '@mui/styles'
-import { useAuth, useGame } from '../../containers'
-import { ReactElement } from 'react'
+import { useAuth, useDimension, useGame } from '../../containers'
+import { ReactElement, useMemo } from 'react'
 import { BoxSlanted } from '..'
+
+const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
+const WIDTH_MECH_ITEM_OTHER_EXPANDED = 260
+const WIDTH_MECH_ITEM_OTHER_COLLAPSED = 120
 
 const ScrollContainer = ({ children }: { children: ReactElement }) => {
     const theme = useTheme<Theme>()
@@ -41,6 +45,43 @@ export const WarMachineStats = () => {
     const { factionID } = useAuth()
     const { warMachines } = useGame()
     const theme = useTheme<Theme>()
+    const {
+        streamDimensions: { width },
+    } = useDimension()
+
+    // Determine whether the mech items should be expanded out or collapsed
+    const shouldBeExpanded = useMemo(() => {
+        let shouldBeExpandedFaction = true
+        let shouldBeExpandedOthers = true
+
+        if (!warMachines || warMachines.length <= 0)
+            return {
+                shouldBeExpandedFaction,
+                shouldBeExpandedOthers,
+            }
+
+        const factionMechs = warMachines.filter((wm) => wm.factionID == factionID)
+        const otherMechs = warMachines.filter((wm) => wm.factionID != factionID)
+
+        if (
+            factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
+                otherMechs.length * WIDTH_MECH_ITEM_OTHER_EXPANDED >
+            width
+        ) {
+            if (
+                factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
+                    otherMechs.length * WIDTH_MECH_ITEM_OTHER_COLLAPSED >
+                width
+            ) {
+                shouldBeExpandedFaction = false
+                shouldBeExpandedOthers = false
+            } else {
+                shouldBeExpandedOthers = false
+            }
+        }
+
+        return { shouldBeExpandedFaction, shouldBeExpandedOthers }
+    }, [width])
 
     if (!warMachines || warMachines.length <= 0) return null
 
@@ -77,6 +118,7 @@ export const WarMachineStats = () => {
                                         key={`${wm.participantID} - ${wm.tokenID}`}
                                         warMachine={wm}
                                         scale={1}
+                                        shouldBeExpanded={shouldBeExpanded.shouldBeExpandedFaction}
                                     />
                                 ))}
                             </Stack>
@@ -98,6 +140,7 @@ export const WarMachineStats = () => {
                                         key={`${wm.participantID} - ${wm.tokenID}`}
                                         warMachine={wm}
                                         scale={haveFactionMechs ? 0.8 : 0.8}
+                                        shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
                                     />
                                 ))}
                             </Stack>

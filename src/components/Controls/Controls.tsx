@@ -1,14 +1,10 @@
-import { Stack } from '@mui/material'
+import { Divider, Stack } from '@mui/material'
 import { LiveCounts, VideoPlayerControls } from '..'
+import { colors } from '../../theme/theme'
 import { Stream } from '../../types'
-import StreamSelect from '../Stream/streamSelect'
+import { StreamSelect } from './StreamSelect'
 
-interface ControlsProps {
-    setCurrentStream: (s: Stream) => void
-    currentStream: Stream | undefined
-}
-
-export const Controls = ({ setCurrentStream, currentStream }: ControlsProps) => {
+export const Controls = () => {
     return (
         <Stack
             direction="row"
@@ -17,8 +13,9 @@ export const Controls = ({ setCurrentStream, currentStream }: ControlsProps) => 
             sx={{ px: 2, pt: 0.3, pb: 0.2, height: '100%' }}
         >
             <LiveCounts />
-            <Stack direction="row" sx={{ height: '100%' }}>
-                <StreamSelect setCurrentStream={setCurrentStream} currentStream={currentStream} />
+
+            <Stack direction="row" spacing={1}>
+                <StreamSelect />
                 <VideoPlayerControls />
             </Stack>
         </Stack>

@@ -19,7 +19,6 @@ import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
 import {
     PASSPORT_SERVER_HOSTNAME,
     PASSPORT_WEB,
-    STREAM_SITE,
     SENTRY_CONFIG,
     GAMEBAR_HEIGHT,
     CONTROLS_HEIGHT,
@@ -27,6 +26,7 @@ import {
 } from './constants'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import * as Sentry from '@sentry/react'
+import { StreamProvider, useStream } from './containers/stream'
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -50,9 +50,9 @@ const AppInner = () => {
     const {
         streamDimensions: { width, height },
     } = useDimension()
+    const { currentStream } = useStream()
     const handle = useFullScreenHandle()
 
-    const [currentStream, setCurrentStream] = useState<Stream>()
     // Work out the aspect ratio for the iframe bit and yeah
     let iframeHeight: number | string = height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT
     let iframeWidth: number | string = width
@@ -114,7 +114,7 @@ const AppInner = () => {
                                 backgroundColor: colors.darkNavyBlue,
                             }}
                         >
-                            <Controls setCurrentStream={setCurrentStream} currentStream={currentStream} />
+                            <Controls />
                         </Box>
                     </Stack>
                 </FullScreen>
@@ -140,15 +140,17 @@ const App = () => {
             <ThemeProvider theme={currentTheme}>
                 <SocketProvider>
                     <AuthProvider>
-                        <WalletProvider>
-                            <GameProvider>
-                                <DimensionProvider>
-                                    <SnackBarProvider>
-                                        <AppInner />
-                                    </SnackBarProvider>
-                                </DimensionProvider>
-                            </GameProvider>
-                        </WalletProvider>
+                        <StreamProvider>
+                            <WalletProvider>
+                                <GameProvider>
+                                    <DimensionProvider>
+                                        <SnackBarProvider>
+                                            <AppInner />
+                                        </SnackBarProvider>
+                                    </DimensionProvider>
+                                </GameProvider>
+                            </WalletProvider>
+                        </StreamProvider>
                     </AuthProvider>
                 </SocketProvider>
             </ThemeProvider>
