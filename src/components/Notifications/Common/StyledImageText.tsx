@@ -7,8 +7,9 @@ export const StyledImageText = ({ imageUrl, text, color }: { imageUrl?: string; 
                 <Box
                     sx={{
                         display: 'inline-block',
-                        width: 13,
-                        height: 13,
+                        width: 16,
+                        height: 16,
+                        mb: '-2px',
                         mr: 0.5,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: 'no-repeat',
