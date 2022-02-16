@@ -24,6 +24,9 @@ enum HubKey {
     GameAbilityContribute = 'GAME:ABILITY:CONTRIBUTE',
     SubWarMachineDestroyed = 'WAR:MACHINE:DESTROYED:UPDATED',
     SubWarMachineAbilitiesUpdated = 'WAR:MACHINE:ABILITIES:UPDATED',
+
+    //stream
+    StreamList = 'STREAMLIST:SUBSCRIBE',
 }
 
 export default HubKey

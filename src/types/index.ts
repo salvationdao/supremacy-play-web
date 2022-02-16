@@ -160,3 +160,19 @@ export interface DamageRecord {
     causedByWarMachine: WarMachineState
     sourceName: string // weapon/ability name
 }
+
+export interface Stream {
+    id: string
+    name: string
+    url: string
+    region: string
+    resolution: string
+    bitRatesKBits: number
+    userMax: number
+    usersNow: number
+    active: boolean
+    status: string
+    latitude: number
+    longitude: number
+    distance?: number
+}

@@ -1,16 +1,26 @@
 import { Stack } from '@mui/material'
 import { LiveCounts, VideoPlayerControls } from '..'
+import { Stream } from '../../types'
+import StreamSelect from '../Stream/streamSelect'
 
-export const Controls = () => {
+interface ControlsProps {
+    setCurrentStream: (s: Stream) => void
+    currentStream: Stream | undefined
+}
+
+export const Controls = ({ setCurrentStream, currentStream }: ControlsProps) => {
     return (
         <Stack
             direction="row"
             alignItems="center"
-            justifyContent="flex-start"
+            justifyContent="space-between"
             sx={{ px: 2, pt: 0.3, pb: 0.2, height: '100%' }}
         >
             <LiveCounts />
-            <VideoPlayerControls />
+            <Stack direction="row" sx={{ height: '100%' }}>
+                <StreamSelect setCurrentStream={setCurrentStream} currentStream={currentStream} />
+                <VideoPlayerControls />
+            </Stack>
         </Stack>
     )
 }

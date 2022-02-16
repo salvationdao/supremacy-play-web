@@ -12,7 +12,7 @@ import {
 import { Box, CssBaseline, Stack, ThemeProvider } from '@mui/material'
 import { Controls, LiveVotingChart, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
 import { useEffect, useState } from 'react'
-import { FactionThemeColor, UpdateTheme } from './types'
+import { FactionThemeColor, UpdateTheme, Stream } from './types'
 import { mergeDeep } from './helpers'
 import { colors, theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
@@ -52,6 +52,7 @@ const AppInner = () => {
     } = useDimension()
     const handle = useFullScreenHandle()
 
+    const [currentStream, setCurrentStream] = useState<Stream>()
     // Work out the aspect ratio for the iframe bit and yeah
     let iframeHeight: number | string = height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT
     let iframeWidth: number | string = width
@@ -81,7 +82,7 @@ const AppInner = () => {
                             <iframe
                                 frameBorder="0"
                                 allowFullScreen
-                                src={STREAM_SITE}
+                                src={currentStream?.url}
                                 style={{
                                     position: 'absolute',
                                     top: '50%',
@@ -113,7 +114,7 @@ const AppInner = () => {
                                 backgroundColor: colors.darkNavyBlue,
                             }}
                         >
-                            <Controls />
+                            <Controls setCurrentStream={setCurrentStream} currentStream={currentStream} />
                         </Box>
                     </Stack>
                 </FullScreen>
