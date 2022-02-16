@@ -128,9 +128,10 @@ export const MiniMap = () => {
                                     targeting
                                     setSubmitted={setSubmitted}
                                     confirmed={confirmed}
+                                    enlarged={enlarged}
                                 />
                             ) : (
-                                <InteractiveMap windowDimension={dimensions} />
+                                <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
                             )}
                         </Box>
                     </ClipThing>

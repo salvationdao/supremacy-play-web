@@ -9,7 +9,7 @@ import { GameAbility, Map } from '../../types'
 
 // UseGesture Stuff
 import { animated, useSpring } from 'react-spring'
-import { useGesture } from '@use-gesture/react'
+import { useDrag, useGesture, useWheel } from '@use-gesture/react'
 
 export interface MapSelection {
     x: number
@@ -61,12 +61,14 @@ export const InteractiveMap = ({
     targeting,
     setSubmitted,
     confirmed,
+    enlarged,
 }: {
     gameAbility?: GameAbility
     windowDimension: { width: number; height: number }
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     confirmed?: MutableRefObject<boolean>
+    enlarged?: boolean
 }) => {
     const { map } = useGame()
     const [selection, setSelection] = useState<MapSelection>()
@@ -108,6 +110,7 @@ export const InteractiveMap = ({
                                                         ? undefined
                                                         : () => {
                                                               if (!isDragging.current) {
+                                                                  // todo: fix - only set selection when not dragging
                                                                   setSelection((prev) => {
                                                                       prevSelection.current = prev
                                                                       return { x, y }
@@ -145,20 +148,29 @@ export const InteractiveMap = ({
     useEffect(() => {
         if (!map) return
 
-        lastPos.current = {
-            x:
-                windowDimension.width <= map.width && prevDimension.current.width > map.width
-                    ? 0
-                    : windowDimension.width <= map.width
-                    ? Math.max(lastPos.current.x, -(map.width - windowDimension.width))
-                    : (windowDimension.width - map.width) / 2,
-            y:
-                windowDimension.height <= map.height && prevDimension.current.height > map.height
-                    ? 0
-                    : windowDimension.height <= map.height
-                    ? Math.max(lastPos.current.y, -(map.height - windowDimension.height))
-                    : (windowDimension.height - map.height) / 2,
+        if (enlarged) {
+            set({ scale: 1 })
+            map.scale = 1 / 40
+            // map.scale = 1
+        } else {
+            set({ scale: 0.16, x: -125, y: -30 })
+            map.scale = 0.16 / 40
         }
+        //
+        // lastPos.current = {
+        //     x:
+        //         windowDimension.width <= map.width && prevDimension.current.width > map.width
+        //             ? 0
+        //             : windowDimension.width <= map.width
+        //             ? Math.max(lastPos.current.x, -(map.width - windowDimension.width))
+        //             : (windowDimension.width - map.width) / 2,
+        //     y:
+        //         windowDimension.height <= map.height && prevDimension.current.height > map.height
+        //             ? 0
+        //             : windowDimension.height <= map.height
+        //             ? Math.max(lastPos.current.y, -(map.height - windowDimension.height))
+        //             : (windowDimension.height - map.height) / 2,
+        // }
 
         prevDimension.current = windowDimension
         toggleRefresh()
@@ -170,75 +182,73 @@ export const InteractiveMap = ({
     document.addEventListener('gesturestart', (e) => e.preventDefault())
     document.addEventListener('gesturechange', (e) => e.preventDefault())
 
-    const [style, api] = useSpring(() => ({
+    // setup use-gesture
+    const [{ x, y, scale }, set] = useSpring(() => ({
         x: 0,
         y: 0,
-        scale: 1,
-        wheel: 0,
+        scale: 0.025,
     }))
-    const mapRef = useRef<HTMLDivElement>(null)
 
-    const bind = useGesture(
-        {
-            onDrag: ({ wheeling, cancel, down, offset: [x, y] }) => {
-                if (wheeling) return cancel()
-                console.log(x, y)
-                api.start({ x, y, immediate: down })
-            },
-            onWheel: ({ delta: [, deltaY] }) => {
-                const factor = 0.1
-                const scale = style.scale.get()
-                const delta = deltaY * -0.01
-                const newScale = scale + delta * factor * scale
+    // const [dragState, setDragState] = useState('No')
+    // const [wheelState, setWheelState] = useState('No')
+    // const [pinchState, setPinchState] = useState('No')
 
-                //Todo: Set the origin of the zoom
-                // y = 0
-                // x = 0
-
-                // Keeps the map within scale bounds
-                if (newScale >= 0.6 && 1 >= newScale) {
-                    api.set({ scale: newScale })
-                } else if (newScale >= 1) {
-                    api.set({ scale: 1 })
-                } else {
-                    api.set({ scale: 0.6 })
-                }
-
-            },
+    const drag = useDrag(({wheeling, cancel, offset: [x, y]}) => {
+        if (!map) return cancel()
+        if (wheeling) return cancel()
+        if (!enlarged) return cancel()
+        set({ x, y, immediate: true })
+    }, {
+        bounds: () => {
+            // set the dragging bounds of the map
+            if (!map) return
+            console.log('map scale', map.scale)
+            // return {
+            //     top:
+            //         windowDimension.height <= map.height * map.scale
+            //             ? -(map.height * map.scale - windowDimension.height)
+            //             : (windowDimension.height - map.height * map.scale) / 2,
+            //     left:
+            //         windowDimension.width <= map.width * map.scale
+            //             ? -(map.width * map.scale - windowDimension.width)
+            //             : (windowDimension.width - map.width * map.scale) / 2,
+            //     right: 0,
+            //     bottom: 0,
+            // }
+            return {
+                top:
+                    windowDimension.height <= map.height
+                        ? -(map.height - windowDimension.height)
+                        : (windowDimension.height - map.height) / 2,
+                left:
+                    windowDimension.width <= map.width
+                        ? -(map.width - windowDimension.width)
+                        : (windowDimension.width - map.width) / 2,
+                right: 0,
+                bottom: 0,
+            }
         },
+    })
 
-        {
-            drag: {
-                // set the initial position of map
-                from: () => [style.x.get(), style.y.get()],
+    const zoom = useWheel(({ delta: [, deltaY]}) => {
+        if (!map) return
+        if (!enlarged) return
 
-                // set the bounds of the map
-                bounds: () => {
-                    if (!map) return
+        // calculate the scale
+        const factor = 0.1
+        const currentScale = scale.get()
+        const delta = deltaY * -0.01
+        let newScale = currentScale + delta * factor * currentScale
 
+        // Keeps the map within scale bounds
+        if (newScale >= 1 || 0.6 >= newScale) {
+            newScale >= 1 ? newScale = 1 : newScale = 0.6
+        }
 
-                    const scale = style.scale.get()
-                    const mapHeight = scale * map.height
-                    const mapWidth = scale * map.width
-
-                    console.log("width", mapWidth, " height", mapHeight)
-
-                    return {
-                        top:
-                            windowDimension.height <= mapHeight
-                                ? -(mapHeight - windowDimension.height)
-                                : (windowDimension.height - mapHeight) / 2,
-                        left:
-                            windowDimension.width <= mapWidth
-                                ? -(mapWidth - windowDimension.width)
-                                : (windowDimension.width - mapWidth) / 2,
-                        right: 0,
-                        bottom: 0,
-                    }
-                },
-            },
-        },
-    )
+        console.log(newScale)
+        set({ scale: newScale, immediate: true})
+        map.scale = newScale / 40
+    })
 
     if (!map) return null
 
@@ -246,22 +256,22 @@ export const InteractiveMap = ({
         <Stack
             key={String(refresh)}
             sx={{
-                position: 'absolute',
-                display: 'flex',
+                position: 'relative',
                 width: '100%',
                 height: '100%',
                 overflow: 'hidden',
             }}
         >
-            <animated.div {...bind()} style={style} ref={mapRef}>
-                <Box sx={{ cursor: 'move' }}>
-                    <MapWarMachines />
+            <animated.div {...drag()} style={{ x, y }}>
+            <Box sx={{ cursor: 'move' }}>
+                <MapWarMachines />
 
-                    {selectionIcon}
+                {selectionIcon}
 
-                    {grid}
+                {grid}
 
-                    {/* Map Image */}
+                {/* Map Image */}
+                <animated.div {...zoom()} style={{ scale }}>
                     <Box
                         sx={{
                             position: 'absolute',
@@ -270,7 +280,8 @@ export const InteractiveMap = ({
                             backgroundImage: `url(${map.imageUrl})`,
                         }}
                     />
-                </Box>
+                </animated.div>
+            </Box>
             </animated.div>
         </Stack>
     )
