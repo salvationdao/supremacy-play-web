@@ -1,18 +1,21 @@
 import { Box, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { SvgMapWarMachine, SvgMapSkull } from '../../assets'
+import { SvgMapSkull, GenericWarMachine } from '../../assets'
 import { useWebsocket } from '../../containers'
+import { shadeColor } from '../../helpers'
 import { colors } from '../../theme/theme'
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from '../../types'
 
 export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
-    const { participantID, faction, maxHealth, maxShield } = warMachine
+    const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
+
+    const wmImageUrl = imageUrl || GenericWarMachine
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
     const [position, sePosition] = useState<Vector2i>(warMachine.position)
-    const [rotation, setRotation] = useState<number>(warMachine.rotation)
+    // const [rotation, setRotation] = useState<number>(warMachine.rotation)
 
     const isAlive = health > 0
     const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
@@ -25,7 +28,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
-            if (payload?.rotation !== undefined) setRotation((prev) => closestAngle(prev, payload.rotation || 0 + 90))
+            // if (payload?.rotation !== undefined) setRotation((prev) => closestAngle(prev, payload.rotation || 0 + 90))
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage])
 
@@ -43,48 +46,51 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                     (position.y - map.top) * map.scale
                 }px, 0)`,
                 transition: 'transform 0.2s linear',
-                zIndex: 5,
+                zIndex: isAlive ? 5 : 4,
             }}
         >
-            <Box sx={{ position: 'relative' }}>
-                <Box
-                    sx={{
-                        transform: `rotate3d(0, 0, 1, ${rotation}deg)`,
-                        transition: 'transform 0.2s linear',
-                    }}
-                >
-                    <SvgMapWarMachine fill={primaryColor} size="17px" sx={{ opacity: isAlive ? 1 : 0.7, zIndex: 3 }} />
-
-                    {!isAlive && (
+            <Box
+                sx={{
+                    position: 'relative',
+                    width: 25,
+                    height: 25,
+                    overflow: 'hidden',
+                    backgroundColor: primaryColor,
+                    backgroundImage: `url(${wmImageUrl})`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover',
+                    border: `${primaryColor} solid 1px`,
+                    borderRadius: 1,
+                    boxShadow: isAlive ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70` : 'none',
+                }}
+            >
+                {!isAlive && (
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            width: '100%',
+                            height: '100%',
+                            background: 'linear-gradient(#00000040, #00000090)',
+                        }}
+                    >
                         <SvgMapSkull
                             fill="#000000"
-                            size="15px"
+                            size="13px"
                             sx={{
                                 position: 'absolute',
-                                top: -6,
+                                top: '52%',
                                 left: '50%',
-                                transform: `translate(-50%, 0) rotate3d(0, 0, 1, -${rotation}deg)`,
+                                transform: 'translate(-50%, -50%)',
                             }}
                         />
-                    )}
-                </Box>
-
-                {isAlive && (
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            boxShadow: `0 0 20px 9px ${primaryColor}90`,
-                            zIndex: -1,
-                        }}
-                    />
+                    </Stack>
                 )}
             </Box>
 
             {isAlive && (
-                <Stack sx={{ mt: 0.7, width: 34 }} spacing={0.1}>
+                <Stack sx={{ mt: 0.2, width: 34 }} spacing={0.1}>
                     <Box sx={{ width: '100%', height: 7, border: '1px solid #00000080' }}>
                         <Box
                             sx={{
@@ -105,31 +111,6 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                     </Box>
                 </Stack>
             )}
-
-            {/* <Box sx={{ mt: 0.5 }}>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: primaryColor,
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                        lineHeight: 1.1,
-                        maxWidth: 70,
-
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        whiteSpace: 'normal',
-                        display: '-webkit-box',
-                        overflowWrap: 'anywhere',
-                        WebkitBoxOrient: 'vertical',
-                        WebkitLineClamp: 2,
-                    }}
-                >
-                    {name}aaaaaaaaaaaaaaaaaaa
-                </Typography>
-            </Box> */}
         </Stack>
     )
 }
-
-const closestAngle = (from: number, to: number) => from + ((((to - from) % 360) + 540) % 360) - 180

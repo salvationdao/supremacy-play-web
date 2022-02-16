@@ -36,6 +36,8 @@ x live view count: by faction and not logged in
 x user won notification color of faction
 x mech abilities
 	x make current faction mechs show first, show smaller
+x fix map mech rotation issue
+x map show mech logo image instead
 
 
 Pending:
@@ -44,14 +46,12 @@ Pending:
 - make overlay components moveable / toggleable
 - iframe dimension onresize
 - XX vs YY
-- fix map mech rotation issue
-- tutorial guide for new users
-- map show mech logo image instead
 
 
 Future nice to have:
 - hotkeys to buttons
 - map follows where the action is
 - improve notification styles (for the map select, reject counters etc.)
+- tutorial guide for new users
 
 
