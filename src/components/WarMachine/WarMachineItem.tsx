@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Box, Stack, Typography } from '@mui/material'
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from '../../types'
 import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, WarMachineAbilitiesPopover } from '..'
-import { SvgSkull } from '../../assets'
+import { GenericWarMachine, SvgSkull } from '../../assets'
 import { useAuth, useWebsocket } from '../../containers'
 import { NullUUID, PASSPORT_WEB } from '../../constants'
 import HubKey from '../../keys'
@@ -35,6 +35,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
         theme: { primary, secondary, background },
     } = faction
 
+    const wmImageUrl = imageUrl || GenericWarMachine
     const isOwnFaction = factionID == warMachine.factionID
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
 
@@ -115,36 +116,42 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                     skipRightCorner={!isExpanded}
                 >
                     <Box
-                        onClick={toggleIsExpanded}
                         sx={{
-                            width: WIDTH_WM_IMAGE,
-                            height: HEIGHT,
-                            overflow: 'hidden',
-                            backgroundColor: primary,
-                            backgroundImage: `url(${imageUrl})`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center',
-                            backgroundSize: 'cover',
-                            cursor: 'pointer',
+                            background: `linear-gradient(${primary}, #000000)`,
                         }}
                     >
-                        <Stack
-                            alignItems="center"
-                            justifyContent="center"
+                        <Box
+                            onClick={toggleIsExpanded}
                             sx={{
-                                px: 3.3,
-                                width: '100%',
-                                height: '100%',
-                                background: 'linear-gradient(#00000090, #000000)',
-                                opacity: isAlive ? 0 : 1,
-                                transition: 'all .2s',
-                                ':hover': {
-                                    opacity: isAlive ? 0.2 : 1,
-                                },
+                                position: 'relative',
+                                width: WIDTH_WM_IMAGE,
+                                height: HEIGHT,
+                                overflow: 'hidden',
+                                backgroundImage: `url(${wmImageUrl})`,
+                                backgroundRepeat: 'no-repeat',
+                                backgroundPosition: 'center',
+                                backgroundSize: 'cover',
+                                cursor: 'pointer',
                             }}
                         >
-                            {!isAlive && <SvgSkull fill="#FFFFFF" size="100%" />}
-                        </Stack>
+                            <Stack
+                                alignItems="center"
+                                justifyContent="center"
+                                sx={{
+                                    px: 3.3,
+                                    width: '100%',
+                                    height: '100%',
+                                    background: 'linear-gradient(#00000090, #000000)',
+                                    opacity: isAlive ? 0 : 1,
+                                    transition: 'all .2s',
+                                    ':hover': {
+                                        opacity: isAlive ? 0.2 : 1,
+                                    },
+                                }}
+                            >
+                                {!isAlive && <SvgSkull fill="#FFFFFF" size="100%" />}
+                            </Stack>
+                        </Box>
                     </Box>
                 </ClipThing>
 
