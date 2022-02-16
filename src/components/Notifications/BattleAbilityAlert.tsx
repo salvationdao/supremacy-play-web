@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { StyledImageText, StyledNormalText } from '..'
+import { FallbackUser, StyledImageText, StyledNormalText } from '..'
 import { PASSPORT_WEB } from '../../constants'
 import { BattleAbility, User } from '../../types'
 
@@ -11,6 +11,7 @@ interface BattleFactionAbilityAlertProps {
 export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertProps }) => {
     const { user, ability } = data
     const { label, colour, imageUrl } = ability
+    const { username, avatarID, faction } = user || FallbackUser
 
     return (
         <Box>
@@ -24,6 +25,12 @@ export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertPr
                 }
             />
             <StyledNormalText text="." />
+            <StyledImageText
+                imageUrl={avatarID ? `${PASSPORT_WEB}/api/files/${avatarID}` : undefined}
+                text={username}
+                color={faction.theme.primary}
+            />
+            <StyledNormalText text=" has been assigned to choose a target location." />
         </Box>
     )
 }
