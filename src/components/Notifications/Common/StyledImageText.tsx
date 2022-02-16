@@ -13,9 +13,10 @@ export const StyledImageText = ({ imageUrl, text, color }: { imageUrl?: string; 
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center',
-                        backgroundSize: 'contain',
+                        backgroundSize: 'cover',
                         backgroundColor: color,
                         borderRadius: 0.3,
+                        border: `${color} solid 1px`,
                     }}
                 />
             )}
