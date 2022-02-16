@@ -10,7 +10,7 @@ import {
     useDimension,
 } from './containers'
 import { Box, CssBaseline, Stack, ThemeProvider } from '@mui/material'
-import { Controls, LiveCounts, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
+import { Controls, LiveVotingChart, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
 import { useEffect, useState } from 'react'
 import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
@@ -23,9 +23,9 @@ import {
     SENTRY_CONFIG,
     GAMEBAR_HEIGHT,
     CONTROLS_HEIGHT,
+    STREAM_ASPECT_RATIO_W_H,
 } from './constants'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
-import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
 import * as Sentry from '@sentry/react'
 
 if (SENTRY_CONFIG) {
@@ -52,13 +52,23 @@ const AppInner = () => {
     } = useDimension()
     const handle = useFullScreenHandle()
 
+    // Work out the aspect ratio for the iframe bit and yeah
+    let iframeHeight: number | string = height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT
+    let iframeWidth: number | string = width
+    const iframeRatio = iframeWidth / iframeHeight
+    if (iframeRatio >= STREAM_ASPECT_RATIO_W_H) {
+        iframeHeight = 'unset'
+    } else {
+        iframeWidth = 'unset'
+    }
+
     return (
         <>
             <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <FullScreen handle={handle}>
                     <Stack sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
-                        <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT }}>
+                        <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT, zIndex: 999 }}>
                             <GameBar
                                 barPosition="top"
                                 gameserverSessionID={gameserverSessionID}
@@ -67,13 +77,20 @@ const AppInner = () => {
                             />
                         </Box>
 
-                        <Box sx={{ flex: 1, position: 'relative' }}>
+                        <Box sx={{ flex: 1, position: 'relative', width: '100%', height: '100%' }}>
                             <iframe
-                                width="100%"
-                                height="100%"
                                 frameBorder="0"
                                 allowFullScreen
                                 src={STREAM_SITE}
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                    width: iframeWidth,
+                                    height: iframeHeight,
+                                }}
                             ></iframe>
 
                             {/* <Box sx={{ backgroundColor: '#622D93', width: '100%', height: '100%' }} /> */}
