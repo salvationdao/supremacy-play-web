@@ -24,7 +24,7 @@ export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertPr
                     user && user.faction.logoBlobID ? `${PASSPORT_WEB}/api/files/${user.faction.logoBlobID}` : undefined
                 }
             />
-            <StyledNormalText text="." />
+            <StyledNormalText text=". " />
             <StyledImageText
                 imageUrl={avatarID ? `${PASSPORT_WEB}/api/files/${avatarID}` : undefined}
                 text={username}
