@@ -1,4 +1,3 @@
-import { Event } from '@mui/icons-material'
 import React, { Dispatch } from 'react'
 
 interface UpdateThemeContextProps {
