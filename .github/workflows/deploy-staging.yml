@@ -25,6 +25,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    outputs:
+      artifact_filename: ${{ steps.artifact.outputs.filename }}
+      version: ${{ steps.version.outputs.v }}
     steps:
       - uses: actions/checkout@v2
 
@@ -51,7 +54,7 @@ jobs:
         run: |
           git config --global user.name "Github CI"
           git config --global user.email "team@supremacy.fi"
-          npm version prerelease --preid rc
+          # npm version prerelease --preid rc
           echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
           echo "REACT_APP_SENTRY_CURRENT_RELEASE_NAME=supremacy-supremacy_stream_site@$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
@@ -71,12 +74,20 @@ jobs:
       - name: List build dir
         run: find deploy
 
+      - id: artifact
+        run: echo "::set-output name=filename::passport-api_${{env.GITVERSION}}.tar"
+      - id: version
+        run: echo "::set-output name=v::${{env.GITVERSION}}"
+
+      - name: tar deploy directory
+        run: tar -cvf ${{ steps.artifact.outputs.filename }} ./deploy
+      
       - name: save artifact
         uses: actions/upload-artifact@v2
         if: ${{ !env.ACT }} # if running in local test environment
         with:
-          name: supremacy-stream-site_${{env.TAG_NAME}}.tar.gz
-          path: ./deploy/
+          name: ${{ steps.artifact.outputs.filename }}
+          path: ${{ steps.artifact.outputs.filename }}
   deploy:
     needs: [build]
     runs-on: ubuntu-20.04
@@ -84,8 +95,10 @@ jobs:
       - uses: actions/download-artifact@v2
         if: ${{ !env.ACT }} # if running in local test environment
         with:
-          name: supremacy-stream-site_${{env.TAG_NAME}}.tar.gz
-          path: ./deploy
+          name: ${{ needs.build.outputs.artifact_filename }}
+
+      - name: untar deploy directory
+        run: tar -xvf ${{ needs.build.outputs.artifact_filename }}
 
       - run: ls -lR
 
