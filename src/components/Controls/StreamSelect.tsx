@@ -77,7 +77,7 @@ export const StreamSelect = () => {
         // If there is no current stream selected then pick the first (best) option in streamOptions
         if (!currentStream && newStreamOptions && newStreamOptions.length > 0) setCurrentStream(newStreamOptions[0])
 
-        setStreamOptions(temp)
+        setStreamOptions(temp.reverse())
     }
 
     return (
@@ -112,7 +112,7 @@ export const StreamSelect = () => {
                     },
                 }}
             >
-                {streamOptions.reverse().map((x) => {
+                {streamOptions.map((x) => {
                     return (
                         <MenuItem
                             key={x.id}
