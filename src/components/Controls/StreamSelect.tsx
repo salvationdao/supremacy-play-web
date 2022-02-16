@@ -42,7 +42,7 @@ export const StreamSelect = () => {
 
         // If we have access to user's location, then choose servers that are closest to user
         if (navigator.geolocation) {
-            navigator.geolocation.watchPosition((position) => {
+            navigator.geolocation.getCurrentPosition((position) => {
                 const closestStreams: Stream[] = []
 
                 availStreams.map((x) => {
