@@ -1,4 +1,4 @@
-name: build-deploy
+name: Staging Deployment
 
 # Controls when the workflow will run
 on:
@@ -23,10 +23,15 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build_and_save_push:
+  build:
     runs-on: ubuntu-20.04
+    outputs:
+      artifact_filename: ${{ steps.artifact.outputs.filename }}
+      version: ${{ steps.version.outputs.v }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
 
       - name: Setup nodejs
         uses: actions/setup-node@v2
@@ -51,15 +56,18 @@ jobs:
         run: |
           git config --global user.name "Github CI"
           git config --global user.email "team@supremacy.fi"
-          npm version prerelease --preid rc
-          git push
-          git push --tags
-          echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+          # npm version prerelease --preid rc
+          echo "GITVERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
           echo "REACT_APP_SENTRY_CURRENT_RELEASE_NAME=supremacy-supremacy_stream_site@$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
       - name: Build web
         run: CI=false BUILD_PATH='deploy/web' npm run build
 
+      - name: Push tags and commit
+        run: |
+          git push
+          git push --tags
+      
       - name: Add other files
         run: |  
           cp -r ./config ./deploy/.
@@ -68,12 +76,31 @@ jobs:
       - name: List build dir
         run: find deploy
 
+      - id: artifact
+        run: echo "::set-output name=filename::passport-api_${{env.GITVERSION}}.tar"
+      - id: version
+        run: echo "::set-output name=v::${{env.GITVERSION}}"
+
+      - name: tar deploy directory
+        run: tar -cvf ${{ steps.artifact.outputs.filename }} ./deploy
+      
       - name: save artifact
         uses: actions/upload-artifact@v2
         if: ${{ !env.ACT }} # if running in local test environment
         with:
-          name: supremacy-stream-site_${{env.TAG_NAME}}.tar.gz
-          path: ./deploy/
+          name: ${{ steps.artifact.outputs.filename }}
+          path: ${{ steps.artifact.outputs.filename }}
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/download-artifact@v2
+        if: ${{ !env.ACT }} # if running in local test environment
+        with:
+          name: ${{ needs.build.outputs.artifact_filename }}
+
+      - name: untar deploy directory
+        run: tar -xvf ${{ needs.build.outputs.artifact_filename }}
 
       - name: Setup SSH
         run: |
@@ -85,11 +112,11 @@ jobs:
 
       - name: Rsync to server
         if: ${{ !env.ACT }} # if running in local test environment
-        run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}}
+        run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }}
 
       - name: Bring new version online
         if: ${{ !env.ACT }} # if running in local test environment
-        run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}} /usr/share/supremacy/supremacy-stream-site_online'
+        run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }} /usr/share/supremacy/supremacy-stream-site_online'
 
       - name: Reload nginx
         if: ${{ !env.ACT }} # if running in local test environment

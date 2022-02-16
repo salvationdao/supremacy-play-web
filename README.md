@@ -1,5 +1,7 @@
 ### Single page app to watch the live stream with interactive overlay
 
+[CD Docs](.github/workflows/README.md)
+
 ```
 npm start
 ```
