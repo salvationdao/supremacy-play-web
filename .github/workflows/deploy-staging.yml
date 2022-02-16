@@ -114,11 +114,11 @@ jobs:
 
       # - name: Rsync to server
       #   if: ${{ !env.ACT }} # if running in local test environment
-      #   run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}}
+      #   run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }}
 
       # - name: Bring new version online
       #   if: ${{ !env.ACT }} # if running in local test environment
-      #   run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{env.TAG_NAME}} /usr/share/supremacy/supremacy-stream-site_online'
+      #   run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }} /usr/share/supremacy/supremacy-stream-site_online'
 
       # - name: Reload nginx
       #   if: ${{ !env.ACT }} # if running in local test environment
