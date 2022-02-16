@@ -49,7 +49,7 @@ export const SkillBar = ({
         if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
 
-            // cache max price for pop up
+            // Cache max price for the popover
             maxAbilityPriceMap.current.set(id, supsCost)
         }
     }, [gameAbilityTargetPrice])

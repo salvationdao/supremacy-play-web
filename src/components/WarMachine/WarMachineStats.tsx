@@ -53,7 +53,6 @@ export const WarMachineStats = () => {
             <Stack
                 direction="row"
                 alignItems="flex-end"
-                justifyContent={haveFactionMechs ? 'flex-start' : 'center'}
                 sx={{
                     position: 'absolute',
                     bottom: 0,
@@ -89,16 +88,16 @@ export const WarMachineStats = () => {
                     <Box sx={{ mb: 0.6, pr: 2, pl: haveFactionMechs ? 0 : 2, overflow: 'hidden' }}>
                         <ScrollContainer>
                             <Stack
-                                spacing={haveFactionMechs ? -3.2 : 2}
+                                spacing={haveFactionMechs ? -3.2 : -2.5}
                                 direction="row"
                                 alignItems="center"
-                                sx={{ flex: 1, ml: haveFactionMechs ? -1.4 : 0 }}
+                                sx={{ flex: 1, ml: haveFactionMechs ? -1.4 : 0, pb: haveFactionMechs ? 0 : 0.6 }}
                             >
                                 {otherMechs.map((wm) => (
                                     <WarMachineItem
                                         key={`${wm.participantID} - ${wm.tokenID}`}
                                         warMachine={wm}
-                                        scale={haveFactionMechs ? 0.8 : 0.9}
+                                        scale={haveFactionMechs ? 0.8 : 0.8}
                                     />
                                 ))}
                             </Stack>

@@ -98,7 +98,9 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
     // const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber('0'))
     const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
-    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
+    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
+        maxAbilityPriceMap?.current.get(id) || new BigNumber('0'),
+    )
     const [isVoting, setIsVoting] = useState(false)
 
     const [gameAbilityTargetPrice, setGameAbilityTargetPrice] = useState<GameAbilityTargetPrice>()
@@ -121,16 +123,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
         setSupsCost(supsCost)
         setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
 
-        if (gameAbilityTargetPrice.shouldReset) {
-            setInitialTargetCost(supsCost)
-            return
-        }
-
-        if (initialTargetCost.isZero()) {
-            if (maxAbilityPriceMap) {
-                setInitialTargetCost(maxAbilityPriceMap.current.get(id) || supsCost)
-                return
-            }
+        if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
         }
     }, [gameAbilityTargetPrice])

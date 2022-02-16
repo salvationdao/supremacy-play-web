@@ -13,7 +13,7 @@ const WIDTH_WM_IMAGE = 92
 const WIDTH_CENTER = 142
 export const WIDTH_PER_SLANTED_BAR = 12
 export const WIDTH_PER_SLANTED_BAR_ACTUAL = 32
-const WIDTH_SKILL_BUTTON = 42
+const WIDTH_SKILL_BUTTON = 43
 const HEIGHT = 76
 
 const SKILL_BUTTON_TEXT_ROTATION = 76.5
@@ -27,7 +27,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
-    const [isExpanded, toggleIsExpanded] = useToggle(true)
+    const [isExpanded, toggleIsExpanded] = useToggle(false)
     const maxAbilityPriceMap = useRef<Map<string, BigNumber>>(new Map<string, BigNumber>())
     const {
         id: warMachineFactionID,
@@ -80,12 +80,15 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                 alignItems="flex-end"
                 sx={{
                     position: 'relative',
+                    ml: isExpanded || isOwnFaction ? 2 : 3.2,
                     width: isOwnFaction
                         ? isExpanded
                             ? WIDTH_WM_IMAGE + WIDTH_CENTER + WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR
                             : WIDTH_WM_IMAGE +
                               (2 * WIDTH_PER_SLANTED_BAR + 6) +
-                              (numSkillBars > 0 ? WIDTH_SKILL_BUTTON + WIDTH_PER_SLANTED_BAR / 2 - 1 : 0)
+                              (numSkillBars > 0
+                                  ? WIDTH_SKILL_BUTTON + (numSkillBars - 1) * WIDTH_PER_SLANTED_BAR - 7
+                                  : 0)
                         : isExpanded
                         ? WIDTH_WM_IMAGE + WIDTH_CENTER
                         : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 6,
@@ -122,22 +125,26 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                             backgroundRepeat: 'no-repeat',
                             backgroundPosition: 'center',
                             backgroundSize: 'cover',
+                            cursor: 'pointer',
                         }}
                     >
-                        {!isAlive && (
-                            <Stack
-                                alignItems="center"
-                                justifyContent="center"
-                                sx={{
-                                    px: 3.3,
-                                    width: '100%',
-                                    height: '100%',
-                                    background: 'linear-gradient(#00000090, #000000)',
-                                }}
-                            >
-                                <SvgSkull fill="#FFFFFF" size="100%" />
-                            </Stack>
-                        )}
+                        <Stack
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{
+                                px: 3.3,
+                                width: '100%',
+                                height: '100%',
+                                background: 'linear-gradient(#00000090, #000000)',
+                                opacity: isAlive ? 0 : 1,
+                                transition: 'all .2s',
+                                ':hover': {
+                                    opacity: isAlive ? 0.2 : 1,
+                                },
+                            }}
+                        >
+                            {!isAlive && <SvgSkull fill="#FFFFFF" size="100%" />}
+                        </Stack>
                     </Box>
                 </ClipThing>
 
@@ -155,55 +162,56 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                             zIndex: 1,
                         }}
                     >
-                        {isExpanded ? (
-                            <>
-                                <Stack
-                                    alignItems="center"
-                                    direction="row"
-                                    spacing={1}
-                                    sx={{ flex: 1, pl: 3.5, pr: 2.1 }}
+                        <Stack
+                            alignItems="center"
+                            direction="row"
+                            spacing={1}
+                            sx={{ flex: 1, pl: isExpanded ? 3.5 : 0, pr: isExpanded ? 2.1 : 0 }}
+                        >
+                            <HealthShieldBars
+                                warMachine={warMachine}
+                                setIsAlive={setIsAlive}
+                                type={isExpanded ? 'horizontal' : 'vertical'}
+                            />
+
+                            {isExpanded && (
+                                <Box
+                                    sx={{
+                                        width: 26,
+                                        height: 26,
+                                        backgroundImage: `url(${PASSPORT_WEB}/api/files/${logoBlobID})`,
+                                        backgroundRepeat: 'no-repeat',
+                                        backgroundPosition: 'center',
+                                        backgroundSize: 'contain',
+                                    }}
+                                />
+                            )}
+                        </Stack>
+
+                        {isExpanded && (
+                            <Stack
+                                justifyContent="center"
+                                sx={{ pl: 2.2, pr: 2.3, py: 0.7, height: 33, backgroundColor: `${background}95` }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: '#FFFFFF',
+                                        lineHeight: 1,
+                                        fontWeight: 'fontWeightBold',
+                                        fontFamily: 'Nostromo Regular Black',
+                                        textOverflow: 'ellipsis',
+                                        overflow: 'hidden',
+                                        whiteSpace: 'normal',
+                                        display: '-webkit-box',
+                                        overflowWrap: 'anywhere',
+                                        WebkitBoxOrient: 'vertical',
+                                        WebkitLineClamp: 2,
+                                    }}
                                 >
-                                    <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} />
-
-                                    <Box
-                                        sx={{
-                                            width: 26,
-                                            height: 26,
-                                            backgroundImage: `url(${PASSPORT_WEB}/api/files/${logoBlobID})`,
-                                            backgroundRepeat: 'no-repeat',
-                                            backgroundPosition: 'center',
-                                            backgroundSize: 'contain',
-                                        }}
-                                    />
-                                </Stack>
-
-                                <Stack
-                                    justifyContent="center"
-                                    sx={{ pl: 2.2, pr: 2.3, py: 0.7, height: 33, backgroundColor: `${background}95` }}
-                                >
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            color: '#FFFFFF',
-                                            lineHeight: 1,
-                                            fontWeight: 'fontWeightBold',
-                                            fontFamily: 'Nostromo Regular Black',
-
-                                            textOverflow: 'ellipsis',
-                                            overflow: 'hidden',
-                                            whiteSpace: 'normal',
-                                            display: '-webkit-box',
-                                            overflowWrap: 'anywhere',
-                                            WebkitBoxOrient: 'vertical',
-                                            WebkitLineClamp: 2,
-                                        }}
-                                    >
-                                        {name}
-                                    </Typography>
-                                </Stack>
-                            </>
-                        ) : (
-                            <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} type="vertical" />
+                                    {name}
+                                </Typography>
+                            </Stack>
                         )}
                     </Stack>
 
