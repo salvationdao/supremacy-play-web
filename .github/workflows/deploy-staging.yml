@@ -4,7 +4,7 @@ name: build-deploy
 on:
   # Triggers the workflow on push or pull request events but only for the ci branch
   push:
-    branches: [staging, nathan/ci_improvments]
+    branches: [staging]
 
 
 env:
@@ -102,24 +102,22 @@ jobs:
       - name: untar deploy directory
         run: tar -xvf ${{ needs.build.outputs.artifact_filename }}
 
-      - run: ls -lR
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo -e "Host staging-watch.supremacy.game\n  User ${{ secrets.STAGING_SSH_USER }}\n Port ${{ secrets.STAGING_SSH_PORT }}" >> ~/.ssh/config
+          echo '${{ secrets.STAGING_KNOWN_HOSTS }}' > ~/.ssh/known_hosts
+          echo '${{ secrets.STAGING_SSH_PKEY }}' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
 
-      # - name: Setup SSH
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo -e "Host staging-watch.supremacy.game\n  User ${{ secrets.STAGING_SSH_USER }}\n Port ${{ secrets.STAGING_SSH_PORT }}" >> ~/.ssh/config
-      #     echo '${{ secrets.STAGING_KNOWN_HOSTS }}' > ~/.ssh/known_hosts
-      #     echo '${{ secrets.STAGING_SSH_PKEY }}' > ~/.ssh/id_ed25519
-      #     chmod 600 ~/.ssh/id_ed25519
+      - name: Rsync to server
+        if: ${{ !env.ACT }} # if running in local test environment
+        run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }}
 
-      # - name: Rsync to server
-      #   if: ${{ !env.ACT }} # if running in local test environment
-      #   run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }}
+      - name: Bring new version online
+        if: ${{ !env.ACT }} # if running in local test environment
+        run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }} /usr/share/supremacy/supremacy-stream-site_online'
 
-      # - name: Bring new version online
-      #   if: ${{ !env.ACT }} # if running in local test environment
-      #   run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }} /usr/share/supremacy/supremacy-stream-site_online'
-
-      # - name: Reload nginx
-      #   if: ${{ !env.ACT }} # if running in local test environment
-      #   run: ssh staging-watch.supremacy.game 'sudo nginx -t && sudo nginx -s reload'
+      - name: Reload nginx
+        if: ${{ !env.ACT }} # if running in local test environment
+        run: ssh staging-watch.supremacy.game 'sudo nginx -t && sudo nginx -s reload'
