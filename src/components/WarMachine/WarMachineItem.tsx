@@ -18,7 +18,15 @@ const HEIGHT = 76
 
 const SKILL_BUTTON_TEXT_ROTATION = 76.5
 
-export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineState; scale: number }) => {
+export const WarMachineItem = ({
+    warMachine,
+    scale,
+    shouldBeExpanded,
+}: {
+    warMachine: WarMachineState
+    scale: number
+    shouldBeExpanded: boolean
+}) => {
     const { participantID, faction, name, imageUrl } = warMachine
     const { state, subscribe } = useWebsocket()
     const { factionID } = useAuth()
@@ -38,6 +46,10 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
     const wmImageUrl = imageUrl || GenericWarMachine
     const isOwnFaction = factionID == warMachine.factionID
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
+
+    useEffect(() => {
+        toggleIsExpanded(shouldBeExpanded)
+    }, [shouldBeExpanded])
 
     // Subscribe to war machine ability updates
     useEffect(() => {

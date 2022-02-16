@@ -3,7 +3,7 @@ import { SvgFullscreen, SvgSettings, SvgVolume } from '../../assets'
 
 export const VideoPlayerControls = () => {
     return (
-        <Stack direction="row" alignItems="center" sx={{ ml: 'auto' }}>
+        <Stack direction="row" alignItems="center">
             <IconButton
                 size="small"
                 onClick={() => alert('TODO')}

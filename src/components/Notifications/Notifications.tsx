@@ -382,7 +382,7 @@ export const Notifications = () => {
         <Stack
             sx={{
                 position: 'absolute',
-                bottom: 138,
+                bottom: 110,
                 right: 10,
                 zIndex: 15,
                 overflow: 'hidden',
@@ -393,9 +393,9 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        // 100vh, 138px gap bottom, gamebar height, controls height
+                        // 100vh, 110px gap bottom, gamebar height, controls height
                         // mini map: 230px total height
-                        maxHeight: `calc(${height}px - 138px - 230px - ${GAMEBAR_HEIGHT}px - ${CONTROLS_HEIGHT}px)`,
+                        maxHeight: `calc(${height}px - 110px - 230px - ${GAMEBAR_HEIGHT}px - ${CONTROLS_HEIGHT}px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
                         pr: 1,
