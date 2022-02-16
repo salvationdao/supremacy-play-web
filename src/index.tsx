@@ -116,6 +116,7 @@ const AppInner = () => {
                             <Controls
                                 volume={volume}
                                 setVolume={setVolume}
+                                isMute={isMute}
                                 muteToggle={() => {
                                     setIsMute(!isMute)
                                 }}

@@ -5,6 +5,7 @@ import { LiveCounts, VideoPlayerControls } from '..'
 export interface ControlsProps {
     screenHandler: FullScreenHandle
     muteToggle: () => void
+    isMute: boolean
     volume: number
     setVolume: (v: number) => void
 }

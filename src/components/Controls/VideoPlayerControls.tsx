@@ -1,18 +1,14 @@
-import { VolumeDown, VolumeUp } from '@mui/icons-material'
 import { Box, IconButton, Slider, Stack } from '@mui/material'
-import { SvgFullscreen, SvgSettings, SvgVolume } from '../../assets'
+import { SvgFullscreen, SvgSettings, SvgVolume, SvgVolumeMute } from '../../assets'
 import { ControlsProps } from './Controls'
 
 export const VideoPlayerControls = (props: ControlsProps) => {
-    const { muteToggle, screenHandler, volume, setVolume } = props
-    const handleChange = (event: Event, newValue: number | number[]) => {
-        console.log('this is new val', newValue)
-        console.log('this is new val', newValue)
-        console.log('this is new val', newValue)
-        console.log('this is new val', newValue)
+    const { muteToggle, isMute, screenHandler, volume, setVolume } = props
 
+    const handleVolumeChange = (_: Event, newValue: number | number[]) => {
         setVolume(newValue as number)
     }
+
     return (
         <Stack direction="row" alignItems="center" sx={{ ml: 'auto' }}>
             <Box sx={{ width: 200 }}>
@@ -22,7 +18,7 @@ export const VideoPlayerControls = (props: ControlsProps) => {
                         onClick={muteToggle}
                         sx={{ opacity: 0.5, transition: 'all .2s', ':hover': { opacity: 1 } }}
                     >
-                        <SvgVolume size="14px" />
+                        {isMute ? <SvgVolumeMute size="14px" /> : <SvgVolume size="14px" />}
                     </IconButton>
                     <Slider
                         size="small"
@@ -31,7 +27,7 @@ export const VideoPlayerControls = (props: ControlsProps) => {
                         step={0.1}
                         aria-label="Volume"
                         value={volume}
-                        onChange={handleChange}
+                        onChange={handleVolumeChange}
                     />
                 </Stack>
             </Box>
