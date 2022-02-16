@@ -73,10 +73,11 @@ export const StreamSelect = () => {
         if (currentStream && !getObjectFromArrayByKey(temp, currentStream.id, 'id')) {
             newStreamOptions[newStreamOptions.length - 1] = currentStream
         }
-        setStreamOptions(temp)
 
         // If there is no current stream selected then pick the first (best) option in streamOptions
-        if (!currentStream && streamOptions && streamOptions.length > 0) setCurrentStream(streamOptions[0])
+        if (!currentStream && newStreamOptions && newStreamOptions.length > 0) setCurrentStream(newStreamOptions[0])
+
+        setStreamOptions(temp)
     }
 
     return (
