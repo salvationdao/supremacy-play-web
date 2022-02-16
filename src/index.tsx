@@ -48,7 +48,7 @@ if (SENTRY_CONFIG) {
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
     const {
-        iframeDimensions: { width, height },
+        streamDimensions: { width, height },
     } = useDimension()
     const handle = useFullScreenHandle()
 

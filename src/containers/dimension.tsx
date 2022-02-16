@@ -4,17 +4,17 @@ import { useWindowDimensions } from '../hooks'
 
 export const DimensionContainer = createContainer(() => {
     const { width, height } = useWindowDimensions()
-    const [iframeDimensions, setIframeDimensions] = useState<{ width: number; height: number }>({
+    const [streamDimensions, setStreamDimensions] = useState<{ width: number; height: number }>({
         width: 0,
         height: 0,
     })
 
     useEffect(() => {
-        setIframeDimensions({ width, height })
+        setStreamDimensions({ width, height })
     }, [width, height])
 
     return {
-        iframeDimensions,
+        streamDimensions,
     }
 })
 

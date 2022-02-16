@@ -12,7 +12,7 @@ export const VotingSystem = () => {
     const { votingState } = useGame()
     const theme = useTheme<Theme>()
     const {
-        iframeDimensions: { height },
+        streamDimensions: { height },
     } = useDimension()
 
     const isBattleStarted = votingState && votingState.phase !== 'HOLD' && votingState.phase !== 'WAIT_MECH_INTRO'
