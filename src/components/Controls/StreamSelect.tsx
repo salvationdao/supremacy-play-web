@@ -42,8 +42,9 @@ export const StreamSelect = () => {
 
         // If we have access to user's location, then choose servers that are closest to user
         if (navigator.geolocation) {
-            const closestStreams: Stream[] = []
             navigator.geolocation.watchPosition((position) => {
+                const closestStreams: Stream[] = []
+
                 availStreams.map((x) => {
                     // Get distance between user and server
                     const userLat = position.coords.latitude
@@ -61,9 +62,8 @@ export const StreamSelect = () => {
 
                 setStreamOptions(newStreamOptions.slice(0, MAX_OPTIONS))
             })
-        } else {
-            setStreamOptions(newStreamOptions.slice(0, MAX_OPTIONS))
         }
+        setStreamOptions(newStreamOptions.slice(0, MAX_OPTIONS))
     }, [streams])
 
     // If there is no current stream selected then pick the first (best) option in streamOptions
