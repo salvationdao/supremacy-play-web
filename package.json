@@ -25,6 +25,7 @@
         "unstated-next": "^1.1.0"
     },
     "devDependencies": {
+        "@ant-media/webrtc_adaptor": "2.4.2",
         "@babel/cli": "^7.7.5",
         "@babel/core": "^7.7.5",
         "@babel/preset-env": "^7.7.6",

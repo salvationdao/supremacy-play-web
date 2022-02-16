@@ -24,3 +24,7 @@ declare module '*.json' {
     const content: any
     export default content
 }
+
+// ant media
+
+declare module '@ant-media/webrtc_adaptor'

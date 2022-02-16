@@ -1,5 +1,20 @@
-import ReactDOM from 'react-dom'
+import { Box, Stack, ThemeProvider } from '@mui/material'
 import { Theme } from '@mui/material/styles'
+import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
+import * as Sentry from '@sentry/react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import ReactDOM from 'react-dom'
+import { FullScreen, useFullScreenHandle } from 'react-full-screen'
+import { Controls, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
+import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
+import {
+    CONTROLS_HEIGHT,
+    GAMEBAR_HEIGHT,
+    PASSPORT_SERVER_HOSTNAME,
+    PASSPORT_WEB,
+    SENTRY_CONFIG,
+    STREAM_SITE,
+} from './constants'
 import {
     AuthProvider,
     DimensionProvider,
@@ -9,25 +24,13 @@ import {
     useAuth,
     useDimension,
 } from './containers'
-import { Box, Button, CssBaseline, Stack, ThemeProvider } from '@mui/material'
-import { Controls, LiveCounts, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { colors, theme } from './theme/theme'
-import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
-import {
-    PASSPORT_SERVER_HOSTNAME,
-    PASSPORT_WEB,
-    STREAM_SITE,
-    SENTRY_CONFIG,
-    GAMEBAR_HEIGHT,
-    CONTROLS_HEIGHT,
-} from './constants'
-import { FullScreen, useFullScreenHandle } from 'react-full-screen'
-import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
-import * as Sentry from '@sentry/react'
-import ReactPlayer from 'react-player'
+import { FactionThemeColor, UpdateTheme } from './types'
+
+// import { WebRTCAdaptor } from '@ant-media/webrtc_adaptor'
+
+// const WebRTCAdaptor = require('@ant-media/webrtc_adaptor')
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -52,14 +55,38 @@ const AppInner = () => {
         iframeDimensions: { width, height },
     } = useDimension()
     const handle = useFullScreenHandle()
+
+    // const webRTCAdaptor = new WebRTCAdaptor({
+    //     websocket_url: 'wss://your-domain.tld:5443/WebRTCAppEE/websocket',
+    //     mediaConstraints: {
+    //         video: true,
+    //         audio: true,
+    //     },
+    //     peerconnection_config: {
+    //         iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }],
+    //     },
+    //     sdp_constraints: {
+    //         OfferToReceiveAudio: false,
+    //         OfferToReceiveVideo: false,
+    //     },
+    //     localVideoId: 'id-of-video-element', // <video id="id-of-video-element" autoplay muted></video>
+    //     // bandwidth: int | string, // default is 900 kbps, string can be 'unlimited'
+    //     // dataChannelEnabled: true | false, // enable or disable data channel
+    //     // callback: (info, obj) => {}, // check info callbacks bellow
+    //     // callbackError: function (error, message) {}, // check error callbacks bellow
+    // })
+
+    // console.log('wrtc lib', webRTCAdaptor)
+
     const elementRef = useRef<HTMLIFrameElement>(null)
     const [isMute, setIsMute] = useState(true)
     const [volume, setVolume] = useState(0.0)
 
     useLayoutEffect(() => {
         if (elementRef.current) {
-            console.log('holy shit wtf', elementRef.current) // { current: <h1_object> }
             // elementRef.current.set
+            // console.log('this is el current', elementRef.current.vol)
+            console.log('this is vol', (elementRef.current as any)?.volume)
         }
     })
 
@@ -79,23 +106,36 @@ const AppInner = () => {
 
                         <Box sx={{ flex: 1, position: 'relative' }}>
                             <iframe
+                                id="supremacy-stream"
                                 ref={elementRef}
-                                // width="100%"
-                                // height="100%"
+                                width="100%"
+                                height="100%"
                                 frameBorder="0"
                                 allowFullScreen
-                                src={STREAM_SITE}
+                                src={
+                                    'https://staging-watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601'
+                                }
                             ></iframe>
+                            {/* 
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: 'https://staging-watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601',
+                                }}
+                            ></div> */}
 
-                            <ReactPlayer
+                            {/* <video width="100%" height="100%" controls>
+                                <source src={STREAM_SITE} type="video/mp4" />
+                            </video> */}
+
+                            {/* <ReactPlayer
                                 volume={volume}
                                 playing
                                 muted={isMute}
                                 controls
-                                url={'https://www.youtube.com/watch?v=5qap5aO4i9A'}
+                                url={STREAM_SITE}
                                 width="100%"
                                 height={'100%'}
-                            />
+                            /> */}
                             <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
                                 <VotingSystem />
                                 <MiniMap />
@@ -118,6 +158,13 @@ const AppInner = () => {
                                 setVolume={setVolume}
                                 isMute={isMute}
                                 muteToggle={() => {
+                                    console.log('this is window', window)
+
+                                    if ((window as any).changeVideoMuteStatus) {
+                                        ;(window as any).changeVideoMuteStatus()
+                                        return
+                                    }
+
                                     setIsMute(!isMute)
                                 }}
                                 screenHandler={handle}
