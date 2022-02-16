@@ -20,6 +20,9 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { Box, BoxProps } from '@mui/system'
 import { colors } from '../theme/theme'
+import GenericWarMachine from './images/GenericWarMachine.png'
+
+export { GenericWarMachine }
 
 interface SvgWrapperProps extends BoxProps {
     size?: string

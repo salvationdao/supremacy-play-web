@@ -1,20 +1,21 @@
-import { Box, Stack, ThemeProvider } from '@mui/material'
-import { Theme } from '@mui/material/styles'
-import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
-import * as Sentry from '@sentry/react'
+import { Box, CssBaseline, Stack, Theme, ThemeProvider } from '@mui/material'
+import { Controls, LiveVotingChart, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import ReactDOM from 'react-dom'
-import { FullScreen, useFullScreenHandle } from 'react-full-screen'
-import { Controls, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
-import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
+import { FactionThemeColor, UpdateTheme } from './types'
+import { mergeDeep } from './helpers'
+import { colors, theme } from './theme/theme'
+import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
 import {
-    CONTROLS_HEIGHT,
-    GAMEBAR_HEIGHT,
     PASSPORT_SERVER_HOSTNAME,
     PASSPORT_WEB,
-    SENTRY_CONFIG,
     STREAM_SITE,
+    SENTRY_CONFIG,
+    GAMEBAR_HEIGHT,
+    CONTROLS_HEIGHT,
+    STREAM_ASPECT_RATIO_W_H,
 } from './constants'
+import { FullScreen, useFullScreenHandle } from 'react-full-screen'
+import * as Sentry from '@sentry/react'
 import {
     AuthProvider,
     DimensionProvider,
@@ -24,13 +25,7 @@ import {
     useAuth,
     useDimension,
 } from './containers'
-import { mergeDeep } from './helpers'
-import { colors, theme } from './theme/theme'
-import { FactionThemeColor, UpdateTheme } from './types'
-
-// import { WebRTCAdaptor } from '@ant-media/webrtc_adaptor'
-
-// const WebRTCAdaptor = require('@ant-media/webrtc_adaptor')
+import ReactDOM from 'react-dom'
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -52,31 +47,9 @@ if (SENTRY_CONFIG) {
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
     const {
-        iframeDimensions: { width, height },
+        streamDimensions: { width, height },
     } = useDimension()
     const handle = useFullScreenHandle()
-
-    // const webRTCAdaptor = new WebRTCAdaptor({
-    //     websocket_url: 'wss://your-domain.tld:5443/WebRTCAppEE/websocket',
-    //     mediaConstraints: {
-    //         video: true,
-    //         audio: true,
-    //     },
-    //     peerconnection_config: {
-    //         iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }],
-    //     },
-    //     sdp_constraints: {
-    //         OfferToReceiveAudio: false,
-    //         OfferToReceiveVideo: false,
-    //     },
-    //     localVideoId: 'id-of-video-element', // <video id="id-of-video-element" autoplay muted></video>
-    //     // bandwidth: int | string, // default is 900 kbps, string can be 'unlimited'
-    //     // dataChannelEnabled: true | false, // enable or disable data channel
-    //     // callback: (info, obj) => {}, // check info callbacks bellow
-    //     // callbackError: function (error, message) {}, // check error callbacks bellow
-    // })
-
-    // console.log('wrtc lib', webRTCAdaptor)
 
     const elementRef = useRef<HTMLIFrameElement>(null)
     const [isMute, setIsMute] = useState(true)
@@ -84,18 +57,28 @@ const AppInner = () => {
 
     useLayoutEffect(() => {
         if (elementRef.current) {
+            // logc
             // elementRef.current.set
             // console.log('this is el current', elementRef.current.vol)
-            console.log('this is vol', (elementRef.current as any)?.volume)
+            // console.log('this is vol', (elementRef.current as any)?.volume)
         }
     })
+    // Work out the aspect ratio for the iframe bit and yeah
+    let iframeHeight: number | string = height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT
+    let iframeWidth: number | string = width
+    const iframeRatio = iframeWidth / iframeHeight
+    if (iframeRatio >= STREAM_ASPECT_RATIO_W_H) {
+        iframeHeight = 'unset'
+    } else {
+        iframeWidth = 'unset'
+    }
 
     return (
         <>
             {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <FullScreen handle={handle}>
                     <Stack sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
-                        <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT }}>
+                        <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT, zIndex: 999 }}>
                             <GameBar
                                 barPosition="top"
                                 gameserverSessionID={gameserverSessionID}
@@ -104,17 +87,20 @@ const AppInner = () => {
                             />
                         </Box>
 
-                        <Box sx={{ flex: 1, position: 'relative' }}>
+                        <Box sx={{ flex: 1, position: 'relative', width: '100%', height: '100%' }}>
                             <iframe
-                                id="supremacy-stream"
-                                ref={elementRef}
-                                width="100%"
-                                height="100%"
                                 frameBorder="0"
                                 allowFullScreen
-                                src={
-                                    'https://staging-watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601'
-                                }
+                                src={STREAM_SITE}
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                    width: iframeWidth,
+                                    height: iframeHeight,
+                                }}
                             ></iframe>
                             {/* 
                             <div
@@ -123,19 +109,9 @@ const AppInner = () => {
                                 }}
                             ></div> */}
 
-                            {/* <video width="100%" height="100%" controls>
-                                <source src={STREAM_SITE} type="video/mp4" />
-                            </video> */}
+                            {/* <Box sx={{ backgroundColor: '#622D93', width: '100%', height: '100%' }} /> */}
+                            {/* <Box sx={{ backgroundColor: '#000000', width: '100%', height: '100%' }} /> */}
 
-                            {/* <ReactPlayer
-                                volume={volume}
-                                playing
-                                muted={isMute}
-                                controls
-                                url={STREAM_SITE}
-                                width="100%"
-                                height={'100%'}
-                            /> */}
                             <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
                                 <VotingSystem />
                                 <MiniMap />

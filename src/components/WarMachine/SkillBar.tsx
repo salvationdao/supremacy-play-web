@@ -1,23 +1,20 @@
-import { Box, Stack } from '@mui/material'
+import { Box } from '@mui/material'
 import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
-import { BoxSlanted } from '..'
+import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from '..'
 import { NullUUID } from '../../constants'
 import { useAuth, useWebsocket } from '../../containers'
 import { shadeColor } from '../../helpers'
-import { colors } from '../../theme/theme'
 import { GameAbility, GameAbilityTargetPrice } from '../../types'
 
 export const SkillBar = ({
     index,
     gameAbility,
-    widthOverall,
-    width,
+    maxAbilityPriceMap,
 }: {
     index: number
     gameAbility: GameAbility
-    widthOverall: number
-    width: number
+    maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
 }) => {
     const { factionID } = useAuth()
     const { state, subscribeAbilityNetMessage } = useWebsocket()
@@ -51,47 +48,30 @@ export const SkillBar = ({
 
         if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
+
+            // Cache max price for the popover
+            maxAbilityPriceMap.current.set(id, supsCost)
         }
     }, [gameAbilityTargetPrice])
 
     return (
-        <BoxSlanted
+        <Box
             key={index}
-            clipSlantSize="20px"
             sx={{
                 position: 'absolute',
                 bottom: 0,
-                right: index * width - index * 1,
-                width: widthOverall,
+                right: index * WIDTH_PER_SLANTED_BAR - index * 1,
+                width: WIDTH_PER_SLANTED_BAR_ACTUAL,
                 height: '100%',
-                transform: 'scale(.95)',
                 zIndex: 4,
+                pointerEvents: 'none',
             }}
         >
-            <Stack
-                justifyContent="flex-end"
-                sx={{ position: 'relative', height: '100%', width: '100%', backgroundColor: '#00000040' }}
-            >
-                <Box
-                    sx={{
-                        height: `${progressPercent}%`,
-                        width: '100%',
-                        backgroundColor: shadeColor('#4844A0', 100 - index * 28),
-                        transition: 'all .25s',
-                    }}
-                />
-
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        bottom: `${costPercent - 2}%`,
-                        height: 2,
-                        width: '100%',
-                        backgroundColor: colors.red,
-                        zIndex: 6,
-                    }}
-                />
-            </Stack>
-        </BoxSlanted>
+            <SlantedBar
+                backgroundColor={shadeColor('#4844A0', 100 - index * 28)}
+                progressPercent={progressPercent}
+                costPercent={costPercent}
+            />
+        </Box>
     )
 }
