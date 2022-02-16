@@ -18,7 +18,7 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
 
     return (
         <Box>
-            <StyledImageText text={label} color={colour} />
+            <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText text={name} color={faction.theme.primary} imageUrl={wmImageUrl} />
             <StyledNormalText text="." />

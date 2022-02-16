@@ -14,7 +14,7 @@ export const FactionAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertP
 
     return (
         <Box>
-            <StyledImageText text={label} color={colour} />
+            <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText
                 text={user ? user.faction.label : 'GABS'}
