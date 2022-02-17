@@ -38,7 +38,7 @@ export const StreamSelect = () => {
         // Reduce the list of options so it's not too many for the user
         // By default its sorted by quietest servers first
         const quietestStreams = availStreams.sort((a, b) => (a.usersNow / a.userMax > b.usersNow / b.userMax ? 1 : -1))
-        let newStreamOptions = quietestStreams
+        SetNewStreamOptions(quietestStreams)
 
         // If we have access to user's location, then choose servers that are closest to user
         if (navigator.geolocation) {
@@ -55,16 +55,14 @@ export const StreamSelect = () => {
                     closestStreams.push({ ...x, distance })
                 })
 
-                newStreamOptions = closestStreams.sort((a, b) => {
+                closestStreams.sort((a, b) => {
                     if (!a.distance || !b.distance) return 0
                     return a.distance > b.distance ? 1 : -1
                 })
 
-                SetNewStreamOptions(newStreamOptions)
+                SetNewStreamOptions(closestStreams)
             })
         }
-
-        SetNewStreamOptions(newStreamOptions)
     }, [streams])
 
     const SetNewStreamOptions = (newStreamOptions: Stream[]) => {
