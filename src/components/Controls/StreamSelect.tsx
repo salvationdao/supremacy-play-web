@@ -46,7 +46,7 @@ export const StreamSelect = () => {
                 const closestStreams: Stream[] = []
 
                 availStreams.map((x) => {
-                    // Get distance between user and server
+                    // Get distance between user and server and populate "distance" key
                     const userLat = position.coords.latitude
                     const userLong = position.coords.longitude
                     const serverLat = x.latitude
@@ -66,7 +66,7 @@ export const StreamSelect = () => {
     }, [streams])
 
     const SetNewStreamOptions = (newStreamOptions: Stream[]) => {
-        // Include our current selection if not already in the list
+        // Limit to only a few for the dropdown and include our current selection if not already in the list
         const temp = newStreamOptions.slice(0, MAX_OPTIONS)
         if (currentStream && !getObjectFromArrayByKey(temp, currentStream.id, 'id')) {
             newStreamOptions[newStreamOptions.length - 1] = currentStream
@@ -75,6 +75,7 @@ export const StreamSelect = () => {
         // If there is no current stream selected then pick the first (best) option in streamOptions
         if (!currentStream && newStreamOptions && newStreamOptions.length > 0) setCurrentStream(newStreamOptions[0])
 
+        // Reverse the order for rendering so best is closer to user's mouse
         setStreamOptions(temp.reverse())
     }
 
