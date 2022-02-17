@@ -16,6 +16,12 @@ export const LiveChatSideButton = () => {
                 width: LIVE_CHAT_DRAWER_BUTTON_WIDTH,
                 cursor: 'pointer',
                 backgroundColor: colors.darkNavyBlue,
+                ':hover > *': {
+                    opacity: 1,
+                },
+                ':active > *': {
+                    opacity: 0.8,
+                },
             }}
         >
             <Stack
@@ -28,6 +34,8 @@ export const LiveChatSideButton = () => {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%) rotate(-90deg)',
+                    opacity: 0.6,
+                    transition: 'all .2s',
                 }}
             >
                 <Typography
