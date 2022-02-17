@@ -7,13 +7,20 @@ import ZoomOutMapOutlinedIcon from '@mui/icons-material/ZoomOutMapOutlined'
 import ZoomInMapOutlinedIcon from '@mui/icons-material/ZoomInMapOutlined'
 import { useToggle } from '../../hooks'
 import { useDimension, useGame } from '../../containers'
-import { CONTROLS_HEIGHT } from '../../constants'
+import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT } from '../../constants'
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
+import { parseString } from '../../helpers'
+import { SvgDrag } from '../../assets'
+
+const Padding = 10
 
 export const MiniMap = () => {
     const {
         iframeDimensions: { width, height },
     } = useDimension()
     const theme = useTheme<Theme>()
+    const [curPosX, setCurPosX] = useState(-1)
+    const [curPosY, setCurPosY] = useState(-1)
     const { map, winner, setWinner, votingState } = useGame()
     const [enlarged, toggleEnlarged] = useToggle()
     const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
@@ -73,70 +80,107 @@ export const MiniMap = () => {
                 filter: 'drop-shadow(0 3px 3px #00000050)',
             }}
         >
-            <Slide in={true} direction="left">
-                <Box>
-                    <ClipThing
-                        clipSize="10px"
-                        border={{
-                            isFancy: true,
-                            borderThickness: '3px',
-                            borderColor: isTargetting ? winner.gameAbility.colour : theme.factionTheme.primary,
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                position: 'relative',
-                                boxShadow: 1,
-                                width: dimensions.width,
-                                height: dimensions.height,
-                                // backgroundColor: colors.darkNavy,
-                                transition: 'all .2s',
-                                background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
+            <Draggable
+                allowAnyClick
+                handle=".handle"
+                position={{
+                    x: curPosX,
+                    y: curPosY,
+                }}
+                onStop={(e: DraggableEvent, data: DraggableData) => {
+                    setCurPosX(data.x)
+                    setCurPosY(data.y)
+                    localStorage.setItem('miniMapPosX', data.x.toString())
+                    localStorage.setItem('miniMapPosY', data.y.toString())
+                }}
+                bounds={{
+                    top: Padding,
+                    bottom: height - map.width - Padding - GAMEBAR_HEIGHT - CONTROLS_HEIGHT,
+                    left: Padding,
+                    right: width - map.height - Padding,
+                }}
+            >
+                <Slide in={true} direction="left">
+                    <Box>
+                        <ClipThing
+                            clipSize="10px"
+                            border={{
+                                isFancy: true,
+                                borderThickness: '3px',
+                                borderColor: isTargetting ? winner.gameAbility.colour : theme.factionTheme.primary,
                             }}
                         >
-                            <IconButton
-                                size="small"
+                            <Box
                                 sx={{
-                                    position: 'absolute',
-                                    left: 1,
-                                    top: 1,
-                                    color: colors.text,
-                                    opacity: 0.8,
-                                    zIndex: 50,
+                                    position: 'relative',
+                                    boxShadow: 1,
+                                    width: dimensions.width,
+                                    height: dimensions.height,
+                                    // backgroundColor: colors.darkNavy,
+                                    transition: 'all .2s',
+                                    background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
                                 }}
-                                onClick={() => toggleEnlarged()}
                             >
-                                {enlarged ? (
-                                    <ZoomInMapOutlinedIcon fontSize="small" />
-                                ) : (
-                                    <ZoomOutMapOutlinedIcon fontSize="small" />
+                                <IconButton
+                                    size="small"
+                                    sx={{
+                                        position: 'absolute',
+                                        left: 1,
+                                        top: 1,
+                                        color: colors.text,
+                                        opacity: 0.8,
+                                        zIndex: 50,
+                                    }}
+                                    onClick={() => toggleEnlarged()}
+                                >
+                                    {enlarged ? (
+                                        <ZoomInMapOutlinedIcon fontSize="small" />
+                                    ) : (
+                                        <ZoomOutMapOutlinedIcon fontSize="small" />
+                                    )}
+                                </IconButton>
+
+                                <IconButton
+                                    className="handle"
+                                    size="small"
+                                    sx={{
+                                        position: 'absolute',
+                                        left: 25,
+                                        top: 3,
+                                        color: colors.text,
+                                        opacity: 0.8,
+                                        zIndex: 50,
+                                        cursor: 'move',
+                                    }}
+                                >
+                                    <SvgDrag size="13px" />
+                                </IconButton>
+
+                                {isTargetting && (
+                                    <TargetTimerCountdown
+                                        gameAbility={winner.gameAbility}
+                                        setTimeReachZero={setTimeReachZero}
+                                        endTime={winner.endTime}
+                                    />
                                 )}
-                            </IconButton>
 
-                            {isTargetting && (
-                                <TargetTimerCountdown
-                                    gameAbility={winner.gameAbility}
-                                    setTimeReachZero={setTimeReachZero}
-                                    endTime={winner.endTime}
-                                />
-                            )}
-
-                            {isTargetting ? (
-                                <InteractiveMap
-                                    gameAbility={winner.gameAbility}
-                                    windowDimension={dimensions}
-                                    targeting
-                                    setSubmitted={setSubmitted}
-                                    confirmed={confirmed}
-                                    enlarged={enlarged}
-                                />
-                            ) : (
-                                <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
-                            )}
-                        </Box>
-                    </ClipThing>
-                </Box>
-            </Slide>
+                                {isTargetting ? (
+                                    <InteractiveMap
+                                        gameAbility={winner.gameAbility}
+                                        windowDimension={dimensions}
+                                        targeting
+                                        setSubmitted={setSubmitted}
+                                        confirmed={confirmed}
+                                        enlarged={enlarged}
+                                    />
+                                ) : (
+                                    <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
+                                )}
+                            </Box>
+                        </ClipThing>
+                    </Box>
+                </Slide>
+            </Draggable>
         </Box>
     )
 }
