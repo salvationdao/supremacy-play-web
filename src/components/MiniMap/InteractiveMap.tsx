@@ -1,20 +1,23 @@
 import { Box, Stack } from '@mui/material'
 import { styled } from '@mui/system'
 import { Dispatch, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
-import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { MapWarMachine, SelectionIcon } from '..'
 import { useGame } from '../../containers'
 import { useToggle } from '../../hooks'
 import { GameAbility, Map, WarMachineState } from '../../types'
-
-// UseGesture Stuff
 import { animated, useSpring } from 'react-spring'
-import { useDrag, useGesture, useWheel } from '@use-gesture/react'
-import { transform } from '@babel/core'
+import { useDrag, useWheel } from '@use-gesture/react'
 
 export interface MapSelection {
     x: number
     y: number
+}
+
+// todo: implement this
+interface MapGridProps {
+    mapHeight: number
+    mapWidth: number
+    scale: number // just this one?
 }
 
 const MapGrid = styled('table', {
@@ -26,6 +29,13 @@ const MapGrid = styled('table', {
     height: `${map.height}px`,
     borderSpacing: 0,
 }))
+
+// todo: implement this
+interface GridCellProps {
+    gridHeight: number
+    gridWidth: number
+    scale: number // just this one?
+}
 
 const GridCell = styled('td', {
     shouldForwardProp: (prop) => prop !== 'disabled',
@@ -58,6 +68,8 @@ const MapWarMachines = ({ warMachines, map }: MapWarMachineProps) => {
         </>
     )
 }
+
+// Should I have interactiveMapProps?
 
 export const InteractiveMap = ({
     gameAbility,
@@ -166,7 +178,7 @@ export const InteractiveMap = ({
                 return prev ? { ...prev, scale: (prev.scale = minScale / 40) } : prev
             })
         }
-        //
+
         // lastPos.current = {
         //     x:
         //         windowDimension.width <= map.width && prevDimension.current.width > map.width
