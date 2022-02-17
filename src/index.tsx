@@ -26,6 +26,7 @@ import {
     useDimension,
 } from './containers'
 import ReactDOM from 'react-dom'
+import { WebRTCAdaptor } from '@antmedia/webrtc_adaptor'
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -51,18 +52,44 @@ const AppInner = () => {
     } = useDimension()
     const handle = useFullScreenHandle()
 
-    const elementRef = useRef<HTMLIFrameElement>(null)
     const [isMute, setIsMute] = useState(true)
     const [volume, setVolume] = useState(0.0)
 
-    useLayoutEffect(() => {
-        if (elementRef.current) {
-            // logc
-            // elementRef.current.set
-            // console.log('this is el current', elementRef.current.vol)
-            // console.log('this is vol', (elementRef.current as any)?.volume)
-        }
-    })
+    // const infoCallback = useCallback(() => {}, [])
+
+    useEffect(() => {
+        initWebRTCAdaptor()
+    }, [])
+
+    const initWebRTCAdaptor = () => {
+        const webRTCAdaptor = new WebRTCAdaptor({
+            //https://staging-watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601
+            // wss://your-domain.tld:5443/WebRTCAppEE/websocket
+            websocket_url: 'wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket',
+            mediaConstraints: {
+                video: true,
+                audio: true,
+            },
+            peerconnection_config: {
+                iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }],
+            },
+            sdp_constraints: {
+                OfferToReceiveAudio: false,
+                OfferToReceiveVideo: false,
+            },
+            localVideoId: 'remoteVideo', // <video id="id-of-video-element" autoplay muted></video>
+            // bandwidth: int|string, // default is 900 kbps, string can be 'unlimited'
+            // dataChannelEnabled: true|false, // enable or disable data channel
+            callback: (info: any, obj: any) => {
+                if (info == 'play_started') {
+                    webRTCAdaptor.getStreamInfo('886200805704583109786601')
+                }
+                console.log('call back', { info, obj })
+            }, // check info callbacks bellow
+            // callbackError: function(error, message) {}, // check error callbacks bellow
+        })
+    }
+
     // Work out the aspect ratio for the iframe bit and yeah
     let iframeHeight: number | string = height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT
     let iframeWidth: number | string = width
@@ -91,6 +118,7 @@ const AppInner = () => {
                             <iframe
                                 frameBorder="0"
                                 allowFullScreen
+                                id="video_stream"
                                 src={STREAM_SITE}
                                 style={{
                                     position: 'absolute',
@@ -102,15 +130,6 @@ const AppInner = () => {
                                     height: iframeHeight,
                                 }}
                             ></iframe>
-                            {/* 
-                            <div
-                                dangerouslySetInnerHTML={{
-                                    __html: 'https://staging-watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601',
-                                }}
-                            ></div> */}
-
-                            {/* <Box sx={{ backgroundColor: '#622D93', width: '100%', height: '100%' }} /> */}
-                            {/* <Box sx={{ backgroundColor: '#000000', width: '100%', height: '100%' }} /> */}
 
                             <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
                                 <VotingSystem />

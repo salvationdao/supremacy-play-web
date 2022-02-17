@@ -27,4 +27,4 @@ declare module '*.json' {
 
 // ant media
 
-declare module '@ant-media/webrtc_adaptor'
+declare module '@antmedia/webrtc_adaptor'

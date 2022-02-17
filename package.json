@@ -3,14 +3,15 @@
     "version": "0.0.3-rc.17",
     "private": true,
     "dependencies": {
+        "@antmedia/webrtc_adaptor": "^2.4.2",
         "@emotion/react": "^11.4.1",
         "@emotion/styled": "^11.3.0",
         "@mui/icons-material": "^5.0.1",
         "@mui/lab": "^5.0.0-alpha.53",
         "@mui/material": "^5.0.1",
         "@mui/styles": "^5.1.0",
-        "@sentry/react": "^6.17.6",
         "@ninjasoftware/passport-gamebar": "^0.8.3",
+        "@sentry/react": "^6.17.6",
         "bignumber.js": "^9.0.2",
         "core-js": "^3.5.0",
         "jsonwebtoken": "^8.5.1",
@@ -25,7 +26,6 @@
         "unstated-next": "^1.1.0"
     },
     "devDependencies": {
-        "@ant-media/webrtc_adaptor": "2.4.2",
         "@babel/cli": "^7.7.5",
         "@babel/core": "^7.7.5",
         "@babel/preset-env": "^7.7.6",
