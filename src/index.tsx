@@ -10,9 +10,18 @@ import {
     useDimension,
 } from './containers'
 import { Box, CssBaseline, Stack, ThemeProvider } from '@mui/material'
-import { Controls, LiveVotingChart, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
+import {
+    Controls,
+    LiveChat,
+    LiveChatSideButton,
+    LiveVotingChart,
+    MiniMap,
+    Notifications,
+    VotingSystem,
+    WarMachineStats,
+} from './components'
 import { useEffect, useState } from 'react'
-import { FactionThemeColor, UpdateTheme, Stream } from './types'
+import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { colors, theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
@@ -23,6 +32,7 @@ import {
     GAMEBAR_HEIGHT,
     CONTROLS_HEIGHT,
     STREAM_ASPECT_RATIO_W_H,
+    LIVE_CHAT_DRAWER_BUTTON_WIDTH,
 } from './constants'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import * as Sentry from '@sentry/react'
@@ -68,55 +78,65 @@ const AppInner = () => {
             <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <FullScreen handle={handle}>
-                    <Stack sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
-                        <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT, zIndex: 999 }}>
-                            <GameBar
-                                barPosition="top"
-                                gameserverSessionID={gameserverSessionID}
-                                passportWeb={PASSPORT_WEB}
-                                passportServerHost={PASSPORT_SERVER_HOSTNAME}
-                            />
-                        </Box>
+                    <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
+                        <Box sx={{ width: LIVE_CHAT_DRAWER_BUTTON_WIDTH, backgroundColor: colors.darkNavyBlue }} />
 
-                        <Box sx={{ flex: 1, position: 'relative', width: '100%', height: '100%' }}>
-                            <iframe
-                                frameBorder="0"
-                                allowFullScreen
-                                src={currentStream?.url}
-                                style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                    width: iframeWidth,
-                                    height: iframeHeight,
-                                }}
-                            ></iframe>
-
-                            {/* <Box sx={{ backgroundColor: '#622D93', width: '100%', height: '100%' }} /> */}
-                            {/* <Box sx={{ backgroundColor: '#000000', width: '100%', height: '100%' }} /> */}
-
-                            <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                                <VotingSystem />
-                                <MiniMap />
-                                <Notifications />
-                                <LiveVotingChart />
-                                <WarMachineStats />
-                            </Box>
-                        </Box>
-
-                        <Box
-                            sx={{
-                                position: 'relative',
-                                width: '100%',
-                                height: CONTROLS_HEIGHT,
-                                backgroundColor: colors.darkNavyBlue,
-                            }}
+                        <Stack
+                            sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}
                         >
-                            <Controls />
-                        </Box>
+                            <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT, zIndex: 999 }}>
+                                <GameBar
+                                    barPosition="top"
+                                    gameserverSessionID={gameserverSessionID}
+                                    passportWeb={PASSPORT_WEB}
+                                    passportServerHost={PASSPORT_SERVER_HOSTNAME}
+                                />
+                            </Box>
+
+                            <Box sx={{ flex: 1, position: 'relative', width: '100%', height: '100%' }}>
+                                <iframe
+                                    frameBorder="0"
+                                    allowFullScreen
+                                    src={currentStream?.url}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                        width: iframeWidth,
+                                        height: iframeHeight,
+                                    }}
+                                ></iframe>
+
+                                {/* <Box sx={{ backgroundColor: '#622D93', width: '100%', height: '100%' }} /> */}
+                                {/* <Box sx={{ backgroundColor: '#000000', width: '100%', height: '100%' }} /> */}
+
+                                <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
+                                    <VotingSystem />
+                                    <MiniMap />
+                                    <Notifications />
+                                    <LiveVotingChart />
+                                    <WarMachineStats />
+                                </Box>
+                            </Box>
+
+                            <Box
+                                sx={{
+                                    position: 'relative',
+                                    width: '100%',
+                                    height: CONTROLS_HEIGHT,
+                                    backgroundColor: colors.darkNavyBlue,
+                                }}
+                            >
+                                <Controls />
+                            </Box>
+                        </Stack>
+
+                        <LiveChatSideButton />
                     </Stack>
+
+                    <LiveChat />
                 </FullScreen>
             )}
         </>
