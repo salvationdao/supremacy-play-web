@@ -20,6 +20,7 @@ interface MapGridProps {
     scale: number // just this one?
 }
 
+//todo: need to scale grid size
 const MapGrid = styled('table', {
     shouldForwardProp: (prop) => prop !== 'map',
 })<{ map: Map }>(({ map }) => ({
@@ -37,6 +38,7 @@ interface GridCellProps {
     scale: number // just this one?
 }
 
+//todo: need to scale grid cell size
 const GridCell = styled('td', {
     shouldForwardProp: (prop) => prop !== 'disabled',
 })<{ disabled?: boolean }>(({ disabled }) => ({
