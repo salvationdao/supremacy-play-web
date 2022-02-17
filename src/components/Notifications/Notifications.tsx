@@ -1,5 +1,12 @@
 import { Box, Stack } from '@mui/material'
-import { BattleFactionAbilityAlert, LocationSelectAlert, NotificationItem, TextAlert, WarMachineAbilityAlert } from '..'
+import {
+    BattleAbilityAlert,
+    FactionAbilityAlert,
+    LocationSelectAlert,
+    NotificationItem,
+    TextAlert,
+    WarMachineAbilityAlert,
+} from '..'
 import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from '../../constants'
 import { colors } from '../../theme/theme'
 import { useTheme } from '@mui/styles'
@@ -221,6 +228,31 @@ export const Notifications = () => {
             data: {
                 user: {
                     username: 'Jayli3n',
+                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
+                    faction: {
+                        label: 'Red Mountain Offworld Mining Corporation',
+                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
+                        theme: {
+                            primary: '#C24242',
+                            secondary: '#FFFFFF',
+                            background: '#0D0404',
+                        },
+                    },
+                },
+                ability: {
+                    label: 'AIRSTRIKE',
+                    imageUrl: 'https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg',
+                    colour: '#428EC1',
+                },
+            },
+        }
+
+        const factionAbilityNoti: NotificationResponse = {
+            type: 'FACTION_ABILITY',
+            data: {
+                user: {
+                    username: 'Jayli3n',
+                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
                     faction: {
                         label: 'Red Mountain Offworld Mining Corporation',
                         logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
@@ -244,6 +276,7 @@ export const Notifications = () => {
             data: {
                 user: {
                     username: 'Jayli3n',
+                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
                     faction: {
                         label: 'Red Mountain Offworld Mining Corporation',
                         logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
@@ -286,6 +319,7 @@ export const Notifications = () => {
         newNotification(locationSelectNoti4)
         newNotification(locationSelectNoti5)
         newNotification(battleAbilityNoti)
+        newNotification(factionAbilityNoti)
         newNotification(warMachineAbilityNoti)
         newNotification(textNoti)
     }, [])
@@ -324,10 +358,15 @@ export const Notifications = () => {
                         </NotificationItem>
                     )
                 case 'BATTLE_ABILITY':
+                    return (
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <BattleAbilityAlert data={n.data} />
+                        </NotificationItem>
+                    )
                 case 'FACTION_ABILITY':
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
-                            <BattleFactionAbilityAlert data={n.data} />
+                            <FactionAbilityAlert data={n.data} />
                         </NotificationItem>
                     )
                 case 'WAR_MACHINE_ABILITY':
@@ -343,7 +382,7 @@ export const Notifications = () => {
         <Stack
             sx={{
                 position: 'absolute',
-                bottom: 138,
+                bottom: 110,
                 right: 10,
                 zIndex: 15,
                 overflow: 'hidden',
@@ -354,9 +393,9 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        // 100vh, 138px gap bottom, gamebar height, controls height
+                        // 100vh, 110px gap bottom, gamebar height, controls height
                         // mini map: 230px total height
-                        maxHeight: `calc(${height}px - 138px - 230px - ${GAMEBAR_HEIGHT}px - ${CONTROLS_HEIGHT}px)`,
+                        maxHeight: `calc(${height}px - 110px - 230px - ${GAMEBAR_HEIGHT}px - ${CONTROLS_HEIGHT}px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
                         pr: 1,

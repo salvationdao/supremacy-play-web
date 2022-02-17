@@ -3,6 +3,7 @@ import Skull from '!react-svg-loader!./svg/Skull.svg'
 import MapSkull from '!react-svg-loader!./svg/MapSkull.svg'
 import SupToken from '!react-svg-loader!./svg/SupToken.svg'
 import Resize from '!react-svg-loader!./svg/Resize.svg'
+import Chat from '!react-svg-loader!./svg/Chat.svg'
 import User from '!react-svg-loader!./svg/User.svg'
 import Applause from '!react-svg-loader!./svg/Applause.svg'
 import Fullscreen from '!react-svg-loader!./svg/Fullscreen.svg'
@@ -166,5 +167,11 @@ export const SvgUser: React.VoidFunctionComponent<SvgWrapperProps> = (props) => 
 export const SvgBattleAbilityIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Unknown />
+    </SvgWrapper>
+)
+
+export const SvgChatIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Chat />
     </SvgWrapper>
 )

@@ -35,7 +35,7 @@ export const VideoPlayerControls = (props: ControlsProps) => {
             <IconButton
                 size="small"
                 onClick={() => alert('TODO')}
-                sx={{ opacity: 0.5, transition: 'all .2s', ':hover': { opacity: 1 } }}
+                sx={{ opacity: 0.6, transition: 'all .2s', ':hover': { opacity: 1 } }}
             >
                 <SvgSettings size="14px" />
             </IconButton>

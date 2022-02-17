@@ -1,6 +1,7 @@
 import { Stack } from '@mui/material'
 import { FullScreenHandle } from 'react-full-screen'
 import { LiveCounts, VideoPlayerControls } from '..'
+import { StreamSelect } from './StreamSelect'
 
 export interface ControlsProps {
     screenHandler: FullScreenHandle
@@ -14,11 +15,15 @@ export const Controls = (props: ControlsProps) => {
         <Stack
             direction="row"
             alignItems="center"
-            justifyContent="flex-start"
-            sx={{ px: 2, pt: 0.3, pb: 0.2, height: '100%' }}
+            justifyContent="space-between"
+            sx={{ px: 1, pt: 0.3, pb: 0.2, height: '100%' }}
         >
             <LiveCounts />
-            <VideoPlayerControls {...props} />
+
+            <Stack direction="row" spacing={1}>
+                <StreamSelect />
+                <VideoPlayerControls {...props} />
+            </Stack>
         </Stack>
     )
 }
