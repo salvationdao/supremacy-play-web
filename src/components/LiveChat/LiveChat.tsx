@@ -22,7 +22,7 @@ export const LiveChat = () => {
                 },
             }}
         >
-            <Typography sx={{ backgroundColor: colors.darkNavy }}>LIVE CHAT (COMING SOON)</Typography>
+            <Typography>LIVE CHAT (COMING SOON)</Typography>
         </Drawer>
     )
 }

@@ -57,21 +57,9 @@ if (SENTRY_CONFIG) {
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
-    const {
-        streamDimensions: { width, height },
-    } = useDimension()
+    const { streamDimensions, iframeDimensions } = useDimension()
     const { currentStream } = useStream()
     const handle = useFullScreenHandle()
-
-    // Work out the aspect ratio for the iframe bit and yeah
-    let iframeHeight: number | string = height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT
-    let iframeWidth: number | string = width
-    const iframeRatio = iframeWidth / iframeHeight
-    if (iframeRatio >= STREAM_ASPECT_RATIO_W_H) {
-        iframeHeight = 'unset'
-    } else {
-        iframeWidth = 'unset'
-    }
 
     return (
         <>
@@ -82,7 +70,13 @@ const AppInner = () => {
                         <Box sx={{ width: LIVE_CHAT_DRAWER_BUTTON_WIDTH, backgroundColor: colors.darkNavyBlue }} />
 
                         <Stack
-                            sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}
+                            sx={{
+                                position: 'relative',
+                                height: streamDimensions.height,
+                                width: streamDimensions.width,
+                                backgroundColor: '#000000',
+                                overflow: 'hidden',
+                            }}
                         >
                             <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT, zIndex: 999 }}>
                                 <GameBar
@@ -104,8 +98,8 @@ const AppInner = () => {
                                         left: '50%',
                                         transform: 'translate(-50%, -50%)',
                                         aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                        width: iframeWidth,
-                                        height: iframeHeight,
+                                        width: iframeDimensions.width,
+                                        height: iframeDimensions.height,
                                     }}
                                 ></iframe>
 
