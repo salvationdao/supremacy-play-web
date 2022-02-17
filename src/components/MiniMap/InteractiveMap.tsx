@@ -206,7 +206,7 @@ export const InteractiveMap = ({
             set({ x, y, immediate: down })
         },
         {
-            // from: () => [x.get(), y.get()],
+            from: () => [x.get(), y.get()],
             bounds: () => {
                 if (!map) return
 
@@ -252,7 +252,9 @@ export const InteractiveMap = ({
         setMap((prev) => {
             return prev ? { ...prev, scale: (prev.scale = newScale / 40) } : prev
         })
-        set({ scale: newScale })
+
+        // move the map, so it stays within bounds when scaling - not working properly
+        set({ scale: newScale, x: x.get() * newScale, y: y.get() * newScale })
     })
 
     if (!map) return null
