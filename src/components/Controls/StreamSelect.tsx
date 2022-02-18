@@ -68,7 +68,7 @@ export const StreamSelect = () => {
     const SetNewStreamOptions = (newStreamOptions: Stream[]) => {
         // Limit to only a few for the dropdown and include our current selection if not already in the list
         const temp = newStreamOptions.slice(0, MAX_OPTIONS)
-        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.id, 'id')) {
+        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.host, 'host')) {
             newStreamOptions[newStreamOptions.length - 1] = currentStream
         }
 
@@ -94,8 +94,8 @@ export const StreamSelect = () => {
                     },
                     '& .MuiSelect-outlined': { px: 1, pt: 0.6, pb: 0 },
                 }}
-                defaultValue={currentStream?.id}
-                value={currentStream ? currentStream.id : ''}
+                defaultValue={currentStream?.host}
+                value={currentStream ? currentStream.host : ''}
                 MenuProps={{
                     variant: 'menu',
                     sx: {
@@ -114,8 +114,8 @@ export const StreamSelect = () => {
                 {streamOptions.map((x) => {
                     return (
                         <MenuItem
-                            key={x.id}
-                            value={x.id}
+                            key={x.host}
+                            value={x.host}
                             onClick={() => setCurrentStream(x)}
                             sx={{
                                 '&:hover': {

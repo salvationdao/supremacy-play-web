@@ -162,7 +162,7 @@ export interface DamageRecord {
 }
 
 export interface Stream {
-    id: string
+    host: string
     name: string
     url: string
     region: string
