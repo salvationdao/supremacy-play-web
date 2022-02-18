@@ -13,8 +13,7 @@ export interface ControlsProps {
     setVolume: (v: number) => void
     resolutionsList: number[]
     forceResolutionFn: (quality: number) => void
-    setSelectedStreamID: (s: string) => void
-    setSelectedWsURL: (s: string) => void
+    defaultValue: number
 }
 export const Controls = (props: ControlsProps) => {
     return (
@@ -28,7 +27,7 @@ export const Controls = (props: ControlsProps) => {
 
             <Stack direction="row" spacing={1}>
                 <StreamSelect />
-                <ResolutionSelect forceResolutionFn={props.forceResolutionFn} options={props.resolutionsList} />
+                <ResolutionSelect defaultValue={props.defaultValue} />
                 <VideoPlayerControls {...props} />
             </Stack>
         </Stack>

@@ -4,6 +4,7 @@ import { colors } from '../../theme/theme'
 
 interface ResolutionSelectProps {
     options: number[]
+    defaultValue: number
     forceResolutionFn: (quality: number) => void
 }
 

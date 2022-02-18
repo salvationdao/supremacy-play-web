@@ -11,7 +11,7 @@ const MAX_OPTIONS = 7
 
 export const StreamSelect = () => {
     const { state, subscribe } = useWebsocket()
-    const { currentStream, setCurrentStream } = useStream()
+    const { currentStream, setCurrentStream, setSelectedWsURL, setSelectedStreamID } = useStream()
     const [streams, setStreams] = useState<Stream[]>([])
     const [streamOptions, setStreamOptions] = useState<Stream[]>([])
 
@@ -118,7 +118,13 @@ export const StreamSelect = () => {
                         <MenuItem
                             key={x.host}
                             value={x.host}
-                            onClick={() => setCurrentStream(x)}
+                            onClick={() => {
+                                console.log('this is xxxx', x)
+
+                                setCurrentStream(x)
+                                setSelectedStreamID(x.streamID)
+                                setSelectedWsURL(x.wsURL)
+                            }}
                             sx={{
                                 '&:hover': {
                                     backgroundColor: colors.darkNavyBlue,

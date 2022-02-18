@@ -9,6 +9,7 @@ import {
     SocketProvider,
     useAuth,
     useDimension,
+    useStream,
 } from './containers'
 import { Box, Button, CssBaseline, Stack, ThemeProvider } from '@mui/material'
 import {
@@ -56,8 +57,7 @@ const AppInner = () => {
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
 
-    const [selectedWsURL, setSelectedWsURL] = useState('wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket')
-    const [selectedStreamID, setSelectedStreamID] = useState('886200805704583109786601')
+    const { selectedWsURL, setSelectedWsURL, selectedStreamID, setSelectedStreamID } = useStream()
 
     const handle = useFullScreenHandle()
 
@@ -88,48 +88,59 @@ const AppInner = () => {
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
-            vidRef.current = vid
-            webRtc.current = new WebRTCAdaptor({
-                websocket_url: selectedWsURL,
+            try {
+                vidRef.current = vid
+                webRtc.current = new WebRTCAdaptor({
+                    websocket_url: selectedWsURL,
 
-                mediaConstraints: { video: false, audio: false },
-                sdp_constraints: {
-                    OfferToReceiveAudio: true,
-                    OfferToReceiveVideo: true,
-                },
-                remoteVideoId: 'remoteVideo',
-                isPlayMode: true,
-                debug: true,
-                candidateTypes: ['tcp', 'udp'],
-                callback: function (info: any, obj: any) {
-                    if (info == 'initialized') {
-                        console.log('info initialized')
-                        webRtc.current.play(selectedStreamID, '')
-                    } else if (info == 'play_started') {
-                        webRtc.current.getStreamInfo(selectedStreamID)
-                    } else if (info == 'play_finished') {
-                        console.log('play finished')
-                    } else if (info == 'closed') {
-                        if (typeof obj != 'undefined') {
-                            console.log('Connecton closed: ' + JSON.stringify(obj))
+                    mediaConstraints: { video: false, audio: false },
+                    sdp_constraints: {
+                        OfferToReceiveAudio: true,
+                        OfferToReceiveVideo: true,
+                    },
+                    remoteVideoId: 'remoteVideo',
+                    isPlayMode: true,
+                    debug: true,
+                    candidateTypes: ['tcp', 'udp'],
+                    callback: function (info: any, obj: any) {
+                        if (info == 'initialized') {
+                            console.log('info initialized')
+                            webRtc.current.play(selectedStreamID, '')
+                        } else if (info == 'play_started') {
+                            webRtc.current.getStreamInfo(selectedStreamID)
+                        } else if (info == 'play_finished') {
+                            console.log('play finished')
+                        } else if (info == 'closed') {
+                            if (typeof obj != 'undefined') {
+                                console.log('Connecton closed: ' + JSON.stringify(obj))
+                            }
+                        } else if (info == 'streamInformation') {
+                            const resolutions: any[] = []
+                            obj['streamInfo'].forEach(function (entry: any) {
+                                // It's needs to both of VP8 and H264. So it can be duplicate
+                                if (!resolutions.includes(entry['streamHeight'])) {
+                                    resolutions.push(entry['streamHeight'])
+                                } // Got resolutions from server response and added to an array.
+                            })
+                            setStreamResolutions(resolutions)
+                        } else if (info == 'ice_connection_state_changed') {
+                            console.log('iceConnectionState Changed: ', JSON.stringify(obj))
                         }
-                    } else if (info == 'streamInformation') {
-                        const resolutions: any[] = []
-                        obj['streamInfo'].forEach(function (entry: any) {
-                            // It's needs to both of VP8 and H264. So it can be duplicate
-                            if (!resolutions.includes(entry['streamHeight'])) {
-                                resolutions.push(entry['streamHeight'])
-                            } // Got resolutions from server response and added to an array.
-                        })
-                        setStreamResolutions(resolutions)
-                    } else if (info == 'ice_connection_state_changed') {
-                        console.log('iceConnectionState Changed: ', JSON.stringify(obj))
-                    }
-                },
-                callbackError: (error: any) => {
-                    console.log('error callback: ' + JSON.stringify(error))
-                },
-            })
+                    },
+                    callbackError: (error: any) => {
+                        console.log('error callback: ' + JSON.stringify(error))
+                    },
+                })
+            } catch (e) {
+                console.log('errrr')
+                console.log('errrr')
+                console.log('errrr')
+                console.log('errrr')
+                console.log('errrr')
+                console.log('errrr')
+
+                console.log(e)
+            }
         },
         [selectedWsURL, selectedStreamID],
     )
@@ -217,8 +228,7 @@ const AppInner = () => {
                                     }}
                                     screenHandler={handle}
                                     forceResolutionFn={changeStreamQuality}
-                                    setSelectedWsURL={setSelectedWsURL}
-                                    setSelectedStreamID={setSelectedStreamID}
+                                    defaultValue={1080}
                                 />
                             </Box>
                         </Stack>

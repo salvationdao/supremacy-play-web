@@ -170,7 +170,7 @@ export interface DamageRecord {
 export interface Stream {
     host: string
     name: string
-    wsUrl: string
+    wsURL: string
     streamID: string
     region: string
     resolution: string
