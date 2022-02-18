@@ -1,5 +1,5 @@
-import { Box, Fade, IconButton, Slide, Stack, Typography, useTheme } from '@mui/material'
-import { SyntheticEvent, useEffect, useRef, useState } from 'react'
+import { Box, IconButton, Slide, useTheme } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
 import { ClipThing, InteractiveMap, TargetTimerCountdown } from '..'
 import { colors } from '../../theme/theme'
 import { Theme } from '@mui/material/styles'
@@ -11,7 +11,6 @@ import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT } from '../../constants'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { parseString } from '../../helpers'
 import { SvgDrag } from '../../assets'
-import { ResizeCallbackData } from 'react-resizable'
 
 const Padding = 10
 const DefaultPositionY = 222
@@ -38,7 +37,6 @@ export const MiniMap = () => {
     useEffect(() => {
         const newWidth = enlarged ? Math.min(width - 23, 1000) : 230
         const newHeight = enlarged ? Math.min(height - 76 - 125 - CONTROLS_HEIGHT, 700) : 200
-        setDimensions({ width: newWidth, height: newHeight })
 
         let newPosX = parseString(localStorage.getItem('miniMapPosX'), -1)
         let newPosY = parseString(localStorage.getItem('miniMapPosY'), DefaultPositionY)
@@ -50,6 +48,7 @@ export const MiniMap = () => {
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
+        setDimensions({ width: newWidth, height: newHeight })
         localStorage.setItem('miniMapPosX', newPosX.toString())
         localStorage.setItem('miniMapPosY', newPosY.toString())
     }, [width, height, enlarged])
@@ -80,7 +79,7 @@ export const MiniMap = () => {
     const isTargeting = winner && !timeReachZero && !submitted && votingState?.phase == 'LOCATION_SELECT'
 
     return (
-        <Stack
+        <Box
             sx={{
                 position: 'absolute',
                 top: 0,
@@ -193,6 +192,6 @@ export const MiniMap = () => {
                     </Slide>
                 </Box>
             </Draggable>
-        </Stack>
+        </Box>
     )
 }
