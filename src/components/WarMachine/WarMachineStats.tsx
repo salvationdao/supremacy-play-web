@@ -81,7 +81,7 @@ export const WarMachineStats = () => {
         }
 
         return { shouldBeExpandedFaction, shouldBeExpandedOthers }
-    }, [width])
+    }, [width, factionID])
 
     if (!warMachines || warMachines.length <= 0) return null
 

@@ -45,7 +45,7 @@ Pending:
 - video controls ui
 - make overlay components moveable / toggleable
 - iframe dimension onresize
-- XX vs YY
+- Ability description tooltip
 
 
 Future nice to have:
@@ -53,5 +53,6 @@ Future nice to have:
 - map follows where the action is
 - improve notification styles (for the map select, reject counters etc.)
 - tutorial guide for new users
+- XX vs YY
 
 
