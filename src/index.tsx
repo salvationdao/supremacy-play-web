@@ -59,7 +59,7 @@ if (SENTRY_CONFIG) {
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
     const { streamDimensions, iframeDimensions } = useDimension()
-    // const [streamResolutions, setStreamResolutions] = useState<number[]>([])
+    const [streamResolutions, setStreamResolutions] = useState<number[]>([])
     // const { currentStream } = useStream()
     const handle = useFullScreenHandle()
 
@@ -70,21 +70,24 @@ const AppInner = () => {
 
     const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
     const STREAM_ID = '886200805704583109786601'
-    useEffect(() => {
-        console.log('this is volume', volume)
-        console.log('this is volume', vidRef?.current?.volume)
-        console.log('this is volume', vidRef?.current)
 
+    useEffect(() => {
         if (vidRef && vidRef.current && vidRef.current.volume) {
             vidRef.current.volume = volume
+            setIsMute(false)
         }
     }, [volume])
 
-    // const changeStreamQuality = () => {
-    //     if (webRtc?.current) {
-    //         webRtc.current.forceStreamQuality(STREAM_ID, 144)
-    //     }
-    // }
+    const changeStreamQuality = (quality: number) => {
+        if (webRtc?.current) {
+            webRtc.current.forceStreamQuality(STREAM_ID, 144)
+            console.log('after')
+        }
+    }
+
+    const muteToggle = () => {
+        setIsMute(!isMute)
+    }
 
     const vidRefCallback = useCallback((vid: HTMLVideoElement) => {
         vidRef.current = vid
@@ -99,15 +102,13 @@ const AppInner = () => {
             isPlayMode: true,
             debug: true,
             candidateTypes: ['tcp', 'udp'],
-
             callback: function (info: any, obj: any) {
-                // console.log('info', info)
                 if (info == 'initialized') {
                     console.log('info initialized')
-                    webRtc.current.play('886200805704583109786601', '')
+                    webRtc.current.play(STREAM_ID, '')
                 } else if (info == 'play_started') {
                     //joined the stream
-                    // webRtc.current.getStreamInfo(STREAM_ID)
+                    webRtc.current.getStreamInfo(STREAM_ID)
                 } else if (info == 'play_finished') {
                     //leaved the stream
                     console.log('play finished')
@@ -117,19 +118,14 @@ const AppInner = () => {
                         console.log('Connecton closed: ' + JSON.stringify(obj))
                     }
                 } else if (info == 'streamInformation') {
-                    // console.log('bruh')
-                    // console.log('bruh')
-                    // console.log('bruh')
-                    // console.log('bruh', vidRef.current)
-                    // console.log('bruh', obj)
-                    // const resolutions: any[] = []
-                    // obj['streamInfo'].forEach(function (entry: any) {
-                    //     //It's needs to both of VP8 and H264. So it can be duplicate
-                    //     if (!resolutions.includes(entry['streamHeight'])) {
-                    //         resolutions.push(entry['streamHeight'])
-                    //     } // Got resolutions from server response and added to an array.
-                    // })
-                    // setStreamResolutions(resolutions)
+                    const resolutions: any[] = []
+                    obj['streamInfo'].forEach(function (entry: any) {
+                        //It's needs to both of VP8 and H264. So it can be duplicate
+                        if (!resolutions.includes(entry['streamHeight'])) {
+                            resolutions.push(entry['streamHeight'])
+                        } // Got resolutions from server response and added to an array.
+                    })
+                    setStreamResolutions(resolutions)
                 } else if (info == 'ice_connection_state_changed') {
                     console.log('iceConnectionState Changed: ', JSON.stringify(obj))
                 }
@@ -167,6 +163,7 @@ const AppInner = () => {
 
                             <Box sx={{ flex: 1, position: 'relative', width: '100%', height: '100%' }}>
                                 <video
+                                    muted={isMute}
                                     ref={vidRefCallback}
                                     id="remoteVideo"
                                     autoPlay
@@ -177,9 +174,13 @@ const AppInner = () => {
                                         top: '50%',
                                         left: '50%',
                                         transform: 'translate(-50%, -50%)',
-                                        aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                        width: iframeDimensions.width,
-                                        height: iframeDimensions.height,
+
+                                        // aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                        // width: iframeDimensions.width,
+                                        // height: iframeDimensions.height,
+
+                                        width: '100%',
+                                        height: '100%',
                                     }}
                                 ></video>
 
@@ -202,20 +203,15 @@ const AppInner = () => {
                             >
                                 {/* <button onClick={changeStreamQuality}>change stream quality</button> */}
                                 <Controls
+                                    resolutionsList={streamResolutions}
                                     volume={volume}
                                     setVolume={setVolume}
                                     isMute={isMute}
                                     muteToggle={() => {
-                                        console.log('this is window', window)
-
-                                        if ((window as any).changeVideoMuteStatus) {
-                                            ;(window as any).changeVideoMuteStatus()
-                                            return
-                                        }
-
-                                        setIsMute(!isMute)
+                                        muteToggle()
                                     }}
                                     screenHandler={handle}
+                                    forceResolutionFn={changeStreamQuality}
                                 />
                             </Box>
                         </Stack>

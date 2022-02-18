@@ -164,7 +164,8 @@ export interface DamageRecord {
 export interface Stream {
     id: string
     name: string
-    url: string
+    wsUrl: string
+    streamID: string
     region: string
     resolution: string
     bitRatesKBits: number

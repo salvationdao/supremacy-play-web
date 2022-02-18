@@ -19,6 +19,7 @@ export const StreamSelect = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<Stream[]>(HubKey.GetStreamList, (payload) => {
+            console.log('this is payload', payload)
             if (!payload) return
             setStreams(payload)
         })
@@ -78,6 +79,8 @@ export const StreamSelect = () => {
         // Reverse the order for rendering so best is closer to user's mouse
         setStreamOptions(temp.reverse())
     }
+
+    console.log('streamms', streams)
 
     return (
         <Stack direction="row" spacing={0.3} alignItems="center">

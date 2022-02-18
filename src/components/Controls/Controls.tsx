@@ -1,6 +1,7 @@
 import { Stack } from '@mui/material'
 import { FullScreenHandle } from 'react-full-screen'
 import { LiveCounts, VideoPlayerControls } from '..'
+import { ResolutionSelect } from './ResolutionSelect'
 import { StreamSelect } from './StreamSelect'
 
 export interface ControlsProps {
@@ -9,6 +10,8 @@ export interface ControlsProps {
     isMute: boolean
     volume: number
     setVolume: (v: number) => void
+    resolutionsList: number[]
+    forceResolutionFn: (quality: number) => void
 }
 export const Controls = (props: ControlsProps) => {
     return (
@@ -22,6 +25,7 @@ export const Controls = (props: ControlsProps) => {
 
             <Stack direction="row" spacing={1}>
                 <StreamSelect />
+                <ResolutionSelect forceResolutionFn={props.forceResolutionFn} options={props.resolutionsList} />
                 <VideoPlayerControls {...props} />
             </Stack>
         </Stack>
