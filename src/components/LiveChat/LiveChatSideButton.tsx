@@ -1,11 +1,11 @@
 import { Box, Stack, Typography } from '@mui/material'
 import { SvgChatIcon } from '../../assets'
-import { LIVE_CHAT_DRAWER_BUTTON_WIDTH } from '../../constants'
+import { SIDE_BARS_WIDTH } from '../../constants'
 import { useDimension } from '../../containers'
 import { colors } from '../../theme/theme'
 
 export const LiveChatSideButton = () => {
-    const { isLiveChatOpen, toggleIsLiveChatOpen } = useDimension()
+    const { toggleIsLiveChatOpen } = useDimension()
 
     return (
         <Box
@@ -13,7 +13,7 @@ export const LiveChatSideButton = () => {
             sx={{
                 position: 'relative',
                 overflow: 'hidden',
-                width: LIVE_CHAT_DRAWER_BUTTON_WIDTH,
+                width: SIDE_BARS_WIDTH,
                 cursor: 'pointer',
                 backgroundColor: colors.darkNavyBlue,
                 ':hover > *': {
@@ -35,7 +35,6 @@ export const LiveChatSideButton = () => {
                     left: '50%',
                     transform: 'translate(-50%, -50%) rotate(-90deg)',
                     opacity: 0.6,
-                    transition: 'all .2s',
                 }}
             >
                 <Typography

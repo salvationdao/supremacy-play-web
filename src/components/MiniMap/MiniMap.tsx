@@ -7,7 +7,6 @@ import ZoomOutMapOutlinedIcon from '@mui/icons-material/ZoomOutMapOutlined'
 import ZoomInMapOutlinedIcon from '@mui/icons-material/ZoomInMapOutlined'
 import { useToggle } from '../../hooks'
 import { useDimension, useGame } from '../../containers'
-import { CONTROLS_HEIGHT } from '../../constants'
 
 export const MiniMap = () => {
     const {
@@ -28,10 +27,10 @@ export const MiniMap = () => {
 
     useEffect(() => {
         if (enlarged) {
-            // Height: 76 is just vertical spacing, and 125 is the height of the bottom mech stats
+            // Height: 125 is the height of the bottom mech stats
             setDimensions({
                 width: Math.min(width - 23, 1000),
-                height: Math.min(height - 76 - 125 - CONTROLS_HEIGHT, 700),
+                height: Math.min(height - 125, 700),
             })
         } else {
             setDimensions({ width: 230, height: 200 })

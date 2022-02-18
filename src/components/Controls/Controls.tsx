@@ -2,6 +2,7 @@ import { Stack } from '@mui/material'
 import { FullScreenHandle } from 'react-full-screen'
 import { LiveCounts, VideoPlayerControls } from '..'
 import { ResolutionSelect } from './ResolutionSelect'
+import { colors } from '../../theme/theme'
 import { StreamSelect } from './StreamSelect'
 
 export interface ControlsProps {
@@ -12,6 +13,8 @@ export interface ControlsProps {
     setVolume: (v: number) => void
     resolutionsList: number[]
     forceResolutionFn: (quality: number) => void
+    setSelectedStreamID: (s: string) => void
+    setSelectedWsURL: (s: string) => void
 }
 export const Controls = (props: ControlsProps) => {
     return (
@@ -19,7 +22,7 @@ export const Controls = (props: ControlsProps) => {
             direction="row"
             alignItems="center"
             justifyContent="space-between"
-            sx={{ px: 1, pt: 0.3, pb: 0.2, height: '100%' }}
+            sx={{ px: 2, pt: 0.3, pb: 0.2, height: '100%', backgroundColor: colors.darkNavyBlue }}
         >
             <LiveCounts />
 

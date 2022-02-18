@@ -4,6 +4,7 @@ import {
     AuthProvider,
     DimensionProvider,
     GameProvider,
+    LeftSideBarProvider,
     SnackBarProvider,
     SocketProvider,
     useAuth,
@@ -12,6 +13,7 @@ import {
 import { Box, Button, CssBaseline, Stack, ThemeProvider } from '@mui/material'
 import {
     Controls,
+    LeftSideBar,
     LiveChat,
     LiveChatSideButton,
     LiveVotingChart,
@@ -25,19 +27,12 @@ import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { colors, theme } from './theme/theme'
 import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
-import {
-    PASSPORT_SERVER_HOSTNAME,
-    PASSPORT_WEB,
-    SENTRY_CONFIG,
-    GAMEBAR_HEIGHT,
-    CONTROLS_HEIGHT,
-    STREAM_ASPECT_RATIO_W_H,
-    LIVE_CHAT_DRAWER_BUTTON_WIDTH,
-} from './constants'
+import { PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, SENTRY_CONFIG, GAMEBAR_HEIGHT, CONTROLS_HEIGHT } from './constants'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import * as Sentry from '@sentry/react'
-import { StreamProvider, useStream } from './containers/stream'
 import { WebRTCAdaptor } from '@antmedia/webrtc_adaptor'
+import { StreamProvider } from './containers'
+import { BattleEndScreen } from './components/BattleEndScreen/BattleEndScreen'
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -58,9 +53,12 @@ if (SENTRY_CONFIG) {
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
-    const { streamDimensions, iframeDimensions } = useDimension()
+    const { mainDivDimensions, streamDimensions } = useDimension()
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
-    // const { currentStream } = useStream()
+
+    const [selectedWsURL, setSelectedWsURL] = useState('wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket')
+    const [selectedStreamID, setSelectedStreamID] = useState('886200805704583109786601')
+
     const handle = useFullScreenHandle()
 
     const [isMute, setIsMute] = useState(true)
@@ -69,7 +67,6 @@ const AppInner = () => {
     const webRtc = useRef<any>()
 
     const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
-    const STREAM_ID = '886200805704583109786601'
 
     useEffect(() => {
         if (vidRef && vidRef.current && vidRef.current.volume) {
@@ -80,7 +77,7 @@ const AppInner = () => {
 
     const changeStreamQuality = (quality: number) => {
         if (webRtc?.current) {
-            webRtc.current.forceStreamQuality(STREAM_ID, 144)
+            webRtc.current.forceStreamQuality(selectedStreamID, quality)
             console.log('after')
         }
     }
@@ -89,69 +86,60 @@ const AppInner = () => {
         setIsMute(!isMute)
     }
 
-    const vidRefCallback = useCallback((vid: HTMLVideoElement) => {
-        vidRef.current = vid
-        webRtc.current = new WebRTCAdaptor({
-            websocket_url: 'wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket',
-            mediaConstraints: { video: false, audio: false },
-            sdp_constraints: {
-                OfferToReceiveAudio: true,
-                OfferToReceiveVideo: true,
-            },
-            remoteVideoId: 'remoteVideo',
-            isPlayMode: true,
-            debug: true,
-            candidateTypes: ['tcp', 'udp'],
-            callback: function (info: any, obj: any) {
-                if (info == 'initialized') {
-                    console.log('info initialized')
-                    webRtc.current.play(STREAM_ID, '')
-                } else if (info == 'play_started') {
-                    //joined the stream
-                    webRtc.current.getStreamInfo(STREAM_ID)
-                } else if (info == 'play_finished') {
-                    //leaved the stream
-                    console.log('play finished')
-                } else if (info == 'closed') {
-                    //console.log("Connection closed");
-                    if (typeof obj != 'undefined') {
-                        console.log('Connecton closed: ' + JSON.stringify(obj))
+    const vidRefCallback = useCallback(
+        (vid: HTMLVideoElement) => {
+            vidRef.current = vid
+            webRtc.current = new WebRTCAdaptor({
+                websocket_url: selectedWsURL,
+
+                mediaConstraints: { video: false, audio: false },
+                sdp_constraints: {
+                    OfferToReceiveAudio: true,
+                    OfferToReceiveVideo: true,
+                },
+                remoteVideoId: 'remoteVideo',
+                isPlayMode: true,
+                debug: true,
+                candidateTypes: ['tcp', 'udp'],
+                callback: function (info: any, obj: any) {
+                    if (info == 'initialized') {
+                        console.log('info initialized')
+                        webRtc.current.play(selectedStreamID, '')
+                    } else if (info == 'play_started') {
+                        webRtc.current.getStreamInfo(selectedStreamID)
+                    } else if (info == 'play_finished') {
+                        console.log('play finished')
+                    } else if (info == 'closed') {
+                        if (typeof obj != 'undefined') {
+                            console.log('Connecton closed: ' + JSON.stringify(obj))
+                        }
+                    } else if (info == 'streamInformation') {
+                        const resolutions: any[] = []
+                        obj['streamInfo'].forEach(function (entry: any) {
+                            // It's needs to both of VP8 and H264. So it can be duplicate
+                            if (!resolutions.includes(entry['streamHeight'])) {
+                                resolutions.push(entry['streamHeight'])
+                            } // Got resolutions from server response and added to an array.
+                        })
+                        setStreamResolutions(resolutions)
+                    } else if (info == 'ice_connection_state_changed') {
+                        console.log('iceConnectionState Changed: ', JSON.stringify(obj))
                     }
-                } else if (info == 'streamInformation') {
-                    const resolutions: any[] = []
-                    obj['streamInfo'].forEach(function (entry: any) {
-                        //It's needs to both of VP8 and H264. So it can be duplicate
-                        if (!resolutions.includes(entry['streamHeight'])) {
-                            resolutions.push(entry['streamHeight'])
-                        } // Got resolutions from server response and added to an array.
-                    })
-                    setStreamResolutions(resolutions)
-                } else if (info == 'ice_connection_state_changed') {
-                    console.log('iceConnectionState Changed: ', JSON.stringify(obj))
-                }
-            },
-            callbackError: function (error: any) {
-                console.log('error callback: ' + JSON.stringify(error))
-            },
-        })
-    }, [])
+                },
+                callbackError: (error: any) => {
+                    console.log('error callback: ' + JSON.stringify(error))
+                },
+            })
+        },
+        [selectedWsURL, selectedStreamID],
+    )
 
     return (
         <>
             {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <FullScreen handle={handle}>
                     <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
-                        <Box sx={{ width: LIVE_CHAT_DRAWER_BUTTON_WIDTH, backgroundColor: colors.darkNavyBlue }} />
-
-                        <Stack
-                            sx={{
-                                position: 'relative',
-                                height: streamDimensions.height,
-                                width: streamDimensions.width,
-                                backgroundColor: '#000000',
-                                overflow: 'hidden',
-                            }}
-                        >
+                        <Stack sx={{ width: mainDivDimensions.width, height: mainDivDimensions.height }}>
                             <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT, zIndex: 999 }}>
                                 <GameBar
                                     barPosition="top"
@@ -161,44 +149,61 @@ const AppInner = () => {
                                 />
                             </Box>
 
-                            <Box sx={{ flex: 1, position: 'relative', width: '100%', height: '100%' }}>
-                                <video
-                                    muted={isMute}
-                                    ref={vidRefCallback}
-                                    id="remoteVideo"
-                                    autoPlay
-                                    controls
-                                    playsInline
-                                    style={{
-                                        position: 'absolute',
-                                        top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)',
+                            <Stack
+                                direction="row"
+                                sx={{
+                                    flex: 1,
+                                    position: 'relative',
+                                    width: '100%',
+                                    backgroundColor: colors.darkNavyBlue,
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                <LeftSideBar />
 
-                                        // aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                        // width: iframeDimensions.width,
-                                        // height: iframeDimensions.height,
-
-                                        width: '100%',
-                                        height: '100%',
+                                <Box
+                                    sx={{
+                                        position: 'relative',
+                                        height: streamDimensions.height,
+                                        width: streamDimensions.width,
+                                        backgroundColor: colors.darkNavyBlue,
+                                        clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
                                     }}
-                                ></video>
+                                >
+                                    <video
+                                        muted={isMute}
+                                        ref={vidRefCallback}
+                                        id="remoteVideo"
+                                        autoPlay
+                                        controls
+                                        playsInline
+                                        style={{
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
 
-                                <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                                    <VotingSystem />
-                                    <MiniMap />
-                                    <Notifications />
-                                    <LiveVotingChart />
-                                    <WarMachineStats />
+                                            width: '100%',
+                                            height: '100%',
+                                        }}
+                                    ></video>
+
+                                    <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
+                                        <VotingSystem />
+                                        <MiniMap />
+                                        <Notifications />
+                                        <LiveVotingChart />
+                                        <WarMachineStats />
+                                        <BattleEndScreen />
+                                    </Box>
                                 </Box>
-                            </Box>
+                            </Stack>
 
                             <Box
                                 sx={{
                                     position: 'relative',
                                     width: '100%',
                                     height: CONTROLS_HEIGHT,
-                                    backgroundColor: colors.darkNavyBlue,
                                 }}
                             >
                                 {/* <button onClick={changeStreamQuality}>change stream quality</button> */}
@@ -212,6 +217,8 @@ const AppInner = () => {
                                     }}
                                     screenHandler={handle}
                                     forceResolutionFn={changeStreamQuality}
+                                    setSelectedWsURL={setSelectedWsURL}
+                                    setSelectedStreamID={setSelectedStreamID}
                                 />
                             </Box>
                         </Stack>
@@ -247,9 +254,11 @@ const App = () => {
                             <WalletProvider>
                                 <GameProvider>
                                     <DimensionProvider>
-                                        <SnackBarProvider>
-                                            <AppInner />
-                                        </SnackBarProvider>
+                                        <LeftSideBarProvider>
+                                            <SnackBarProvider>
+                                                <AppInner />
+                                            </SnackBarProvider>
+                                        </LeftSideBarProvider>
                                     </DimensionProvider>
                                 </GameProvider>
                             </WalletProvider>

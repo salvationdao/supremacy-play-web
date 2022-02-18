@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { createContainer } from 'unstated-next'
 import { NullUUID } from '../constants'
 import HubKey from '../keys'
-import { VotingState, Map, WarMachineState, NetMessageType, GameAbility, BattleEvent } from '../types'
+import { VotingState, Map, WarMachineState, NetMessageType, GameAbility } from '../types'
 import { useAuth } from './auth'
 import { useWebsocket } from './socket'
 import BigNumber from 'bignumber.js'
@@ -28,6 +28,7 @@ interface FactionsColorResponse {
     zaibatsu: string
 }
 
+// Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
     const { state, send, subscribe, subscribeNetMessage } = useWebsocket()
     const { factionID } = useAuth()
@@ -133,19 +134,6 @@ export const GameContainer = createContainer(() => {
             null,
         )
     }, [state, subscribe, factionID])
-
-    // Subscribe on battle end information
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<BattleEvent[]>(
-            HubKey.SubBattleEndDetailUpdated,
-            (payload) => {
-                if (!payload) return
-                console.log(payload)
-            },
-            null,
-        )
-    }, [state, subscribe])
 
     return {
         votingState,
