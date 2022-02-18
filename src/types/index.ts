@@ -127,10 +127,16 @@ export interface NetMessageTick {
 }
 
 export interface BattleEndDetail {
-    topSupsContributor: User // user who contribute the most sups
-    topSupsContributeFaction: Faction // faction which contribute the most sups
-    topApplauseContributor: User // user who contribute the most applause
-    mostFrequentAbilityExecutor: User // user who trigger ability most frequent
+    battleID: string
+    battleIdentifier: number
+    startedAt: Date
+    endedAt: Date
+    winningCondition: string
+    winningFaction: Faction
+    winningWarMachines: WarMachineState[]
+    topSupsContributors: User[]
+    topSupsContributeFactions: Faction[]
+    mostFrequentAbilityExecutors: User[]
     battleEvents: BattleEvent[]
 }
 

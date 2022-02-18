@@ -5,7 +5,7 @@ import { SyntheticEvent, useEffect, useState } from 'react'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { Resizable, ResizeCallbackData } from 'react-resizable'
 import { SvgDrag, SvgResizeArrow, SvgSupToken } from '../../assets'
-import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, UI_OPACITY } from '../../constants'
+import { UI_OPACITY } from '../../constants'
 import { useDimension, useWebsocket } from '../../containers'
 import { parseString } from '../../helpers'
 import { pulseEffect } from '../../theme/keyframes'
@@ -63,7 +63,7 @@ export const LiveVotingChart = () => {
         // Make sure live voting chart is inside iframe when page is resized etc.
         newPosX =
             newPosX > 0 ? Math.max(Padding, Math.min(newPosX, width - curWidth - Padding)) : width - curWidth - Padding
-        newPosY = Math.max(Padding, Math.min(newPosY, height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT - curHeight - Padding))
+        newPosY = Math.max(Padding, Math.min(newPosY, height - curHeight - Padding))
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
@@ -115,7 +115,7 @@ export const LiveVotingChart = () => {
                 }}
                 bounds={{
                     top: Padding,
-                    bottom: height - curHeight - Padding - GAMEBAR_HEIGHT - CONTROLS_HEIGHT,
+                    bottom: height - curHeight - Padding,
                     left: Padding,
                     right: width - curWidth - Padding,
                 }}

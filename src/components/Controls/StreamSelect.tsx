@@ -1,7 +1,7 @@
 import { MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useWebsocket } from '../../containers/socket'
-import { useStream } from '../../containers/stream'
+import { useStream } from '../../containers'
 import { getDistanceFromLatLonInKm, getObjectFromArrayByKey } from '../../helpers'
 import HubKey from '../../keys'
 import { colors } from '../../theme/theme'

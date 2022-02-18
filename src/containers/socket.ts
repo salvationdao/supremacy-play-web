@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createContainer } from 'unstated-next'
 import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from '../constants'
+import { parseNetMessage } from '../helpers/netMessages'
 import { useDebounce } from '../hooks/useDebounce'
 import HubKey from '../keys'
-import { GameAbilityTargetPrice, NetMessageTick, NetMessageTickWarMachine, NetMessageType } from '../types'
-import { parseNetMessage } from './netMessages'
+import { GameAbilityTargetPrice, NetMessageTick, NetMessageType } from '../types'
 
 // websocket message struct
 interface MessageData {

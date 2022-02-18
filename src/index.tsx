@@ -4,6 +4,7 @@ import {
     AuthProvider,
     DimensionProvider,
     GameProvider,
+    LeftSideBarProvider,
     SnackBarProvider,
     SocketProvider,
     useAuth,
@@ -12,6 +13,7 @@ import {
 import { Box, CssBaseline, Stack, ThemeProvider } from '@mui/material'
 import {
     Controls,
+    LeftSideBar,
     LiveChat,
     LiveChatSideButton,
     LiveVotingChart,
@@ -32,11 +34,11 @@ import {
     GAMEBAR_HEIGHT,
     CONTROLS_HEIGHT,
     STREAM_ASPECT_RATIO_W_H,
-    LIVE_CHAT_DRAWER_BUTTON_WIDTH,
 } from './constants'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import * as Sentry from '@sentry/react'
-import { StreamProvider, useStream } from './containers/stream'
+import { StreamProvider, useStream } from './containers'
+import { BattleEndScreen } from './components/BattleEndScreen/BattleEndScreen'
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -57,7 +59,7 @@ if (SENTRY_CONFIG) {
 
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
-    const { streamDimensions, iframeDimensions } = useDimension()
+    const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
     const { currentStream } = useStream()
     const handle = useFullScreenHandle()
 
@@ -67,17 +69,7 @@ const AppInner = () => {
             {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <FullScreen handle={handle}>
                     <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
-                        <Box sx={{ width: LIVE_CHAT_DRAWER_BUTTON_WIDTH, backgroundColor: colors.darkNavyBlue }} />
-
-                        <Stack
-                            sx={{
-                                position: 'relative',
-                                height: streamDimensions.height,
-                                width: streamDimensions.width,
-                                backgroundColor: '#000000',
-                                overflow: 'hidden',
-                            }}
-                        >
+                        <Stack sx={{ width: mainDivDimensions.width, height: mainDivDimensions.height }}>
                             <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT, zIndex: 999 }}>
                                 <GameBar
                                     barPosition="top"
@@ -87,40 +79,61 @@ const AppInner = () => {
                                 />
                             </Box>
 
-                            <Box sx={{ flex: 1, position: 'relative', width: '100%', height: '100%' }}>
-                                <iframe
-                                    frameBorder="0"
-                                    allowFullScreen
-                                    src={currentStream?.url}
-                                    style={{
-                                        position: 'absolute',
-                                        top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)',
-                                        aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                        width: iframeDimensions.width,
-                                        height: iframeDimensions.height,
+                            <Stack
+                                direction="row"
+                                sx={{
+                                    flex: 1,
+                                    position: 'relative',
+                                    width: '100%',
+                                    backgroundColor: colors.darkNavyBlue,
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                <LeftSideBar />
+
+                                <Box
+                                    sx={{
+                                        position: 'relative',
+                                        height: streamDimensions.height,
+                                        width: streamDimensions.width,
+                                        backgroundColor: colors.darkNavyBlue,
+                                        clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
                                     }}
-                                ></iframe>
+                                >
+                                    <iframe
+                                        frameBorder="0"
+                                        allowFullScreen
+                                        src={currentStream?.url}
+                                        style={{
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                            aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                            width: iframeDimensions.width,
+                                            height: iframeDimensions.height,
+                                        }}
+                                    ></iframe>
 
-                                {/* <Box sx={{ backgroundColor: '#622D93', width: '100%', height: '100%' }} /> */}
-                                {/* <Box sx={{ backgroundColor: '#000000', width: '100%', height: '100%' }} /> */}
+                                    {/* <Box sx={{ backgroundColor: '#622D93', width: '100%', height: '100%' }} /> */}
+                                    {/* <Box sx={{ backgroundColor: '#000000', width: '100%', height: '100%' }} /> */}
 
-                                <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                                    <VotingSystem />
-                                    <MiniMap />
-                                    <Notifications />
-                                    <LiveVotingChart />
-                                    <WarMachineStats />
+                                    <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
+                                        <VotingSystem />
+                                        <MiniMap />
+                                        <Notifications />
+                                        <LiveVotingChart />
+                                        <WarMachineStats />
+                                        <BattleEndScreen />
+                                    </Box>
                                 </Box>
-                            </Box>
+                            </Stack>
 
                             <Box
                                 sx={{
                                     position: 'relative',
                                     width: '100%',
                                     height: CONTROLS_HEIGHT,
-                                    backgroundColor: colors.darkNavyBlue,
                                 }}
                             >
                                 <Controls />
@@ -158,9 +171,11 @@ const App = () => {
                             <WalletProvider>
                                 <GameProvider>
                                     <DimensionProvider>
-                                        <SnackBarProvider>
-                                            <AppInner />
-                                        </SnackBarProvider>
+                                        <LeftSideBarProvider>
+                                            <SnackBarProvider>
+                                                <AppInner />
+                                            </SnackBarProvider>
+                                        </LeftSideBarProvider>
                                     </DimensionProvider>
                                 </GameProvider>
                             </WalletProvider>
