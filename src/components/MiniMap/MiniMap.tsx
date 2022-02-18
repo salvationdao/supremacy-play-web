@@ -1,5 +1,5 @@
 import { Box, Fade, IconButton, Slide, Stack, Typography, useTheme } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { SyntheticEvent, useEffect, useRef, useState } from 'react'
 import { ClipThing, InteractiveMap, TargetTimerCountdown } from '..'
 import { colors } from '../../theme/theme'
 import { Theme } from '@mui/material/styles'
@@ -11,8 +11,10 @@ import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT } from '../../constants'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { parseString } from '../../helpers'
 import { SvgDrag } from '../../assets'
+import { ResizeCallbackData } from 'react-resizable'
 
 const Padding = 10
+const DefaultPositionY = 222
 
 export const MiniMap = () => {
     const {
@@ -28,22 +30,29 @@ export const MiniMap = () => {
         height: 200,
     })
 
-    // For targetting map
+    // For targeting map
     const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
     const [submitted, setSubmitted] = useState<boolean>(false)
     const confirmed = useRef<boolean>(false)
 
     useEffect(() => {
-        if (enlarged) {
-            // Height: 76 is just vertical spacing, and 125 is the height of the bottom mech stats
-            setDimensions({
-                width: Math.min(width - 23, 1000),
-                height: Math.min(height - 76 - 125 - CONTROLS_HEIGHT, 700),
-            })
-        } else {
-            setDimensions({ width: 230, height: 200 })
-        }
-    }, [enlarged])
+        const newWidth = enlarged ? Math.min(width - 23, 1000) : 230
+        const newHeight = enlarged ? Math.min(height - 76 - 125 - CONTROLS_HEIGHT, 700) : 200
+        setDimensions({ width: newWidth, height: newHeight })
+
+        let newPosX = parseString(localStorage.getItem('miniMapPosX'), -1)
+        let newPosY = parseString(localStorage.getItem('miniMapPosY'), DefaultPositionY)
+
+        // Make sure map is inside iframe when page is resized etc.
+        newPosX =
+            newPosX > 0 ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding)) : width - newWidth - Padding
+        newPosY = Math.max(Padding, Math.min(newPosY, height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT - newHeight - Padding))
+
+        setCurPosX(newPosX)
+        setCurPosY(newPosY)
+        localStorage.setItem('miniMapPosX', newPosX.toString())
+        localStorage.setItem('miniMapPosY', newPosY.toString())
+    }, [width, height, enlarged])
 
     useEffect(() => {
         const endTime = winner?.endTime
@@ -68,14 +77,15 @@ export const MiniMap = () => {
 
     if (!map) return null
 
-    const isTargetting = winner && !timeReachZero && !submitted && votingState?.phase == 'LOCATION_SELECT'
+    const isTargeting = winner && !timeReachZero && !submitted && votingState?.phase == 'LOCATION_SELECT'
 
     return (
-        <Box
+        <Stack
             sx={{
                 position: 'absolute',
-                top: 10,
-                right: 10,
+                top: 0,
+                left: 0,
+                pointerEvents: 'none',
                 zIndex: 32,
                 filter: 'drop-shadow(0 3px 3px #00000050)',
             }}
@@ -95,92 +105,95 @@ export const MiniMap = () => {
                 }}
                 bounds={{
                     top: Padding,
-                    bottom: height - map.width - Padding - GAMEBAR_HEIGHT - CONTROLS_HEIGHT,
+                    bottom: height - dimensions.height - Padding - GAMEBAR_HEIGHT - CONTROLS_HEIGHT,
                     left: Padding,
-                    right: width - map.height - Padding,
+                    right: width - dimensions.width - Padding,
                 }}
             >
-                <Slide in={true} direction="left">
-                    <Box>
-                        <ClipThing
-                            clipSize="10px"
-                            border={{
-                                isFancy: true,
-                                borderThickness: '3px',
-                                borderColor: isTargetting ? winner.gameAbility.colour : theme.factionTheme.primary,
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    position: 'relative',
-                                    boxShadow: 1,
-                                    width: dimensions.width,
-                                    height: dimensions.height,
-                                    // backgroundColor: colors.darkNavy,
-                                    transition: 'all .2s',
-                                    background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
+                <Box sx={{ pointerEvents: 'all' }}>
+                    <Slide in={true} direction="left">
+                        <Box>
+                            <ClipThing
+                                clipSize="10px"
+                                border={{
+                                    isFancy: true,
+                                    borderThickness: '3px',
+                                    borderColor: isTargeting ? winner.gameAbility.colour : theme.factionTheme.primary,
                                 }}
                             >
-                                <IconButton
-                                    size="small"
+                                <Box
                                     sx={{
-                                        position: 'absolute',
-                                        left: 1,
-                                        top: 1,
-                                        color: colors.text,
-                                        opacity: 0.8,
-                                        zIndex: 50,
+                                        position: 'relative',
+                                        boxShadow: 1,
+                                        width: dimensions.width,
+                                        height: dimensions.height,
+                                        // backgroundColor: colors.darkNavy,
+                                        transition: 'all .2s',
+                                        background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
                                     }}
-                                    onClick={() => toggleEnlarged()}
                                 >
-                                    {enlarged ? (
-                                        <ZoomInMapOutlinedIcon fontSize="small" />
-                                    ) : (
-                                        <ZoomOutMapOutlinedIcon fontSize="small" />
+                                    <IconButton
+                                        size="small"
+                                        sx={{
+                                            position: 'absolute',
+                                            left: 1,
+                                            top: 1,
+                                            color: colors.text,
+                                            opacity: 0.8,
+                                            zIndex: 50,
+                                        }}
+                                        onClick={() => toggleEnlarged()}
+                                    >
+                                        {enlarged ? (
+                                            <ZoomInMapOutlinedIcon fontSize="small" />
+                                        ) : (
+                                            <ZoomOutMapOutlinedIcon fontSize="small" />
+                                        )}
+                                    </IconButton>
+
+                                    <IconButton
+                                        className="handle"
+                                        size="small"
+                                        sx={{
+                                            position: 'absolute',
+                                            left: 25,
+                                            top: 3,
+                                            color: colors.text,
+                                            opacity: 0.8,
+                                            zIndex: 50,
+                                            cursor: 'move',
+                                        }}
+                                    >
+                                        <SvgDrag size="13px" />
+                                    </IconButton>
+
+                                    {isTargeting && (
+                                        <TargetTimerCountdown
+                                            gameAbility={winner.gameAbility}
+                                            setTimeReachZero={setTimeReachZero}
+                                            endTime={winner.endTime}
+                                        />
                                     )}
-                                </IconButton>
 
-                                <IconButton
-                                    className="handle"
-                                    size="small"
-                                    sx={{
-                                        position: 'absolute',
-                                        left: 25,
-                                        top: 3,
-                                        color: colors.text,
-                                        opacity: 0.8,
-                                        zIndex: 50,
-                                        cursor: 'move',
-                                    }}
-                                >
-                                    <SvgDrag size="13px" />
-                                </IconButton>
-
-                                {isTargetting && (
-                                    <TargetTimerCountdown
-                                        gameAbility={winner.gameAbility}
-                                        setTimeReachZero={setTimeReachZero}
-                                        endTime={winner.endTime}
-                                    />
-                                )}
-
-                                {isTargetting ? (
-                                    <InteractiveMap
-                                        gameAbility={winner.gameAbility}
-                                        windowDimension={dimensions}
-                                        targeting
-                                        setSubmitted={setSubmitted}
-                                        confirmed={confirmed}
-                                        enlarged={enlarged}
-                                    />
-                                ) : (
-                                    <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
-                                )}
-                            </Box>
-                        </ClipThing>
-                    </Box>
-                </Slide>
+                                    {isTargeting ? (
+                                        <InteractiveMap
+                                            gameAbility={winner.gameAbility}
+                                            windowDimension={dimensions}
+                                            targeting
+                                            setSubmitted={setSubmitted}
+                                            confirmed={confirmed}
+                                            enlarged={enlarged}
+                                        />
+                                    ) : (
+                                        // do I need enlarged?
+                                        <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
+                                    )}
+                                </Box>
+                            </ClipThing>
+                        </Box>
+                    </Slide>
+                </Box>
             </Draggable>
-        </Box>
+        </Stack>
     )
 }

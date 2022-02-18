@@ -7,13 +7,14 @@ import { useToggle } from '../../hooks'
 import { GameAbility, Map, WarMachineState } from '../../types'
 import { animated, useSpring } from 'react-spring'
 import { useDrag, useWheel } from '@use-gesture/react'
+import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT } from '../../constants'
 
 export interface MapSelection {
     x: number
     y: number
 }
 
-// todo: implement this
+// todo: implement this?
 interface MapGridProps {
     mapHeight: number
     mapWidth: number
@@ -26,12 +27,13 @@ const MapGrid = styled('table', {
 })<{ map: Map }>(({ map }) => ({
     position: 'absolute',
     zIndex: 4,
-    width: `${map.width}px`,
-    height: `${map.height}px`,
+    // todo: redo this
+    width: `${map.width * map.scale * 40}px`,
+    height: `${map.height * map.scale * 40}px`,
     borderSpacing: 0,
 }))
 
-// todo: implement this
+// todo: implement this?
 interface GridCellProps {
     gridHeight: number
     gridWidth: number
@@ -40,10 +42,10 @@ interface GridCellProps {
 
 //todo: need to scale grid cell size
 const GridCell = styled('td', {
-    shouldForwardProp: (prop) => prop !== 'disabled',
-})<{ disabled?: boolean }>(({ disabled }) => ({
-    height: '50px',
-    width: '50px',
+    shouldForwardProp: (prop) => prop !== 'disabled' && prop !== 'map',
+})<{ disabled?: boolean; map: Map }>(({ disabled, map }) => ({
+    height: `${50 * map.scale * 40}px`,
+    width: `${50 * map.scale * 40}px`,
     cursor: disabled ? 'auto' : 'pointer',
     border: disabled ? 'unset' : `1px solid #FFFFFF40`,
     backgroundColor: disabled ? '#00000090' : 'unset',
@@ -93,7 +95,7 @@ export const InteractiveMap = ({
     const [refresh, toggleRefresh] = useToggle()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
-    const lastPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
+    const lastPos = useRef<{ x: number; y: number; scale: number }>({ x: 0, y: 0, scale: 1 })
     const prevDimension = useRef<{ width: number; height: number }>({ width: 0, height: 0 })
 
     useEffect(() => {
@@ -123,6 +125,7 @@ export const InteractiveMap = ({
                                             <GridCell
                                                 key={`column-${y}-row-${x}`}
                                                 disabled={disabled}
+                                                map={map}
                                                 onClick={
                                                     disabled
                                                         ? undefined
@@ -166,20 +169,12 @@ export const InteractiveMap = ({
     useEffect(() => {
         if (!map) return
 
-        if (enlarged) {
-            // todo: set the previous scale and location
-            const minScale = windowDimension.width / map.width
-            set({ scale: minScale, x: 0, y: 0 })
-            setMap((prev) => {
-                return prev ? { ...prev, scale: (prev.scale = minScale / 40) } : prev
-            })
-        } else {
-            const minScale = windowDimension.width / map.width
-            set({ scale: minScale, x: 0, y: 0 })
-            setMap((prev) => {
-                return prev ? { ...prev, scale: (prev.scale = minScale / 40) } : prev
-            })
-        }
+        // todo: set the previous enlarged scale and location
+        const minScale = windowDimension.width / map.width
+        set({ scale: minScale, x: 0, y: 0 })
+        setMap((prev) => {
+            return prev ? { ...prev, scale: (prev.scale = minScale / 40) } : prev
+        })
 
         // lastPos.current = {
         //     x:
@@ -210,21 +205,20 @@ export const InteractiveMap = ({
     const [{ x, y, scale }, set] = useSpring(() => ({
         x: 0,
         y: 0,
-        scale: 1,
+        scale: map ? windowDimension.width / map.width : 1,
     }))
 
     const drag = useDrag(
         ({ dragging, wheeling, cancel, offset: [x, y], down }) => {
             if (wheeling || !map || !enlarged) return cancel()
-            dragging ? (isDragging.current = true) : (isDragging.current = false) // so I still need this?
+            dragging && down ? (isDragging.current = true) : (isDragging.current = false)
             set({ x, y, immediate: down })
         },
         {
             from: () => [x.get(), y.get()],
+            // set new bounds so the map doesn't go outside the view window when dragging
             bounds: () => {
                 if (!map) return
-
-                // set new bounds so the map doesn't go outside the window
                 return {
                     top:
                         windowDimension.height <= map.height * scale.get()
@@ -262,10 +256,18 @@ export const InteractiveMap = ({
             newScale >= 1 ? (newScale = maxScale) : (newScale = minScale)
         }
 
-        // set the maps new scale
+        // set the maps new scale, height & width
         setMap((prev) => {
             return prev ? { ...prev, scale: (prev.scale = newScale / 40) } : prev
         })
+
+        // calculate the new x & y coordinates so the map stays within bounds when zooming
+        // something like this?
+        // newPosX =
+        //     newPosX > 0 ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding)) : width - newWidth - Padding
+        // newPosY = Math.max(Padding, Math.min(newPosY, height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT - newHeight - Padding))
+        // setCurPosX(newPosX)
+        // setCurPosY(newPosY)
 
         // move the map, so it stays within bounds when scaling - not working properly
         set({ scale: newScale, x: x.get() * newScale, y: y.get() * newScale })
@@ -282,6 +284,7 @@ export const InteractiveMap = ({
                 overflow: 'hidden',
             }}
         >
+            {/* Map - can be dragged */}
             <animated.div {...drag()} style={{ x, y, touchAction: 'none' }}>
                 <Box sx={{ cursor: 'move' }}>
                     <MapWarMachines map={map} warMachines={warMachines || []} />
@@ -290,7 +293,7 @@ export const InteractiveMap = ({
 
                     {grid}
 
-                    {/* Map Image */}
+                    {/* Map Image - can be scaled */}
                     <animated.div {...zoom()} style={{ scale, transformOrigin: `0% 0%` }}>
                         <Box
                             sx={{
