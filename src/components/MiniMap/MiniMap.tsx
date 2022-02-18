@@ -185,7 +185,6 @@ export const MiniMap = () => {
                                             enlarged={enlarged}
                                         />
                                     ) : (
-                                        // do I need enlarged?
                                         <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
                                     )}
                                 </Box>

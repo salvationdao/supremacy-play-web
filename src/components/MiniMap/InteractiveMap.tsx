@@ -7,43 +7,25 @@ import { useToggle } from '../../hooks'
 import { GameAbility, Map, WarMachineState } from '../../types'
 import { animated, useSpring } from 'react-spring'
 import { useDrag, useWheel } from '@use-gesture/react'
-import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT } from '../../constants'
 
 export interface MapSelection {
     x: number
     y: number
 }
 
-// todo: implement this?
-interface MapGridProps {
-    mapHeight: number
-    mapWidth: number
-    scale: number // just this one?
-}
-
-//todo: need to scale grid size
 const MapGrid = styled('table', {
     shouldForwardProp: (prop) => prop !== 'map',
 })<{ map: Map }>(({ map }) => ({
     position: 'absolute',
     zIndex: 4,
-    // todo: redo this
     width: `${map.width}px`,
     height: `${map.height}px`,
     borderSpacing: 0,
 }))
 
-// todo: implement this?
-interface GridCellProps {
-    gridHeight: number
-    gridWidth: number
-    scale: number // just this one?
-}
-
-//todo: need to scale grid cell size
 const GridCell = styled('td', {
-    shouldForwardProp: (prop) => prop !== 'disabled' && prop !== 'map',
-})<{ disabled?: boolean; map: Map }>(({ disabled, map }) => ({
+    shouldForwardProp: (prop) => prop !== 'disabled',
+})<{ disabled?: boolean }>(({ disabled }) => ({
     height: '50px',
     width: '50px',
     cursor: disabled ? 'auto' : 'pointer',
@@ -73,8 +55,6 @@ const MapWarMachines = ({ warMachines, map }: MapWarMachineProps) => {
     )
 }
 
-// Should I have interactiveMapProps?
-
 export const InteractiveMap = ({
     gameAbility,
     windowDimension,
@@ -95,8 +75,8 @@ export const InteractiveMap = ({
     const [refresh, toggleRefresh] = useToggle()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
-    const lastPos = useRef<{ x: number; y: number; scale: number }>({ x: 0, y: 0, scale: 1 })
-    const prevDimension = useRef<{ width: number; height: number }>({ width: 0, height: 0 })
+    // const lastPos = useRef<{ x: number; y: number; scale: number }>({ x: 0, y: 0, scale: 1 })
+    // const prevDimension = useRef<{ width: number; height: number }>({ width: 0, height: 0 })
 
     useEffect(() => {
         setSelection(undefined)
@@ -125,7 +105,6 @@ export const InteractiveMap = ({
                                             <GridCell
                                                 key={`column-${y}-row-${x}`}
                                                 disabled={disabled}
-                                                map={map}
                                                 onClick={
                                                     disabled
                                                         ? undefined
@@ -175,6 +154,8 @@ export const InteractiveMap = ({
         setMap((prev) => {
             return prev ? { ...prev, scale: (prev.scale = minScale / 40) } : prev
         })
+
+        toggleRefresh()
     }, [windowDimension])
 
     // ---------- Minimap - useGesture setup --------------
@@ -193,13 +174,16 @@ export const InteractiveMap = ({
     const dragMap = useDrag(
         ({ dragging, wheeling, cancel, offset: [x, y], down }) => {
             if (wheeling || !map || !enlarged) return cancel()
-            dragging && down ? (isDragging.current = true) : (isDragging.current = false)
-            console.log(isDragging)
+            dragging
+                ? (isDragging.current = true)
+                : setTimeout(() => {
+                      isDragging.current = false
+                  }, 50)
             set({ x, y, immediate: down })
         },
         {
             from: () => [x.get(), y.get()],
-            // set new bounds so the map doesn't go outside the view window when dragging
+            filterTaps: true, // will ignore clicks - for selecting ability on grid
             bounds: () => {
                 if (!map) return
                 return {
