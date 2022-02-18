@@ -20,7 +20,7 @@ import {
     VotingSystem,
     WarMachineStats,
 } from './components'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FactionThemeColor, UpdateTheme } from './types'
 import { mergeDeep } from './helpers'
 import { colors, theme } from './theme/theme'
@@ -38,7 +38,6 @@ import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import * as Sentry from '@sentry/react'
 import { StreamProvider, useStream } from './containers/stream'
 import { WebRTCAdaptor } from '@antmedia/webrtc_adaptor'
-import { log } from 'console'
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -60,44 +59,38 @@ if (SENTRY_CONFIG) {
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
     const { streamDimensions, iframeDimensions } = useDimension()
-    const { currentStream } = useStream()
+    // const [streamResolutions, setStreamResolutions] = useState<number[]>([])
+    // const { currentStream } = useStream()
     const handle = useFullScreenHandle()
-
-    const [wtc, setWtc] = useState<any>()
 
     const [isMute, setIsMute] = useState(true)
     const [volume, setVolume] = useState(0.0)
 
-    const wsConn = new WebSocket('wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket')
+    const webRtc = useRef<any>()
 
-    const playStream = () => {
-        if (wsConn.readyState == 0 || wsConn.readyState == 2 || wsConn.readyState == 3) {
-            // thiz.callbackError('WebSocketNotConnected')
-            return
+    const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
+    const STREAM_ID = '886200805704583109786601'
+    useEffect(() => {
+        console.log('this is volume', volume)
+        console.log('this is volume', vidRef?.current?.volume)
+        console.log('this is volume', vidRef?.current)
+
+        if (vidRef && vidRef.current && vidRef.current.volume) {
+            vidRef.current.volume = volume
         }
-        wtc.playStreamId.push('886200805704583109786601')
-        const jsCmd = {
-            command: 'play',
-            streamId: '886200805704583109786601',
-            token: '',
-            room: undefined,
-            trackList: undefined,
-        }
+    }, [volume])
 
-        const wsR = wsConn.send(JSON.stringify(jsCmd))
-        console.log(wsR)
-        console.log(wtc)
-    }
+    // const changeStreamQuality = () => {
+    //     if (webRtc?.current) {
+    //         webRtc.current.forceStreamQuality(STREAM_ID, 144)
+    //     }
+    // }
 
-    // const infoCallback = useCallback(() => {}, [])
-    const initWebRTCAdaptor = () => {
-        const webRTCAdaptor = new WebRTCAdaptor({
-            //https://staging-watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601
+    const vidRefCallback = useCallback((vid: HTMLVideoElement) => {
+        vidRef.current = vid
+        webRtc.current = new WebRTCAdaptor({
             websocket_url: 'wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket',
             mediaConstraints: { video: false, audio: false },
-            peerconnection_config: {
-                iceServers: { urls: 'stun:stun.l.google.com:19302' },
-            },
             sdp_constraints: {
                 OfferToReceiveAudio: true,
                 OfferToReceiveVideo: true,
@@ -106,12 +99,15 @@ const AppInner = () => {
             isPlayMode: true,
             debug: true,
             candidateTypes: ['tcp', 'udp'],
+
             callback: function (info: any, obj: any) {
+                // console.log('info', info)
                 if (info == 'initialized') {
-                    console.log('initialized')
+                    console.log('info initialized')
+                    webRtc.current.play('886200805704583109786601', '')
                 } else if (info == 'play_started') {
                     //joined the stream
-                    console.log('play started')
+                    // webRtc.current.getStreamInfo(STREAM_ID)
                 } else if (info == 'play_finished') {
                     //leaved the stream
                     console.log('play finished')
@@ -121,28 +117,27 @@ const AppInner = () => {
                         console.log('Connecton closed: ' + JSON.stringify(obj))
                     }
                 } else if (info == 'streamInformation') {
-                    console.log('bruh')
+                    // console.log('bruh')
+                    // console.log('bruh')
+                    // console.log('bruh')
+                    // console.log('bruh', vidRef.current)
+                    // console.log('bruh', obj)
+                    // const resolutions: any[] = []
+                    // obj['streamInfo'].forEach(function (entry: any) {
+                    //     //It's needs to both of VP8 and H264. So it can be duplicate
+                    //     if (!resolutions.includes(entry['streamHeight'])) {
+                    //         resolutions.push(entry['streamHeight'])
+                    //     } // Got resolutions from server response and added to an array.
+                    // })
+                    // setStreamResolutions(resolutions)
                 } else if (info == 'ice_connection_state_changed') {
                     console.log('iceConnectionState Changed: ', JSON.stringify(obj))
                 }
             },
             callbackError: function (error: any) {
-                //some of the possible errors, NotFoundError, SecurityError,PermissionDeniedError
-                console.log('error 1: ' + JSON.stringify(error))
-
                 console.log('error callback: ' + JSON.stringify(error))
-                // alert(JSON.stringify(error))
-                // alert(3)
             },
         })
-
-        return webRTCAdaptor
-    }
-
-    useEffect(() => {
-        const initW = initWebRTCAdaptor()
-        setWtc(initW)
-        console.log('___________', initW)
     }, [])
 
     return (
@@ -171,12 +166,12 @@ const AppInner = () => {
                             </Box>
 
                             <Box sx={{ flex: 1, position: 'relative', width: '100%', height: '100%' }}>
-                                <video id="remoteVideo" autoPlay controls playsInline></video>
-                                {/* <iframe
-                                    frameBorder="0"
-                                    id={'localVideo'}
-                                    allowFullScreen
-                                    src={currentStream?.url}
+                                <video
+                                    ref={vidRefCallback}
+                                    id="remoteVideo"
+                                    autoPlay
+                                    controls
+                                    playsInline
                                     style={{
                                         position: 'absolute',
                                         top: '50%',
@@ -186,7 +181,7 @@ const AppInner = () => {
                                         width: iframeDimensions.width,
                                         height: iframeDimensions.height,
                                     }}
-                                ></iframe> */}
+                                ></video>
 
                                 <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
                                     <VotingSystem />
@@ -205,15 +200,7 @@ const AppInner = () => {
                                     backgroundColor: colors.darkNavyBlue,
                                 }}
                             >
-                                <Button
-                                    onClick={() => {
-                                        console.log('start')
-
-                                        playStream()
-                                    }}
-                                >
-                                    Start
-                                </Button>
+                                {/* <button onClick={changeStreamQuality}>change stream quality</button> */}
                                 <Controls
                                     volume={volume}
                                     setVolume={setVolume}

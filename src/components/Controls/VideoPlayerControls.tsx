@@ -22,7 +22,7 @@ export const VideoPlayerControls = (props: ControlsProps) => {
                     </IconButton>
                     <Slider
                         size="small"
-                        min={0}
+                        min={0.1}
                         max={1}
                         step={0.1}
                         aria-label="Volume"
