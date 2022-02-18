@@ -1,10 +1,10 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
+import { Drawer, Typography } from '@mui/material'
 import { LIVE_CHAT_DRAWER_WIDTH } from '../../constants'
 import { useDimension } from '../../containers'
 import { colors } from '../../theme/theme'
 
 export const LiveChat = () => {
-    const { isLiveChatOpen, toggleIsLiveChatOpen } = useDimension()
+    const { isLiveChatOpen } = useDimension()
 
     return (
         <Drawer

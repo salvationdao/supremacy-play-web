@@ -35,8 +35,9 @@ export const MiniMap = () => {
     const confirmed = useRef<boolean>(false)
 
     useEffect(() => {
+        // Height: 125 is the height of the bottom mech stats
         const newWidth = enlarged ? Math.min(width - 23, 1000) : 230
-        const newHeight = enlarged ? Math.min(height - 76 - 125 - CONTROLS_HEIGHT, 700) : 200
+        const newHeight = enlarged ? Math.min(height - 125, 700) : 200
 
         let newPosX = parseString(localStorage.getItem('miniMapPosX'), -1)
         let newPosY = parseString(localStorage.getItem('miniMapPosY'), DefaultPositionY)
