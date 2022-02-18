@@ -16,6 +16,7 @@ export interface ClipThingProps {
     sx?: SxProps<Theme>
     innerSx?: SxProps<Theme>
     fillHeight?: boolean
+    skipRightCorner?: boolean
 }
 
 export const ClipThing: React.FC<ClipThingProps> = ({
@@ -26,13 +27,16 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     innerSx,
     sx,
     fillHeight,
+    skipRightCorner,
 }) => {
     const theme = useTheme<Theme>()
 
     const innerClipStyles: any = {
         height: fillHeight ? '100%' : 'fit-content',
         lineHeight: 1,
-        clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${clipSize}) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, ${
+        clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
+            skipRightCorner ? '0%' : clipSize
+        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, ${
             clipSlantSize != '0px' ? '2px' : '0%'
         } calc(100% - ${clipSize}))`,
     }
@@ -40,7 +44,9 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     const outerClipStyles: any = {
         height: fillHeight ? '100%' : 'fit-content',
         lineHeight: 1,
-        clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${clipSize}) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, 0% calc(100% - ${clipSize}))`,
+        clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
+            skipRightCorner ? '0%' : clipSize
+        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, 0% calc(100% - ${clipSize}))`,
     }
 
     const borderStyles: any = {

@@ -126,6 +126,28 @@ export interface NetMessageTick {
     warmachines: NetMessageTickWarMachine[]
 }
 
+export interface BattleEndDetail {
+    topSupsContributor: User // user who contribute the most sups
+    topSupsContributeFaction: Faction // faction which contribute the most sups
+    topApplauseContributor: User // user who contribute the most applause
+    mostFrequentAbilityExecutor: User // user who trigger ability most frequent
+    battleEvents: BattleEvent[]
+}
+
+export interface BattleEvent {
+    type: 'GAME_ABILITY' | 'WAR_MACHINE_DESTROYED'
+    createdAt: Date
+    event: GameAbility | WarMachineDestroyedRecord
+}
+
+export interface GameAbilityEvent {
+    ability: GameAbility
+    triggeredByUser?: User
+    x?: number
+    y?: number
+    triggeredOnWarMachine?: WarMachineState
+}
+
 export interface WarMachineDestroyedRecord {
     destroyedWarMachine: WarMachineState
     killedByWarMachine?: WarMachineState
@@ -137,4 +159,20 @@ export interface DamageRecord {
     amount: number
     causedByWarMachine: WarMachineState
     sourceName: string // weapon/ability name
+}
+
+export interface Stream {
+    host: string
+    name: string
+    url: string
+    region: string
+    resolution: string
+    bitRatesKBits: number
+    userMax: number
+    usersNow: number
+    active: boolean
+    status: string
+    latitude: number
+    longitude: number
+    distance?: number
 }

@@ -137,21 +137,19 @@ export const BattleAbility = () => {
 
                 <Stack key={fadeEffect} spacing={1.3}>
                     <Fade in={true}>
-                        <Box sx={{ opacity: isVoting ? 1 : 0.5 }}>
-                            <ClipThing
-                                // border={{ isFancy: true, borderColor: colour, borderThickness: '1.5px' }}
-                                clipSize="6px"
-                            >
+                        <Box>
+                            <ClipThing clipSize="6px">
                                 <Stack
                                     spacing={1}
                                     alignItems="flex-start"
                                     sx={{
                                         flex: 1,
                                         minWidth: 325,
-                                        backgroundColor: `${colour || colors.darkNavy}12`,
+                                        backgroundColor: `${colour || colors.darkNavy}15`,
                                         px: 2,
                                         pt: 1.4,
                                         pb: 1.6,
+                                        opacity: isVoting ? 1 : 0.32,
                                     }}
                                 >
                                     <Stack
@@ -197,7 +195,7 @@ export const BattleAbility = () => {
                                             alignItems="center"
                                             justifyContent="center"
                                         >
-                                            <SvgCooldown component="span" size="13.2px" fill={'grey'} />
+                                            <SvgCooldown component="span" size="13px" fill={'grey'} sx={{ mb: 0.2 }} />
                                             <Typography
                                                 variant="body2"
                                                 sx={{ lineHeight: 1, color: 'grey !important' }}

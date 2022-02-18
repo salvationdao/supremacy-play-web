@@ -11,6 +11,7 @@ enum HubKey {
     SubVoteStageUpdated = 'VOTE:STAGE:UPDATED',
     SubVoteWinnerAnnouncement = 'VOTE:WINNER:ANNOUNCEMENT',
     SubFactionWarMachineQueueUpdated = 'FACTION:WAR:MACHINE:QUEUE:UPDATED',
+    SubBattleEndDetailUpdated = 'BATTLE:END:DETAIL:UPDATED',
 
     // Notification container
     SubGameNotification = 'GAME:NOTIFICATION',
@@ -23,6 +24,7 @@ enum HubKey {
     GameAbilityContribute = 'GAME:ABILITY:CONTRIBUTE',
     SubWarMachineDestroyed = 'WAR:MACHINE:DESTROYED:UPDATED',
     SubWarMachineAbilitiesUpdated = 'WAR:MACHINE:ABILITIES:UPDATED',
+    GetStreamList = 'STREAMLIST:SUBSCRIBE',
 }
 
 export default HubKey

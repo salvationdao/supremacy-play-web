@@ -154,17 +154,14 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
         <Box key={refresh}>
             <Fade in={true}>
                 <Box>
-                    <ClipThing
-                        // border={{ isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: '1.5px' }}
-                        clipSize="6px"
-                    >
+                    <ClipThing clipSize="6px">
                         <Stack
                             spacing={1}
                             alignItems="flex-start"
                             sx={{
                                 flex: 1,
                                 minWidth: 325,
-                                backgroundColor: `${colour || colors.darkNavy}12`,
+                                backgroundColor: `${colour || colors.darkNavy}15`,
                                 px: 2,
                                 pt: 1.6,
                                 pb: 1.6,
@@ -234,7 +231,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                         {supsCost.toFixed(2)}
                                     </Typography>
                                     <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
-                                        &nbsp;SUPS
+                                        &nbsp;SUP{supsCost.eq(1) ? '' : 'S'}
                                     </Typography>
                                 </Stack>
                             </Stack>

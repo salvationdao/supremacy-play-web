@@ -1,5 +1,3 @@
-import { Theme } from '@mui/material/styles'
-import { useTheme } from '@mui/styles'
 import { Box, Fade, Stack, Typography } from '@mui/material'
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useState } from 'react'
@@ -9,7 +7,6 @@ import HubKey from '../../keys'
 import { zoomEffect } from '../../theme/keyframes'
 import { colors } from '../../theme/theme'
 import { GameAbility, GameAbilityTargetPrice } from '../../types'
-import { useToggle } from '../../hooks'
 import { NullUUID } from '../../constants'
 import { SvgSupToken } from '../../assets'
 
@@ -60,9 +57,9 @@ const ContributionBar = ({
                     sx={{
                         position: 'absolute',
                         left: `${costPercent}%`,
-                        backgroundColor: colors.red,
                         height: 10,
                         width: 2,
+                        backgroundColor: colors.red,
                         zIndex: 6,
                     }}
                 />
@@ -90,18 +87,20 @@ interface GameAbilityContributeRequest {
 
 interface WarMachineAbilityItemProps {
     gameAbility: GameAbility
+    maxAbilityPriceMap?: React.MutableRefObject<Map<string, BigNumber>>
 }
 
-export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProps) => {
+export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMachineAbilityItemProps) => {
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
-    const theme = useTheme<Theme>()
 
     const { label, colour, imageUrl, id } = gameAbility
-    const [refresh, toggleRefresh] = useToggle()
+    // const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber('0'))
     const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
-    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
+    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
+        maxAbilityPriceMap?.current.get(id) || new BigNumber('0'),
+    )
     const [isVoting, setIsVoting] = useState(false)
 
     const [gameAbilityTargetPrice, setGameAbilityTargetPrice] = useState<GameAbilityTargetPrice>()
@@ -126,7 +125,6 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
 
         if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
-            toggleRefresh()
         }
     }, [gameAbilityTargetPrice])
 
@@ -151,7 +149,7 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
     )
 
     return (
-        <Box key={refresh}>
+        <Box key={`${initialTargetCost}`}>
             <Fade in={true}>
                 <Box>
                     <ClipThing clipSize="6px" clipSlantSize="5px">
@@ -161,7 +159,7 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
                             sx={{
                                 flex: 1,
                                 minWidth: 325,
-                                backgroundColor: colour ? `${colour}12` : `${colors.darkNavyBlue}80`,
+                                backgroundColor: colour ? `${colour}15` : `${colors.darkNavyBlue}80`,
                                 px: 2,
                                 pt: 1.6,
                                 pb: 1.6,
@@ -231,7 +229,7 @@ export const WarMachineAbilityItem = ({ gameAbility }: WarMachineAbilityItemProp
                                         {supsCost.toFixed(2)}
                                     </Typography>
                                     <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
-                                        &nbsp;SUPS
+                                        &nbsp;SUP{supsCost.eq(1) ? '' : 'S'}
                                     </Typography>
                                 </Stack>
                             </Stack>

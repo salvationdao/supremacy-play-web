@@ -18,7 +18,7 @@ const DefaultPositionY = 222
 
 export const MiniMap = () => {
     const {
-        iframeDimensions: { width, height },
+        streamDimensions: { width, height },
     } = useDimension()
     const theme = useTheme<Theme>()
     const [curPosX, setCurPosX] = useState(-1)

@@ -1,4 +1,5 @@
 import { Box, Popover, Stack, Typography } from '@mui/material'
+import BigNumber from 'bignumber.js'
 import { ClipThing, WarMachineAbilityItem } from '..'
 import { colors } from '../../theme/theme'
 import { GameAbility, WarMachineState } from '../../types'
@@ -9,6 +10,7 @@ interface WarMachineAbilitiesPopoverProps {
     toggleOpen: (_state: boolean) => void
     warMachine: WarMachineState
     gameAbilities: GameAbility[]
+    maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
 }
 
 export const WarMachineAbilitiesPopover = ({
@@ -17,6 +19,7 @@ export const WarMachineAbilitiesPopover = ({
     toggleOpen,
     warMachine,
     gameAbilities,
+    maxAbilityPriceMap,
 }: WarMachineAbilitiesPopoverProps) => {
     const factionTheme = warMachine.faction.theme
 
@@ -51,7 +54,7 @@ export const WarMachineAbilitiesPopover = ({
                         borderColor: factionTheme.primary,
                     }}
                 >
-                    <Box sx={{ backgroundColor: factionTheme.background, px: 1.6, pt: 1.6, pb: 1.8 }}>
+                    <Box sx={{ backgroundColor: factionTheme.background, px: 1.6, pt: 1.6, pb: 1.6 }}>
                         <Stack spacing={0.9}>
                             <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: 1.1 }}>
                                 <Box
@@ -76,7 +79,10 @@ export const WarMachineAbilitiesPopover = ({
                             <Stack spacing={0.9}>
                                 {gameAbilities.map((ga, i) => (
                                     <Box key={ga.id} sx={{ ml: (i + 1) * 0.2 }}>
-                                        <WarMachineAbilityItem gameAbility={ga} />
+                                        <WarMachineAbilityItem
+                                            gameAbility={ga}
+                                            maxAbilityPriceMap={maxAbilityPriceMap}
+                                        />
                                     </Box>
                                 ))}
                             </Stack>

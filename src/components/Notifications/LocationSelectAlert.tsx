@@ -31,7 +31,7 @@ interface LocationSelectAlertProps {
     y?: number
 }
 
-const FallbackUser: User = {
+export const FallbackUser: User = {
     id: '',
     factionID: '',
     username: 'Unknown User',
@@ -58,7 +58,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
     if (type == 'CANCELLED_NO_PLAYER' || type == 'CANCELLED_DISCONNECT') {
         return (
             <Box>
-                <StyledImageText text={label} color={colour} />
+                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
                 <StyledNormalText text=" has been cancelled as there were no players available to choose a target location." />
             </Box>
         )
@@ -79,7 +79,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={nextFaction.theme.primary}
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
-                <StyledImageText text={label} color={colour} />
+                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
                 <StyledNormalText text="." />
             </Box>
         )
@@ -100,7 +100,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={nextFaction.theme.primary}
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
-                <StyledImageText text={label} color={colour} />
+                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
                 <StyledNormalText text="." />
             </Box>
         )
@@ -115,7 +115,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={faction.theme.primary}
                 />
                 <StyledNormalText text=" has chosen a target location for " />
-                <StyledImageText text={label} color={colour} />
+                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
                 <StyledNormalText text="." />
             </Box>
         )

@@ -2,27 +2,29 @@ import { Box, Typography } from '@mui/material'
 
 export const StyledImageText = ({ imageUrl, text, color }: { imageUrl?: string; text: string; color: string }) => {
     return (
-        <Box sx={{ display: 'inline-block' }}>
+        <Box sx={{ display: 'inline' }}>
             {imageUrl && (
                 <Box
                     sx={{
                         display: 'inline-block',
-                        width: 13,
-                        height: 13,
+                        width: 16,
+                        height: 16,
+                        mb: '-2px',
                         mr: 0.5,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center',
-                        backgroundSize: 'contain',
+                        backgroundSize: 'cover',
                         backgroundColor: color,
                         borderRadius: 0.3,
+                        border: `${color} solid 1px`,
                     }}
                 />
             )}
             <Typography
                 component="span"
                 variant="body1"
-                sx={{ fontWeight: 'fontWeightBold', color, wordBreak: 'break-word' }}
+                sx={{ display: 'inline', fontWeight: 'fontWeightBold', color, wordBreak: 'break-word' }}
             >
                 {text}
             </Typography>
