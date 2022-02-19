@@ -136,7 +136,7 @@ export const sampleBattleEndDetail: BattleEndDetail = {
     },
     winningWarMachines: [
         {
-            imageUrl: 'http://localhost:5005/static/media/GenericWarMachine.df93230e7e423976eda9.png',
+            imageUrl: 'http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png',
             name: 'Olympus Mons LY07',
             faction: {
                 id: '1',
@@ -160,7 +160,7 @@ export const sampleBattleEndDetail: BattleEndDetail = {
             rotation: 10,
         },
         {
-            imageUrl: 'http://localhost:5005/static/media/GenericWarMachine.df93230e7e423976eda9.png',
+            imageUrl: 'http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png',
             name: 'Tenshi Mk1 B',
             faction: {
                 id: '1',
@@ -184,7 +184,7 @@ export const sampleBattleEndDetail: BattleEndDetail = {
             rotation: 10,
         },
         {
-            imageUrl: 'http://localhost:5005/static/media/GenericWarMachine.df93230e7e423976eda9.png',
+            imageUrl: 'http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png',
             name: 'Law Enforcer X-1000',
             faction: {
                 id: '1',

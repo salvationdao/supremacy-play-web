@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { SvgMapSkull, GenericWarMachine, SvgMapWarMachine } from '../../assets'
+import { SvgMapSkull, GenericWarMachinePNG, SvgMapWarMachine } from '../../assets'
 import { useWebsocket } from '../../containers'
 import { shadeColor } from '../../helpers'
 import { colors } from '../../theme/theme'
@@ -13,7 +13,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
     const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
 
-    const wmImageUrl = imageUrl || GenericWarMachine
+    const wmImageUrl = imageUrl || GenericWarMachinePNG
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)

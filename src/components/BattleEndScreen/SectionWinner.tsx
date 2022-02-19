@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material'
 import { BattleEndTooltip, StyledImageText } from '..'
-import { GenericWarMachine } from '../../assets'
+import { GenericWarMachinePNG } from '../../assets'
 import { PASSPORT_WEB } from '../../constants'
 import { colors } from '../../theme/theme'
 import { BattleEndDetail } from '../../types'
@@ -49,7 +49,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                                 color={colors.text}
                                 imageBorderColor={wm.faction.theme.primary}
                                 text={wm.name.toUpperCase()}
-                                imageUrl={wm.imageUrl || GenericWarMachine}
+                                imageUrl={wm.imageUrl || GenericWarMachinePNG}
                                 variant="h5"
                                 imageSize={29}
                                 imageBorderThickness="2px"
