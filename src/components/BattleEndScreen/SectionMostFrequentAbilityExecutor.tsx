@@ -28,7 +28,7 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                 </Typography>
             </Box>
 
-            {mostFrequentAbilityExecutors && mostFrequentAbilityExecutors.length > 0 && (
+            {mostFrequentAbilityExecutors && mostFrequentAbilityExecutors.length > 0 ? (
                 <Stack spacing={2}>
                     <Stack spacing={1.3} sx={{ pl: 1 }}>
                         {mostFrequentAbilityExecutors.map((u, index) => (
@@ -50,6 +50,10 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                         ))}
                     </Stack>
                 </Stack>
+            ) : (
+                <Typography variant="h5" sx={{ pl: 1 }}>
+                    Nothing to show...
+                </Typography>
             )}
         </Stack>
     )

@@ -92,30 +92,32 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                     </Stack>
                 )}
 
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
-                        transition: 'all .2s',
-                        zIndex: -1,
-                    }}
-                >
-                    <Box sx={{ position: 'relative', height: ARROW_LENGTH }}>
-                        <SvgMapWarMachine
-                            fill={primaryColor}
-                            size="10px"
-                            sx={{
-                                position: 'absolute',
-                                top: -6,
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                            }}
-                        />
+                {isAlive && (
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            left: '50%',
+                            top: '50%',
+                            transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
+                            transition: 'all .2s',
+                            zIndex: -1,
+                        }}
+                    >
+                        <Box sx={{ position: 'relative', height: ARROW_LENGTH }}>
+                            <SvgMapWarMachine
+                                fill={primaryColor}
+                                size="10px"
+                                sx={{
+                                    position: 'absolute',
+                                    top: -6,
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                }}
+                            />
+                        </Box>
+                        <Box sx={{ height: ARROW_LENGTH }} />
                     </Box>
-                    <Box sx={{ height: ARROW_LENGTH }} />
-                </Box>
+                )}
             </Box>
 
             {isAlive && (

@@ -47,7 +47,7 @@ export const BattleEndScreen = () => {
 
     const backgroundColor = useMemo(
         () => ({
-            background: `linear-gradient(65deg, ${colors.darkNavyBlue} 3%, ${colors.darkNavyBlue}92 50%, ${colors.darkNavy}90)`,
+            background: `linear-gradient(65deg, ${colors.darkNavyBlue} 3%, ${colors.darkNavyBlue}96 50%, ${colors.darkNavy}92)`,
         }),
         [],
     )
@@ -55,7 +55,7 @@ export const BattleEndScreen = () => {
     if (!battleEndDetail || !battleEndDetail.winningFaction) return null
 
     return (
-        <Slide in={isEndBattleDetailOpen} direction="right">
+        <Slide key={battleEndDetail.battleID} in={isEndBattleDetailOpen} direction="right">
             <Box
                 sx={{
                     position: 'absolute',

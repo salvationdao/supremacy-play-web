@@ -28,7 +28,7 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
                 </Typography>
             </Box>
 
-            {topSupsContributors && topSupsContributors.length > 0 && (
+            {topSupsContributors && topSupsContributors.length > 0 ? (
                 <Stack spacing={2}>
                     <Stack spacing={1.3} sx={{ pl: 1 }}>
                         {topSupsContributors.map((u, index) => (
@@ -50,6 +50,10 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
                         ))}
                     </Stack>
                 </Stack>
+            ) : (
+                <Typography variant="h5" sx={{ pl: 1 }}>
+                    Nothing to show...
+                </Typography>
             )}
         </Stack>
     )

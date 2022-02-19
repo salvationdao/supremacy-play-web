@@ -28,7 +28,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                 </Typography>
             </Box>
 
-            {topSupsContributeFactions && topSupsContributeFactions.length > 0 && (
+            {topSupsContributeFactions && topSupsContributeFactions.length > 0 ? (
                 <Stack spacing={2}>
                     <Stack spacing={1.3} sx={{ pl: 1 }}>
                         {topSupsContributeFactions.map((f, index) => (
@@ -50,6 +50,10 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                         ))}
                     </Stack>
                 </Stack>
+            ) : (
+                <Typography variant="h5" sx={{ pl: 1 }}>
+                    Nothing to show...
+                </Typography>
             )}
         </Stack>
     )

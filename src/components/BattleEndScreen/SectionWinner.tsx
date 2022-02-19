@@ -42,7 +42,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     truncateLine
                 />
 
-                {winningWarMachines && winningWarMachines.length > 0 && (
+                {winningWarMachines && winningWarMachines.length > 0 ? (
                     <Stack spacing={1.3} sx={{ pl: 1 }}>
                         {winningWarMachines.map((wm) => (
                             <StyledImageText
@@ -59,6 +59,10 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                             />
                         ))}
                     </Stack>
+                ) : (
+                    <Typography variant="h5" sx={{ pl: 1 }}>
+                        Nothing to show...
+                    </Typography>
                 )}
             </Stack>
         </Stack>
