@@ -52,17 +52,17 @@ jobs:
           echo "GITVERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
           echo "REACT_APP_SENTRY_CURRENT_RELEASE_NAME=supremacy-supremacy_stream_site@$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
-      - name: Tar Gzip
-        run: |
-          mv deploy supremacy-stream-site_${{env.GITVERSION}}
-          tar czf supremacy-stream-site_${{env.GITVERSION}}.tar.gz supremacy-stream-site_${{env.GITVERSION}}
-
       - name: Build web
         run: CI=false BUILD_PATH='deploy/web' npm run build
       
       - name: Add other files
         run: |  
           cp -r ./config ./deploy/.
+
+      - name: Tar Gzip
+        run: |
+          mv deploy supremacy-stream-site_${{env.GITVERSION}}
+          tar czf supremacy-stream-site_${{env.GITVERSION}}.tar.gz supremacy-stream-site_${{env.GITVERSION}}
       
       - name: Release
         uses: softprops/action-gh-release@v1
