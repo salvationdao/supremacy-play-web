@@ -137,7 +137,7 @@ export const Notifications = () => {
         <Stack
             sx={{
                 position: 'absolute',
-                bottom: 110,
+                top: 10,
                 right: 10,
                 zIndex: 15,
                 overflow: 'hidden',
@@ -149,8 +149,7 @@ export const Notifications = () => {
                     sx={{
                         flex: 1,
                         // 100vh, 110px gap bottom
-                        // mini map: 230px total height
-                        maxHeight: `calc(${height}px - 110px - 230px)`,
+                        maxHeight: `calc(${height}px - 110px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
                         pr: 1,

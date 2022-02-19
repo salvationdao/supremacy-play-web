@@ -14,8 +14,9 @@ import { NetMessageType } from '../../types'
 import { LiveGraph } from './LiveGraph'
 
 const Padding = 10
-const DefaultPositionY = 222
-const DefaultSizeX = 280
+const DefaultPositionX = 0
+const DefaultPositionYBottom = 128
+const DefaultSizeX = 363
 const DefaultSizeY = 115
 const MaxSizeY = 115
 const DefaultMaxLiveVotingDataLength = 100
@@ -58,12 +59,15 @@ export const LiveVotingChart = () => {
 
     useEffect(() => {
         let newPosX = parseString(localStorage.getItem('liveVotingPosX'), -1)
-        let newPosY = parseString(localStorage.getItem('liveVotingPosY'), DefaultPositionY)
+        let newPosY = parseString(localStorage.getItem('liveVotingPosY'), -1)
 
         // Make sure live voting chart is inside iframe when page is resized etc.
         newPosX =
-            newPosX > 0 ? Math.max(Padding, Math.min(newPosX, width - curWidth - Padding)) : width - curWidth - Padding
-        newPosY = Math.max(Padding, Math.min(newPosY, height - curHeight - Padding))
+            newPosX > 0 ? Math.max(Padding, Math.min(newPosX, width - curWidth - Padding)) : DefaultPositionX + Padding
+        newPosY =
+            newPosY > 0
+                ? Math.max(Padding, Math.min(newPosY, height - curHeight - Padding))
+                : height - DefaultPositionYBottom - curHeight
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
