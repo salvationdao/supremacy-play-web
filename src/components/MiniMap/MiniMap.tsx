@@ -7,13 +7,13 @@ import ZoomOutMapOutlinedIcon from '@mui/icons-material/ZoomOutMapOutlined'
 import ZoomInMapOutlinedIcon from '@mui/icons-material/ZoomInMapOutlined'
 import { useToggle } from '../../hooks'
 import { useDimension, useGame } from '../../containers'
-import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT } from '../../constants'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { parseString } from '../../helpers'
 import { SvgDrag } from '../../assets'
 
 const Padding = 10
-const DefaultPositionY = 222
+const DefaultPositionXRight = 0
+const DefaultPositionY = 0
 
 export const MiniMap = () => {
     const {
@@ -35,21 +35,29 @@ export const MiniMap = () => {
     const confirmed = useRef<boolean>(false)
 
     useEffect(() => {
-        // Height: 125 is the height of the bottom mech stats
+        let newPosX = parseString(localStorage.getItem('miniMapPosX'), -1)
+        let newPosY = parseString(localStorage.getItem('miniMapPosY'), -1)
+
+        // Set window dimensions: 125 is the height of the bottom mech stats
         const newWidth = enlarged ? Math.min(width - 23, 1000) : 230
         const newHeight = enlarged ? Math.min(height - 125, 700) : 200
 
-        let newPosX = parseString(localStorage.getItem('miniMapPosX'), -1)
-        let newPosY = parseString(localStorage.getItem('miniMapPosY'), DefaultPositionY)
+        // make the map scale towards the top right
+        // const xOffset = enlarged ? 0 : dimensions.width - newWidth
 
         // Make sure map is inside iframe when page is resized etc.
         newPosX =
-            newPosX > 0 ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding)) : width - newWidth - Padding
-        newPosY = Math.max(Padding, Math.min(newPosY, height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT - newHeight - Padding))
+            newPosX > 0
+                ? Math.max(Padding - 6, Math.min(newPosX, width - newWidth - Padding - 6))
+                : width - DefaultPositionXRight - newWidth
+        newPosY =
+            newPosY > 0
+                ? Math.max(Padding - 6, Math.min(newPosY, height - newHeight - Padding - 6))
+                : DefaultPositionY + Padding - 6
 
+        setDimensions({ width: newWidth, height: newHeight })
         setCurPosX(newPosX)
         setCurPosY(newPosY)
-        setDimensions({ width: newWidth, height: newHeight })
         localStorage.setItem('miniMapPosX', newPosX.toString())
         localStorage.setItem('miniMapPosY', newPosY.toString())
     }, [width, height, enlarged])
@@ -105,9 +113,9 @@ export const MiniMap = () => {
                 }}
                 bounds={{
                     top: Padding,
-                    bottom: height - dimensions.height - Padding - 3,
+                    bottom: height - dimensions.height - Padding - 6,
                     left: Padding,
-                    right: width - dimensions.width - Padding - 3,
+                    right: width - dimensions.width - Padding - 6,
                 }}
             >
                 <Box sx={{ pointerEvents: 'all' }}>

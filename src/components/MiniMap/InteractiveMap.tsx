@@ -3,7 +3,6 @@ import { styled } from '@mui/system'
 import { Dispatch, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import { MapWarMachine, SelectionIcon } from '..'
 import { useGame } from '../../containers'
-import { useToggle } from '../../hooks'
 import { GameAbility, Map, WarMachineState } from '../../types'
 import { animated, useSpring } from 'react-spring'
 import { useDrag, useWheel } from '@use-gesture/react'
@@ -72,7 +71,6 @@ export const InteractiveMap = ({
 }) => {
     const { map, setMap, warMachines } = useGame()
     const [selection, setSelection] = useState<MapSelection>()
-    const [refresh, toggleRefresh] = useToggle()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
     // const lastPos = useRef<{ x: number; y: number; scale: number }>({ x: 0, y: 0, scale: 1 })
@@ -144,7 +142,6 @@ export const InteractiveMap = ({
         return <div />
     }, [targeting, setSubmitted, selection])
 
-    // When map is enlarged etc. This will keep the bounds valid
     useEffect(() => {
         if (!map) return
 
@@ -154,8 +151,6 @@ export const InteractiveMap = ({
         setMap((prev) => {
             return prev ? { ...prev, scale: (prev.scale = minScale / 40) } : prev
         })
-
-        toggleRefresh()
     }, [windowDimension])
 
     // ---------- Minimap - useGesture setup --------------
@@ -186,8 +181,6 @@ export const InteractiveMap = ({
             filterTaps: true, // will ignore clicks - for selecting ability on grid
             bounds: () => {
                 if (!map) return
-
-                // console.log(x.get(), y.get())
 
                 return {
                     top:
@@ -254,7 +247,6 @@ export const InteractiveMap = ({
     if (!map) return null
     return (
         <Stack
-            key={String(refresh)}
             sx={{
                 position: 'relative',
                 width: '100%',
@@ -265,7 +257,7 @@ export const InteractiveMap = ({
             {/* Map - can be dragged */}
             <animated.div {...dragMap()} style={{ x, y, touchAction: 'none' }}>
                 <Box sx={{ cursor: 'move' }}>
-                    <MapWarMachines map={map} warMachines={warMachines || []} />
+                    <MapWarMachines map={map} warMachines={warMachines || []} key={map.scale} />
 
                     {/* Can be scaled and dragged */}
                     <animated.div {...scaleMap()} style={{ scale, transformOrigin: `0% 0%` }}>
