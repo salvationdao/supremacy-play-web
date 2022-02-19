@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Stack } from '@mui/material'
 import { NetMessageTickWarMachine, WarMachineState } from '../../types'
 import { BoxSlanted, SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from '..'
@@ -8,22 +8,17 @@ import { useWebsocket } from '../../containers'
 export const HealthShieldBars = ({
     type = 'horizontal',
     warMachine,
-    setIsAlive,
 }: {
     type?: 'vertical' | 'horizontal'
     warMachine: WarMachineState
-    setIsAlive: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const { participantID, maxHealth, maxShield } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
-    const alreadySetAlive = useRef(false)
 
     const healthPercent = (health / maxHealth) * 100
     const shieldPercent = (shield / maxShield) * 100
-
-    useEffect(() => checkIfAlive())
 
     // Listen on current war machine changes
     useEffect(() => {
@@ -32,21 +27,10 @@ export const HealthShieldBars = ({
         return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
             if (payload?.health !== undefined) {
                 setHealth(payload.health)
-                checkIfAlive()
             }
             if (payload?.shield !== undefined) setShield(payload.shield)
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage])
-
-    const checkIfAlive = () => {
-        if (health <= 0) {
-            setIsAlive(false)
-            alreadySetAlive.current = false
-        } else if (!alreadySetAlive.current) {
-            setIsAlive(true)
-            alreadySetAlive.current = true
-        }
-    }
 
     if (type == 'vertical') {
         return (
