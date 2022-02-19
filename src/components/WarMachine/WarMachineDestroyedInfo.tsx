@@ -92,7 +92,7 @@ const WarMachineBig = ({
                     isDead={isDead}
                 />
             ) : (
-                <WarMachineIcon color={'#333333'} size={75} />
+                <WarMachineIcon color={'#444444'} size={75} />
             )}
             <Typography
                 variant="h6"
@@ -114,9 +114,52 @@ const WarMachineBig = ({
     )
 }
 
-const WarMachineSmall = ({ warMachine, name }: { warMachine?: WarMachineState; name?: string }) => {
-    // If warMachine is null, then use name and a generic picture
-    return null
+const WarMachineSmall = ({
+    warMachine,
+    name,
+    damagePercent,
+}: {
+    warMachine?: WarMachineState
+    name?: string
+    damagePercent: number
+}) => {
+    const color = warMachine ? warMachine.faction.theme.primary : colors.text
+    return (
+        <Stack direction="row" alignItems="center" spacing={1.2}>
+            {warMachine ? (
+                <WarMachineIcon color={color} size={38} imageUrl={warMachine.imageUrl || GenericWarMachinePNG} />
+            ) : (
+                <WarMachineIcon color={'#444444'} size={38} />
+            )}
+
+            <Stack spacing={0}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        fontFamily: 'Nostromo Regular Black',
+                        display: '-webkit-box',
+                        overflow: 'hidden',
+                        overflowWrap: 'anywhere',
+                        textOverflow: 'ellipsis',
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: 'vertical',
+                        color,
+                    }}
+                >
+                    {name}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        fontFamily: 'Nostromo Regular Bold',
+                        color: '#FFFFFF',
+                    }}
+                >
+                    {damagePercent}%
+                </Typography>
+            </Stack>
+        </Stack>
+    )
 }
 
 const DamageList = ({
@@ -128,7 +171,41 @@ const DamageList = ({
     damageRecords: DamageRecord[]
     top?: number
 }) => {
-    return null
+    return (
+        <Box sx={{ flex: 1 }}>
+            <Box sx={{ mx: 0.8, mb: 1.3, px: 2, pt: 1.5, pb: 1.2, backgroundColor: '#00000090' }}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        textAlign: 'center',
+                        fontFamily: 'Nostromo Regular Heavy',
+                        color: '#FFFFFF',
+                    }}
+                >
+                    {title}
+                </Typography>
+            </Box>
+
+            <Stack spacing={1.3} sx={{ mx: 2 }}>
+                {damageRecords && damageRecords.length > 0 ? (
+                    damageRecords
+                        .slice(0, top)
+                        .map((dr, index) => (
+                            <WarMachineSmall
+                                key={`${dr.sourceName}-${index}`}
+                                warMachine={dr.causedByWarMachine}
+                                name={dr.causedByWarMachine ? dr.causedByWarMachine.name : dr.sourceName}
+                                damagePercent={dr.amount / 100}
+                            />
+                        ))
+                ) : (
+                    <Typography variant="body2" sx={{ fontFamily: 'Nostromo Regular Bold' }}>
+                        Nothing to show...
+                    </Typography>
+                )}
+            </Stack>
+        </Box>
+    )
 }
 
 export const WarMachineDestroyedInfo = ({
@@ -166,7 +243,7 @@ export const WarMachineDestroyedInfo = ({
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: 600,
+                    width: 630,
                     border: 'none',
                     outline: 'none',
                     borderRadius: 1,
@@ -182,11 +259,23 @@ export const WarMachineDestroyedInfo = ({
                             bottom: 0,
                             left: 0,
                             right: 0,
-                            opacity: 0.3,
+                            opacity: 0.15,
                             backgroundImage: `url(${FlamesPNG})`,
                             backgroundRepeat: 'no-repeat',
                             backgroundPosition: 'center',
                             backgroundSize: 'cover',
+                            zIndex: -1,
+                        }}
+                    />
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            backgroundColor: `${colors.darkNavyBlue}40`,
+                            zIndex: -2,
                         }}
                     />
 
@@ -197,7 +286,7 @@ export const WarMachineDestroyedInfo = ({
                             pb: 5,
                         }}
                     >
-                        <Stack>
+                        <Stack spacing={3.8}>
                             <Stack direction="row" alignItems="center">
                                 <WarMachineBig
                                     warMachine={killedByWarMachine}
@@ -229,7 +318,7 @@ export const WarMachineDestroyedInfo = ({
 
                             <Stack direction="row">
                                 <DamageList title="ASSIST DAMAGE" damageRecords={assistDamageMechs} />
-                                <DamageList title="WEAPON DAMAGE" damageRecords={assistDamageOthers} />
+                                <DamageList title="OTHER DAMAGE" damageRecords={assistDamageOthers} />
                             </Stack>
                         </Stack>
                     </Box>
