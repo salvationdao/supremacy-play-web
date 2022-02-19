@@ -186,6 +186,9 @@ export const InteractiveMap = ({
             filterTaps: true, // will ignore clicks - for selecting ability on grid
             bounds: () => {
                 if (!map) return
+
+                // console.log(x.get(), y.get())
+
                 return {
                     top:
                         windowDimension.height <= map.height * scale.get()
@@ -223,21 +226,27 @@ export const InteractiveMap = ({
             newScale >= 1 ? (newScale = maxScale) : (newScale = minScale)
         }
 
-        // set the maps new scale, height & width
+        // Set game map
         setMap((prev) => {
             return prev ? { ...prev, scale: (prev.scale = newScale / 40) } : prev
         })
 
-        //todo: calculate the new x & y coordinates so the map stays within bounds when zooming
-        // something like this?
-        // newPosX =
-        //     newPosX > 0 ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding)) : width - newWidth - Padding
-        // newPosY = Math.max(Padding, Math.min(newPosY, height - GAMEBAR_HEIGHT - CONTROLS_HEIGHT - newHeight - Padding))
-        // setCurPosX(newPosX)
-        // setCurPosY(newPosY)
+        // calculate the new boundary
+        const xBound =
+            windowDimension.width <= map.width * newScale
+                ? -(map.width * newScale - windowDimension.width)
+                : (windowDimension.width - map.width * newScale) / 2
+        const yBound =
+            windowDimension.height <= map.height * newScale
+                ? -(map.height * newScale - windowDimension.height)
+                : (windowDimension.height - map.height * newScale) / 2
 
-        // move the map, so it stays within bounds when scaling - not working properly
-        set({ scale: newScale, x: x.get() * newScale, y: y.get() * newScale })
+        // check if the map is in-bounds
+        const ox = xBound >= x.get() ? xBound : x.get()
+        const oy = yBound >= y.get() ? yBound : y.get()
+
+        // set the new map scale, and new x&y if out of bounds
+        set({ scale: newScale, x: ox, y: oy })
     })
 
     if (!map) return null
