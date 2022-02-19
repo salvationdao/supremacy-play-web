@@ -1,16 +1,22 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { StreamContainerType } from "../../containers"
 import { colors } from "../../theme/theme"
 
 interface ResolutionSelectProps {
-    options: number[]
-    defaultValue: number
+    streamContainer: StreamContainerType
     forceResolutionFn: (quality: number) => void
 }
 
 export const ResolutionSelect = (props: ResolutionSelectProps) => {
-    const [currentResolution, setCurrentResolution] = useState<number>()
-
+    const { streamContainer, forceResolutionFn } = props
+    const { streamResolutions, setCurrentResolution } = streamContainer
+    const [options, setOptions] = useState<number[]>([])
+    useMemo(() => {
+        if (streamResolutions.length == 0) return
+        setOptions(streamResolutions)
+    }, [streamResolutions])
+    if (options.length === 0) return <></>
     return (
         <Stack direction="row" spacing={0.3} alignItems="center">
             <Typography variant="body2" sx={{ lineHeight: 1 }}>
@@ -26,8 +32,7 @@ export const ResolutionSelect = (props: ResolutionSelectProps) => {
                     },
                     "& .MuiSelect-outlined": { px: 1, pt: 0.6, pb: 0 },
                 }}
-                defaultValue={currentResolution || props.defaultValue}
-                value={currentResolution}
+                defaultValue={options[0]}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -43,14 +48,14 @@ export const ResolutionSelect = (props: ResolutionSelectProps) => {
                     },
                 }}
             >
-                {props.options.map((x) => {
+                {options.map((x) => {
                     return (
                         <MenuItem
                             key={x}
                             value={x}
                             onClick={() => {
                                 setCurrentResolution(x)
-                                props.forceResolutionFn(x)
+                                forceResolutionFn(x)
                             }}
                             sx={{
                                 "&:hover": {

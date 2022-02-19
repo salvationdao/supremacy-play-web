@@ -3,7 +3,9 @@ import { SvgFullscreen, SvgVolume, SvgVolumeMute } from "../../assets"
 import { ControlsProps } from "./Controls"
 
 export const VideoPlayerControls = (props: ControlsProps) => {
-    const { muteToggle, isMute, screenHandler, volume, setVolume } = props
+    const { streamContainer, fullScreenHandleContainer } = props
+    const { muteToggle, isMute, volume, setVolume } = streamContainer
+    const { enter, exit } = fullScreenHandleContainer
 
     const handleVolumeChange = (_: Event, newValue: number | number[]) => {
         setVolume(newValue as number)
@@ -36,10 +38,10 @@ export const VideoPlayerControls = (props: ControlsProps) => {
                 size="small"
                 onClick={() => {
                     if (window.innerWidth == screen.width && window.innerHeight == screen.height) {
-                        screenHandler.exit()
+                        exit()
                         return
                     }
-                    screenHandler.enter()
+                    enter()
                 }}
                 sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
             >

@@ -77,6 +77,14 @@ interface WebRTCAdaptorType {
     getStreamInfo: (streamID: string) => void
 }
 
+interface StreamInfoEntry {
+    audioBitrate: number
+    streamHeight: number
+    streamWidth: number
+    videoBitrate: number
+    videoCodec: string
+}
+
 const AppInner = (props: AppInnerProps) => {
     // props
     const { authContainer, dimensionContainer, fullScreenHandleContainer, streamContainer } = props
@@ -88,17 +96,7 @@ const AppInner = (props: AppInnerProps) => {
     const { mainDivDimensions, streamDimensions } = dimensionContainer
 
     // stream
-    const {
-        selectedWsURL,
-        selectedStreamID,
-        streamResolutions,
-        setStreamResolutions,
-        volume,
-        setVolume,
-        isMute,
-        setIsMute,
-        muteToggle,
-    } = streamContainer
+    const { selectedWsURL, selectedStreamID, setStreamResolutions, volume, isMute, setIsMute } = streamContainer
 
     useEffect(() => {
         if (volume === 0.1) {
@@ -147,7 +145,7 @@ const AppInner = (props: AppInnerProps) => {
                         } else if (info == "streamInformation") {
                             console.log(`--- ${info} ---`, { info, obj })
                             const resolutions: number[] = []
-                            obj["streamInfo"].forEach(function (entry: any) {
+                            obj["streamInfo"].forEach(function (entry: StreamInfoEntry) {
                                 // get resolutions from server response and added to an array.
                                 if (!resolutions.includes(entry["streamHeight"])) {
                                     resolutions.push(entry["streamHeight"])
@@ -159,7 +157,6 @@ const AppInner = (props: AppInnerProps) => {
                         }
                     },
                     callbackError: (error: string) => {
-                        console.log(typeof error)
                         console.log(`--- ERROR ---`, error)
                     },
                 })
@@ -169,7 +166,6 @@ const AppInner = (props: AppInnerProps) => {
         },
         [selectedWsURL, selectedStreamID],
     )
-
     const changeStreamQuality = (quality: number) => {
         if (webRtc?.current) {
             webRtc.current.forceStreamQuality(selectedStreamID, quality)
@@ -182,7 +178,7 @@ const AppInner = (props: AppInnerProps) => {
                 <FullScreen handle={fullScreenHandleContainer}>
                     <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
                         <Stack sx={{ width: mainDivDimensions.width, height: mainDivDimensions.height }}>
-                            <Box sx={{ position: "relative", width: "100%", height: GAMEBAR_HEIGHT, zIndex: 999 }}>
+                            <Box sx={{ position: "relative", width: "100%", height: GAMEBAR_HEIGHT }}>
                                 <GameBar
                                     barPosition="top"
                                     gameserverSessionID={gameserverSessionID}
@@ -249,16 +245,9 @@ const AppInner = (props: AppInnerProps) => {
                                 }}
                             >
                                 <Controls
-                                    resolutionsList={streamResolutions}
-                                    volume={volume}
-                                    setVolume={setVolume}
-                                    isMute={isMute}
-                                    muteToggle={() => {
-                                        muteToggle()
-                                    }}
-                                    screenHandler={fullScreenHandleContainer}
+                                    fullScreenHandleContainer={fullScreenHandleContainer}
+                                    streamContainer={streamContainer}
                                     forceResolutionFn={changeStreamQuality}
-                                    defaultValue={1080}
                                 />
                             </Box>
                         </Stack>

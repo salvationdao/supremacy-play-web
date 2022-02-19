@@ -16,6 +16,8 @@ export interface StreamContainerType {
     isMute: boolean
     setIsMute: React.Dispatch<React.SetStateAction<boolean>>
     muteToggle: () => void
+    currentResolution: number | undefined
+    setCurrentResolution: React.Dispatch<React.SetStateAction<number | undefined>>
     defaultStreamID: string
     defaultWSURL: string
     defaultResolution: number
@@ -39,6 +41,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
 
     // resolution
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
+    const [currentResolution, setCurrentResolution] = useState<number>()
 
     return {
         currentStream,
@@ -49,6 +52,9 @@ export const StreamContainer = createContainer((): StreamContainerType => {
 
         selectedStreamID,
         setSelectedStreamID,
+
+        currentResolution,
+        setCurrentResolution,
 
         streamResolutions,
         setStreamResolutions,

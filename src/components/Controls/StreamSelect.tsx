@@ -19,8 +19,6 @@ export const StreamSelect = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<Stream[]>(HubKey.GetStreamList, (payload) => {
-            console.log("this is payload", payload)
-
             if (!payload) return
             setStreams(payload)
         })
@@ -119,8 +117,6 @@ export const StreamSelect = () => {
                             key={x.host}
                             value={x.host}
                             onClick={() => {
-                                console.log("this is xxxx", x)
-
                                 setCurrentStream(x)
                                 setSelectedStreamID(x.streamID)
                                 setSelectedWsURL(x.url)
