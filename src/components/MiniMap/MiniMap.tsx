@@ -105,9 +105,9 @@ export const MiniMap = () => {
                 }}
                 bounds={{
                     top: Padding,
-                    bottom: height - dimensions.height - Padding - GAMEBAR_HEIGHT - CONTROLS_HEIGHT,
+                    bottom: height - dimensions.height - Padding - 3,
                     left: Padding,
-                    right: width - dimensions.width - Padding,
+                    right: width - dimensions.width - Padding - 3,
                 }}
             >
                 <Box sx={{ pointerEvents: 'all' }}>

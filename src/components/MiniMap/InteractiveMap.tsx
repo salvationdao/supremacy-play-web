@@ -241,9 +241,11 @@ export const InteractiveMap = ({
                 ? -(map.height * newScale - windowDimension.height)
                 : (windowDimension.height - map.height * newScale) / 2
 
-        // check if the map is in-bounds
+        // Keep the map in-bounds
         const ox = xBound >= x.get() ? xBound : x.get()
         const oy = yBound >= y.get() ? yBound : y.get()
+        // const ox = xBound >= x.get() ? xBound : x.get() === 0 ? newScale : x.get() * newScale
+        // const oy = yBound >= y.get() ? yBound : y.get() === 0 ? newScale : y.get() * newScale
 
         // set the new map scale, and new x&y if out of bounds
         set({ scale: newScale, x: ox, y: oy })
