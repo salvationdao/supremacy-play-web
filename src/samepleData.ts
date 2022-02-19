@@ -443,11 +443,11 @@ export const battleAbilityNoti: NotificationResponse = {
             username: 'Jayli3n',
             avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
             faction: {
-                label: 'Red Mountain Offworld Mining Corporation',
+                label: 'Zaibatsu Industries',
                 logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
                 theme: {
-                    primary: '#C24242',
-                    secondary: '#FFFFFF',
+                    primary: '#FFFFF',
+                    secondary: '#00000',
                     background: '#0D0404',
                 },
             },

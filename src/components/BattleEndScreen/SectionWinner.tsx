@@ -9,7 +9,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
     const { battleIdentifier, winningFaction, winningWarMachines } = battleEndDetail
 
     return (
-        <Stack spacing={1.6}>
+        <Stack spacing={3}>
             <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#00000083' }}>
                 <Typography
                     component="span"
@@ -29,7 +29,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 </Typography>
             </Box>
 
-            <Stack spacing={1.6} sx={{ px: 1.2 }}>
+            <Stack spacing={3.2} sx={{ px: 1.2 }}>
                 <StyledImageText
                     color={winningFaction.theme.primary}
                     text={winningFaction.label}
@@ -37,13 +37,12 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     variant="h4"
                     imageSize={40}
                     imageBorderThickness="0px"
-                    imageBackgroundSize="contain"
                     noImageBackgroundColor
                     truncateLine
                 />
 
                 {winningWarMachines && winningWarMachines.length > 0 ? (
-                    <Stack spacing={1.3} sx={{ pl: 1 }}>
+                    <Stack spacing={2} sx={{ pl: 1 }}>
                         {winningWarMachines.map((wm) => (
                             <StyledImageText
                                 key={`${wm.tokenID}-${wm.participantID}`}

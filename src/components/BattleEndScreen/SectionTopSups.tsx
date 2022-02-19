@@ -30,7 +30,7 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
 
             {topSupsContributors && topSupsContributors.length > 0 ? (
                 <Stack spacing={2}>
-                    <Stack spacing={1.3} sx={{ pl: 1 }}>
+                    <Stack spacing={2} sx={{ pl: 1 }}>
                         {topSupsContributors.map((u, index) => (
                             <Stack key={index} direction="row" spacing={1.3} alignItems="center">
                                 <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: 'fontWeightBold' }}>
