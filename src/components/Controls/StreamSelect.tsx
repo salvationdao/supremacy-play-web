@@ -120,6 +120,8 @@ export const StreamSelect = () => {
                                 setCurrentStream(x)
                                 setSelectedStreamID(x.streamID)
                                 setSelectedWsURL(x.url)
+
+                                console.log("xxx selector val", x)
                             }}
                             sx={{
                                 "&:hover": {

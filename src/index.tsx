@@ -82,6 +82,7 @@ interface WebRTCAdaptorType {
     forceStreamQuality: (streamID: string, quality: number) => void
     play: (streamID: string, tokenID: string) => void
     getStreamInfo: (streamID: string) => void
+    closeWebSocket: (streamID: string) => void
 }
 
 interface StreamInfoEntry {
@@ -97,6 +98,7 @@ interface AppInnerProps {
     dimensionContainer: DimensionContainerType
     fullScreenHandleContainer: FullScreenHandle
     streamContainer: StreamContainerType
+    streamID: string
 }
 
 const AppInner = (props: AppInnerProps) => {
@@ -125,8 +127,13 @@ const AppInner = (props: AppInnerProps) => {
 
     const webRtc = useRef<WebRTCAdaptorType>()
     const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
+
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
+            if (!vid || !vid.parentNode) {
+                vidRef.current = undefined
+                return
+            }
             try {
                 vidRef.current = vid
                 webRtc.current = new WebRTCAdaptor({
@@ -156,6 +163,13 @@ const AppInner = (props: AppInnerProps) => {
                                 }
                             })
                             setStreamResolutions(resolutions)
+                        } else if (info == "closed") {
+                            webRtc.current = undefined
+
+                            //console.log("Connection closed");
+                            if (typeof obj != "undefined") {
+                                console.log("Connecton closed: " + JSON.stringify(obj))
+                            }
                         }
                     },
                     callbackError: (error: string) => {
@@ -164,10 +178,12 @@ const AppInner = (props: AppInnerProps) => {
                 })
             } catch (e) {
                 console.log(e)
+                webRtc.current = undefined
             }
         },
-        [selectedWsURL, selectedStreamID],
+        [selectedWsURL],
     )
+
     const changeStreamQuality = (quality: number) => {
         if (webRtc?.current) {
             webRtc.current.forceStreamQuality(selectedStreamID, quality)
@@ -211,9 +227,10 @@ const AppInner = (props: AppInnerProps) => {
                                     }}
                                 >
                                     <video
+                                        key={selectedWsURL}
                                         muted={isMute}
                                         ref={vidRefCallback}
-                                        id="remoteVideo"
+                                        id={"remoteVideo"}
                                         autoPlay
                                         controls
                                         playsInline
@@ -265,12 +282,15 @@ const AppInner = (props: AppInnerProps) => {
 }
 
 const AppInnerContainer = () => {
+    // TODO: change this
     const authContainer = useAuth()
     const dimensionContainer = useDimension()
     const streamContainer = useStream()
     const handle = useFullScreenHandle()
+
     return (
         <AppInner
+            streamID={streamContainer.selectedStreamID}
             streamContainer={streamContainer}
             authContainer={authContainer}
             dimensionContainer={dimensionContainer}
