@@ -1,19 +1,67 @@
-import { useState } from 'react'
-import { createContainer } from 'unstated-next'
-import { Stream } from '../types'
+import { useState } from "react"
+import { createContainer } from "unstated-next"
+import { Stream } from "../types"
 
-export const StreamContainer = createContainer(() => {
+export interface StreamContainerType {
+    currentStream: Stream | undefined
+    setCurrentStream: React.Dispatch<React.SetStateAction<Stream | undefined>>
+    selectedWsURL: string
+    setSelectedWsURL: React.Dispatch<React.SetStateAction<string>>
+    selectedStreamID: string
+    setSelectedStreamID: React.Dispatch<React.SetStateAction<string>>
+    streamResolutions: number[]
+    setStreamResolutions: React.Dispatch<React.SetStateAction<number[]>>
+    volume: number
+    setVolume: React.Dispatch<React.SetStateAction<number>>
+    isMute: boolean
+    setIsMute: React.Dispatch<React.SetStateAction<boolean>>
+    muteToggle: () => void
+    defaultStreamID: string
+    defaultWSURL: string
+    defaultResolution: number
+}
+export const StreamContainer = createContainer((): StreamContainerType => {
+    const defaultStreamID = "886200805704583109786601"
+    const defaultWSURL = "wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket"
+    const defaultResolution = 720
+
+    // stream
     const [currentStream, setCurrentStream] = useState<Stream>()
-    const [selectedWsURL, setSelectedWsURL] = useState('wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket')
-    const [selectedStreamID, setSelectedStreamID] = useState('886200805704583109786601')
+    const [selectedWsURL, setSelectedWsURL] = useState(defaultWSURL)
+    const [selectedStreamID, setSelectedStreamID] = useState(defaultStreamID)
+
+    // volume
+    const [volume, setVolume] = useState(0.0)
+    const [isMute, setIsMute] = useState(true)
+    const muteToggle = () => {
+        setIsMute(!isMute)
+    }
+
+    // resolution
+    const [streamResolutions, setStreamResolutions] = useState<number[]>([])
 
     return {
         currentStream,
         setCurrentStream,
+
         selectedWsURL,
         setSelectedWsURL,
+
         selectedStreamID,
         setSelectedStreamID,
+
+        streamResolutions,
+        setStreamResolutions,
+
+        volume,
+        setVolume,
+        isMute,
+        setIsMute,
+        muteToggle,
+
+        defaultStreamID,
+        defaultWSURL,
+        defaultResolution,
     }
 })
 

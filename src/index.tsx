@@ -1,17 +1,11 @@
-import ReactDOM from "react-dom"
+import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
+import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import {
-    AuthProvider,
-    DimensionProvider,
-    GameProvider,
-    LeftSideBarProvider,
-    SnackBarProvider,
-    SocketProvider,
-    useAuth,
-    useDimension,
-    useStream,
-} from "./containers"
-import { Box, Button, CssBaseline, Stack, ThemeProvider } from "@mui/material"
+import { GameBar, WalletProvider } from "@ninjasoftware/passport-gamebar"
+import * as Sentry from "@sentry/react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import ReactDOM from "react-dom"
+import { FullScreen, FullScreenHandle, useFullScreenHandle } from "react-full-screen"
 import {
     Controls,
     LeftSideBar,
@@ -23,17 +17,26 @@ import {
     VotingSystem,
     WarMachineStats,
 } from "./components"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { FactionThemeColor, UpdateTheme } from "./types"
+import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
+import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, SENTRY_CONFIG } from "./constants"
+import {
+    AuthContainerType,
+    AuthProvider,
+    DimensionContainerType,
+    DimensionProvider,
+    GameProvider,
+    LeftSideBarProvider,
+    SnackBarProvider,
+    SocketProvider,
+    StreamContainerType,
+    StreamProvider,
+    useAuth,
+    useDimension,
+    useStream,
+} from "./containers"
 import { mergeDeep } from "./helpers"
 import { colors, theme } from "./theme/theme"
-import { GameBar, WalletProvider } from "@ninjasoftware/passport-gamebar"
-import { PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, SENTRY_CONFIG, GAMEBAR_HEIGHT, CONTROLS_HEIGHT } from "./constants"
-import { FullScreen, useFullScreenHandle } from "react-full-screen"
-import * as Sentry from "@sentry/react"
-import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
-import { StreamProvider } from "./containers"
-import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
+import { FactionThemeColor, UpdateTheme } from "./types"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -52,25 +55,52 @@ if (SENTRY_CONFIG) {
     })
 }
 
-const AppInner = () => {
-    const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
-    const { mainDivDimensions, streamDimensions } = useDimension()
-    const [streamResolutions, setStreamResolutions] = useState<number[]>([])
+interface WebRTCAdaptorType {
+    websocket_url: string
+    mediaConstraints: {
+        video: boolean
+        audio: boolean
+    }
+    sdp_constraints: {
+        OfferToReceiveAudio: boolean
+        OfferToReceiveVideo: boolean
+    }
+    remoteVideoId: string
+    isPlayMode: boolean
+    debug: boolean
+    candidateTypes: string[]
+    callback: (info: string, obj: any) => void
+    callbackError: (error: string) => void
 
-    const { selectedWsURL, selectedStreamID } = useStream()
+    forceStreamQuality: (streamID: string, quality: number) => void
+    play: (streamID: string, tokenID: string) => void
+    getStreamInfo: (streamID: string) => void
+}
 
-    const handle = useFullScreenHandle()
+const AppInner = (props: AppInnerProps) => {
+    // props
+    const { authContainer, dimensionContainer, fullScreenHandleContainer, streamContainer } = props
 
-    const [isMute, setIsMute] = useState(true)
-    const [volume, setVolume] = useState(0.0)
+    // auth
+    const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = authContainer
 
-    const webRtc = useRef<any>()
+    // dimensions
+    const { mainDivDimensions, streamDimensions } = dimensionContainer
 
-    const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
+    // stream
+    const {
+        selectedWsURL,
+        selectedStreamID,
+        streamResolutions,
+        setStreamResolutions,
+        volume,
+        setVolume,
+        isMute,
+        setIsMute,
+        muteToggle,
+    } = streamContainer
 
     useEffect(() => {
-        console.log("this is volume", volume)
-
         if (volume === 0.1) {
             setIsMute(true)
             return
@@ -81,17 +111,8 @@ const AppInner = () => {
         }
     }, [volume])
 
-    const changeStreamQuality = (quality: number) => {
-        if (webRtc?.current) {
-            webRtc.current.forceStreamQuality(selectedStreamID, quality)
-            console.log("after")
-        }
-    }
-
-    const muteToggle = () => {
-        setIsMute(!isMute)
-    }
-
+    const webRtc = useRef<WebRTCAdaptorType>()
+    const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
             try {
@@ -106,35 +127,40 @@ const AppInner = () => {
                     },
                     remoteVideoId: "remoteVideo",
                     isPlayMode: true,
-                    debug: true,
+                    debug: false,
                     candidateTypes: ["tcp", "udp"],
-                    callback: function (info: any, obj: any) {
+                    callback: function (info: string, obj: any) {
                         if (info == "initialized") {
-                            console.log("info initialized")
+                            console.log(`--- ${info} ---`, { info, obj })
+                            if (!webRtc || !webRtc.current || !webRtc.current.play) return
                             webRtc.current.play(selectedStreamID, "")
                         } else if (info == "play_started") {
+                            console.log(`--- ${info} ---`, { info, obj })
+                            if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
                             webRtc.current.getStreamInfo(selectedStreamID)
                         } else if (info == "play_finished") {
-                            console.log("play finished")
+                            console.log(`--- ${info} ---`, { info, obj })
                         } else if (info == "closed") {
                             if (typeof obj != "undefined") {
-                                console.log("Connecton closed: " + JSON.stringify(obj))
+                                console.log(`--- ${info} ---`, { info, obj })
                             }
                         } else if (info == "streamInformation") {
-                            const resolutions: any[] = []
+                            console.log(`--- ${info} ---`, { info, obj })
+                            const resolutions: number[] = []
                             obj["streamInfo"].forEach(function (entry: any) {
-                                // It's needs to both of VP8 and H264. So it can be duplicate
+                                // get resolutions from server response and added to an array.
                                 if (!resolutions.includes(entry["streamHeight"])) {
                                     resolutions.push(entry["streamHeight"])
-                                } // Got resolutions from server response and added to an array.
+                                }
                             })
                             setStreamResolutions(resolutions)
                         } else if (info == "ice_connection_state_changed") {
-                            console.log("iceConnectionState Changed: ", JSON.stringify(obj))
+                            console.log("--- iceConnectionState Changed ---", { info, obj })
                         }
                     },
-                    callbackError: (error: any) => {
-                        console.log("error callback: " + JSON.stringify(error))
+                    callbackError: (error: string) => {
+                        console.log(typeof error)
+                        console.log(`--- ERROR ---`, error)
                     },
                 })
             } catch (e) {
@@ -144,10 +170,16 @@ const AppInner = () => {
         [selectedWsURL, selectedStreamID],
     )
 
+    const changeStreamQuality = (quality: number) => {
+        if (webRtc?.current) {
+            webRtc.current.forceStreamQuality(selectedStreamID, quality)
+        }
+    }
+
     return (
         <>
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <FullScreen handle={handle}>
+                <FullScreen handle={fullScreenHandleContainer}>
                     <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
                         <Stack sx={{ width: mainDivDimensions.width, height: mainDivDimensions.height }}>
                             <Box sx={{ position: "relative", width: "100%", height: GAMEBAR_HEIGHT, zIndex: 999 }}>
@@ -224,7 +256,7 @@ const AppInner = () => {
                                     muteToggle={() => {
                                         muteToggle()
                                     }}
-                                    screenHandler={handle}
+                                    screenHandler={fullScreenHandleContainer}
                                     forceResolutionFn={changeStreamQuality}
                                     defaultValue={1080}
                                 />
@@ -241,6 +273,27 @@ const AppInner = () => {
     )
 }
 
+interface AppInnerProps {
+    authContainer: AuthContainerType
+    dimensionContainer: DimensionContainerType
+    fullScreenHandleContainer: FullScreenHandle
+    streamContainer: StreamContainerType
+}
+
+const AppInnerContainer = () => {
+    const authContainer = useAuth()
+    const dimensionContainer = useDimension()
+    const streamContainer = useStream()
+    const handle = useFullScreenHandle()
+    return (
+        <AppInner
+            streamContainer={streamContainer}
+            authContainer={authContainer}
+            dimensionContainer={dimensionContainer}
+            fullScreenHandleContainer={handle}
+        />
+    )
+}
 const App = () => {
     const [currentTheme, setTheme] = useState<Theme>(theme)
     const [factionColors, setFactionColors] = useState<FactionThemeColor>({
@@ -264,7 +317,7 @@ const App = () => {
                                     <DimensionProvider>
                                         <LeftSideBarProvider>
                                             <SnackBarProvider>
-                                                <AppInner />
+                                                <AppInnerContainer />
                                             </SnackBarProvider>
                                         </LeftSideBarProvider>
                                     </DimensionProvider>

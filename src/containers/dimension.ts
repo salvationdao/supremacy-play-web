@@ -1,16 +1,33 @@
-import { useEffect, useState } from 'react'
-import { createContainer } from 'unstated-next'
+import { useEffect, useState } from "react"
+import { createContainer } from "unstated-next"
 import {
     GAMEBAR_HEIGHT,
     CONTROLS_HEIGHT,
     SIDE_BARS_WIDTH,
     LIVE_CHAT_DRAWER_WIDTH,
     STREAM_ASPECT_RATIO_W_H,
-} from '../constants'
-import { useToggle, useWindowDimensions } from '../hooks'
+} from "../constants"
+import { useToggle, useWindowDimensions } from "../hooks"
+
+export interface DimensionContainerType {
+    mainDivDimensions: {
+        width: number
+        height: number
+    }
+    streamDimensions: {
+        width: number
+        height: number
+    }
+    iframeDimensions: {
+        width: string | number
+        height: string | number
+    }
+    isLiveChatOpen: any
+    toggleIsLiveChatOpen: any
+}
 
 // Contains dimensions for the overall layout of the divs, iframe etc.
-export const DimensionContainer = createContainer(() => {
+export const DimensionContainer = createContainer((): DimensionContainerType => {
     const { width: windowWidth, height: windowHeight } = useWindowDimensions()
     const [isLiveChatOpen, toggleIsLiveChatOpen] = useToggle(false)
     const [mainDivDimensions, setMainDivDimensions] = useState<{ width: number; height: number }>({
@@ -52,9 +69,9 @@ export const DimensionContainer = createContainer(() => {
         let iframeHeight: number | string = streamDimensions.height
         const iframeRatio = iframeWidth / iframeHeight
         if (iframeRatio >= STREAM_ASPECT_RATIO_W_H) {
-            iframeHeight = 'unset'
+            iframeHeight = "unset"
         } else {
-            iframeWidth = 'unset'
+            iframeWidth = "unset"
         }
 
         setIframeDimensions({ width: iframeWidth, height: iframeHeight })

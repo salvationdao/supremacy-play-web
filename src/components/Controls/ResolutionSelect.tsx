@@ -1,6 +1,6 @@
-import { MenuItem, Select, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
-import { colors } from '../../theme/theme'
+import { MenuItem, Select, Stack, Typography } from "@mui/material"
+import { useState } from "react"
+import { colors } from "../../theme/theme"
 
 interface ResolutionSelectProps {
     options: number[]
@@ -14,24 +14,24 @@ export const ResolutionSelect = (props: ResolutionSelectProps) => {
     return (
         <Stack direction="row" spacing={0.3} alignItems="center">
             <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                RESOLUTION:{' '}
+                RESOLUTION:{" "}
             </Typography>
 
             <Select
                 sx={{
                     width: 150,
                     borderRadius: 0.5,
-                    '&:hover': {
+                    "&:hover": {
                         backgroundColor: colors.darkNavy,
                     },
-                    '& .MuiSelect-outlined': { px: 1, pt: 0.6, pb: 0 },
+                    "& .MuiSelect-outlined": { px: 1, pt: 0.6, pb: 0 },
                 }}
                 defaultValue={currentResolution || props.defaultValue}
                 value={currentResolution}
                 MenuProps={{
-                    variant: 'menu',
+                    variant: "menu",
                     sx: {
-                        '&& .Mui-selected': {
+                        "&& .Mui-selected": {
                             backgroundColor: colors.darkerNeonBlue,
                         },
                     },
@@ -53,12 +53,12 @@ export const ResolutionSelect = (props: ResolutionSelectProps) => {
                                 props.forceResolutionFn(x)
                             }}
                             sx={{
-                                '&:hover': {
+                                "&:hover": {
                                     backgroundColor: colors.darkNavyBlue,
                                 },
                             }}
                         >
-                            <Typography variant="body2">{x}</Typography>
+                            <Typography variant="body2">{x}P</Typography>
                         </MenuItem>
                     )
                 })}

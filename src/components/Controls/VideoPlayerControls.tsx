@@ -24,7 +24,7 @@ export const VideoPlayerControls = (props: ControlsProps) => {
                         size="small"
                         min={0.1}
                         max={1}
-                        step={0.1}
+                        step={0.01}
                         aria-label="Volume"
                         value={volume}
                         onChange={handleVolumeChange}

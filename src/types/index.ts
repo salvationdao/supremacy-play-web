@@ -1,4 +1,4 @@
-import React, { Dispatch } from 'react'
+import React, { Dispatch } from "react"
 
 interface UpdateThemeContextProps {
     updateTheme: Dispatch<React.SetStateAction<FactionThemeColor>>
@@ -28,12 +28,12 @@ export interface Faction {
 }
 
 export type VotingState =
-    | 'HOLD'
-    | 'VOTE_COOLDOWN'
-    | 'VOTE_ABILITY_RIGHT'
-    | 'NEXT_VOTE_WIN'
-    | 'LOCATION_SELECT'
-    | 'WAIT_MECH_INTRO'
+    | "HOLD"
+    | "VOTE_COOLDOWN"
+    | "VOTE_ABILITY_RIGHT"
+    | "NEXT_VOTE_WIN"
+    | "LOCATION_SELECT"
+    | "WAIT_MECH_INTRO"
 
 export interface BattleAbility {
     id: string
@@ -141,7 +141,7 @@ export interface BattleEndDetail {
 }
 
 export interface BattleEvent {
-    type: 'GAME_ABILITY' | 'WAR_MACHINE_DESTROYED'
+    type: "GAME_ABILITY" | "WAR_MACHINE_DESTROYED"
     createdAt: Date
     event: GameAbility | WarMachineDestroyedRecord
 }
@@ -170,7 +170,7 @@ export interface DamageRecord {
 export interface Stream {
     host: string
     name: string
-    wsURL: string
+    url: string
     streamID: string
     region: string
     resolution: string
