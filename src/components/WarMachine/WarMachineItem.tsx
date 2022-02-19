@@ -24,7 +24,7 @@ const WIDTH_SKILL_BUTTON = 43
 const HEIGHT = 76
 
 const SKILL_BUTTON_TEXT_ROTATION = 76.5
-const DEAD_OPACITY = 0.5
+const DEAD_OPACITY = 0.6
 
 export const WarMachineItem = ({
     warMachine,
@@ -97,6 +97,7 @@ export const WarMachineItem = ({
                 sx={{
                     position: 'relative',
                     ml: isExpanded || isOwnFaction ? 2 : 3.2,
+                    opacity: isAlive ? 1 : 0.8,
                     width: isOwnFaction
                         ? isExpanded
                             ? WIDTH_WM_IMAGE + WIDTH_CENTER + WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR
