@@ -1,5 +1,5 @@
-import ReactDOM from 'react-dom'
-import { Theme } from '@mui/material/styles'
+import ReactDOM from "react-dom"
+import { Theme } from "@mui/material/styles"
 import {
     AuthProvider,
     DimensionProvider,
@@ -10,8 +10,8 @@ import {
     useAuth,
     useDimension,
     useStream,
-} from './containers'
-import { Box, Button, CssBaseline, Stack, ThemeProvider } from '@mui/material'
+} from "./containers"
+import { Box, Button, CssBaseline, Stack, ThemeProvider } from "@mui/material"
 import {
     Controls,
     LeftSideBar,
@@ -22,18 +22,18 @@ import {
     Notifications,
     VotingSystem,
     WarMachineStats,
-} from './components'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { FactionThemeColor, UpdateTheme } from './types'
-import { mergeDeep } from './helpers'
-import { colors, theme } from './theme/theme'
-import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
-import { PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, SENTRY_CONFIG, GAMEBAR_HEIGHT, CONTROLS_HEIGHT } from './constants'
-import { FullScreen, useFullScreenHandle } from 'react-full-screen'
-import * as Sentry from '@sentry/react'
-import { WebRTCAdaptor } from '@antmedia/webrtc_adaptor'
-import { StreamProvider } from './containers'
-import { BattleEndScreen } from './components/BattleEndScreen/BattleEndScreen'
+} from "./components"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { FactionThemeColor, UpdateTheme } from "./types"
+import { mergeDeep } from "./helpers"
+import { colors, theme } from "./theme/theme"
+import { GameBar, WalletProvider } from "@ninjasoftware/passport-gamebar"
+import { PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, SENTRY_CONFIG, GAMEBAR_HEIGHT, CONTROLS_HEIGHT } from "./constants"
+import { FullScreen, useFullScreenHandle } from "react-full-screen"
+import * as Sentry from "@sentry/react"
+import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
+import { StreamProvider } from "./containers"
+import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -57,7 +57,7 @@ const AppInner = () => {
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
 
-    const { selectedWsURL, setSelectedWsURL, selectedStreamID, setSelectedStreamID } = useStream()
+    const { selectedWsURL, selectedStreamID } = useStream()
 
     const handle = useFullScreenHandle()
 
@@ -69,6 +69,12 @@ const AppInner = () => {
     const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
 
     useEffect(() => {
+        console.log("this is volume", volume)
+
+        if (volume === 0.1) {
+            setIsMute(true)
+            return
+        }
         if (vidRef && vidRef.current && vidRef.current.volume) {
             vidRef.current.volume = volume
             setIsMute(false)
@@ -78,7 +84,7 @@ const AppInner = () => {
     const changeStreamQuality = (quality: number) => {
         if (webRtc?.current) {
             webRtc.current.forceStreamQuality(selectedStreamID, quality)
-            console.log('after')
+            console.log("after")
         }
     }
 
@@ -98,47 +104,40 @@ const AppInner = () => {
                         OfferToReceiveAudio: true,
                         OfferToReceiveVideo: true,
                     },
-                    remoteVideoId: 'remoteVideo',
+                    remoteVideoId: "remoteVideo",
                     isPlayMode: true,
                     debug: true,
-                    candidateTypes: ['tcp', 'udp'],
+                    candidateTypes: ["tcp", "udp"],
                     callback: function (info: any, obj: any) {
-                        if (info == 'initialized') {
-                            console.log('info initialized')
-                            webRtc.current.play(selectedStreamID, '')
-                        } else if (info == 'play_started') {
+                        if (info == "initialized") {
+                            console.log("info initialized")
+                            webRtc.current.play(selectedStreamID, "")
+                        } else if (info == "play_started") {
                             webRtc.current.getStreamInfo(selectedStreamID)
-                        } else if (info == 'play_finished') {
-                            console.log('play finished')
-                        } else if (info == 'closed') {
-                            if (typeof obj != 'undefined') {
-                                console.log('Connecton closed: ' + JSON.stringify(obj))
+                        } else if (info == "play_finished") {
+                            console.log("play finished")
+                        } else if (info == "closed") {
+                            if (typeof obj != "undefined") {
+                                console.log("Connecton closed: " + JSON.stringify(obj))
                             }
-                        } else if (info == 'streamInformation') {
+                        } else if (info == "streamInformation") {
                             const resolutions: any[] = []
-                            obj['streamInfo'].forEach(function (entry: any) {
+                            obj["streamInfo"].forEach(function (entry: any) {
                                 // It's needs to both of VP8 and H264. So it can be duplicate
-                                if (!resolutions.includes(entry['streamHeight'])) {
-                                    resolutions.push(entry['streamHeight'])
+                                if (!resolutions.includes(entry["streamHeight"])) {
+                                    resolutions.push(entry["streamHeight"])
                                 } // Got resolutions from server response and added to an array.
                             })
                             setStreamResolutions(resolutions)
-                        } else if (info == 'ice_connection_state_changed') {
-                            console.log('iceConnectionState Changed: ', JSON.stringify(obj))
+                        } else if (info == "ice_connection_state_changed") {
+                            console.log("iceConnectionState Changed: ", JSON.stringify(obj))
                         }
                     },
                     callbackError: (error: any) => {
-                        console.log('error callback: ' + JSON.stringify(error))
+                        console.log("error callback: " + JSON.stringify(error))
                     },
                 })
             } catch (e) {
-                console.log('errrr')
-                console.log('errrr')
-                console.log('errrr')
-                console.log('errrr')
-                console.log('errrr')
-                console.log('errrr')
-
                 console.log(e)
             }
         },
@@ -151,7 +150,7 @@ const AppInner = () => {
                 <FullScreen handle={handle}>
                     <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
                         <Stack sx={{ width: mainDivDimensions.width, height: mainDivDimensions.height }}>
-                            <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT, zIndex: 999 }}>
+                            <Box sx={{ position: "relative", width: "100%", height: GAMEBAR_HEIGHT, zIndex: 999 }}>
                                 <GameBar
                                     barPosition="top"
                                     gameserverSessionID={gameserverSessionID}
@@ -164,17 +163,17 @@ const AppInner = () => {
                                 direction="row"
                                 sx={{
                                     flex: 1,
-                                    position: 'relative',
-                                    width: '100%',
+                                    position: "relative",
+                                    width: "100%",
                                     backgroundColor: colors.darkNavyBlue,
-                                    overflow: 'hidden',
+                                    overflow: "hidden",
                                 }}
                             >
                                 <LeftSideBar />
 
                                 <Box
                                     sx={{
-                                        position: 'relative',
+                                        position: "relative",
                                         height: streamDimensions.height,
                                         width: streamDimensions.width,
                                         backgroundColor: colors.darkNavyBlue,
@@ -189,17 +188,17 @@ const AppInner = () => {
                                         controls
                                         playsInline
                                         style={{
-                                            position: 'absolute',
-                                            top: '50%',
-                                            left: '50%',
-                                            transform: 'translate(-50%, -50%)',
+                                            position: "absolute",
+                                            top: "50%",
+                                            left: "50%",
+                                            transform: "translate(-50%, -50%)",
 
-                                            width: '100%',
-                                            height: '100%',
+                                            width: "100%",
+                                            height: "100%",
                                         }}
                                     ></video>
 
-                                    <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
+                                    <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
                                         <VotingSystem />
                                         <MiniMap />
                                         <Notifications />
@@ -212,12 +211,11 @@ const AppInner = () => {
 
                             <Box
                                 sx={{
-                                    position: 'relative',
-                                    width: '100%',
+                                    position: "relative",
+                                    width: "100%",
                                     height: CONTROLS_HEIGHT,
                                 }}
                             >
-                                {/* <button onClick={changeStreamQuality}>change stream quality</button> */}
                                 <Controls
                                     resolutionsList={streamResolutions}
                                     volume={volume}
@@ -246,9 +244,9 @@ const AppInner = () => {
 const App = () => {
     const [currentTheme, setTheme] = useState<Theme>(theme)
     const [factionColors, setFactionColors] = useState<FactionThemeColor>({
-        primary: '#00FFFF',
-        secondary: '#00FFFF',
-        background: '#050c12',
+        primary: "#00FFFF",
+        secondary: "#00FFFF",
+        background: "#050c12",
     })
 
     useEffect(() => {
@@ -280,4 +278,4 @@ const App = () => {
     )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<App />, document.getElementById("root"))

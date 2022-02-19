@@ -26,7 +26,7 @@ export const ResolutionSelect = (props: ResolutionSelectProps) => {
                     },
                     '& .MuiSelect-outlined': { px: 1, pt: 0.6, pb: 0 },
                 }}
-                defaultValue={currentResolution}
+                defaultValue={currentResolution || props.defaultValue}
                 value={currentResolution}
                 MenuProps={{
                     variant: 'menu',

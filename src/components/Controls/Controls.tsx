@@ -27,7 +27,11 @@ export const Controls = (props: ControlsProps) => {
 
             <Stack direction="row" spacing={1}>
                 <StreamSelect />
-                <ResolutionSelect defaultValue={props.defaultValue} />
+                <ResolutionSelect
+                    defaultValue={props.defaultValue}
+                    forceResolutionFn={props.forceResolutionFn}
+                    options={props.resolutionsList}
+                />
                 <VideoPlayerControls {...props} />
             </Stack>
         </Stack>
