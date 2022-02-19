@@ -38,10 +38,10 @@ x mech abilities
 	x make current faction mechs show first, show smaller
 x fix map mech rotation issue
 x map show mech logo image instead
+x kill notification
 
 
 Pending:
-- kill notification
 - video controls ui
 - make overlay components moveable / toggleable
 - iframe dimension onresize

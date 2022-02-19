@@ -282,8 +282,7 @@ export const WarMachineDestroyedInfo = ({
                     <Box
                         sx={{
                             px: 5,
-                            pt: 6,
-                            pb: 5,
+                            py: 4.5,
                         }}
                     >
                         <Stack spacing={3.8}>
@@ -294,7 +293,7 @@ export const WarMachineDestroyedInfo = ({
                                 />
 
                                 <Stack alignItems="center" sx={{ flex: 1 }}>
-                                    <SvgSkull fill="#FFFFFF" size="128px" sx={{ mb: 1 }} />
+                                    <SvgSkull fill="#FFFFFF" size="120px" sx={{ mb: 1 }} />
                                     <Typography
                                         sx={{
                                             fontFamily: 'Nostromo Regular Heavy',
