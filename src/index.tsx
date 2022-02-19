@@ -155,7 +155,7 @@ const AppInner = (props: AppInnerProps) => {
                             if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
                             webRtc.current.getStreamInfo(selectedStreamID)
                         } else if (info == "streamInformation") {
-                            const resolutions: number[] = []
+                            const resolutions: number[] = [0]
                             obj["streamInfo"].forEach(function (entry: StreamInfoEntry) {
                                 // get resolutions from server response and added to an array.
                                 if (!resolutions.includes(entry["streamHeight"])) {
@@ -165,10 +165,8 @@ const AppInner = (props: AppInnerProps) => {
                             setStreamResolutions(resolutions)
                         } else if (info == "closed") {
                             webRtc.current = undefined
-
-                            //console.log("Connection closed");
                             if (typeof obj != "undefined") {
-                                console.log("Connecton closed: " + JSON.stringify(obj))
+                                console.log("connection closed: " + JSON.stringify(obj))
                             }
                         }
                     },

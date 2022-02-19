@@ -63,7 +63,9 @@ export const ResolutionSelect = (props: ResolutionSelectProps) => {
                                 },
                             }}
                         >
-                            <Typography variant="body2">{x}P</Typography>
+                            <Typography textTransform="uppercase" variant="body2">
+                                {x === 0 ? "Automatic" : `${x}P`}
+                            </Typography>
                         </MenuItem>
                     )
                 })}
