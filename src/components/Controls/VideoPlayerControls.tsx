@@ -13,7 +13,7 @@ export const VideoPlayerControls = (props: ControlsProps) => {
 
     return (
         <Stack direction="row" alignItems="center" sx={{ ml: "auto" }}>
-            <Box sx={{ width: 200 }}>
+            <Box sx={{ width: 200, marginRight: 5 }}>
                 <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
                     <IconButton
                         size="small"

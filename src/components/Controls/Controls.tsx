@@ -12,7 +12,6 @@ export interface ControlsProps {
     forceResolutionFn: (quality: number) => void
 }
 export const Controls = (props: ControlsProps) => {
-    const { streamContainer, forceResolutionFn } = props
     return (
         <Stack
             direction="row"
@@ -24,7 +23,7 @@ export const Controls = (props: ControlsProps) => {
 
             <Stack direction="row" spacing={1}>
                 <StreamSelect />
-                <ResolutionSelect forceResolutionFn={forceResolutionFn} streamContainer={streamContainer} />
+                <ResolutionSelect {...props} />
                 <VideoPlayerControls {...props} />
             </Stack>
         </Stack>

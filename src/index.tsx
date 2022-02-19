@@ -18,7 +18,14 @@ import {
     WarMachineStats,
 } from "./components"
 import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
-import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, SENTRY_CONFIG } from "./constants"
+import {
+    CONTROLS_HEIGHT,
+    GAMEBAR_HEIGHT,
+    PASSPORT_SERVER_HOSTNAME,
+    PASSPORT_WEB,
+    SENTRY_CONFIG,
+    STREAM_ASPECT_RATIO_W_H,
+} from "./constants"
 import {
     AuthContainerType,
     AuthProvider,
@@ -85,6 +92,13 @@ interface StreamInfoEntry {
     videoCodec: string
 }
 
+interface AppInnerProps {
+    authContainer: AuthContainerType
+    dimensionContainer: DimensionContainerType
+    fullScreenHandleContainer: FullScreenHandle
+    streamContainer: StreamContainerType
+}
+
 const AppInner = (props: AppInnerProps) => {
     // props
     const { authContainer, dimensionContainer, fullScreenHandleContainer, streamContainer } = props
@@ -117,7 +131,6 @@ const AppInner = (props: AppInnerProps) => {
                 vidRef.current = vid
                 webRtc.current = new WebRTCAdaptor({
                     websocket_url: selectedWsURL,
-
                     mediaConstraints: { video: false, audio: false },
                     sdp_constraints: {
                         OfferToReceiveAudio: true,
@@ -129,21 +142,12 @@ const AppInner = (props: AppInnerProps) => {
                     candidateTypes: ["tcp", "udp"],
                     callback: function (info: string, obj: any) {
                         if (info == "initialized") {
-                            console.log(`--- ${info} ---`, { info, obj })
                             if (!webRtc || !webRtc.current || !webRtc.current.play) return
                             webRtc.current.play(selectedStreamID, "")
                         } else if (info == "play_started") {
-                            console.log(`--- ${info} ---`, { info, obj })
                             if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
                             webRtc.current.getStreamInfo(selectedStreamID)
-                        } else if (info == "play_finished") {
-                            console.log(`--- ${info} ---`, { info, obj })
-                        } else if (info == "closed") {
-                            if (typeof obj != "undefined") {
-                                console.log(`--- ${info} ---`, { info, obj })
-                            }
                         } else if (info == "streamInformation") {
-                            console.log(`--- ${info} ---`, { info, obj })
                             const resolutions: number[] = []
                             obj["streamInfo"].forEach(function (entry: StreamInfoEntry) {
                                 // get resolutions from server response and added to an array.
@@ -152,8 +156,6 @@ const AppInner = (props: AppInnerProps) => {
                                 }
                             })
                             setStreamResolutions(resolutions)
-                        } else if (info == "ice_connection_state_changed") {
-                            console.log("--- iceConnectionState Changed ---", { info, obj })
                         }
                     },
                     callbackError: (error: string) => {
@@ -220,11 +222,11 @@ const AppInner = (props: AppInnerProps) => {
                                             top: "50%",
                                             left: "50%",
                                             transform: "translate(-50%, -50%)",
-
+                                            aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
                                             width: "100%",
                                             height: "100%",
                                         }}
-                                    ></video>
+                                    />
 
                                     <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
                                         <VotingSystem />
@@ -260,13 +262,6 @@ const AppInner = (props: AppInnerProps) => {
             )}
         </>
     )
-}
-
-interface AppInnerProps {
-    authContainer: AuthContainerType
-    dimensionContainer: DimensionContainerType
-    fullScreenHandleContainer: FullScreenHandle
-    streamContainer: StreamContainerType
 }
 
 const AppInnerContainer = () => {
