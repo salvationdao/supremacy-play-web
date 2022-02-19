@@ -107,7 +107,7 @@ const AppInner = (props: AppInnerProps) => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = authContainer
 
     // dimensions
-    const { mainDivDimensions, streamDimensions } = dimensionContainer
+    const { mainDivDimensions, streamDimensions, iframeDimensions } = dimensionContainer
 
     // stream
     const { selectedWsURL, selectedStreamID, setStreamResolutions, volume, isMute, setIsMute } = streamContainer
@@ -223,8 +223,8 @@ const AppInner = (props: AppInnerProps) => {
                                             left: "50%",
                                             transform: "translate(-50%, -50%)",
                                             aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                            width: "100%",
-                                            height: "100%",
+                                            width: iframeDimensions.width,
+                                            height: iframeDimensions.height,
                                         }}
                                     />
 
