@@ -9,7 +9,7 @@ import {
     WarMachineAbilitiesPopover,
     WarMachineDestroyedInfo,
 } from '..'
-import { GenericWarMachine, SvgInfoCircularIcon, SvgSkull } from '../../assets'
+import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from '../../assets'
 import { useAuth, useWebsocket } from '../../containers'
 import { NullUUID, PASSPORT_WEB } from '../../constants'
 import HubKey from '../../keys'
@@ -51,7 +51,7 @@ export const WarMachineItem = ({
         theme: { primary, secondary, background },
     } = faction
 
-    const wmImageUrl = imageUrl || GenericWarMachine
+    const wmImageUrl = imageUrl || GenericWarMachinePNG
     const isOwnFaction = factionID == warMachine.factionID
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord
@@ -59,6 +59,11 @@ export const WarMachineItem = ({
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
     }, [shouldBeExpanded])
+
+    // If warmachine is updated, reset destroy info
+    useEffect(() => {
+        setWarMachineDestroyedRecord(undefined)
+    }, [warMachine])
 
     // Subscribe to war machine ability updates
     useEffect(() => {
@@ -156,11 +161,7 @@ export const WarMachineItem = ({
                     sx={{ zIndex: 2 }}
                     skipRightCorner={!isExpanded}
                 >
-                    <Box
-                        sx={{
-                            background: `linear-gradient(${primary}, #000000)`,
-                        }}
-                    >
+                    <Box sx={{ background: `linear-gradient(${primary}, #000000)` }}>
                         <Box
                             onClick={toggleIsExpanded}
                             sx={{

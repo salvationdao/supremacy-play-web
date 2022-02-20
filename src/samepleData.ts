@@ -136,7 +136,7 @@ export const sampleBattleEndDetail: BattleEndDetail = {
     },
     winningWarMachines: [
         {
-            imageUrl: 'http://localhost:5005/static/media/GenericWarMachine.df93230e7e423976eda9.png',
+            imageUrl: 'http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png',
             name: 'Olympus Mons LY07',
             faction: {
                 id: '1',
@@ -160,7 +160,7 @@ export const sampleBattleEndDetail: BattleEndDetail = {
             rotation: 10,
         },
         {
-            imageUrl: 'http://localhost:5005/static/media/GenericWarMachine.df93230e7e423976eda9.png',
+            imageUrl: 'http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png',
             name: 'Tenshi Mk1 B',
             faction: {
                 id: '1',
@@ -184,7 +184,7 @@ export const sampleBattleEndDetail: BattleEndDetail = {
             rotation: 10,
         },
         {
-            imageUrl: 'http://localhost:5005/static/media/GenericWarMachine.df93230e7e423976eda9.png',
+            imageUrl: 'http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png',
             name: 'Law Enforcer X-1000',
             faction: {
                 id: '1',
@@ -443,11 +443,11 @@ export const battleAbilityNoti: NotificationResponse = {
             username: 'Jayli3n',
             avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
             faction: {
-                label: 'Red Mountain Offworld Mining Corporation',
+                label: 'Zaibatsu Industries',
                 logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
                 theme: {
-                    primary: '#C24242',
-                    secondary: '#FFFFFF',
+                    primary: '#FFFFF',
+                    secondary: '#00000',
                     background: '#0D0404',
                 },
             },

@@ -45,16 +45,24 @@ export const StyledImageText = ({
     )
 
     return (
-        <Box sx={{ display: 'inline-flex', alignItems: 'center', overflow: 'hidden' }}>
+        <Box
+            sx={{
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+                pl: imageUrl ? `${imageSize + 0.2 * imageSize}px` : 0,
+            }}
+        >
             {imageUrl && (
                 <Box
                     sx={{
+                        position: 'absolute',
+                        left: 0,
+                        bottom: 0,
                         display: 'inline-block',
                         flexShrink: 0,
                         width: imageSize,
                         height: imageSize,
-                        mb: '4px',
-                        mr: 0.032 * imageSize,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center',
@@ -68,7 +76,15 @@ export const StyledImageText = ({
             <Typography
                 component="span"
                 variant={variant}
-                sx={{ display: 'inline', fontFamily, fontWeight, color, wordBreak: 'break-word', ...truncateStyle }}
+                sx={{
+                    display: 'inline',
+                    lineHeight: 1,
+                    fontFamily,
+                    fontWeight,
+                    color,
+                    wordBreak: 'break-word',
+                    ...truncateStyle,
+                }}
             >
                 {text}
             </Typography>
