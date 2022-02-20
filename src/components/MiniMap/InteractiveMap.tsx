@@ -151,7 +151,7 @@ export const InteractiveMap = ({
         setMap((prev) => {
             return prev ? { ...prev, scale: (prev.scale = minScale / 40) } : prev
         })
-    }, [windowDimension])
+    }, [windowDimension, warMachines])
 
     // ---------- Minimap - useGesture setup --------------
     // Prevents map zooming from interfering with the browsers' accessibility zoom
@@ -232,11 +232,9 @@ export const InteractiveMap = ({
         // Keep the map in-bounds
         const ox = xBound >= x.get() ? xBound : x.get()
         const oy = yBound >= y.get() ? yBound : y.get()
-        // const ox = xBound >= x.get() ? xBound : x.get() === 0 ? newScale : x.get() * newScale
-        // const oy = yBound >= y.get() ? yBound : y.get() === 0 ? newScale : y.get() * newScale
 
         // set the new map scale, and new x&y if out of bounds
-        set({ scale: newScale, x: ox, y: oy, immediate: true })
+        set({ scale: newScale, x: ox, y: oy })
 
         // Set game map
         setMap((prev) => {
@@ -257,7 +255,7 @@ export const InteractiveMap = ({
             {/* Map - can be dragged */}
             <animated.div {...dragMap()} style={{ x, y, touchAction: 'none' }}>
                 <Box sx={{ cursor: 'move' }}>
-                    <MapWarMachines map={map} warMachines={warMachines || []} key={map.scale} />
+                    <MapWarMachines map={map} warMachines={warMachines || []} />
 
                     {/* Can be scaled and dragged */}
                     <animated.div {...scaleMap()} style={{ scale, transformOrigin: `0% 0%` }}>
