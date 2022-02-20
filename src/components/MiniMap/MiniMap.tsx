@@ -55,8 +55,11 @@ export const MiniMap = () => {
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
-        localStorage.setItem("miniMapPosX", newPosX.toString())
-        localStorage.setItem("miniMapPosY", newPosY.toString())
+
+        if (!enlarged) {
+            localStorage.setItem("miniMapPosX", newPosX.toString())
+            localStorage.setItem("miniMapPosY", newPosY.toString())
+        }
     }, [width, height, enlarged])
 
     useEffect(() => {

@@ -51,7 +51,7 @@ const MapWarMachines = ({ warMachines, map, enlarged }: MapWarMachineProps) => {
         <>
             {warMachines.map((wm) => (
                 <div key={`${wm.participantID} - ${wm.tokenID}`}>
-                    <MapWarMachine warMachine={wm} map={map} enlarged={enlarged}/>
+                    <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} />
                 </div>
             ))}
         </>
@@ -212,7 +212,7 @@ export const InteractiveMap = ({
 
         // Calculate new scale
         const zoomSpeed = 0.05
-        let newScale = deltaY > 0 ? curScale + zoomSpeed : curScale - zoomSpeed
+        let newScale = deltaY < 0 ? curScale + zoomSpeed : curScale - zoomSpeed
 
         // Keeps the map within scale bounds
         if (newScale >= maxScale || minScale >= newScale) {
