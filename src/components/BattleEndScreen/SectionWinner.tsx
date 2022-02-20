@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material'
 import { BattleEndTooltip, StyledImageText } from '..'
-import { GenericWarMachine } from '../../assets'
+import { GenericWarMachinePNG } from '../../assets'
 import { PASSPORT_WEB } from '../../constants'
 import { colors } from '../../theme/theme'
 import { BattleEndDetail } from '../../types'
@@ -9,7 +9,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
     const { battleIdentifier, winningFaction, winningWarMachines } = battleEndDetail
 
     return (
-        <Stack spacing={1.6}>
+        <Stack spacing={3}>
             <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#00000083' }}>
                 <Typography
                     component="span"
@@ -29,7 +29,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 </Typography>
             </Box>
 
-            <Stack spacing={1.6} sx={{ px: 1.2 }}>
+            <Stack spacing={3.2} sx={{ px: 1.2 }}>
                 <StyledImageText
                     color={winningFaction.theme.primary}
                     text={winningFaction.label}
@@ -37,20 +37,19 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     variant="h4"
                     imageSize={40}
                     imageBorderThickness="0px"
-                    imageBackgroundSize="contain"
                     noImageBackgroundColor
                     truncateLine
                 />
 
-                {winningWarMachines && winningWarMachines.length > 0 && (
-                    <Stack spacing={1.3} sx={{ pl: 1 }}>
+                {winningWarMachines && winningWarMachines.length > 0 ? (
+                    <Stack spacing={2} sx={{ pl: 1 }}>
                         {winningWarMachines.map((wm) => (
                             <StyledImageText
                                 key={`${wm.tokenID}-${wm.participantID}`}
                                 color={colors.text}
                                 imageBorderColor={wm.faction.theme.primary}
                                 text={wm.name.toUpperCase()}
-                                imageUrl={wm.imageUrl || GenericWarMachine}
+                                imageUrl={wm.imageUrl || GenericWarMachinePNG}
                                 variant="h5"
                                 imageSize={29}
                                 imageBorderThickness="2px"
@@ -59,6 +58,10 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                             />
                         ))}
                     </Stack>
+                ) : (
+                    <Typography variant="h5" sx={{ pl: 1 }}>
+                        Nothing to show...
+                    </Typography>
                 )}
             </Stack>
         </Stack>

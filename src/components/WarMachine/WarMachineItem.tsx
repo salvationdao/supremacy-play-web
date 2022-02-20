@@ -1,8 +1,15 @@
 import { useEffect, useState, useRef } from 'react'
 import { Box, Stack, Typography } from '@mui/material'
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from '../../types'
-import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, WarMachineAbilitiesPopover } from '..'
-import { GenericWarMachine, SvgSkull } from '../../assets'
+import {
+    BoxSlanted,
+    ClipThing,
+    HealthShieldBars,
+    SkillBar,
+    WarMachineAbilitiesPopover,
+    WarMachineDestroyedInfo,
+} from '..'
+import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from '../../assets'
 import { useAuth, useWebsocket } from '../../containers'
 import { NullUUID, PASSPORT_WEB } from '../../constants'
 import HubKey from '../../keys'
@@ -17,6 +24,7 @@ const WIDTH_SKILL_BUTTON = 43
 const HEIGHT = 76
 
 const SKILL_BUTTON_TEXT_ROTATION = 76.5
+const DEAD_OPACITY = 0.6
 
 export const WarMachineItem = ({
     warMachine,
@@ -30,12 +38,12 @@ export const WarMachineItem = ({
     const { participantID, faction, name, imageUrl } = warMachine
     const { state, subscribe } = useWebsocket()
     const { factionID } = useAuth()
-    const [isAlive, setIsAlive] = useState(true)
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
     const [isExpanded, toggleIsExpanded] = useToggle(false)
+    const [isDestroyedInfoOpen, toggleIsDestroyedInfoOpen] = useToggle()
     const maxAbilityPriceMap = useRef<Map<string, BigNumber>>(new Map<string, BigNumber>())
     const {
         id: warMachineFactionID,
@@ -43,13 +51,19 @@ export const WarMachineItem = ({
         theme: { primary, secondary, background },
     } = faction
 
-    const wmImageUrl = imageUrl || GenericWarMachine
+    const wmImageUrl = imageUrl || GenericWarMachinePNG
     const isOwnFaction = factionID == warMachine.factionID
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
+    const isAlive = !warMachineDestroyedRecord
 
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
     }, [shouldBeExpanded])
+
+    // If warmachine is updated, reset destroy info
+    useEffect(() => {
+        setWarMachineDestroyedRecord(undefined)
+    }, [warMachine])
 
     // Subscribe to war machine ability updates
     useEffect(() => {
@@ -75,18 +89,12 @@ export const WarMachineItem = ({
                 if (!payload) return
                 setWarMachineDestroyedRecord(payload)
             },
-            {
-                participantID,
-            },
+            { participantID },
         )
     }, [state, subscribe, participantID])
 
     return (
-        <BoxSlanted
-            key={`WarMachineItem-${participantID}`}
-            clipSlantSize="20px"
-            sx={{ transform: isOwnFaction ? '' : `scale(${scale})` }}
-        >
+        <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
             <Stack
                 ref={popoverRef}
                 direction="row"
@@ -94,6 +102,7 @@ export const WarMachineItem = ({
                 sx={{
                     position: 'relative',
                     ml: isExpanded || isOwnFaction ? 2 : 3.2,
+                    opacity: isAlive ? 1 : 0.8,
                     width: isOwnFaction
                         ? isExpanded
                             ? WIDTH_WM_IMAGE + WIDTH_CENTER + WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR
@@ -105,9 +114,33 @@ export const WarMachineItem = ({
                         : isExpanded
                         ? WIDTH_WM_IMAGE + WIDTH_CENTER
                         : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 6,
-                    opacity: isAlive ? 1 : 0.5,
                 }}
             >
+                {!isAlive && (
+                    <Box
+                        onClick={toggleIsDestroyedInfoOpen}
+                        sx={{
+                            position: 'absolute',
+                            top: 1.5,
+                            left: WIDTH_WM_IMAGE - 23,
+                            px: 0.7,
+                            py: 0.5,
+                            opacity: 0.83,
+                            cursor: 'pointer',
+                            ':hover': {
+                                opacity: 1,
+                                transform: 'scale(1.1)',
+                            },
+                            ':active': {
+                                transform: 'scale(1)',
+                            },
+                            zIndex: 99,
+                        }}
+                    >
+                        <SvgInfoCircularIcon fill={'white'} size="15px" />
+                    </Box>
+                )}
+
                 <Box
                     sx={{
                         position: 'absolute',
@@ -117,6 +150,7 @@ export const WarMachineItem = ({
                         height: 3,
                         backgroundColor: primary,
                         zIndex: 9,
+                        opacity: isAlive ? 1 : DEAD_OPACITY,
                     }}
                 />
 
@@ -127,11 +161,7 @@ export const WarMachineItem = ({
                     sx={{ zIndex: 2 }}
                     skipRightCorner={!isExpanded}
                 >
-                    <Box
-                        sx={{
-                            background: `linear-gradient(${primary}, #000000)`,
-                        }}
-                    >
+                    <Box sx={{ background: `linear-gradient(${primary}, #000000)` }}>
                         <Box
                             onClick={toggleIsExpanded}
                             sx={{
@@ -177,7 +207,7 @@ export const WarMachineItem = ({
                             ml: -2.5,
 
                             backgroundColor: isExpanded ? '#00000056' : 'transparent',
-                            opacity: isAlive ? 1 : 0.7,
+                            opacity: isAlive ? 1 : DEAD_OPACITY,
                             zIndex: 1,
                         }}
                     >
@@ -187,11 +217,7 @@ export const WarMachineItem = ({
                             spacing={1}
                             sx={{ flex: 1, pl: isExpanded ? 3.5 : 0, pr: isExpanded ? 2.1 : 0 }}
                         >
-                            <HealthShieldBars
-                                warMachine={warMachine}
-                                setIsAlive={setIsAlive}
-                                type={isExpanded ? 'horizontal' : 'vertical'}
-                            />
+                            <HealthShieldBars warMachine={warMachine} type={isExpanded ? 'horizontal' : 'vertical'} />
 
                             {isExpanded && (
                                 <Box
@@ -246,11 +272,12 @@ export const WarMachineItem = ({
                                     ml: -2.5,
                                     backgroundColor: primary,
                                     boxShadow: 3,
-                                    cursor: 'pointer',
+                                    cursor: isAlive ? 'pointer' : 'auto',
                                     ':hover #warMachineSkillsText': {
                                         letterSpacing: isAlive ? 2.3 : 1,
                                     },
                                     zIndex: 3,
+                                    opacity: isAlive ? 1 : DEAD_OPACITY,
                                 }}
                             >
                                 <Box
@@ -300,6 +327,14 @@ export const WarMachineItem = ({
                     warMachine={warMachine}
                     gameAbilities={gameAbilities}
                     maxAbilityPriceMap={maxAbilityPriceMap}
+                />
+            )}
+
+            {!isAlive && (
+                <WarMachineDestroyedInfo
+                    open={isDestroyedInfoOpen}
+                    toggleOpen={toggleIsDestroyedInfoOpen}
+                    warMachineDestroyedRecord={warMachineDestroyedRecord}
                 />
             )}
         </BoxSlanted>

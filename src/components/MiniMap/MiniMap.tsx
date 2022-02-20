@@ -91,9 +91,11 @@ export const MiniMap = () => {
         <Box
             sx={{
                 position: 'absolute',
-                top: 0,
-                left: 0,
-                pointerEvents: 'none',
+                bottom: 105,
+                right: 10,
+                // top: 0,
+                // left: 0,
+                // pointerEvents: 'none',
                 zIndex: 32,
                 filter: 'drop-shadow(0 3px 3px #00000050)',
             }}
