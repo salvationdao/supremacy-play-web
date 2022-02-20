@@ -12,14 +12,14 @@ import { parseString } from '../../helpers'
 import { SvgDrag } from '../../assets'
 
 const Padding = 10
-const DefaultPositionXRight = 0
-const DefaultPositionY = 0
+const DefaultPositionXRight = 6
+const DefaultPositionYBottom = 105
 
 export const MiniMap = () => {
+    const theme = useTheme<Theme>()
     const {
         streamDimensions: { width, height },
     } = useDimension()
-    const theme = useTheme<Theme>()
     const [curPosX, setCurPosX] = useState(-1)
     const [curPosY, setCurPosY] = useState(-1)
     const { map, winner, setWinner, votingState } = useGame()
@@ -35,27 +35,25 @@ export const MiniMap = () => {
     const confirmed = useRef<boolean>(false)
 
     useEffect(() => {
+        // Set new window dimensions: 125 is the height of the bottom mech stats
+        const newWidth = enlarged ? Math.min(width - 23, 1000) : 230
+        const newHeight = enlarged ? Math.min(height - 125, 700) : 200
+        setDimensions({ width: newWidth, height: newHeight })
+
         let newPosX = parseString(localStorage.getItem('miniMapPosX'), -1)
         let newPosY = parseString(localStorage.getItem('miniMapPosY'), -1)
 
-        // Set window dimensions: 125 is the height of the bottom mech stats
-        const newWidth = enlarged ? Math.min(width - 23, 1000) : 230
-        const newHeight = enlarged ? Math.min(height - 125, 700) : 200
-
-        // make the map scale towards the top right
-        // const xOffset = enlarged ? 0 : dimensions.width - newWidth
-
-        // Make sure map is inside iframe when page is resized etc.
+        // Make sure map is inside iframe when page / map are resized
         newPosX =
             newPosX > 0
-                ? Math.max(Padding - 6, Math.min(newPosX, width - newWidth - Padding - 6))
-                : width - DefaultPositionXRight - newWidth
+                ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding - 6))
+                : width - DefaultPositionXRight - newWidth - Padding // initial position of the map
+
         newPosY =
             newPosY > 0
-                ? Math.max(Padding - 6, Math.min(newPosY, height - newHeight - Padding - 6))
-                : DefaultPositionY + Padding - 6
+                ? Math.max(Padding, Math.min(newPosY, height - newHeight - Padding - 6))
+                : height - DefaultPositionYBottom - newHeight - Padding // initial position of the map
 
-        setDimensions({ width: newWidth, height: newHeight })
         setCurPosX(newPosX)
         setCurPosY(newPosY)
         localStorage.setItem('miniMapPosX', newPosX.toString())
@@ -91,11 +89,9 @@ export const MiniMap = () => {
         <Box
             sx={{
                 position: 'absolute',
-                bottom: 105,
-                right: 10,
-                // top: 0,
-                // left: 0,
-                // pointerEvents: 'none',
+                top: 0,
+                left: 0,
+                pointerEvents: 'none',
                 zIndex: 32,
                 filter: 'drop-shadow(0 3px 3px #00000050)',
             }}
