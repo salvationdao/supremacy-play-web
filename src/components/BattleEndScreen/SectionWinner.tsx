@@ -1,23 +1,23 @@
-import { Box, Stack, Typography } from '@mui/material'
-import { BattleEndTooltip, StyledImageText } from '..'
-import { GenericWarMachinePNG } from '../../assets'
-import { PASSPORT_WEB } from '../../constants'
-import { colors } from '../../theme/theme'
-import { BattleEndDetail } from '../../types'
+import { Box, Stack, Typography } from "@mui/material"
+import { BattleEndTooltip, StyledImageText } from ".."
+import { GenericWarMachinePNG } from "../../assets"
+import { PASSPORT_WEB } from "../../constants"
+import { colors } from "../../theme/theme"
+import { BattleEndDetail } from "../../types"
 
 export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { battleIdentifier, winningFaction, winningWarMachines } = battleEndDetail
 
     return (
         <Stack spacing={3}>
-            <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#00000083' }}>
+            <Box sx={{ px: 2.5, py: 1.5, backgroundColor: "#00000083" }}>
                 <Typography
                     component="span"
                     variant="h3"
                     sx={{
-                        position: 'relative',
-                        fontFamily: 'Nostromo Regular Black',
-                        fontWeight: 'fontWeightBold',
+                        position: "relative",
+                        fontFamily: "Nostromo Regular Black",
+                        fontWeight: "fontWeightBold",
                         color: colors.yellow,
                     }}
                 >
@@ -38,6 +38,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     imageSize={40}
                     imageBorderThickness="0px"
                     noImageBackgroundColor
+                    imageBackgroundSize="contain"
                     truncateLine
                 />
 
