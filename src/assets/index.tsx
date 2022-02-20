@@ -11,6 +11,7 @@ import Applause from '!react-svg-loader!./svg/Applause.svg'
 import Fullscreen from '!react-svg-loader!./svg/Fullscreen.svg'
 import Unknown from '!react-svg-loader!./svg/Unknown.svg'
 import Volume from '!react-svg-loader!./svg/Volume.svg'
+import VolumeMute from '!react-svg-loader!./svg/VolumeMute.svg'
 import Settings from '!react-svg-loader!./svg/Settings.svg'
 import Damage from '!react-svg-loader!./svg/Damage.svg'
 import Drag from '!react-svg-loader!./svg/Drag.svg'
@@ -153,6 +154,12 @@ export const SvgFullscreen: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgVolume: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Volume />
+    </SvgWrapper>
+)
+
+export const SvgVolumeMute: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <VolumeMute />
     </SvgWrapper>
 )
 
