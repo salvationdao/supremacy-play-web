@@ -146,7 +146,7 @@ export const InteractiveMap = ({
         if (!map) return
 
         // todo: set the previous enlarged scale and location
-        const minScale = windowDimension.width / map.width
+        const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
         set({ scale: minScale, x: 0, y: 0 })
         setMap((prev) => {
             return prev ? { ...prev, scale: (prev.scale = minScale / 40) } : prev
@@ -211,18 +211,13 @@ export const InteractiveMap = ({
         let newScale = currentScale + delta * factor * currentScale
 
         // min scale to fit the window
-        const minScale = windowDimension.width / map.width
+        const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
         const maxScale = 1
 
         // Keeps the map within scale bounds
         if (newScale >= 1 || 0.6 >= newScale) {
             newScale >= 1 ? (newScale = maxScale) : (newScale = minScale)
         }
-
-        // Set game map
-        setMap((prev) => {
-            return prev ? { ...prev, scale: (prev.scale = newScale / 40) } : prev
-        })
 
         // calculate the new boundary
         const xBound =
@@ -241,7 +236,12 @@ export const InteractiveMap = ({
         // const oy = yBound >= y.get() ? yBound : y.get() === 0 ? newScale : y.get() * newScale
 
         // set the new map scale, and new x&y if out of bounds
-        set({ scale: newScale, x: ox, y: oy })
+        set({ scale: newScale, x: ox, y: oy, immediate: true })
+
+        // Set game map
+        setMap((prev) => {
+            return prev ? { ...prev, scale: (prev.scale = newScale / 40) } : prev
+        })
     })
 
     if (!map) return null
