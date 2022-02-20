@@ -8,8 +8,17 @@ import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../
 
 const ICON_SIZE = 25
 const ARROW_LENGTH = ICON_SIZE / 2 + 10
+const DOT_SIZE = 10
 
-export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState; map: Map }) => {
+export const MapWarMachine = ({
+    warMachine,
+    map,
+    enlarged,
+}: {
+    warMachine: WarMachineState
+    map: Map
+    enlarged: boolean
+}) => {
     const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
 
@@ -53,21 +62,34 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
             }}
         >
             <Box
-                sx={{
-                    position: "relative",
-                    width: ICON_SIZE,
-                    height: ICON_SIZE,
-                    overflow: "visible",
-                    backgroundColor: primaryColor,
-                    backgroundImage: `url(${wmImageUrl})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
-                    border: `${primaryColor} solid 1px`,
-                    borderRadius: 1,
-                    boxShadow: isAlive ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70` : "none",
-                    zIndex: 2,
-                }}
+                sx={
+                    enlarged
+                        ? {
+                              position: "relative",
+                              width: ICON_SIZE,
+                              height: ICON_SIZE,
+                              overflow: "visible",
+                              backgroundColor: primaryColor,
+                              backgroundImage: `url(${wmImageUrl})`,
+                              backgroundRepeat: "no-repeat",
+                              backgroundPosition: "center",
+                              backgroundSize: "cover",
+                              border: `${primaryColor} solid 1px`,
+                              borderRadius: 1,
+                              boxShadow: isAlive ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70` : "none",
+                              zIndex: 2,
+                          }
+                        : {
+                              position: "relative",
+                              width: DOT_SIZE,
+                              height: DOT_SIZE,
+                              overflow: "visible",
+                              backgroundColor: primaryColor,
+                              border: "1.5px solid #000",
+                              borderRadius: "50%",
+                              zIndex: 2,
+                          }
+                }
             >
                 {!isAlive && (
                     <Stack
@@ -92,7 +114,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                     </Stack>
                 )}
 
-                {isAlive && (
+                {(isAlive && enlarged) && (
                     <Box
                         sx={{
                             position: "absolute",
@@ -120,7 +142,7 @@ export const MapWarMachine = ({ warMachine, map }: { warMachine: WarMachineState
                 )}
             </Box>
 
-            {isAlive && (
+            {(isAlive && enlarged) && (
                 <Stack sx={{ mt: 0.2, width: 34, zIndex: 1 }} spacing={0.1}>
                     <Box sx={{ width: "100%", height: 7, border: "1px solid #00000080" }}>
                         <Box

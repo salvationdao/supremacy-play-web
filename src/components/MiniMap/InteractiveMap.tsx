@@ -41,16 +41,17 @@ const GridCell = styled("td", {
 interface MapWarMachineProps {
     warMachines: WarMachineState[]
     map: Map
+    enlarged: boolean
 }
 
-const MapWarMachines = ({ warMachines, map }: MapWarMachineProps) => {
+const MapWarMachines = ({ warMachines, map, enlarged }: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
         <>
             {warMachines.map((wm) => (
                 <div key={`${wm.participantID} - ${wm.tokenID}`}>
-                    <MapWarMachine warMachine={wm} map={map} />
+                    <MapWarMachine warMachine={wm} map={map} enlarged={enlarged}/>
                 </div>
             ))}
         </>
@@ -255,7 +256,7 @@ export const InteractiveMap = ({
             <animated.div {...dragMap()} style={{ x, y, touchAction: "none" }}>
                 <Box sx={{ cursor: "move" }}>
                     {/* War machines can be dragged - the scale is set through the map */}
-                    <MapWarMachines map={map} warMachines={warMachines || []} />
+                    <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
 
                     {/* Ability Selection Grid and Map Image - can be scaled and dragged */}
                     <animated.div {...scaleMap()} style={{ scale, transformOrigin: `0% 0%` }}>
