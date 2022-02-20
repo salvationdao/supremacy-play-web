@@ -23,7 +23,7 @@ export const Controls = (props: ControlsProps) => {
             <Stack direction="row" spacing={1.5}>
                 <StreamSelect />
                 <ResolutionSelect {...props} />
-                <VideoPlayerControls {...props} />
+                <VideoPlayerControls />
             </Stack>
         </Stack>
     )

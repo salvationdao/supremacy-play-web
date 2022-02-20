@@ -3,15 +3,24 @@ import { FullScreenHandle } from "react-full-screen"
 import { SvgFullscreen, SvgVolume, SvgVolumeMute } from "../../assets"
 import { useStream } from "../../containers"
 
-export interface VideoPlayerControlsProps {
-    fullScreenHandleContainer: FullScreenHandle
-}
-export const VideoPlayerControls = (props: VideoPlayerControlsProps) => {
-    const { enter, exit } = props.fullScreenHandleContainer
+export const VideoPlayerControls = () => {
     const { toggleIsMute, isMute, volume, setVolume } = useStream()
 
     const handleVolumeChange = (_: Event, newValue: number | number[]) => {
         setVolume(newValue as number)
+    }
+
+    const toggleFullscreen = () => {
+        const elem = document.documentElement
+        const doc = document
+
+        if (window.innerWidth == screen.width && window.innerHeight == screen.height && doc.exitFullscreen) {
+            doc.exitFullscreen()
+            return
+        }
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen()
+        }
     }
 
     return (
@@ -43,13 +52,7 @@ export const VideoPlayerControls = (props: VideoPlayerControlsProps) => {
 
             <IconButton
                 size="small"
-                onClick={() => {
-                    if (window.innerWidth == screen.width && window.innerHeight == screen.height) {
-                        exit()
-                        return
-                    }
-                    enter()
-                }}
+                onClick={toggleFullscreen}
                 sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
             >
                 <SvgFullscreen size="14px" />
