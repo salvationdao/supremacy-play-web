@@ -12,8 +12,9 @@ import { parseString } from '../../helpers'
 import { SvgDrag } from '../../assets'
 
 const Padding = 10
-const DefaultPositionXRight = 6
+const DefaultPositionXRight = 10
 const DefaultPositionYBottom = 105
+const ClipBorder = 6
 
 export const MiniMap = () => {
     const theme = useTheme<Theme>()
@@ -46,13 +47,13 @@ export const MiniMap = () => {
         // Make sure map is inside iframe when page / map are resized
         newPosX =
             newPosX > 0
-                ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding - 6))
-                : width - DefaultPositionXRight - newWidth - Padding // initial position of the map
+                ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding - ClipBorder))
+                : width - DefaultPositionXRight - newWidth - Padding
 
         newPosY =
             newPosY > 0
-                ? Math.max(Padding, Math.min(newPosY, height - newHeight - Padding - 6))
-                : height - DefaultPositionYBottom - newHeight - Padding // initial position of the map
+                ? Math.max(Padding, Math.min(newPosY, height - newHeight - Padding - ClipBorder))
+                : height - DefaultPositionYBottom - newHeight - Padding
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
@@ -111,9 +112,9 @@ export const MiniMap = () => {
                 }}
                 bounds={{
                     top: Padding,
-                    bottom: height - dimensions.height - Padding - 6,
+                    bottom: height - dimensions.height - Padding - ClipBorder,
                     left: Padding,
-                    right: width - dimensions.width - Padding - 6,
+                    right: width - dimensions.width - Padding - ClipBorder,
                 }}
             >
                 <Box sx={{ pointerEvents: 'all' }}>
@@ -123,7 +124,7 @@ export const MiniMap = () => {
                                 clipSize="10px"
                                 border={{
                                     isFancy: true,
-                                    borderThickness: '3px',
+                                    borderThickness: `${ClipBorder / 2}px`,
                                     borderColor: isTargeting ? winner.gameAbility.colour : theme.factionTheme.primary,
                                 }}
                             >

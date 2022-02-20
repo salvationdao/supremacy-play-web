@@ -7,6 +7,9 @@ import { GameAbility, Map, WarMachineState } from '../../types'
 import { animated, useSpring } from 'react-spring'
 import { useDrag, useWheel } from '@use-gesture/react'
 
+// Difference between game map scale & image scale
+const MapScaleRatio = 40
+
 export interface MapSelection {
     x: number
     y: number
@@ -73,8 +76,6 @@ export const InteractiveMap = ({
     const [selection, setSelection] = useState<MapSelection>()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
-    // const lastPos = useRef<{ x: number; y: number; scale: number }>({ x: 0, y: 0, scale: 1 })
-    // const prevDimension = useRef<{ width: number; height: number }>({ width: 0, height: 0 })
 
     useEffect(() => {
         setSelection(undefined)
@@ -142,46 +143,50 @@ export const InteractiveMap = ({
         return <div />
     }, [targeting, setSubmitted, selection])
 
+    // Set map scale to minimum scale while staying in-bounds
     useEffect(() => {
         if (!map) return
-
-        // todo: set the previous enlarged scale and location
         const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
+
         set({ scale: minScale, x: 0, y: 0 })
         setMap((prev) => {
-            return prev ? { ...prev, scale: (prev.scale = minScale / 40) } : prev
+            return prev ? { ...prev, scale: (prev.scale = minScale / MapScaleRatio) } : prev
         })
     }, [windowDimension, warMachines])
 
-    // ---------- Minimap - useGesture setup --------------
+    // --------------- Minimap - useGesture setup -------------------
+
     // Prevents map zooming from interfering with the browsers' accessibility zoom
-    // https://developer.apple.com/documentation/webkitjs/gestureevent
     document.addEventListener('gesturestart', (e) => e.preventDefault())
     document.addEventListener('gesturechange', (e) => e.preventDefault())
 
-    // setup use-gesture
+    // Setup use-gesture props
     const [{ x, y, scale }, set] = useSpring(() => ({
         x: 0,
         y: 0,
         scale: map ? windowDimension.width / map.width : 1,
     }))
 
+    // Setup map drag
     const dragMap = useDrag(
         ({ dragging, wheeling, cancel, offset: [x, y], down }) => {
             if (wheeling || !map || !enlarged) return cancel()
+
+            // Set dragging
             dragging
                 ? (isDragging.current = true)
                 : setTimeout(() => {
                       isDragging.current = false
                   }, 50)
+
+            // Set [x,y] offset
             set({ x, y, immediate: down })
         },
         {
             from: () => [x.get(), y.get()],
-            filterTaps: true, // will ignore clicks - for selecting ability on grid
+            filterTaps: true,
             bounds: () => {
                 if (!map) return
-
                 return {
                     top:
                         windowDimension.height <= map.height * scale.get()
@@ -198,28 +203,23 @@ export const InteractiveMap = ({
         },
     )
 
-    // controls the maps scale - transforms to 0,0 (top left corner)
-    // https://codepen.io/danwilson/pen/qXPdbw
+    // Setup map zoom
     const scaleMap = useWheel(({ delta: [, deltaY] }) => {
         if (!map || !enlarged) return
-
-        // calculate the scale (based on offset of the mouse - could change this to be 36??)
-        // https://github.com/pmndrs/use-gesture/blob/main/packages/core/src/engines/PinchEngine.ts
-        const factor = 0.1
-        const currentScale = scale.get()
-        const delta = deltaY * -0.01
-        let newScale = currentScale + delta * factor * currentScale
-
-        // min scale to fit the window
+        const curScale = scale.get()
         const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
         const maxScale = 1
 
+        // Calculate new scale
+        const zoomSpeed = 0.05
+        let newScale = deltaY > 0 ? curScale + zoomSpeed : curScale - zoomSpeed
+
         // Keeps the map within scale bounds
-        if (newScale >= 1 || 0.6 >= newScale) {
-            newScale >= 1 ? (newScale = maxScale) : (newScale = minScale)
+        if (newScale >= maxScale || minScale >= newScale) {
+            newScale >= maxScale ? (newScale = maxScale) : (newScale = minScale)
         }
 
-        // calculate the new boundary
+        // Calculate the new boundary
         const xBound =
             windowDimension.width <= map.width * newScale
                 ? -(map.width * newScale - windowDimension.width)
@@ -233,12 +233,12 @@ export const InteractiveMap = ({
         const ox = xBound >= x.get() ? xBound : x.get()
         const oy = yBound >= y.get() ? yBound : y.get()
 
-        // set the new map scale, and new x&y if out of bounds
+        // Set scale and [x,y] offset
         set({ scale: newScale, x: ox, y: oy })
 
         // Set game map
         setMap((prev) => {
-            return prev ? { ...prev, scale: (prev.scale = newScale / 40) } : prev
+            return prev ? { ...prev, scale: (prev.scale = newScale / MapScaleRatio) } : prev
         })
     })
 
@@ -255,12 +255,12 @@ export const InteractiveMap = ({
             {/* Map - can be dragged */}
             <animated.div {...dragMap()} style={{ x, y, touchAction: 'none' }}>
                 <Box sx={{ cursor: 'move' }}>
+                    {/* War machines can be dragged - the scale is set through the map */}
                     <MapWarMachines map={map} warMachines={warMachines || []} />
 
-                    {/* Can be scaled and dragged */}
+                    {/* Ability Selection Grid and Map Image - can be scaled and dragged */}
                     <animated.div {...scaleMap()} style={{ scale, transformOrigin: `0% 0%` }}>
                         {selectionIcon}
-
                         {grid}
 
                         {/* Map Image */}
