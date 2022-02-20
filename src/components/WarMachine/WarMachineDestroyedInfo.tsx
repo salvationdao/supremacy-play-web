@@ -1,8 +1,8 @@
-import { Box, Modal, Stack, Typography } from '@mui/material'
-import { ClipThing } from '..'
-import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkull } from '../../assets'
-import { colors } from '../../theme/theme'
-import { DamageRecord, WarMachineDestroyedRecord, WarMachineState } from '../../types'
+import { Box, Modal, Stack, Typography } from "@mui/material"
+import { ClipThing } from ".."
+import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
+import { colors } from "../../theme/theme"
+import { DamageRecord, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 const WarMachineIcon = ({
     color,
@@ -16,11 +16,11 @@ const WarMachineIcon = ({
     size: number
 }) => {
     return (
-        <Box sx={{ width: 'fit-content' }}>
+        <Box sx={{ width: "fit-content" }}>
             <ClipThing
                 border={{
                     isFancy: false,
-                    borderThickness: '3px',
+                    borderThickness: "3px",
                     borderColor: color,
                 }}
                 clipSize="6px"
@@ -28,14 +28,14 @@ const WarMachineIcon = ({
                 <Box sx={{ background: `linear-gradient(${color}, #000000)` }}>
                     <Box
                         sx={{
-                            position: 'relative',
+                            position: "relative",
                             width: size,
                             height: size,
-                            overflow: 'hidden',
+                            overflow: "hidden",
                             backgroundImage: `url(${imageUrl})`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center',
-                            backgroundSize: 'cover',
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
                         }}
                     >
                         <Stack
@@ -43,11 +43,11 @@ const WarMachineIcon = ({
                             justifyContent="center"
                             sx={{
                                 px: 3.3,
-                                width: '100%',
-                                height: '100%',
-                                background: 'linear-gradient(#00000010, #00000080)',
+                                width: "100%",
+                                height: "100%",
+                                background: "linear-gradient(#00000010, #00000080)",
                                 opacity: isDead ? 1 : 0,
-                                transition: 'all .2s',
+                                transition: "all .2s",
                             }}
                         >
                             {isDead && <SvgDamageCross fill="#FF1919" size={`${size * 1.3}px`} sx={{ opacity: 0.6 }} />}
@@ -58,10 +58,10 @@ const WarMachineIcon = ({
                                 size={`${size * 0.5}px`}
                                 fill="#8C8C8C"
                                 sx={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
                                 }}
                             />
                         )}
@@ -92,19 +92,19 @@ const WarMachineBig = ({
                     isDead={isDead}
                 />
             ) : (
-                <WarMachineIcon color={'#444444'} size={75} />
+                <WarMachineIcon color={"#444444"} size={75} />
             )}
             <Typography
                 variant="h6"
                 sx={{
-                    textAlign: 'center',
-                    fontFamily: 'Nostromo Regular Black',
-                    display: '-webkit-box',
-                    overflow: 'hidden',
-                    overflowWrap: 'anywhere',
-                    textOverflow: 'ellipsis',
+                    textAlign: "center",
+                    fontFamily: "Nostromo Regular Black",
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
                     WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
+                    WebkitBoxOrient: "vertical",
                     color,
                 }}
             >
@@ -129,20 +129,20 @@ const WarMachineSmall = ({
             {warMachine ? (
                 <WarMachineIcon color={color} size={38} imageUrl={warMachine.imageUrl || GenericWarMachinePNG} />
             ) : (
-                <WarMachineIcon color={'#444444'} size={38} />
+                <WarMachineIcon color={"#444444"} size={38} />
             )}
 
             <Stack spacing={0}>
                 <Typography
                     variant="body2"
                     sx={{
-                        fontFamily: 'Nostromo Regular Black',
-                        display: '-webkit-box',
-                        overflow: 'hidden',
-                        overflowWrap: 'anywhere',
-                        textOverflow: 'ellipsis',
+                        fontFamily: "Nostromo Regular Black",
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
                         WebkitLineClamp: 1,
-                        WebkitBoxOrient: 'vertical',
+                        WebkitBoxOrient: "vertical",
                         color,
                     }}
                 >
@@ -151,8 +151,8 @@ const WarMachineSmall = ({
                 <Typography
                     variant="body2"
                     sx={{
-                        fontFamily: 'Nostromo Regular Bold',
-                        color: '#FFFFFF',
+                        fontFamily: "Nostromo Regular Bold",
+                        color: "#FFFFFF",
                     }}
                 >
                     {damagePercent}%
@@ -173,13 +173,13 @@ const DamageList = ({
 }) => {
     return (
         <Box sx={{ flex: 1 }}>
-            <Box sx={{ mx: 0.8, mb: 1.3, px: 2, pt: 1.5, pb: 1.2, backgroundColor: '#00000090' }}>
+            <Box sx={{ mx: 0.8, mb: 1.3, px: 2, pt: 1.5, pb: 1.2, backgroundColor: "#00000090" }}>
                 <Typography
                     variant="body2"
                     sx={{
-                        textAlign: 'center',
-                        fontFamily: 'Nostromo Regular Heavy',
-                        color: '#FFFFFF',
+                        textAlign: "center",
+                        fontFamily: "Nostromo Regular Heavy",
+                        color: "#FFFFFF",
                     }}
                 >
                     {title}
@@ -199,7 +199,7 @@ const DamageList = ({
                             />
                         ))
                 ) : (
-                    <Typography variant="body2" sx={{ fontFamily: 'Nostromo Regular Bold' }}>
+                    <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                         Nothing to show...
                     </Typography>
                 )}
@@ -229,47 +229,49 @@ export const WarMachineDestroyedInfo = ({
             )
             .reduce((acc, dr) => acc + dr.amount, 0) / 100
     const assistDamageMechs = damageRecords
-        .filter((dr) => dr.causedByWarMachine)
+        .filter(
+            (dr) => dr.causedByWarMachine && dr.causedByWarMachine.participantID != killedByWarMachine?.participantID,
+        )
         .sort((a, b) => (b.amount > a.amount ? 1 : -1))
     const assistDamageOthers = damageRecords
         .filter((dr) => !dr.causedByWarMachine)
         .sort((a, b) => (b.amount > a.amount ? 1 : -1))
 
     return (
-        <Modal open={open} onClose={() => toggleOpen(false)} BackdropProps={{ sx: { opacity: '0 !important' } }}>
+        <Modal open={open} onClose={() => toggleOpen(false)} BackdropProps={{ sx: { opacity: "0 !important" } }}>
             <Box
                 sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
                     width: 630,
-                    border: 'none',
-                    outline: 'none',
+                    border: "none",
+                    outline: "none",
                     borderRadius: 1,
                     backgroundColor: `${colors.darkNavyBlue}99`,
-                    filter: 'drop-shadow(0 3px 6px #00000080)',
+                    filter: "drop-shadow(0 3px 6px #00000080)",
                 }}
             >
-                <Box sx={{ position: 'relative' }}>
+                <Box sx={{ position: "relative" }}>
                     <Box
                         sx={{
-                            position: 'absolute',
+                            position: "absolute",
                             top: 0,
                             bottom: 0,
                             left: 0,
                             right: 0,
                             opacity: 0.15,
                             backgroundImage: `url(${FlamesPNG})`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center',
-                            backgroundSize: 'cover',
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
                             zIndex: -1,
                         }}
                     />
                     <Box
                         sx={{
-                            position: 'absolute',
+                            position: "absolute",
                             top: 0,
                             bottom: 0,
                             left: 0,
@@ -296,14 +298,14 @@ export const WarMachineDestroyedInfo = ({
                                     <SvgSkull fill="#FFFFFF" size="120px" sx={{ mb: 1 }} />
                                     <Typography
                                         sx={{
-                                            fontFamily: 'Nostromo Regular Heavy',
-                                            fontSize: '1.5rem',
-                                            color: '#FFFFFF',
+                                            fontFamily: "Nostromo Regular Heavy",
+                                            fontSize: "1.5rem",
+                                            color: "#FFFFFF",
                                         }}
                                     >
                                         DESTROYED
                                     </Typography>
-                                    <Typography sx={{ fontFamily: 'Nostromo Regular Bold', color: colors.neonBlue }}>
+                                    <Typography sx={{ fontFamily: "Nostromo Regular Bold", color: colors.neonBlue }}>
                                         {killDamagePercent}% DAMAGE
                                     </Typography>
                                 </Stack>
