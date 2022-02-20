@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { createContainer } from 'unstated-next'
-import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from '../constants'
-import { parseNetMessage } from '../helpers/netMessages'
-import { useDebounce } from '../hooks/useDebounce'
-import HubKey from '../keys'
-import { GameAbilityTargetPrice, NetMessageTick, NetMessageType } from '../types'
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { createContainer } from "unstated-next"
+import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from "../constants"
+import { parseNetMessage } from "../helpers/netMessages"
+import { useDebounce } from "../hooks/useDebounce"
+import HubKey from "../keys"
+import { GameAbilityTargetPrice, NetMessageTick, NetMessageType } from "../types"
 
 // websocket message struct
 interface MessageData {
@@ -15,8 +15,8 @@ interface MessageData {
 
 // makeid is used to generate a random transactionID for the websocket
 export function makeid(length = 12): string {
-    let result = ''
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    let result = ""
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
     for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * characters.length))
     }
@@ -28,7 +28,7 @@ const DateParse = () => {
         /^([0-9]+)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])[Tt]([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\.[0-9]+)?(([Zz])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/
 
     return function (key: string, value: any) {
-        if (typeof value === 'string') {
+        if (typeof value === "string") {
             const a = reISO.exec(value)
             if (a) return new Date(value)
         }
@@ -39,11 +39,11 @@ const DateParse = () => {
 const dp = DateParse()
 
 export function wsProtocol() {
-    return window.location.protocol.match(/^https/) ? 'wss' : 'ws'
+    return window.location.protocol.match(/^https/) ? "wss" : "ws"
 }
 
 export function httpProtocol() {
-    return window.location.protocol.match(/^https/) ? 'https' : 'http'
+    return window.location.protocol.match(/^https/) ? "https" : "http"
 }
 
 export enum SocketState {
@@ -101,7 +101,7 @@ const UseWebsocket = (): WebSocketProperties => {
         if (LOG_API_CALLS) {
             console.log(
                 `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE REQUEST: "${key}"`,
-                'background: #D1E5FF; color: #000000',
+                "background: #D1E5FF; color: #000000",
             )
             console.log({
                 key,
@@ -111,7 +111,7 @@ const UseWebsocket = (): WebSocketProperties => {
 
         return new Promise(function (resolve, reject) {
             callbacks.current[transactionID] = (data: Message<Y> | HubError) => {
-                if (data.key === 'HUB:ERROR') {
+                if (data.key === "HUB:ERROR") {
                     reject((data as HubError).message)
                     return
                 }
@@ -120,7 +120,7 @@ const UseWebsocket = (): WebSocketProperties => {
                 if (LOG_API_CALLS) {
                     console.log(
                         `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE RESPONSE: "${key}"`,
-                        'background: #FFD5C7; color: #000000',
+                        "background: #FFD5C7; color: #000000",
                     )
                     console.log(result)
                 }
@@ -157,32 +157,32 @@ const UseWebsocket = (): WebSocketProperties => {
             }
 
             if (LOG_API_CALLS) {
-                console.log(
-                    `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE REQUEST (${
-                        listenOnly ? 'LISTEN' : 'SUBSCRIPTION'
-                    }): "${key}"`,
-                    'background: #D1E5FF; color: #000000',
-                )
-                console.log({
-                    key,
-                    subKey,
-                    payload: args,
-                })
+                // console.log(
+                //     `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE REQUEST (${
+                //         listenOnly ? "LISTEN" : "SUBSCRIPTION"
+                //     }): "${key}"`,
+                //     "background: #D1E5FF; color: #000000",
+                // )
+                // console.log({
+                //     key,
+                //     subKey,
+                //     payload: args,
+                // })
             }
 
             const callback2 = (payload: T) => {
                 if (LOG_API_CALLS && !disableLog) {
-                    console.log(
-                        `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE RESPONSE (${
-                            listenOnly ? 'LISTEN' : 'SUBSCRIPTION'
-                        }): "${key}"`,
-                        'background: #FFD5C7; color: #000000',
-                    )
-                    console.log({
-                        key,
-                        subKey,
-                        payload,
-                    })
+                    // console.log(
+                    //     `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE RESPONSE (${
+                    //         listenOnly ? "LISTEN" : "SUBSCRIPTION"
+                    //     }): "${key}"`,
+                    //     "background: #FFD5C7; color: #000000",
+                    // )
+                    // console.log({
+                    //     key,
+                    //     subKey,
+                    //     payload,
+                    // })
                 }
                 callback(payload)
             }
@@ -197,7 +197,7 @@ const UseWebsocket = (): WebSocketProperties => {
                 setOutgoing((prev) => [
                     ...prev,
                     {
-                        key: key + (open ? '' : ':UNSUBSCRIBE'),
+                        key: key + (open ? "" : ":UNSUBSCRIBE"),
                         payload: open ? args : undefined,
                         transactionID,
                     },
@@ -225,7 +225,6 @@ const UseWebsocket = (): WebSocketProperties => {
             } else {
                 abilitySubs.current[abilityID] = [callback]
             }
-
             return () => {
                 const i = abilitySubs.current[abilityID].indexOf(callback)
                 if (i === -1) return
@@ -270,10 +269,10 @@ const UseWebsocket = (): WebSocketProperties => {
 
     const sendOutgoingMessages = useCallback(() => {
         if (outgoing.length === 0) return
-        if (!webSocket.current) throw new Error('no websocket')
+        if (!webSocket.current) throw new Error("no websocket")
 
         outgoing.forEach((og) => {
-            if (!webSocket.current) throw new Error('no websocket')
+            if (!webSocket.current) throw new Error("no websocket")
             webSocket.current.send(JSON.stringify(og))
         })
 
@@ -367,7 +366,7 @@ const UseWebsocket = (): WebSocketProperties => {
                 setState(WebSocket.CONNECTING)
                 setTimeout(() => {
                     webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
-                    webSocket.current.binaryType = 'arraybuffer'
+                    webSocket.current.binaryType = "arraybuffer"
                     setupWS(webSocket.current)
                     resolve(undefined)
                 }, 2000)
@@ -385,7 +384,7 @@ const UseWebsocket = (): WebSocketProperties => {
 
     useEffect(() => {
         webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
-        webSocket.current.binaryType = 'arraybuffer'
+        webSocket.current.binaryType = "arraybuffer"
         setupWS(webSocket.current)
 
         return () => {

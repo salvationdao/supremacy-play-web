@@ -3,9 +3,11 @@ import { colors } from "../../theme/theme"
 import { WarMachineItem } from "./WarMachineItem"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import { useAuth, useDimension, useGame } from "../../containers"
-import { ReactElement, useMemo } from "react"
+import { useAuth, useDimension, useGame, useWebsocket } from "../../containers"
+import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
+import HubKey from "../../keys"
+import { NullUUID } from "../../constants"
 
 const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
 const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245
@@ -44,10 +46,17 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
 export const WarMachineStats = () => {
     const { factionID } = useAuth()
     const { warMachines } = useGame()
+    const { state, subscribe } = useWebsocket()
     const theme = useTheme<Theme>()
     const {
         streamDimensions: { width },
     } = useDimension()
+
+    // Subscribe to the result of the vote
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe(HubKey.TriggerWarMachineLocationUpdated, () => console.log(""), null)
+    }, [state, subscribe])
 
     // Determine whether the mech items should be expanded out or collapsed
     const shouldBeExpanded = useMemo(() => {
