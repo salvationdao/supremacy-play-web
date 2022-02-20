@@ -6,12 +6,14 @@ import Resize from '!react-svg-loader!./svg/Resize.svg'
 import Chat from '!react-svg-loader!./svg/Chat.svg'
 import User from '!react-svg-loader!./svg/User.svg'
 import Info from '!react-svg-loader!./svg/Info.svg'
+import InfoCircular from '!react-svg-loader!./svg/InfoCircular.svg'
 import Applause from '!react-svg-loader!./svg/Applause.svg'
 import Fullscreen from '!react-svg-loader!./svg/Fullscreen.svg'
 import Unknown from '!react-svg-loader!./svg/Unknown.svg'
 import Volume from '!react-svg-loader!./svg/Volume.svg'
 import VolumeMute from '!react-svg-loader!./svg/VolumeMute.svg'
 import Settings from '!react-svg-loader!./svg/Settings.svg'
+import Damage from '!react-svg-loader!./svg/Damage.svg'
 import Drag from '!react-svg-loader!./svg/Drag.svg'
 import CampaignSharpIcon from '@mui/icons-material/CampaignSharp'
 import FlagSharpIcon from '@mui/icons-material/FlagSharp'
@@ -20,11 +22,13 @@ import WorkspacesSharpIcon from '@mui/icons-material/WorkspacesSharp'
 import AccessTimeSharpIcon from '@mui/icons-material/AccessTimeSharp'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import CloseSharpIcon from '@mui/icons-material/CloseSharp'
 import { Box, BoxProps } from '@mui/system'
 import { colors } from '../theme/theme'
-import GenericWarMachine from './images/GenericWarMachine.png'
+import GenericWarMachinePNG from './images/GenericWarMachine.png'
+import FlamesPNG from './images/Flames.png'
 
-export { GenericWarMachine }
+export { GenericWarMachinePNG, FlamesPNG }
 
 interface SvgWrapperProps extends BoxProps {
     size?: string
@@ -180,5 +184,23 @@ export const SvgChatIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgInfoIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Info />
+    </SvgWrapper>
+)
+
+export const SvgInfoCircularIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <InfoCircular />
+    </SvgWrapper>
+)
+
+export const SvgDamageIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Damage />
+    </SvgWrapper>
+)
+
+export const SvgDamageCross: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <CloseSharpIcon />
     </SvgWrapper>
 )

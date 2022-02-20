@@ -8,7 +8,7 @@ import { ReactElement, useMemo } from "react"
 import { BoxSlanted } from ".."
 
 const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
-const WIDTH_MECH_ITEM_OTHER_EXPANDED = 260
+const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245
 const WIDTH_MECH_ITEM_OTHER_COLLAPSED = 120
 
 const ScrollContainer = ({ children }: { children: ReactElement }) => {
@@ -81,7 +81,7 @@ export const WarMachineStats = () => {
         }
 
         return { shouldBeExpandedFaction, shouldBeExpandedOthers }
-    }, [width, factionID])
+    }, [width, factionID, warMachines])
 
     if (!warMachines || warMachines.length <= 0) return null
 
@@ -109,15 +109,15 @@ export const WarMachineStats = () => {
                         clipSize="9px"
                         clipSlantSize="26px"
                         skipLeft
-                        sx={{ pl: 5, pr: 7, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
+                        sx={{ pl: 3.5, pr: 6, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
                     >
                         <ScrollContainer>
-                            <Stack spacing={1.5} direction="row" alignItems="center" justifyContent="center">
+                            <Stack spacing={-1} direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
                                         key={`${wm.participantID} - ${wm.tokenID}`}
                                         warMachine={wm}
-                                        scale={1}
+                                        scale={0.9}
                                         shouldBeExpanded={shouldBeExpanded.shouldBeExpandedFaction}
                                     />
                                 ))}

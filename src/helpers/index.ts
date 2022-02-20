@@ -92,6 +92,15 @@ export const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: numb
 }
 
 // Converts numeric degrees to radians
-const deg2rad = (deg: number): number => {
+export const deg2rad = (deg: number): number => {
     return deg * (Math.PI / 180)
+}
+
+// Converts numeric degrees to radians
+export const rad2Deg = (rad: number): number => {
+    return rad * (180 / Math.PI)
+}
+
+export const clamp = (min: number, value: number, max: number) => {
+    return Math.min(Math.max(value, min), max)
 }

@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { StyledImageText, StyledNormalText } from '..'
-import { GenericWarMachine } from '../../assets'
+import { GenericWarMachinePNG } from '../../assets'
 import { BattleAbility, User, WarMachineState } from '../../types'
 
 interface WarMachineAbilityAlertProps {
@@ -10,11 +10,11 @@ interface WarMachineAbilityAlertProps {
 }
 
 export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertProps }) => {
-    const { user, ability, warMachine } = data
+    const { ability, warMachine } = data
     const { label, colour, imageUrl } = ability
     const { name, imageUrl: warMachineImageUrl, faction } = warMachine
 
-    const wmImageUrl = warMachineImageUrl || GenericWarMachine
+    const wmImageUrl = warMachineImageUrl || GenericWarMachinePNG
 
     return (
         <Box>

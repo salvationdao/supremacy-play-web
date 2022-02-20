@@ -163,7 +163,7 @@ export interface WarMachineDestroyedRecord {
 
 export interface DamageRecord {
     amount: number
-    causedByWarMachine: WarMachineState
+    causedByWarMachine?: WarMachineState
     sourceName: string // weapon/ability name
 }
 
