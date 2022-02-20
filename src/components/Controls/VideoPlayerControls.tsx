@@ -25,7 +25,7 @@ export const VideoPlayerControls = () => {
     return (
         <Stack direction="row" alignItems="center">
             <Box sx={{ width: 200, mr: 2 }}>
-                <Stack spacing={1} direction="row" alignItems="center">
+                <Stack spacing={1.5} direction="row" alignItems="center">
                     <IconButton
                         size="small"
                         onClick={toggleIsMute}
@@ -39,11 +39,11 @@ export const VideoPlayerControls = () => {
                     </IconButton>
                     <Slider
                         size="small"
-                        min={0.1}
+                        min={0}
                         max={1}
                         step={0.01}
                         aria-label="Volume"
-                        value={volume}
+                        value={isMute ? 0 : volume}
                         onChange={handleVolumeChange}
                     />
                 </Stack>

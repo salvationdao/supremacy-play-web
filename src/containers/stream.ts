@@ -81,7 +81,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
     const [currentResolution, setCurrentResolution] = useState<number>()
 
     useEffect(() => {
-        if (volume === 0.1) {
+        if (volume <= 0) {
             toggleIsMute(true)
             return
         }
@@ -110,7 +110,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                     isPlayMode: true,
                     debug: false,
                     candidateTypes: ["tcp", "udp"],
-                    callback: function (info: string, obj: any) {
+                    callback: (info: string, obj: any) => {
                         if (info == "initialized") {
                             if (!webRtc || !webRtc.current || !webRtc.current.play) return
                             webRtc.current.play(selectedStreamID, "")
@@ -119,7 +119,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                             webRtc.current.getStreamInfo(selectedStreamID)
                         } else if (info == "streamInformation") {
                             const resolutions: number[] = [0]
-                            obj["streamInfo"].forEach(function (entry: StreamInfoEntry) {
+                            obj["streamInfo"].forEach((entry: StreamInfoEntry) => {
                                 // get resolutions from server response and added to an array.
                                 if (!resolutions.includes(entry["streamHeight"])) {
                                     resolutions.push(entry["streamHeight"])
