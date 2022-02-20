@@ -27,15 +27,12 @@ import {
     STREAM_ASPECT_RATIO_W_H,
 } from "./constants"
 import {
-    AuthContainerType,
     AuthProvider,
-    DimensionContainerType,
     DimensionProvider,
     GameProvider,
     LeftSideBarProvider,
     SnackBarProvider,
     SocketProvider,
-    StreamContainerType,
     StreamProvider,
     useAuth,
     useDimension,
@@ -93,35 +90,20 @@ interface StreamInfoEntry {
     videoCodec: string
 }
 
-interface AppInnerProps {
-    authContainer: AuthContainerType
-    dimensionContainer: DimensionContainerType
-    fullScreenHandleContainer: FullScreenHandle
-    streamContainer: StreamContainerType
-    streamID: string
-}
-
-const AppInner = (props: AppInnerProps) => {
-    // props
-    const { authContainer, dimensionContainer, fullScreenHandleContainer, streamContainer } = props
-
-    // auth
-    const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = authContainer
-
-    // dimensions
-    const { mainDivDimensions, streamDimensions, iframeDimensions } = dimensionContainer
-
-    // stream
-    const { selectedWsURL, selectedStreamID, setStreamResolutions, volume, isMute, setIsMute } = streamContainer
+const AppInner = () => {
+    const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
+    const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
+    const { selectedWsURL, selectedStreamID, setStreamResolutions, volume, isMute, toggleIsMute } = useStream()
+    const fullScreenHandleContainer = useFullScreenHandle()
 
     useEffect(() => {
         if (volume === 0.1) {
-            setIsMute(true)
+            toggleIsMute(true)
             return
         }
         if (vidRef && vidRef.current && vidRef.current.volume) {
             vidRef.current.volume = volume
-            setIsMute(false)
+            toggleIsMute(false)
         }
     }, [volume])
 
@@ -263,7 +245,6 @@ const AppInner = (props: AppInnerProps) => {
                             >
                                 <Controls
                                     fullScreenHandleContainer={fullScreenHandleContainer}
-                                    streamContainer={streamContainer}
                                     forceResolutionFn={changeStreamQuality}
                                 />
                             </Box>
@@ -279,23 +260,6 @@ const AppInner = (props: AppInnerProps) => {
     )
 }
 
-const AppInnerContainer = () => {
-    // TODO: change this
-    const authContainer = useAuth()
-    const dimensionContainer = useDimension()
-    const streamContainer = useStream()
-    const handle = useFullScreenHandle()
-
-    return (
-        <AppInner
-            streamID={streamContainer.selectedStreamID}
-            streamContainer={streamContainer}
-            authContainer={authContainer}
-            dimensionContainer={dimensionContainer}
-            fullScreenHandleContainer={handle}
-        />
-    )
-}
 const App = () => {
     const [currentTheme, setTheme] = useState<Theme>(theme)
     const [factionColors, setFactionColors] = useState<FactionThemeColor>({
@@ -319,7 +283,7 @@ const App = () => {
                                     <DimensionProvider>
                                         <LeftSideBarProvider>
                                             <SnackBarProvider>
-                                                <AppInnerContainer />
+                                                <AppInner />
                                             </SnackBarProvider>
                                         </LeftSideBarProvider>
                                     </DimensionProvider>

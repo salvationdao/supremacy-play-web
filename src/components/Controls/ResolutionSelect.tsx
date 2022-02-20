@@ -1,22 +1,24 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { StreamContainerType } from "../../containers"
+import { useStream } from "../../containers"
 import { colors } from "../../theme/theme"
 
 interface ResolutionSelectProps {
-    streamContainer: StreamContainerType
     forceResolutionFn: (quality: number) => void
 }
 
 export const ResolutionSelect = (props: ResolutionSelectProps) => {
-    const { streamContainer, forceResolutionFn } = props
-    const { streamResolutions, setCurrentResolution } = streamContainer
+    const { forceResolutionFn } = props
+    const { streamResolutions, setCurrentResolution } = useStream()
     const [options, setOptions] = useState<number[]>([])
+
     useMemo(() => {
         if (streamResolutions.length == 0) return
         setOptions(streamResolutions)
     }, [streamResolutions])
-    if (options.length === 0) return <></>
+
+    if (options.length <= 0) return null
+
     return (
         <Stack direction="row" spacing={0.3} alignItems="center">
             <Typography variant="body2" sx={{ lineHeight: 1 }}>

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { createContainer } from "unstated-next"
+import { useToggle } from "../hooks"
 import { Stream } from "../types"
 
 export interface StreamContainerType {
@@ -14,8 +15,7 @@ export interface StreamContainerType {
     volume: number
     setVolume: React.Dispatch<React.SetStateAction<number>>
     isMute: boolean
-    setIsMute: React.Dispatch<React.SetStateAction<boolean>>
-    muteToggle: () => void
+    toggleIsMute: any
     currentResolution: number | undefined
     setCurrentResolution: React.Dispatch<React.SetStateAction<number | undefined>>
     defaultStreamID: string
@@ -34,10 +34,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
 
     // volume
     const [volume, setVolume] = useState(0.0)
-    const [isMute, setIsMute] = useState(true)
-    const muteToggle = () => {
-        setIsMute(!isMute)
-    }
+    const [isMute, toggleIsMute] = useToggle(true)
 
     // resolution
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
@@ -62,8 +59,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
         volume,
         setVolume,
         isMute,
-        setIsMute,
-        muteToggle,
+        toggleIsMute,
 
         defaultStreamID,
         defaultWSURL,

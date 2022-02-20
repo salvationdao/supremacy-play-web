@@ -24,4 +24,4 @@ export const SENTRY_CONFIG = {
 export const GAMEBAR_HEIGHT = 61
 export const CONTROLS_HEIGHT = 30
 export const LIVE_CHAT_DRAWER_WIDTH = 320
-export const SIDE_BARS_WIDTH = 35
+export const SIDE_BARS_WIDTH = 20
