@@ -1,16 +1,11 @@
-import ReactDOM from 'react-dom'
-import { Theme } from '@mui/material/styles'
-import {
-    AuthProvider,
-    DimensionProvider,
-    GameProvider,
-    LeftSideBarProvider,
-    SnackBarProvider,
-    SocketProvider,
-    useAuth,
-    useDimension,
-} from './containers'
-import { Box, CssBaseline, Stack, ThemeProvider } from '@mui/material'
+import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
+import { Box, Stack, ThemeProvider } from "@mui/material"
+import { Theme } from "@mui/material/styles"
+import { GameBar, WalletProvider } from "@ninjasoftware/passport-gamebar"
+import * as Sentry from "@sentry/react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import ReactDOM from "react-dom"
+import { FullScreen, FullScreenHandle, useFullScreenHandle } from "react-full-screen"
 import {
     Controls,
     LeftSideBar,
@@ -21,24 +16,31 @@ import {
     Notifications,
     VotingSystem,
     WarMachineStats,
-} from './components'
-import { useEffect, useState } from 'react'
-import { FactionThemeColor, UpdateTheme } from './types'
-import { mergeDeep } from './helpers'
-import { colors, theme } from './theme/theme'
-import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
+} from "./components"
+import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
 import {
+    CONTROLS_HEIGHT,
+    GAMEBAR_HEIGHT,
     PASSPORT_SERVER_HOSTNAME,
     PASSPORT_WEB,
     SENTRY_CONFIG,
-    GAMEBAR_HEIGHT,
-    CONTROLS_HEIGHT,
     STREAM_ASPECT_RATIO_W_H,
-} from './constants'
-import { FullScreen, useFullScreenHandle } from 'react-full-screen'
-import * as Sentry from '@sentry/react'
-import { StreamProvider, useStream } from './containers'
-import { BattleEndScreen } from './components/BattleEndScreen/BattleEndScreen'
+} from "./constants"
+import {
+    AuthProvider,
+    DimensionProvider,
+    GameProvider,
+    LeftSideBarProvider,
+    SnackBarProvider,
+    SocketProvider,
+    StreamProvider,
+    useAuth,
+    useDimension,
+    useStream,
+} from "./containers"
+import { mergeDeep } from "./helpers"
+import { colors, theme } from "./theme/theme"
+import { FactionThemeColor, UpdateTheme } from "./types"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -57,20 +59,124 @@ if (SENTRY_CONFIG) {
     })
 }
 
+interface WebRTCAdaptorType {
+    websocket_url: string
+    mediaConstraints: {
+        video: boolean
+        audio: boolean
+    }
+    sdp_constraints: {
+        OfferToReceiveAudio: boolean
+        OfferToReceiveVideo: boolean
+    }
+    remoteVideoId: string
+    isPlayMode: boolean
+    debug: boolean
+    candidateTypes: string[]
+    callback: (info: string, obj: any) => void
+    callbackError: (error: string) => void
+
+    forceStreamQuality: (streamID: string, quality: number) => void
+    play: (streamID: string, tokenID: string) => void
+    getStreamInfo: (streamID: string) => void
+    closeWebSocket: (streamID: string) => void
+}
+
+interface StreamInfoEntry {
+    audioBitrate: number
+    streamHeight: number
+    streamWidth: number
+    videoBitrate: number
+    videoCodec: string
+}
+
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
-    const { currentStream } = useStream()
-    const handle = useFullScreenHandle()
+    const { selectedWsURL, selectedStreamID, setStreamResolutions, volume, isMute, toggleIsMute } = useStream()
+    const fullScreenHandleContainer = useFullScreenHandle()
+
+    useEffect(() => {
+        if (volume === 0.1) {
+            toggleIsMute(true)
+            return
+        }
+        if (vidRef && vidRef.current && vidRef.current.volume) {
+            vidRef.current.volume = volume
+            toggleIsMute(false)
+        }
+    }, [volume])
+
+    const webRtc = useRef<WebRTCAdaptorType>()
+    const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
+
+    const vidRefCallback = useCallback(
+        (vid: HTMLVideoElement) => {
+            if (!vid || !vid.parentNode) {
+                vidRef.current = undefined
+                return
+            }
+            try {
+                vidRef.current = vid
+                webRtc.current = new WebRTCAdaptor({
+                    websocket_url: selectedWsURL,
+                    mediaConstraints: { video: false, audio: false },
+                    sdp_constraints: {
+                        OfferToReceiveAudio: true,
+                        OfferToReceiveVideo: true,
+                    },
+                    remoteVideoId: "remoteVideo",
+                    isPlayMode: true,
+                    debug: false,
+                    candidateTypes: ["tcp", "udp"],
+                    callback: function (info: string, obj: any) {
+                        if (info == "initialized") {
+                            if (!webRtc || !webRtc.current || !webRtc.current.play) return
+                            webRtc.current.play(selectedStreamID, "")
+                        } else if (info == "play_started") {
+                            if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
+                            webRtc.current.getStreamInfo(selectedStreamID)
+                        } else if (info == "streamInformation") {
+                            const resolutions: number[] = [0]
+                            obj["streamInfo"].forEach(function (entry: StreamInfoEntry) {
+                                // get resolutions from server response and added to an array.
+                                if (!resolutions.includes(entry["streamHeight"])) {
+                                    resolutions.push(entry["streamHeight"])
+                                }
+                            })
+                            setStreamResolutions(resolutions)
+                        } else if (info == "closed") {
+                            webRtc.current = undefined
+                            if (typeof obj != "undefined") {
+                                console.log("connection closed: " + JSON.stringify(obj))
+                            }
+                        }
+                    },
+                    callbackError: (error: string) => {
+                        console.log(`--- ERROR ---`, error)
+                    },
+                })
+            } catch (e) {
+                console.log(e)
+                webRtc.current = undefined
+            }
+        },
+        [selectedWsURL],
+    )
+
+    const changeStreamQuality = (quality: number) => {
+        if (webRtc?.current) {
+            webRtc.current.forceStreamQuality(selectedStreamID, quality)
+        }
+    }
 
     return (
         <>
-            <CssBaseline />
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <FullScreen handle={handle}>
+                <FullScreen handle={fullScreenHandleContainer}>
                     <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
                         <Stack sx={{ width: mainDivDimensions.width, height: mainDivDimensions.height }}>
-                            <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT, zIndex: 999 }}>
+                            <Box sx={{ position: "relative", width: "100%", height: GAMEBAR_HEIGHT }}>
                                 <GameBar
                                     barPosition="top"
                                     gameserverSessionID={gameserverSessionID}
@@ -83,51 +189,43 @@ const AppInner = () => {
                                 direction="row"
                                 sx={{
                                     flex: 1,
-                                    position: 'relative',
-                                    width: '100%',
+                                    position: "relative",
+                                    width: "100%",
                                     backgroundColor: colors.darkNavyBlue,
-                                    overflow: 'hidden',
+                                    overflow: "hidden",
                                 }}
                             >
                                 <LeftSideBar />
 
                                 <Box
                                     sx={{
-                                        position: 'relative',
+                                        position: "relative",
                                         height: streamDimensions.height,
                                         width: streamDimensions.width,
                                         backgroundColor: colors.darkNavyBlue,
                                         clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
                                     }}
                                 >
-                                    <iframe
-                                        frameBorder="0"
-                                        allowFullScreen
-                                        src={currentStream?.url}
+                                    <video
+                                        key={selectedWsURL}
+                                        muted={isMute}
+                                        ref={vidRefCallback}
+                                        id={"remoteVideo"}
+                                        autoPlay
+                                        controls
+                                        playsInline
                                         style={{
-                                            position: 'absolute',
-                                            top: '50%',
-                                            left: '50%',
-                                            transform: 'translate(-50%, -50%)',
+                                            position: "absolute",
+                                            top: "50%",
+                                            left: "50%",
+                                            transform: "translate(-50%, -50%)",
                                             aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
                                             width: iframeDimensions.width,
                                             height: iframeDimensions.height,
                                         }}
-                                    ></iframe>
+                                    />
 
-                                    {/* <Box
-                                        sx={{
-                                            position: 'absolute',
-                                            left: 0,
-                                            right: 0,
-                                            top: 0,
-                                            bottom: 0,
-                                            backgroundColor: '#622D93',
-                                        }}
-                                    /> */}
-                                    {/* <Box sx={{ position: 'absolute', left: 0, right: 0 , top: 0, bottom: 0, backgroundColor: '#000000', }} /> */}
-
-                                    <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
+                                    <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
                                         <VotingSystem />
                                         <MiniMap />
                                         <Notifications />
@@ -140,12 +238,15 @@ const AppInner = () => {
 
                             <Box
                                 sx={{
-                                    position: 'relative',
-                                    width: '100%',
+                                    position: "relative",
+                                    width: "100%",
                                     height: CONTROLS_HEIGHT,
                                 }}
                             >
-                                <Controls />
+                                <Controls
+                                    fullScreenHandleContainer={fullScreenHandleContainer}
+                                    forceResolutionFn={changeStreamQuality}
+                                />
                             </Box>
                         </Stack>
 
@@ -162,9 +263,9 @@ const AppInner = () => {
 const App = () => {
     const [currentTheme, setTheme] = useState<Theme>(theme)
     const [factionColors, setFactionColors] = useState<FactionThemeColor>({
-        primary: '#00FFFF',
-        secondary: '#00FFFF',
-        background: '#050c12',
+        primary: "#00FFFF",
+        secondary: "#00FFFF",
+        background: "#050c12",
     })
 
     useEffect(() => {
@@ -196,4 +297,4 @@ const App = () => {
     )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<App />, document.getElementById("root"))
