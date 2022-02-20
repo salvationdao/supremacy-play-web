@@ -3,13 +3,11 @@ import { useEffect, useRef, useState } from "react"
 import { ClipThing, InteractiveMap, TargetTimerCountdown } from ".."
 import { colors } from "../../theme/theme"
 import { Theme } from "@mui/material/styles"
-import ZoomOutMapOutlinedIcon from "@mui/icons-material/ZoomOutMapOutlined"
-import ZoomInMapOutlinedIcon from "@mui/icons-material/ZoomInMapOutlined"
 import { useToggle } from "../../hooks"
 import { useDimension, useGame } from "../../containers"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
 import { parseString } from "../../helpers"
-import { SvgDrag } from "../../assets"
+import { SvgDrag, SvgMapEnlarge } from "../../assets"
 
 const Padding = 10
 const DefaultPositionXRight = 10
@@ -143,19 +141,15 @@ export const MiniMap = () => {
                                         size="small"
                                         sx={{
                                             position: "absolute",
-                                            left: 1,
-                                            top: 1,
+                                            left: 2,
+                                            top: 2,
                                             color: colors.text,
                                             opacity: 0.8,
                                             zIndex: 50,
                                         }}
                                         onClick={() => toggleEnlarged()}
                                     >
-                                        {enlarged ? (
-                                            <ZoomInMapOutlinedIcon fontSize="small" />
-                                        ) : (
-                                            <ZoomOutMapOutlinedIcon fontSize="small" />
-                                        )}
+                                        {enlarged ? <SvgMapEnlarge size="13px" /> : <SvgMapEnlarge size="13px" />}
                                     </IconButton>
 
                                     <IconButton
@@ -163,15 +157,15 @@ export const MiniMap = () => {
                                         size="small"
                                         sx={{
                                             position: "absolute",
-                                            left: 25,
-                                            top: 3,
+                                            left: 22,
+                                            top: 2,
                                             color: colors.text,
                                             opacity: 0.8,
                                             zIndex: 50,
                                             cursor: "move",
                                         }}
                                     >
-                                        <SvgDrag size="13px" />
+                                        <SvgDrag size="12.5px" />
                                     </IconButton>
 
                                     {isTargeting && (
