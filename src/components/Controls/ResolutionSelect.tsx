@@ -3,19 +3,20 @@ import { useMemo, useState } from "react"
 import { useStream } from "../../containers"
 import { colors } from "../../theme/theme"
 
-interface ResolutionSelectProps {
-    forceResolutionFn: (quality: number) => void
-}
-
-export const ResolutionSelect = (props: ResolutionSelectProps) => {
-    const { forceResolutionFn } = props
-    const { streamResolutions, setCurrentResolution } = useStream()
+export const ResolutionSelect = () => {
+    const { webRtc, selectedStreamID, streamResolutions, setCurrentResolution } = useStream()
     const [options, setOptions] = useState<number[]>([])
 
     useMemo(() => {
         if (streamResolutions.length == 0) return
         setOptions(streamResolutions)
     }, [streamResolutions])
+
+    const changeStreamQuality = (quality: number) => {
+        if (webRtc?.current) {
+            webRtc.current.forceStreamQuality(selectedStreamID, quality)
+        }
+    }
 
     if (options.length <= 0) return null
 
@@ -57,7 +58,7 @@ export const ResolutionSelect = (props: ResolutionSelectProps) => {
                             value={x}
                             onClick={() => {
                                 setCurrentResolution(x)
-                                forceResolutionFn(x)
+                                changeStreamQuality(x)
                             }}
                             sx={{
                                 "&:hover": {
