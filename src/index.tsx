@@ -5,7 +5,6 @@ import { GameBar, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import ReactDOM from "react-dom"
-import { FullScreen, FullScreenHandle, useFullScreenHandle } from "react-full-screen"
 import {
     Controls,
     LeftSideBar,
@@ -94,7 +93,6 @@ const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
     const { selectedWsURL, selectedStreamID, setStreamResolutions, volume, isMute, toggleIsMute } = useStream()
-    const fullScreenHandleContainer = useFullScreenHandle()
 
     useEffect(() => {
         if (volume === 0.1) {
@@ -173,7 +171,7 @@ const AppInner = () => {
     return (
         <>
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <FullScreen handle={fullScreenHandleContainer}>
+                <>
                     <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
                         <Stack sx={{ width: mainDivDimensions.width, height: mainDivDimensions.height }}>
                             <Box sx={{ position: "relative", width: "100%", height: GAMEBAR_HEIGHT }}>
@@ -243,10 +241,7 @@ const AppInner = () => {
                                     height: CONTROLS_HEIGHT,
                                 }}
                             >
-                                <Controls
-                                    fullScreenHandleContainer={fullScreenHandleContainer}
-                                    forceResolutionFn={changeStreamQuality}
-                                />
+                                <Controls forceResolutionFn={changeStreamQuality} />
                             </Box>
                         </Stack>
 
@@ -254,7 +249,7 @@ const AppInner = () => {
                     </Stack>
 
                     <LiveChat />
-                </FullScreen>
+                </>
             )}
         </>
     )

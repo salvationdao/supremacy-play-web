@@ -1,5 +1,4 @@
 import { Box, IconButton, Slider, Stack } from "@mui/material"
-import { FullScreenHandle } from "react-full-screen"
 import { SvgFullscreen, SvgVolume, SvgVolumeMute } from "../../assets"
 import { useStream } from "../../containers"
 

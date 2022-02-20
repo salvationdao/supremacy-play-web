@@ -4,10 +4,8 @@ import { ResolutionSelect } from "./ResolutionSelect"
 import { colors } from "../../theme/theme"
 import { StreamSelect } from "./StreamSelect"
 import { SIDE_BARS_WIDTH } from "../../constants"
-import { FullScreenHandle } from "react-full-screen"
 
 export interface ControlsProps {
-    fullScreenHandleContainer: FullScreenHandle
     forceResolutionFn: (quality: number) => void
 }
 export const Controls = (props: ControlsProps) => {
