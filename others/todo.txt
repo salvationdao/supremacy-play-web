@@ -39,10 +39,10 @@ x mech abilities
 x fix map mech rotation issue
 x map show mech logo image instead
 x kill notification
+x video controls ui
 
 
 Pending:
-- video controls ui
 - make overlay components moveable / toggleable
 - iframe dimension onresize
 - Ability description tooltip
