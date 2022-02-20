@@ -1,15 +1,15 @@
-import { Box, IconButton, Slide, useTheme } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
-import { ClipThing, InteractiveMap, TargetTimerCountdown } from '..'
-import { colors } from '../../theme/theme'
-import { Theme } from '@mui/material/styles'
-import ZoomOutMapOutlinedIcon from '@mui/icons-material/ZoomOutMapOutlined'
-import ZoomInMapOutlinedIcon from '@mui/icons-material/ZoomInMapOutlined'
-import { useToggle } from '../../hooks'
-import { useDimension, useGame } from '../../containers'
-import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
-import { parseString } from '../../helpers'
-import { SvgDrag } from '../../assets'
+import { Box, IconButton, Slide, useTheme } from "@mui/material"
+import { useEffect, useRef, useState } from "react"
+import { ClipThing, InteractiveMap, TargetTimerCountdown } from ".."
+import { colors } from "../../theme/theme"
+import { Theme } from "@mui/material/styles"
+import ZoomOutMapOutlinedIcon from "@mui/icons-material/ZoomOutMapOutlined"
+import ZoomInMapOutlinedIcon from "@mui/icons-material/ZoomInMapOutlined"
+import { useToggle } from "../../hooks"
+import { useDimension, useGame } from "../../containers"
+import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
+import { parseString } from "../../helpers"
+import { SvgDrag } from "../../assets"
 
 const Padding = 10
 const DefaultPositionXRight = 10
@@ -24,7 +24,7 @@ export const MiniMap = () => {
     const [curPosX, setCurPosX] = useState(-1)
     const [curPosY, setCurPosY] = useState(-1)
     const { map, winner, setWinner, votingState } = useGame()
-    const [enlarged, toggleEnlarged] = useToggle()
+    const [enlarged, toggleEnlarged] = useToggle(false)
     const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
         width: 230,
         height: 200,
@@ -41,8 +41,8 @@ export const MiniMap = () => {
         const newHeight = enlarged ? Math.min(height - 125, 700) : 200
         setDimensions({ width: newWidth, height: newHeight })
 
-        let newPosX = parseString(localStorage.getItem('miniMapPosX'), -1)
-        let newPosY = parseString(localStorage.getItem('miniMapPosY'), -1)
+        let newPosX = parseString(localStorage.getItem("miniMapPosX"), -1)
+        let newPosY = parseString(localStorage.getItem("miniMapPosY"), -1)
 
         // Make sure map is inside iframe when page / map are resized
         newPosX =
@@ -57,8 +57,8 @@ export const MiniMap = () => {
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
-        localStorage.setItem('miniMapPosX', newPosX.toString())
-        localStorage.setItem('miniMapPosY', newPosY.toString())
+        localStorage.setItem("miniMapPosX", newPosX.toString())
+        localStorage.setItem("miniMapPosY", newPosY.toString())
     }, [width, height, enlarged])
 
     useEffect(() => {
@@ -72,7 +72,7 @@ export const MiniMap = () => {
     }, [winner])
 
     useEffect(() => {
-        if (winner && votingState?.phase == 'LOCATION_SELECT') toggleEnlarged(true)
+        if (winner && votingState?.phase == "LOCATION_SELECT") toggleEnlarged(true)
     }, [winner, votingState])
 
     useEffect(() => {
@@ -84,17 +84,17 @@ export const MiniMap = () => {
 
     if (!map) return null
 
-    const isTargeting = winner && !timeReachZero && !submitted && votingState?.phase == 'LOCATION_SELECT'
+    const isTargeting = winner && !timeReachZero && !submitted && votingState?.phase == "LOCATION_SELECT"
 
     return (
         <Box
             sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 0,
                 left: 0,
-                pointerEvents: 'none',
+                pointerEvents: "none",
                 zIndex: 32,
-                filter: 'drop-shadow(0 3px 3px #00000050)',
+                filter: "drop-shadow(0 3px 3px #00000050)",
             }}
         >
             <Draggable
@@ -107,8 +107,8 @@ export const MiniMap = () => {
                 onStop={(e: DraggableEvent, data: DraggableData) => {
                     setCurPosX(data.x)
                     setCurPosY(data.y)
-                    localStorage.setItem('miniMapPosX', data.x.toString())
-                    localStorage.setItem('miniMapPosY', data.y.toString())
+                    localStorage.setItem("miniMapPosX", data.x.toString())
+                    localStorage.setItem("miniMapPosY", data.y.toString())
                 }}
                 bounds={{
                     top: Padding,
@@ -117,7 +117,7 @@ export const MiniMap = () => {
                     right: width - dimensions.width - Padding - ClipBorder,
                 }}
             >
-                <Box sx={{ pointerEvents: 'all' }}>
+                <Box sx={{ pointerEvents: "all" }}>
                     <Slide in={true} direction="left">
                         <Box>
                             <ClipThing
@@ -130,19 +130,19 @@ export const MiniMap = () => {
                             >
                                 <Box
                                     sx={{
-                                        position: 'relative',
+                                        position: "relative",
                                         boxShadow: 1,
                                         width: dimensions.width,
                                         height: dimensions.height,
                                         // backgroundColor: colors.darkNavy,
-                                        transition: 'all .2s',
+                                        transition: "all .2s",
                                         background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
                                     }}
                                 >
                                     <IconButton
                                         size="small"
                                         sx={{
-                                            position: 'absolute',
+                                            position: "absolute",
                                             left: 1,
                                             top: 1,
                                             color: colors.text,
@@ -162,13 +162,13 @@ export const MiniMap = () => {
                                         className="handle"
                                         size="small"
                                         sx={{
-                                            position: 'absolute',
+                                            position: "absolute",
                                             left: 25,
                                             top: 3,
                                             color: colors.text,
                                             opacity: 0.8,
                                             zIndex: 50,
-                                            cursor: 'move',
+                                            cursor: "move",
                                         }}
                                     >
                                         <SvgDrag size="13px" />

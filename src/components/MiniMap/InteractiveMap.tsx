@@ -1,11 +1,11 @@
-import { Box, Stack } from '@mui/material'
-import { styled } from '@mui/system'
-import { Dispatch, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
-import { MapWarMachine, SelectionIcon } from '..'
-import { useGame } from '../../containers'
-import { GameAbility, Map, WarMachineState } from '../../types'
-import { animated, useSpring } from 'react-spring'
-import { useDrag, useWheel } from '@use-gesture/react'
+import { Box, Stack } from "@mui/material"
+import { styled } from "@mui/system"
+import { Dispatch, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
+import { MapWarMachine, SelectionIcon } from ".."
+import { useGame } from "../../containers"
+import { GameAbility, Map, WarMachineState } from "../../types"
+import { animated, useSpring } from "react-spring"
+import { useDrag, useWheel } from "@use-gesture/react"
 
 // Difference between game map scale & image scale
 const MapScaleRatio = 40
@@ -15,26 +15,26 @@ export interface MapSelection {
     y: number
 }
 
-const MapGrid = styled('table', {
-    shouldForwardProp: (prop) => prop !== 'map',
+const MapGrid = styled("table", {
+    shouldForwardProp: (prop) => prop !== "map",
 })<{ map: Map }>(({ map }) => ({
-    position: 'absolute',
+    position: "absolute",
     zIndex: 4,
     width: `${map.width}px`,
     height: `${map.height}px`,
     borderSpacing: 0,
 }))
 
-const GridCell = styled('td', {
-    shouldForwardProp: (prop) => prop !== 'disabled',
+const GridCell = styled("td", {
+    shouldForwardProp: (prop) => prop !== "disabled",
 })<{ disabled?: boolean }>(({ disabled }) => ({
-    height: '50px',
-    width: '50px',
-    cursor: disabled ? 'auto' : 'pointer',
-    border: disabled ? 'unset' : `1px solid #FFFFFF40`,
-    backgroundColor: disabled ? '#00000090' : 'unset',
-    '&:hover': {
-        backgroundColor: disabled ? '#00000090' : '#FFFFFF45',
+    height: "50px",
+    width: "50px",
+    cursor: disabled ? "auto" : "pointer",
+    border: disabled ? "unset" : `1px solid #FFFFFF40`,
+    backgroundColor: disabled ? "#00000090" : "unset",
+    "&:hover": {
+        backgroundColor: disabled ? "#00000090" : "#FFFFFF45",
     },
 }))
 
@@ -70,7 +70,7 @@ export const InteractiveMap = ({
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     confirmed?: MutableRefObject<boolean>
-    enlarged?: boolean
+    enlarged: boolean
 }) => {
     const { map, setMap, warMachines } = useGame()
     const [selection, setSelection] = useState<MapSelection>()
@@ -157,8 +157,8 @@ export const InteractiveMap = ({
     // --------------- Minimap - useGesture setup -------------------
 
     // Prevents map zooming from interfering with the browsers' accessibility zoom
-    document.addEventListener('gesturestart', (e) => e.preventDefault())
-    document.addEventListener('gesturechange', (e) => e.preventDefault())
+    document.addEventListener("gesturestart", (e) => e.preventDefault())
+    document.addEventListener("gesturechange", (e) => e.preventDefault())
 
     // Setup use-gesture props
     const [{ x, y, scale }, set] = useSpring(() => ({
@@ -246,15 +246,15 @@ export const InteractiveMap = ({
     return (
         <Stack
             sx={{
-                position: 'relative',
-                width: '100%',
-                height: '100%',
-                overflow: 'hidden',
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                overflow: "hidden",
             }}
         >
             {/* Map - can be dragged */}
-            <animated.div {...dragMap()} style={{ x, y, touchAction: 'none' }}>
-                <Box sx={{ cursor: 'move' }}>
+            <animated.div {...dragMap()} style={{ x, y, touchAction: "none" }}>
+                <Box sx={{ cursor: "move" }}>
                     {/* War machines can be dragged - the scale is set through the map */}
                     <MapWarMachines map={map} warMachines={warMachines || []} />
 
@@ -266,7 +266,7 @@ export const InteractiveMap = ({
                         {/* Map Image */}
                         <Box
                             sx={{
-                                position: 'absolute',
+                                position: "absolute",
                                 width: `${map.width}px`,
                                 height: `${map.height}px`,
                                 backgroundImage: `url(${map.imageUrl})`,
