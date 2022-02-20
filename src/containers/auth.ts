@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import { createContainer } from 'unstated-next'
-import HubKey from '../keys'
-import { UpdateTheme, User } from '../types'
-import { useWebsocket } from './socket'
+import React, { useEffect, useState } from "react"
+import { createContainer } from "unstated-next"
+import HubKey from "../keys"
+import { UpdateTheme, User } from "../types"
+import { useWebsocket } from "./socket"
 
+export interface AuthContainerType {
+    user: User | undefined
+    userID: string | undefined
+    factionID: string | undefined
+    gameserverSessionID: string
+    authSessionIDGetLoading: boolean
+    authSessionIDGetError: undefined
+}
 /**
  * A Container that handles Authorisation
  */
-export const AuthContainer = createContainer(() => {
+export const AuthContainer = createContainer((): AuthContainerType => {
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useWebsocket()
     const [user, setUser] = useState<User>()
-    const [gameserverSessionID, setGameserverSessionID] = useState<string>('')
+    const [gameserverSessionID, setGameserverSessionID] = useState<string>("")
 
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
     const [authSessionIDGetError, setAuthSessionIDGetError] = useState()

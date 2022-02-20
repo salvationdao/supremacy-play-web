@@ -1,17 +1,17 @@
-import { MenuItem, Select, Stack, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { useWebsocket } from '../../containers/socket'
-import { useStream } from '../../containers'
-import { getDistanceFromLatLonInKm, getObjectFromArrayByKey } from '../../helpers'
-import HubKey from '../../keys'
-import { colors } from '../../theme/theme'
-import { Stream } from '../../types'
+import { MenuItem, Select, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
+import { useWebsocket } from "../../containers/socket"
+import { useStream } from "../../containers"
+import { getDistanceFromLatLonInKm, getObjectFromArrayByKey } from "../../helpers"
+import HubKey from "../../keys"
+import { colors } from "../../theme/theme"
+import { Stream } from "../../types"
 
 const MAX_OPTIONS = 7
 
 export const StreamSelect = () => {
     const { state, subscribe } = useWebsocket()
-    const { currentStream, setCurrentStream } = useStream()
+    const { currentStream, setCurrentStream, setSelectedWsURL, setSelectedStreamID } = useStream()
     const [streams, setStreams] = useState<Stream[]>([])
     const [streamOptions, setStreamOptions] = useState<Stream[]>([])
 
@@ -30,7 +30,7 @@ export const StreamSelect = () => {
 
         // Filter for servers that have capacity and is onlnine
         const availStreams = streams.filter((x) => {
-            return x.usersNow < x.userMax && x.status === 'online'
+            return x.usersNow < x.userMax && x.status === "online"
         })
 
         if (availStreams.length <= 0) return
@@ -68,7 +68,7 @@ export const StreamSelect = () => {
     const SetNewStreamOptions = (newStreamOptions: Stream[]) => {
         // Limit to only a few for the dropdown and include our current selection if not already in the list
         const temp = newStreamOptions.slice(0, MAX_OPTIONS)
-        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.host, 'host')) {
+        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.host, "host")) {
             newStreamOptions[newStreamOptions.length - 1] = currentStream
         }
 
@@ -82,24 +82,24 @@ export const StreamSelect = () => {
     return (
         <Stack direction="row" spacing={0.3} alignItems="center">
             <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                STREAM SERVER:{' '}
+                STREAM SERVER:{" "}
             </Typography>
 
             <Select
                 sx={{
                     width: 150,
                     borderRadius: 0.5,
-                    '&:hover': {
+                    "&:hover": {
                         backgroundColor: colors.darkNavy,
                     },
-                    '& .MuiSelect-outlined': { px: 1, pt: 0.6, pb: 0 },
+                    "& .MuiSelect-outlined": { px: 1, pt: 0.6, pb: 0 },
                 }}
                 defaultValue={currentStream?.host}
-                value={currentStream ? currentStream.host : ''}
+                value={currentStream ? currentStream.host : ""}
                 MenuProps={{
-                    variant: 'menu',
+                    variant: "menu",
                     sx: {
-                        '&& .Mui-selected': {
+                        "&& .Mui-selected": {
                             backgroundColor: colors.darkerNeonBlue,
                         },
                     },
@@ -116,9 +116,15 @@ export const StreamSelect = () => {
                         <MenuItem
                             key={x.host}
                             value={x.host}
-                            onClick={() => setCurrentStream(x)}
+                            onClick={() => {
+                                setCurrentStream(x)
+                                setSelectedStreamID(x.streamID)
+                                setSelectedWsURL(x.url)
+
+                                console.log("xxx selector val", x)
+                            }}
                             sx={{
-                                '&:hover': {
+                                "&:hover": {
                                     backgroundColor: colors.darkNavyBlue,
                                 },
                             }}
