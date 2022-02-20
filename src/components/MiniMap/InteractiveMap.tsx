@@ -109,7 +109,6 @@ export const InteractiveMap = ({
                                                         ? undefined
                                                         : () => {
                                                               if (!isDragging.current) {
-                                                                  // todo: fix - only set selection when not dragging
                                                                   setSelection((prev) => {
                                                                       prevSelection.current = prev
                                                                       return { x, y }
