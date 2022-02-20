@@ -143,6 +143,7 @@ export const GameContainer = createContainer(() => {
         winner,
         setWinner,
         map,
+        setMap,
         warMachines,
         queuingWarMachines,
     }

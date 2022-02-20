@@ -1,11 +1,9 @@
-import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { GameBar, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
-import { FullScreen, FullScreenHandle, useFullScreenHandle } from "react-full-screen"
 import {
     Controls,
     LeftSideBar,
@@ -31,7 +29,6 @@ import {
     DimensionProvider,
     GameProvider,
     LeftSideBarProvider,
-    SnackBarProvider,
     SocketProvider,
     StreamProvider,
     useAuth,
@@ -59,121 +56,15 @@ if (SENTRY_CONFIG) {
     })
 }
 
-interface WebRTCAdaptorType {
-    websocket_url: string
-    mediaConstraints: {
-        video: boolean
-        audio: boolean
-    }
-    sdp_constraints: {
-        OfferToReceiveAudio: boolean
-        OfferToReceiveVideo: boolean
-    }
-    remoteVideoId: string
-    isPlayMode: boolean
-    debug: boolean
-    candidateTypes: string[]
-    callback: (info: string, obj: any) => void
-    callbackError: (error: string) => void
-
-    forceStreamQuality: (streamID: string, quality: number) => void
-    play: (streamID: string, tokenID: string) => void
-    getStreamInfo: (streamID: string) => void
-    closeWebSocket: (streamID: string) => void
-}
-
-interface StreamInfoEntry {
-    audioBitrate: number
-    streamHeight: number
-    streamWidth: number
-    videoBitrate: number
-    videoCodec: string
-}
-
 const AppInner = () => {
     const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
-    const { selectedWsURL, selectedStreamID, setStreamResolutions, volume, isMute, toggleIsMute } = useStream()
-    const fullScreenHandleContainer = useFullScreenHandle()
-
-    useEffect(() => {
-        if (volume === 0.1) {
-            toggleIsMute(true)
-            return
-        }
-        if (vidRef && vidRef.current && vidRef.current.volume) {
-            vidRef.current.volume = volume
-            toggleIsMute(false)
-        }
-    }, [volume])
-
-    const webRtc = useRef<WebRTCAdaptorType>()
-    const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
-
-    const vidRefCallback = useCallback(
-        (vid: HTMLVideoElement) => {
-            if (!vid || !vid.parentNode) {
-                vidRef.current = undefined
-                return
-            }
-            try {
-                vidRef.current = vid
-                webRtc.current = new WebRTCAdaptor({
-                    websocket_url: selectedWsURL,
-                    mediaConstraints: { video: false, audio: false },
-                    sdp_constraints: {
-                        OfferToReceiveAudio: true,
-                        OfferToReceiveVideo: true,
-                    },
-                    remoteVideoId: "remoteVideo",
-                    isPlayMode: true,
-                    debug: false,
-                    candidateTypes: ["tcp", "udp"],
-                    callback: function (info: string, obj: any) {
-                        if (info == "initialized") {
-                            if (!webRtc || !webRtc.current || !webRtc.current.play) return
-                            webRtc.current.play(selectedStreamID, "")
-                        } else if (info == "play_started") {
-                            if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
-                            webRtc.current.getStreamInfo(selectedStreamID)
-                        } else if (info == "streamInformation") {
-                            const resolutions: number[] = [0]
-                            obj["streamInfo"].forEach(function (entry: StreamInfoEntry) {
-                                // get resolutions from server response and added to an array.
-                                if (!resolutions.includes(entry["streamHeight"])) {
-                                    resolutions.push(entry["streamHeight"])
-                                }
-                            })
-                            setStreamResolutions(resolutions)
-                        } else if (info == "closed") {
-                            webRtc.current = undefined
-                            if (typeof obj != "undefined") {
-                                console.log("connection closed: " + JSON.stringify(obj))
-                            }
-                        }
-                    },
-                    callbackError: (error: string) => {
-                        console.log(`--- ERROR ---`, error)
-                    },
-                })
-            } catch (e) {
-                console.log(e)
-                webRtc.current = undefined
-            }
-        },
-        [selectedWsURL],
-    )
-
-    const changeStreamQuality = (quality: number) => {
-        if (webRtc?.current) {
-            webRtc.current.forceStreamQuality(selectedStreamID, quality)
-        }
-    }
+    const { selectedWsURL, isMute, vidRefCallback } = useStream()
 
     return (
         <>
             {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <FullScreen handle={fullScreenHandleContainer}>
+                <>
                     <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
                         <Stack sx={{ width: mainDivDimensions.width, height: mainDivDimensions.height }}>
                             <Box sx={{ position: "relative", width: "100%", height: GAMEBAR_HEIGHT }}>
@@ -208,9 +99,9 @@ const AppInner = () => {
                                 >
                                     <video
                                         key={selectedWsURL}
+                                        id={"remoteVideo"}
                                         muted={isMute}
                                         ref={vidRefCallback}
-                                        id={"remoteVideo"}
                                         autoPlay
                                         controls
                                         playsInline
@@ -243,10 +134,7 @@ const AppInner = () => {
                                     height: CONTROLS_HEIGHT,
                                 }}
                             >
-                                <Controls
-                                    fullScreenHandleContainer={fullScreenHandleContainer}
-                                    forceResolutionFn={changeStreamQuality}
-                                />
+                                <Controls />
                             </Box>
                         </Stack>
 
@@ -254,7 +142,7 @@ const AppInner = () => {
                     </Stack>
 
                     <LiveChat />
-                </FullScreen>
+                </>
             )}
         </>
     )
@@ -282,9 +170,7 @@ const App = () => {
                                 <GameProvider>
                                     <DimensionProvider>
                                         <LeftSideBarProvider>
-                                            <SnackBarProvider>
-                                                <AppInner />
-                                            </SnackBarProvider>
+                                            <AppInner />
                                         </LeftSideBarProvider>
                                     </DimensionProvider>
                                 </GameProvider>
