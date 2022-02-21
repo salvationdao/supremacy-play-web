@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react'
-import { Box, Stack, Typography } from '@mui/material'
-import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from '../../types'
+import { useEffect, useState, useRef } from "react"
+import { Box, Stack, Typography } from "@mui/material"
+import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 import {
     BoxSlanted,
     ClipThing,
@@ -8,13 +8,14 @@ import {
     SkillBar,
     WarMachineAbilitiesPopover,
     WarMachineDestroyedInfo,
-} from '..'
-import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from '../../assets'
-import { useAuth, useWebsocket } from '../../containers'
-import { NullUUID, PASSPORT_WEB } from '../../constants'
-import HubKey from '../../keys'
-import { useToggle } from '../../hooks'
-import BigNumber from 'bignumber.js'
+} from ".."
+import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
+import { useAuth, useWebsocket } from "../../containers"
+import { NullUUID, PASSPORT_WEB } from "../../constants"
+import HubKey from "../../keys"
+import { useToggle } from "../../hooks"
+import BigNumber from "bignumber.js"
+import { useLiveChat } from "@ninjasoftware/passport-gamebar"
 
 const WIDTH_WM_IMAGE = 92
 const WIDTH_CENTER = 142
@@ -38,6 +39,7 @@ export const WarMachineItem = ({
     const { participantID, faction, name, imageUrl } = warMachine
     const { state, subscribe } = useWebsocket()
     const { factionID } = useAuth()
+    const { isOpen: isLiveChatOpen } = useLiveChat()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -58,7 +60,7 @@ export const WarMachineItem = ({
 
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
-    }, [shouldBeExpanded])
+    }, [shouldBeExpanded, isLiveChatOpen])
 
     // If warmachine is updated, reset destroy info
     useEffect(() => {
@@ -100,7 +102,7 @@ export const WarMachineItem = ({
                 direction="row"
                 alignItems="flex-end"
                 sx={{
-                    position: 'relative',
+                    position: "relative",
                     ml: isExpanded || isOwnFaction ? 2 : 3.2,
                     opacity: isAlive ? 1 : 0.8,
                     width: isOwnFaction
@@ -120,30 +122,30 @@ export const WarMachineItem = ({
                     <Box
                         onClick={toggleIsDestroyedInfoOpen}
                         sx={{
-                            position: 'absolute',
+                            position: "absolute",
                             top: 1.5,
                             left: WIDTH_WM_IMAGE - 23,
                             px: 0.7,
                             py: 0.5,
                             opacity: 0.83,
-                            cursor: 'pointer',
-                            ':hover': {
+                            cursor: "pointer",
+                            ":hover": {
                                 opacity: 1,
-                                transform: 'scale(1.1)',
+                                transform: "scale(1.1)",
                             },
-                            ':active': {
-                                transform: 'scale(1)',
+                            ":active": {
+                                transform: "scale(1)",
                             },
                             zIndex: 99,
                         }}
                     >
-                        <SvgInfoCircularIcon fill={'white'} size="15px" />
+                        <SvgInfoCircularIcon fill={"white"} size="15px" />
                     </Box>
                 )}
 
                 <Box
                     sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         bottom: 0,
                         right: 0,
                         left: 10,
@@ -157,7 +159,7 @@ export const WarMachineItem = ({
                 <ClipThing
                     clipSize="8px"
                     clipSlantSize="18px"
-                    border={{ isFancy: false, borderColor: primary, borderThickness: '3px' }}
+                    border={{ isFancy: false, borderColor: primary, borderThickness: "3px" }}
                     sx={{ zIndex: 2 }}
                     skipRightCorner={!isExpanded}
                 >
@@ -165,15 +167,15 @@ export const WarMachineItem = ({
                         <Box
                             onClick={toggleIsExpanded}
                             sx={{
-                                position: 'relative',
+                                position: "relative",
                                 width: WIDTH_WM_IMAGE,
                                 height: HEIGHT,
-                                overflow: 'hidden',
+                                overflow: "hidden",
                                 backgroundImage: `url(${wmImageUrl})`,
-                                backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'center',
-                                backgroundSize: 'cover',
-                                cursor: 'pointer',
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                                cursor: "pointer",
                             }}
                         >
                             <Stack
@@ -181,12 +183,12 @@ export const WarMachineItem = ({
                                 justifyContent="center"
                                 sx={{
                                     px: 3.3,
-                                    width: '100%',
-                                    height: '100%',
-                                    background: 'linear-gradient(#00000090, #000000)',
+                                    width: "100%",
+                                    height: "100%",
+                                    background: "linear-gradient(#00000090, #000000)",
                                     opacity: isAlive ? 0 : 1,
-                                    transition: 'all .2s',
-                                    ':hover': {
+                                    transition: "all .2s",
+                                    ":hover": {
                                         opacity: isAlive ? 0.2 : 1,
                                     },
                                 }}
@@ -197,16 +199,16 @@ export const WarMachineItem = ({
                     </Box>
                 </ClipThing>
 
-                <Stack direction="row" alignSelf="stretch" flex={1} sx={{ position: 'relative' }}>
+                <Stack direction="row" alignSelf="stretch" flex={1} sx={{ position: "relative" }}>
                     <Stack
                         justifyContent="flex-end"
                         sx={{
                             flex: 1,
-                            position: 'relative',
-                            alignSelf: 'stretch',
+                            position: "relative",
+                            alignSelf: "stretch",
                             ml: -2.5,
 
-                            backgroundColor: isExpanded ? '#00000056' : 'transparent',
+                            backgroundColor: isExpanded ? "#00000056" : "transparent",
                             opacity: isAlive ? 1 : DEAD_OPACITY,
                             zIndex: 1,
                         }}
@@ -217,7 +219,7 @@ export const WarMachineItem = ({
                             spacing={1}
                             sx={{ flex: 1, pl: isExpanded ? 3.5 : 0, pr: isExpanded ? 2.1 : 0 }}
                         >
-                            <HealthShieldBars warMachine={warMachine} type={isExpanded ? 'horizontal' : 'vertical'} />
+                            <HealthShieldBars warMachine={warMachine} type={isExpanded ? "horizontal" : "vertical"} />
 
                             {isExpanded && (
                                 <Box
@@ -225,9 +227,9 @@ export const WarMachineItem = ({
                                         width: 26,
                                         height: 26,
                                         backgroundImage: `url(${PASSPORT_WEB}/api/files/${logoBlobID})`,
-                                        backgroundRepeat: 'no-repeat',
-                                        backgroundPosition: 'center',
-                                        backgroundSize: 'contain',
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "contain",
                                     }}
                                 />
                             )}
@@ -241,16 +243,16 @@ export const WarMachineItem = ({
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        color: '#FFFFFF',
+                                        color: "#FFFFFF",
                                         lineHeight: 1,
-                                        fontWeight: 'fontWeightBold',
-                                        fontFamily: 'Nostromo Regular Black',
-                                        textOverflow: 'ellipsis',
-                                        overflow: 'hidden',
-                                        whiteSpace: 'normal',
-                                        display: '-webkit-box',
-                                        overflowWrap: 'anywhere',
-                                        WebkitBoxOrient: 'vertical',
+                                        fontWeight: "fontWeightBold",
+                                        fontFamily: "Nostromo Regular Black",
+                                        textOverflow: "ellipsis",
+                                        overflow: "hidden",
+                                        whiteSpace: "normal",
+                                        display: "-webkit-box",
+                                        overflowWrap: "anywhere",
+                                        WebkitBoxOrient: "vertical",
                                         WebkitLineClamp: 2,
                                     }}
                                 >
@@ -266,14 +268,14 @@ export const WarMachineItem = ({
                                 clipSlantSize="20px"
                                 onClick={isAlive ? togglePopoverOpen : null}
                                 sx={{
-                                    position: 'relative',
+                                    position: "relative",
                                     width: WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR,
-                                    alignSelf: 'stretch',
+                                    alignSelf: "stretch",
                                     ml: -2.5,
                                     backgroundColor: primary,
                                     boxShadow: 3,
-                                    cursor: isAlive ? 'pointer' : 'auto',
-                                    ':hover #warMachineSkillsText': {
+                                    cursor: isAlive ? "pointer" : "auto",
+                                    ":hover #warMachineSkillsText": {
                                         letterSpacing: isAlive ? 2.3 : 1,
                                     },
                                     zIndex: 3,
@@ -282,9 +284,9 @@ export const WarMachineItem = ({
                             >
                                 <Box
                                     sx={{
-                                        position: 'absolute',
+                                        position: "absolute",
                                         left: 22,
-                                        top: '50%',
+                                        top: "50%",
                                         transform: `translate(-50%, -50%) rotate(-${SKILL_BUTTON_TEXT_ROTATION}deg)`,
                                     }}
                                 >
@@ -292,10 +294,10 @@ export const WarMachineItem = ({
                                         id="warMachineSkillsText"
                                         variant="body1"
                                         sx={{
-                                            fontWeight: 'fontWeightBold',
+                                            fontWeight: "fontWeightBold",
                                             color: secondary,
                                             letterSpacing: 1,
-                                            transition: 'all .2s',
+                                            transition: "all .2s",
                                         }}
                                     >
                                         SKILLS

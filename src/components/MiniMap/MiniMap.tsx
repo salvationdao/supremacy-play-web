@@ -1,4 +1,4 @@
-import { Box, IconButton, Slide, useTheme } from "@mui/material"
+import { Box, IconButton, Fade, useTheme } from "@mui/material"
 import { useEffect, useRef, useState } from "react"
 import { ClipThing, InteractiveMap, TargetTimerCountdown } from ".."
 import { colors } from "../../theme/theme"
@@ -119,7 +119,7 @@ export const MiniMap = () => {
                 }}
             >
                 <Box sx={{ pointerEvents: "all" }}>
-                    <Slide in={true} direction="left">
+                    <Fade in={true}>
                         <Box>
                             <ClipThing
                                 clipSize="10px"
@@ -194,7 +194,7 @@ export const MiniMap = () => {
                                 </Box>
                             </ClipThing>
                         </Box>
-                    </Slide>
+                    </Fade>
                 </Box>
             </Draggable>
         </Box>
