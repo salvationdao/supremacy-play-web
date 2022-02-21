@@ -117,6 +117,7 @@ export const BattleAbility = () => {
 
     const onVote = useCallback(
         (voteAmount: number) => async () => {
+            if (state !== WebSocket.OPEN) return
             try {
                 const resp = await send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
 
@@ -129,7 +130,7 @@ export const BattleAbility = () => {
                 return false
             }
         },
-        [],
+        [state],
     )
 
     if (!battleAbility) return null
