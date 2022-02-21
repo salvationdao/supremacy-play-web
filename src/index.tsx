@@ -8,6 +8,7 @@ import {
     Controls,
     LeftSideBar,
     LiveVotingChart,
+    LoadMessage,
     MiniMap,
     Notifications,
     VotingSystem,
@@ -54,103 +55,100 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
-    const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
+    const { gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
     const { selectedWsURL, isMute, vidRefCallback } = useStream()
 
     return (
         <>
-            {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <>
-                    <GameBar
-                        barPosition="top"
-                        gameserverSessionID={gameserverSessionID}
-                        passportWeb={PASSPORT_WEB}
-                        passportServerHost={PASSPORT_SERVER_HOSTNAME}
-                    />
+            <GameBar
+                barPosition="top"
+                gameserverSessionID={gameserverSessionID}
+                passportWeb={PASSPORT_WEB}
+                passportServerHost={PASSPORT_SERVER_HOSTNAME}
+            />
 
-                    <Stack
-                        sx={{
-                            mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
-                            width: mainDivDimensions.width,
-                            height: mainDivDimensions.height,
-                        }}
-                    >
-                        <Stack
-                            direction="row"
-                            sx={{
-                                flex: 1,
-                                position: "relative",
-                                width: "100%",
-                                backgroundColor: colors.darkNavyBlue,
-                                overflow: "hidden",
-                            }}
-                        >
-                            <LeftSideBar />
-
-                            <Box
-                                sx={{
-                                    position: "relative",
-                                    height: streamDimensions.height,
-                                    width: streamDimensions.width,
-                                    backgroundColor: colors.darkNavyBlue,
-                                    clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
-                                }}
-                            >
-                                <video
-                                    key={selectedWsURL}
-                                    id={"remoteVideo"}
-                                    muted={isMute}
-                                    ref={vidRefCallback}
-                                    autoPlay
-                                    controls
-                                    playsInline
-                                    style={{
-                                        position: "absolute",
-                                        top: "50%",
-                                        left: "50%",
-                                        transform: "translate(-50%, -50%)",
-                                        aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                        width: iframeDimensions.width,
-                                        height: iframeDimensions.height,
-                                    }}
-                                />
-
-                                <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
-                                    <VotingSystem />
-                                    <MiniMap />
-                                    <Notifications />
-                                    <LiveVotingChart />
-                                    <WarMachineStats />
-                                    <BattleEndScreen />
-                                </Box>
-                            </Box>
-                        </Stack>
-
-                        <Box
-                            sx={{
-                                position: "relative",
-                                width: "100%",
-                                height: CONTROLS_HEIGHT,
-                            }}
-                        >
-                            <Controls />
-                        </Box>
-                    </Stack>
+            <Stack
+                sx={{
+                    mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
+                    width: mainDivDimensions.width,
+                    height: mainDivDimensions.height,
+                }}
+            >
+                <Stack
+                    direction="row"
+                    sx={{
+                        flex: 1,
+                        position: "relative",
+                        width: "100%",
+                        backgroundColor: colors.darkNavyBlue,
+                        overflow: "hidden",
+                    }}
+                >
+                    <LeftSideBar />
 
                     <Box
                         sx={{
-                            position: "fixed",
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
+                            position: "relative",
+                            height: streamDimensions.height,
+                            width: streamDimensions.width,
                             backgroundColor: colors.darkNavyBlue,
-                            zIndex: -1,
+                            clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
                         }}
-                    />
-                </>
-            )}
+                    >
+                        <video
+                            key={selectedWsURL}
+                            id={"remoteVideo"}
+                            muted={isMute}
+                            ref={vidRefCallback}
+                            autoPlay
+                            controls
+                            playsInline
+                            style={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                width: iframeDimensions.width,
+                                height: iframeDimensions.height,
+                            }}
+                        />
+
+                        <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
+                            <LoadMessage />
+                            <VotingSystem />
+                            <MiniMap />
+                            <Notifications />
+                            <LiveVotingChart />
+                            <WarMachineStats />
+                            <BattleEndScreen />
+                        </Box>
+                    </Box>
+                </Stack>
+
+                <Box
+                    sx={{
+                        position: "relative",
+                        width: "100%",
+                        height: CONTROLS_HEIGHT,
+                    }}
+                >
+                    <Controls />
+                </Box>
+            </Stack>
+
+            <Box
+                sx={{
+                    position: "fixed",
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: colors.darkNavyBlue,
+                    zIndex: -1,
+                }}
+            />
         </>
     )
 }
