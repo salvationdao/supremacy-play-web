@@ -59,8 +59,8 @@ export interface StreamContainerType {
 }
 
 export const StreamContainer = createContainer((): StreamContainerType => {
-    const defaultStreamID = "886200805704583109786601"
-    const defaultWSURL = "wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket"
+    const defaultStreamID = "R3dvaIhZOxRr1645381571194"
+    const defaultWSURL = "wss://video.ninja-cdn.com:5443/WebRTCAppEE/websocket"
     const defaultResolution = 720
 
     // video

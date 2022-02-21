@@ -1,7 +1,7 @@
-import { Box, Stack, Typography } from '@mui/material'
-import { SIDE_BARS_WIDTH } from '../../constants'
-import { useLeftSideBar } from '../../containers'
-import { colors } from '../../theme/theme'
+import { Box, Stack, Typography } from "@mui/material"
+import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
+import { useLeftSideBar } from "../../containers"
+import { colors } from "../../theme/theme"
 
 const BUTTON_WIDTH = 110
 const NUM_BUTTONS = 1
@@ -12,9 +12,9 @@ export const LeftSideBar = () => {
     return (
         <Box
             sx={{
-                position: 'relative',
-                overflow: 'hidden',
-                width: SIDE_BARS_WIDTH,
+                position: "relative",
+                overflow: "hidden",
+                width: GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth,
                 backgroundColor: colors.darkNavyBlue,
                 zIndex: 1002,
             }}
@@ -25,9 +25,9 @@ export const LeftSideBar = () => {
                 justifyContent="flex-end"
                 spacing={0.2}
                 sx={{
-                    position: 'absolute',
+                    position: "absolute",
                     top: 0,
-                    left: '50%',
+                    left: "50%",
                     transform: `translate(-50%, ${NUM_BUTTONS * (BUTTON_WIDTH / 2)}px) rotate(-90deg)`,
                 }}
             >
@@ -36,15 +36,15 @@ export const LeftSideBar = () => {
                     justifyContent="center"
                     sx={{
                         px: 2,
-                        height: SIDE_BARS_WIDTH,
+                        height: GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth,
                         width: BUTTON_WIDTH,
                         backgroundColor: colors.darkNavy,
-                        cursor: 'pointer',
+                        cursor: "pointer",
                         opacity: isEndBattleDetailOpen ? 1 : 0.6,
-                        ':hover': {
+                        ":hover": {
                             opacity: 1,
                         },
-                        ':active': {
+                        ":active": {
                             opacity: 0.8,
                         },
                     }}
@@ -52,10 +52,10 @@ export const LeftSideBar = () => {
                     <Typography
                         variant="caption"
                         sx={{
-                            textAlign: 'center',
+                            textAlign: "center",
                             lineHeight: 1,
-                            fontWeight: 'fontWeightBold',
-                            whiteSpace: 'nowrap',
+                            fontWeight: "fontWeightBold",
+                            whiteSpace: "nowrap",
                         }}
                     >
                         PREVIOUS BATTLE

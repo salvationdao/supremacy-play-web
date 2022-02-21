@@ -5,6 +5,7 @@ export const LOG_API_CALLS = true
 export const UI_OPACITY = 0.96
 export const NOTIFICATION_TIME = 28000
 export const NOTIFICATION_LINGER = 400
+export const CONTROLS_HEIGHT = 30
 export const STREAM_ASPECT_RATIO_W_H = 16 / 9
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const SENTRY_CONFIG = {
@@ -21,7 +22,3 @@ export const SENTRY_CONFIG = {
         return rate
     },
 }
-export const GAMEBAR_HEIGHT = 61
-export const CONTROLS_HEIGHT = 30
-export const LIVE_CHAT_DRAWER_WIDTH = 320
-export const SIDE_BARS_WIDTH = 20
