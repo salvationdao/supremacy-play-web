@@ -40,29 +40,19 @@ export const DimensionContainer = createContainer((): DimensionContainerType => 
     })
 
     useEffect(() => {
+        // Main div dimensions
         const mainDivWidth = isLiveChatOpen
             ? windowWidth - GAMEBAR_CONSTANTS.liveChatDrawerWidth
             : windowWidth - GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth
         const mainDivHeight = windowHeight - GAMEBAR_CONSTANTS.gameBarHeight
-        setMainDivDimensions({
-            width: mainDivWidth,
-            height: mainDivHeight,
-        })
-    }, [windowWidth, windowHeight, isLiveChatOpen])
 
-    useEffect(() => {
-        const streamWidth = mainDivDimensions.width - GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth
-        const streamHeight = mainDivDimensions.height - CONTROLS_HEIGHT
-        setStreamDimensions({
-            width: streamWidth,
-            height: streamHeight,
-        })
-    }, [mainDivDimensions])
+        // Stream div dimensions
+        const streamWidth = mainDivWidth - GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth
+        const streamHeight = mainDivHeight - CONTROLS_HEIGHT
 
-    // Work out iframe width and height based on its aspect ratio and stream width and height
-    useEffect(() => {
-        let iframeWidth: number | string = streamDimensions.width
-        let iframeHeight: number | string = streamDimensions.height
+        // Work out iframe width and height based on its aspect ratio and stream width and height
+        let iframeWidth: number | string = streamWidth
+        let iframeHeight: number | string = streamHeight
         const iframeRatio = iframeWidth / iframeHeight
         if (iframeRatio >= STREAM_ASPECT_RATIO_W_H) {
             iframeHeight = "unset"
@@ -70,8 +60,10 @@ export const DimensionContainer = createContainer((): DimensionContainerType => 
             iframeWidth = "unset"
         }
 
+        setStreamDimensions({ width: streamWidth, height: streamHeight })
+        setMainDivDimensions({ width: mainDivWidth, height: mainDivHeight })
         setIframeDimensions({ width: iframeWidth, height: iframeHeight })
-    }, [streamDimensions])
+    }, [windowWidth, windowHeight, isLiveChatOpen])
 
     return {
         mainDivDimensions,

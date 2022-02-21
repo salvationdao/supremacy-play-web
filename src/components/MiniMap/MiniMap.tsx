@@ -34,6 +34,8 @@ export const MiniMap = () => {
     const confirmed = useRef<boolean>(false)
 
     useEffect(() => {
+        if (width <= 0 || height <= 0) return
+
         // Set new window dimensions: 125 is the height of the bottom mech stats
         const newWidth = enlarged ? Math.min(width - 23, 1000) : 230
         const newHeight = enlarged ? Math.min(height - 125, 700) : 200

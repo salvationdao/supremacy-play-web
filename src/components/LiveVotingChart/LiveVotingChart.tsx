@@ -63,6 +63,8 @@ export const LiveVotingChart = () => {
     )
 
     useEffect(() => {
+        if (width <= 0 || height <= 0) return
+
         let newPosX = parseString(localStorage.getItem("liveVotingPosX"), -1)
         let newPosY = parseString(localStorage.getItem("liveVotingPosY"), -1)
 
@@ -83,6 +85,8 @@ export const LiveVotingChart = () => {
     }, [width, height, curWidth])
 
     const onResize = (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
+        if (width <= 0 || height <= 0) return
+
         const { size } = data || { size: { width: curWidth, height: curHeight } }
         if (size.width >= DefaultSizeX) {
             setMaxLiveVotingDataLength(size.width / 5)
