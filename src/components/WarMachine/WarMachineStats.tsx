@@ -7,7 +7,6 @@ import { useAuth, useDimension, useGame, useWebsocket } from "../../containers"
 import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import HubKey from "../../keys"
-import { NullUUID } from "../../constants"
 
 const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
 const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245

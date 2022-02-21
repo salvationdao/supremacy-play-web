@@ -1,14 +1,12 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { GameBar, WalletProvider } from "@ninjasoftware/passport-gamebar"
+import { GameBar, WalletProvider, LiveChatProvider, GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
 import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import {
     Controls,
     LeftSideBar,
-    LiveChat,
-    LiveChatSideButton,
     LiveVotingChart,
     MiniMap,
     Notifications,
@@ -18,7 +16,6 @@ import {
 import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
 import {
     CONTROLS_HEIGHT,
-    GAMEBAR_HEIGHT,
     PASSPORT_SERVER_HOSTNAME,
     PASSPORT_WEB,
     SENTRY_CONFIG,
@@ -65,83 +62,93 @@ const AppInner = () => {
         <>
             {!authSessionIDGetLoading && !authSessionIDGetError && (
                 <>
-                    <Stack direction="row" sx={{ backgroundColor: colors.darkNavy }}>
-                        <Stack sx={{ width: mainDivDimensions.width, height: mainDivDimensions.height }}>
-                            <Box sx={{ position: "relative", width: "100%", height: GAMEBAR_HEIGHT }}>
-                                <GameBar
-                                    barPosition="top"
-                                    gameserverSessionID={gameserverSessionID}
-                                    passportWeb={PASSPORT_WEB}
-                                    passportServerHost={PASSPORT_SERVER_HOSTNAME}
-                                />
-                            </Box>
+                    <GameBar
+                        barPosition="top"
+                        gameserverSessionID={gameserverSessionID}
+                        passportWeb={PASSPORT_WEB}
+                        passportServerHost={PASSPORT_SERVER_HOSTNAME}
+                    />
 
-                            <Stack
-                                direction="row"
-                                sx={{
-                                    flex: 1,
-                                    position: "relative",
-                                    width: "100%",
-                                    backgroundColor: colors.darkNavyBlue,
-                                    overflow: "hidden",
-                                }}
-                            >
-                                <LeftSideBar />
-
-                                <Box
-                                    sx={{
-                                        position: "relative",
-                                        height: streamDimensions.height,
-                                        width: streamDimensions.width,
-                                        backgroundColor: colors.darkNavyBlue,
-                                        clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
-                                    }}
-                                >
-                                    <video
-                                        key={selectedWsURL}
-                                        id={"remoteVideo"}
-                                        muted={isMute}
-                                        ref={vidRefCallback}
-                                        autoPlay
-                                        controls
-                                        playsInline
-                                        style={{
-                                            position: "absolute",
-                                            top: "50%",
-                                            left: "50%",
-                                            transform: "translate(-50%, -50%)",
-                                            aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                            width: iframeDimensions.width,
-                                            height: iframeDimensions.height,
-                                        }}
-                                    />
-
-                                    <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
-                                        <VotingSystem />
-                                        <MiniMap />
-                                        <Notifications />
-                                        <LiveVotingChart />
-                                        <WarMachineStats />
-                                        <BattleEndScreen />
-                                    </Box>
-                                </Box>
-                            </Stack>
+                    <Stack
+                        sx={{
+                            mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
+                            width: mainDivDimensions.width,
+                            height: mainDivDimensions.height,
+                        }}
+                    >
+                        <Stack
+                            direction="row"
+                            sx={{
+                                flex: 1,
+                                position: "relative",
+                                width: "100%",
+                                backgroundColor: colors.darkNavyBlue,
+                                overflow: "hidden",
+                            }}
+                        >
+                            <LeftSideBar />
 
                             <Box
                                 sx={{
                                     position: "relative",
-                                    width: "100%",
-                                    height: CONTROLS_HEIGHT,
+                                    height: streamDimensions.height,
+                                    width: streamDimensions.width,
+                                    backgroundColor: colors.darkNavyBlue,
+                                    clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
                                 }}
                             >
-                                <Controls />
+                                <video
+                                    key={selectedWsURL}
+                                    id={"remoteVideo"}
+                                    muted={isMute}
+                                    ref={vidRefCallback}
+                                    autoPlay
+                                    controls
+                                    playsInline
+                                    style={{
+                                        position: "absolute",
+                                        top: "50%",
+                                        left: "50%",
+                                        transform: "translate(-50%, -50%)",
+                                        aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                        width: iframeDimensions.width,
+                                        height: iframeDimensions.height,
+                                    }}
+                                />
+
+                                <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
+                                    <VotingSystem />
+                                    <MiniMap />
+                                    <Notifications />
+                                    <LiveVotingChart />
+                                    <WarMachineStats />
+                                    <BattleEndScreen />
+                                </Box>
                             </Box>
                         </Stack>
 
-                        <LiveChatSideButton />
+                        <Box
+                            sx={{
+                                position: "relative",
+                                width: "100%",
+                                height: CONTROLS_HEIGHT,
+                            }}
+                        >
+                            <Controls />
+                        </Box>
                     </Stack>
 
-                    <LiveChat />
+                    <Box
+                        sx={{
+                            position: "fixed",
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            backgroundColor: colors.darkNavyBlue,
+                            zIndex: -1,
+                        }}
+                    />
                 </>
             )}
         </>
@@ -167,13 +174,15 @@ const App = () => {
                     <AuthProvider>
                         <StreamProvider>
                             <WalletProvider>
-                                <GameProvider>
-                                    <DimensionProvider>
-                                        <LeftSideBarProvider>
-                                            <AppInner />
-                                        </LeftSideBarProvider>
-                                    </DimensionProvider>
-                                </GameProvider>
+                                <LiveChatProvider>
+                                    <GameProvider>
+                                        <DimensionProvider>
+                                            <LeftSideBarProvider>
+                                                <AppInner />
+                                            </LeftSideBarProvider>
+                                        </DimensionProvider>
+                                    </GameProvider>
+                                </LiveChatProvider>
                             </WalletProvider>
                         </StreamProvider>
                     </AuthProvider>
