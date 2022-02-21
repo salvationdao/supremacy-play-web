@@ -212,7 +212,7 @@ export const InteractiveMap = ({
 
         // Calculate new scale
         const zoomSpeed = 0.05
-        let newScale = deltaY < 0 ? curScale + zoomSpeed : curScale - zoomSpeed
+        let newScale = deltaY < 0 ? curScale - zoomSpeed : curScale + zoomSpeed
 
         // Keeps the map within scale bounds
         if (newScale >= maxScale || minScale >= newScale) {
