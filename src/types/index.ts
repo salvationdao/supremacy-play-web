@@ -1,4 +1,4 @@
-import React, { Dispatch } from 'react'
+import React, { Dispatch } from "react"
 
 interface UpdateThemeContextProps {
     updateTheme: Dispatch<React.SetStateAction<FactionThemeColor>>
@@ -28,12 +28,12 @@ export interface Faction {
 }
 
 export type VotingState =
-    | 'HOLD'
-    | 'VOTE_COOLDOWN'
-    | 'VOTE_ABILITY_RIGHT'
-    | 'NEXT_VOTE_WIN'
-    | 'LOCATION_SELECT'
-    | 'WAIT_MECH_INTRO'
+    | "HOLD"
+    | "VOTE_COOLDOWN"
+    | "VOTE_ABILITY_RIGHT"
+    | "NEXT_VOTE_WIN"
+    | "LOCATION_SELECT"
+    | "WAIT_MECH_INTRO"
 
 export interface BattleAbility {
     id: string
@@ -126,6 +126,34 @@ export interface NetMessageTick {
     warmachines: NetMessageTickWarMachine[]
 }
 
+export interface BattleEndDetail {
+    battleID: string
+    battleIdentifier: number
+    startedAt: Date
+    endedAt: Date
+    winningCondition: string
+    winningFaction: Faction
+    winningWarMachines: WarMachineState[]
+    topSupsContributors: User[]
+    topSupsContributeFactions: Faction[]
+    mostFrequentAbilityExecutors: User[]
+    battleEvents: BattleEvent[]
+}
+
+export interface BattleEvent {
+    type: "GAME_ABILITY" | "WAR_MACHINE_DESTROYED"
+    createdAt: Date
+    event: GameAbility | WarMachineDestroyedRecord
+}
+
+export interface GameAbilityEvent {
+    ability: GameAbility
+    triggeredByUser?: User
+    x?: number
+    y?: number
+    triggeredOnWarMachine?: WarMachineState
+}
+
 export interface WarMachineDestroyedRecord {
     destroyedWarMachine: WarMachineState
     killedByWarMachine?: WarMachineState
@@ -135,6 +163,23 @@ export interface WarMachineDestroyedRecord {
 
 export interface DamageRecord {
     amount: number
-    causedByWarMachine: WarMachineState
+    causedByWarMachine?: WarMachineState
     sourceName: string // weapon/ability name
+}
+
+export interface Stream {
+    host: string
+    name: string
+    url: string
+    streamID: string
+    region: string
+    resolution: string
+    bitRatesKBits: number
+    userMax: number
+    usersNow: number
+    active: boolean
+    status: string
+    latitude: number
+    longitude: number
+    distance?: number
 }

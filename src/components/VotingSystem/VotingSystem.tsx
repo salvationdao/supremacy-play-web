@@ -1,19 +1,18 @@
 import { Box, Divider, Slide, Stack } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { useTheme } from '@mui/styles'
-import { ClipThing, BattleAbility, Prices } from '..'
-import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, UI_OPACITY } from '../../constants'
+import { ClipThing, BattleAbility, Prices, FactionAbilities } from '..'
+import { UI_OPACITY } from '../../constants'
 import { useDimension, useGame } from '../../containers'
 import { colors } from '../../theme/theme'
 import { useAuth } from '../../containers'
-import { FactionAbilities } from './gameAbilities'
 
 export const VotingSystem = () => {
     const { user } = useAuth()
     const { votingState } = useGame()
     const theme = useTheme<Theme>()
     const {
-        iframeDimensions: { height },
+        streamDimensions: { height },
     } = useDimension()
 
     const isBattleStarted = votingState && votingState.phase !== 'HOLD' && votingState.phase !== 'WAIT_MECH_INTRO'
@@ -45,8 +44,8 @@ export const VotingSystem = () => {
                             <Box
                                 sx={{
                                     flex: 1,
-                                    // 100vh, 150px gap bottom, 10px gap above, 56px for the title, gamebar height, controls height
-                                    maxHeight: `calc(${height}px - 150px - 10px - 56px - ${GAMEBAR_HEIGHT}px - ${CONTROLS_HEIGHT}px)`,
+                                    // 100vh, 160px gap bottom, 10px gap above, 56px for the title
+                                    maxHeight: `calc(${height}px - 160px - 10px - 56px)`,
                                     overflowY: 'auto',
                                     overflowX: 'hidden',
                                     pl: 1.1,

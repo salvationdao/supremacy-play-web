@@ -1,26 +1,90 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, TypographyPropsVariantOverrides } from '@mui/material'
+import { Variant } from '@mui/material/styles/createTypography'
+import { OverridableStringUnion } from '@mui/types'
+import { useMemo } from 'react'
 
-export const StyledImageText = ({ imageUrl, text, color }: { imageUrl?: string; text: string; color: string }) => {
+export const StyledImageText = ({
+    imageUrl,
+    text,
+    variant = 'body1',
+    color,
+    truncateLine,
+
+    fontFamily,
+    fontWeight = 'fontWeightBold',
+    imageSize = 16,
+    imageBorderColor,
+    imageBorderThickness = '1px',
+    imageBackgroundSize = 'cover',
+    noImageBackgroundColor,
+}: {
+    imageUrl?: string
+    text: string
+    variant?: OverridableStringUnion<Variant | 'inherit', TypographyPropsVariantOverrides>
+    color: string
+    truncateLine?: boolean
+
+    fontWeight?: string
+    fontFamily?: string
+    imageSize?: number
+    imageBorderColor?: string
+    imageBorderThickness?: string
+    imageBackgroundSize?: string
+    noImageBackgroundColor?: boolean
+}) => {
+    const truncateStyle: any = useMemo(
+        () =>
+            truncateLine
+                ? {
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                  }
+                : {},
+        [truncateLine],
+    )
+
     return (
-        <Box sx={{ display: 'inline-block' }}>
+        <Box
+            sx={{
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+                pl: imageUrl ? `${imageSize + 0.2 * imageSize}px` : 0,
+            }}
+        >
             {imageUrl && (
                 <Box
                     sx={{
+                        position: 'absolute',
+                        left: 0,
+                        bottom: 0,
                         display: 'inline-block',
-                        width: 13,
-                        height: 13,
-                        mr: 0.5,
+                        flexShrink: 0,
+                        width: imageSize,
+                        height: imageSize,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center',
-                        backgroundSize: 'contain',
+                        backgroundSize: imageBackgroundSize,
+                        backgroundColor: noImageBackgroundColor ? 'unset' : imageBorderColor || color,
+                        borderRadius: 0.5,
+                        border: `${imageBorderColor || color} solid ${imageBorderThickness}`,
                     }}
                 />
             )}
             <Typography
                 component="span"
-                variant="body1"
-                sx={{ fontWeight: 'fontWeightBold', color, wordBreak: 'break-word' }}
+                variant={variant}
+                sx={{
+                    display: 'inline',
+                    lineHeight: 1,
+                    fontFamily,
+                    fontWeight,
+                    color,
+                    wordBreak: 'break-word',
+                    ...truncateStyle,
+                }}
             >
                 {text}
             </Typography>

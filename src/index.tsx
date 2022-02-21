@@ -1,32 +1,41 @@
-import ReactDOM from 'react-dom'
-import { Theme } from '@mui/material/styles'
+import { Box, Stack, ThemeProvider } from "@mui/material"
+import { Theme } from "@mui/material/styles"
+import { GameBar, WalletProvider, LiveChatProvider, GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
+import * as Sentry from "@sentry/react"
+import { useEffect, useState } from "react"
+import ReactDOM from "react-dom"
+import {
+    Controls,
+    LeftSideBar,
+    LiveVotingChart,
+    LoadMessage,
+    MiniMap,
+    Notifications,
+    VotingSystem,
+    WarMachineStats,
+} from "./components"
+import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
+import {
+    CONTROLS_HEIGHT,
+    PASSPORT_SERVER_HOSTNAME,
+    PASSPORT_WEB,
+    SENTRY_CONFIG,
+    STREAM_ASPECT_RATIO_W_H,
+} from "./constants"
 import {
     AuthProvider,
     DimensionProvider,
     GameProvider,
-    SnackBarProvider,
+    LeftSideBarProvider,
     SocketProvider,
+    StreamProvider,
     useAuth,
     useDimension,
-} from './containers'
-import { Box, CssBaseline, Stack, ThemeProvider } from '@mui/material'
-import { Controls, LiveCounts, MiniMap, Notifications, VotingSystem, WarMachineStats } from './components'
-import { useEffect, useState } from 'react'
-import { FactionThemeColor, UpdateTheme } from './types'
-import { mergeDeep } from './helpers'
-import { colors, theme } from './theme/theme'
-import { GameBar, WalletProvider } from '@ninjasoftware/passport-gamebar'
-import {
-    PASSPORT_SERVER_HOSTNAME,
-    PASSPORT_WEB,
-    STREAM_SITE,
-    SENTRY_CONFIG,
-    GAMEBAR_HEIGHT,
-    CONTROLS_HEIGHT,
-} from './constants'
-import { FullScreen, useFullScreenHandle } from 'react-full-screen'
-import { LiveVotingChart } from './components/LiveVotingChart/LiveVotingChart'
-import * as Sentry from '@sentry/react'
+    useStream,
+} from "./containers"
+import { mergeDeep } from "./helpers"
+import { colors, theme } from "./theme/theme"
+import { FactionThemeColor, UpdateTheme } from "./types"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -46,57 +55,100 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
-    const { gameserverSessionID, authSessionIDGetLoading, authSessionIDGetError } = useAuth()
-    const {
-        iframeDimensions: { width, height },
-    } = useDimension()
-    const handle = useFullScreenHandle()
+    const { gameserverSessionID } = useAuth()
+    const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
+    const { selectedWsURL, isMute, vidRefCallback } = useStream()
 
     return (
         <>
-            <CssBaseline />
-            {!authSessionIDGetLoading && !authSessionIDGetError && (
-                <FullScreen handle={handle}>
-                    <Stack sx={{ position: 'relative', height, width, backgroundColor: '#000000', overflow: 'hidden' }}>
-                        <Box sx={{ position: 'relative', width: '100%', height: GAMEBAR_HEIGHT }}>
-                            <GameBar
-                                barPosition="top"
-                                gameserverSessionID={gameserverSessionID}
-                                passportWeb={PASSPORT_WEB}
-                                passportServerHost={PASSPORT_SERVER_HOSTNAME}
-                            />
-                        </Box>
+            <GameBar
+                barPosition="top"
+                gameserverSessionID={gameserverSessionID}
+                passportWeb={PASSPORT_WEB}
+                passportServerHost={PASSPORT_SERVER_HOSTNAME}
+            />
 
-                        <Box sx={{ flex: 1, position: 'relative' }}>
-                            <iframe
-                                width="100%"
-                                height="100%"
-                                frameBorder="0"
-                                allowFullScreen
-                                src={STREAM_SITE}
-                            ></iframe>
-                            <Box sx={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-                                <VotingSystem />
-                                <MiniMap />
-                                <Notifications />
-                                <LiveVotingChart />
-                                <WarMachineStats />
-                            </Box>
-                        </Box>
+            <Stack
+                sx={{
+                    mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
+                    width: mainDivDimensions.width,
+                    height: mainDivDimensions.height,
+                }}
+            >
+                <Stack
+                    direction="row"
+                    sx={{
+                        flex: 1,
+                        position: "relative",
+                        width: "100%",
+                        backgroundColor: colors.darkNavyBlue,
+                        overflow: "hidden",
+                    }}
+                >
+                    <LeftSideBar />
 
-                        <Box
-                            sx={{
-                                position: 'relative',
-                                width: '100%',
-                                height: CONTROLS_HEIGHT,
-                                backgroundColor: colors.darkNavyBlue,
+                    <Box
+                        sx={{
+                            position: "relative",
+                            height: streamDimensions.height,
+                            width: streamDimensions.width,
+                            backgroundColor: colors.darkNavyBlue,
+                            clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
+                        }}
+                    >
+                        <video
+                            key={selectedWsURL}
+                            id={"remoteVideo"}
+                            muted={isMute}
+                            ref={vidRefCallback}
+                            autoPlay
+                            controls
+                            playsInline
+                            style={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                width: iframeDimensions.width,
+                                height: iframeDimensions.height,
                             }}
-                        >
-                            <Controls />
+                        />
+
+                        <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
+                            <LoadMessage />
+                            <VotingSystem />
+                            <MiniMap />
+                            <Notifications />
+                            <LiveVotingChart />
+                            <WarMachineStats />
+                            <BattleEndScreen />
                         </Box>
-                    </Stack>
-                </FullScreen>
-            )}
+                    </Box>
+                </Stack>
+
+                <Box
+                    sx={{
+                        position: "relative",
+                        width: "100%",
+                        height: CONTROLS_HEIGHT,
+                    }}
+                >
+                    <Controls />
+                </Box>
+            </Stack>
+
+            <Box
+                sx={{
+                    position: "fixed",
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: colors.darkNavyBlue,
+                    zIndex: -1,
+                }}
+            />
         </>
     )
 }
@@ -104,9 +156,9 @@ const AppInner = () => {
 const App = () => {
     const [currentTheme, setTheme] = useState<Theme>(theme)
     const [factionColors, setFactionColors] = useState<FactionThemeColor>({
-        primary: '#00FFFF',
-        secondary: '#00FFFF',
-        background: '#050c12',
+        primary: "#00FFFF",
+        secondary: "#00FFFF",
+        background: "#050c12",
     })
 
     useEffect(() => {
@@ -118,15 +170,19 @@ const App = () => {
             <ThemeProvider theme={currentTheme}>
                 <SocketProvider>
                     <AuthProvider>
-                        <WalletProvider>
-                            <GameProvider>
-                                <DimensionProvider>
-                                    <SnackBarProvider>
-                                        <AppInner />
-                                    </SnackBarProvider>
-                                </DimensionProvider>
-                            </GameProvider>
-                        </WalletProvider>
+                        <StreamProvider>
+                            <WalletProvider>
+                                <LiveChatProvider>
+                                    <GameProvider>
+                                        <DimensionProvider>
+                                            <LeftSideBarProvider>
+                                                <AppInner />
+                                            </LeftSideBarProvider>
+                                        </DimensionProvider>
+                                    </GameProvider>
+                                </LiveChatProvider>
+                            </WalletProvider>
+                        </StreamProvider>
                     </AuthProvider>
                 </SocketProvider>
             </ThemeProvider>
@@ -134,4 +190,4 @@ const App = () => {
     )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<App />, document.getElementById("root"))

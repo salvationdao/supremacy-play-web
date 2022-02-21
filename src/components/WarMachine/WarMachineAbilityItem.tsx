@@ -1,17 +1,14 @@
-import { Theme } from '@mui/material/styles'
-import { useTheme } from '@mui/styles'
-import { Box, Fade, Stack, Typography } from '@mui/material'
-import BigNumber from 'bignumber.js'
-import { useCallback, useEffect, useState } from 'react'
-import { ClipThing, VotingButton } from '..'
-import { useAuth, useWebsocket } from '../../containers'
-import HubKey from '../../keys'
-import { zoomEffect } from '../../theme/keyframes'
-import { colors } from '../../theme/theme'
-import { GameAbility, GameAbilityTargetPrice } from '../../types'
-import { useToggle } from '../../hooks'
-import { NullUUID } from '../../constants'
-import { SvgSupToken } from '../../assets'
+import { Box, Fade, Stack, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
+import { useCallback, useEffect, useState } from "react"
+import { ClipThing, VotingButton } from ".."
+import { useAuth, useWebsocket } from "../../containers"
+import HubKey from "../../keys"
+import { zoomEffect } from "../../theme/keyframes"
+import { colors } from "../../theme/theme"
+import { GameAbility, GameAbilityTargetPrice } from "../../types"
+import { NullUUID } from "../../constants"
+import { SvgSupToken } from "../../assets"
 
 const ContributionBar = ({
     color,
@@ -32,7 +29,7 @@ const ContributionBar = ({
             direction="row"
             alignItems="center"
             spacing={1}
-            sx={{ width: '100%', px: 1.5, py: 1.2, backgroundColor: '#00000050', borderRadius: 1 }}
+            sx={{ width: "100%", px: 1.5, py: 1.2, backgroundColor: "#00000050", borderRadius: 1 }}
         >
             <Stack
                 direction="row"
@@ -40,17 +37,17 @@ const ContributionBar = ({
                 justifyContent="flex-start"
                 sx={{
                     flex: 1,
-                    position: 'relative',
+                    position: "relative",
                     height: 7,
                     backgroundColor: `${colors.text}20`,
-                    overflow: 'visible',
+                    overflow: "visible",
                 }}
             >
                 <Box
                     sx={{
                         width: `${progressPercent}%`,
-                        height: '100%',
-                        transition: 'all .25s',
+                        height: "100%",
+                        transition: "all .25s",
                         backgroundColor: color || colors.neonBlue,
                         zIndex: 5,
                     }}
@@ -58,11 +55,11 @@ const ContributionBar = ({
 
                 <Box
                     sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         left: `${costPercent}%`,
-                        backgroundColor: colors.red,
                         height: 10,
                         width: 2,
+                        backgroundColor: colors.red,
                         zIndex: 6,
                     }}
                 />
@@ -88,60 +85,52 @@ interface GameAbilityContributeRequest {
     amount: BigNumber
 }
 
-interface GameAbilityItemProps {
+interface WarMachineAbilityItemProps {
     gameAbility: GameAbility
+    maxAbilityPriceMap?: React.MutableRefObject<Map<string, BigNumber>>
 }
 
-export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
-    const { user } = useAuth()
-    const userID = user?.id
-    const factionID = user?.factionID
+export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMachineAbilityItemProps) => {
+    const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
-    const theme = useTheme<Theme>()
 
     const { label, colour, imageUrl, id } = gameAbility
-    const [refresh, toggleRefresh] = useToggle()
-    const [supsCost, setSupsCost] = useState(new BigNumber('0'))
-    const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
-    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
+    // const [refresh, toggleRefresh] = useToggle()
+    const [supsCost, setSupsCost] = useState(new BigNumber("0"))
+    const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
+    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
+        maxAbilityPriceMap?.current.get(id) || new BigNumber("0"),
+    )
     const [isVoting, setIsVoting] = useState(false)
 
     const [gameAbilityTargetPrice, setGameAbilityTargetPrice] = useState<GameAbilityTargetPrice>()
 
     // Listen on current faction ability price change
     useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !subscribeAbilityNetMessage ||
-            !userID ||
-            userID === '' ||
-            !factionID ||
-            factionID === NullUUID
-        )
-            return
+        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(id, (payload) => {
             if (!payload) return
             setGameAbilityTargetPrice(payload)
         })
-    }, [id, state, subscribeAbilityNetMessage, userID, factionID])
+    }, [id, state, subscribeAbilityNetMessage, factionID])
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
-        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy('1000000000000000000')
-        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy('1000000000000000000')
+        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy("1000000000000000000")
+        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy("1000000000000000000")
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
         setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
 
         if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
-            toggleRefresh()
         }
     }, [gameAbilityTargetPrice])
 
     const onContribute = useCallback(
         (amount: number) => async () => {
+            if (state !== WebSocket.OPEN) return
             try {
                 const resp = await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
                     gameAbilityID: id,
@@ -157,24 +146,21 @@ export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
                 return false
             }
         },
-        [],
+        [state],
     )
 
     return (
-        <Box key={refresh}>
+        <Box key={`${initialTargetCost}`}>
             <Fade in={true}>
                 <Box>
-                    <ClipThing
-                        border={{ isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: '1.5px' }}
-                        clipSize="6px"
-                    >
+                    <ClipThing clipSize="6px" clipSlantSize="5px">
                         <Stack
-                            spacing={1}
+                            spacing={0.9}
                             alignItems="flex-start"
                             sx={{
                                 flex: 1,
                                 minWidth: 325,
-                                backgroundColor: colors.darkNavy,
+                                backgroundColor: colour ? `${colour}15` : `${colors.darkNavyBlue}80`,
                                 px: 2,
                                 pt: 1.6,
                                 pb: 1.6,
@@ -187,28 +173,29 @@ export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
+                                <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
                                     <Box
                                         sx={{
-                                            height: 18,
-                                            width: 18,
+                                            height: 17,
+                                            width: 17,
                                             backgroundImage: `url(${imageUrl})`,
-                                            backgroundRepeat: 'no-repeat',
-                                            backgroundPosition: 'center',
-                                            backgroundSize: 'cover',
-                                            backgroundColor: colour || '#030409',
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
+                                            backgroundSize: "cover",
+                                            backgroundColor: colour || "#030409",
+                                            mb: 0.3,
                                         }}
                                     />
                                     <Typography
-                                        variant="body1"
+                                        variant="body2"
                                         sx={{
                                             lineHeight: 1,
-                                            fontWeight: 'fontWeightBold',
-                                            fontFamily: 'Nostromo Regular Medium',
+                                            fontWeight: "fontWeightBold",
+                                            fontFamily: "Nostromo Regular Medium",
                                             color: colour,
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
                                             maxWidth: 200,
                                         }}
                                     >
@@ -243,7 +230,7 @@ export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
                                         {supsCost.toFixed(2)}
                                     </Typography>
                                     <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
-                                        &nbsp;SUPS
+                                        &nbsp;SUP{supsCost.eq(1) ? "" : "S"}
                                     </Typography>
                                 </Stack>
                             </Stack>
@@ -255,7 +242,7 @@ export const GameAbilityItem = ({ gameAbility }: GameAbilityItemProps) => {
                                 supsCost={supsCost}
                             />
 
-                            <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: '100%' }}>
+                            <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                 <VotingButton
                                     color={colour}
                                     amount={1}

@@ -9,7 +9,7 @@ Some examples:
 1. CANCELLED_NO_PLAYER
 => {ability} is cancelled, due to no player select location
 
-2. CANCELLED_DISCONNECTED
+2. CANCELLED_DISCONNECT
 => {ability} is cancelled, due to the last player eligible to pick location is disconnected.
 
 3. FAILED_TIMEOUT
@@ -19,11 +19,11 @@ Some examples:
 => {currentUsername} is disconnected, it is {nextUsername}'s turn to select the location for {ability}
 
 5. TRIGGER
-=> {currentUserName} is selecting a target location for {ability}
+=> {currentUserName} has chosen a target location for {ability}
 */
 
 interface LocationSelectAlertProps {
-    type: 'CANCELLED_NO_PLAYER' | 'CANCELLED_DISCONNECTED' | 'FAILED_TIMEOUT' | 'FAILED_DISCONNECTED' | 'TRIGGER'
+    type: 'CANCELLED_NO_PLAYER' | 'CANCELLED_DISCONNECT' | 'FAILED_TIMEOUT' | 'FAILED_DISCONNECTED' | 'TRIGGER'
     currentUser?: User
     nextUser?: User
     ability: BattleAbility
@@ -31,7 +31,7 @@ interface LocationSelectAlertProps {
     y?: number
 }
 
-const FallbackUser: User = {
+export const FallbackUser: User = {
     id: '',
     factionID: '',
     username: 'Unknown User',
@@ -55,11 +55,11 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
     const { username, avatarID, faction } = currentUser || FallbackUser
     const { username: nextUsername, avatarID: nextAvatarID, faction: nextFaction } = nextUser || FallbackUser
 
-    if (type == 'CANCELLED_NO_PLAYER' || type == 'CANCELLED_DISCONNECTED') {
+    if (type == 'CANCELLED_NO_PLAYER' || type == 'CANCELLED_DISCONNECT') {
         return (
             <Box>
-                <StyledImageText text={label} color={colour} />
-                <StyledNormalText text=" has been cancelled as there are no players left to choose a target location." />
+                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
+                <StyledNormalText text=" has been cancelled as there were no players available to choose a target location." />
             </Box>
         )
     }
@@ -79,7 +79,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={nextFaction.theme.primary}
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
-                <StyledImageText text={label} color={colour} />
+                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
                 <StyledNormalText text="." />
             </Box>
         )
@@ -100,7 +100,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={nextFaction.theme.primary}
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
-                <StyledImageText text={label} color={colour} />
+                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
                 <StyledNormalText text="." />
             </Box>
         )
@@ -114,8 +114,8 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     text={username}
                     color={faction.theme.primary}
                 />
-                <StyledNormalText text=" is choosing a target location for " />
-                <StyledImageText text={label} color={colour} />
+                <StyledNormalText text=" has chosen a target location for " />
+                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
                 <StyledNormalText text="." />
             </Box>
         )

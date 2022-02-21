@@ -1,24 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { createContainer } from 'unstated-next'
-import HubKey from '../keys'
-import { UpdateTheme, User } from '../types'
-import { useWebsocket } from './socket'
+import React, { useEffect, useState } from "react"
+import { createContainer } from "unstated-next"
+import HubKey from "../keys"
+import { UpdateTheme, User } from "../types"
+import { useWebsocket } from "./socket"
 
+export interface AuthContainerType {
+    user: User | undefined
+    userID: string | undefined
+    factionID: string | undefined
+    gameserverSessionID: string
+    authSessionIDGetLoading: boolean
+    authSessionIDGetError: undefined
+}
 /**
  * A Container that handles Authorisation
  */
-export const AuthContainer = createContainer(() => {
+export const AuthContainer = createContainer((): AuthContainerType => {
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useWebsocket()
     const [user, setUser] = useState<User>()
-    const [gameserverSessionID, setGameserverSessionID] = useState<string>('')
+    const [gameserverSessionID, setGameserverSessionID] = useState<string>("")
 
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
     const [authSessionIDGetError, setAuthSessionIDGetError] = useState()
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
-        if (!subscribe) return
+        if (!subscribe || state !== WebSocket.OPEN) return
         return subscribe<User>(
             HubKey.UserSubscribe,
             (u) => {
@@ -28,7 +36,7 @@ export const AuthContainer = createContainer(() => {
             null,
             true,
         )
-    }, [subscribe])
+    }, [state, subscribe])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || user || gameserverSessionID) return
@@ -47,7 +55,8 @@ export const AuthContainer = createContainer(() => {
 
     return {
         user,
-        userFactionID: user?.factionID,
+        userID: user?.id,
+        factionID: user?.factionID,
         gameserverSessionID,
         authSessionIDGetLoading,
         authSessionIDGetError,

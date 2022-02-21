@@ -1,6 +1,13 @@
 import { Box, Stack } from '@mui/material'
-import { BattleFactionAbilityAlert, LocationSelectAlert, NotificationItem, TextAlert, WarMachineAbilityAlert } from '..'
-import { CONTROLS_HEIGHT, GAMEBAR_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from '../../constants'
+import {
+    BattleAbilityAlert,
+    FactionAbilityAlert,
+    LocationSelectAlert,
+    NotificationItem,
+    TextAlert,
+    WarMachineAbilityAlert,
+} from '..'
+import { NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from '../../constants'
 import { colors } from '../../theme/theme'
 import { useTheme } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
@@ -8,6 +15,17 @@ import { makeid, useAuth, useDimension, useWebsocket } from '../../containers'
 import { useEffect } from 'react'
 import HubKey from '../../keys'
 import { useArray } from '../../hooks'
+import {
+    locationSelectNoti,
+    locationSelectNoti2,
+    locationSelectNoti3,
+    locationSelectNoti4,
+    locationSelectNoti5,
+    battleAbilityNoti,
+    factionAbilityNoti,
+    warMachineAbilityNoti,
+    textNoti,
+} from '../../samepleData'
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -19,7 +37,7 @@ FACTION_ABILITY: when a faction has initiated a faction ability
 WARMACHINE_ABILITY: when a faction has initiated a war machine ability
 TEXT: generic notification with no styles, just text
 */
-interface NotificationResponse {
+export interface NotificationResponse {
     type: 'TEXT' | 'LOCATION_SELECT' | 'BATTLE_ABILITY' | 'FACTION_ABILITY' | 'WAR_MACHINE_ABILITY'
     data: any
 }
@@ -29,7 +47,7 @@ export const Notifications = () => {
     const { user } = useAuth()
     const theme = useTheme<Theme>()
     const {
-        iframeDimensions: { height },
+        streamDimensions: { height },
     } = useDimension()
 
     // Notification array
@@ -50,242 +68,13 @@ export const Notifications = () => {
     useEffect(() => {
         if (!SPAWN_TEST_NOTIFICATIONS) return
 
-        const locationSelectNoti: NotificationResponse = {
-            type: 'LOCATION_SELECT',
-            data: {
-                type: 'TRIGGER',
-                x: 7,
-                y: 5,
-                currentUser: {
-                    username: 'Jayli3n',
-                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
-                    faction: {
-                        label: 'Red Mountain Offworld Mining Corporation',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-                ability: {
-                    label: 'AIRSTRIKE',
-                    imageUrl: 'https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg',
-                    colour: '#428EC1',
-                },
-                reason: '',
-            },
-        }
-
-        const locationSelectNoti2: NotificationResponse = {
-            type: 'LOCATION_SELECT',
-            data: {
-                type: 'FAILED_TIMEOUT',
-                x: 7,
-                y: 5,
-                currentUser: {
-                    username: 'Jayli3n',
-                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
-                    faction: {
-                        label: 'Red Mountain Offworld Mining Corporation',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-                nextUser: {
-                    username: 'Darren-Hung',
-                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
-                    faction: {
-                        label: 'Boston Cybernetics',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-                ability: {
-                    label: 'AIRSTRIKE',
-                    imageUrl: 'https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg',
-                    colour: '#428EC1',
-                },
-                reason: '',
-            },
-        }
-
-        const locationSelectNoti3: NotificationResponse = {
-            type: 'LOCATION_SELECT',
-            data: {
-                type: 'FAILED_DISCONNECTED',
-                x: 7,
-                y: 5,
-                currentUser: {
-                    username: 'Jayli3n',
-                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
-                    faction: {
-                        label: 'Red Mountain Offworld Mining Corporation',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-                nextUser: {
-                    username: 'Darren-Hung',
-                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
-                    faction: {
-                        label: 'Boston Cybernetics',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-                ability: {
-                    label: 'AIRSTRIKE',
-                    imageUrl: 'https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg',
-                    colour: '#428EC1',
-                },
-                reason: '',
-            },
-        }
-
-        const locationSelectNoti4: NotificationResponse = {
-            type: 'LOCATION_SELECT',
-            data: {
-                type: 'CANCELLED_NO_PLAYER',
-                x: 7,
-                y: 5,
-                currentUser: {
-                    username: 'Jayli3n',
-                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
-                    faction: {
-                        label: 'Red Mountain Offworld Mining Corporation',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-                ability: {
-                    label: 'AIRSTRIKE',
-                    imageUrl: 'https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg',
-                    colour: '#428EC1',
-                },
-                reason: '',
-            },
-        }
-
-        const locationSelectNoti5: NotificationResponse = {
-            type: 'LOCATION_SELECT',
-            data: {
-                type: 'CANCELLED_DISCONNECTED',
-                x: 7,
-                y: 5,
-                currentUser: {
-                    username: 'Jayli3n',
-                    avatarID: '949fd2b8-1c8f-4938-8c78-d4d40f8e12ef',
-                    faction: {
-                        label: 'Red Mountain Offworld Mining Corporation',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-                ability: {
-                    label: 'AIRSTRIKE',
-                    imageUrl: 'https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg',
-                    colour: '#428EC1',
-                },
-                reason: '',
-            },
-        }
-
-        const battleAbilityNoti: NotificationResponse = {
-            type: 'BATTLE_ABILITY',
-            data: {
-                user: {
-                    username: 'Jayli3n',
-                    faction: {
-                        label: 'Red Mountain Offworld Mining Corporation',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-                ability: {
-                    label: 'AIRSTRIKE',
-                    imageUrl: 'https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg',
-                    colour: '#428EC1',
-                },
-            },
-        }
-
-        const warMachineAbilityNoti: NotificationResponse = {
-            type: 'WAR_MACHINE_ABILITY',
-            data: {
-                user: {
-                    username: 'Jayli3n',
-                    faction: {
-                        label: 'Red Mountain Offworld Mining Corporation',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-                ability: {
-                    label: 'AIRSTRIKE',
-                    imageUrl: 'https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg',
-                    colour: '#428EC1',
-                },
-                warMachine: {
-                    name: 'Zaibatsu WREX Tenshi Mk1 B',
-                    imageUrl: '',
-                    faction: {
-                        label: 'Red Mountain Offworld Mining Corporation',
-                        logoBlobID: '91dae11d-eb07-4906-bbdd-6417b880770a',
-                        theme: {
-                            primary: '#C24242',
-                            secondary: '#FFFFFF',
-                            background: '#0D0404',
-                        },
-                    },
-                },
-            },
-        }
-
-        const textNoti: NotificationResponse = {
-            type: 'TEXT',
-            data: 'Just a test notification text to see how it looks.',
-        }
-
         newNotification(locationSelectNoti)
         newNotification(locationSelectNoti2)
         newNotification(locationSelectNoti3)
         newNotification(locationSelectNoti4)
         newNotification(locationSelectNoti5)
         newNotification(battleAbilityNoti)
+        newNotification(factionAbilityNoti)
         newNotification(warMachineAbilityNoti)
         newNotification(textNoti)
     }, [])
@@ -313,36 +102,33 @@ export const Notifications = () => {
             switch (n.type) {
                 case 'TEXT':
                     return (
-                        <Box key={n.notiID}>
-                            <NotificationItem duration={n.duration}>
-                                <TextAlert data={n.data} />
-                            </NotificationItem>
-                        </Box>
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <TextAlert data={n.data} />
+                        </NotificationItem>
                     )
                 case 'LOCATION_SELECT':
                     return (
-                        <Box key={n.notiID}>
-                            <NotificationItem duration={n.duration}>
-                                <LocationSelectAlert data={n.data} />
-                            </NotificationItem>
-                        </Box>
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <LocationSelectAlert data={n.data} />
+                        </NotificationItem>
                     )
                 case 'BATTLE_ABILITY':
+                    return (
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <BattleAbilityAlert data={n.data} />
+                        </NotificationItem>
+                    )
                 case 'FACTION_ABILITY':
                     return (
-                        <Box key={n.notiID}>
-                            <NotificationItem duration={n.duration}>
-                                <BattleFactionAbilityAlert data={n.data} />
-                            </NotificationItem>
-                        </Box>
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <FactionAbilityAlert data={n.data} />
+                        </NotificationItem>
                     )
                 case 'WAR_MACHINE_ABILITY':
                     return (
-                        <Box key={n.notiID}>
-                            <NotificationItem duration={n.duration}>
-                                <WarMachineAbilityAlert data={n.data} />
-                            </NotificationItem>
-                        </Box>
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <WarMachineAbilityAlert data={n.data} />
+                        </NotificationItem>
                     )
             }
         })
@@ -351,7 +137,7 @@ export const Notifications = () => {
         <Stack
             sx={{
                 position: 'absolute',
-                bottom: 138,
+                top: 10,
                 right: 10,
                 zIndex: 15,
                 overflow: 'hidden',
@@ -362,9 +148,8 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        // 100vh, 138px gap bottom, gamebar height, controls height
-                        // mini map: 230px total height
-                        maxHeight: `calc(${height}px - 138px - 230px - ${GAMEBAR_HEIGHT}px - ${CONTROLS_HEIGHT}px)`,
+                        // 100vh, 110px gap bottom
+                        maxHeight: `calc(${height}px - 110px)`,
                         overflowY: 'auto',
                         overflowX: 'hidden',
                         pr: 1,

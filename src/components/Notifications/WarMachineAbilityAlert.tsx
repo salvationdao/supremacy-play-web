@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { StyledImageText, StyledNormalText } from '..'
-import { PASSPORT_WEB } from '../../constants'
+import { GenericWarMachinePNG } from '../../assets'
 import { BattleAbility, User, WarMachineState } from '../../types'
 
 interface WarMachineAbilityAlertProps {
@@ -10,19 +10,18 @@ interface WarMachineAbilityAlertProps {
 }
 
 export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertProps }) => {
-    const { user, ability, warMachine } = data
+    const { ability, warMachine } = data
     const { label, colour, imageUrl } = ability
     const { name, imageUrl: warMachineImageUrl, faction } = warMachine
 
+    const wmImageUrl = warMachineImageUrl || GenericWarMachinePNG
+
     return (
         <Box>
-            <StyledImageText text={label} color={colour} />
+            <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
             <StyledNormalText text=" has been initiated by " />
-            <StyledImageText
-                text={name}
-                color={faction.theme.primary}
-                imageUrl={warMachineImageUrl ? warMachineImageUrl : undefined}
-            />
+            <StyledImageText text={name} color={faction.theme.primary} imageUrl={wmImageUrl} />
+            <StyledNormalText text="." />
         </Box>
     )
 }
