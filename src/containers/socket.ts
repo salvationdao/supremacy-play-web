@@ -157,32 +157,32 @@ const UseWebsocket = (): WebSocketProperties => {
             }
 
             if (LOG_API_CALLS) {
-                // console.log(
-                //     `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE REQUEST (${
-                //         listenOnly ? "LISTEN" : "SUBSCRIPTION"
-                //     }): "${key}"`,
-                //     "background: #D1E5FF; color: #000000",
-                // )
-                // console.log({
-                //     key,
-                //     subKey,
-                //     payload: args,
-                // })
+                console.log(
+                    `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE REQUEST (${
+                        listenOnly ? "LISTEN" : "SUBSCRIPTION"
+                    }): "${key}"`,
+                    "background: #D1E5FF; color: #000000",
+                )
+                console.log({
+                    key,
+                    subKey,
+                    payload: args,
+                })
             }
 
             const callback2 = (payload: T) => {
                 if (LOG_API_CALLS && !disableLog) {
-                    // console.log(
-                    //     `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE RESPONSE (${
-                    //         listenOnly ? "LISTEN" : "SUBSCRIPTION"
-                    //     }): "${key}"`,
-                    //     "background: #FFD5C7; color: #000000",
-                    // )
-                    // console.log({
-                    //     key,
-                    //     subKey,
-                    //     payload,
-                    // })
+                    console.log(
+                        `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE RESPONSE (${
+                            listenOnly ? "LISTEN" : "SUBSCRIPTION"
+                        }): "${key}"`,
+                        "background: #FFD5C7; color: #000000",
+                    )
+                    console.log({
+                        key,
+                        subKey,
+                        payload,
+                    })
                 }
                 callback(payload)
             }
