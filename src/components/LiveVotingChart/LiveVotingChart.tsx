@@ -25,11 +25,13 @@ const DefaultMaxLiveVotingDataLength = 100
 const SpoilOfWarAmount = () => {
     const { state, subscribe, subscribeNetMessage } = useWebsocket()
     const [spoilOfWarAmount, setSpoilOfWarAmount] = useState<string>("0")
+
     // Triggered spoil of war update
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe(HubKey.TriggerSpoilOfWarUpdated, () => console.log(""), null)
     }, [state, subscribe])
+
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
         return subscribeNetMessage<string | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {

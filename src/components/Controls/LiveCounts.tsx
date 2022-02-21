@@ -18,11 +18,13 @@ export const LiveCounts = () => {
     const { state, subscribe, subscribeNetMessage } = useWebsocket()
     const { factionsColor } = useGame()
     const [viewers, setViewers] = useState<ViewerLiveCount>()
+
     // Triggered live viewer count tick
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe(HubKey.TriggerViewerLiveCountUpdated, () => console.log(""), null)
     }, [state, subscribe])
+
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
         return subscribeNetMessage<ViewerLiveCount | undefined>(NetMessageType.ViewerLiveCountTick, (payload) => {
