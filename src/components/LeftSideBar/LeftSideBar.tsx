@@ -7,7 +7,7 @@ const BUTTON_WIDTH = 110
 const NUM_BUTTONS = 1
 
 export const LeftSideBar = () => {
-    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen } = useLeftSideBar()
+    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, isEndBattleDetailEnabled } = useLeftSideBar()
 
     return (
         <Box
@@ -40,7 +40,8 @@ export const LeftSideBar = () => {
                         width: BUTTON_WIDTH,
                         backgroundColor: colors.darkNavy,
                         cursor: "pointer",
-                        opacity: isEndBattleDetailOpen ? 1 : 0.6,
+                        pointerEvents: isEndBattleDetailEnabled ? "auto" : "none",
+                        opacity: isEndBattleDetailEnabled && isEndBattleDetailOpen ? 1 : 0.6,
                         ":hover": {
                             opacity: 1,
                         },
