@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
-import { createContainer } from 'unstated-next'
-import { NullUUID } from '../constants'
-import HubKey from '../keys'
-import { VotingState, Map, WarMachineState, NetMessageType, GameAbility } from '../types'
-import { useAuth } from './auth'
-import { useWebsocket } from './socket'
-import BigNumber from 'bignumber.js'
+import { useEffect, useState } from "react"
+import { createContainer } from "unstated-next"
+import { NullUUID } from "../constants"
+import HubKey from "../keys"
+import { VotingState, Map, WarMachineState, NetMessageType, GameAbility } from "../types"
+import { useAuth } from "./auth"
+import { useWebsocket } from "./socket"
+import BigNumber from "bignumber.js"
 
 interface VtotingStateResponse {
     phase: VotingState
@@ -35,8 +35,8 @@ export const GameContainer = createContainer(() => {
     const [factionsColor, setFactionsColor] = useState<FactionsColorResponse>()
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
-    const [factionVotePrice, setFactionVotePrice] = useState<BigNumber>(new BigNumber('0'))
-    const [prevFactionVotePrice, setPrevFactionVotePrice] = useState<BigNumber>(new BigNumber('0'))
+    const [factionVotePrice, setFactionVotePrice] = useState<BigNumber>(new BigNumber("0"))
+    const [prevFactionVotePrice, setPrevFactionVotePrice] = useState<BigNumber>(new BigNumber("0"))
     const [votingState, setVotingState] = useState<VtotingStateResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [queuingWarMachines, setQueuingWarMachines] = useState<WarMachineState[]>([])
@@ -55,6 +55,12 @@ export const GameContainer = createContainer(() => {
             true,
         )
     }, [state, subscribe])
+
+    // Triggered faction ability or war machine ability price ticking
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        return subscribe(HubKey.TriggerFactionAbilityPriceUpdated, () => console.log(""), null)
+    }, [state, subscribe, factionID])
 
     // Get main color of each factions
     useEffect(() => {
@@ -79,7 +85,7 @@ export const GameContainer = createContainer(() => {
             try {
                 const resp = await send<string>(HubKey.GetFactionVotePrice)
                 if (resp) {
-                    setFactionVotePrice(new BigNumber(resp).dividedBy(new BigNumber('1000000000000000000')))
+                    setFactionVotePrice(new BigNumber(resp).dividedBy(new BigNumber("1000000000000000000")))
                 }
             } catch (e) {
                 console.log(e)
@@ -88,6 +94,12 @@ export const GameContainer = createContainer(() => {
         })()
     }, [send, state, factionID])
 
+    // Trigger faction vote price net message listener
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        return subscribe(HubKey.TriggerFactionVotePriceUpdated, () => console.log("just placeholder"))
+    }, [state, subscribe, factionID])
+
     // Listen on current price change
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage || !factionID || factionID === NullUUID) return
@@ -95,7 +107,7 @@ export const GameContainer = createContainer(() => {
             if (!payload) return
             setFactionVotePrice((prev) => {
                 setPrevFactionVotePrice(prev)
-                return new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000'))
+                return new BigNumber(payload).dividedBy(new BigNumber("1000000000000000000"))
             })
         })
     }, [state, subscribeNetMessage, factionID])

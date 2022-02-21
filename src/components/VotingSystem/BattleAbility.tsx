@@ -1,15 +1,15 @@
-import { Box, Fade, Stack, Typography } from '@mui/material'
-import { useCallback, useEffect, useState } from 'react'
-import { BattleAbilityCountdown, ClipThing, VotingButton } from '..'
-import { SvgCooldown, SvgApplause } from '../../assets'
-import { NullUUID } from '../../constants'
-import { useAuth, useGame, useWebsocket } from '../../containers'
-import { shadeColor } from '../../helpers'
-import { useToggle } from '../../hooks'
-import HubKey from '../../keys'
-import { zoomEffect } from '../../theme/keyframes'
-import { colors } from '../../theme/theme'
-import { BattleAbility as BattleAbilityType, NetMessageType } from '../../types'
+import { Box, Fade, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useState } from "react"
+import { BattleAbilityCountdown, ClipThing, VotingButton } from ".."
+import { SvgCooldown, SvgApplause } from "../../assets"
+import { NullUUID } from "../../constants"
+import { useAuth, useGame, useWebsocket } from "../../containers"
+import { shadeColor } from "../../helpers"
+import { useToggle } from "../../hooks"
+import HubKey from "../../keys"
+import { zoomEffect } from "../../theme/keyframes"
+import { colors } from "../../theme/theme"
+import { BattleAbility as BattleAbilityType, NetMessageType } from "../../types"
 
 const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: boolean }) => {
     const { state, subscribeNetMessage } = useWebsocket()
@@ -37,10 +37,10 @@ const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: bo
         (color: string, ratio: number) => (
             <Box
                 sx={{
-                    position: 'relative',
-                    width: isCooldown ? '33.33%' : `${ratio}%`,
-                    height: '100%',
-                    transition: 'all .25s',
+                    position: "relative",
+                    width: isCooldown ? "33.33%" : `${ratio}%`,
+                    height: "100%",
+                    transition: "all .25s",
                     opacity: isVoting ? 1 : 0.4,
                     backgroundColor: color,
                 }}
@@ -49,12 +49,12 @@ const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: bo
                     key={ratio}
                     variant="caption"
                     sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: -16,
-                        left: '50%',
-                        transform: 'translateX(-50%)',
+                        left: "50%",
+                        transform: "translateX(-50%)",
                         color,
-                        fontWeight: 'fontWeightBold',
+                        fontWeight: "fontWeightBold",
                         animation: `${zoomEffect()} 300ms ease-out`,
                     }}
                 >
@@ -66,7 +66,7 @@ const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: bo
     )
 
     return (
-        <Box sx={{ width: '100%', px: 1.5, pt: 1, pb: 1.2, backgroundColor: '#00000050', borderRadius: 1 }}>
+        <Box sx={{ width: "100%", px: 1.5, pt: 1, pb: 1.2, backgroundColor: "#00000050", borderRadius: 1 }}>
             <Stack
                 direction="row"
                 alignSelf="stretch"
@@ -74,9 +74,9 @@ const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: bo
                 justifyContent="center"
                 sx={{ mt: 1.6, height: 5.5, px: 0.5 }}
             >
-                {subBar(factionsColor?.redMountain || '#C24242', voteRatio[0])}
-                {subBar(factionsColor?.boston || '#428EC1', voteRatio[1])}
-                {subBar(factionsColor?.zaibatsu || '#FFFFFF', voteRatio[2])}
+                {subBar(factionsColor?.redMountain || "#C24242", voteRatio[0])}
+                {subBar(factionsColor?.boston || "#428EC1", voteRatio[1])}
+                {subBar(factionsColor?.zaibatsu || "#FFFFFF", voteRatio[2])}
             </Stack>
         </Box>
     )
@@ -93,8 +93,14 @@ export const BattleAbility = () => {
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [fadeEffect, toggleFadeEffect] = useToggle()
 
-    const isVoting = votingState?.phase == 'VOTE_ABILITY_RIGHT' || votingState?.phase == 'NEXT_VOTE_WIN'
-    const isCooldown = votingState?.phase == 'VOTE_COOLDOWN'
+    const isVoting = votingState?.phase == "VOTE_ABILITY_RIGHT" || votingState?.phase == "NEXT_VOTE_WIN"
+    const isCooldown = votingState?.phase == "VOTE_COOLDOWN"
+
+    // Subscribe to the result of the vote
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        return subscribe(HubKey.TriggerAbilityRightRatio, () => console.log(""), null)
+    }, [state, subscribe, factionID])
 
     // Subscribe to battle ability updates
     useEffect(() => {
@@ -165,10 +171,10 @@ export const BattleAbility = () => {
                                                     height: 18,
                                                     width: 18,
                                                     backgroundImage: `url(${imageUrl})`,
-                                                    backgroundRepeat: 'no-repeat',
-                                                    backgroundPosition: 'center',
-                                                    backgroundSize: 'cover',
-                                                    backgroundColor: colour || '#030409',
+                                                    backgroundRepeat: "no-repeat",
+                                                    backgroundPosition: "center",
+                                                    backgroundSize: "cover",
+                                                    backgroundColor: colour || "#030409",
                                                 }}
                                             />
 
@@ -176,12 +182,12 @@ export const BattleAbility = () => {
                                                 variant="body1"
                                                 sx={{
                                                     lineHeight: 1,
-                                                    fontWeight: 'fontWeightBold',
-                                                    fontFamily: 'Nostromo Regular Medium',
+                                                    fontWeight: "fontWeightBold",
+                                                    fontFamily: "Nostromo Regular Medium",
                                                     color: colour,
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    whiteSpace: 'nowrap',
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "nowrap",
                                                     maxWidth: 200,
                                                 }}
                                             >
@@ -195,10 +201,10 @@ export const BattleAbility = () => {
                                             alignItems="center"
                                             justifyContent="center"
                                         >
-                                            <SvgCooldown component="span" size="13px" fill={'grey'} sx={{ mb: 0.2 }} />
+                                            <SvgCooldown component="span" size="13px" fill={"grey"} sx={{ mb: 0.2 }} />
                                             <Typography
                                                 variant="body2"
-                                                sx={{ lineHeight: 1, color: 'grey !important' }}
+                                                sx={{ lineHeight: 1, color: "grey !important" }}
                                             >
                                                 {cooldownDurationSecond}s
                                             </Typography>
@@ -207,7 +213,7 @@ export const BattleAbility = () => {
 
                                     <VotingBar isVoting={isVoting} isCooldown={isCooldown} />
 
-                                    <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: '100%' }}>
+                                    <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                         <VotingButton
                                             color={colour}
                                             amount={1}

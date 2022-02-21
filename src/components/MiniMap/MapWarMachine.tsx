@@ -84,8 +84,8 @@ export const MapWarMachine = ({
                               width: DOT_SIZE,
                               height: DOT_SIZE,
                               overflow: "visible",
-                              backgroundColor: primaryColor,
-                              border: "1.5px solid #000",
+                              backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
+                              border: `1.5px solid #000000${isAlive ? "" : "00"}`,
                               borderRadius: "50%",
                               zIndex: 2,
                           }
@@ -99,6 +99,7 @@ export const MapWarMachine = ({
                             width: "100%",
                             height: "100%",
                             background: "linear-gradient(#00000040, #00000090)",
+                            opacity: enlarged ? 1 : 0.76,
                         }}
                     >
                         <SvgMapSkull
@@ -114,7 +115,7 @@ export const MapWarMachine = ({
                     </Stack>
                 )}
 
-                {(isAlive && enlarged) && (
+                {isAlive && enlarged && (
                     <Box
                         sx={{
                             position: "absolute",
@@ -142,7 +143,7 @@ export const MapWarMachine = ({
                 )}
             </Box>
 
-            {(isAlive && enlarged) && (
+            {isAlive && enlarged && (
                 <Stack sx={{ mt: 0.2, width: 34, zIndex: 1 }} spacing={0.1}>
                     <Box sx={{ width: "100%", height: 7, border: "1px solid #00000080" }}>
                         <Box

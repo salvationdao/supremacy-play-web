@@ -1,12 +1,12 @@
-import { Box, Fade, Stack, Typography } from '@mui/material'
-import { Theme } from '@mui/material/styles'
-import { useTheme } from '@mui/styles'
-import { useEffect, useState } from 'react'
-import { FactionAbilityItem } from '..'
-import { NullUUID, PASSPORT_WEB } from '../../constants'
-import { useAuth, useWebsocket } from '../../containers'
-import HubKey from '../../keys'
-import { GameAbility } from '../../types'
+import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Theme } from "@mui/material/styles"
+import { useTheme } from "@mui/styles"
+import { useEffect, useState } from "react"
+import { FactionAbilityItem } from ".."
+import { NullUUID, PASSPORT_WEB } from "../../constants"
+import { useAuth, useWebsocket } from "../../containers"
+import HubKey from "../../keys"
+import { GameAbility } from "../../types"
 
 export const FactionAbilities = () => {
     const { state, subscribe } = useWebsocket()
@@ -35,13 +35,13 @@ export const FactionAbilities = () => {
                             width: 19,
                             height: 19,
                             backgroundImage: `url(${PASSPORT_WEB}/api/files/${user?.faction.logoBlobID})`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center',
-                            backgroundSize: 'contain',
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "contain",
                             mb: 0.3,
                         }}
                     />
-                    <Typography sx={{ lineHeight: 1, color: theme.factionTheme.primary, fontWeight: 'fontWeightBold' }}>
+                    <Typography sx={{ lineHeight: 1, color: theme.factionTheme.primary, fontWeight: "fontWeightBold" }}>
                         SYNDICATE UNIQUE SKILLS
                     </Typography>
                 </Stack>
