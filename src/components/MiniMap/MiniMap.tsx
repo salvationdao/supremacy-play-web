@@ -21,11 +21,8 @@ export const MiniMap = () => {
     } = useDimension()
     const [curPosX, setCurPosX] = useState(-1)
     const [curPosY, setCurPosY] = useState(-1)
-    const [prevPosX, setPrevPosX] = useState(-1)
-    const [prevPosY, setPrevPosY] = useState(-1)
     const { map, winner, setWinner, votingState } = useGame()
     const [enlarged, toggleEnlarged] = useToggle(false)
-    const enlargedToggled = useRef<boolean>(false)
     const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
         width: 230,
         height: 200,
@@ -45,34 +42,24 @@ export const MiniMap = () => {
         let newPosX = parseString(localStorage.getItem("miniMapPosX"), -1)
         let newPosY = parseString(localStorage.getItem("miniMapPosY"), -1)
 
-        console.log(prevPosX, prevPosY)
-
         // Make sure map is inside iframe when page / map are resized
-        if (enlargedToggled.current && !enlarged) {
-            // newPosX = prevPosX > 0 ? Math.max(Padding, Math.min(prevPosX, width - prevPosX - Padding - ClipBorder)) : newPosX + (dimensions.width - newWidth)
-            // newPosY = prevPosY > 0 ? Math.max(Padding, Math.min(prevPosY, width - prevPosY - Padding - ClipBorder)) : newPosY + (dimensions.height - newHeight)
-            // newPosY = newPosY + (dimensions.height - newHeight)
-            newPosX = prevPosX
-            newPosY = prevPosY
-        } else {
-            newPosX =
-                newPosX > 0
-                    ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding - ClipBorder))
-                    : width - DefaultPositionXRight - newWidth - Padding
+        newPosX =
+            newPosX > 0
+                ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding - ClipBorder))
+                : width - DefaultPositionXRight - newWidth - Padding
 
-            newPosY =
-                newPosY > 0
-                    ? Math.max(Padding, Math.min(newPosY, height - newHeight - Padding - ClipBorder))
-                    : height - DefaultPositionYBottom - newHeight - Padding
-        }
-
-
+        newPosY =
+            newPosY > 0
+                ? Math.max(Padding, Math.min(newPosY, height - newHeight - Padding - ClipBorder))
+                : height - DefaultPositionYBottom - newHeight - Padding
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
-        localStorage.setItem("miniMapPosX", newPosX.toString())
-        localStorage.setItem("miniMapPosY", newPosY.toString())
-        enlargedToggled.current = false
+
+        if (!enlarged) {
+            localStorage.setItem("miniMapPosX", newPosX.toString())
+            localStorage.setItem("miniMapPosY", newPosY.toString())
+        }
     }, [width, height, enlarged])
 
     useEffect(() => {
@@ -119,10 +106,6 @@ export const MiniMap = () => {
                     y: curPosY,
                 }}
                 onStop={(e: DraggableEvent, data: DraggableData) => {
-                    if (!enlarged) {
-                        setPrevPosX(curPosX)
-                        setPrevPosY(curPosY)
-                    }
                     setCurPosX(data.x)
                     setCurPosY(data.y)
                     localStorage.setItem("miniMapPosX", data.x.toString())
@@ -155,7 +138,6 @@ export const MiniMap = () => {
                                         // backgroundColor: colors.darkNavy,
                                         transition: "all .2s",
                                         background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
-                                        transformOrigin: "top right"
                                     }}
                                 >
                                     <IconButton
@@ -168,10 +150,7 @@ export const MiniMap = () => {
                                             opacity: 0.8,
                                             zIndex: 50,
                                         }}
-                                        onClick={() => {
-                                            toggleEnlarged()
-                                            enlargedToggled.current = true
-                                        }}
+                                        onClick={() => toggleEnlarged()}
                                     >
                                         {enlarged ? <SvgMapEnlarge size="13px" /> : <SvgMapEnlarge size="13px" />}
                                     </IconButton>

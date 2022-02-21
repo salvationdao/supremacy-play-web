@@ -1,17 +1,18 @@
-import { Box, Fade, Stack, Theme, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import BigNumber from 'bignumber.js'
-import { SyntheticEvent, useEffect, useState } from 'react'
-import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
-import { Resizable, ResizeCallbackData } from 'react-resizable'
-import { SvgDrag, SvgResizeArrow, SvgSupToken } from '../../assets'
-import { UI_OPACITY } from '../../constants'
-import { useDimension, useWebsocket } from '../../containers'
-import { parseString } from '../../helpers'
-import { pulseEffect } from '../../theme/keyframes'
-import { colors } from '../../theme/theme'
-import { NetMessageType } from '../../types'
-import { LiveGraph } from './LiveGraph'
+import { Box, Fade, Stack, Theme, Typography } from "@mui/material"
+import { useTheme } from "@mui/styles"
+import BigNumber from "bignumber.js"
+import { SyntheticEvent, useEffect, useState } from "react"
+import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
+import { Resizable, ResizeCallbackData } from "react-resizable"
+import { SvgDrag, SvgResizeArrow, SvgSupToken } from "../../assets"
+import { UI_OPACITY } from "../../constants"
+import { useDimension, useWebsocket } from "../../containers"
+import { parseString } from "../../helpers"
+import HubKey from "../../keys"
+import { pulseEffect } from "../../theme/keyframes"
+import { colors } from "../../theme/theme"
+import { NetMessageType } from "../../types"
+import { LiveGraph } from "./LiveGraph"
 
 const Padding = 10
 const DefaultPositionX = 0
@@ -22,14 +23,18 @@ const MaxSizeY = 115
 const DefaultMaxLiveVotingDataLength = 100
 
 const SpoilOfWarAmount = () => {
-    const { state, subscribeNetMessage } = useWebsocket()
-    const [spoilOfWarAmount, setSpoilOfWarAmount] = useState<string>('0')
-
+    const { state, subscribe, subscribeNetMessage } = useWebsocket()
+    const [spoilOfWarAmount, setSpoilOfWarAmount] = useState<string>("0")
+    // Triggered spoil of war update
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe(HubKey.TriggerSpoilOfWarUpdated, () => console.log(""), null)
+    }, [state, subscribe])
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
         return subscribeNetMessage<string | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {
             if (!payload) return
-            setSpoilOfWarAmount(new BigNumber(payload).dividedBy('1000000000000000000').toFixed(6))
+            setSpoilOfWarAmount(new BigNumber(payload).dividedBy("1000000000000000000").toFixed(6))
         })
     }, [state, subscribeNetMessage])
 
@@ -51,15 +56,15 @@ export const LiveVotingChart = () => {
     } = useDimension()
     const [curPosX, setCurPosX] = useState(-1)
     const [curPosY, setCurPosY] = useState(-1)
-    const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem('liveVotingSizeX'), DefaultSizeX))
-    const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem('liveVotingSizeY'), DefaultSizeY))
+    const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem("liveVotingSizeX"), DefaultSizeX))
+    const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem("liveVotingSizeY"), DefaultSizeY))
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
-        parseString(localStorage.getItem('liveVotingDataMax'), DefaultMaxLiveVotingDataLength),
+        parseString(localStorage.getItem("liveVotingDataMax"), DefaultMaxLiveVotingDataLength),
     )
 
     useEffect(() => {
-        let newPosX = parseString(localStorage.getItem('liveVotingPosX'), -1)
-        let newPosY = parseString(localStorage.getItem('liveVotingPosY'), -1)
+        let newPosX = parseString(localStorage.getItem("liveVotingPosX"), -1)
+        let newPosY = parseString(localStorage.getItem("liveVotingPosY"), -1)
 
         // Make sure live voting chart is inside iframe when page is resized etc.
         newPosX =
@@ -71,8 +76,8 @@ export const LiveVotingChart = () => {
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
-        localStorage.setItem('liveVotingPosX', newPosX.toString())
-        localStorage.setItem('liveVotingPosY', newPosY.toString())
+        localStorage.setItem("liveVotingPosX", newPosX.toString())
+        localStorage.setItem("liveVotingPosY", newPosY.toString())
 
         onResize()
     }, [width, height, curWidth])
@@ -92,14 +97,14 @@ export const LiveVotingChart = () => {
     return (
         <Stack
             sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 0,
                 left: 0,
-                pointerEvents: 'none',
+                pointerEvents: "none",
                 zIndex: 18,
                 opacity: UI_OPACITY,
-                filter: 'drop-shadow(0 3px 3px #00000050)',
-                ':hover': {
+                filter: "drop-shadow(0 3px 3px #00000050)",
+                ":hover": {
                     zIndex: 999,
                 },
             }}
@@ -114,8 +119,8 @@ export const LiveVotingChart = () => {
                 onStop={(e: DraggableEvent, data: DraggableData) => {
                     setCurPosX(data.x)
                     setCurPosY(data.y)
-                    localStorage.setItem('liveVotingPosX', data.x.toString())
-                    localStorage.setItem('liveVotingPosY', data.y.toString())
+                    localStorage.setItem("liveVotingPosX", data.x.toString())
+                    localStorage.setItem("liveVotingPosY", data.y.toString())
                 }}
                 bounds={{
                     top: Padding,
@@ -124,7 +129,7 @@ export const LiveVotingChart = () => {
                     right: width - curWidth - Padding,
                 }}
             >
-                <Box sx={{ pointerEvents: 'all' }}>
+                <Box sx={{ pointerEvents: "all" }}>
                     <Fade in={true}>
                         <Box>
                             <Resizable
@@ -134,42 +139,42 @@ export const LiveVotingChart = () => {
                                 handle={() => (
                                     <Box
                                         sx={{
-                                            position: 'absolute',
+                                            position: "absolute",
                                             bottom: 9.1,
                                             right: 9,
-                                            cursor: 'ew-resize',
+                                            cursor: "ew-resize",
                                             opacity: 0.4,
-                                            ':hover': { opacity: 1 },
+                                            ":hover": { opacity: 1 },
                                         }}
                                     >
                                         <SvgResizeArrow size="13px" />
                                     </Box>
                                 )}
                                 onResizeStop={(e: SyntheticEvent, data: ResizeCallbackData) => {
-                                    localStorage.setItem('liveVotingSizeX', data.size.width.toString())
-                                    localStorage.setItem('liveVotingSizeY', data.size.height.toString())
+                                    localStorage.setItem("liveVotingSizeX", data.size.width.toString())
+                                    localStorage.setItem("liveVotingSizeY", data.size.height.toString())
                                 }}
                             >
                                 <Stack
                                     sx={{
-                                        position: 'relative',
+                                        position: "relative",
                                         width: curWidth,
                                         height: curHeight,
-                                        resize: 'all',
-                                        overflow: 'auto',
+                                        resize: "all",
+                                        overflow: "auto",
                                         backgroundColor: theme.factionTheme.background,
                                         borderRadius: 0.5,
                                     }}
                                 >
-                                    <Box sx={{ flex: 1, px: 1, pt: 1, pb: 0.9, width: '100%' }}>
+                                    <Box sx={{ flex: 1, px: 1, pt: 1, pb: 0.9, width: "100%" }}>
                                         <Box
                                             key={maxLiveVotingDataLength}
                                             sx={{
-                                                position: 'relative',
-                                                height: '100%',
+                                                position: "relative",
+                                                height: "100%",
                                                 px: 0.7,
                                                 pt: 2,
-                                                background: '#00000099',
+                                                background: "#00000099",
                                             }}
                                         >
                                             <Stack
@@ -178,7 +183,7 @@ export const LiveVotingChart = () => {
                                                 justifyContent="center"
                                                 spacing={0.5}
                                                 sx={{
-                                                    position: 'absolute',
+                                                    position: "absolute",
                                                     top: 5,
                                                     right: 7,
                                                 }}
@@ -189,7 +194,7 @@ export const LiveVotingChart = () => {
                                                         height: 7,
                                                         mb: 0.2,
                                                         backgroundColor: colors.red,
-                                                        borderRadius: '50%',
+                                                        borderRadius: "50%",
                                                         animation: `${pulseEffect} 3s infinite`,
                                                     }}
                                                 />
@@ -216,14 +221,14 @@ export const LiveVotingChart = () => {
                                             direction="row"
                                             alignItems="center"
                                             justifyContent="center"
-                                            sx={{ mr: 'auto' }}
+                                            sx={{ mr: "auto" }}
                                         >
                                             <SpoilOfWarAmount />
                                         </Stack>
 
                                         <Box
                                             className="handle"
-                                            sx={{ cursor: 'move', mr: '20px', opacity: 0.4, ':hover': { opacity: 1 } }}
+                                            sx={{ cursor: "move", mr: "20px", opacity: 0.4, ":hover": { opacity: 1 } }}
                                         >
                                             <SvgDrag size="13px" />
                                         </Box>

@@ -4,7 +4,7 @@ import {
     NetMessageTickWarMachine,
     GameAbilityTargetPrice,
     ViewerLiveCount,
-} from '../types'
+} from "../types"
 
 export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; payload: unknown } | undefined => {
     const dv = new DataView(buffer)
@@ -55,41 +55,41 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
         case NetMessageType.VotePriceTick:
         case NetMessageType.SpoilOfWarTick:
         case NetMessageType.VotePriceForecastTick: {
-            const enc = new TextDecoder('utf-8')
+            const enc = new TextDecoder("utf-8")
             const arr = new Uint8Array(buffer)
             const payload = enc.decode(arr).substring(1)
             return { type, payload }
         }
         case NetMessageType.AbilityRightRatioTick: {
-            const enc = new TextDecoder('utf-8')
+            const enc = new TextDecoder("utf-8")
             const arr = new Uint8Array(buffer)
             const payload = enc
                 .decode(arr)
                 .substring(1)
-                .split(',')
+                .split(",")
                 .map<number>((str) => parseInt(str) / 10000)
             return { type, payload }
         }
         case NetMessageType.GameAbilityTargetPriceTick: {
-            const enc = new TextDecoder('utf-8')
+            const enc = new TextDecoder("utf-8")
             const arr = new Uint8Array(buffer)
             const payload = enc
                 .decode(arr)
                 .substring(1)
-                .split('|')
+                .split("|")
                 .map<GameAbilityTargetPrice>((str) => {
-                    const strArr = str.split('_')
+                    const strArr = str.split("_")
                     return {
                         id: strArr[0],
                         supsCost: strArr[1],
                         currentSups: strArr[2],
-                        shouldReset: strArr[3] == '1',
+                        shouldReset: strArr[3] == "1",
                     }
                 })
             return { type, payload }
         }
         case NetMessageType.ViewerLiveCountTick: {
-            const enc = new TextDecoder('utf-8')
+            const enc = new TextDecoder("utf-8")
             const arr = new Uint8Array(buffer)
             const payload: ViewerLiveCount = {
                 RedMountain: 0,
@@ -99,20 +99,20 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
             }
             enc.decode(arr)
                 .substring(1)
-                .split('|')
+                .split("|")
                 .forEach((str) => {
-                    const strArr = str.split('_')
+                    const strArr = str.split("_")
                     switch (strArr[0]) {
-                        case 'R':
+                        case "R":
                             payload.RedMountain = parseInt(strArr[1])
                             break
-                        case 'B':
+                        case "B":
                             payload.Boston = parseInt(strArr[1])
                             break
-                        case 'Z':
+                        case "Z":
                             payload.Zaibatsu = parseInt(strArr[1])
                             break
-                        case 'O':
+                        case "O":
                             payload.Other = parseInt(strArr[1])
                             break
                     }
