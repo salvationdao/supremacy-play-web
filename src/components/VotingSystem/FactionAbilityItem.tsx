@@ -1,17 +1,17 @@
-import { Theme } from '@mui/material/styles'
-import { useTheme } from '@mui/styles'
-import { Box, Fade, Stack, Typography } from '@mui/material'
-import BigNumber from 'bignumber.js'
-import { useCallback, useEffect, useState } from 'react'
-import { ClipThing, VotingButton } from '..'
-import { useAuth, useWebsocket } from '../../containers'
-import HubKey from '../../keys'
-import { zoomEffect } from '../../theme/keyframes'
-import { colors } from '../../theme/theme'
-import { GameAbility, GameAbilityTargetPrice } from '../../types'
-import { useToggle } from '../../hooks'
-import { NullUUID } from '../../constants'
-import { SvgSupToken } from '../../assets'
+import { Theme } from "@mui/material/styles"
+import { useTheme } from "@mui/styles"
+import { Box, Fade, Stack, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
+import { useCallback, useEffect, useState } from "react"
+import { ClipThing, VotingButton } from ".."
+import { useAuth, useWebsocket } from "../../containers"
+import HubKey from "../../keys"
+import { zoomEffect } from "../../theme/keyframes"
+import { colors } from "../../theme/theme"
+import { GameAbility, GameAbilityTargetPrice } from "../../types"
+import { useToggle } from "../../hooks"
+import { NullUUID } from "../../constants"
+import { SvgSupToken } from "../../assets"
 
 const ContributionBar = ({
     color,
@@ -32,7 +32,7 @@ const ContributionBar = ({
             direction="row"
             alignItems="center"
             spacing={1}
-            sx={{ width: '100%', px: 1.5, py: 1.2, backgroundColor: '#00000050', borderRadius: 1 }}
+            sx={{ width: "100%", px: 1.5, py: 1.2, backgroundColor: "#00000050", borderRadius: 1 }}
         >
             <Stack
                 direction="row"
@@ -40,17 +40,17 @@ const ContributionBar = ({
                 justifyContent="flex-start"
                 sx={{
                     flex: 1,
-                    position: 'relative',
+                    position: "relative",
                     height: 7,
                     backgroundColor: `${colors.text}20`,
-                    overflow: 'visible',
+                    overflow: "visible",
                 }}
             >
                 <Box
                     sx={{
                         width: `${progressPercent}%`,
-                        height: '100%',
-                        transition: 'all .25s',
+                        height: "100%",
+                        transition: "all .25s",
                         backgroundColor: color || colors.neonBlue,
                         zIndex: 5,
                     }}
@@ -58,7 +58,7 @@ const ContributionBar = ({
 
                 <Box
                     sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         left: `${costPercent}%`,
                         backgroundColor: colors.red,
                         height: 10,
@@ -99,9 +99,9 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
 
     const { label, colour, imageUrl, id } = gameAbility
     const [refresh, toggleRefresh] = useToggle()
-    const [supsCost, setSupsCost] = useState(new BigNumber('0'))
-    const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
-    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
+    const [supsCost, setSupsCost] = useState(new BigNumber("0"))
+    const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
+    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber("0"))
     const [isVoting, setIsVoting] = useState(false)
 
     const [gameAbilityTargetPrice, setGameAbilityTargetPrice] = useState<GameAbilityTargetPrice>()
@@ -118,8 +118,8 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
-        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy('1000000000000000000')
-        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy('1000000000000000000')
+        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy("1000000000000000000")
+        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy("1000000000000000000")
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
         setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
@@ -133,6 +133,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
     const onContribute = useCallback(
         (amount: number) => async () => {
             try {
+                if (state !== WebSocket.OPEN) return
                 const resp = await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
                     gameAbilityID: id,
                     amount: new BigNumber(amount),
@@ -147,7 +148,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                 return false
             }
         },
-        [],
+        [state],
     )
 
     return (
@@ -180,10 +181,10 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                             height: 18,
                                             width: 18,
                                             backgroundImage: `url(${imageUrl})`,
-                                            backgroundRepeat: 'no-repeat',
-                                            backgroundPosition: 'center',
-                                            backgroundSize: 'cover',
-                                            backgroundColor: colour || '#030409',
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
+                                            backgroundSize: "cover",
+                                            backgroundColor: colour || "#030409",
                                             mb: 0.3,
                                         }}
                                     />
@@ -191,12 +192,12 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                         variant="body1"
                                         sx={{
                                             lineHeight: 1,
-                                            fontWeight: 'fontWeightBold',
-                                            fontFamily: 'Nostromo Regular Medium',
+                                            fontWeight: "fontWeightBold",
+                                            fontFamily: "Nostromo Regular Medium",
                                             color: colour,
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
                                             maxWidth: 200,
                                         }}
                                     >
@@ -231,7 +232,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                         {supsCost.toFixed(2)}
                                     </Typography>
                                     <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
-                                        &nbsp;SUP{supsCost.eq(1) ? '' : 'S'}
+                                        &nbsp;SUP{supsCost.eq(1) ? "" : "S"}
                                     </Typography>
                                 </Stack>
                             </Stack>
@@ -243,7 +244,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                 supsCost={supsCost}
                             />
 
-                            <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: '100%' }}>
+                            <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                 <VotingButton
                                     color={colour}
                                     amount={1}

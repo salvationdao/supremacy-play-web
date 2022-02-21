@@ -1,9 +1,9 @@
-import { Box, Typography, Zoom } from '@mui/material'
-import { Dispatch, MutableRefObject, SetStateAction } from 'react'
-import { FancyButton, MapSelection } from '..'
-import { useWebsocket } from '../../containers'
-import HubKey from '../../keys'
-import { GameAbility } from '../../types'
+import { Box, Typography, Zoom } from "@mui/material"
+import { Dispatch, MutableRefObject, SetStateAction } from "react"
+import { FancyButton, MapSelection } from ".."
+import { useWebsocket } from "../../containers"
+import HubKey from "../../keys"
+import { GameAbility } from "../../types"
 
 interface MapSelectRequest {
     x: number
@@ -23,12 +23,13 @@ export const SelectionIcon = ({
     setSubmitted: Dispatch<SetStateAction<boolean>>
     confirmed: MutableRefObject<boolean>
 }) => {
-    const { send } = useWebsocket()
+    const { state, send } = useWebsocket()
 
     if (!selection) return null
 
     const onConfirm = async () => {
         try {
+            if (state !== WebSocket.OPEN) return
             confirmed.current = true
             const resp = await send<boolean, MapSelectRequest>(HubKey.SubmitAbilityLocationSelect, {
                 x: selection.x,
@@ -52,10 +53,10 @@ export const SelectionIcon = ({
     return (
         <Box
             sx={{
-                position: 'absolute',
-                height: '54px',
-                width: '54px',
-                mt: '1px',
+                position: "absolute",
+                height: "54px",
+                width: "54px",
+                mt: "1px",
                 zIndex: 6,
                 border: `2px solid ${colour}`,
                 borderRadius: 1,
@@ -64,30 +65,30 @@ export const SelectionIcon = ({
         >
             <Box
                 sx={{
-                    position: 'relative',
-                    height: '100%',
-                    width: '100%',
+                    position: "relative",
+                    height: "100%",
+                    width: "100%",
                 }}
             >
                 <Box
                     onClick={() => setSelection(undefined)}
                     sx={{
-                        height: '100%',
-                        width: '100%',
+                        height: "100%",
+                        width: "100%",
                         opacity: 0.65,
                         backgroundImage: `url(${imageUrl})`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center',
-                        backgroundSize: 'cover',
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
                     }}
                 ></Box>
 
                 <Box
                     sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         bottom: 0,
-                        left: '50%',
-                        transform: 'translate(-50%, 50%)',
+                        left: "50%",
+                        transform: "translate(-50%, 50%)",
                     }}
                 >
                     <Zoom in={!confirmed.current}>
@@ -101,7 +102,7 @@ export const SelectionIcon = ({
                                 borderColor={colour}
                                 onClick={onConfirm}
                             >
-                                <Typography variant="body2" sx={{ fontWeight: 'fontWeightBold' }}>
+                                <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
                                     CONFIRM
                                 </Typography>
                             </FancyButton>

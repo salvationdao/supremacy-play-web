@@ -1,14 +1,14 @@
-import { Box, Fade, Stack, Typography } from '@mui/material'
-import BigNumber from 'bignumber.js'
-import { useCallback, useEffect, useState } from 'react'
-import { ClipThing, VotingButton } from '..'
-import { useAuth, useWebsocket } from '../../containers'
-import HubKey from '../../keys'
-import { zoomEffect } from '../../theme/keyframes'
-import { colors } from '../../theme/theme'
-import { GameAbility, GameAbilityTargetPrice } from '../../types'
-import { NullUUID } from '../../constants'
-import { SvgSupToken } from '../../assets'
+import { Box, Fade, Stack, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
+import { useCallback, useEffect, useState } from "react"
+import { ClipThing, VotingButton } from ".."
+import { useAuth, useWebsocket } from "../../containers"
+import HubKey from "../../keys"
+import { zoomEffect } from "../../theme/keyframes"
+import { colors } from "../../theme/theme"
+import { GameAbility, GameAbilityTargetPrice } from "../../types"
+import { NullUUID } from "../../constants"
+import { SvgSupToken } from "../../assets"
 
 const ContributionBar = ({
     color,
@@ -29,7 +29,7 @@ const ContributionBar = ({
             direction="row"
             alignItems="center"
             spacing={1}
-            sx={{ width: '100%', px: 1.5, py: 1.2, backgroundColor: '#00000050', borderRadius: 1 }}
+            sx={{ width: "100%", px: 1.5, py: 1.2, backgroundColor: "#00000050", borderRadius: 1 }}
         >
             <Stack
                 direction="row"
@@ -37,17 +37,17 @@ const ContributionBar = ({
                 justifyContent="flex-start"
                 sx={{
                     flex: 1,
-                    position: 'relative',
+                    position: "relative",
                     height: 7,
                     backgroundColor: `${colors.text}20`,
-                    overflow: 'visible',
+                    overflow: "visible",
                 }}
             >
                 <Box
                     sx={{
                         width: `${progressPercent}%`,
-                        height: '100%',
-                        transition: 'all .25s',
+                        height: "100%",
+                        transition: "all .25s",
                         backgroundColor: color || colors.neonBlue,
                         zIndex: 5,
                     }}
@@ -55,7 +55,7 @@ const ContributionBar = ({
 
                 <Box
                     sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         left: `${costPercent}%`,
                         height: 10,
                         width: 2,
@@ -96,10 +96,10 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
 
     const { label, colour, imageUrl, id } = gameAbility
     // const [refresh, toggleRefresh] = useToggle()
-    const [supsCost, setSupsCost] = useState(new BigNumber('0'))
-    const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
+    const [supsCost, setSupsCost] = useState(new BigNumber("0"))
+    const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
-        maxAbilityPriceMap?.current.get(id) || new BigNumber('0'),
+        maxAbilityPriceMap?.current.get(id) || new BigNumber("0"),
     )
     const [isVoting, setIsVoting] = useState(false)
 
@@ -117,8 +117,8 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
-        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy('1000000000000000000')
-        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy('1000000000000000000')
+        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy("1000000000000000000")
+        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy("1000000000000000000")
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
         setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
@@ -130,6 +130,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
 
     const onContribute = useCallback(
         (amount: number) => async () => {
+            if (state !== WebSocket.OPEN) return
             try {
                 const resp = await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
                     gameAbilityID: id,
@@ -145,7 +146,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                 return false
             }
         },
-        [],
+        [state],
     )
 
     return (
@@ -178,10 +179,10 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                             height: 17,
                                             width: 17,
                                             backgroundImage: `url(${imageUrl})`,
-                                            backgroundRepeat: 'no-repeat',
-                                            backgroundPosition: 'center',
-                                            backgroundSize: 'cover',
-                                            backgroundColor: colour || '#030409',
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
+                                            backgroundSize: "cover",
+                                            backgroundColor: colour || "#030409",
                                             mb: 0.3,
                                         }}
                                     />
@@ -189,12 +190,12 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                         variant="body2"
                                         sx={{
                                             lineHeight: 1,
-                                            fontWeight: 'fontWeightBold',
-                                            fontFamily: 'Nostromo Regular Medium',
+                                            fontWeight: "fontWeightBold",
+                                            fontFamily: "Nostromo Regular Medium",
                                             color: colour,
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
                                             maxWidth: 200,
                                         }}
                                     >
@@ -229,7 +230,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                         {supsCost.toFixed(2)}
                                     </Typography>
                                     <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
-                                        &nbsp;SUP{supsCost.eq(1) ? '' : 'S'}
+                                        &nbsp;SUP{supsCost.eq(1) ? "" : "S"}
                                     </Typography>
                                 </Stack>
                             </Stack>
@@ -241,7 +242,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                 supsCost={supsCost}
                             />
 
-                            <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: '100%' }}>
+                            <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                 <VotingButton
                                     color={colour}
                                     amount={1}
