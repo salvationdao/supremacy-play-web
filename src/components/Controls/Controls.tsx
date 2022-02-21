@@ -10,12 +10,11 @@ export const Controls = () => {
         <Stack
             direction="row"
             alignItems="center"
-            justifyContent="space-between"
             sx={{ pl: `${SIDE_BARS_WIDTH}px`, pt: 0.3, pb: 0.2, height: "100%", backgroundColor: colors.darkNavyBlue }}
         >
             <LiveCounts />
 
-            <Stack direction="row" spacing={1.5}>
+            <Stack direction="row" spacing={1.5} sx={{ ml: "auto" }}>
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />
