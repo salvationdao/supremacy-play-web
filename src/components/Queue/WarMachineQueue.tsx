@@ -12,7 +12,7 @@ import { colors } from "../../theme/theme"
 const Padding = 10
 const DefaultPositionX = 0
 const DefaultPositionYBottom = 128
-const DefaultSizeX = 200
+const DefaultSizeX = 240
 const DefaultSizeY = 400
 const MaxSizeY = 400
 const DefaultMaxWarMachineQueueHeight = 100
@@ -169,7 +169,7 @@ export const WarMachineQueue = () => {
                                         justifyContent="center"
                                         sx={{ mr: "auto" }}
                                     >
-                                        hello
+                                        War Machine Queue
                                     </Stack>
 
                                     <Box
