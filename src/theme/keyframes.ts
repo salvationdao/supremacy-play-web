@@ -11,3 +11,8 @@ export const pulseEffect = keyframes`
 	70% { opacity: 0; }
 	90% { opacity: 1; }
 `
+
+export const opacityEffect = keyframes`
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+`
