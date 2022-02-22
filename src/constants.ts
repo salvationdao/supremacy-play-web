@@ -1,6 +1,8 @@
 export const GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOST || "localhost:8084"
 export const PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003"
 export const PASSPORT_SERVER_HOSTNAME = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
+export const VIDEO_SERVER_WEBSOCKET = process.env.REACT_APP_PASSPORT_SERVER_HOST || "ws://10.25.26.11:5080/WebRTCAppEE/websocket"
+export const VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
 export const LOG_API_CALLS = true
 export const UI_OPACITY = 0.96
 export const NOTIFICATION_TIME = 28000

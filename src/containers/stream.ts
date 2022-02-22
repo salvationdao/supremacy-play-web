@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
+import { VIDEO_SERVER_WEBSOCKET, VIDEO_SERVER_STREAM_ID } from "../constants"
 import { useToggle } from "../hooks"
 import { Stream } from "../types"
 
@@ -60,8 +61,8 @@ export interface StreamContainerType {
 }
 
 export const StreamContainer = createContainer((): StreamContainerType => {
-    const defaultStreamID = "524280586954581049507513"
-    const defaultWSURL = "ws://10.25.26.11:5080/WebRTCAppEE/websocket"
+    const defaultStreamID = VIDEO_SERVER_STREAM_ID
+    const defaultWSURL = VIDEO_SERVER_WEBSOCKET
     const defaultResolution = 720
 
     // video
