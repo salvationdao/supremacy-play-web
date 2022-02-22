@@ -1,69 +1,161 @@
-import { Box, Slide, Stack } from '@mui/material'
-import { colors } from '../../theme/theme'
-import { WarMachineItem } from './WarMachineItem'
-import { Theme } from '@mui/material/styles'
-import { useTheme } from '@mui/styles'
-import { useDimension, useGame } from '../../containers'
+import { Box, Slide, Stack } from "@mui/material"
+import { colors } from "../../theme/theme"
+import { WarMachineItem } from "./WarMachineItem"
+import { Theme } from "@mui/material/styles"
+import { useTheme } from "@mui/styles"
+import { useAuth, useDimension, useGame, useWebsocket } from "../../containers"
+import { ReactElement, useEffect, useMemo } from "react"
+import { BoxSlanted } from ".."
+import HubKey from "../../keys"
+
+const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
+const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245
+const WIDTH_MECH_ITEM_OTHER_COLLAPSED = 120
+
+const ScrollContainer = ({ children }: { children: ReactElement }) => {
+    const theme = useTheme<Theme>()
+
+    return (
+        <Box
+            sx={{
+                flex: 1,
+                overflowY: "hidden",
+                overflowX: "auto",
+                direction: "ltr",
+                scrollbarWidth: "none",
+                "::-webkit-scrollbar": {
+                    height: 4,
+                },
+                "::-webkit-scrollbar-track": {
+                    boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}50`,
+                    borderRadius: 3,
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: `${theme.factionTheme.primary}20`,
+                    borderRadius: 3,
+                },
+                transition: "all .2s",
+            }}
+        >
+            <Box sx={{ direction: "ltr" }}>{children}</Box>
+        </Box>
+    )
+}
 
 export const WarMachineStats = () => {
-    const theme = useTheme<Theme>()
+    const { factionID } = useAuth()
     const { warMachines } = useGame()
+    const { state, subscribe } = useWebsocket()
+    const theme = useTheme<Theme>()
     const {
-        iframeDimensions: { width },
+        streamDimensions: { width },
     } = useDimension()
+
+    // Subscribe to the result of the vote
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe(HubKey.TriggerWarMachineLocationUpdated, () => console.log(""), null)
+    }, [state, subscribe])
+
+    // Determine whether the mech items should be expanded out or collapsed
+    const shouldBeExpanded = useMemo(() => {
+        let shouldBeExpandedFaction = true
+        let shouldBeExpandedOthers = true
+
+        if (!warMachines || warMachines.length <= 0)
+            return {
+                shouldBeExpandedFaction,
+                shouldBeExpandedOthers,
+            }
+
+        const factionMechs = warMachines.filter((wm) => wm.factionID == factionID)
+        const otherMechs = warMachines.filter((wm) => wm.factionID != factionID)
+
+        if (
+            factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
+                otherMechs.length * WIDTH_MECH_ITEM_OTHER_EXPANDED >
+            width
+        ) {
+            if (
+                factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
+                    otherMechs.length * WIDTH_MECH_ITEM_OTHER_COLLAPSED >
+                width
+            ) {
+                shouldBeExpandedFaction = false
+                shouldBeExpandedOthers = false
+            } else {
+                shouldBeExpandedOthers = false
+            }
+        }
+
+        return { shouldBeExpandedFaction, shouldBeExpandedOthers }
+    }, [width, factionID, warMachines])
 
     if (!warMachines || warMachines.length <= 0) return null
 
+    const factionMechs = warMachines.filter((wm) => wm.factionID == factionID)
+    const otherMechs = warMachines.filter((wm) => wm.factionID != factionID)
+    const haveFactionMechs = factionMechs.length > 0
+
     return (
-        <Stack
-            sx={{
-                position: 'absolute',
-                bottom: 15,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 13,
-                overflow: 'hidden',
-                filter: 'drop-shadow(0 3px 3px #00000020)',
-            }}
-        >
-            <Slide in={true} direction="up">
-                <Box>
-                    <Box
-                        sx={{
-                            flex: 1,
-                            // 100vw, 18px each side
-                            maxWidth: `calc(${width}px - (2 * 40px))`,
-                            overflowY: 'hidden',
-                            overflowX: 'auto',
-                            direction: 'ltr',
-                            scrollbarWidth: 'none',
-                            pb: 1.3,
-                            '::-webkit-scrollbar': {
-                                height: 4,
-                            },
-                            '::-webkit-scrollbar-track': {
-                                boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
-                                borderRadius: 3,
-                            },
-                            '::-webkit-scrollbar-thumb': {
-                                background: theme.factionTheme.primary,
-                                borderRadius: 3,
-                            },
-                            transition: 'all .2s',
-                        }}
+        <Slide in direction="up">
+            <Stack
+                direction="row"
+                alignItems="flex-end"
+                sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 13,
+                    overflow: "hidden",
+                    filter: "drop-shadow(0 3px 3px #00000020)",
+                }}
+            >
+                {haveFactionMechs && (
+                    <BoxSlanted
+                        clipSize="9px"
+                        clipSlantSize="26px"
+                        skipLeft
+                        sx={{ pl: 3.5, pr: 6, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
                     >
-                        <Box sx={{ direction: 'ltr' }}>
-                            <Stack spacing={5} direction="row" alignItems="center">
-                                {warMachines.map((mw) => (
-                                    <Box key={mw.participantID}>
-                                        <WarMachineItem warMachine={mw} />
-                                    </Box>
+                        <ScrollContainer>
+                            <Stack spacing={-1} direction="row" alignItems="center" justifyContent="center">
+                                {factionMechs.map((wm) => (
+                                    <WarMachineItem
+                                        key={`${wm.participantID} - ${wm.tokenID}`}
+                                        warMachine={wm}
+                                        scale={0.9}
+                                        shouldBeExpanded={shouldBeExpanded.shouldBeExpandedFaction}
+                                    />
                                 ))}
                             </Stack>
-                        </Box>
+                        </ScrollContainer>
+                    </BoxSlanted>
+                )}
+
+                {otherMechs.length > 0 && (
+                    <Box sx={{ mb: 0.6, pr: 2, pl: haveFactionMechs ? 0 : 2, overflow: "hidden" }}>
+                        <ScrollContainer>
+                            <Stack
+                                spacing={haveFactionMechs ? -3.2 : -2.5}
+                                direction="row"
+                                alignItems="center"
+                                sx={{ flex: 1, ml: haveFactionMechs ? -1.4 : 0, pb: haveFactionMechs ? 0 : 0.6 }}
+                            >
+                                {otherMechs.map((wm) => (
+                                    <WarMachineItem
+                                        key={`${wm.participantID} - ${wm.tokenID}`}
+                                        warMachine={wm}
+                                        scale={haveFactionMechs ? 0.8 : 0.8}
+                                        shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
+                                    />
+                                ))}
+                            </Stack>
+                        </ScrollContainer>
                     </Box>
-                </Box>
-            </Slide>
-        </Stack>
+                )}
+            </Stack>
+        </Slide>
     )
 }

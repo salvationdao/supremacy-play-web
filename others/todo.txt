@@ -32,20 +32,27 @@ x battle ability dont go away, stay there but opaque
 x top message to be within the action box
 x relocation notifications to right corner
 x move game bar outside of stream
+x live view count: by faction and not logged in
+x user won notification color of faction
+x mech abilities
+	x make current faction mechs show first, show smaller
+x fix map mech rotation issue
+x map show mech logo image instead
+x kill notification
+x video controls ui
 
 
 Pending:
-- kill notification
+- make overlay components moveable / toggleable
 - iframe dimension onresize
-
-- user won notification color of faction
-- video controls ui
-- live view count: by faction and not logged in
+- Ability description tooltip
 
 
 Future nice to have:
 - hotkeys to buttons
 - map follows where the action is
 - improve notification styles (for the map select, reject counters etc.)
+- tutorial guide for new users
+- XX vs YY
 
 

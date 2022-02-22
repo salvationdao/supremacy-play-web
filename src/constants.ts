@@ -1,12 +1,13 @@
-export const GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOST || 'localhost:8084'
-export const PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || 'http://localhost:5003'
-export const PASSPORT_SERVER_HOSTNAME = process.env.REACT_APP_PASSPORT_SERVER_HOST || 'localhost:8086'
-export const STREAM_SITE = process.env.REACT_APP_STREAM_SITE || ''
+export const GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOST || "localhost:8084"
+export const PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003"
+export const PASSPORT_SERVER_HOSTNAME = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
 export const LOG_API_CALLS = true
-export const UI_OPACITY = 0.93
-export const NOTIFICATION_TIME = 20000
+export const UI_OPACITY = 0.96
+export const NOTIFICATION_TIME = 28000
 export const NOTIFICATION_LINGER = 400
-export const NullUUID = '00000000-0000-0000-0000-000000000000'
+export const CONTROLS_HEIGHT = 30
+export const STREAM_ASPECT_RATIO_W_H = 16 / 9
+export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const SENTRY_CONFIG = {
     DSN: process.env.REACT_APP_SENTRY_DSN_FRONTEND,
     RELEASE: process.env.REACT_APP_SENTRY_CURRENT_RELEASE_NAME,

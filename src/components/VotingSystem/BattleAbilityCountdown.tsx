@@ -1,11 +1,15 @@
-import { Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { Theme } from '@mui/material/styles'
+import { useTheme } from '@mui/styles'
 import moment from 'moment'
 import { useGame } from '../../containers'
 import { useInterval } from '../../hooks'
 import { BattleAbility } from '../../types'
+import { SvgBattleAbilityIcon } from '../../assets'
 
 export const BattleAbilityCountdown = ({ battleAbility }: { battleAbility: BattleAbility }) => {
+    const theme = useTheme<Theme>()
     const { votingState } = useGame()
     const [sentence, setSentence] = useState<string>('Loading...')
     const [timeRemain, setTimeRemain] = useState<number>(0)
@@ -64,13 +68,11 @@ export const BattleAbilityCountdown = ({ battleAbility }: { battleAbility: Battl
     }
 
     return (
-        <Typography
-            sx={{
-                fontWeight: 'fontWeightBold',
-                color: battleAbility?.colour,
-            }}
-        >
-            {sentence}
-        </Typography>
+        <Stack direction="row" spacing={0.6} alignItems="center">
+            <SvgBattleAbilityIcon size="18px" fill={theme.factionTheme.primary} />
+            <Typography sx={{ lineHeight: 1, color: theme.factionTheme.primary, fontWeight: 'fontWeightBold' }}>
+                {sentence}
+            </Typography>
+        </Stack>
     )
 }

@@ -1,4 +1,4 @@
-import React, { Dispatch } from 'react'
+import React, { Dispatch } from "react"
 
 interface UpdateThemeContextProps {
     updateTheme: Dispatch<React.SetStateAction<FactionThemeColor>>
@@ -7,6 +7,8 @@ export const UpdateTheme = React.createContext({} as UpdateThemeContextProps)
 
 export interface User {
     id: string
+    username: string
+    avatarID: string
     factionID: string
     faction: Faction
 }
@@ -20,12 +22,18 @@ export interface FactionThemeColor {
 export interface Faction {
     id: string
     label: string
-    logoUrl: string
-    backgroundUrl: string
+    logoBlobID: string
+    backgroundBlobID: string
     theme: FactionThemeColor
 }
 
-export type VotingState = 'HOLD' | 'VOTE_COOLDOWN' | 'VOTE_ABILITY_RIGHT' | 'NEXT_VOTE_WIN' | 'LOCATION_SELECT'
+export type VotingState =
+    | "HOLD"
+    | "VOTE_COOLDOWN"
+    | "VOTE_ABILITY_RIGHT"
+    | "NEXT_VOTE_WIN"
+    | "LOCATION_SELECT"
+    | "WAIT_MECH_INTRO"
 
 export interface BattleAbility {
     id: string
@@ -35,7 +43,7 @@ export interface BattleAbility {
     cooldownDurationSecond: number
 }
 
-export interface FactionAbility {
+export interface GameAbility {
     id: string
     label: string
     colour: string
@@ -44,7 +52,7 @@ export interface FactionAbility {
     currentSups: string
 }
 
-export interface FactionAbilityTargetPrice {
+export interface GameAbilityTargetPrice {
     id: string
     supsCost: string
     currentSups: string
@@ -87,6 +95,13 @@ export interface Map {
     disabledCells: number[]
 }
 
+export interface ViewerLiveCount {
+    RedMountain: number
+    Boston: number
+    Zaibatsu: number
+    Other: number
+}
+
 export enum NetMessageType {
     Default,
     Tick,
@@ -94,7 +109,9 @@ export enum NetMessageType {
     AbilityRightRatioTick,
     VotePriceTick,
     VotePriceForecastTick,
-    FactionAbilityTargetPriceTick,
+    GameAbilityTargetPriceTick,
+    ViewerLiveCountTick,
+    SpoilOfWarTick,
 }
 
 export interface NetMessageTickWarMachine {
@@ -107,4 +124,62 @@ export interface NetMessageTickWarMachine {
 
 export interface NetMessageTick {
     warmachines: NetMessageTickWarMachine[]
+}
+
+export interface BattleEndDetail {
+    battleID: string
+    battleIdentifier: number
+    startedAt: Date
+    endedAt: Date
+    winningCondition: string
+    winningFaction: Faction
+    winningWarMachines: WarMachineState[]
+    topSupsContributors: User[]
+    topSupsContributeFactions: Faction[]
+    mostFrequentAbilityExecutors: User[]
+    battleEvents: BattleEvent[]
+}
+
+export interface BattleEvent {
+    type: "GAME_ABILITY" | "WAR_MACHINE_DESTROYED"
+    createdAt: Date
+    event: GameAbility | WarMachineDestroyedRecord
+}
+
+export interface GameAbilityEvent {
+    ability: GameAbility
+    triggeredByUser?: User
+    x?: number
+    y?: number
+    triggeredOnWarMachine?: WarMachineState
+}
+
+export interface WarMachineDestroyedRecord {
+    destroyedWarMachine: WarMachineState
+    killedByWarMachine?: WarMachineState
+    killedBy?: string
+    damageRecords: DamageRecord[]
+}
+
+export interface DamageRecord {
+    amount: number
+    causedByWarMachine?: WarMachineState
+    sourceName: string // weapon/ability name
+}
+
+export interface Stream {
+    host: string
+    name: string
+    url: string
+    streamID: string
+    region: string
+    resolution: string
+    bitRatesKBits: number
+    userMax: number
+    usersNow: number
+    active: boolean
+    status: string
+    latitude: number
+    longitude: number
+    distance?: number
 }
