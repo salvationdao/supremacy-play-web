@@ -15,6 +15,7 @@ import {
     WarMachineStats,
 } from "./components"
 import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
+import { WarMachineQueue } from "./components/Queue/WarMachineQueue"
 import {
     CONTROLS_HEIGHT,
     PASSPORT_SERVER_HOSTNAME,
@@ -121,6 +122,7 @@ const AppInner = () => {
                             <MiniMap />
                             <Notifications />
                             <LiveVotingChart />
+                            <WarMachineQueue />
                             <WarMachineStats />
                             <BattleEndScreen />
                         </Box>
