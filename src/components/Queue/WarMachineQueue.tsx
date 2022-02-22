@@ -83,13 +83,15 @@ export const WarMachineQueue = () => {
                         <Typography
                             variant="body2"
                             sx={{
+                                px: 1.6,
+                                py: 1.6,
                                 color: colors.grey,
                                 fontFamily: "Share Tech",
                                 fontSize: "0.8rem",
                                 userSelect: "text",
                             }}
                         >
-                            There are no messages yet...
+                            There are no war machines in the queue...
                         </Typography>
                     )}
                 </Stack>
