@@ -38,7 +38,7 @@ export const LiveCounts = () => {
     return (
         <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center">
             <SvgUser size="9px" />
-            <Typography variant="body2" sx={{ lineHeight: 1 }}>
+            <Typography variant="body2" sx={{ lineHeight: 1, whiteSpace: "nowrap" }}>
                 LIVE VIEWERS:{" "}
             </Typography>
 
