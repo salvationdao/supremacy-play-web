@@ -15,7 +15,7 @@ import { NullUUID, PASSPORT_WEB } from "../../constants"
 import HubKey from "../../keys"
 import { useToggle } from "../../hooks"
 import BigNumber from "bignumber.js"
-import { useLiveChat } from "@ninjasoftware/passport-gamebar"
+import { useDrawer } from "@ninjasoftware/passport-gamebar"
 
 const WIDTH_WM_IMAGE = 92
 const WIDTH_CENTER = 142
@@ -39,7 +39,7 @@ export const WarMachineItem = ({
     const { participantID, faction, name, imageUrl } = warMachine
     const { state, subscribe } = useWebsocket()
     const { factionID } = useAuth()
-    const { isOpen: isLiveChatOpen } = useLiveChat()
+    const { isOpen: isLiveChatOpen } = useDrawer()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
