@@ -1,4 +1,4 @@
-import { Stack, Box, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { useState, useEffect } from "react"
 import { SvgUser } from "../../assets"
 import { useGame, useWebsocket } from "../../containers"

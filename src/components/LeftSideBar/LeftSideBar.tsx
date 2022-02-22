@@ -55,6 +55,7 @@ const SideButton = ({
                     fontWeight: "fontWeightBold",
                     whiteSpace: "nowrap",
                     fontFamily: "Nostromo Regular Bold",
+                    color: user && user.faction ? user.faction.theme.secondary : "#FFFFFF",
                 }}
             >
                 {text}
@@ -67,7 +68,7 @@ const SideButton = ({
 export const LeftSideBar = () => {
     const { user } = useAuth()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, isEndBattleDetailEnabled } = useOverlayToggles()
-    console.log(user)
+
     return (
         <Box
             sx={{
