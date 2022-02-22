@@ -123,11 +123,6 @@ export const StreamSelect = () => {
                                 setCurrentStream(x)
                                 setSelectedStreamID(x.streamID)
                                 setSelectedWsURL(x.url)
-
-                                console.log("xxx selector val", x)
-                                if (x.url.includes("ws://")) {
-                                    location.replace(`http:${location.href.substring(location.protocol.length)}`)
-                                }
                             }}
                             sx={{
                                 "&:hover": {
