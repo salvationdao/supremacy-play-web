@@ -19,7 +19,7 @@ export const WarMachineQueue = () => {
         if (state !== WebSocket.OPEN || !subscribe || !user) return
         return subscribe<QueuedWarMachine[]>(HubKey.SubUserWarMachineQueueUpdated, (payload) => {
             if (!payload) return
-            setQueuedWarMachines(payload)
+            setQueuedWarMachines(payload.filter((q) => q.position >= 0))
         })
     }, [state, subscribe, user, userID])
 
@@ -70,15 +70,13 @@ export const WarMachineQueue = () => {
             >
                 <Stack>
                     {queuedWarMachines && queuedWarMachines.length > 0 ? (
-                        queuedWarMachines
-                            .filter((q) => q.position >= 0)
-                            .map((q, index) => (
-                                <WarMachineQueueItem
-                                    key={`${q.warMachineMetadata.tokenID}-${index}`}
-                                    queueItem={q}
-                                    index={index}
-                                />
-                            ))
+                        queuedWarMachines.map((q, index) => (
+                            <WarMachineQueueItem
+                                key={`${q.warMachineMetadata.tokenID}-${index}`}
+                                queueItem={q}
+                                index={index}
+                            />
+                        ))
                     ) : (
                         <Typography
                             variant="body2"
@@ -91,7 +89,7 @@ export const WarMachineQueue = () => {
                                 userSelect: "text",
                             }}
                         >
-                            There are no war machines in the queue...
+                            {"You don't have any war machines in the queue..."}
                         </Typography>
                     )}
                 </Stack>
