@@ -7,6 +7,8 @@ export const NOTIFICATION_TIME = 28000
 export const NOTIFICATION_LINGER = 400
 export const CONTROLS_HEIGHT = 30
 export const STREAM_ASPECT_RATIO_W_H = 16 / 9
+export const MINI_MAP_DEFAULT_WIDTH = 230
+export const MINI_MAP_DEFAULT_HEIGHT = 200
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const SENTRY_CONFIG = {
     DSN: process.env.REACT_APP_SENTRY_DSN_FRONTEND,

@@ -1,22 +1,44 @@
 import { IconButton, Stack, Typography } from "@mui/material"
-import { SvgSupToken } from "../../assets"
-import { useOverlayToggles } from "../../containers/overlayToggles"
+import { SvgGoldBars, SvgRadar } from "../../assets"
+import { useOverlayToggles } from "../../containers"
+import { overlayPulseEffect } from "../../theme/keyframes"
 
 export const OverlayToggles = () => {
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
+    const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
 
     return (
-        <Stack direction="row" spacing={0.3} alignItems="center">
-            <Typography variant="body2" sx={{ lineHeight: 1 }}>
+        <Stack direction="row" alignItems="center">
+            <Typography variant="body2" sx={{ lineHeight: 1, mr: 0.5 }}>
                 OVERLAYS:{" "}
             </Typography>
 
+            {/* Live Chart */}
             <IconButton
                 size="small"
                 onClick={toggleIsLiveChartOpen}
-                sx={{ opacity: isLiveChartOpen ? 1 : 0.2, transition: "all .2s", ":hover": { opacity: 1 } }}
+                sx={{
+                    filter: isLiveChartOpen ? "grayscale(0)" : "grayscale(1)",
+                    transition: "all .2s",
+                    ":hover": { animation: "unset", filter: "grayscale(0)" },
+                    animation: isLiveChartOpen ? "" : `${overlayPulseEffect} 6s infinite`,
+                }}
             >
-                <SvgSupToken size="13px" />
+                <SvgGoldBars size="18px" />
+            </IconButton>
+
+            {/* Map */}
+            <IconButton
+                size="small"
+                onClick={toggleIsMapOpen}
+                sx={{
+                    filter: isMapOpen ? "grayscale(0)" : "grayscale(1)",
+                    transition: "all .2s",
+                    ":hover": { animation: "unset", filter: "grayscale(0)" },
+                    animation: isMapOpen ? "" : `${overlayPulseEffect} 6s infinite`,
+                }}
+            >
+                <SvgRadar size="17px" />
             </IconButton>
         </Stack>
     )
