@@ -68,7 +68,7 @@ const SideButton = ({
 export const LeftSideBar = () => {
     const { user } = useAuth()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, isEndBattleDetailEnabled } = useOverlayToggles()
-    console.log(user)
+
     return (
         <Box
             sx={{
