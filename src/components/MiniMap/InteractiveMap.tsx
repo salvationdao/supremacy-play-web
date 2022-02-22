@@ -146,7 +146,8 @@ export const InteractiveMap = ({
         if (!map) return
         const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
 
-        set({ scale: minScale, x: 0, y: 0 })
+        // the ternary stops the map showing out of bounds
+        enlarged ? set({ scale: minScale, x: 0, y: 0, immediate: true }) : set({ scale: minScale, x: 0, y: 0 })
     }, [windowDimension, warMachines])
 
     // --------------- Minimap - useGesture setup -------------------
@@ -281,8 +282,7 @@ export const InteractiveMap = ({
             {/* Map - can be dragged and zoomed/scaled */}
             <animated.div ref={gestureRef} style={{ x, y, touchAction: "none", scale, transformOrigin: `0% 0%` }}>
                 <Box sx={{ cursor: enlarged ? "move" : "" }}>
-
-                    <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1`}}>
+                    <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1` }}>
                         <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
                     </Box>
 
