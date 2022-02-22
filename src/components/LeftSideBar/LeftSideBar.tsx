@@ -28,7 +28,9 @@ export const LeftSideBar = () => {
                     position: "absolute",
                     top: 0,
                     left: "50%",
-                    transform: `translate(-50%, ${NUM_BUTTONS * (BUTTON_WIDTH / 2)}px) rotate(-90deg)`,
+                    transform: `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}px - ${
+                        GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth / 2
+                    }px)) rotate(-90deg)`,
                 }}
             >
                 <Stack
@@ -36,9 +38,10 @@ export const LeftSideBar = () => {
                     justifyContent="center"
                     sx={{
                         px: 2,
+                        pt: 0.2,
                         height: GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth,
                         width: BUTTON_WIDTH,
-                        backgroundColor: colors.darkNavy,
+                        backgroundColor: colors.darkerNeonBlue,
                         cursor: "pointer",
                         pointerEvents: isEndBattleDetailEnabled ? "auto" : "none",
                         opacity: isEndBattleDetailEnabled && isEndBattleDetailOpen ? 1 : 0.6,
