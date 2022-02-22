@@ -282,8 +282,7 @@ export const InteractiveMap = ({
             {/* Map - can be dragged and zoomed/scaled */}
             <animated.div ref={gestureRef} style={{ x, y, touchAction: "none", scale, transformOrigin: `0% 0%` }}>
                 <Box sx={{ cursor: enlarged ? "move" : "" }}>
-
-                    <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1`}}>
+                    <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1` }}>
                         <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
                     </Box>
 
