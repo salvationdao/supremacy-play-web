@@ -22,7 +22,7 @@ export interface DimensionContainerType {
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer((): DimensionContainerType => {
     const { width: windowWidth, height: windowHeight } = useWindowDimensions()
-    const { isAnyPanelOpen, toggleIsLiveChatOpen } = useDrawer()
+    const { isAnyPanelOpen } = useDrawer()
 
     const [mainDivDimensions, setMainDivDimensions] = useState<{ width: number; height: number }>({
         width: 0,
