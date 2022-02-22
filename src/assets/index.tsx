@@ -19,6 +19,8 @@ import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
+import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
+import Radar from "!react-svg-loader!./svg/Radar.svg"
 import CampaignSharpIcon from "@mui/icons-material/CampaignSharp"
 import FlagSharpIcon from "@mui/icons-material/FlagSharp"
 import MapSharpIcon from "@mui/icons-material/MapSharp"
@@ -230,5 +232,17 @@ export const SvgResizeXY: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgHide: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Hide />
+    </SvgWrapper>
+)
+
+export const SvgRadar: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Radar />
+    </SvgWrapper>
+)
+
+export const SvgGoldBars: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <GoldBars />
     </SvgWrapper>
 )

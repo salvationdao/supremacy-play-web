@@ -13,10 +13,15 @@ export const OverlayTogglesContainer = createContainer(() => {
 
     const [isEndBattleDetailEnabled, toggleIsEndBattleDetailEnabled] = useToggle()
     const [isLiveChartOpen, toggleIsLiveChartOpen] = useToggle(localStorage.getItem("liveChartOverlay") === "true")
+    const [isMapOpen, toggleIsMapOpen] = useToggle(localStorage.getItem("mapOverlay") === "true")
 
     useEffect(() => {
         localStorage.setItem("liveChartOverlay", isLiveChartOpen)
     }, [isLiveChartOpen])
+
+    useEffect(() => {
+        localStorage.setItem("mapOverlay", isMapOpen)
+    }, [isMapOpen])
 
     const togglePanel = (newPanel: LeftDrawerPanels, value: boolean) => {
         setActivePanel((prev) => {
@@ -30,8 +35,10 @@ export const OverlayTogglesContainer = createContainer(() => {
         toggleIsEndBattleDetailOpen: (value: boolean) => togglePanel(LeftDrawerPanels.EndBattleDetail, value),
         isLiveChartOpen,
         isEndBattleDetailEnabled,
+        isMapOpen,
         toggleIsEndBattleDetailEnabled,
         toggleIsLiveChartOpen,
+        toggleIsMapOpen,
     }
 })
 
