@@ -29,7 +29,7 @@ export const colors = {
     text: "#D4FFFF",
     offWhite: "#F8F8F8",
     red: "#C24242",
-    green: "#30B07D",
+    green: "#2BA172",
     yellow: "#FFE200",
 
     neonBlue: "#00FFFF",
@@ -41,6 +41,9 @@ export const colors = {
 
     health: "#BFF600",
     shield: "#00F7F7",
+
+    grey: "#89898d",
+    battleQueueBanner: "#C24242",
 }
 
 const factionTheme: FactionTheme = {

@@ -11,7 +11,7 @@ const MAX_OPTIONS = 7
 
 export const StreamSelect = () => {
     const { state, subscribe } = useWebsocket()
-    const { currentStream, setCurrentStream, setSelectedWsURL, setSelectedStreamID } = useStream()
+    const { currentStream, setCurrentStream, setSelectedWsURL, defaultWSURL, setSelectedStreamID } = useStream()
     const [streams, setStreams] = useState<Stream[]>([])
     const [streamOptions, setStreamOptions] = useState<Stream[]>([])
 
@@ -72,8 +72,11 @@ export const StreamSelect = () => {
             newStreamOptions[newStreamOptions.length - 1] = currentStream
         }
 
-        // If there is no current stream selected then pick the first (best) option in streamOptions
-        if (!currentStream && newStreamOptions && newStreamOptions.length > 0) setCurrentStream(newStreamOptions[0])
+        // If there is no current stream selected then pick the first use default stream
+        if (!currentStream && newStreamOptions && newStreamOptions.length > 0) {
+            const defStream = newStreamOptions.filter((s) => s.url === defaultWSURL)[0]
+            setCurrentStream(defStream)
+        }
 
         // Reverse the order for rendering so best is closer to user's mouse
         setStreamOptions(temp.reverse())
@@ -120,8 +123,6 @@ export const StreamSelect = () => {
                                 setCurrentStream(x)
                                 setSelectedStreamID(x.streamID)
                                 setSelectedWsURL(x.url)
-
-                                console.log("xxx selector val", x)
                             }}
                             sx={{
                                 "&:hover": {

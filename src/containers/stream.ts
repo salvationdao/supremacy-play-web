@@ -63,6 +63,7 @@ export interface StreamContainerType {
 export const StreamContainer = createContainer((): StreamContainerType => {
     const defaultStreamID = VIDEO_SERVER_STREAM_ID
     const defaultWSURL = VIDEO_SERVER_WEBSOCKET
+
     const defaultResolution = 720
 
     // video
@@ -139,9 +140,8 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                         }
                     },
                     callbackError: (error: string) => {
-                        console.log(`--- ERROR ---`, error)
-                        if (error === "no_stream_exist") {
-                            setNoStreamExist(true)
+                        if (error === "no_stream_exist" || error === "WebSocketNotConnected") {
+                            console.log(`--- ERROR ---`, error)
                         }
                     },
                 })
