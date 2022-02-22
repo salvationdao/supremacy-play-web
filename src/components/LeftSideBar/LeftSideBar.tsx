@@ -55,6 +55,7 @@ const SideButton = ({
                     fontWeight: "fontWeightBold",
                     whiteSpace: "nowrap",
                     fontFamily: "Nostromo Regular Bold",
+                    color: user && user.faction ? user.faction.theme.secondary : "#FFFFFF",
                 }}
             >
                 {text}
