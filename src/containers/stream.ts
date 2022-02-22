@@ -140,9 +140,8 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                         }
                     },
                     callbackError: (error: string) => {
-                        console.log(`--- ERROR ---`, error)
                         if (error === "no_stream_exist" || error === "WebSocketNotConnected") {
-                            // setNoStreamExist(true)
+                            console.log(`--- ERROR ---`, error)
                         }
                     },
                 })
