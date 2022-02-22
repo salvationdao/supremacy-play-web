@@ -92,7 +92,7 @@ const AppInner = () => {
                             position: "relative",
                             height: streamDimensions.height,
                             width: streamDimensions.width,
-                            backgroundColor: colors.darkNavyBlue,
+                            backgroundColor: colors.darkNavy,
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >

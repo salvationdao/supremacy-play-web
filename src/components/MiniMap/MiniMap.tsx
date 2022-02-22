@@ -4,10 +4,9 @@ import { ClipThing, InteractiveMap, TargetTimerCountdown } from ".."
 import { colors } from "../../theme/theme"
 import { Theme } from "@mui/material/styles"
 import { useToggle } from "../../hooks"
-import { useDimension, useGame, useOverlayToggles } from '../../containers'
-import { SvgHide, SvgMapEnlarge } from '../../assets'
-
-
+import { useDimension, useGame, useOverlayToggles } from "../../containers"
+import { SvgHide, SvgMapEnlarge } from "../../assets"
+import { MINI_MAP_DEFAULT_HEIGHT, MINI_MAP_DEFAULT_WIDTH } from "../../constants"
 
 export const MiniMap = () => {
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
@@ -18,8 +17,8 @@ export const MiniMap = () => {
     const { map, winner, setWinner, votingState } = useGame()
     const [enlarged, toggleEnlarged] = useToggle(false)
     const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
-        width: 230,
-        height: 200,
+        width: MINI_MAP_DEFAULT_WIDTH,
+        height: MINI_MAP_DEFAULT_HEIGHT,
     })
 
     // For targeting map
@@ -30,12 +29,11 @@ export const MiniMap = () => {
     useEffect(() => {
         if (width <= 0 || height <= 0) return
 
-        // Set new window dimensions: 125 is the height of the bottom mech stats
-        const newWidth = enlarged ? Math.min(width - 23, 1000) : 230
-        const newHeight = enlarged ? Math.min(height - 125, 700) : 200
+        // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
+        const newWidth = enlarged ? Math.min(width - 25, 1000) : MINI_MAP_DEFAULT_WIDTH
+        const newHeight = enlarged ? Math.min(height - 25, 700) : MINI_MAP_DEFAULT_HEIGHT
         setDimensions({ width: newWidth, height: newHeight })
-
-    }, [ enlarged])
+    }, [enlarged])
 
     useEffect(() => {
         const endTime = winner?.endTime
@@ -66,90 +64,90 @@ export const MiniMap = () => {
         <Box
             sx={{
                 position: "absolute",
-                bottom: 105,
+                bottom: 10,
                 right: 10,
                 pointerEvents: "none",
                 zIndex: 32,
                 filter: "drop-shadow(0 3px 3px #00000050)",
             }}
         >
-                <Box sx={{ pointerEvents: "all" }}>
-                    <Fade in={isMapOpen}>
-                        <Box>
-                            <ClipThing
-                                clipSize="10px"
-                                border={{
-                                    isFancy: true,
-                                    borderThickness: "3px",
-                                    borderColor: isTargeting ? winner.gameAbility.colour : theme.factionTheme.primary,
+            <Box sx={{ pointerEvents: "all" }}>
+                <Fade in={isMapOpen}>
+                    <Box>
+                        <ClipThing
+                            clipSize="10px"
+                            border={{
+                                isFancy: true,
+                                borderThickness: "3px",
+                                borderColor: isTargeting ? winner.gameAbility.colour : theme.factionTheme.primary,
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    position: "relative",
+                                    boxShadow: 1,
+                                    width: dimensions.width,
+                                    height: dimensions.height,
+                                    // backgroundColor: colors.darkNavy,
+                                    transition: "all .2s",
+                                    background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
                                 }}
                             >
-                                <Box
+                                <IconButton
+                                    size="small"
                                     sx={{
-                                        position: "relative",
-                                        boxShadow: 1,
-                                        width: dimensions.width,
-                                        height: dimensions.height,
-                                        // backgroundColor: colors.darkNavy,
-                                        transition: "all .2s",
-                                        background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
+                                        position: "absolute",
+                                        left: 2,
+                                        top: 2,
+                                        color: colors.text,
+                                        opacity: 0.8,
+                                        zIndex: 50,
                                     }}
+                                    onClick={() => toggleEnlarged()}
                                 >
-                                    <IconButton
-                                        size="small"
-                                        sx={{
-                                            position: "absolute",
-                                            left: 2,
-                                            top: 2,
-                                            color: colors.text,
-                                            opacity: 0.8,
-                                            zIndex: 50,
-                                        }}
-                                        onClick={() => toggleEnlarged()}
-                                    >
-                                       <SvgMapEnlarge size="13px" />
-                                    </IconButton>
+                                    <SvgMapEnlarge size="13px" />
+                                </IconButton>
 
-                                    <IconButton
-                                        size="small"
-                                        sx={{
-                                            position: "absolute",
-                                            left: 25,
-                                            top: 2,
-                                            color: colors.text,
-                                            opacity: 0.8,
-                                            zIndex: 50,
-                                        }}
-                                        onClick={toggleIsMapOpen}
-                                    >
-                                        <SvgHide size="13px" />
-                                    </IconButton>
+                                <IconButton
+                                    size="small"
+                                    sx={{
+                                        position: "absolute",
+                                        left: 25,
+                                        top: 2,
+                                        color: colors.text,
+                                        opacity: 0.8,
+                                        zIndex: 50,
+                                    }}
+                                    onClick={toggleIsMapOpen}
+                                >
+                                    <SvgHide size="13px" />
+                                </IconButton>
 
-                                    {isTargeting && (
-                                        <TargetTimerCountdown
-                                            gameAbility={winner.gameAbility}
-                                            setTimeReachZero={setTimeReachZero}
-                                            endTime={winner.endTime}
-                                        />
-                                    )}
+                                {isTargeting && (
+                                    <TargetTimerCountdown
+                                        gameAbility={winner.gameAbility}
+                                        setTimeReachZero={setTimeReachZero}
+                                        endTime={winner.endTime}
+                                    />
+                                )}
 
-                                    {isTargeting ? (
-                                        <InteractiveMap
-                                            gameAbility={winner.gameAbility}
-                                            windowDimension={dimensions}
-                                            targeting
-                                            setSubmitted={setSubmitted}
-                                            confirmed={confirmed}
-                                            enlarged={enlarged}
-                                        />
-                                    ) : (
-                                        <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
-                                    )}
-                                </Box>
-                            </ClipThing>
-                        </Box>
-                    </Fade>
-                </Box>
+                                {isTargeting ? (
+                                    <InteractiveMap
+                                        gameAbility={winner.gameAbility}
+                                        windowDimension={dimensions}
+                                        targeting
+                                        setSubmitted={setSubmitted}
+                                        confirmed={confirmed}
+                                        enlarged={enlarged}
+                                    />
+                                ) : (
+                                    <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
+                                )}
+                            </Box>
+                        </ClipThing>
+                    </Box>
+                </Fade>
+            </Box>
         </Box>
     )
 }
