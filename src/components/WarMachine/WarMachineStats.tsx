@@ -7,6 +7,7 @@ import { useAuth, useDimension, useGame, useWebsocket } from "../../containers"
 import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import HubKey from "../../keys"
+import { MINI_MAP_DEFAULT_WIDTH } from "../../constants"
 
 const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
 const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245
@@ -106,7 +107,7 @@ export const WarMachineStats = () => {
                     position: "absolute",
                     bottom: 0,
                     left: 0,
-                    right: 0,
+                    right: MINI_MAP_DEFAULT_WIDTH + 8,
                     zIndex: 13,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",
