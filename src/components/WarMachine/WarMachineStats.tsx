@@ -3,10 +3,11 @@ import { colors } from "../../theme/theme"
 import { WarMachineItem } from "./WarMachineItem"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import { useAuth, useDimension, useGame, useWebsocket } from "../../containers"
+import { useAuth, useDimension, useGame, useOverlayToggles, useWebsocket } from "../../containers"
 import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import HubKey from "../../keys"
+import { MINI_MAP_DEFAULT_WIDTH } from "../../constants"
 
 const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
 const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245
@@ -50,6 +51,7 @@ export const WarMachineStats = () => {
     const {
         streamDimensions: { width },
     } = useDimension()
+    const { isMapOpen } = useOverlayToggles()
 
     // Subscribe to the result of the vote
     useEffect(() => {
@@ -106,7 +108,7 @@ export const WarMachineStats = () => {
                     position: "absolute",
                     bottom: 0,
                     left: 0,
-                    right: 0,
+                    right: isMapOpen ? MINI_MAP_DEFAULT_WIDTH + 12 : 0,
                     zIndex: 13,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",

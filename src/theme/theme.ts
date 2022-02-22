@@ -1,6 +1,6 @@
-import "./global.css"
-import { createTheme, FactionTheme } from "@mui/material/styles"
 import { red } from "@mui/material/colors"
+import { createTheme, FactionTheme } from "@mui/material/styles"
+import "./global.css"
 
 // had to keep the declare in this file for it to work
 declare module "@mui/material/styles" {
@@ -29,17 +29,21 @@ export const colors = {
     text: "#D4FFFF",
     offWhite: "#F8F8F8",
     red: "#C24242",
-    green: "#30B07D",
+    green: "#2BA172",
     yellow: "#FFE200",
 
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
     darkNavyBlue: "#070719",
+    navy: "#28283f",
     darkNavy: "#101019",
 
     health: "#BFF600",
     shield: "#00F7F7",
+
+    grey: "#89898d",
+    battleQueueBanner: "#C24242",
 }
 
 const factionTheme: FactionTheme = {

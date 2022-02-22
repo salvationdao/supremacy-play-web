@@ -4,28 +4,22 @@ import { ClipThing, InteractiveMap, TargetTimerCountdown } from ".."
 import { colors } from "../../theme/theme"
 import { Theme } from "@mui/material/styles"
 import { useToggle } from "../../hooks"
-import { useDimension, useGame } from "../../containers"
-import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
-import { parseString } from "../../helpers"
-import { SvgDrag, SvgMapEnlarge } from "../../assets"
-
-const Padding = 10
-const DefaultPositionXRight = 10
-const DefaultPositionYBottom = 105
-const ClipBorder = 6
+import { useDimension, useGame, useOverlayToggles } from "../../containers"
+import { SvgHide, SvgMapEnlarge } from "../../assets"
+import { MINI_MAP_DEFAULT_HEIGHT, MINI_MAP_DEFAULT_WIDTH } from "../../constants"
+import { useSpring, animated } from "react-spring"
 
 export const MiniMap = () => {
+    const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const theme = useTheme<Theme>()
     const {
         streamDimensions: { width, height },
     } = useDimension()
-    const [curPosX, setCurPosX] = useState(-1)
-    const [curPosY, setCurPosY] = useState(-1)
     const { map, winner, setWinner, votingState } = useGame()
     const [enlarged, toggleEnlarged] = useToggle(false)
     const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
-        width: 230,
-        height: 200,
+        width: MINI_MAP_DEFAULT_WIDTH,
+        height: MINI_MAP_DEFAULT_HEIGHT,
     })
 
     // For targeting map
@@ -36,32 +30,10 @@ export const MiniMap = () => {
     useEffect(() => {
         if (width <= 0 || height <= 0) return
 
-        // Set new window dimensions: 125 is the height of the bottom mech stats
-        const newWidth = enlarged ? Math.min(width - 23, 1000) : 230
-        const newHeight = enlarged ? Math.min(height - 125, 700) : 200
+        // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
+        const newWidth = enlarged ? Math.min(width - 25, 1000) : MINI_MAP_DEFAULT_WIDTH
+        const newHeight = enlarged ? Math.min(height - 25, 700) : MINI_MAP_DEFAULT_HEIGHT
         setDimensions({ width: newWidth, height: newHeight })
-
-        let newPosX = parseString(localStorage.getItem("miniMapPosX"), -1)
-        let newPosY = parseString(localStorage.getItem("miniMapPosY"), -1)
-
-        // Make sure map is inside iframe when page / map are resized
-        newPosX =
-            newPosX > 0
-                ? Math.max(Padding, Math.min(newPosX, width - newWidth - Padding - ClipBorder))
-                : width - DefaultPositionXRight - newWidth - Padding
-
-        newPosY =
-            newPosY > 0
-                ? Math.max(Padding, Math.min(newPosY, height - newHeight - Padding - ClipBorder))
-                : height - DefaultPositionYBottom - newHeight - Padding
-
-        setCurPosX(newPosX)
-        setCurPosY(newPosY)
-
-        if (!enlarged) {
-            localStorage.setItem("miniMapPosX", newPosX.toString())
-            localStorage.setItem("miniMapPosY", newPosY.toString())
-        }
     }, [width, height, enlarged])
 
     useEffect(() => {
@@ -75,7 +47,10 @@ export const MiniMap = () => {
     }, [winner])
 
     useEffect(() => {
-        if (winner && votingState?.phase == "LOCATION_SELECT") toggleEnlarged(true)
+        if (winner && votingState?.phase == "LOCATION_SELECT") {
+            toggleEnlarged(true)
+            toggleIsMapOpen(true)
+        }
     }, [winner, votingState])
 
     useEffect(() => {
@@ -85,6 +60,16 @@ export const MiniMap = () => {
         }
     }, [timeReachZero, submitted])
 
+    // -------------- Map React Spring ----------------
+    const { xy } = useSpring({
+        // Rounding is needed for the transform - otherwise it makes the element blurry
+        xy: enlarged
+            ? [Math.round(-(width - dimensions.width - 25) / 2), Math.round(-(height - dimensions.height - 25) / 1.2)]
+            : [0, 0],
+        from: { xy: [0, 0] },
+        config: { duration: 200 },
+    })
+
     if (!map) return null
 
     const isTargeting = winner && !timeReachZero && !submitted && votingState?.phase == "LOCATION_SELECT"
@@ -93,41 +78,26 @@ export const MiniMap = () => {
         <Box
             sx={{
                 position: "absolute",
-                top: 0,
-                left: 0,
+                bottom: 10,
+                right: 10,
                 pointerEvents: "none",
                 zIndex: 32,
                 filter: "drop-shadow(0 3px 3px #00000050)",
             }}
         >
-            <Draggable
-                allowAnyClick
-                handle=".handle"
-                position={{
-                    x: curPosX,
-                    y: curPosY,
-                }}
-                onStop={(e: DraggableEvent, data: DraggableData) => {
-                    setCurPosX(data.x)
-                    setCurPosY(data.y)
-                    localStorage.setItem("miniMapPosX", data.x.toString())
-                    localStorage.setItem("miniMapPosY", data.y.toString())
-                }}
-                bounds={{
-                    top: Padding,
-                    bottom: height - dimensions.height - Padding - ClipBorder,
-                    left: Padding,
-                    right: width - dimensions.width - Padding - ClipBorder,
+            <animated.div
+                style={{
+                    transform: xy.to((x, y) => `translate(${x}px, ${y}px)`),
                 }}
             >
                 <Box sx={{ pointerEvents: "all" }}>
-                    <Fade in={true}>
+                    <Fade in={isMapOpen}>
                         <Box>
                             <ClipThing
                                 clipSize="10px"
                                 border={{
                                     isFancy: true,
-                                    borderThickness: `${ClipBorder / 2}px`,
+                                    borderThickness: "3px",
                                     borderColor: isTargeting ? winner.gameAbility.colour : theme.factionTheme.primary,
                                 }}
                             >
@@ -154,23 +124,22 @@ export const MiniMap = () => {
                                         }}
                                         onClick={() => toggleEnlarged()}
                                     >
-                                        {enlarged ? <SvgMapEnlarge size="13px" /> : <SvgMapEnlarge size="13px" />}
+                                        <SvgMapEnlarge size="13px" />
                                     </IconButton>
 
                                     <IconButton
-                                        className="handle"
                                         size="small"
                                         sx={{
                                             position: "absolute",
-                                            left: 22,
+                                            left: 25,
                                             top: 2,
                                             color: colors.text,
                                             opacity: 0.8,
                                             zIndex: 50,
-                                            cursor: "move",
                                         }}
+                                        onClick={toggleIsMapOpen}
                                     >
-                                        <SvgDrag size="12.5px" />
+                                        <SvgHide size="13px" />
                                     </IconButton>
 
                                     {isTargeting && (
@@ -198,7 +167,7 @@ export const MiniMap = () => {
                         </Box>
                     </Fade>
                 </Box>
-            </Draggable>
+            </animated.div>
         </Box>
     )
 }

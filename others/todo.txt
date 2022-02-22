@@ -40,11 +40,11 @@ x fix map mech rotation issue
 x map show mech logo image instead
 x kill notification
 x video controls ui
+x make overlay components moveable / toggleable
+x iframe dimension onresize
 
 
 Pending:
-- make overlay components moveable / toggleable
-- iframe dimension onresize
 - Ability description tooltip
 
 

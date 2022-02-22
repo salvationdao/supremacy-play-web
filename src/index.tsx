@@ -1,10 +1,11 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { GameBar, WalletProvider, LiveChatProvider, GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
+import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
 import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import {
+    BattleEndScreen,
     Controls,
     LeftSideBar,
     LiveVotingChart,
@@ -12,28 +13,30 @@ import {
     MiniMap,
     Notifications,
     VotingSystem,
+    WarMachineQueue,
     WarMachineStats,
 } from "./components"
-import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
 import {
     CONTROLS_HEIGHT,
     PASSPORT_SERVER_HOSTNAME,
     PASSPORT_WEB,
     SENTRY_CONFIG,
     STREAM_ASPECT_RATIO_W_H,
+    SUPREMACY_PAGE,
+    TOKEN_SALE_PAGE,
 } from "./constants"
 import {
     AuthProvider,
     DimensionProvider,
     GameProvider,
-    LeftSideBarProvider,
+    OverlayTogglesProvider,
     SocketProvider,
     StreamProvider,
     useAuth,
     useDimension,
     useStream,
 } from "./containers"
-import { mergeDeep } from "./helpers"
+import { mergeDeep, shadeColor } from "./helpers"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
 
@@ -55,17 +58,20 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
-    const { gameserverSessionID } = useAuth()
+    const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
-    const { selectedWsURL, isMute, vidRefCallback } = useStream()
+    const { selectedWsURL, isMute, vidRefCallback, noStreamExist } = useStream()
 
     return (
         <>
             <GameBar
                 barPosition="top"
                 gameserverSessionID={gameserverSessionID}
+                tokenSalePage={TOKEN_SALE_PAGE}
+                supremacyPage={SUPREMACY_PAGE}
                 passportWeb={PASSPORT_WEB}
                 passportServerHost={PASSPORT_SERVER_HOSTNAME}
+                MechQueueComponent={<WarMachineQueue />}
             />
 
             <Stack
@@ -73,6 +79,7 @@ const AppInner = () => {
                     mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
                     width: mainDivDimensions.width,
                     height: mainDivDimensions.height,
+                    transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
                 }}
             >
                 <Stack
@@ -92,28 +99,45 @@ const AppInner = () => {
                             position: "relative",
                             height: streamDimensions.height,
                             width: streamDimensions.width,
-                            backgroundColor: colors.darkNavyBlue,
-                            clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
+                            backgroundColor: colors.darkNavy,
+                            transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
+                            clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        <video
-                            key={selectedWsURL}
-                            id={"remoteVideo"}
-                            muted={isMute}
-                            ref={vidRefCallback}
-                            autoPlay
-                            controls
-                            playsInline
-                            style={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                width: iframeDimensions.width,
-                                height: iframeDimensions.height,
-                            }}
-                        />
+                        {!noStreamExist ? (
+                            <video
+                                key={selectedWsURL}
+                                id={"remoteVideo"}
+                                muted={isMute}
+                                ref={vidRefCallback}
+                                autoPlay
+                                controls
+                                playsInline
+                                style={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                    width: iframeDimensions.width,
+                                    height: iframeDimensions.height,
+                                }}
+                            />
+                        ) : (
+                            // TODO replace with fallback image
+                            <div
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <div>Stream Not Found</div>
+                            </div>
+                        )}
 
                         <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
                             <LoadMessage />
@@ -145,7 +169,8 @@ const AppInner = () => {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    backgroundColor: colors.darkNavyBlue,
+                    backgroundColor:
+                        user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                     zIndex: -1,
                 }}
             />
@@ -172,15 +197,15 @@ const App = () => {
                     <AuthProvider>
                         <StreamProvider>
                             <WalletProvider>
-                                <LiveChatProvider>
+                                <DrawerProvider>
                                     <GameProvider>
                                         <DimensionProvider>
-                                            <LeftSideBarProvider>
+                                            <OverlayTogglesProvider>
                                                 <AppInner />
-                                            </LeftSideBarProvider>
+                                            </OverlayTogglesProvider>
                                         </DimensionProvider>
                                     </GameProvider>
-                                </LiveChatProvider>
+                                </DrawerProvider>
                             </WalletProvider>
                         </StreamProvider>
                     </AuthProvider>

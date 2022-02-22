@@ -11,8 +11,11 @@ npm start
 #### Environment:
 
 ```
-export NINJA_NPM_TOKEN=[get from BitWarden]
-export REACT_APP_PASSPORT_WEB=[passport web url]
-export REACT_APP_GAME_SERVER_HOST=[game server address]
-export REACT_APP_PASSPORT_SERVER_HOST=[passport server address]
+export NINJA_NPM_TOKEN=[get from BitWarden, string]
+export REACT_APP_TOKEN_SALE_PAGE=[token sale page, string]
+export REACT_APP_SUPREMACY_PAGE=[supremacy home page, string]
+export REACT_APP_PASSPORT_WEB=[passport web url including protocol, string]
+export REACT_APP_GAME_SERVER_HOST=[game server address excluding protocol, string]
+export REACT_APP_PASSPORT_SERVER_HOST=[passport server address excluding protocol, string]
+export REACT_APP_LOG_API_CALLS=[whether to console log ws and rest api calls, true/false]
 ```
