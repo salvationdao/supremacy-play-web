@@ -8,7 +8,7 @@ export const LoadMessage = () => {
 
     let message = ""
     if (state !== WebSocket.OPEN) {
-        message = "Connecting to server..."
+        message = "Connecting to the game server..."
     } else if (authSessionIDGetLoading) {
         message = "Getting session..."
     } else if (authSessionIDGetError) {
@@ -16,7 +16,7 @@ export const LoadMessage = () => {
     }
 
     return (
-        <Box sx={{ position: "absolute", top: 10, left: 16 }}>
+        <Box sx={{ position: "absolute", top: 10, left: 16, zIndex: 99 }}>
             <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.text }}>
                 {message}
             </Typography>
