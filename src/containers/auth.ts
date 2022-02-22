@@ -26,7 +26,7 @@ export const AuthContainer = createContainer((): AuthContainerType => {
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
-        if (!subscribe) return
+        if (!subscribe || state !== WebSocket.OPEN) return
         return subscribe<User>(
             HubKey.UserSubscribe,
             (u) => {
@@ -36,7 +36,7 @@ export const AuthContainer = createContainer((): AuthContainerType => {
             null,
             true,
         )
-    }, [subscribe])
+    }, [state, subscribe])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || user || gameserverSessionID) return

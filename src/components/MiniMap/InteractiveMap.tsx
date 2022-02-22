@@ -5,7 +5,7 @@ import { MapWarMachine, SelectionIcon } from ".."
 import { useGame } from "../../containers"
 import { GameAbility, Map, WarMachineState } from "../../types"
 import { animated, useSpring } from "react-spring"
-import { useDrag, useWheel } from "@use-gesture/react"
+import { createUseGesture, dragAction, pinchAction, wheelAction } from "@use-gesture/react"
 
 // Difference between game map scale & image scale
 const MapScaleRatio = 40
@@ -159,6 +159,13 @@ export const InteractiveMap = ({
     // Prevents map zooming from interfering with the browsers' accessibility zoom
     document.addEventListener("gesturestart", (e) => e.preventDefault())
     document.addEventListener("gesturechange", (e) => e.preventDefault())
+    document.addEventListener("gestureend", (e) => e.preventDefault())
+
+    // Create actions
+    const zoom = createUseGesture([wheelAction, pinchAction])
+    const drag = createUseGesture([dragAction])
+    const dragTarget = useRef<HTMLDivElement>(null)
+    const zoomTarget = useRef<HTMLDivElement>(null)
 
     // Setup use-gesture props
     const [{ x, y, scale }, set] = useSpring(() => ({
@@ -168,51 +175,93 @@ export const InteractiveMap = ({
     }))
 
     // Setup map drag
-    const dragMap = useDrag(
-        ({ dragging, wheeling, cancel, offset: [x, y], down }) => {
-            if (wheeling || !map || !enlarged) return cancel()
+    drag(
+        {
+            onDrag: ({ dragging, wheeling, cancel, offset: [x, y], down }) => {
+                if (wheeling || !map || !enlarged) return cancel()
 
-            // Set dragging
-            dragging
-                ? (isDragging.current = true)
-                : setTimeout(() => {
-                      isDragging.current = false
-                  }, 50)
+                // Set dragging
+                dragging
+                    ? (isDragging.current = true)
+                    : setTimeout(() => {
+                          isDragging.current = false
+                      }, 50)
 
-            // Set [x,y] offset
-            set({ x, y, immediate: down })
+                // Set [x,y] offset
+                set({ x, y, immediate: down })
+            },
         },
         {
-            from: () => [x.get(), y.get()],
-            filterTaps: true,
-            bounds: () => {
-                if (!map) return
-                return {
-                    top:
-                        windowDimension.height <= map.height * scale.get()
-                            ? -(map.height * scale.get() - windowDimension.height)
-                            : (windowDimension.height - map.height * scale.get()) / 2,
-                    left:
-                        windowDimension.width <= map.width * scale.get()
-                            ? -(map.width * scale.get() - windowDimension.width)
-                            : (windowDimension.width - map.width * scale.get()) / 2,
-                    right: 0,
-                    bottom: 0,
-                }
+            target: dragTarget,
+            eventOptions: { passive: false },
+            drag: {
+                from: () => [x.get(), y.get()],
+                filterTaps: true,
+                preventDefault: true,
+                bounds: () => {
+                    if (!map) return
+                    return {
+                        top:
+                            windowDimension.height <= map.height * scale.get()
+                                ? -(map.height * scale.get() - windowDimension.height)
+                                : (windowDimension.height - map.height * scale.get()) / 2,
+                        left:
+                            windowDimension.width <= map.width * scale.get()
+                                ? -(map.width * scale.get() - windowDimension.width)
+                                : (windowDimension.width - map.width * scale.get()) / 2,
+                        right: 0,
+                        bottom: 0,
+                    }
+                },
             },
         },
     )
 
-    // Setup map zoom
-    const scaleMap = useWheel(({ delta: [, deltaY] }) => {
-        if (!map || !enlarged) return
-        const curScale = scale.get()
+    // Setup map zoom: can zoom using pinch or scroll wheel
+    zoom(
+        {
+            onWheel: ({ delta: [, deltaY], pinching, dragging }) => {
+                if (!enlarged || pinching || dragging) return
+
+                // Calculate new scale
+                const curScale = scale.get()
+                const zoomSpeed = 0.05
+                const newScale = deltaY < 0 ? curScale + zoomSpeed : curScale - zoomSpeed
+
+                setScale(newScale)
+            },
+            onPinch: ({ movement: [ms], dragging, wheeling }) => {
+                if (!enlarged || dragging || wheeling) return
+
+                // Calculate new scale
+                const curScale = scale.get()
+                const zoomSpeed = 0.2
+                const newScale = ms < 0 ? curScale + zoomSpeed : curScale - zoomSpeed
+
+                setScale(newScale)
+            },
+        },
+        {
+            target: zoomTarget,
+            eventOptions: { passive: false },
+            wheel: {
+                preventDefault: true,
+                filterTaps: true,
+                threshold: 20,
+            },
+            pinch: {
+                preventDefault: true,
+                filterTaps: true,
+                threshold: 20,
+            },
+        },
+    )
+
+    // Set the zoom of the map
+    const setScale = (newScale: number) => {
+        if (!map) return
         const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
         const maxScale = 1
-
-        // Calculate new scale
-        const zoomSpeed = 0.05
-        let newScale = deltaY < 0 ? curScale + zoomSpeed : curScale - zoomSpeed
 
         // Keeps the map within scale bounds
         if (newScale >= maxScale || minScale >= newScale) {
@@ -240,7 +289,7 @@ export const InteractiveMap = ({
         setMap((prev) => {
             return prev ? { ...prev, scale: (prev.scale = newScale / MapScaleRatio) } : prev
         })
-    })
+    }
 
     if (!map) return null
     return (
@@ -253,13 +302,20 @@ export const InteractiveMap = ({
             }}
         >
             {/* Map - can be dragged */}
-            <animated.div {...dragMap()} style={{ x, y, touchAction: "none" }}>
+            <animated.div
+                ref={dragTarget}
+                className={`${isDragging ? "dragging" : ""}`}
+                style={{ x, y, touchAction: "none" }}
+            >
                 <Box sx={{ cursor: "move" }}>
                     {/* War machines can be dragged - the scale is set through the map */}
                     <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
 
                     {/* Ability Selection Grid and Map Image - can be scaled and dragged */}
-                    <animated.div {...scaleMap()} style={{ scale, transformOrigin: `0% 0%` }}>
+                    <animated.div
+                        ref={zoomTarget}
+                        style={{ scale, transformOrigin: `0% 0%` }}
+                    >
                         {selectionIcon}
                         {grid}
 
