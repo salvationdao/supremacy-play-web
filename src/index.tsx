@@ -67,6 +67,7 @@ const AppInner = () => {
                 gameserverSessionID={gameserverSessionID}
                 passportWeb={PASSPORT_WEB}
                 passportServerHost={PASSPORT_SERVER_HOSTNAME}
+                MechQueueComponent={<WarMachineQueue />}
             />
 
             <Stack
@@ -138,7 +139,6 @@ const AppInner = () => {
                             <MiniMap />
                             <Notifications />
                             <LiveVotingChart />
-                            <WarMachineQueue />
                             <WarMachineStats />
                             <BattleEndScreen />
                         </Box>
