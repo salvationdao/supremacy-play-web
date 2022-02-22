@@ -1,35 +1,170 @@
-import { Box, Stack, Typography } from '@mui/material'
-import { SvgMapWarMachine } from '../../assets'
-import { Map, WarMachineState } from '../../types'
+import { Box, Stack } from "@mui/material"
+import { useEffect, useState } from "react"
+import { SvgMapSkull, GenericWarMachinePNG, SvgMapWarMachine } from "../../assets"
+import { useWebsocket } from "../../containers"
+import { shadeColor } from "../../helpers"
+import { colors } from "../../theme/theme"
+import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
 
-export const MapWarMachine = ({ warMachine }: { warMachine: WarMachineState; map: Map }) => {
-    const { tokenID, faction, name, remainHitPoint, position, rotation } = warMachine
+const ICON_SIZE = 25
+const ARROW_LENGTH = ICON_SIZE / 2 + 10
+const DOT_SIZE = 10
 
-    const primaryColor = faction && faction.theme ? faction.theme.primary : '#FFFFFF'
+export const MapWarMachine = ({
+    warMachine,
+    map,
+    enlarged,
+}: {
+    warMachine: WarMachineState
+    map: Map
+    enlarged: boolean
+}) => {
+    const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
+    const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
+
+    const wmImageUrl = imageUrl || GenericWarMachinePNG
+
+    const [health, setHealth] = useState<number>(warMachine.health)
+    const [shield, setShield] = useState<number>(warMachine.shield)
+    const [position, sePosition] = useState<Vector2i>(warMachine.position)
+    // 0 is east, and goes CW, can be negative and above 360
+    const [rotation, setRotation] = useState<number>(warMachine.rotation)
+    const isAlive = health > 0
+    const primaryColor = faction && faction.theme ? faction.theme.primary : "#FFFFFF"
+
+    // Listen on current war machine changes
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
+
+        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
+            if (payload?.health !== undefined) setHealth(payload.health)
+            if (payload?.shield !== undefined) setShield(payload.shield)
+            if (payload?.position !== undefined) sePosition(payload.position)
+            if (payload?.rotation !== undefined) setRotation(payload.rotation)
+        })
+    }, [participantID, state, subscribeWarMachineStatNetMessage])
+
+    if (!position) return null
 
     return (
         <Stack
-            key={`warMachine-${tokenID}`}
+            key={`warMachine-${participantID}`}
             alignItems="center"
             justifyContent="center"
             sx={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                opacity: remainHitPoint <= 0 ? '0.2' : 'unset',
-                transform: `translate(-50%, -50%) translate3d(${position.x}px, ${position.y}px, 0)`,
-                transition: 'transform 0.2s linear',
-                zIndex: 5,
+                position: "absolute",
+                pointerEvents: "none",
+                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * map.scale}px, ${
+                    (position.y - map.top) * map.scale
+                }px, 0)`,
+                transition: "transform 0.2s linear",
+                zIndex: isAlive ? 5 : 4,
             }}
         >
             <Box
-                sx={{
-                    transform: `rotate3d(0, 0, 1, ${-rotation + 90}deg)`,
-                    transition: 'transform 0.2s linear',
-                }}
+                sx={
+                    enlarged
+                        ? {
+                              position: "relative",
+                              width: ICON_SIZE,
+                              height: ICON_SIZE,
+                              overflow: "visible",
+                              backgroundColor: primaryColor,
+                              backgroundImage: `url(${wmImageUrl})`,
+                              backgroundRepeat: "no-repeat",
+                              backgroundPosition: "center",
+                              backgroundSize: "cover",
+                              border: `${primaryColor} solid 1px`,
+                              borderRadius: 1,
+                              boxShadow: isAlive ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70` : "none",
+                              zIndex: 2,
+                          }
+                        : {
+                              position: "relative",
+                              width: DOT_SIZE,
+                              height: DOT_SIZE,
+                              overflow: "visible",
+                              backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
+                              border: `1.5px solid #000000${isAlive ? "" : "00"}`,
+                              borderRadius: "50%",
+                              zIndex: 2,
+                          }
+                }
             >
-                <SvgMapWarMachine fill={primaryColor} size="17px" />
+                {!isAlive && (
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            background: "linear-gradient(#00000040, #00000090)",
+                            opacity: enlarged ? 1 : 0.76,
+                        }}
+                    >
+                        <SvgMapSkull
+                            fill="#000000"
+                            size="13px"
+                            sx={{
+                                position: "absolute",
+                                top: "52%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                            }}
+                        />
+                    </Stack>
+                )}
+
+                {isAlive && enlarged && (
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
+                            transition: "all .2s",
+                            zIndex: -1,
+                        }}
+                    >
+                        <Box sx={{ position: "relative", height: ARROW_LENGTH }}>
+                            <SvgMapWarMachine
+                                fill={primaryColor}
+                                size="10px"
+                                sx={{
+                                    position: "absolute",
+                                    top: -6,
+                                    left: "50%",
+                                    transform: "translateX(-50%)",
+                                }}
+                            />
+                        </Box>
+                        <Box sx={{ height: ARROW_LENGTH }} />
+                    </Box>
+                )}
             </Box>
-            <Typography sx={{ mt: 0.4, color: primaryColor, fontWeight: 'fontWeightBold' }}>{name}</Typography>
+
+            {isAlive && enlarged && (
+                <Stack sx={{ mt: 0.2, width: 34, zIndex: 1 }} spacing={0.1}>
+                    <Box sx={{ width: "100%", height: 7, border: "1px solid #00000080" }}>
+                        <Box
+                            sx={{
+                                width: `${(shield / maxShield) * 100}%`,
+                                height: "100%",
+                                backgroundColor: colors.shield,
+                            }}
+                        />
+                    </Box>
+                    <Box sx={{ width: "100%", height: 7, border: "1px solid #00000080" }}>
+                        <Box
+                            sx={{
+                                width: `${(health / maxHealth) * 100}%`,
+                                height: "100%",
+                                backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
+                            }}
+                        />
+                    </Box>
+                </Stack>
+            )}
         </Stack>
     )
 }
