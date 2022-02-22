@@ -34,7 +34,7 @@ import {
     useDimension,
     useStream,
 } from "./containers"
-import { mergeDeep } from "./helpers"
+import { mergeDeep, shadeColor } from "./helpers"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
 
@@ -56,7 +56,7 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
-    const { gameserverSessionID } = useAuth()
+    const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
     const { selectedWsURL, isMute, vidRefCallback, noStreamExist } = useStream()
 
@@ -163,7 +163,8 @@ const AppInner = () => {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    backgroundColor: colors.darkNavyBlue,
+                    backgroundColor:
+                        user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                     zIndex: -1,
                 }}
             />
