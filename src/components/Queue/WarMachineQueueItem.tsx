@@ -17,8 +17,8 @@ export const WarMachineQueueItem = ({ index, queueItem }: { index: number; queue
             <Box
                 sx={{
                     position: "relative",
-                    width: 45,
-                    height: 45,
+                    width: 55,
+                    height: 55,
                     flexShrink: 0,
                     overflow: "hidden",
                     backgroundImage: `url(${queueItem.warMachineMetadata.image})`,
@@ -36,7 +36,7 @@ export const WarMachineQueueItem = ({ index, queueItem }: { index: number; queue
                     variant="body1"
                     sx={{ color: "#FFFFFF", fontWeight: "fontWeightBold", wordBreak: "break-word" }}
                 >
-                    {queueItem.warMachineMetadata.model || queueItem.warMachineMetadata.name}
+                    {queueItem.warMachineMetadata.name || queueItem.warMachineMetadata.model}
                 </Typography>
                 <Typography variant="body2">Queue Position: {queueItem.position + 1}</Typography>
             </Stack>
