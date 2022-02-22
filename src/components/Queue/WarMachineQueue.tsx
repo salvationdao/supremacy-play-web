@@ -43,7 +43,7 @@ export const WarMachineQueue = () => {
                     variant="caption"
                     sx={{ flex: 1, color: colors.text, fontFamily: "Nostromo Regular Black" }}
                 >
-                    BATTLE QUEUE
+                    YOUR BATTLE QUEUE
                 </Typography>
             </Stack>
 
