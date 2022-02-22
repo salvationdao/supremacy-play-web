@@ -1,8 +1,9 @@
-import { useWebsocket } from '../../containers'
-import { NetMessageType } from '../../types'
-import BigNumber from 'bignumber.js'
-import { useEffect, useRef, useState } from 'react'
-import { colors } from '../../theme/theme'
+import { useWebsocket } from "../../containers"
+import { NetMessageType } from "../../types"
+import BigNumber from "bignumber.js"
+import { useEffect, useRef, useState } from "react"
+import { colors } from "../../theme/theme"
+import HubKey from "../../keys"
 
 interface LiveGraphProps {
     maxHeightPx: number
@@ -18,7 +19,7 @@ interface LiveVotingData {
 export const LiveGraph = (props: LiveGraphProps) => {
     const { maxWidthPx, maxHeightPx, maxLiveVotingDataLength } = props
 
-    const { state, subscribeNetMessage } = useWebsocket()
+    const { state, subscribe, subscribeNetMessage } = useWebsocket()
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [liveVotingData, setLiveVotingData] = useState<LiveVotingData[]>([])
 
@@ -28,12 +29,18 @@ export const LiveGraph = (props: LiveGraphProps) => {
         setLiveVotingData(zeroArray)
     }, [])
 
+    // Trigger live voting data coming through
+    // useEffect(() => {
+    //     if (state !== WebSocket.OPEN || !subscribe) return
+    //     return subscribe(HubKey.TriggerLiveVoteUpdated, () => console.log(), null)
+    // }, [state, subscribe])
+
     // Live voting data
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
         return subscribeNetMessage<string | undefined>(NetMessageType.LiveVoting, (payload) => {
             if (!payload) return
-            const rawData = new BigNumber(payload).dividedBy(new BigNumber('1000000000000000000')).toNumber()
+            const rawData = new BigNumber(payload).dividedBy(new BigNumber("1000000000000000000")).toNumber()
             setLiveVotingData((lvd) => {
                 if (lvd.length > maxLiveVotingDataLength) {
                     for (let i = 0; i <= lvd.length - maxLiveVotingDataLength; i++) {
@@ -76,7 +83,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
         const canvas: HTMLCanvasElement = canvasRef.current
         canvas.width = maxWidthPx - 100
 
-        const context = canvasRef.current.getContext('2d')
+        const context = canvasRef.current.getContext("2d")
 
         if (context) {
             context.clearRect(0, 0, canvas.width, canvas.height)
@@ -97,7 +104,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
 
             // Draw raw voting data
             context.beginPath()
-            context.lineJoin = 'round'
+            context.lineJoin = "round"
             context.strokeStyle = colors.neonBlue
 
             // Add first point in the graph
@@ -120,7 +127,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
         <canvas
             ref={canvasRef}
             style={{
-                display: 'block',
+                display: "block",
                 width: `${maxWidthPx - 30}px`,
                 height: `${maxHeightPx - 60}px`,
                 padding: 0,
