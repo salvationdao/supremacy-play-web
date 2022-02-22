@@ -1,6 +1,6 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { GameBar, WalletProvider, DrawerProvider, GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
+import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
 import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
@@ -15,6 +15,7 @@ import {
     WarMachineStats,
 } from "./components"
 import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
+import { WarMachineQueue } from "./components/Queue/WarMachineQueue"
 import {
     CONTROLS_HEIGHT,
     PASSPORT_SERVER_HOSTNAME,
@@ -66,6 +67,7 @@ const AppInner = () => {
                 gameserverSessionID={gameserverSessionID}
                 passportWeb={PASSPORT_WEB}
                 passportServerHost={PASSPORT_SERVER_HOSTNAME}
+                MechQueueComponent={<WarMachineQueue />}
             />
 
             <Stack

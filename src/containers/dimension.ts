@@ -17,14 +17,12 @@ export interface DimensionContainerType {
         width: string | number
         height: string | number
     }
-    isLiveChatOpen: any
-    toggleIsLiveChatOpen: any
 }
 
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer((): DimensionContainerType => {
     const { width: windowWidth, height: windowHeight } = useWindowDimensions()
-    const { isOpen: isLiveChatOpen, toggleIsOpen: toggleIsLiveChatOpen } = useDrawer()
+    const { isAnyPanelOpen } = useDrawer()
 
     const [mainDivDimensions, setMainDivDimensions] = useState<{ width: number; height: number }>({
         width: 0,
@@ -41,7 +39,7 @@ export const DimensionContainer = createContainer((): DimensionContainerType => 
 
     useEffect(() => {
         // Main div dimensions
-        const mainDivWidth = isLiveChatOpen
+        const mainDivWidth = isAnyPanelOpen
             ? windowWidth - GAMEBAR_CONSTANTS.liveChatDrawerWidth
             : windowWidth - GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth
         const mainDivHeight = windowHeight - GAMEBAR_CONSTANTS.gameBarHeight
@@ -63,14 +61,12 @@ export const DimensionContainer = createContainer((): DimensionContainerType => 
         setStreamDimensions({ width: streamWidth, height: streamHeight })
         setMainDivDimensions({ width: mainDivWidth, height: mainDivHeight })
         setIframeDimensions({ width: iframeWidth, height: iframeHeight })
-    }, [windowWidth, windowHeight, isLiveChatOpen])
+    }, [windowWidth, windowHeight, isAnyPanelOpen])
 
     return {
         mainDivDimensions,
         streamDimensions,
         iframeDimensions,
-        isLiveChatOpen,
-        toggleIsLiveChatOpen,
     }
 })
 

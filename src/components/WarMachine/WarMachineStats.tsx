@@ -108,7 +108,7 @@ export const WarMachineStats = () => {
                     position: "absolute",
                     bottom: 0,
                     left: 0,
-                    right: isMapOpen ? MINI_MAP_DEFAULT_WIDTH + 8 : 0,
+                    right: isMapOpen ? MINI_MAP_DEFAULT_WIDTH + 12 : 0,
                     zIndex: 13,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",
