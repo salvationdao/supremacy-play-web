@@ -7,7 +7,7 @@ import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
 
 const ICON_SIZE = 40
-const ARROW_LENGTH = ICON_SIZE / 2 + 15
+const ARROW_LENGTH = ICON_SIZE / 2 + 20
 const DOT_SIZE = 70
 
 export const MapWarMachine = ({
@@ -123,7 +123,7 @@ export const MapWarMachine = ({
                             top: "50%",
                             transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
                             transition: "all .2s",
-                            zIndex: -1,
+                            zIndex: 3,
                         }}
                     >
                         <Box sx={{ position: "relative", height: ARROW_LENGTH }}>
@@ -141,30 +141,40 @@ export const MapWarMachine = ({
                         <Box sx={{ height: ARROW_LENGTH }} />
                     </Box>
                 )}
-            </Box>
 
-            {isAlive && enlarged && (
-                <Stack sx={{ mt: 0.2, width: 34, zIndex: 1 }} spacing={0.1}>
-                    <Box sx={{ width: "100%", height: 7, border: "1px solid #00000080" }}>
-                        <Box
-                            sx={{
-                                width: `${(shield / maxShield) * 100}%`,
-                                height: "100%",
-                                backgroundColor: colors.shield,
-                            }}
-                        />
-                    </Box>
-                    <Box sx={{ width: "100%", height: 7, border: "1px solid #00000080" }}>
-                        <Box
-                            sx={{
-                                width: `${(health / maxHealth) * 100}%`,
-                                height: "100%",
-                                backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
-                            }}
-                        />
-                    </Box>
-                </Stack>
-            )}
+                {isAlive && enlarged && (
+                    <Stack
+                        sx={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: "50%",
+                            transform: "translate(-50%, calc(100% + 10px))",
+                            width: 50,
+                            zIndex: 1,
+                        }}
+                        spacing={0.3}
+                    >
+                        <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
+                            <Box
+                                sx={{
+                                    width: `${(shield / maxShield) * 100}%`,
+                                    height: "100%",
+                                    backgroundColor: colors.shield,
+                                }}
+                            />
+                        </Box>
+                        <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
+                            <Box
+                                sx={{
+                                    width: `${(health / maxHealth) * 100}%`,
+                                    height: "100%",
+                                    backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
+                                }}
+                            />
+                        </Box>
+                    </Stack>
+                )}
+            </Box>
         </Stack>
     )
 }
