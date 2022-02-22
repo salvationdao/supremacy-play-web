@@ -8,8 +8,8 @@ export const OverlayToggles = () => {
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
 
     return (
-        <Stack direction="row" spacing={0.3} alignItems="center">
-            <Typography variant="body2" sx={{ lineHeight: 1 }}>
+        <Stack direction="row" alignItems="center">
+            <Typography variant="body2" sx={{ lineHeight: 1, mr: 0.5 }}>
                 OVERLAYS:{" "}
             </Typography>
 
@@ -20,12 +20,11 @@ export const OverlayToggles = () => {
                 sx={{
                     filter: isLiveChartOpen ? "grayscale(0)" : "grayscale(1)",
                     transition: "all .2s",
-                    ":hover":  { animation: 'unset', filter: "grayscale(0)" },
+                    ":hover": { animation: "unset", filter: "grayscale(0)" },
                     animation: isLiveChartOpen ? "" : `${overlayPulseEffect} 6s infinite`,
                 }}
-
             >
-                <SvgGoldBars size="20px" />
+                <SvgGoldBars size="18px" />
             </IconButton>
 
             {/* Map */}
@@ -35,11 +34,11 @@ export const OverlayToggles = () => {
                 sx={{
                     filter: isMapOpen ? "grayscale(0)" : "grayscale(1)",
                     transition: "all .2s",
-                    ":hover":  { animation: 'unset', filter: "grayscale(0)" },
+                    ":hover": { animation: "unset", filter: "grayscale(0)" },
                     animation: isMapOpen ? "" : `${overlayPulseEffect} 6s infinite`,
                 }}
             >
-                <SvgRadar size="20px" />
+                <SvgRadar size="17px" />
             </IconButton>
         </Stack>
     )
