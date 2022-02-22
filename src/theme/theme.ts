@@ -29,7 +29,7 @@ export const colors = {
     text: "#D4FFFF",
     offWhite: "#F8F8F8",
     red: "#C24242",
-    green: "#30B07D",
+    green: "#2BA172",
     yellow: "#FFE200",
 
     neonBlue: "#00FFFF",
