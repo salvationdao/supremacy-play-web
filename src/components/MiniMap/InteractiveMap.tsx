@@ -146,7 +146,8 @@ export const InteractiveMap = ({
         if (!map) return
         const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
 
-        set({ scale: minScale, x: 0, y: 0 })
+        // the ternary stops the map showing out of bounds
+        enlarged ? set({ scale: minScale, x: 0, y: 0, immediate: true }) : set({ scale: minScale, x: 0, y: 0 })
     }, [windowDimension, warMachines])
 
     // --------------- Minimap - useGesture setup -------------------
