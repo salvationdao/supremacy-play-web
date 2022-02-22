@@ -1,6 +1,7 @@
 import { IconButton, Stack, Typography } from "@mui/material"
-import { SvgSupToken } from "../../assets"
-import { useOverlayToggles } from '../../containers'
+import { SvgGoldBars, SvgRadar } from "../../assets"
+import { useOverlayToggles } from "../../containers"
+import { overlayPulseEffect } from "../../theme/keyframes"
 
 export const OverlayToggles = () => {
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
@@ -16,18 +17,29 @@ export const OverlayToggles = () => {
             <IconButton
                 size="small"
                 onClick={toggleIsLiveChartOpen}
-                sx={{ opacity: isLiveChartOpen ? 1 : 0.2, transition: "all .2s", ":hover": { opacity: 1 } }}
+                sx={{
+                    filter: isLiveChartOpen ? "grayscale(0)" : "grayscale(1)",
+                    transition: "all .2s",
+                    ":hover":  { animation: 'unset', filter: "grayscale(0)" },
+                    animation: isLiveChartOpen ? "" : `${overlayPulseEffect} 6s infinite`,
+                }}
+
             >
-                <SvgSupToken size="13px" />
+                <SvgGoldBars size="20px" />
             </IconButton>
 
             {/* Map */}
             <IconButton
                 size="small"
                 onClick={toggleIsMapOpen}
-                sx={{ opacity: isMapOpen ? 1 : 0.2, transition: "all .2s", ":hover": { opacity: 1 } }}
+                sx={{
+                    filter: isMapOpen ? "grayscale(0)" : "grayscale(1)",
+                    transition: "all .2s",
+                    ":hover":  { animation: 'unset', filter: "grayscale(0)" },
+                    animation: isMapOpen ? "" : `${overlayPulseEffect} 6s infinite`,
+                }}
             >
-                <SvgSupToken size="13px" />
+                <SvgRadar size="20px" />
             </IconButton>
         </Stack>
     )
