@@ -58,7 +58,7 @@ if (SENTRY_CONFIG) {
 const AppInner = () => {
     const { gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
-    const { selectedWsURL, isMute, vidRefCallback } = useStream()
+    const { selectedWsURL, isMute, vidRefCallback, noStreamExist } = useStream()
 
     return (
         <>
@@ -97,24 +97,40 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        <video
-                            key={selectedWsURL}
-                            id={"remoteVideo"}
-                            muted={isMute}
-                            ref={vidRefCallback}
-                            autoPlay
-                            controls
-                            playsInline
-                            style={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                width: iframeDimensions.width,
-                                height: iframeDimensions.height,
-                            }}
-                        />
+                        {!noStreamExist ? (
+                            <video
+                                key={selectedWsURL}
+                                id={"remoteVideo"}
+                                muted={isMute}
+                                ref={vidRefCallback}
+                                autoPlay
+                                controls
+                                playsInline
+                                style={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                    width: iframeDimensions.width,
+                                    height: iframeDimensions.height,
+                                }}
+                            />
+                        ) : (
+                            // TODO replace with fallback image
+                            <div
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <div>Stream Not Found</div>
+                            </div>
+                        )}
 
                         <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
                             <LoadMessage />
