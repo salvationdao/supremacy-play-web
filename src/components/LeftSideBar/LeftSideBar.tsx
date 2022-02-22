@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
 import { ReactElement } from "react"
-import { useOverlayToggles } from "../../containers"
+import { useAuth, useOverlayToggles } from "../../containers"
 import { colors } from "../../theme/theme"
 
 const BUTTON_WIDTH = 150
@@ -20,6 +20,8 @@ const SideButton = ({
     text: string
     Svg?: ReactElement
 }) => {
+    const { user } = useAuth()
+
     return (
         <Stack
             onClick={toggleIsOpen}
@@ -32,10 +34,10 @@ const SideButton = ({
                 pt: 0.2,
                 height: GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth,
                 width: BUTTON_WIDTH,
-                backgroundColor: colors.darkerNeonBlue,
+                backgroundColor: user && user.faction ? `${user.faction.theme.primary}40` : colors.darkerNeonBlue,
                 cursor: "pointer",
                 pointerEvents: isEnabled ? "auto" : "none",
-                opacity: isEnabled && isOpen ? 1 : 0.45,
+                opacity: isEnabled && isOpen ? 1 : 0.36,
                 ":hover": {
                     opacity: 1,
                 },

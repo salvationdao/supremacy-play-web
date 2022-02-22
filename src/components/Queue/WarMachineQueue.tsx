@@ -1,4 +1,5 @@
 import { Box, Fade, Typography } from "@mui/material"
+import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
 import React, { useEffect, useState } from "react"
 import { useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
@@ -32,7 +33,7 @@ export const WarMachineQueue = () => {
                 >
                     <Box
                         sx={{
-                            minHeight: 61,
+                            minHeight: GAMEBAR_CONSTANTS.gameBarHeight || 61,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
