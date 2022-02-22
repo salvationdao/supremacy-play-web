@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import { LiveCounts, VideoPlayerControls } from ".."
+import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { ResolutionSelect } from "./ResolutionSelect"
 import { colors } from "../../theme/theme"
 import { StreamSelect } from "./StreamSelect"
@@ -18,7 +18,10 @@ export const Controls = () => {
                 backgroundColor: colors.darkNavyBlue,
             }}
         >
-            <LiveCounts />
+            <Stack direction="row" spacing={2}>
+                <LiveCounts />
+                <OverlayToggles />
+            </Stack>
 
             <Stack direction="row" spacing={1.5} sx={{ ml: "auto" }}>
                 <StreamSelect />

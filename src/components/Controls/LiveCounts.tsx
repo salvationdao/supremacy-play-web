@@ -8,7 +8,7 @@ import { NetMessageType, ViewerLiveCount } from "../../types"
 
 const ReUsedText = ({ text, color }: { text: string; color?: string }) => {
     return (
-        <Typography variant="body2" sx={{ color: color || colors.text }}>
+        <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
             {text}
         </Typography>
     )
@@ -38,7 +38,9 @@ export const LiveCounts = () => {
     return (
         <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center">
             <SvgUser size="9px" />
-            <Typography variant="body2">LIVE VIEWERS: </Typography>
+            <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                LIVE VIEWERS:{" "}
+            </Typography>
 
             <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center">
                 <ReUsedText text={viewers.RedMountain.toFixed()} color={factionsColor?.redMountain} />

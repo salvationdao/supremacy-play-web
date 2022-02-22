@@ -30,10 +30,10 @@ export const LiveGraph = (props: LiveGraphProps) => {
     }, [])
 
     // Trigger live voting data coming through
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(HubKey.TriggerLiveVoteUpdated, () => console.log(), null)
-    }, [state, subscribe])
+    // useEffect(() => {
+    //     if (state !== WebSocket.OPEN || !subscribe) return
+    //     return subscribe(HubKey.TriggerLiveVoteUpdated, () => console.log(), null)
+    // }, [state, subscribe])
 
     // Live voting data
     useEffect(() => {

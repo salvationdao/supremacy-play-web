@@ -18,6 +18,7 @@ import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
+import Hide from "!react-svg-loader!./svg/Hide.svg"
 import CampaignSharpIcon from "@mui/icons-material/CampaignSharp"
 import FlagSharpIcon from "@mui/icons-material/FlagSharp"
 import MapSharpIcon from "@mui/icons-material/MapSharp"
@@ -223,5 +224,11 @@ export const SvgResizeY: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
 export const SvgResizeXY: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ResizeXY />
+    </SvgWrapper>
+)
+
+export const SvgHide: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Hide />
     </SvgWrapper>
 )
