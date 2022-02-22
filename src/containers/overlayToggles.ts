@@ -7,18 +7,25 @@ export const OverlayTogglesContainer = createContainer(() => {
     const [isEndBattleDetailOpen, toggleIsEndBattleDetailOpen] = useToggle()
     const [isEndBattleDetailEnabled, toggleIsEndBattleDetailEnabled] = useToggle()
     const [isLiveChartOpen, toggleIsLiveChartOpen] = useToggle(localStorage.getItem("liveChartOverlay") === "true")
+    const [isMapOpen, toggleIsMapOpen] = useToggle(localStorage.getItem("mapOverlay") === "true")
 
     useEffect(() => {
         localStorage.setItem("liveChartOverlay", isLiveChartOpen)
     }, [isLiveChartOpen])
 
+    useEffect(() => {
+        localStorage.setItem("mapOverlay", isMapOpen)
+    }, [isMapOpen])
+
     return {
         isEndBattleDetailOpen,
         isEndBattleDetailEnabled,
         isLiveChartOpen,
+        isMapOpen,
         toggleIsEndBattleDetailOpen,
         toggleIsEndBattleDetailEnabled,
         toggleIsLiveChartOpen,
+        toggleIsMapOpen,
     }
 })
 
