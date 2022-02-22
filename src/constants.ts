@@ -4,7 +4,7 @@ export const PASSPORT_SERVER_HOSTNAME = process.env.REACT_APP_PASSPORT_SERVER_HO
 export const VIDEO_SERVER_WEBSOCKET =
     process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
 export const VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
-export const LOG_API_CALLS = true
+export const LOG_API_CALLS = process.env.REACT_APP_LOG_API_CALLS
 export const UI_OPACITY = 0.96
 export const NOTIFICATION_TIME = 28000
 export const NOTIFICATION_LINGER = 400
