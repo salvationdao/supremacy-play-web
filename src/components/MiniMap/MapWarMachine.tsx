@@ -6,9 +6,9 @@ import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
 
-const ICON_SIZE = 25
-const ARROW_LENGTH = ICON_SIZE / 2 + 10
-const DOT_SIZE = 10
+const ICON_SIZE = 40
+const ARROW_LENGTH = ICON_SIZE / 2 + 15
+const DOT_SIZE = 70
 
 export const MapWarMachine = ({
     warMachine,
@@ -85,7 +85,7 @@ export const MapWarMachine = ({
                               height: DOT_SIZE,
                               overflow: "visible",
                               backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
-                              border: `1.5px solid #000000${isAlive ? "" : "00"}`,
+                              border: `6px solid #000000${isAlive ? "" : "00"}`,
                               borderRadius: "50%",
                               zIndex: 2,
                           }
@@ -104,7 +104,7 @@ export const MapWarMachine = ({
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size="13px"
+                            size={enlarged ? "25px" : "90px"}
                             sx={{
                                 position: "absolute",
                                 top: "52%",
@@ -129,7 +129,7 @@ export const MapWarMachine = ({
                         <Box sx={{ position: "relative", height: ARROW_LENGTH }}>
                             <SvgMapWarMachine
                                 fill={primaryColor}
-                                size="10px"
+                                size="15px"
                                 sx={{
                                     position: "absolute",
                                     top: -6,

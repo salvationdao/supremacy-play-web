@@ -26,7 +26,7 @@ import {
     AuthProvider,
     DimensionProvider,
     GameProvider,
-    LeftSideBarProvider,
+    OverlayTogglesProvider,
     SocketProvider,
     StreamProvider,
     useAuth,
@@ -175,9 +175,9 @@ const App = () => {
                                 <LiveChatProvider>
                                     <GameProvider>
                                         <DimensionProvider>
-                                            <LeftSideBarProvider>
+                                            <OverlayTogglesProvider>
                                                 <AppInner />
-                                            </LeftSideBarProvider>
+                                            </OverlayTogglesProvider>
                                         </DimensionProvider>
                                     </GameProvider>
                                 </LiveChatProvider>

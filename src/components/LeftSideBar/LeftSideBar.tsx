@@ -1,13 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
-import { useLeftSideBar } from "../../containers"
+import { useOverlayToggles } from "../../containers"
 import { colors } from "../../theme/theme"
 
 const BUTTON_WIDTH = 110
 const NUM_BUTTONS = 1
 
 export const LeftSideBar = () => {
-    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, isEndBattleDetailEnabled } = useLeftSideBar()
+    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, isEndBattleDetailEnabled } = useOverlayToggles()
 
     return (
         <Box

@@ -8,7 +8,7 @@ import {
     SectionTopSupsFaction,
     SectionWinner,
 } from ".."
-import { useWebsocket, useLeftSideBar } from "../../containers"
+import { useWebsocket, useOverlayToggles } from "../../containers"
 import HubKey from "../../keys"
 import { sampleBattleEndDetail } from "../../samepleData"
 import { colors } from "../../theme/theme"
@@ -20,7 +20,7 @@ export const BOTTOM_BUTTONS_HEIGHT = 50
 
 export const BattleEndScreen = () => {
     const { state, subscribe } = useWebsocket()
-    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useLeftSideBar()
+    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
 
     // Subscribe on battle end information
