@@ -1,10 +1,16 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
 
+enum LeftDrawerPanels {
+    None = "NONE",
+    EndBattleDetail = "END_BATTLE_DETAIL",
+}
+
 // Control left side bar button and open states
 export const OverlayTogglesContainer = createContainer(() => {
-    const [isEndBattleDetailOpen, toggleIsEndBattleDetailOpen] = useToggle()
+    const [activePanel, setActivePanel] = useState<LeftDrawerPanels>(LeftDrawerPanels.None)
+
     const [isEndBattleDetailEnabled, toggleIsEndBattleDetailEnabled] = useToggle()
     const [isLiveChartOpen, toggleIsLiveChartOpen] = useToggle(localStorage.getItem("liveChartOverlay") === "true")
 
@@ -12,11 +18,18 @@ export const OverlayTogglesContainer = createContainer(() => {
         localStorage.setItem("liveChartOverlay", isLiveChartOpen)
     }, [isLiveChartOpen])
 
+    const togglePanel = (newPanel: LeftDrawerPanels, value: boolean) => {
+        setActivePanel((prev) => {
+            if (prev == newPanel || !value) return LeftDrawerPanels.None
+            return newPanel
+        })
+    }
+
     return {
-        isEndBattleDetailOpen,
-        isEndBattleDetailEnabled,
+        isEndBattleDetailOpen: activePanel == LeftDrawerPanels.EndBattleDetail,
+        toggleIsEndBattleDetailOpen: (value: boolean) => togglePanel(LeftDrawerPanels.EndBattleDetail, value),
         isLiveChartOpen,
-        toggleIsEndBattleDetailOpen,
+        isEndBattleDetailEnabled,
         toggleIsEndBattleDetailEnabled,
         toggleIsLiveChartOpen,
     }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { GAMEBAR_CONSTANTS, useLiveChat } from "@ninjasoftware/passport-gamebar"
+import { GAMEBAR_CONSTANTS, useDrawer } from "@ninjasoftware/passport-gamebar"
 import { CONTROLS_HEIGHT, STREAM_ASPECT_RATIO_W_H } from "../constants"
 import { useWindowDimensions } from "../hooks"
 
@@ -24,7 +24,7 @@ export interface DimensionContainerType {
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer((): DimensionContainerType => {
     const { width: windowWidth, height: windowHeight } = useWindowDimensions()
-    const { isOpen: isLiveChatOpen, toggleIsOpen: toggleIsLiveChatOpen } = useLiveChat()
+    const { isOpen: isLiveChatOpen, toggleIsOpen: toggleIsLiveChatOpen } = useDrawer()
 
     const [mainDivDimensions, setMainDivDimensions] = useState<{ width: number; height: number }>({
         width: 0,

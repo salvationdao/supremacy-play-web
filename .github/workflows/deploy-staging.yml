@@ -6,7 +6,6 @@ on:
   push:
     branches: [staging]
 
-
 env:
   # hack to bypass node warning
   CI: false
@@ -14,7 +13,7 @@ env:
   REACT_APP_GAME_SERVER_HOST: staging-api.supremacy.game
   REACT_APP_PASSPORT_WEB: https://staging-passport.xsyn.io
   REACT_APP_PASSPORT_SERVER_HOST: staging-passport.xsyn.io
-  REACT_APP_STREAM_SITE: https://staging-watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601
+  REACT_APP_STREAM_SITE: https://staging-watch.supremacy.game:5443/WebRTCAppEE/play.html?name=416927524201617962690213
   REACT_APP_STREAM_SITE_OFFICE: https://staging-watch-local-am.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513
 
   REACT_APP_SENTRY_DSN_FRONTEND: https://326f24205fe94d2093775e0228384359@o370480.ingest.sentry.io/6194703
@@ -67,9 +66,9 @@ jobs:
         run: |
           git push
           git push --tags
-      
+
       - name: Add other files
-        run: |  
+        run: |
           cp -r ./config ./deploy/.
 
       # list build folder recursively
@@ -83,7 +82,7 @@ jobs:
 
       - name: tar deploy directory
         run: tar -cvf ${{ steps.artifact.outputs.filename }} ./deploy
-      
+
       - name: save artifact
         uses: actions/upload-artifact@v2
         if: ${{ !env.ACT }} # if running in local test environment

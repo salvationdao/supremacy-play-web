@@ -1,6 +1,6 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { GameBar, GAMEBAR_CONSTANTS, LiveChatProvider, WalletProvider } from "@ninjasoftware/passport-gamebar"
+import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
 import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
@@ -94,7 +94,7 @@ const AppInner = () => {
                             height: streamDimensions.height,
                             width: streamDimensions.width,
                             backgroundColor: colors.darkNavyBlue,
-                            clipPath: `polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px)`,
+                            clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
                         <video
@@ -174,7 +174,7 @@ const App = () => {
                     <AuthProvider>
                         <StreamProvider>
                             <WalletProvider>
-                                <LiveChatProvider>
+                                <DrawerProvider>
                                     <GameProvider>
                                         <DimensionProvider>
                                             <OverlayTogglesProvider>
@@ -182,7 +182,7 @@ const App = () => {
                                             </OverlayTogglesProvider>
                                         </DimensionProvider>
                                     </GameProvider>
-                                </LiveChatProvider>
+                                </DrawerProvider>
                             </WalletProvider>
                         </StreamProvider>
                     </AuthProvider>
