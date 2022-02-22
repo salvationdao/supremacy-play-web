@@ -5,6 +5,7 @@ import { MoveableResizable, MoveableResizableConfig } from ".."
 import { SvgSupToken } from "../../assets"
 import { useWebsocket, useOverlayToggles } from "../../containers"
 import { parseString } from "../../helpers"
+import HubKey from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { NetMessageType } from "../../types"
@@ -13,14 +14,8 @@ import { LiveGraph } from "./LiveGraph"
 const DefaultMaxLiveVotingDataLength = 100
 
 const SpoilOfWarAmount = () => {
-    const { state, subscribe, subscribeNetMessage } = useWebsocket()
+    const { state, subscribeNetMessage } = useWebsocket()
     const [spoilOfWarAmount, setSpoilOfWarAmount] = useState<string>("0")
-
-    // Triggered spoil of war update
-    // useEffect(() => {
-    //     if (state !== WebSocket.OPEN || !subscribe) return
-    //     return subscribe(HubKey.TriggerSpoilOfWarUpdated, () => console.log(""), null)
-    // }, [state, subscribe])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
@@ -42,12 +37,25 @@ const SpoilOfWarAmount = () => {
 }
 
 export const LiveVotingChart = () => {
+    const { state, subscribe } = useWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
     const [curWidth, setCurWidth] = useState(0)
     const [curHeight, setCurHeight] = useState(0)
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
         parseString(localStorage.getItem("liveVotingDataMax"), DefaultMaxLiveVotingDataLength),
     )
+
+    // Triggered spoil of war update
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe(HubKey.TriggerSpoilOfWarUpdated, () => console.log(""), null)
+    }, [state, subscribe])
+
+    // Trigger live voting data coming through
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe(HubKey.TriggerLiveVoteUpdated, () => console.log(), null)
+    }, [state, subscribe])
 
     const onResize = useCallback((width: number, height: number) => {
         setCurWidth(width)
