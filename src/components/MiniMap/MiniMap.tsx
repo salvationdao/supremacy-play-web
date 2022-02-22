@@ -47,7 +47,10 @@ export const MiniMap = () => {
     }, [winner])
 
     useEffect(() => {
-        if (winner && votingState?.phase == "LOCATION_SELECT") toggleEnlarged(true)
+        if (winner && votingState?.phase == "LOCATION_SELECT") {
+            toggleEnlarged(true)
+            toggleIsMapOpen(true)
+        }
     }, [winner, votingState])
 
     useEffect(() => {
