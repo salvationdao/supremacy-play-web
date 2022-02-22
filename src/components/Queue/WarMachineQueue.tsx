@@ -38,11 +38,8 @@ export const WarMachineQueue = () => {
                     boxShadow: 1.5,
                 }}
             >
-                <SvgRobot size="23px" fill={colors.text} sx={{ pb: 0.6 }} />
-                <Typography
-                    variant="caption"
-                    sx={{ flex: 1, color: colors.text, fontFamily: "Nostromo Regular Black" }}
-                >
+                <SvgRobot size="23px" fill="#FFFFFF" sx={{ pb: 0.6 }} />
+                <Typography variant="caption" sx={{ flex: 1, color: "#FFFFF", fontFamily: "Nostromo Regular Black" }}>
                     YOUR BATTLE QUEUE
                 </Typography>
             </Stack>
