@@ -22,6 +22,8 @@ import {
     PASSPORT_WEB,
     SENTRY_CONFIG,
     STREAM_ASPECT_RATIO_W_H,
+    SUPREMACY_PAGE,
+    TOKEN_SALE_PAGE,
 } from "./constants"
 import {
     AuthProvider,
@@ -65,6 +67,8 @@ const AppInner = () => {
             <GameBar
                 barPosition="top"
                 gameserverSessionID={gameserverSessionID}
+                tokenSalePage={TOKEN_SALE_PAGE}
+                supremacyPage={SUPREMACY_PAGE}
                 passportWeb={PASSPORT_WEB}
                 passportServerHost={PASSPORT_SERVER_HOSTNAME}
                 MechQueueComponent={<WarMachineQueue />}
