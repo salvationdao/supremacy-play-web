@@ -2,7 +2,9 @@ import MapWarMachine from "!react-svg-loader!./svg/MapWarMachine.svg"
 import Skull from "!react-svg-loader!./svg/Skull.svg"
 import MapSkull from "!react-svg-loader!./svg/MapSkull.svg"
 import SupToken from "!react-svg-loader!./svg/SupToken.svg"
-import Resize from "!react-svg-loader!./svg/Resize.svg"
+import ResizeX from "!react-svg-loader!./svg/ResizeX.svg"
+import ResizeY from "!react-svg-loader!./svg/ResizeY.svg"
+import ResizeXY from "!react-svg-loader!./svg/ResizeXY.svg"
 import Chat from "!react-svg-loader!./svg/Chat.svg"
 import User from "!react-svg-loader!./svg/User.svg"
 import Info from "!react-svg-loader!./svg/Info.svg"
@@ -101,12 +103,6 @@ export const SvgActivities: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgActions: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <WorkspacesSharpIcon />
-    </SvgWrapper>
-)
-
-export const SvgResizeArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
-    <SvgWrapper {...props}>
-        <Resize />
     </SvgWrapper>
 )
 
@@ -209,5 +205,23 @@ export const SvgDamageCross: React.VoidFunctionComponent<SvgWrapperProps> = (pro
 export const SvgMapEnlarge: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <MapEnlarge />
+    </SvgWrapper>
+)
+
+export const SvgResizeX: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ResizeX />
+    </SvgWrapper>
+)
+
+export const SvgResizeY: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ResizeY />
+    </SvgWrapper>
+)
+
+export const SvgResizeXY: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ResizeXY />
     </SvgWrapper>
 )

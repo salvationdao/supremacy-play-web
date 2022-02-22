@@ -1,5 +1,6 @@
 export * from "./Common/ClipThing"
 export * from "./Common/FancyButton"
+export * from "./Common/MoveableResizable"
 export * from "./MiniMap/InteractiveMap"
 export * from "./MiniMap/MapWarMachine"
 export * from "./MiniMap/SelectionIcon"
