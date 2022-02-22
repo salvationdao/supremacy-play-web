@@ -75,6 +75,7 @@ const AppInner = () => {
                     mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
                     width: mainDivDimensions.width,
                     height: mainDivDimensions.height,
+                    transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
                 }}
             >
                 <Stack
@@ -95,6 +96,7 @@ const AppInner = () => {
                             height: streamDimensions.height,
                             width: streamDimensions.width,
                             backgroundColor: colors.darkNavy,
+                            transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
