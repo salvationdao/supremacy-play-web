@@ -181,27 +181,46 @@ export const InteractiveMap = ({
                       }, 50)
 
                 // Set [x,y] offset
-                set({ x, y, immediate: down })
+                set({ x: Math.round(x), y: Math.round(y), immediate: down })
             },
-            onWheel: ({ delta: [, deltaY], pinching, dragging }) => {
-                if (!enlarged || pinching || dragging) return
+            onWheel: ({ delta: [, deltaY], pinching, dragging, event: e }) => {
+                if (!enlarged || pinching || dragging || !map) return
+                const mapWidth = map.width
+                const mapHeight = map.height
 
                 // Calculate new scale
                 const curScale = scale.get()
-                const zoomSpeed = 0.05
-                const newScale = deltaY < 0 ? curScale + zoomSpeed : curScale - zoomSpeed
+                const newScale = curScale * (deltaY > 0 ? 0.95 : 1.05)
 
-                setScale(newScale)
+                // Cursors position in relation to the image
+                const cursorX = e.offsetX
+                const cursorY = e.offsetY
+
+                // Change in x after scaling
+                const displacementX = mapWidth * curScale - mapWidth * newScale
+                // The ratio of image between the cursor and the side of the image (x)
+                const sideRatioX = cursorX / mapWidth
+                // The new position of x - keeps the ratio of image between the cursor and the edge
+                const newX = x.get() + displacementX * sideRatioX
+
+                // Change in y after scaling
+                const displacementY = mapHeight * curScale - mapHeight * newScale
+                // The ratio of image between the cursor and the top of the image (y)
+                const topRatioY = cursorY / mapHeight
+                // The new position of y - keeps the ratio of image between the cursor and the top
+                const newY = y.get() + displacementY * topRatioY
+
+                // Set new scale and positions
+                setScale(newScale, newX, newY)
             },
             onPinch: ({ movement: [ms], dragging, wheeling }) => {
                 if (!enlarged || dragging || wheeling) return
 
                 // Calculate new scale
                 const curScale = scale.get()
-                const zoomSpeed = 0.2
-                const newScale = ms < 0 ? curScale + zoomSpeed : curScale - zoomSpeed
+                const newScale = curScale * (ms > 0 ? 0.95 : 1.05)
 
-                setScale(newScale)
+                setScale(newScale, 0, 0)
             },
         },
         {
@@ -241,14 +260,20 @@ export const InteractiveMap = ({
     )
 
     // Set the zoom of the map
-    const setScale = (newScale: number) => {
+    const setScale = (newScale: number, newX: number, newY: number) => {
         if (!map) return
         const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
         const maxScale = 1
+        const curScale = scale.get()
 
         // Keeps the map within scale bounds
         if (newScale >= maxScale || minScale >= newScale) {
             newScale >= maxScale ? (newScale = maxScale) : (newScale = minScale)
+        }
+
+        // Return if the map is already at zoom limit
+        if ((curScale === minScale || curScale === maxScale) && (newScale >= maxScale || minScale >= newScale)) {
+            return
         }
 
         // Calculate the new boundary
@@ -262,11 +287,11 @@ export const InteractiveMap = ({
                 : (windowDimension.height - map.height * newScale) / 2
 
         // Keep the map in-bounds
-        const ox = xBound >= x.get() ? xBound : x.get()
-        const oy = yBound >= y.get() ? yBound : y.get()
+        newX = xBound >= newX ? xBound : newX > 0 ? 0 : newX
+        newY = yBound >= newY ? yBound : newY > 0 ? 0 : newY
 
         // Set scale and [x,y] offset
-        set({ scale: newScale, x: ox, y: oy })
+        set({ scale: newScale, x: Math.round(newX), y: Math.round(newY), immediate: true })
     }
 
     if (!map) return null
