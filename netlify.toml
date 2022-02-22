@@ -1,11 +1,2 @@
 [context.production]
-  environment = { 
-      REACT_APP_GAME_SERVER_HOST: api.supremacy.game,
-      REACT_APP_PASSPORT_WEB: https://passport.supremacy.game,
-      REACT_APP_PASSPORT_SERVER_HOST: passport.supremacy.game,
-      REACT_APP_STREAM_SITE: https://watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601,
-      REACT_APP_STREAM_SITE_OFFICE: https://watch-local-am.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513,
-      REACT_APP_SENTRY_DSN_FRONTEND: https://326f24205fe94d2093775e0228384359@o370480.ingest.sentry.io/6194703,
-      REACT_APP_SENTRY_ENVIRONMENT: production,
-      REACT_APP_SENTRY_SAMPLERATE: 1
-   }
+  environment = { REACT_APP_GAME_SERVER_HOST = "api.supremacy.game", REACT_APP_PASSPORT_WEB = "https://passport.supremacy.game", REACT_APP_PASSPORT_SERVER_HOST = "passport.supremacy.game", REACT_APP_STREAM_SITE = "https://watch-syd02.supremacy.game/WebRTCAppEE/play.html?name=886200805704583109786601", REACT_APP_STREAM_SITE_OFFICE = "https://watch-local-am.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513", REACT_APP_SENTRY_DSN_FRONTEND = "https://326f24205fe94d2093775e0228384359@o370480.ingest.sentry.io/6194703", REACT_APP_SENTRY_ENVIRONMENT = "production", REACT_APP_SENTRY_SAMPLERATE = "1"}
