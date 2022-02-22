@@ -1,4 +1,6 @@
 export const GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOST || "localhost:8084"
+export const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://sales.supremacy.game/"
+export const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
 export const PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003"
 export const PASSPORT_SERVER_HOSTNAME = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
 export const VIDEO_SERVER_WEBSOCKET =
