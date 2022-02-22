@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
+import { VIDEO_SERVER_WEBSOCKET, VIDEO_SERVER_STREAM_ID } from "../constants"
 import { useToggle } from "../hooks"
 import { Stream } from "../types"
 
@@ -56,11 +57,12 @@ export interface StreamContainerType {
     defaultStreamID: string
     defaultWSURL: string
     defaultResolution: number
+    noStreamExist: boolean
 }
 
 export const StreamContainer = createContainer((): StreamContainerType => {
-    const defaultStreamID = "524280586954581049507513"
-    const defaultWSURL = "ws://10.25.26.11:5080/WebRTCAppEE/websocket"
+    const defaultStreamID = VIDEO_SERVER_STREAM_ID
+    const defaultWSURL = VIDEO_SERVER_WEBSOCKET
     const defaultResolution = 720
 
     // video
@@ -79,6 +81,9 @@ export const StreamContainer = createContainer((): StreamContainerType => {
     // resolution
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
     const [currentResolution, setCurrentResolution] = useState<number>()
+
+    // no stream error
+    const [noStreamExist, setNoStreamExist] = useState(false)
 
     useEffect(() => {
         if (volume <= 0) {
@@ -135,6 +140,9 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                     },
                     callbackError: (error: string) => {
                         console.log(`--- ERROR ---`, error)
+                        if (error === "no_stream_exist") {
+                            setNoStreamExist(true)
+                        }
                     },
                 })
             } catch (e) {
@@ -142,7 +150,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                 webRtc.current = undefined
             }
         },
-        [selectedWsURL],
+        [selectedWsURL, selectedStreamID],
     )
 
     return {
@@ -173,6 +181,8 @@ export const StreamContainer = createContainer((): StreamContainerType => {
         defaultStreamID,
         defaultWSURL,
         defaultResolution,
+
+        noStreamExist,
     }
 })
 
