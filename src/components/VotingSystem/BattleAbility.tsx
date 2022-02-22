@@ -183,7 +183,7 @@ export const BattleAbility = () => {
                                                 sx={{
                                                     lineHeight: 1,
                                                     fontWeight: "fontWeightBold",
-                                                    fontFamily: "Nostromo Regular Medium",
+                                                    fontFamily: "Nostromo Regular Bold",
                                                     color: colour,
                                                     overflow: "hidden",
                                                     textOverflow: "ellipsis",
