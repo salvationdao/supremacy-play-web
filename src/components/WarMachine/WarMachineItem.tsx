@@ -39,7 +39,7 @@ export const WarMachineItem = ({
     const { participantID, faction, name, imageUrl } = warMachine
     const { state, subscribe } = useWebsocket()
     const { factionID } = useAuth()
-    const { isOpen: isLiveChatOpen } = useDrawer()
+    const { isAnyPanelOpen } = useDrawer()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -60,7 +60,7 @@ export const WarMachineItem = ({
 
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
-    }, [shouldBeExpanded, isLiveChatOpen])
+    }, [shouldBeExpanded, isAnyPanelOpen])
 
     // If warmachine is updated, reset destroy info
     useEffect(() => {
