@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
 
@@ -5,7 +6,11 @@ import { useToggle } from "../hooks"
 export const OverlayTogglesContainer = createContainer(() => {
     const [isEndBattleDetailOpen, toggleIsEndBattleDetailOpen] = useToggle()
     const [isEndBattleDetailEnabled, toggleIsEndBattleDetailEnabled] = useToggle()
-    const [isLiveChartOpen, toggleIsLiveChartOpen] = useToggle(true)
+    const [isLiveChartOpen, toggleIsLiveChartOpen] = useToggle(localStorage.getItem("liveChartOverlay") === "true")
+
+    useEffect(() => {
+        localStorage.setItem("liveChartOverlay", isLiveChartOpen)
+    }, [isLiveChartOpen])
 
     return {
         isEndBattleDetailOpen,
