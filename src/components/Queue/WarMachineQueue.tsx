@@ -3,12 +3,14 @@ import { useTheme } from "@mui/styles"
 import React, { SyntheticEvent, useEffect, useState } from "react"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
 import { Resizable, ResizeCallbackData } from "react-resizable"
-import { GenericWarMachinePNG, SvgDrag, SvgResizeArrow } from "../../assets"
+import { SvgDrag } from "../../assets"
 import { UI_OPACITY } from "../../constants"
-import { useDimension } from "../../containers"
+import { useAuth, useDimension, useWebsocket } from "../../containers"
 import { parseString } from "../../helpers"
+import HubKey from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
+import { QueuedWarMachine } from "../../types"
 
 const Padding = 10
 const DefaultPositionX = 0
@@ -23,6 +25,13 @@ export const WarMachineQueue = () => {
     const {
         streamDimensions: { width, height },
     } = useDimension()
+    const { user, userID } = useAuth()
+    const { state, subscribe } = useWebsocket()
+
+    // Queued war machine data
+    const [queuedWarMachines, setQueuedWarMachines] = useState<QueuedWarMachine[]>([])
+
+    // Window dimensions and position
     const [curPosX, setCurPosX] = useState(-1)
     const [curPosY, setCurPosY] = useState(-1)
     const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem("warMachineQueueSizeX"), DefaultSizeX))
@@ -30,6 +39,20 @@ export const WarMachineQueue = () => {
     const [maxWarMachineQueueLength, setWarMachineQueueLength] = useState(
         parseString(localStorage.getItem("warMachineQueueDataMax"), DefaultMaxWarMachineQueueLength),
     )
+
+    const onResize = (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
+        if (width <= 0 || height <= 0) return
+
+        const { size } = data || { size: { width: curWidth, height: curHeight } }
+        if (size.width >= DefaultSizeX) {
+            setWarMachineQueueLength(size.width / 5)
+            setCurWidth(Math.min(width - 2 * Padding, size.width))
+        }
+
+        if (size.height <= MaxSizeY && size.height >= DefaultSizeY) {
+            setCurHeight(Math.min(height - 2 * Padding, size.height))
+        }
+    }
 
     useEffect(() => {
         if (width <= 0 || height <= 0) return
@@ -53,19 +76,13 @@ export const WarMachineQueue = () => {
         onResize()
     }, [width, height, curWidth])
 
-    const onResize = (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
-        if (width <= 0 || height <= 0) return
-
-        const { size } = data || { size: { width: curWidth, height: curHeight } }
-        if (size.width >= DefaultSizeX) {
-            setWarMachineQueueLength(size.width / 5)
-            setCurWidth(Math.min(width - 2 * Padding, size.width))
-        }
-
-        if (size.height <= MaxSizeY && size.height >= DefaultSizeY) {
-            setCurHeight(Math.min(height - 2 * Padding, size.height))
-        }
-    }
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        return subscribe<QueuedWarMachine[]>(HubKey.SubUserWarMachineQueueUpdated, (payload) => {
+            if (!payload) return
+            setQueuedWarMachines(payload)
+        })
+    }, [state, subscribe, user, userID])
 
     return (
         <Stack
@@ -109,20 +126,20 @@ export const WarMachineQueue = () => {
                                 height={curHeight}
                                 width={curWidth}
                                 onResize={onResize}
-                                handle={() => (
-                                    <Box
-                                        sx={{
-                                            position: "absolute",
-                                            bottom: 9.1,
-                                            right: 9,
-                                            cursor: "ew-resize",
-                                            opacity: 0.4,
-                                            ":hover": { opacity: 1 },
-                                        }}
-                                    >
-                                        <SvgResizeArrow size="13px" />
-                                    </Box>
-                                )}
+                                // handle={() => (
+                                //     <Box
+                                //         sx={{
+                                //             position: "absolute",
+                                //             bottom: 9.1,
+                                //             right: 9,
+                                //             cursor: "ew-resize",
+                                //             opacity: 0.4,
+                                //             ":hover": { opacity: 1 },
+                                //         }}
+                                //     >
+                                //         <SvgResizeArrow size="13px" />
+                                //     </Box>
+                                // )}
                                 onResizeStop={(e: SyntheticEvent, data: ResizeCallbackData) => {
                                     localStorage.setItem("warMachineQueueSizeX", data.size.width.toString())
                                     localStorage.setItem("warMachineQueueSizeY", data.size.height.toString())
@@ -175,35 +192,48 @@ export const WarMachineQueue = () => {
                                                     Live
                                                 </Typography>
                                             </Stack>
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    "&:not(:last-child)": {
-                                                        marginBottom: 1,
-                                                    },
-                                                }}
-                                            >
-                                                <Box
-                                                    component="img"
-                                                    src={GenericWarMachinePNG}
-                                                    alt="Warmachine Thumbnail"
-                                                    sx={{
-                                                        height: 40,
-                                                        width: 40,
-                                                        marginRight: 1,
-                                                    }}
-                                                />
-                                                <Box>
-                                                    <Typography
-                                                        variant="subtitle1"
-                                                        sx={{
-                                                            textAlign: "start",
-                                                        }}
-                                                    >
-                                                        Warmachine name
-                                                    </Typography>
-                                                    <Typography variant="subtitle2">Queue Position: 1</Typography>
-                                                </Box>
+                                            <Box>
+                                                {queuedWarMachines.length > 0 ? (
+                                                    queuedWarMachines.map((q, index) => (
+                                                        <Box
+                                                            key={`${q.warMachineMetadata.tokenID}-${index}`}
+                                                            sx={{
+                                                                display: "flex",
+                                                                "&:not(:last-child)": {
+                                                                    marginBottom: 1,
+                                                                },
+                                                            }}
+                                                        >
+                                                            <Box
+                                                                component="img"
+                                                                src={q.warMachineMetadata.image}
+                                                                alt="Warmachine Thumbnail"
+                                                                sx={{
+                                                                    height: 40,
+                                                                    width: 40,
+                                                                    marginRight: 1,
+                                                                    objectFit: "cover",
+                                                                }}
+                                                            />
+                                                            <Box>
+                                                                <Typography
+                                                                    variant="subtitle1"
+                                                                    sx={{
+                                                                        textAlign: "start",
+                                                                    }}
+                                                                >
+                                                                    {q.warMachineMetadata.model ||
+                                                                        q.warMachineMetadata.name}
+                                                                </Typography>
+                                                                <Typography variant="subtitle2">
+                                                                    Queue Position: {q.position}
+                                                                </Typography>
+                                                            </Box>
+                                                        </Box>
+                                                    ))
+                                                ) : (
+                                                    <Typography>No war machines queued</Typography>
+                                                )}
                                             </Box>
                                         </Box>
                                     </Box>
