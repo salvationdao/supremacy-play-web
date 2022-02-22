@@ -56,11 +56,12 @@ export interface StreamContainerType {
     defaultStreamID: string
     defaultWSURL: string
     defaultResolution: number
+    noStreamExist: boolean
 }
 
 export const StreamContainer = createContainer((): StreamContainerType => {
-    const defaultStreamID = "886200805704583109786601"
-    const defaultWSURL = "wss://staging-watch-syd02.supremacy.game/WebRTCAppEE/websocket"
+    const defaultStreamID = "524280586954581049507513"
+    const defaultWSURL = "ws://10.25.26.11:5080/WebRTCAppEE/websocket"
     const defaultResolution = 720
 
     // video
@@ -79,6 +80,9 @@ export const StreamContainer = createContainer((): StreamContainerType => {
     // resolution
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
     const [currentResolution, setCurrentResolution] = useState<number>()
+
+    // no stream error
+    const [noStreamExist, setNoStreamExist] = useState(false)
 
     useEffect(() => {
         if (volume <= 0) {
@@ -135,6 +139,9 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                     },
                     callbackError: (error: string) => {
                         console.log(`--- ERROR ---`, error)
+                        if (error === "no_stream_exist") {
+                            setNoStreamExist(true)
+                        }
                     },
                 })
             } catch (e) {
@@ -142,7 +149,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                 webRtc.current = undefined
             }
         },
-        [selectedWsURL],
+        [selectedWsURL, selectedStreamID],
     )
 
     return {
@@ -173,6 +180,8 @@ export const StreamContainer = createContainer((): StreamContainerType => {
         defaultStreamID,
         defaultWSURL,
         defaultResolution,
+
+        noStreamExist,
     }
 })
 

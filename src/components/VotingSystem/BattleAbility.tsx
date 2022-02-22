@@ -4,7 +4,6 @@ import { BattleAbilityCountdown, ClipThing, VotingButton } from ".."
 import { SvgCooldown, SvgApplause } from "../../assets"
 import { NullUUID } from "../../constants"
 import { useAuth, useGame, useWebsocket } from "../../containers"
-import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
@@ -117,6 +116,7 @@ export const BattleAbility = () => {
 
     const onVote = useCallback(
         (voteAmount: number) => async () => {
+            if (state !== WebSocket.OPEN) return
             try {
                 const resp = await send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
 
@@ -129,7 +129,7 @@ export const BattleAbility = () => {
                 return false
             }
         },
-        [],
+        [state],
     )
 
     if (!battleAbility) return null

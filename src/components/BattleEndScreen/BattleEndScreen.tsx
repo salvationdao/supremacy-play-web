@@ -1,18 +1,18 @@
-import { Slide, Stack } from '@mui/material'
-import { Box } from '@mui/system'
-import { useEffect, useMemo, useState } from 'react'
+import { Slide, Stack } from "@mui/material"
+import { Box } from "@mui/system"
+import { useEffect, useMemo, useState } from "react"
 import {
     SectionBottom,
     SectionMostFrequentAbilityExecutor,
     SectionTopSups,
     SectionTopSupsFaction,
     SectionWinner,
-} from '..'
-import { useWebsocket, useLeftSideBar } from '../../containers'
-import HubKey from '../../keys'
-import { sampleBattleEndDetail } from '../../samepleData'
-import { colors } from '../../theme/theme'
-import { BattleEndDetail } from '../../types'
+} from ".."
+import { useWebsocket, useOverlayToggles } from "../../containers"
+import HubKey from "../../keys"
+import { sampleBattleEndDetail } from "../../samepleData"
+import { colors } from "../../theme/theme"
+import { BattleEndDetail } from "../../types"
 
 const SPAWN_TEST_DATA = false
 
@@ -20,7 +20,7 @@ export const BOTTOM_BUTTONS_HEIGHT = 50
 
 export const BattleEndScreen = () => {
     const { state, subscribe } = useWebsocket()
-    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen } = useLeftSideBar()
+    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
 
     // Subscribe on battle end information
@@ -34,6 +34,7 @@ export const BattleEndScreen = () => {
                     return
                 }
                 setBattleEndDetail(payload)
+                toggleIsEndBattleDetailEnabled(true)
                 toggleIsEndBattleDetailOpen(true)
             },
             null,
@@ -58,7 +59,7 @@ export const BattleEndScreen = () => {
         <Slide key={battleEndDetail.battleID} in={isEndBattleDetailOpen} direction="right">
             <Box
                 sx={{
-                    position: 'absolute',
+                    position: "absolute",
                     top: 0,
                     bottom: 0,
                     left: 0,
@@ -70,9 +71,9 @@ export const BattleEndScreen = () => {
             >
                 <Box
                     sx={{
-                        position: 'relative',
-                        height: '100%',
-                        width: '100%',
+                        position: "relative",
+                        height: "100%",
+                        width: "100%",
                         pl: 4.3,
                         pr: 1,
                         pt: 3,
@@ -85,18 +86,18 @@ export const BattleEndScreen = () => {
                         sx={{
                             height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}px)`,
                             pr: 3.6,
-                            overflowY: 'auto',
-                            overflowX: 'auto',
-                            scrollbarWidth: 'none',
-                            '::-webkit-scrollbar': {
+                            overflowY: "auto",
+                            overflowX: "auto",
+                            scrollbarWidth: "none",
+                            "::-webkit-scrollbar": {
                                 width: 4,
                                 height: 4,
                             },
-                            '::-webkit-scrollbar-track': {
+                            "::-webkit-scrollbar-track": {
                                 backgroundColor: colors.darkNavyBlue,
                                 borderRadius: 3,
                             },
-                            '::-webkit-scrollbar-thumb': {
+                            "::-webkit-scrollbar-thumb": {
                                 background: colors.darkNeonBlue,
                                 borderRadius: 3,
                             },
@@ -112,7 +113,7 @@ export const BattleEndScreen = () => {
 
                     <Box
                         sx={{
-                            position: 'absolute',
+                            position: "absolute",
                             top: 0,
                             bottom: 0,
                             left: 0,

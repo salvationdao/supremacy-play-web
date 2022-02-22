@@ -318,8 +318,8 @@ export const WarMachineDestroyedInfo = ({
                             </Stack>
 
                             <Stack direction="row">
-                                <DamageList title="ASSIST DAMAGE" damageRecords={assistDamageMechs} />
-                                <DamageList title="OTHER DAMAGE" damageRecords={assistDamageOthers} />
+                                <DamageList title="TOP 2 ASSIST DAMAGE" damageRecords={assistDamageMechs} />
+                                <DamageList title="TOP 2 OTHER DAMAGE" damageRecords={assistDamageOthers} />
                             </Stack>
                         </Stack>
                     </Box>
