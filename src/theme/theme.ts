@@ -41,6 +41,9 @@ export const colors = {
 
     health: "#BFF600",
     shield: "#00F7F7",
+
+    grey: "#89898d",
+    battleQueueBanner: "#C24242",
 }
 
 const factionTheme: FactionTheme = {

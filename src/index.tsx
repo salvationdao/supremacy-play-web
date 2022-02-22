@@ -5,6 +5,7 @@ import * as Sentry from "@sentry/react"
 import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import {
+    BattleEndScreen,
     Controls,
     LeftSideBar,
     LiveVotingChart,
@@ -12,10 +13,9 @@ import {
     MiniMap,
     Notifications,
     VotingSystem,
+    WarMachineQueue,
     WarMachineStats,
 } from "./components"
-import { BattleEndScreen } from "./components/BattleEndScreen/BattleEndScreen"
-import { WarMachineQueue } from "./components/Queue/WarMachineQueue"
 import {
     CONTROLS_HEIGHT,
     PASSPORT_SERVER_HOSTNAME,

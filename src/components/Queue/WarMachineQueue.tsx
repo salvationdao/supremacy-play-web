@@ -1,6 +1,8 @@
-import { Box, Fade, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import { WarMachineQueueItem } from ".."
+import { SvgRobot } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { colors } from "../../theme/theme"
@@ -22,98 +24,78 @@ export const WarMachineQueue = () => {
     }, [state, subscribe, user, userID])
 
     return (
-        <Box sx={{ pointerEvents: "all", height: "100%" }}>
-            <Fade in={true}>
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        height: "100%",
-                    }}
+        <Stack sx={{ height: "100%" }}>
+            <Stack
+                direction="row"
+                spacing={1.2}
+                alignItems="center"
+                sx={{
+                    position: "relative",
+                    pl: 2.5,
+                    pr: 6,
+                    height: GAMEBAR_CONSTANTS.gameBarHeight || 61,
+                    background: `${colors.battleQueueBanner}65`,
+                    boxShadow: 1.5,
+                }}
+            >
+                <SvgRobot size="23px" fill={colors.text} sx={{ pb: 0.6 }} />
+                <Typography
+                    variant="caption"
+                    sx={{ flex: 1, color: colors.text, fontFamily: "Nostromo Regular Black" }}
                 >
-                    <Box
-                        sx={{
-                            minHeight: GAMEBAR_CONSTANTS.gameBarHeight || 61,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            backgroundColor: colors.darkNeonBlue,
-                        }}
-                    >
-                        <Typography
-                            sx={{
-                                fontSize: ".7rem",
-                                fontFamily: '"Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"',
-                                textTransform: "uppercase",
-                            }}
-                        >
-                            Your Battle Queue
-                        </Typography>
-                    </Box>
-                    {queuedWarMachines.length > 0 ? (
-                        <Box
-                            sx={{
-                                flex: 1,
-                                overflowY: "auto",
-                            }}
-                        >
-                            {queuedWarMachines
-                                .filter((q) => q.position >= 0)
-                                .map((q, index) => (
-                                    <Box
-                                        key={`${q.warMachineMetadata.tokenID}-${index}`}
-                                        sx={{
-                                            position: "relative",
-                                            display: "flex",
-                                            padding: 1,
-                                            backgroundColor: index % 2 === 0 ? colors.navy : undefined,
-                                        }}
-                                    >
-                                        <Box
-                                            component="img"
-                                            src={q.warMachineMetadata.image}
-                                            alt="Warmachine Thumbnail"
-                                            sx={{
-                                                height: 40,
-                                                width: 40,
-                                                marginRight: 1,
-                                                objectFit: "cover",
-                                            }}
-                                        />
-                                        <Box>
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{
-                                                    textAlign: "start",
-                                                }}
-                                            >
-                                                {q.warMachineMetadata.model || q.warMachineMetadata.name}
-                                            </Typography>
-                                            <Typography variant="subtitle2">
-                                                Queue Position: {q.position + 1}
-                                            </Typography>
-                                        </Box>
-                                        <Box
-                                            sx={{
-                                                position: "absolute",
-                                            }}
-                                        >
-                                            {q.position + 1}
-                                        </Box>
-                                    </Box>
-                                ))}
-                        </Box>
+                    YOUR BATTLE QUEUE
+                </Typography>
+            </Stack>
+
+            <Box
+                sx={{
+                    m: 0.5,
+                    flex: 1,
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    direction: "ltr",
+                    scrollbarWidth: "none",
+                    "::-webkit-scrollbar": {
+                        width: 4,
+                    },
+                    "::-webkit-scrollbar-track": {
+                        boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
+                        borderRadius: 3,
+                    },
+                    "::-webkit-scrollbar-thumb": {
+                        background: colors.battleQueueBanner,
+                        borderRadius: 3,
+                    },
+                }}
+            >
+                <Stack>
+                    {queuedWarMachines && queuedWarMachines.length > 0 ? (
+                        queuedWarMachines
+                            .filter((q) => q.position >= 0)
+                            .map((q, index) => (
+                                <WarMachineQueueItem
+                                    key={`${q.warMachineMetadata.tokenID}-${index}`}
+                                    queueItem={q}
+                                    index={index}
+                                />
+                            ))
                     ) : (
-                        <Box
+                        <Typography
+                            variant="body2"
                             sx={{
-                                padding: 1,
+                                px: 1.6,
+                                py: 1.6,
+                                color: colors.grey,
+                                fontFamily: "Share Tech",
+                                fontSize: "0.8rem",
+                                userSelect: "text",
                             }}
                         >
-                            <Typography>No war machines queued</Typography>
-                        </Box>
+                            There are no war machines in the queue...
+                        </Typography>
                     )}
-                </Box>
-            </Fade>
-        </Box>
+                </Stack>
+            </Box>
+        </Stack>
     )
 }
