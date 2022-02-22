@@ -3,7 +3,7 @@ import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
 import { useOverlayToggles } from "../../containers"
 import { colors } from "../../theme/theme"
 
-const BUTTON_WIDTH = 110
+const BUTTON_WIDTH = 150
 const NUM_BUTTONS = 1
 
 export const LeftSideBar = () => {
@@ -58,6 +58,7 @@ export const LeftSideBar = () => {
                         sx={{
                             textAlign: "center",
                             lineHeight: 1,
+                            fontFamily: "Nostromo Regular Bold",
                             fontWeight: "fontWeightBold",
                             whiteSpace: "nowrap",
                         }}
