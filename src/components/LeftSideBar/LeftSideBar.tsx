@@ -35,7 +35,7 @@ const SideButton = ({
                 backgroundColor: colors.darkerNeonBlue,
                 cursor: "pointer",
                 pointerEvents: isEnabled ? "auto" : "none",
-                opacity: isEnabled && isOpen ? 1 : 0.6,
+                opacity: isEnabled && isOpen ? 1 : 0.45,
                 ":hover": {
                     opacity: 1,
                 },
@@ -51,6 +51,7 @@ const SideButton = ({
                     lineHeight: 1,
                     fontWeight: "fontWeightBold",
                     whiteSpace: "nowrap",
+                    fontFamily: "Nostromo Regular Bold",
                 }}
             >
                 {text}
