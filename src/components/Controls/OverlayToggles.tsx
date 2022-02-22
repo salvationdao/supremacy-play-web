@@ -1,11 +1,14 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { SvgGoldBars, SvgRadar } from "../../assets"
-import { useOverlayToggles } from "../../containers"
+import { useGame, useOverlayToggles } from "../../containers"
 import { overlayPulseEffect } from "../../theme/keyframes"
 
 export const OverlayToggles = () => {
+    const { votingState } = useGame()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
+
+    const isBattleStarted = votingState && votingState.phase !== "HOLD" && votingState.phase !== "WAIT_MECH_INTRO"
 
     return (
         <Stack direction="row" alignItems="center">
@@ -17,6 +20,7 @@ export const OverlayToggles = () => {
             <IconButton
                 size="small"
                 onClick={toggleIsLiveChartOpen}
+                disabled={!isBattleStarted}
                 sx={{
                     filter: isLiveChartOpen ? "grayscale(0)" : "grayscale(1)",
                     transition: "all .2s",
@@ -31,6 +35,7 @@ export const OverlayToggles = () => {
             <IconButton
                 size="small"
                 onClick={toggleIsMapOpen}
+                disabled={!isBattleStarted}
                 sx={{
                     filter: isMapOpen ? "grayscale(0)" : "grayscale(1)",
                     transition: "all .2s",
