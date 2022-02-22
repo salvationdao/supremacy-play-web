@@ -1,6 +1,6 @@
-import "./global.css"
-import { createTheme, FactionTheme } from "@mui/material/styles"
 import { red } from "@mui/material/colors"
+import { createTheme, FactionTheme } from "@mui/material/styles"
+import "./global.css"
 
 // had to keep the declare in this file for it to work
 declare module "@mui/material/styles" {
@@ -36,6 +36,7 @@ export const colors = {
     darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
     darkNavyBlue: "#070719",
+    navy: "#28283f",
     darkNavy: "#101019",
 
     health: "#BFF600",

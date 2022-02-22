@@ -82,6 +82,20 @@ export interface WarMachineState {
     rotation: number
 }
 
+export interface QueuedWarMachine {
+    position: number
+    warMachineMetadata: WarMachineMetadata
+}
+
+export interface WarMachineMetadata {
+    tokenID: number
+    isInsured: boolean
+    contractReward: string
+    name: string
+    model: string
+    image: string
+}
+
 export interface Map {
     name: string
     imageUrl: string
