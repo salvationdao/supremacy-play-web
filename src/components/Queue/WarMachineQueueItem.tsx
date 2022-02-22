@@ -19,6 +19,7 @@ export const WarMachineQueueItem = ({ index, queueItem }: { index: number; queue
                     position: "relative",
                     width: 45,
                     height: 45,
+                    flexShrink: 0,
                     overflow: "hidden",
                     backgroundImage: `url(${queueItem.warMachineMetadata.image})`,
                     backgroundRepeat: "no-repeat",
