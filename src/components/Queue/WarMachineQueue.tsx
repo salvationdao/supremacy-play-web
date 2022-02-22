@@ -56,47 +56,51 @@ export const WarMachineQueue = () => {
                                 overflowY: "auto",
                             }}
                         >
-                            {queuedWarMachines.map((q, index) => (
-                                <Box
-                                    key={`${q.warMachineMetadata.tokenID}-${index}`}
-                                    sx={{
-                                        position: "relative",
-                                        display: "flex",
-                                        padding: 1,
-                                        backgroundColor: index % 2 === 0 ? colors.navy : undefined,
-                                    }}
-                                >
+                            {queuedWarMachines
+                                .filter((q) => q.position >= 0)
+                                .map((q, index) => (
                                     <Box
-                                        component="img"
-                                        src={q.warMachineMetadata.image}
-                                        alt="Warmachine Thumbnail"
+                                        key={`${q.warMachineMetadata.tokenID}-${index}`}
                                         sx={{
-                                            height: 40,
-                                            width: 40,
-                                            marginRight: 1,
-                                            objectFit: "cover",
-                                        }}
-                                    />
-                                    <Box>
-                                        <Typography
-                                            variant="subtitle1"
-                                            sx={{
-                                                textAlign: "start",
-                                            }}
-                                        >
-                                            {q.warMachineMetadata.model || q.warMachineMetadata.name}
-                                        </Typography>
-                                        <Typography variant="subtitle2">Queue Position: {q.position}</Typography>
-                                    </Box>
-                                    <Box
-                                        sx={{
-                                            position: "absolute",
+                                            position: "relative",
+                                            display: "flex",
+                                            padding: 1,
+                                            backgroundColor: index % 2 === 0 ? colors.navy : undefined,
                                         }}
                                     >
-                                        {q.position}
+                                        <Box
+                                            component="img"
+                                            src={q.warMachineMetadata.image}
+                                            alt="Warmachine Thumbnail"
+                                            sx={{
+                                                height: 40,
+                                                width: 40,
+                                                marginRight: 1,
+                                                objectFit: "cover",
+                                            }}
+                                        />
+                                        <Box>
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{
+                                                    textAlign: "start",
+                                                }}
+                                            >
+                                                {q.warMachineMetadata.model || q.warMachineMetadata.name}
+                                            </Typography>
+                                            <Typography variant="subtitle2">
+                                                Queue Position: {q.position + 1}
+                                            </Typography>
+                                        </Box>
+                                        <Box
+                                            sx={{
+                                                position: "absolute",
+                                            }}
+                                        >
+                                            {q.position + 1}
+                                        </Box>
                                     </Box>
-                                </Box>
-                            ))}
+                                ))}
                         </Box>
                     ) : (
                         <Box
