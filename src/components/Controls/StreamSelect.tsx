@@ -74,8 +74,9 @@ export const StreamSelect = () => {
 
         // If there is no current stream selected then pick the first use default stream
         if (!currentStream && newStreamOptions && newStreamOptions.length > 0) {
-            const defStream = newStreamOptions.filter((s) => s.url === defaultWSURL)[0]
-            setCurrentStream(defStream)
+            setCurrentStream(newStreamOptions[0])
+            setSelectedStreamID(newStreamOptions[0].streamID)
+            setSelectedWsURL(newStreamOptions[0].url)
         }
 
         // Reverse the order for rendering so best is closer to user's mouse
