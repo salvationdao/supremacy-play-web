@@ -1,8 +1,10 @@
 import { Box, IconButton, Slider, Stack } from "@mui/material"
 import { SvgFullscreen, SvgVolume, SvgVolumeMute } from "../../assets"
-import { useStream } from "../../containers"
+import { useAuth, useStream } from "../../containers"
+import { colors } from "../../theme/theme"
 
 export const VideoPlayerControls = () => {
+    const { user } = useAuth()
     const { toggleIsMute, isMute, volume, setVolume } = useStream()
 
     const handleVolumeChange = (_: Event, newValue: number | number[]) => {
@@ -45,6 +47,9 @@ export const VideoPlayerControls = () => {
                         aria-label="Volume"
                         value={isMute ? 0 : volume}
                         onChange={handleVolumeChange}
+                        sx={{
+                            color: user && user.faction ? user.faction.theme.primary : colors.neonBlue,
+                        }}
                     />
                 </Stack>
             </Box>

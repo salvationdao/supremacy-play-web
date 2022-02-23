@@ -22,6 +22,8 @@ import {
     PASSPORT_WEB,
     SENTRY_CONFIG,
     STREAM_ASPECT_RATIO_W_H,
+    SUPREMACY_PAGE,
+    TOKEN_SALE_PAGE,
 } from "./constants"
 import {
     AuthProvider,
@@ -34,7 +36,7 @@ import {
     useDimension,
     useStream,
 } from "./containers"
-import { mergeDeep } from "./helpers"
+import { mergeDeep, shadeColor } from "./helpers"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
 
@@ -56,7 +58,7 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
-    const { gameserverSessionID } = useAuth()
+    const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
     const { selectedWsURL, isMute, vidRefCallback, noStreamExist } = useStream()
 
@@ -65,6 +67,8 @@ const AppInner = () => {
             <GameBar
                 barPosition="top"
                 gameserverSessionID={gameserverSessionID}
+                tokenSalePage={TOKEN_SALE_PAGE}
+                supremacyPage={SUPREMACY_PAGE}
                 passportWeb={PASSPORT_WEB}
                 passportServerHost={PASSPORT_SERVER_HOSTNAME}
                 MechQueueComponent={<WarMachineQueue />}
@@ -75,6 +79,7 @@ const AppInner = () => {
                     mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
                     width: mainDivDimensions.width,
                     height: mainDivDimensions.height,
+                    transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
                 }}
             >
                 <Stack
@@ -95,6 +100,7 @@ const AppInner = () => {
                             height: streamDimensions.height,
                             width: streamDimensions.width,
                             backgroundColor: colors.darkNavy,
+                            transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
@@ -163,7 +169,8 @@ const AppInner = () => {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    backgroundColor: colors.darkNavyBlue,
+                    backgroundColor:
+                        user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                     zIndex: -1,
                 }}
             />

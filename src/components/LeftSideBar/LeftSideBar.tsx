@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
 import { ReactElement } from "react"
 import { useAuth, useOverlayToggles } from "../../containers"
+import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 
 const BUTTON_WIDTH = 150
@@ -54,6 +55,7 @@ const SideButton = ({
                     fontWeight: "fontWeightBold",
                     whiteSpace: "nowrap",
                     fontFamily: "Nostromo Regular Bold",
+                    color: "#FFFFFF",
                 }}
             >
                 {text}
@@ -64,6 +66,7 @@ const SideButton = ({
 }
 
 export const LeftSideBar = () => {
+    const { user } = useAuth()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, isEndBattleDetailEnabled } = useOverlayToggles()
 
     return (
@@ -72,7 +75,8 @@ export const LeftSideBar = () => {
                 position: "relative",
                 overflow: "hidden",
                 width: GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth,
-                backgroundColor: colors.darkNavyBlue,
+                backgroundColor:
+                    user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                 zIndex: 1002,
             }}
         >
