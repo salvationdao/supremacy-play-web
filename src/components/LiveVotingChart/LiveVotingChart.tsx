@@ -109,7 +109,7 @@ const Content = () => {
             <Box>
                 <MoveableResizable config={config}>
                     <Box sx={{ flex: 1, position: "relative", px: 1, pt: 1, pb: 0.9, width: "100%" }}>
-                        <TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players at a rate that is dependent on their multiplier.">
+                        <TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players through watch-to-earn. Contribute to the battle or be part of the winning Syndicate to increase your earnings.">
                             <Box
                                 sx={{
                                     position: "absolute",
