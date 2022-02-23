@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useState } from "react"
-import { ClipThing, VotingButton } from ".."
+import { ClipThing, TooltipHelper, VotingButton } from ".."
 import { useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
@@ -94,7 +94,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
 
-    const { label, colour, imageUrl, id } = gameAbility
+    const { label, colour, imageUrl, id, description } = gameAbility
     // const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
     const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
@@ -173,35 +173,39 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
-                                    <Box
-                                        sx={{
-                                            height: 17,
-                                            width: 17,
-                                            backgroundImage: `url(${imageUrl})`,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            backgroundSize: "cover",
-                                            backgroundColor: colour || "#030409",
-                                            mb: 0.3,
-                                        }}
-                                    />
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            lineHeight: 1,
-                                            fontWeight: "fontWeightBold",
-                                            fontFamily: "Nostromo Regular Bold",
-                                            color: colour,
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            whiteSpace: "nowrap",
-                                            maxWidth: 200,
-                                        }}
-                                    >
-                                        {label}
-                                    </Typography>
-                                </Stack>
+                                <TooltipHelper text={description}>
+                                    <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
+                                        <Box
+                                            sx={{
+                                                height: 17,
+                                                width: 17,
+                                                backgroundImage: `url(${imageUrl})`,
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundPosition: "center",
+                                                backgroundSize: "cover",
+                                                backgroundColor: colour || "#030409",
+                                                border: `${colour} 1px solid`,
+                                                borderRadius: 0.6,
+                                                mb: 0.3,
+                                            }}
+                                        />
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                lineHeight: 1,
+                                                fontWeight: "fontWeightBold",
+                                                fontFamily: "Nostromo Regular Bold",
+                                                color: colour,
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                maxWidth: 200,
+                                            }}
+                                        >
+                                            {label}
+                                        </Typography>
+                                    </Stack>
+                                </TooltipHelper>
 
                                 <Stack direction="row" alignItems="center" justifyContent="center">
                                     <Typography
