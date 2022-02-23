@@ -1,8 +1,8 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { MoveableResizable, MoveableResizableConfig } from ".."
-import { SvgSupToken } from "../../assets"
+import { MoveableResizable, MoveableResizableConfig, TooltipHelper } from ".."
+import { SvgInfoCircularIcon, SvgSupToken } from "../../assets"
 import { useWebsocket, useOverlayToggles } from "../../containers"
 import { parseString } from "../../helpers"
 import { useToggle } from "../../hooks"
@@ -108,7 +108,22 @@ const Content = () => {
         <Fade in={isLiveChartOpen}>
             <Box>
                 <MoveableResizable config={config}>
-                    <Box sx={{ flex: 1, px: 1, pt: 1, pb: 0.9, width: "100%" }}>
+                    <Box sx={{ flex: 1, position: "relative", px: 1, pt: 1, pb: 0.9, width: "100%" }}>
+                        <TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players at a rate that is dependent on their multiplier.">
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    bottom: -18,
+                                    right: 75,
+                                    opacity: 0.4,
+                                    zIndex: 99,
+                                    ":hover": { opacity: 1 },
+                                }}
+                            >
+                                <SvgInfoCircularIcon fill={colors.text} size="12px" />
+                            </Box>
+                        </TooltipHelper>
+
                         <Box
                             key={maxLiveVotingDataLength}
                             sx={{
