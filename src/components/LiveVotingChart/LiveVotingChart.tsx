@@ -5,6 +5,7 @@ import { MoveableResizable, MoveableResizableConfig } from ".."
 import { SvgSupToken } from "../../assets"
 import { useWebsocket, useOverlayToggles } from "../../containers"
 import { parseString } from "../../helpers"
+import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
@@ -39,6 +40,7 @@ const SpoilOfWarAmount = () => {
 export const LiveVotingChart = () => {
     const { state, subscribe } = useWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
+    const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
     const [curWidth, setCurWidth] = useState(0)
     const [curHeight, setCurHeight] = useState(0)
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
@@ -85,6 +87,15 @@ export const LiveVotingChart = () => {
         }),
         [onResize],
     )
+
+    useEffect(() => {
+        if (isLiveChartOpen) return toggleIsRender(true)
+        setTimeout(() => {
+            toggleIsRender(false)
+        }, 250)
+    }, [isLiveChartOpen])
+
+    if (!isRender) return null
 
     return (
         <Fade in={isLiveChartOpen}>
