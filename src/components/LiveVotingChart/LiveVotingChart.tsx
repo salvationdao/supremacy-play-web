@@ -21,6 +21,7 @@ const SpoilOfWarAmount = () => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
         return subscribeNetMessage<string | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {
             if (!payload) return
+            console.log({ payload })
             setSpoilOfWarAmount(new BigNumber(payload).dividedBy("1000000000000000000").toFixed(6))
         })
     }, [state, subscribeNetMessage])
@@ -48,7 +49,7 @@ export const LiveVotingChart = () => {
     // Triggered spoil of war update
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(HubKey.TriggerSpoilOfWarUpdated, () => console.log(""), null)
+        return subscribe(HubKey.TriggerSpoilOfWarUpdated, () => console.log(), null)
     }, [state, subscribe])
 
     // Trigger live voting data coming through
