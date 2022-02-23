@@ -32,7 +32,7 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
                     borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: `${theme.factionTheme.primary}20`,
+                    background: `${theme.factionTheme.primary}50`,
                     borderRadius: 3,
                 },
                 transition: "all .2s",
