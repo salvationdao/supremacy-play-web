@@ -5,6 +5,7 @@ import { MoveableResizable, MoveableResizableConfig } from ".."
 import { SvgSupToken } from "../../assets"
 import { useWebsocket, useOverlayToggles } from "../../containers"
 import { parseString } from "../../helpers"
+import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
@@ -37,6 +38,23 @@ const SpoilOfWarAmount = () => {
 }
 
 export const LiveVotingChart = () => {
+    const { isLiveChartOpen } = useOverlayToggles()
+    const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
+
+    // A little timeout so fade transition can play
+    useEffect(() => {
+        if (isLiveChartOpen) return toggleIsRender(true)
+        setTimeout(() => {
+            toggleIsRender(false)
+        }, 250)
+    }, [isLiveChartOpen])
+
+    if (!isRender) return null
+
+    return <Content />
+}
+
+const Content = () => {
     const { state, subscribe } = useWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
     const [curWidth, setCurWidth] = useState(0)
@@ -48,7 +66,7 @@ export const LiveVotingChart = () => {
     // Triggered spoil of war update
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(HubKey.TriggerSpoilOfWarUpdated, () => console.log(""), null)
+        return subscribe(HubKey.TriggerSpoilOfWarUpdated, () => console.log(), null)
     }, [state, subscribe])
 
     // Trigger live voting data coming through
