@@ -2,8 +2,8 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgApplause } from "../../assets"
-import { NullUUID } from "../../constants"
-import { useAuth, useGame, useWebsocket } from "../../containers"
+import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
+import { httpProtocol, useAuth, useGame, useWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
@@ -176,7 +176,7 @@ export const BattleAbility = () => {
                                                     sx={{
                                                         height: 18,
                                                         width: 18,
-                                                        backgroundImage: `url(${imageUrl})`,
+                                                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
                                                         backgroundRepeat: "no-repeat",
                                                         backgroundPosition: "center",
                                                         backgroundSize: "cover",

@@ -2,12 +2,12 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing, TooltipHelper, VotingButton } from ".."
-import { useAuth, useWebsocket } from "../../containers"
+import { httpProtocol, useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityTargetPrice } from "../../types"
-import { NullUUID } from "../../constants"
+import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
 import { SvgSupToken } from "../../assets"
 
 const ContributionBar = ({
@@ -179,7 +179,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                             sx={{
                                                 height: 17,
                                                 width: 17,
-                                                backgroundImage: `url(${imageUrl})`,
+                                                backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
                                                 backgroundRepeat: "no-repeat",
                                                 backgroundPosition: "center",
                                                 backgroundSize: "cover",
