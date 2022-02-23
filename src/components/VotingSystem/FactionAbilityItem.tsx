@@ -3,7 +3,7 @@ import { useTheme } from "@mui/styles"
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useState } from "react"
-import { ClipThing, VotingButton } from ".."
+import { ClipThing, TooltipHelper, VotingButton } from ".."
 import { useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
@@ -97,7 +97,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
     const theme = useTheme<Theme>()
 
-    const { label, colour, imageUrl, id } = gameAbility
+    const { label, colour, imageUrl, id, description } = gameAbility
     const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
     const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
@@ -176,18 +176,20 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                 alignSelf="stretch"
                             >
                                 <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
-                                    <Box
-                                        sx={{
-                                            height: 18,
-                                            width: 18,
-                                            backgroundImage: `url(${imageUrl})`,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            backgroundSize: "cover",
-                                            backgroundColor: colour || "#030409",
-                                            mb: 0.3,
-                                        }}
-                                    />
+                                    <TooltipHelper text={description}>
+                                        <Box
+                                            sx={{
+                                                height: 18,
+                                                width: 18,
+                                                backgroundImage: `url(${imageUrl})`,
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundPosition: "center",
+                                                backgroundSize: "cover",
+                                                backgroundColor: colour || "#030409",
+                                                mb: 0.3,
+                                            }}
+                                        />
+                                    </TooltipHelper>
                                     <Typography
                                         variant="body1"
                                         sx={{

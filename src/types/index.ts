@@ -39,6 +39,7 @@ export interface BattleAbility {
     id: string
     label: string
     colour: string
+    description: string
     imageUrl: string
     cooldownDurationSecond: number
 }
@@ -47,6 +48,7 @@ export interface GameAbility {
     id: string
     label: string
     colour: string
+    description: string
     imageUrl: string
     supsCost: string
     currentSups: string

@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { BattleAbilityCountdown, ClipThing, VotingButton } from ".."
+import { BattleAbilityCountdown, ClipThing, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgApplause } from "../../assets"
 import { NullUUID } from "../../constants"
 import { useAuth, useGame, useWebsocket } from "../../containers"
@@ -134,7 +134,7 @@ export const BattleAbility = () => {
 
     if (!battleAbility) return null
 
-    const { label, colour, imageUrl, cooldownDurationSecond } = battleAbility
+    const { label, colour, imageUrl, description, cooldownDurationSecond } = battleAbility
 
     return (
         <Fade in={true}>
@@ -166,18 +166,19 @@ export const BattleAbility = () => {
                                         alignSelf="stretch"
                                     >
                                         <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
-                                            <Box
-                                                sx={{
-                                                    height: 18,
-                                                    width: 18,
-                                                    backgroundImage: `url(${imageUrl})`,
-                                                    backgroundRepeat: "no-repeat",
-                                                    backgroundPosition: "center",
-                                                    backgroundSize: "cover",
-                                                    backgroundColor: colour || "#030409",
-                                                }}
-                                            />
-
+                                            <TooltipHelper text={description}>
+                                                <Box
+                                                    sx={{
+                                                        height: 18,
+                                                        width: 18,
+                                                        backgroundImage: `url(${imageUrl})`,
+                                                        backgroundRepeat: "no-repeat",
+                                                        backgroundPosition: "center",
+                                                        backgroundSize: "cover",
+                                                        backgroundColor: colour || "#030409",
+                                                    }}
+                                                />
+                                            </TooltipHelper>
                                             <Typography
                                                 variant="body1"
                                                 sx={{
