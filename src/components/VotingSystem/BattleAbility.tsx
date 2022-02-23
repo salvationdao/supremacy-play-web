@@ -165,8 +165,13 @@ export const BattleAbility = () => {
                                         justifyContent="space-between"
                                         alignSelf="stretch"
                                     >
-                                        <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
-                                            <TooltipHelper text={description}>
+                                        <TooltipHelper text={description}>
+                                            <Stack
+                                                spacing={1}
+                                                direction="row"
+                                                alignItems="center"
+                                                justifyContent="center"
+                                            >
                                                 <Box
                                                     sx={{
                                                         height: 18,
@@ -178,23 +183,23 @@ export const BattleAbility = () => {
                                                         backgroundColor: colour || "#030409",
                                                     }}
                                                 />
-                                            </TooltipHelper>
-                                            <Typography
-                                                variant="body1"
-                                                sx={{
-                                                    lineHeight: 1,
-                                                    fontWeight: "fontWeightBold",
-                                                    fontFamily: "Nostromo Regular Bold",
-                                                    color: colour,
-                                                    overflow: "hidden",
-                                                    textOverflow: "ellipsis",
-                                                    whiteSpace: "nowrap",
-                                                    maxWidth: 200,
-                                                }}
-                                            >
-                                                {label}
-                                            </Typography>
-                                        </Stack>
+                                                <Typography
+                                                    variant="body1"
+                                                    sx={{
+                                                        lineHeight: 1,
+                                                        fontWeight: "fontWeightBold",
+                                                        fontFamily: "Nostromo Regular Bold",
+                                                        color: colour,
+                                                        overflow: "hidden",
+                                                        textOverflow: "ellipsis",
+                                                        whiteSpace: "nowrap",
+                                                        maxWidth: 200,
+                                                    }}
+                                                >
+                                                    {label}
+                                                </Typography>
+                                            </Stack>
+                                        </TooltipHelper>
 
                                         <Stack
                                             spacing={0.3}

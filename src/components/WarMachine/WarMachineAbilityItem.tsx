@@ -173,8 +173,8 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
-                                    <TooltipHelper text={description}>
+                                <TooltipHelper text={description}>
+                                    <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
                                         <Box
                                             sx={{
                                                 height: 17,
@@ -187,23 +187,23 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                                 mb: 0.3,
                                             }}
                                         />
-                                    </TooltipHelper>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            lineHeight: 1,
-                                            fontWeight: "fontWeightBold",
-                                            fontFamily: "Nostromo Regular Bold",
-                                            color: colour,
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            whiteSpace: "nowrap",
-                                            maxWidth: 200,
-                                        }}
-                                    >
-                                        {label}
-                                    </Typography>
-                                </Stack>
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                lineHeight: 1,
+                                                fontWeight: "fontWeightBold",
+                                                fontFamily: "Nostromo Regular Bold",
+                                                color: colour,
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                maxWidth: 200,
+                                            }}
+                                        >
+                                            {label}
+                                        </Typography>
+                                    </Stack>
+                                </TooltipHelper>
 
                                 <Stack direction="row" alignItems="center" justifyContent="center">
                                     <Typography
