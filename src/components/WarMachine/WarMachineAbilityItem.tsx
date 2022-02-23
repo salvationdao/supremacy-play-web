@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { ClipThing, TooltipHelper, VotingButton } from ".."
 import { httpProtocol, useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
