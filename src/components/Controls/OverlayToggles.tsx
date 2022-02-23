@@ -20,8 +20,8 @@ export const OverlayToggles = () => {
                 sx={{
                     filter: isLiveChartOpen ? "grayscale(0)" : "grayscale(1)",
                     transition: "all .2s",
-                    ":hover": { animation: "unset", filter: "grayscale(0)" },
-                    animation: isLiveChartOpen ? "" : `${overlayPulseEffect} 6s infinite`,
+                    ":hover": { filter: "grayscale(0.2)" },
+                    ":active": { filter: "grayscale(.6)" },
                 }}
             >
                 <SvgGoldBars size="18px" />
@@ -34,8 +34,8 @@ export const OverlayToggles = () => {
                 sx={{
                     filter: isMapOpen ? "grayscale(0)" : "grayscale(1)",
                     transition: "all .2s",
-                    ":hover": { animation: "unset", filter: "grayscale(0)" },
-                    animation: isMapOpen ? "" : `${overlayPulseEffect} 6s infinite`,
+                    ":hover": { filter: "grayscale(0.2)" },
+                    ":active": { filter: "grayscale(.6)" },
                 }}
             >
                 <SvgRadar size="17px" />

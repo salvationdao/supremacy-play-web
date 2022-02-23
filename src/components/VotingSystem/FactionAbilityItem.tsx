@@ -134,16 +134,10 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
         (amount: number) => async () => {
             try {
                 if (state !== WebSocket.OPEN) return
-                const resp = await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
+                await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
                     gameAbilityID: id,
                     amount: new BigNumber(amount),
                 })
-
-                if (resp) {
-                    return true
-                } else {
-                    throw new Error()
-                }
             } catch (e) {
                 return false
             }

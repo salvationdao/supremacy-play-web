@@ -8,17 +8,19 @@ import {
     SectionTopSupsFaction,
     SectionWinner,
 } from ".."
-import { useWebsocket, useOverlayToggles } from "../../containers"
+import { useWebsocket, useOverlayToggles, useAuth } from "../../containers"
+import { shadeColor } from "../../helpers"
 import HubKey from "../../keys"
 import { sampleBattleEndDetail } from "../../samepleData"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
-const SPAWN_TEST_DATA = false
+const SPAWN_TEST_DATA = true
 
 export const BOTTOM_BUTTONS_HEIGHT = 50
 
 export const BattleEndScreen = () => {
+    const { user } = useAuth()
     const { state, subscribe } = useWebsocket()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
@@ -46,12 +48,12 @@ export const BattleEndScreen = () => {
         toggleIsEndBattleDetailOpen(true)
     }, [])
 
-    const backgroundColor = useMemo(
-        () => ({
-            background: `linear-gradient(65deg, ${colors.darkNavyBlue} 3%, ${colors.darkNavyBlue}96 50%, ${colors.darkNavy}92)`,
-        }),
-        [],
-    )
+    const backgroundColor = useMemo(() => {
+        const primaryColor = user && user.faction ? shadeColor(user.faction.theme.primary, -96) : colors.darkNavyBlue
+        return {
+            background: `linear-gradient(65deg, ${primaryColor} 3%, ${primaryColor}96 50%, ${primaryColor}92)`,
+        }
+    }, [user])
 
     if (!battleEndDetail || !battleEndDetail.winningFaction) return null
 

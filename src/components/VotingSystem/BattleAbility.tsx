@@ -118,13 +118,7 @@ export const BattleAbility = () => {
         (voteAmount: number) => async () => {
             if (state !== WebSocket.OPEN) return
             try {
-                const resp = await send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
-
-                if (resp) {
-                    return true
-                } else {
-                    throw new Error()
-                }
+                await send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
             } catch (e) {
                 return false
             }
