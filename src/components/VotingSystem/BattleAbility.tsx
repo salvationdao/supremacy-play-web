@@ -181,6 +181,8 @@ export const BattleAbility = () => {
                                                         backgroundPosition: "center",
                                                         backgroundSize: "cover",
                                                         backgroundColor: colour || "#030409",
+                                                        border: `${colour} 1px solid`,
+                                                        borderRadius: 0.6,
                                                     }}
                                                 />
                                                 <Typography
