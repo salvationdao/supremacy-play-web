@@ -14,7 +14,7 @@ export const OverlayToggles = () => {
             </Typography>
 
             {/* Live Chart */}
-            <IconButton
+            {/* <IconButton
                 size="small"
                 onClick={toggleIsLiveChartOpen}
                 sx={{
@@ -25,7 +25,7 @@ export const OverlayToggles = () => {
                 }}
             >
                 <SvgGoldBars size="18px" />
-            </IconButton>
+            </IconButton> */}
 
             {/* Map */}
             <IconButton
