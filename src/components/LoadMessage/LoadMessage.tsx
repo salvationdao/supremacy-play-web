@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material"
 import { useAuth, useWebsocket } from "../../containers"
+import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 
 export const LoadMessage = () => {
@@ -8,16 +9,19 @@ export const LoadMessage = () => {
 
     let message = ""
     if (state !== WebSocket.OPEN) {
-        message = "Connecting to the game server..."
+        message = "CONNECTING TO THE GAME SERVER..."
     } else if (authSessionIDGetLoading) {
-        message = "Getting session..."
+        message = "GETTING SESSION..."
     } else if (authSessionIDGetError) {
         message = "Failed to get session..."
     }
 
     return (
-        <Box sx={{ position: "absolute", top: 10, left: 16, zIndex: 99 }}>
-            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.text }}>
+        <Box sx={{ position: "absolute", top: 20, left: 26, zIndex: 99, animation: `${pulseEffect} 5s infinite` }}>
+            <Typography
+                variant="h5"
+                sx={{ fontFamily: "Nostromo Regular Heavy", fontWeight: "fontWeightBold", color: colors.text }}
+            >
                 {message}
             </Typography>
         </Box>

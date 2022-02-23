@@ -3,7 +3,6 @@ import { NetMessageType } from "../../types"
 import BigNumber from "bignumber.js"
 import { useEffect, useRef, useState } from "react"
 import { colors } from "../../theme/theme"
-import HubKey from "../../keys"
 
 interface LiveGraphProps {
     maxHeightPx: number
@@ -19,7 +18,7 @@ interface LiveVotingData {
 export const LiveGraph = (props: LiveGraphProps) => {
     const { maxWidthPx, maxHeightPx, maxLiveVotingDataLength } = props
 
-    const { state, subscribe, subscribeNetMessage } = useWebsocket()
+    const { state, subscribeNetMessage } = useWebsocket()
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [liveVotingData, setLiveVotingData] = useState<LiveVotingData[]>([])
 
@@ -28,12 +27,6 @@ export const LiveGraph = (props: LiveGraphProps) => {
         for (let i = 0; i < maxLiveVotingDataLength; i++) zeroArray.push({ rawData: 0, smoothData: 0 })
         setLiveVotingData(zeroArray)
     }, [])
-
-    // Trigger live voting data coming through
-    // useEffect(() => {
-    //     if (state !== WebSocket.OPEN || !subscribe) return
-    //     return subscribe(HubKey.TriggerLiveVoteUpdated, () => console.log(), null)
-    // }, [state, subscribe])
 
     // Live voting data
     useEffect(() => {

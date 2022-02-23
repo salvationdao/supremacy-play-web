@@ -14,6 +14,8 @@ export const Controls = () => {
         <Stack
             direction="row"
             alignItems="center"
+            justifyContent="space-between"
+            spacing={2}
             sx={{
                 pl: `${GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth}px`,
                 pt: 0.3,
@@ -28,7 +30,7 @@ export const Controls = () => {
                 <OverlayToggles />
             </Stack>
 
-            <Stack direction="row" spacing={1.5} sx={{ ml: "auto" }}>
+            <Stack direction="row" spacing={2}>
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />
