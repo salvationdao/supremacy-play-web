@@ -2,8 +2,8 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgApplause } from "../../assets"
-import { NullUUID } from "../../constants"
-import { useAuth, useGame, useWebsocket } from "../../containers"
+import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
+import { httpProtocol, useAuth, useGame, useWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
@@ -114,23 +114,9 @@ export const BattleAbility = () => {
         )
     }, [state, subscribe, factionID])
 
-    const onVote = useCallback(
-        (voteAmount: number) => async () => {
-            if (state !== WebSocket.OPEN) return
-            try {
-                const resp = await send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
-
-                if (resp) {
-                    return true
-                } else {
-                    throw new Error()
-                }
-            } catch (e) {
-                return false
-            }
-        },
-        [state],
-    )
+    const onVote = (voteAmount: number) => {
+        send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
+    }
 
     if (!battleAbility) return null
 
@@ -176,7 +162,7 @@ export const BattleAbility = () => {
                                                     sx={{
                                                         height: 18,
                                                         width: 18,
-                                                        backgroundImage: `url(${imageUrl})`,
+                                                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
                                                         backgroundRepeat: "no-repeat",
                                                         backgroundPosition: "center",
                                                         backgroundSize: "cover",
@@ -227,7 +213,7 @@ export const BattleAbility = () => {
                                             amount={1}
                                             cost={factionVotePrice.multipliedBy(1).toNumber()}
                                             isVoting={isVoting}
-                                            onClick={onVote(1)}
+                                            onClick={() => onVote(1)}
                                             Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
                                         />
                                         <VotingButton
@@ -235,7 +221,7 @@ export const BattleAbility = () => {
                                             amount={25}
                                             cost={factionVotePrice.multipliedBy(25).toNumber()}
                                             isVoting={isVoting}
-                                            onClick={onVote(25)}
+                                            onClick={() => onVote(25)}
                                             Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
                                         />
                                         <VotingButton
@@ -243,7 +229,7 @@ export const BattleAbility = () => {
                                             amount={100}
                                             cost={factionVotePrice.multipliedBy(100).toNumber()}
                                             isVoting={isVoting}
-                                            onClick={onVote(100)}
+                                            onClick={() => onVote(100)}
                                             Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
                                         />
                                     </Stack>

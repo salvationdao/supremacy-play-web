@@ -8,7 +8,8 @@ import {
     SectionTopSupsFaction,
     SectionWinner,
 } from ".."
-import { useWebsocket, useOverlayToggles } from "../../containers"
+import { useWebsocket, useOverlayToggles, useAuth } from "../../containers"
+import { shadeColor } from "../../helpers"
 import HubKey from "../../keys"
 import { sampleBattleEndDetail } from "../../samepleData"
 import { colors } from "../../theme/theme"
@@ -19,6 +20,7 @@ const SPAWN_TEST_DATA = false
 export const BOTTOM_BUTTONS_HEIGHT = 50
 
 export const BattleEndScreen = () => {
+    const { user } = useAuth()
     const { state, subscribe } = useWebsocket()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
@@ -46,11 +48,14 @@ export const BattleEndScreen = () => {
         toggleIsEndBattleDetailOpen(true)
     }, [])
 
-    const backgroundColor = useMemo(
+    const primaryColor = user && user.faction ? user.faction.theme.primary : colors.neonBlue
+    const backgroundColor = user && user.faction ? shadeColor(user.faction.theme.primary, -96) : colors.darkNavyBlue
+
+    const backgroundColorGradient = useMemo(
         () => ({
-            background: `linear-gradient(65deg, ${colors.darkNavyBlue} 3%, ${colors.darkNavyBlue}96 50%, ${colors.darkNavy}92)`,
+            background: `linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}96 50%, ${backgroundColor}92)`,
         }),
-        [],
+        [backgroundColor],
     )
 
     if (!battleEndDetail || !battleEndDetail.winningFaction) return null
@@ -66,7 +71,7 @@ export const BattleEndScreen = () => {
                     boxShadow: 20,
                     zIndex: 999,
                     maxWidth: 616,
-                    ...backgroundColor,
+                    ...backgroundColorGradient,
                 }}
             >
                 <Box
@@ -78,7 +83,7 @@ export const BattleEndScreen = () => {
                         pr: 1,
                         pt: 3,
                         pb: 1.5,
-                        ...backgroundColor,
+                        ...backgroundColorGradient,
                     }}
                 >
                     <Stack
@@ -94,11 +99,11 @@ export const BattleEndScreen = () => {
                                 height: 4,
                             },
                             "::-webkit-scrollbar-track": {
-                                backgroundColor: colors.darkNavyBlue,
+                                backgroundColor: primaryColor,
                                 borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
-                                background: colors.darkNeonBlue,
+                                background: primaryColor,
                                 borderRadius: 3,
                             },
                         }}
@@ -119,7 +124,7 @@ export const BattleEndScreen = () => {
                             left: 0,
                             right: 0,
                             zIndex: -1,
-                            ...backgroundColor,
+                            ...backgroundColorGradient,
                         }}
                     />
                 </Box>

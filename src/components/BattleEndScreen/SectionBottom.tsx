@@ -1,13 +1,17 @@
 import { Stack, Typography } from "@mui/material"
 import moment from "moment"
 import { BOTTOM_BUTTONS_HEIGHT, FancyButton } from ".."
-import { useOverlayToggles } from "../../containers"
+import { useAuth, useOverlayToggles } from "../../containers"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
 export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
+    const { user } = useAuth()
     const { toggleIsEndBattleDetailOpen } = useOverlayToggles()
     const { battleIdentifier, startedAt, endedAt } = battleEndDetail
+
+    const primaryColor = user && user.faction ? user.faction.theme.primary : colors.darkNavyBlue
+    const secondaryColor = user && user.faction ? user.faction.theme.secondary : colors.text
 
     return (
         <Stack
@@ -39,11 +43,11 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 excludeCaret
                 clipSize="8px"
                 sx={{ py: 1.2, width: 120 }}
-                backgroundColor={colors.darkNavyBlue}
-                borderColor={colors.darkNavyBlue}
+                backgroundColor={primaryColor}
+                borderColor={primaryColor}
                 onClick={() => toggleIsEndBattleDetailOpen(false)}
             >
-                <Typography variant="body1" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                <Typography variant="body1" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: secondaryColor }}>
                     CLOSE
                 </Typography>
             </FancyButton>
