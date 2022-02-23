@@ -1,13 +1,13 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useState } from "react"
-import { ClipThing, VotingButton } from ".."
-import { useAuth, useWebsocket } from "../../containers"
+import { ClipThing, TooltipHelper, VotingButton } from ".."
+import { httpProtocol, useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityTargetPrice } from "../../types"
-import { NullUUID } from "../../constants"
+import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
 import { SvgSupToken } from "../../assets"
 
 const ContributionBar = ({
@@ -94,7 +94,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
 
-    const { label, colour, imageUrl, id } = gameAbility
+    const { label, colour, imageUrl, id, description } = gameAbility
     // const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
     const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
@@ -128,26 +128,12 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
         }
     }, [gameAbilityTargetPrice])
 
-    const onContribute = useCallback(
-        (amount: number) => async () => {
-            if (state !== WebSocket.OPEN) return
-            try {
-                const resp = await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
-                    gameAbilityID: id,
-                    amount: new BigNumber(amount),
-                })
-
-                if (resp) {
-                    return true
-                } else {
-                    throw new Error()
-                }
-            } catch (e) {
-                return false
-            }
-        },
-        [state],
-    )
+    const onContribute = async (amount: number) => {
+        send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
+            gameAbilityID: id,
+            amount: new BigNumber(amount),
+        })
+    }
 
     return (
         <Box key={`${initialTargetCost}`}>
@@ -173,35 +159,39 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
-                                    <Box
-                                        sx={{
-                                            height: 17,
-                                            width: 17,
-                                            backgroundImage: `url(${imageUrl})`,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            backgroundSize: "cover",
-                                            backgroundColor: colour || "#030409",
-                                            mb: 0.3,
-                                        }}
-                                    />
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            lineHeight: 1,
-                                            fontWeight: "fontWeightBold",
-                                            fontFamily: "Nostromo Regular Bold",
-                                            color: colour,
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            whiteSpace: "nowrap",
-                                            maxWidth: 200,
-                                        }}
-                                    >
-                                        {label}
-                                    </Typography>
-                                </Stack>
+                                <TooltipHelper text={description}>
+                                    <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
+                                        <Box
+                                            sx={{
+                                                height: 17,
+                                                width: 17,
+                                                backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundPosition: "center",
+                                                backgroundSize: "cover",
+                                                backgroundColor: colour || "#030409",
+                                                border: `${colour} 1px solid`,
+                                                borderRadius: 0.6,
+                                                mb: 0.3,
+                                            }}
+                                        />
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                lineHeight: 1,
+                                                fontWeight: "fontWeightBold",
+                                                fontFamily: "Nostromo Regular Bold",
+                                                color: colour,
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                maxWidth: 200,
+                                            }}
+                                        >
+                                            {label}
+                                        </Typography>
+                                    </Stack>
+                                </TooltipHelper>
 
                                 <Stack direction="row" alignItems="center" justifyContent="center">
                                     <Typography
@@ -248,7 +238,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     amount={1}
                                     cost={1}
                                     isVoting={isVoting}
-                                    onClick={onContribute(1)}
+                                    onClick={() => onContribute(1)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
@@ -257,7 +247,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     amount={25}
                                     cost={25}
                                     isVoting={isVoting}
-                                    onClick={onContribute(25)}
+                                    onClick={() => onContribute(25)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
@@ -266,7 +256,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     amount={100}
                                     cost={100}
                                     isVoting={isVoting}
-                                    onClick={onContribute(100)}
+                                    onClick={() => onContribute(100)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />

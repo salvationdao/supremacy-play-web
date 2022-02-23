@@ -42,17 +42,19 @@ x kill notification
 x video controls ui
 x make overlay components moveable / toggleable
 x iframe dimension onresize
+x Ability description tooltip
+x map follows where the action is
+x improve notification styles (for the map select, reject counters etc.)
+ tutorial guide for new users
+ XX vs YY
+
 
 
 Pending:
-- Ability description tooltip
+
+
 
 
 Future nice to have:
-- hotkeys to buttons
-- map follows where the action is
-- improve notification styles (for the map select, reject counters etc.)
-- tutorial guide for new users
-- XX vs YY
 
 

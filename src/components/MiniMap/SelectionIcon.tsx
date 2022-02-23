@@ -1,7 +1,8 @@
 import { Box, Typography, Zoom } from "@mui/material"
 import { Dispatch, MutableRefObject, SetStateAction } from "react"
 import { FancyButton, MapSelection } from ".."
-import { useWebsocket } from "../../containers"
+import { GAME_SERVER_HOSTNAME } from "../../constants"
+import { httpProtocol, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { GameAbility } from "../../types"
 
@@ -76,7 +77,7 @@ export const SelectionIcon = ({
                         height: "100%",
                         width: "100%",
                         opacity: 0.65,
-                        backgroundImage: `url(${imageUrl})`,
+                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",

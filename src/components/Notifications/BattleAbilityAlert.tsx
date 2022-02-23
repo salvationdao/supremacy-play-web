@@ -1,7 +1,8 @@
-import { Box } from '@mui/material'
-import { FallbackUser, StyledImageText, StyledNormalText } from '..'
-import { PASSPORT_WEB } from '../../constants'
-import { BattleAbility, User } from '../../types'
+import { Box } from "@mui/material"
+import { FallbackUser, StyledImageText, StyledNormalText } from ".."
+import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../../constants"
+import { httpProtocol } from "../../containers"
+import { BattleAbility, User } from "../../types"
 
 interface BattleFactionAbilityAlertProps {
     user?: User
@@ -15,11 +16,15 @@ export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertPr
 
     return (
         <Box>
-            <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
+            <StyledImageText
+                text={label}
+                color={colour}
+                imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl}`}
+            />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText
-                text={user ? user.faction.label : 'GABS'}
-                color={user ? user.faction.theme.primary : 'grey !important'}
+                text={user ? user.faction.label : "GABS"}
+                color={user ? user.faction.theme.primary : "grey !important"}
                 imageUrl={
                     user && user.faction.logoBlobID ? `${PASSPORT_WEB}/api/files/${user.faction.logoBlobID}` : undefined
                 }
