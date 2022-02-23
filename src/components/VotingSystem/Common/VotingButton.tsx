@@ -8,7 +8,7 @@ interface VotingButtonProps {
     cost: number
     color: string
     isVoting: boolean
-    onClick: () => Promise<boolean | undefined>
+    onClick: () => void
     Prefix?: JSX.Element
     Suffix?: JSX.Element
     disableHover?: boolean

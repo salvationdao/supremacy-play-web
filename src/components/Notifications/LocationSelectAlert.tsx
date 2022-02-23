@@ -1,7 +1,8 @@
-import { Box } from '@mui/material'
-import { StyledImageText, StyledNormalText } from '..'
-import { PASSPORT_WEB } from '../../constants'
-import { BattleAbility, User } from '../../types'
+import { Box } from "@mui/material"
+import { StyledImageText, StyledNormalText } from ".."
+import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../../constants"
+import { httpProtocol } from "../../containers"
+import { BattleAbility, User } from "../../types"
 
 /*
 NOTE:
@@ -23,7 +24,7 @@ Some examples:
 */
 
 interface LocationSelectAlertProps {
-    type: 'CANCELLED_NO_PLAYER' | 'CANCELLED_DISCONNECT' | 'FAILED_TIMEOUT' | 'FAILED_DISCONNECTED' | 'TRIGGER'
+    type: "CANCELLED_NO_PLAYER" | "CANCELLED_DISCONNECT" | "FAILED_TIMEOUT" | "FAILED_DISCONNECTED" | "TRIGGER"
     currentUser?: User
     nextUser?: User
     ability: BattleAbility
@@ -32,19 +33,19 @@ interface LocationSelectAlertProps {
 }
 
 export const FallbackUser: User = {
-    id: '',
-    factionID: '',
-    username: 'Unknown User',
-    avatarID: '',
+    id: "",
+    factionID: "",
+    username: "Unknown User",
+    avatarID: "",
     faction: {
-        id: '',
-        label: 'xxx',
-        logoBlobID: '',
-        backgroundBlobID: '',
+        id: "",
+        label: "xxx",
+        logoBlobID: "",
+        backgroundBlobID: "",
         theme: {
-            primary: 'grey !important',
-            secondary: '#FFFFFF',
-            background: '#0D0404',
+            primary: "grey !important",
+            secondary: "#FFFFFF",
+            background: "#0D0404",
         },
     },
 }
@@ -55,16 +56,18 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
     const { username, avatarID, faction } = currentUser || FallbackUser
     const { username: nextUsername, avatarID: nextAvatarID, faction: nextFaction } = nextUser || FallbackUser
 
-    if (type == 'CANCELLED_NO_PLAYER' || type == 'CANCELLED_DISCONNECT') {
+    const abilityImageUrl = `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl}`
+
+    if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
         return (
             <Box>
-                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
+                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
                 <StyledNormalText text=" has been cancelled as there were no players available to choose a target location." />
             </Box>
         )
     }
 
-    if (type == 'FAILED_TIMEOUT') {
+    if (type == "FAILED_TIMEOUT") {
         return (
             <Box>
                 <StyledImageText
@@ -79,13 +82,13 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={nextFaction.theme.primary}
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
-                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
+                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
                 <StyledNormalText text="." />
             </Box>
         )
     }
 
-    if (type == 'FAILED_DISCONNECTED') {
+    if (type == "FAILED_DISCONNECTED") {
         return (
             <Box>
                 <StyledImageText
@@ -100,13 +103,13 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={nextFaction.theme.primary}
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
-                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
+                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
                 <StyledNormalText text="." />
             </Box>
         )
     }
 
-    if (type == 'TRIGGER') {
+    if (type == "TRIGGER") {
         return (
             <Box>
                 <StyledImageText
@@ -115,7 +118,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={faction.theme.primary}
                 />
                 <StyledNormalText text=" has chosen a target location for " />
-                <StyledImageText text={label} color={colour} imageUrl={imageUrl} />
+                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
                 <StyledNormalText text="." />
             </Box>
         )

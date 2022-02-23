@@ -1,13 +1,13 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { ClipThing, TooltipHelper, VotingButton } from ".."
-import { useAuth, useWebsocket } from "../../containers"
+import { httpProtocol, useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityTargetPrice } from "../../types"
-import { NullUUID } from "../../constants"
+import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
 import { SvgSupToken } from "../../assets"
 
 const ContributionBar = ({
@@ -128,26 +128,12 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
         }
     }, [gameAbilityTargetPrice])
 
-    const onContribute = useCallback(
-        (amount: number) => async () => {
-            if (state !== WebSocket.OPEN) return
-            try {
-                const resp = await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
-                    gameAbilityID: id,
-                    amount: new BigNumber(amount),
-                })
-
-                if (resp) {
-                    return true
-                } else {
-                    throw new Error()
-                }
-            } catch (e) {
-                return false
-            }
-        },
-        [state],
-    )
+    const onContribute = async (amount: number) => {
+        send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
+            gameAbilityID: id,
+            amount: new BigNumber(amount),
+        })
+    }
 
     return (
         <Box key={`${initialTargetCost}`}>
@@ -179,7 +165,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                             sx={{
                                                 height: 17,
                                                 width: 17,
-                                                backgroundImage: `url(${imageUrl})`,
+                                                backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
                                                 backgroundRepeat: "no-repeat",
                                                 backgroundPosition: "center",
                                                 backgroundSize: "cover",
@@ -252,7 +238,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     amount={1}
                                     cost={1}
                                     isVoting={isVoting}
-                                    onClick={onContribute(1)}
+                                    onClick={() => onContribute(1)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
@@ -261,7 +247,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     amount={25}
                                     cost={25}
                                     isVoting={isVoting}
-                                    onClick={onContribute(25)}
+                                    onClick={() => onContribute(25)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
@@ -270,7 +256,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     amount={100}
                                     cost={100}
                                     isVoting={isVoting}
-                                    onClick={onContribute(100)}
+                                    onClick={() => onContribute(100)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
