@@ -114,17 +114,9 @@ export const BattleAbility = () => {
         )
     }, [state, subscribe, factionID])
 
-    const onVote = useCallback(
-        (voteAmount: number) => async () => {
-            if (state !== WebSocket.OPEN) return
-            try {
-                await send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
-            } catch (e) {
-                return false
-            }
-        },
-        [state],
-    )
+    const onVote = (voteAmount: number) => {
+        send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
+    }
 
     if (!battleAbility) return null
 
@@ -221,7 +213,7 @@ export const BattleAbility = () => {
                                             amount={1}
                                             cost={factionVotePrice.multipliedBy(1).toNumber()}
                                             isVoting={isVoting}
-                                            onClick={onVote(1)}
+                                            onClick={() => onVote(1)}
                                             Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
                                         />
                                         <VotingButton
@@ -229,7 +221,7 @@ export const BattleAbility = () => {
                                             amount={25}
                                             cost={factionVotePrice.multipliedBy(25).toNumber()}
                                             isVoting={isVoting}
-                                            onClick={onVote(25)}
+                                            onClick={() => onVote(25)}
                                             Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
                                         />
                                         <VotingButton
@@ -237,7 +229,7 @@ export const BattleAbility = () => {
                                             amount={100}
                                             cost={factionVotePrice.multipliedBy(100).toNumber()}
                                             isVoting={isVoting}
-                                            onClick={onVote(100)}
+                                            onClick={() => onVote(100)}
                                             Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
                                         />
                                     </Stack>

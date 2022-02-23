@@ -128,20 +128,12 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
         }
     }, [gameAbilityTargetPrice])
 
-    const onContribute = useCallback(
-        (amount: number) => async () => {
-            if (state !== WebSocket.OPEN) return
-            try {
-                await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
-                    gameAbilityID: id,
-                    amount: new BigNumber(amount),
-                })
-            } catch (e) {
-                return false
-            }
-        },
-        [state],
-    )
+    const onContribute = async (amount: number) => {
+        send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
+            gameAbilityID: id,
+            amount: new BigNumber(amount),
+        })
+    }
 
     return (
         <Box key={`${initialTargetCost}`}>
@@ -246,7 +238,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     amount={1}
                                     cost={1}
                                     isVoting={isVoting}
-                                    onClick={onContribute(1)}
+                                    onClick={() => onContribute(1)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
@@ -255,7 +247,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     amount={25}
                                     cost={25}
                                     isVoting={isVoting}
-                                    onClick={onContribute(25)}
+                                    onClick={() => onContribute(25)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
@@ -264,7 +256,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     amount={100}
                                     cost={100}
                                     isVoting={isVoting}
-                                    onClick={onContribute(100)}
+                                    onClick={() => onContribute(100)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />

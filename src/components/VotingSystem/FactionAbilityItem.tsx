@@ -130,20 +130,12 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
         }
     }, [gameAbilityTargetPrice])
 
-    const onContribute = useCallback(
-        (amount: number) => async () => {
-            try {
-                if (state !== WebSocket.OPEN) return
-                await send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
-                    gameAbilityID: id,
-                    amount: new BigNumber(amount),
-                })
-            } catch (e) {
-                return false
-            }
-        },
-        [state],
-    )
+    const onContribute = async (amount: number) => {
+        send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
+            gameAbilityID: id,
+            amount: new BigNumber(amount),
+        })
+    }
 
     return (
         <Box key={refresh}>
@@ -248,7 +240,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     amount={1}
                                     cost={1}
                                     isVoting={isVoting}
-                                    onClick={onContribute(1)}
+                                    onClick={() => onContribute(1)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
@@ -257,7 +249,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     amount={25}
                                     cost={25}
                                     isVoting={isVoting}
-                                    onClick={onContribute(25)}
+                                    onClick={() => onContribute(25)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
@@ -266,7 +258,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     amount={100}
                                     cost={100}
                                     isVoting={isVoting}
-                                    onClick={onContribute(100)}
+                                    onClick={() => onContribute(100)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                     disableHover
                                 />
