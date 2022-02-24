@@ -4,23 +4,8 @@ import { GAMEBAR_CONSTANTS, useDrawer } from "@ninjasoftware/passport-gamebar"
 import { CONTROLS_HEIGHT, STREAM_ASPECT_RATIO_W_H } from "../constants"
 import { useWindowDimensions } from "../hooks"
 
-export interface DimensionContainerType {
-    mainDivDimensions: {
-        width: number
-        height: number
-    }
-    streamDimensions: {
-        width: number
-        height: number
-    }
-    iframeDimensions: {
-        width: string | number
-        height: string | number
-    }
-}
-
 // Contains dimensions for the overall layout of the divs, iframe etc.
-export const DimensionContainer = createContainer((): DimensionContainerType => {
+export const DimensionContainer = createContainer(() => {
     const { width: windowWidth, height: windowHeight } = useWindowDimensions()
     const { isAnyPanelOpen } = useDrawer()
 

@@ -62,6 +62,8 @@ const AppInner = () => {
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
     const { selectedWsURL, isMute, vidRefCallback, noStreamExist } = useStream()
 
+    console.log("us=er", user)
+
     return (
         <>
             <GameBar
@@ -104,27 +106,9 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        {!noStreamExist ? (
-                            <video
-                                key={selectedWsURL}
-                                id={"remoteVideo"}
-                                muted={isMute}
-                                ref={vidRefCallback}
-                                autoPlay
-                                controls
-                                playsInline
-                                style={{
-                                    position: "absolute",
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                    aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                    width: iframeDimensions.width,
-                                    height: iframeDimensions.height,
-                                }}
-                            />
+                        {!user ? (
+                            <div>Stream Not Found</div>
                         ) : (
-                            // TODO replace with fallback image
                             <div
                                 style={{
                                     width: "100%",
@@ -135,7 +119,24 @@ const AppInner = () => {
                                     alignItems: "center",
                                 }}
                             >
-                                <div>Stream Not Found</div>
+                                <video
+                                    key={selectedWsURL}
+                                    id={"remoteVideo"}
+                                    muted={isMute}
+                                    ref={vidRefCallback}
+                                    autoPlay
+                                    controls
+                                    playsInline
+                                    style={{
+                                        position: "absolute",
+                                        top: "50%",
+                                        left: "50%",
+                                        transform: "translate(-50%, -50%)",
+                                        aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                                        width: iframeDimensions.width,
+                                        height: iframeDimensions.height,
+                                    }}
+                                />
                             </div>
                         )}
 
