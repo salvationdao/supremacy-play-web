@@ -19,8 +19,8 @@ export const LoadMessage = () => {
     return (
         <Box sx={{ position: "absolute", top: 20, left: 26, zIndex: 99, animation: `${pulseEffect} 5s infinite` }}>
             <Typography
-                variant="h5"
-                sx={{ fontFamily: "Nostromo Regular Heavy", fontWeight: "fontWeightBold", color: colors.text }}
+                variant="h6"
+                sx={{ fontFamily: "Nostromo Regular Bold", fontWeight: "fontWeightBold", color: colors.text }}
             >
                 {message}
             </Typography>
