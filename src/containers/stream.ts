@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
-import { VIDEO_SERVER_WEBSOCKET, VIDEO_SERVER_STREAM_ID } from "../constants"
 import { useToggle } from "../hooks"
 import { Stream } from "../types"
 
@@ -54,16 +53,11 @@ export interface StreamContainerType {
     toggleIsMute: any
     currentResolution: number | undefined
     setCurrentResolution: React.Dispatch<React.SetStateAction<number | undefined>>
-    defaultStreamID: string
-    defaultWSURL: string
     defaultResolution: number
     noStreamExist: boolean
 }
 
 export const StreamContainer = createContainer((): StreamContainerType => {
-    const defaultStreamID = VIDEO_SERVER_STREAM_ID
-    const defaultWSURL = VIDEO_SERVER_WEBSOCKET
-
     const defaultResolution = 720
 
     // video
@@ -72,8 +66,8 @@ export const StreamContainer = createContainer((): StreamContainerType => {
 
     // stream
     const [currentStream, setCurrentStream] = useState<Stream>()
-    const [selectedWsURL, setSelectedWsURL] = useState(defaultWSURL)
-    const [selectedStreamID, setSelectedStreamID] = useState(defaultStreamID)
+    const [selectedWsURL, setSelectedWsURL] = useState("")
+    const [selectedStreamID, setSelectedStreamID] = useState("")
 
     // volume
     const [volume, setVolume] = useState(0.0)
@@ -99,6 +93,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
+            if (!selectedWsURL || !selectedStreamID) return
             if (!vid || !vid.parentNode) {
                 vidRef.current = undefined
                 return
@@ -178,8 +173,6 @@ export const StreamContainer = createContainer((): StreamContainerType => {
         isMute,
         toggleIsMute,
 
-        defaultStreamID,
-        defaultWSURL,
         defaultResolution,
 
         noStreamExist,
