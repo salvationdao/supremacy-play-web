@@ -1,4 +1,4 @@
-import { Box, Stack, ThemeProvider } from "@mui/material"
+import { Box, Stack, ThemeProvider, Typography } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
@@ -104,7 +104,7 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        {!noStreamExist ? (
+                        {noStreamExist ? (
                             <video
                                 key={selectedWsURL}
                                 id={"remoteVideo"}
@@ -125,18 +125,21 @@ const AppInner = () => {
                             />
                         ) : (
                             // TODO replace with fallback image
-                            <div
+                            <Stack
+                                justifyContent="center"
+                                alignItems="center"
                                 style={{
-                                    width: "100%",
-                                    height: "100%",
-
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
+                                    position: "absolute",
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    // backgroundColor: "#622D93", // Keep this for green screening
+                                    backgroundColor: colors.darkNavy,
                                 }}
                             >
-                                <div>Stream Not Found</div>
-                            </div>
+                                <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Stream Not Found</Typography>
+                            </Stack>
                         )}
 
                         <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
