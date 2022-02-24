@@ -11,7 +11,7 @@ const MAX_OPTIONS = 7
 
 export const StreamSelect = () => {
     const { state, subscribe } = useWebsocket()
-    const { currentStream, setCurrentStream, setSelectedWsURL, defaultWSURL, setSelectedStreamID } = useStream()
+    const { currentStream, setCurrentStream, setSelectedWsURL, setSelectedStreamID } = useStream()
     const [streams, setStreams] = useState<Stream[]>([])
     const [streamOptions, setStreamOptions] = useState<Stream[]>([])
 
