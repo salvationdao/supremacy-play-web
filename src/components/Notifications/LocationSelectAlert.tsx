@@ -37,6 +37,7 @@ export const FallbackUser: User = {
     factionID: "",
     username: "Unknown User",
     avatarID: "",
+    sups: 0,
     faction: {
         id: "",
         label: "xxx",

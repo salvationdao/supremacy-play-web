@@ -1,16 +1,19 @@
 import { Stack, Typography } from "@mui/material"
 import { useState, useEffect } from "react"
+import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
 import { useGame, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { colors } from "../../theme/theme"
 import { NetMessageType, ViewerLiveCount } from "../../types"
 
-const ReUsedText = ({ text, color }: { text: string; color?: string }) => {
+const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; tooltip: string }) => {
     return (
-        <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
-            {text}
-        </Typography>
+        <TooltipHelper text={tooltip} isCentered>
+            <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
+                {text}
+            </Typography>
+        </TooltipHelper>
     )
 }
 
@@ -43,10 +46,22 @@ export const LiveCounts = () => {
             </Typography>
 
             <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center">
-                <ReUsedText text={viewers.RedMountain.toFixed()} color={factionsColor?.redMountain} />
-                <ReUsedText text={viewers.Boston.toFixed()} color={factionsColor?.boston} />
-                <ReUsedText text={viewers.Zaibatsu.toFixed()} color={factionsColor?.zaibatsu} />
-                <ReUsedText text={viewers.Other.toFixed()} color={"grey !important"} />
+                <ReUsedText
+                    text={viewers.RedMountain.toFixed()}
+                    color={factionsColor?.redMountain}
+                    tooltip="Red Mountain"
+                />
+                <ReUsedText
+                    text={viewers.Boston.toFixed()}
+                    color={factionsColor?.boston}
+                    tooltip="Boston Cybernetics"
+                />
+                <ReUsedText
+                    text={viewers.Zaibatsu.toFixed()}
+                    color={factionsColor?.zaibatsu}
+                    tooltip="Zaibatsu Heavy Industries"
+                />
+                <ReUsedText text={viewers.Other.toFixed()} color={"grey !important"} tooltip="Not enlisted" />
             </Stack>
         </Stack>
     )

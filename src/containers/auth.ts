@@ -51,7 +51,7 @@ export const AuthContainer = createContainer((): AuthContainerType => {
                 setAuthSessionIDGetLoading(false)
             }
         })()
-    }, [gameserverSessionID, send, state])
+    }, [gameserverSessionID, send, state, user])
 
     return {
         user,

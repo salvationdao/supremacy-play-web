@@ -46,7 +46,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     <Stack spacing={2} sx={{ pl: 1 }}>
                         {winningWarMachines.map((wm) => (
                             <StyledImageText
-                                key={`${wm.tokenID}-${wm.participantID}`}
+                                key={`${wm.hash}-${wm.participantID}`}
                                 color={colors.text}
                                 imageBorderColor={wm.faction.theme.primary}
                                 text={wm.name.toUpperCase()}

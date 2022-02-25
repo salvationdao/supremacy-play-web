@@ -16,8 +16,22 @@ export const LoadMessage = () => {
         message = "Failed to get session..."
     }
 
+    if (!message) return null
+
     return (
-        <Box sx={{ position: "absolute", top: 20, left: 26, zIndex: 99, animation: `${pulseEffect} 5s infinite` }}>
+        <Box
+            sx={{
+                position: "absolute",
+                bottom: 20,
+                left: 26,
+                px: 1.6,
+                py: 0.5,
+                backgroundColor: "#000000",
+                animation: `${pulseEffect} 5s infinite`,
+                filter: "drop-shadow(0 3px 3px #00000060)",
+                zIndex: 999,
+            }}
+        >
             <Typography
                 variant="h6"
                 sx={{ fontFamily: "Nostromo Regular Bold", fontWeight: "fontWeightBold", color: colors.text }}

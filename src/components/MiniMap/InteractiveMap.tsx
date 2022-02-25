@@ -48,7 +48,7 @@ const MapWarMachines = ({ warMachines, map, enlarged }: MapWarMachineProps) => {
     return (
         <>
             {warMachines.map((wm) => (
-                <div key={`${wm.participantID} - ${wm.tokenID}`}>
+                <div key={`${wm.participantID} - ${wm.hash}`}>
                     <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} />
                 </div>
             ))}

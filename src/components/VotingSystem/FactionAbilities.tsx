@@ -48,7 +48,7 @@ export const FactionAbilities = () => {
 
                 <Stack spacing={1.3}>
                     {gameAbilities.map((ga) => (
-                        <FactionAbilityItem key={ga.id} gameAbility={ga} />
+                        <FactionAbilityItem key={ga.identity} gameAbility={ga} />
                     ))}
                 </Stack>
             </Stack>

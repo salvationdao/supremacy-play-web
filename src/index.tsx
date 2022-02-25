@@ -1,4 +1,4 @@
-import { Box, Stack, ThemeProvider, Typography } from "@mui/material"
+import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
@@ -6,12 +6,14 @@ import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import {
     BattleEndScreen,
+    BattleHistory,
     Controls,
     LeftSideBar,
     LiveVotingChart,
     LoadMessage,
     MiniMap,
     Notifications,
+    Stream,
     VotingSystem,
     WarMachineQueue,
     WarMachineStats,
@@ -21,7 +23,6 @@ import {
     PASSPORT_SERVER_HOSTNAME,
     PASSPORT_WEB,
     SENTRY_CONFIG,
-    STREAM_ASPECT_RATIO_W_H,
     SUPREMACY_PAGE,
     TOKEN_SALE_PAGE,
 } from "./constants"
@@ -34,9 +35,9 @@ import {
     StreamProvider,
     useAuth,
     useDimension,
-    useStream,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
+import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
 
@@ -59,8 +60,49 @@ if (SENTRY_CONFIG) {
 
 const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
-    const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
-    const { selectedWsURL, isMute, vidRefCallback, noStreamExist } = useStream()
+    const { mainDivDimensions, streamDimensions } = useDimension()
+    const [haveSups, toggleHaveSups] = useToggle()
+    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
+
+    if (!watchedTrailer) {
+        return (
+            <Stack
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    width: "100vw",
+                    height: "100vh",
+                    backgroundColor: "#000000",
+                    "video::-internal-media-controls-overlay-cast-button": {
+                        display: "none",
+                    },
+                }}
+            >
+                <video
+                    disablePictureInPicture
+                    disableRemotePlayback
+                    playsInline
+                    controlsList="nodownload"
+                    // controls={false}
+                    onEnded={() => {
+                        setWatchedTrailer(true)
+                        localStorage.setItem("watchedTrailer", "true")
+                    }}
+                    style={{
+                        height: "100%",
+                        width: "100%",
+                    }}
+                    controls
+                    autoPlay
+                >
+                    <source
+                        src="https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"
+                        type="video/mp4"
+                    />
+                </video>
+            </Stack>
+        )
+    }
 
     return (
         <>
@@ -104,53 +146,20 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        {noStreamExist ? (
-                            <video
-                                key={selectedWsURL}
-                                id={"remoteVideo"}
-                                muted={isMute}
-                                ref={vidRefCallback}
-                                autoPlay
-                                controls
-                                playsInline
-                                style={{
-                                    position: "absolute",
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                    aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                    width: iframeDimensions.width,
-                                    height: iframeDimensions.height,
-                                }}
-                            />
-                        ) : (
-                            // TODO replace with fallback image
-                            <Stack
-                                justifyContent="center"
-                                alignItems="center"
-                                style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    // backgroundColor: "#622D93", // Keep this for green screening
-                                    backgroundColor: colors.darkNavy,
-                                }}
-                            >
-                                <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Stream Not Found</Typography>
-                            </Stack>
-                        )}
+                        <LoadMessage />
+                        <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
-                        <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
-                            <LoadMessage />
-                            <VotingSystem />
-                            <MiniMap />
-                            <Notifications />
-                            <LiveVotingChart />
-                            <WarMachineStats />
-                            <BattleEndScreen />
-                        </Box>
+                        {user && haveSups && (
+                            <Box>
+                                <VotingSystem />
+                                <MiniMap />
+                                <Notifications />
+                                <LiveVotingChart />
+                                <WarMachineStats />
+                                <BattleEndScreen />
+                                <BattleHistory />
+                            </Box>
+                        )}
                     </Box>
                 </Stack>
 
@@ -165,6 +174,7 @@ const AppInner = () => {
                 </Box>
             </Stack>
 
+            {/* Just the under background, visible when drawers open / close */}
             <Box
                 sx={{
                     position: "fixed",
