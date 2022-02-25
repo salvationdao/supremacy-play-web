@@ -80,13 +80,14 @@ export const WarMachineQueue = () => {
                             sx={{
                                 px: 1.6,
                                 py: 1.6,
+                                textAlign: "center",
                                 color: colors.grey,
                                 fontFamily: "Share Tech",
                                 fontSize: "0.8rem",
                                 userSelect: "text",
                             }}
                         >
-                            {"You don't have any war machines in the queue..."}
+                            {"You don't have any war machines in the queue."}
                         </Typography>
                     )}
                 </Stack>
