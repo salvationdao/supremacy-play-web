@@ -104,19 +104,17 @@ const AppInner = () => {
                     >
                         <Stream />
 
-                        <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
-                            {user && user.sups > 0 && (
-                                <>
-                                    <LoadMessage />
-                                    <VotingSystem />
-                                    <MiniMap />
-                                    <Notifications />
-                                    <LiveVotingChart />
-                                    <WarMachineStats />
-                                    <BattleEndScreen />
-                                </>
-                            )}
-                        </Box>
+                        {user && user.sups > 0 && (
+                            <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
+                                <LoadMessage />
+                                <VotingSystem />
+                                <MiniMap />
+                                <Notifications />
+                                <LiveVotingChart />
+                                <WarMachineStats />
+                                <BattleEndScreen />
+                            </Box>
+                        )}
                     </Box>
                 </Stack>
 
