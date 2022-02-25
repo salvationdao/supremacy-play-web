@@ -1,6 +1,6 @@
 {
     "name": "supremacy-stream-site",
-    "version": "0.0.6-rc.70",
+    "version": "0.0.6-rc.72",
     "private": true,
     "dependencies": {
         "@antmedia/webrtc_adaptor": "^2.4.2-latest",
@@ -10,7 +10,7 @@
         "@mui/lab": "^5.0.0-alpha.53",
         "@mui/material": "^5.0.1",
         "@mui/styles": "^5.1.0",
-        "@ninjasoftware/passport-gamebar": "^0.21.6",
+        "@ninjasoftware/passport-gamebar": "^0.21.7",
         "@sentry/react": "^6.17.6",
         "@types/react-router-dom": "^5.3.3",
         "@use-gesture/react": "^10.2.6",
