@@ -43,9 +43,11 @@ export const BattleEndScreen = () => {
     }, [state, subscribe])
 
     useEffect(() => {
-        if (SPAWN_TEST_DATA) setBattleEndDetail(sampleBattleEndDetail)
-        toggleIsEndBattleDetailEnabled(true)
-        toggleIsEndBattleDetailOpen(true)
+        if (SPAWN_TEST_DATA) {
+            setBattleEndDetail(sampleBattleEndDetail)
+            toggleIsEndBattleDetailEnabled(true)
+            toggleIsEndBattleDetailOpen(true)
+        }
     }, [])
 
     const primaryColor =
