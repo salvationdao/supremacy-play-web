@@ -1,6 +1,6 @@
 {
     "name": "supremacy-stream-site",
-    "version": "0.0.6-rc.73",
+    "version": "0.0.6-rc.74",
     "private": true,
     "dependencies": {
         "@antmedia/webrtc_adaptor": "^2.4.2-latest",
