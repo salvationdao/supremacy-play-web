@@ -114,7 +114,7 @@ const AppInner = () => {
                                     bottom: 0,
                                     left: 0,
                                     right: 0,
-                                    // backgroundColor: "#622D93", // Keep this for green screening
+                                    // backgroundColor: "#622D93", // Keep this color for green screening
                                     backgroundColor: colors.darkNavy,
                                 }}
                             >
@@ -127,7 +127,7 @@ const AppInner = () => {
                                 muted={isMute}
                                 ref={vidRefCallback}
                                 autoPlay
-                                controls
+                                controls={false}
                                 playsInline
                                 style={{
                                     position: "absolute",
