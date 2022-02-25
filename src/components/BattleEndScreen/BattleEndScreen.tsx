@@ -44,6 +44,7 @@ export const BattleEndScreen = () => {
 
     useEffect(() => {
         if (SPAWN_TEST_DATA) setBattleEndDetail(sampleBattleEndDetail)
+        toggleIsEndBattleDetailEnabled(true)
         toggleIsEndBattleDetailOpen(true)
     }, [])
 
@@ -58,7 +59,7 @@ export const BattleEndScreen = () => {
 
     const backgroundColorGradient = useMemo(
         () => ({
-            background: `linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}98 50%, ${backgroundColor}95)`,
+            background: backgroundColor, //`linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}98 50%, ${backgroundColor}95)`,
         }),
         [backgroundColor],
     )
@@ -104,7 +105,7 @@ export const BattleEndScreen = () => {
                                 height: 4,
                             },
                             "::-webkit-scrollbar-track": {
-                                backgroundColor: primaryColor,
+                                backgroundColor: `${primaryColor}09`,
                                 borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
