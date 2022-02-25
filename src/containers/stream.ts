@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-// import { WebRTCAdaptor } from "../antmedia-vendor/js/external"
-
-import { WebRTCAdaptor } from "../antmedia-vendor/js/webrtc_adaptor"
-
-// const WebRTCAdaptor = require("../antmedia-vendor/js/")
-
+import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { useToggle } from "../hooks"
 import { Stream } from "../types"
 
@@ -66,7 +61,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
     const defaultResolution = 720
 
     // video
-    const webRtc = useRef<any>()
+    const webRtc = useRef<WebRTCAdaptorType>()
     const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
 
     // stream
