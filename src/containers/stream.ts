@@ -87,8 +87,8 @@ export const StreamContainer = createContainer((): StreamContainerType => {
         }
         if (vidRef && vidRef.current && vidRef.current.volume) {
             vidRef.current.volume = volume
-            toggleIsMute(false)
         }
+        toggleIsMute(false)
     }, [volume])
 
     const vidRefCallback = useCallback(
