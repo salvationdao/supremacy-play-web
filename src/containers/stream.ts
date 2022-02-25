@@ -35,29 +35,7 @@ interface WebRTCAdaptorType {
     closeWebSocket: (streamID: string) => void
 }
 
-export interface StreamContainerType {
-    webRtc: React.MutableRefObject<WebRTCAdaptorType | undefined>
-    vidRef: React.MutableRefObject<HTMLVideoElement | undefined>
-    vidRefCallback: (vid: HTMLVideoElement) => void
-    currentStream: Stream | undefined
-    setCurrentStream: React.Dispatch<React.SetStateAction<Stream | undefined>>
-    selectedWsURL: string
-    setSelectedWsURL: React.Dispatch<React.SetStateAction<string>>
-    selectedStreamID: string
-    setSelectedStreamID: React.Dispatch<React.SetStateAction<string>>
-    streamResolutions: number[]
-    setStreamResolutions: React.Dispatch<React.SetStateAction<number[]>>
-    volume: number
-    setVolume: React.Dispatch<React.SetStateAction<number>>
-    isMute: boolean
-    toggleIsMute: any
-    currentResolution: number | undefined
-    setCurrentResolution: React.Dispatch<React.SetStateAction<number | undefined>>
-    defaultResolution: number
-    noStreamExist: boolean
-}
-
-export const StreamContainer = createContainer((): StreamContainerType => {
+export const StreamContainer = createContainer(() => {
     const defaultResolution = 720
 
     // video

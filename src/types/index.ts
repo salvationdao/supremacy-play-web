@@ -11,6 +11,7 @@ export interface User {
     avatarID: string
     factionID: string
     faction: Faction
+    sups: number
 }
 
 export interface FactionThemeColor {
