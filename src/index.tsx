@@ -36,6 +36,7 @@ import {
     useDimension,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
+import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
 
@@ -59,6 +60,7 @@ if (SENTRY_CONFIG) {
 const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
+    const [haveSups, toggleHaveSups] = useToggle()
 
     return (
         <>
@@ -103,9 +105,9 @@ const AppInner = () => {
                         }}
                     >
                         <LoadMessage />
-                        <Stream />
+                        <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
-                        {user && user.sups > 0 && (
+                        {user && haveSups && (
                             <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
                                 <VotingSystem />
                                 <MiniMap />

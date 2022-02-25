@@ -3,17 +3,18 @@ import { useWallet } from "@ninjasoftware/passport-gamebar"
 import { useEffect } from "react"
 import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useAuth, useDimension, useStream } from "../../containers"
-import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
 
-const Message = ({ toggleHaveSups }: { toggleHaveSups: any }) => {
+const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
     const { user } = useAuth()
     const { onWorldSups } = useWallet()
 
-    const haveSups = onWorldSups ? onWorldSups.dividedBy(1000000000000000000).isGreaterThanOrEqualTo(0) : false
+    const supsAboveZero = onWorldSups ? onWorldSups.dividedBy(1000000000000000000).isGreaterThanOrEqualTo(0) : false
 
+    // Doing it here prevents index.tsx from re-rendering continuously from sup ticks
     useEffect(() => {
-        if (haveSups) toggleHaveSups
+        if (supsAboveZero && !haveSups) toggleHaveSups(true)
+        if (!supsAboveZero && haveSups) toggleHaveSups(false)
     }, [onWorldSups])
 
     return (
@@ -37,17 +38,14 @@ const Message = ({ toggleHaveSups }: { toggleHaveSups: any }) => {
     )
 }
 
-export const Stream = () => {
+export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
     const { user } = useAuth()
     const { iframeDimensions } = useDimension()
     const { selectedWsURL, isMute, vidRefCallback } = useStream()
-    // We don't want the stream to suddenly cut off while they are playing,
-    // so only check if theyhave sups on initial load
-    const [haveSups, toggleHaveSups] = useToggle()
 
     return (
         <Stack sx={{ width: "100%", height: "100%" }}>
-            {user && (user.sups > 0 || haveSups) ? (
+            {user && haveSups ? (
                 <video
                     key={selectedWsURL}
                     id={"remoteVideo"}
@@ -67,7 +65,7 @@ export const Stream = () => {
                     }}
                 />
             ) : (
-                <Message toggleHaveSups={toggleHaveSups} />
+                <Message haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
             )}
         </Stack>
     )
