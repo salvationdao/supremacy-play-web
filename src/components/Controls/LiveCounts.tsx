@@ -47,21 +47,21 @@ export const LiveCounts = () => {
 
             <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center">
                 <ReUsedText
-                    text={viewers.RedMountain.toFixed()}
+                    text={Math.abs(viewers.RedMountain).toFixed()}
                     color={factionsColor?.redMountain}
                     tooltip="Red Mountain"
                 />
                 <ReUsedText
-                    text={viewers.Boston.toFixed()}
+                    text={Math.abs(viewers.Boston).toFixed()}
                     color={factionsColor?.boston}
                     tooltip="Boston Cybernetics"
                 />
                 <ReUsedText
-                    text={viewers.Zaibatsu.toFixed()}
+                    text={Math.abs(viewers.Zaibatsu).toFixed()}
                     color={factionsColor?.zaibatsu}
                     tooltip="Zaibatsu Heavy Industries"
                 />
-                <ReUsedText text={viewers.Other.toFixed()} color={"grey !important"} tooltip="Not enlisted" />
+                <ReUsedText text={Math.abs(viewers.Other).toFixed()} color={"grey !important"} tooltip="Not enlisted" />
             </Stack>
         </Stack>
     )
