@@ -52,7 +52,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
                     muted={isMute}
                     ref={vidRefCallback}
                     autoPlay
-                    controls
+                    controls={false}
                     playsInline
                     style={{
                         position: "absolute",
