@@ -9,7 +9,7 @@ const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSu
     const { user } = useAuth()
     const { onWorldSups } = useWallet()
 
-    const supsAboveZero = onWorldSups ? onWorldSups.dividedBy(1000000000000000000).isGreaterThan(0) : false
+    const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
 
     // Doing it here prevents index.tsx from re-rendering continuously from sup ticks
     useEffect(() => {
