@@ -102,11 +102,11 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
+                        <LoadMessage />
                         <Stream />
 
                         {user && user.sups > 0 && (
                             <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
-                                <LoadMessage />
                                 <VotingSystem />
                                 <MiniMap />
                                 <Notifications />
