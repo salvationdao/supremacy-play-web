@@ -19,6 +19,7 @@ import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
+import History from "!react-svg-loader!./svg/History.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
 import Radar from "!react-svg-loader!./svg/Radar.svg"
@@ -251,5 +252,11 @@ export const SvgGoldBars: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgRobot: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Robot />
+    </SvgWrapper>
+)
+
+export const SvgHistory: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <History />
     </SvgWrapper>
 )

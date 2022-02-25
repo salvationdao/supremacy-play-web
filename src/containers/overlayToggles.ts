@@ -14,6 +14,7 @@ export const OverlayTogglesContainer = createContainer(() => {
     const [isEndBattleDetailEnabled, toggleIsEndBattleDetailEnabled] = useToggle()
     const [isLiveChartOpen, toggleIsLiveChartOpen] = useToggle(localStorage.getItem("liveChartOverlay") === "true")
     const [isMapOpen, toggleIsMapOpen] = useToggle(localStorage.getItem("mapOverlay") === "true")
+    const [isBattleHistoryOpen, toggleIsBattleHistoryOpen] = useToggle()
 
     useEffect(() => {
         localStorage.setItem("liveChartOverlay", isLiveChartOpen)
@@ -31,14 +32,18 @@ export const OverlayTogglesContainer = createContainer(() => {
     }
 
     return {
+        // Left side panels are a little different, only 1 can be open at a time
         isEndBattleDetailOpen: activePanel == LeftDrawerPanels.EndBattleDetail,
         toggleIsEndBattleDetailOpen: (value: boolean) => togglePanel(LeftDrawerPanels.EndBattleDetail, value),
+
         isLiveChartOpen,
         isEndBattleDetailEnabled,
         isMapOpen,
+        isBattleHistoryOpen,
         toggleIsEndBattleDetailEnabled,
         toggleIsLiveChartOpen,
         toggleIsMapOpen,
+        toggleIsBattleHistoryOpen,
     }
 })
 

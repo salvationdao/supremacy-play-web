@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import {
     BattleEndScreen,
+    BattleHistory,
     Controls,
     LeftSideBar,
     LiveVotingChart,
@@ -108,13 +109,14 @@ const AppInner = () => {
                         <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
                         {user && haveSups && (
-                            <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
+                            <Box>
                                 <VotingSystem />
                                 <MiniMap />
                                 <Notifications />
                                 <LiveVotingChart />
                                 <WarMachineStats />
                                 <BattleEndScreen />
+                                <BattleHistory />
                             </Box>
                         )}
                     </Box>
