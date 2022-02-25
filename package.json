@@ -1,6 +1,6 @@
 {
     "name": "supremacy-stream-site",
-    "version": "0.0.6-rc.41",
+    "version": "0.0.6-rc.42",
     "private": true,
     "dependencies": {
         "@emotion/react": "^11.4.1",
