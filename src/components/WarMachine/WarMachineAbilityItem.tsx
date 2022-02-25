@@ -64,18 +64,6 @@ const ContributionBar = ({
                     }}
                 />
             </Stack>
-            {/* 
-            <Typography
-                key={progressPercent}
-                variant="caption"
-                sx={{
-                    fontWeight: 'fontWeightBold',
-                    lineHeight: 1,
-                    animation: `${zoomEffect()} 300ms ease-out`,
-                }}
-            >
-                {Math.round(progressPercent)}%
-            </Typography> */}
         </Stack>
     )
 }
