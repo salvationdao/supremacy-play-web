@@ -1,4 +1,4 @@
-import { Box, Stack, ThemeProvider, Typography } from "@mui/material"
+import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
@@ -12,6 +12,7 @@ import {
     LoadMessage,
     MiniMap,
     Notifications,
+    Stream,
     VotingSystem,
     WarMachineQueue,
     WarMachineStats,
@@ -21,7 +22,6 @@ import {
     PASSPORT_SERVER_HOSTNAME,
     PASSPORT_WEB,
     SENTRY_CONFIG,
-    STREAM_ASPECT_RATIO_W_H,
     SUPREMACY_PAGE,
     TOKEN_SALE_PAGE,
 } from "./constants"
@@ -34,7 +34,6 @@ import {
     StreamProvider,
     useAuth,
     useDimension,
-    useStream,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { colors, theme } from "./theme/theme"
@@ -59,8 +58,7 @@ if (SENTRY_CONFIG) {
 
 const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
-    const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
-    const { selectedWsURL, isMute, vidRefCallback, noStreamExist } = useStream()
+    const { mainDivDimensions, streamDimensions } = useDimension()
 
     return (
         <>
@@ -104,124 +102,20 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        <div
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                            }}
-                        >
-                            {!user && (
-                                <Box
-                                    sx={{
-                                        width: "100%",
-                                        height: "100%",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="h6"
-                                            sx={{
-                                                fontFamily: "Nostromo Regular Bold",
-                                                fontWeight: "fontWeightBold",
-                                                color: colors.text,
-                                                marginBottom: 1,
-                                                marginTop: 1,
-                                                marginRight: 1,
-                                            }}
-                                        >
-                                            Passport must be connected to view the battle stream
-                                        </Typography>
-                                    </Box>
-
-                                    <iframe
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                            border: 0,
-                                        }}
-                                        src="https://stats.supremacy.game/#/"
-                                    ></iframe>
-                                </Box>
-                            )}
-
-                            {user && user.sups <= 0 && (
-                                <Box
-                                    sx={{
-                                        width: "100%",
-                                        height: "100%",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="h6"
-                                            sx={{
-                                                fontFamily: "Nostromo Regular Bold",
-                                                fontWeight: "fontWeightBold",
-                                                color: colors.text,
-                                                marginBottom: 1,
-                                                marginTop: 1,
-                                                marginRight: 1,
-                                            }}
-                                        >
-                                            Must have sups to view battle stream
-                                        </Typography>
-                                    </Box>
-
-                                    <iframe
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                            border: 0,
-                                        }}
-                                        src="https://stats.supremacy.game/#/"
-                                    ></iframe>
-                                </Box>
-                            )}
-
-                            {user && user.sups > 0 && (
-                                <video
-                                    key={selectedWsURL}
-                                    id={"remoteVideo"}
-                                    muted={isMute}
-                                    ref={vidRefCallback}
-                                    autoPlay
-                                    controls
-                                    playsInline
-                                    style={{
-                                        position: "absolute",
-                                        top: "50%",
-                                        left: "50%",
-                                        transform: "translate(-50%, -50%)",
-                                        aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                                        width: iframeDimensions.width,
-                                        height: iframeDimensions.height,
-                                    }}
-                                />
-                            )}
-                        </div>
+                        <Stream />
 
                         <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
-                            {user && user.sups > 0 && <LoadMessage />}
-                            <VotingSystem />
-                            <MiniMap />
-                            <Notifications />
-                            <LiveVotingChart />
-                            <WarMachineStats />
-                            <BattleEndScreen />
+                            {user && user.sups > 0 && (
+                                <>
+                                    <LoadMessage />
+                                    <VotingSystem />
+                                    <MiniMap />
+                                    <Notifications />
+                                    <LiveVotingChart />
+                                    <WarMachineStats />
+                                    <BattleEndScreen />
+                                </>
+                            )}
                         </Box>
                     </Box>
                 </Stack>
@@ -237,6 +131,7 @@ const AppInner = () => {
                 </Box>
             </Stack>
 
+            {/* Just the under background, visible when drawers open / close */}
             <Box
                 sx={{
                     position: "fixed",
