@@ -1,17 +1,22 @@
 import { Stack, Typography } from "@mui/material"
 import moment from "moment"
 import { BOTTOM_BUTTONS_HEIGHT, FancyButton } from ".."
-import { useAuth, useOverlayToggles } from "../../containers"
+import { useOverlayToggles } from "../../containers"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
 export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { user } = useAuth()
     const { toggleIsEndBattleDetailOpen } = useOverlayToggles()
     const { battleIdentifier, startedAt, endedAt } = battleEndDetail
 
-    const primaryColor = user && user.faction ? user.faction.theme.primary : colors.darkNavyBlue
-    const secondaryColor = user && user.faction ? user.faction.theme.secondary : colors.text
+    const primaryColor =
+        battleEndDetail && battleEndDetail.winningFaction
+            ? battleEndDetail && battleEndDetail.winningFaction.theme.primary
+            : colors.darkNavyBlue
+    const secondaryColor =
+        battleEndDetail && battleEndDetail.winningFaction
+            ? battleEndDetail && battleEndDetail.winningFaction.theme.secondary
+            : colors.text
 
     return (
         <Stack
