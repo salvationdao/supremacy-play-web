@@ -15,7 +15,7 @@ const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSu
     useEffect(() => {
         if (supsAboveZero && !haveSups) toggleHaveSups(true)
         if (!supsAboveZero && haveSups) toggleHaveSups(false)
-    }, [onWorldSups])
+    }, [onWorldSups, supsAboveZero, haveSups])
 
     return (
         <Stack sx={{ flex: 1, width: "100%" }}>
