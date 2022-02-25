@@ -33,7 +33,7 @@ export const VideoPlayerControls = () => {
                         onClick={toggleIsMute}
                         sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
                     >
-                        {isMute ? (
+                        {isMute || volume <= 0 ? (
                             <SvgVolumeMute size="14px" sx={{ pb: 0 }} />
                         ) : (
                             <SvgVolume size="14px" sx={{ pb: 0 }} />

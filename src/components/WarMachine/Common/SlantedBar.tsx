@@ -1,6 +1,6 @@
-import { Box, Stack } from '@mui/material'
-import { colors } from '../../../theme/theme'
-import { BoxSlanted } from './BoxSlanted'
+import { Box, Stack } from "@mui/material"
+import { colors } from "../../../theme/theme"
+import { BoxSlanted } from "./BoxSlanted"
 
 export const SlantedBar = ({
     backgroundColor,
@@ -15,31 +15,31 @@ export const SlantedBar = ({
         <BoxSlanted
             clipSlantSize="20px"
             sx={{
-                height: '100%',
-                width: '100%',
-                pointerEvents: 'none',
+                height: "100%",
+                width: "100%",
+                pointerEvents: "none",
             }}
         >
             <Stack
                 justifyContent="flex-end"
-                sx={{ position: 'relative', height: '100%', width: '100%', backgroundColor: '#00000060' }}
+                sx={{ position: "relative", height: "100%", width: "100%", backgroundColor: "#00000060" }}
             >
                 <Box
                     sx={{
                         height: `${progressPercent}%`,
-                        width: '100%',
+                        width: "100%",
                         backgroundColor,
-                        transition: 'all .25s',
+                        transition: "all .25s",
                     }}
                 />
 
-                {costPercent && (
+                {!!costPercent && (
                     <Box
                         sx={{
-                            position: 'absolute',
+                            position: "absolute",
                             bottom: `${costPercent - 2.5}%`,
                             height: 2,
-                            width: '100%',
+                            width: "100%",
                             backgroundColor: colors.red,
                             zIndex: 6,
                         }}

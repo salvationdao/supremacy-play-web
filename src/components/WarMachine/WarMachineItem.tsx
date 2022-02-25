@@ -310,7 +310,7 @@ export const WarMachineItem = ({
                                 .reverse()
                                 .map((ga, index) => (
                                     <SkillBar
-                                        key={ga.id}
+                                        key={ga.identity}
                                         index={index}
                                         gameAbility={ga}
                                         maxAbilityPriceMap={maxAbilityPriceMap}
