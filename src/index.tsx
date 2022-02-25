@@ -1,9 +1,10 @@
-import { Box, Stack, ThemeProvider } from "@mui/material"
+import { Box, Button, dividerClasses, Stack, ThemeProvider, Typography } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
+
 import {
     BattleEndScreen,
     Controls,
@@ -37,6 +38,8 @@ import {
     useStream,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
+import { PassportLogin } from "./PassportLogin"
+import { pulseEffect } from "./theme/keyframes"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
 
@@ -57,13 +60,28 @@ if (SENTRY_CONFIG) {
     })
 }
 
+console.log("passprot", PASSPORT_WEB)
+
 const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions, iframeDimensions } = useDimension()
     const { selectedWsURL, isMute, vidRefCallback, noStreamExist } = useStream()
 
-    console.log("us=er", user)
+    useEffect(() => {
+        if (!gameserverSessionID) return
+        const href = `${PASSPORT_WEB}/nosidebar/login?omitSideBar=true&&sessionID=${gameserverSessionID}`
+        console.log("re", href)
 
+        const width = 520
+        const height = 730
+        const top = window.screenY + (window.outerHeight - height) / 2.5
+        const left = window.screenX + (window.outerWidth - width) / 2
+        const popup = window.open(
+            href,
+            "Connect Gamebar to XSYN Passport",
+            `width=${width},height=${height},left=${left},top=${top},popup=1`,
+        )
+    }, [gameserverSessionID])
     return (
         <>
             <GameBar
@@ -106,19 +124,99 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        {!user ? (
-                            <div>Stream Not Found</div>
-                        ) : (
-                            <div
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
+                        <div
+                            style={{
+                                width: "100%",
+                                height: "100%",
 
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            {!user && (
+                                <Box
+                                    sx={{
+                                        width: "100%",
+                                        height: "100%",
+
+                                        display: "flex",
+                                        flexDirection: "column",
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            zIndex: 9999999999999,
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="h6"
+                                            sx={{
+                                                fontFamily: "Nostromo Regular Bold",
+                                                fontWeight: "fontWeightBold",
+                                                color: colors.text,
+                                                marginBottom: 1,
+                                                marginRight: 1,
+                                            }}
+                                        >
+                                            Passport must be connected to view the battle stream
+                                        </Typography>
+                                    </Box>
+
+                                    <iframe
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            border: 0,
+                                        }}
+                                        src="https://stats.supremacy.game/#/"
+                                    ></iframe>
+                                </Box>
+                            )}
+
+                            {user && user.sups <= 0 && (
+                                <Box
+                                    sx={{
+                                        width: "100%",
+                                        height: "100%",
+
+                                        display: "flex",
+                                        flexDirection: "column",
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            zIndex: 9999999999999,
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="h6"
+                                            sx={{
+                                                fontFamily: "Nostromo Regular Bold",
+                                                fontWeight: "fontWeightBold",
+                                                color: colors.text,
+                                                marginBottom: 1,
+                                                marginRight: 1,
+                                            }}
+                                        >
+                                            Must have sups to view battle stream
+                                        </Typography>
+                                    </Box>
+
+                                    <iframe
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            border: 0,
+                                        }}
+                                        src="https://stats.supremacy.game/#/"
+                                    ></iframe>
+                                </Box>
+                            )}
+
+                            {user && user.sups > 0 && (
                                 <video
                                     key={selectedWsURL}
                                     id={"remoteVideo"}
@@ -137,11 +235,11 @@ const AppInner = () => {
                                         height: iframeDimensions.height,
                                     }}
                                 />
-                            </div>
-                        )}
+                            )}
+                        </div>
 
                         <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
-                            <LoadMessage />
+                            {user && user.sups > 0 && <LoadMessage />}
                             <VotingSystem />
                             <MiniMap />
                             <Notifications />

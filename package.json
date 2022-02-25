@@ -12,6 +12,7 @@
         "@mui/styles": "^5.1.0",
         "@ninjasoftware/passport-gamebar": "^0.17.3",
         "@sentry/react": "^6.17.6",
+        "@types/react-router-dom": "^5.3.3",
         "@use-gesture/react": "^10.2.6",
         "bignumber.js": "^9.0.2",
         "core-js": "^3.5.0",
