@@ -57,7 +57,7 @@ export const StreamSelect = () => {
 
         // If there is nno current stream selected then pick the US one (for now)
         if (!currentStream && newStreamOptions && newStreamOptions.length > 0) {
-            const usaStreams = newStreamOptions.filter((s) => s.name == "USA")
+            const usaStreams = newStreamOptions.filter((s) => s.name == "Singapore")
             if (usaStreams && usaStreams.length > 0) {
                 setCurrentStream(usaStreams[0])
                 setSelectedStreamID(usaStreams[0].streamID)

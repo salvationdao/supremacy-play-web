@@ -22,7 +22,7 @@ export const LoadMessage = () => {
         <Box
             sx={{
                 position: "absolute",
-                bottom: 20,
+                top: 20,
                 left: 26,
                 px: 1.6,
                 py: 0.5,
