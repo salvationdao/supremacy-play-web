@@ -12,7 +12,7 @@ export const Prices = () => {
             <Stack direction="row" alignItems="center" alignSelf="stretch">
                 <Stack direction="row" alignItems="center" justifyContent="center">
                     <Typography variant="body1" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                        1 x Applause&nbsp;
+                        1 x APPLAUSE&nbsp;
                     </Typography>
                     <SvgApplause size="14px" />
                     <Typography variant="body1" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
