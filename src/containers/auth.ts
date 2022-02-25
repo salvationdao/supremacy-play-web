@@ -19,8 +19,6 @@ export const AuthContainer = createContainer((): AuthContainerType => {
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useWebsocket()
     const [user, setUser] = useState<User>()
-    const userID = user?.id
-
     const [gameserverSessionID, setGameserverSessionID] = useState<string>("")
 
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
@@ -28,17 +26,10 @@ export const AuthContainer = createContainer((): AuthContainerType => {
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
-        console.log("here")
-
         if (!subscribe || state !== WebSocket.OPEN) return
-
-        console.log("here2")
-
         return subscribe<User>(
             HubKey.UserSubscribe,
             (u) => {
-                console.log("here3, user", u)
-
                 if (u) setUser(u)
                 if (u?.faction?.theme) updateTheme(u.faction.theme)
             },
