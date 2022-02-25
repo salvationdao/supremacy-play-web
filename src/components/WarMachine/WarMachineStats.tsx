@@ -95,8 +95,8 @@ export const WarMachineStats = () => {
 
     if (!warMachines || warMachines.length <= 0) return null
 
-    const factionMechs = warMachines.filter((wm) => wm.factionID == factionID)
-    const otherMechs = warMachines.filter((wm) => wm.factionID != factionID)
+    const factionMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == factionID)
+    const otherMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != factionID)
     const haveFactionMechs = factionMechs.length > 0
 
     return (
