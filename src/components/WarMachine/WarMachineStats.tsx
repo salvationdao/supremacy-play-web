@@ -119,10 +119,10 @@ export const WarMachineStats = () => {
                         clipSize="9px"
                         clipSlantSize="26px"
                         skipLeft
-                        sx={{ pl: 3.5, pr: 6, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
+                        sx={{ pl: 3, pr: 5.5, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
                     >
                         <ScrollContainer>
-                            <Stack spacing={-1} direction="row" alignItems="center" justifyContent="center">
+                            <Stack spacing={-1.5} direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
                                         key={`${wm.participantID} - ${wm.hash}`}
@@ -137,10 +137,10 @@ export const WarMachineStats = () => {
                 )}
 
                 {otherMechs.length > 0 && (
-                    <Box sx={{ mb: 0.6, pr: 2, pl: haveFactionMechs ? 0 : 2, overflow: "hidden" }}>
+                    <Box sx={{ mb: 0.6, pr: 2, pl: haveFactionMechs ? 0 : 1.6, overflow: "hidden" }}>
                         <ScrollContainer>
                             <Stack
-                                spacing={haveFactionMechs ? -3.2 : -2.5}
+                                spacing={haveFactionMechs ? -3.7 : -3}
                                 direction="row"
                                 alignItems="center"
                                 sx={{ flex: 1, ml: haveFactionMechs ? -1.4 : 0, pb: haveFactionMechs ? 0 : 0.6 }}
