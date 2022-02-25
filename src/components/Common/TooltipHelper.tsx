@@ -10,7 +10,7 @@ export const TooltipHelper = ({ text, children }: { text: string; children: Reac
             placement={"bottom-start"}
             title={
                 <Box sx={{ px: 0.5, py: 0.2 }}>
-                    <Typography variant="body1" sx={{ fontFamily: "Share Tech" }}>
+                    <Typography variant="body1" sx={{ color: "#FFFFFF", fontFamily: "Share Tech" }}>
                         {text}
                     </Typography>
                 </Box>

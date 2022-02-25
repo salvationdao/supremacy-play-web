@@ -1,7 +1,7 @@
 import { IconButton, Stack, Typography } from "@mui/material"
+import { TooltipHelper } from ".."
 import { SvgGoldBars, SvgRadar } from "../../assets"
 import { useOverlayToggles } from "../../containers"
-import { overlayPulseEffect } from "../../theme/keyframes"
 
 export const OverlayToggles = () => {
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
@@ -14,32 +14,36 @@ export const OverlayToggles = () => {
             </Typography>
 
             {/* Live Chart */}
-            <IconButton
-                size="small"
-                onClick={toggleIsLiveChartOpen}
-                sx={{
-                    filter: isLiveChartOpen ? "grayscale(0)" : "grayscale(1)",
-                    transition: "all .2s",
-                    ":hover": { filter: "grayscale(0.2)" },
-                    ":active": { filter: "grayscale(.6)" },
-                }}
-            >
-                <SvgGoldBars size="18px" />
-            </IconButton>
+            <TooltipHelper text="Toggle the live voting chart.">
+                <IconButton
+                    size="small"
+                    onClick={toggleIsLiveChartOpen}
+                    sx={{
+                        filter: isLiveChartOpen ? "grayscale(0)" : "grayscale(1)",
+                        transition: "all .2s",
+                        ":hover": { filter: "grayscale(0.2)" },
+                        ":active": { filter: "grayscale(.6)" },
+                    }}
+                >
+                    <SvgGoldBars size="18px" />
+                </IconButton>
+            </TooltipHelper>
 
             {/* Map */}
-            <IconButton
-                size="small"
-                onClick={toggleIsMapOpen}
-                sx={{
-                    filter: isMapOpen ? "grayscale(0)" : "grayscale(1)",
-                    transition: "all .2s",
-                    ":hover": { filter: "grayscale(0.2)" },
-                    ":active": { filter: "grayscale(.6)" },
-                }}
-            >
-                <SvgRadar size="17px" />
-            </IconButton>
+            <TooltipHelper text="Toggle the mini map.">
+                <IconButton
+                    size="small"
+                    onClick={toggleIsMapOpen}
+                    sx={{
+                        filter: isMapOpen ? "grayscale(0)" : "grayscale(1)",
+                        transition: "all .2s",
+                        ":hover": { filter: "grayscale(0.2)" },
+                        ":active": { filter: "grayscale(.6)" },
+                    }}
+                >
+                    <SvgRadar size="17px" />
+                </IconButton>
+            </TooltipHelper>
         </Stack>
     )
 }
