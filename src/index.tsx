@@ -1,4 +1,4 @@
-import { Box, Stack, ThemeProvider } from "@mui/material"
+import { Box, Button, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
@@ -62,14 +62,16 @@ const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
+    const [trailerEnded, toggleTrailerEnded] = useToggle()
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
-    if (!watchedTrailer) {
+    if (!trailerEnded) {
         return (
             <Stack
                 alignItems="center"
                 justifyContent="center"
                 sx={{
+                    position: "relative",
                     width: "100vw",
                     height: "100vh",
                     backgroundColor: "#000000",
@@ -78,15 +80,33 @@ const AppInner = () => {
                     },
                 }}
             >
+                {watchedTrailer && (
+                    <Button
+                        variant="contained"
+                        sx={{
+                            position: "absolute",
+                            top: 30,
+                            right: 30,
+                            zIndex: 99,
+                            backgroundColor: colors.darkNavy,
+                            borderRadius: 0.7,
+                            ":hover": { opacity: 0.8, backgroundColor: colors.darkNavy },
+                        }}
+                        onClick={() => toggleTrailerEnded(true)}
+                    >
+                        SKIP
+                    </Button>
+                )}
+
                 <video
                     disablePictureInPicture
                     disableRemotePlayback
                     playsInline
                     controlsList="nodownload"
-                    // controls={false}
                     onEnded={() => {
                         setWatchedTrailer(true)
-                        localStorage.setItem("watchedTrailer", "true")
+                        toggleTrailerEnded(true)
+                        if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
                     }}
                     style={{
                         height: "100%",
