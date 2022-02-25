@@ -59,7 +59,7 @@ export const BattleEndScreen = () => {
 
     const backgroundColorGradient = useMemo(
         () => ({
-            background: backgroundColor, //`linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}98 50%, ${backgroundColor}95)`,
+            background: `linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}98 50%, ${backgroundColor}95)`,
         }),
         [backgroundColor],
     )
