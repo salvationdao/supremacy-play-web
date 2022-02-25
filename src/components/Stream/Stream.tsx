@@ -28,7 +28,7 @@ const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSu
             </Box>
             <Box
                 sx={{
-                    position: "position",
+                    position: "relative",
                     flex: 1,
                 }}
             >
