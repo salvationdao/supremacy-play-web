@@ -69,7 +69,7 @@ export interface Vector2i {
 
 export interface WarMachineState {
     // One off fetch on inital load
-    tokenID: string
+    hash: string
     participantID: number
     factionID: string
     faction: Faction
@@ -91,7 +91,7 @@ export interface QueuedWarMachine {
 }
 
 export interface WarMachineMetadata {
-    tokenID: number
+    hash: string
     isInsured: boolean
     contractReward: string
     name: string

@@ -69,7 +69,7 @@ export const WarMachineQueue = () => {
                     {queuedWarMachines && queuedWarMachines.length > 0 ? (
                         queuedWarMachines.map((q, index) => (
                             <WarMachineQueueItem
-                                key={`${q.warMachineMetadata.tokenID}-${index}`}
+                                key={`${q.warMachineMetadata.hash}-${index}`}
                                 queueItem={q}
                                 index={index}
                             />

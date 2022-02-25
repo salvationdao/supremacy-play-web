@@ -125,7 +125,7 @@ export const WarMachineStats = () => {
                             <Stack spacing={-1} direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
-                                        key={`${wm.participantID} - ${wm.tokenID}`}
+                                        key={`${wm.participantID} - ${wm.hash}`}
                                         warMachine={wm}
                                         scale={0.9}
                                         shouldBeExpanded={shouldBeExpanded.shouldBeExpandedFaction}
@@ -147,7 +147,7 @@ export const WarMachineStats = () => {
                             >
                                 {otherMechs.map((wm) => (
                                     <WarMachineItem
-                                        key={`${wm.participantID} - ${wm.tokenID}`}
+                                        key={`${wm.participantID} - ${wm.hash}`}
                                         warMachine={wm}
                                         scale={haveFactionMechs ? 0.8 : 0.8}
                                         shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
