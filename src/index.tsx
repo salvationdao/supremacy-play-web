@@ -105,6 +105,22 @@ const AppInner = () => {
                         }}
                     >
                         {noStreamExist ? (
+                            <Stack
+                                justifyContent="center"
+                                alignItems="center"
+                                style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    // backgroundColor: "#622D93", // Keep this for green screening
+                                    backgroundColor: colors.darkNavy,
+                                }}
+                            >
+                                <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Stream Not Found</Typography>
+                            </Stack>
+                        ) : (
                             <video
                                 key={selectedWsURL}
                                 id={"remoteVideo"}
@@ -123,23 +139,6 @@ const AppInner = () => {
                                     height: iframeDimensions.height,
                                 }}
                             />
-                        ) : (
-                            // TODO replace with fallback image
-                            <Stack
-                                justifyContent="center"
-                                alignItems="center"
-                                style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    // backgroundColor: "#622D93", // Keep this for green screening
-                                    backgroundColor: colors.darkNavy,
-                                }}
-                            >
-                                <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Stream Not Found</Typography>
-                            </Stack>
                         )}
 
                         <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
