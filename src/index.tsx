@@ -83,8 +83,7 @@ const AppInner = () => {
                     disableRemotePlayback
                     playsInline
                     controlsList="nodownload"
-                    controls={false}
-                    autoPlay
+                    // controls={false}
                     onEnded={() => {
                         setWatchedTrailer(true)
                         localStorage.setItem("watchedTrailer", "true")
@@ -93,8 +92,13 @@ const AppInner = () => {
                         height: "100%",
                         width: "100%",
                     }}
+                    controls
+                    autoPlay
                 >
-                    <source src="https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9" />
+                    <source
+                        src="https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"
+                        type="video/mp4"
+                    />
                 </video>
             </Stack>
         )
