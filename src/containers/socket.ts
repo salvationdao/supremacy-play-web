@@ -217,18 +217,18 @@ const UseWebsocket = (): WebSocketProperties => {
     }, [setOutgoing])
 
     // subscription function for Faction Ability only
-    const abilitySubs = useRef<{ [abilityID: string]: SubscribeCallback[] }>({})
+    const abilitySubs = useRef<{ [abilityIdentity: string]: SubscribeCallback[] }>({})
     const subscribeAbilityNetMessage = useMemo(() => {
-        return <T>(abilityID: string, callback: (payload: T) => void) => {
-            if (abilitySubs.current[abilityID]) {
-                abilitySubs.current[abilityID].push(callback)
+        return <T>(abilityIdentity: string, callback: (payload: T) => void) => {
+            if (abilitySubs.current[abilityIdentity]) {
+                abilitySubs.current[abilityIdentity].push(callback)
             } else {
-                abilitySubs.current[abilityID] = [callback]
+                abilitySubs.current[abilityIdentity] = [callback]
             }
             return () => {
-                const i = abilitySubs.current[abilityID].indexOf(callback)
+                const i = abilitySubs.current[abilityIdentity].indexOf(callback)
                 if (i === -1) return
-                abilitySubs.current[abilityID].splice(i, 1)
+                abilitySubs.current[abilityIdentity].splice(i, 1)
             }
         }
     }, [])

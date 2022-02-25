@@ -1,11 +1,11 @@
-import { Box } from '@mui/material'
-import BigNumber from 'bignumber.js'
-import { useEffect, useState } from 'react'
-import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from '..'
-import { NullUUID } from '../../constants'
-import { useAuth, useWebsocket } from '../../containers'
-import { shadeColor } from '../../helpers'
-import { GameAbility, GameAbilityTargetPrice } from '../../types'
+import { Box } from "@mui/material"
+import BigNumber from "bignumber.js"
+import { useEffect, useState } from "react"
+import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
+import { NullUUID } from "../../constants"
+import { useAuth, useWebsocket } from "../../containers"
+import { shadeColor } from "../../helpers"
+import { GameAbility, GameAbilityTargetPrice } from "../../types"
 
 export const SkillBar = ({
     index,
@@ -19,10 +19,10 @@ export const SkillBar = ({
     const { factionID } = useAuth()
     const { state, subscribeAbilityNetMessage } = useWebsocket()
 
-    const { id } = gameAbility
-    const [supsCost, setSupsCost] = useState(new BigNumber('0'))
-    const [currentSups, setCurrentSups] = useState(new BigNumber('0'))
-    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber('0'))
+    const { identity } = gameAbility
+    const [supsCost, setSupsCost] = useState(new BigNumber("0"))
+    const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
+    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber("0"))
 
     const [gameAbilityTargetPrice, setGameAbilityTargetPrice] = useState<GameAbilityTargetPrice>()
 
@@ -33,16 +33,16 @@ export const SkillBar = ({
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
 
-        return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(id, (payload) => {
+        return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(identity, (payload) => {
             if (!payload) return
             setGameAbilityTargetPrice(payload)
         })
-    }, [id, state, subscribeAbilityNetMessage, factionID])
+    }, [identity, state, subscribeAbilityNetMessage, factionID])
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
-        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy('1000000000000000000')
-        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy('1000000000000000000')
+        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy("1000000000000000000")
+        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy("1000000000000000000")
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
 
@@ -50,7 +50,7 @@ export const SkillBar = ({
             setInitialTargetCost(supsCost)
 
             // Cache max price for the popover
-            maxAbilityPriceMap.current.set(id, supsCost)
+            maxAbilityPriceMap.current.set(identity, supsCost)
         }
     }, [gameAbilityTargetPrice])
 
@@ -58,17 +58,17 @@ export const SkillBar = ({
         <Box
             key={index}
             sx={{
-                position: 'absolute',
+                position: "absolute",
                 bottom: 0,
                 right: index * WIDTH_PER_SLANTED_BAR - index * 1,
                 width: WIDTH_PER_SLANTED_BAR_ACTUAL,
-                height: '100%',
+                height: "100%",
                 zIndex: 4,
-                pointerEvents: 'none',
+                pointerEvents: "none",
             }}
         >
             <SlantedBar
-                backgroundColor={shadeColor('#4844A0', 100 - index * 28)}
+                backgroundColor={shadeColor("#4844A0", 100 - index * 28)}
                 progressPercent={progressPercent}
                 costPercent={costPercent}
             />
