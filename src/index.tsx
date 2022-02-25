@@ -1,7 +1,8 @@
-import { Box, Button, Stack, ThemeProvider } from "@mui/material"
+import { Box, Button, Stack, ThemeProvider, Typography } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
 import * as Sentry from "@sentry/react"
+import moment from "moment"
 import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import {
@@ -37,7 +38,7 @@ import {
     useDimension,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
-import { useToggle } from "./hooks"
+import { useInterval, useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
 
@@ -58,6 +59,81 @@ if (SENTRY_CONFIG) {
     })
 }
 
+const Countdown = () => {
+    const [endTime, setEndTime] = useState<Date>(new Date("2022-03-01T04:00:00.000Z"))
+    const [timeRemain, setTimeRemain] = useState<number>(0)
+    const [delay, setDelay] = useState<number | null>(null)
+    const [hours, setHours] = useState<number>()
+    const [minutes, setMinutes] = useState<number>()
+    const [seconds, setSeconds] = useState<number>()
+
+    useEffect(() => {
+        if (endTime) {
+            setDelay(1000)
+            const d = moment.duration(moment(endTime).diff(moment()))
+            setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
+            return
+        }
+        setDelay(null)
+    }, [])
+
+    useInterval(() => {
+        setTimeRemain((t) => Math.max(t - 1, 0))
+        setHours(moment(endTime).diff(moment(), "hours"))
+        setMinutes(moment(endTime).diff(moment(), "minutes") % 24)
+        setSeconds(moment(endTime).diff(moment(), "seconds") % 60)
+    }, delay)
+
+    return (
+        <Stack
+            alignItems="center"
+            justifyContent="center"
+            sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}
+        >
+            <Stack sx={{ px: 4.2, py: 4, backgroundColor: "#00000060", borderRadius: 0.7 }}>
+                <Typography
+                    variant="h5"
+                    sx={{
+                        mb: 0.5,
+                        color: colors.text,
+                        fontFamily: "Nostromo Regular Bold",
+                        textAlign: "center",
+                    }}
+                >
+                    VERSION UPDATE INCOMING
+                </Typography>
+                <Typography
+                    variant="body1"
+                    sx={{
+                        color: colors.neonBlue,
+                        fontFamily: "Nostromo Regular Medium",
+                        textAlign: "center",
+                    }}
+                >
+                    TUESDAY 12 PM (PERTH)
+                    <br />
+                    MONDAY 8 PM PST
+                </Typography>
+
+                <Stack direction="row" justifyContent="space-around" sx={{ mt: 2 }}>
+                    <Stack alignItems="center" sx={{ px: 2, py: 1.5, backgroundColor: "#00000040" }}>
+                        <Typography sx={{ color: colors.neonBlue }}>{hours}</Typography>
+                        <Typography>HOURS</Typography>
+                    </Stack>
+                    <Stack alignItems="center" sx={{ px: 2, py: 1.5, backgroundColor: "#00000040" }}>
+                        <Typography sx={{ color: colors.neonBlue }}>{minutes}</Typography>
+                        <Typography>MINUTES</Typography>
+                    </Stack>
+                    <Stack alignItems="center" sx={{ px: 2, py: 1.5, backgroundColor: "#00000040" }}>
+                        <Typography sx={{ color: colors.neonBlue }}>{seconds}</Typography>
+                        <Typography>SECONDS</Typography>
+                    </Stack>
+                </Stack>
+            </Stack>
+        </Stack>
+    )
+}
+
 const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
@@ -65,6 +141,7 @@ const AppInner = () => {
     const [trailerEnded, toggleTrailerEnded] = useToggle()
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
+    // Trailer video
     if (!trailerEnded) {
         return (
             <Stack
@@ -166,10 +243,13 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
+                        {/* Temporary */}
+                        <Countdown />
+
                         <LoadMessage />
                         <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
-                        {user && haveSups && (
+                        {/* {user && haveSups && (
                             <Box>
                                 <VotingSystem />
                                 <MiniMap />
@@ -179,7 +259,7 @@ const AppInner = () => {
                                 <BattleEndScreen />
                                 <BattleHistory />
                             </Box>
-                        )}
+                        )} */}
                     </Box>
                 </Stack>
 
@@ -194,7 +274,7 @@ const AppInner = () => {
                 </Box>
             </Stack>
 
-            {/* Just the under background, visible when drawers open / close */}
+            {/* Just the under background, glimpse of it is visible when drawers open / close */}
             <Box
                 sx={{
                     position: "fixed",
