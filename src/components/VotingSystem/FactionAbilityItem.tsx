@@ -97,7 +97,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
     const theme = useTheme<Theme>()
 
-    const { label, colour, imageUrl, id, description } = gameAbility
+    const { label, colour, imageUrl, identity, description } = gameAbility
     const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
     const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
@@ -110,11 +110,11 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
 
-        return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(id, (payload) => {
+        return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(identity, (payload) => {
             if (!payload) return
             setGameAbilityTargetPrice(payload)
         })
-    }, [id, state, subscribeAbilityNetMessage, factionID])
+    }, [identity, state, subscribeAbilityNetMessage, factionID])
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
@@ -132,7 +132,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
 
     const onContribute = async (amount: number) => {
         send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
-            gameAbilityID: id,
+            gameAbilityID: identity,
             amount: new BigNumber(amount),
         })
     }

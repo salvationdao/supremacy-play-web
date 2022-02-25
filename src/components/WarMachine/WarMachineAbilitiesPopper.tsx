@@ -1,8 +1,8 @@
-import { Box, Popover, Stack, Typography } from '@mui/material'
-import BigNumber from 'bignumber.js'
-import { ClipThing, WarMachineAbilityItem } from '..'
-import { colors } from '../../theme/theme'
-import { GameAbility, WarMachineState } from '../../types'
+import { Box, Popover, Stack, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
+import { ClipThing, WarMachineAbilityItem } from ".."
+import { colors } from "../../theme/theme"
+import { GameAbility, WarMachineState } from "../../types"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -29,20 +29,20 @@ export const WarMachineAbilitiesPopover = ({
             anchorEl={popoverRef.current}
             onClose={() => toggleOpen(false)}
             anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
+                vertical: "top",
+                horizontal: "left",
             }}
             transformOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+                vertical: "bottom",
+                horizontal: "left",
             }}
-            PaperProps={{ sx: { backgroundColor: 'transparent', boxShadow: 0 } }}
+            PaperProps={{ sx: { backgroundColor: "transparent", boxShadow: 0 } }}
         >
             <Box
                 sx={{
                     ml: 2.5,
                     mb: 1.75,
-                    filter: 'drop-shadow(0 3px 3px #00000050)',
+                    filter: "drop-shadow(0 3px 3px #00000050)",
                 }}
             >
                 <ClipThing
@@ -50,7 +50,7 @@ export const WarMachineAbilitiesPopover = ({
                     clipSlantSize="8px"
                     border={{
                         isFancy: true,
-                        borderThickness: '1.4px',
+                        borderThickness: "1.4px",
                         borderColor: factionTheme.primary,
                     }}
                 >
@@ -62,23 +62,23 @@ export const WarMachineAbilitiesPopover = ({
                                         width: 17,
                                         height: 17,
                                         backgroundImage: `url(${warMachine.imageUrl})`,
-                                        backgroundRepeat: 'no-repeat',
-                                        backgroundPosition: 'center',
-                                        backgroundSize: 'contain',
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "contain",
                                         backgroundColor: factionTheme.primary,
                                         mb: 0.3,
                                     }}
                                 />
                                 <Typography
-                                    sx={{ lineHeight: 1, color: factionTheme.primary, fontWeight: 'fontWeightBold' }}
+                                    sx={{ lineHeight: 1, color: factionTheme.primary, fontWeight: "fontWeightBold" }}
                                 >
-                                    WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? 'S' : ''}
+                                    WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
                                 </Typography>
                             </Stack>
 
                             <Stack spacing={0.9}>
                                 {gameAbilities.map((ga, i) => (
-                                    <Box key={ga.id} sx={{ ml: (i + 1) * 0.2 }}>
+                                    <Box key={ga.identity} sx={{ ml: (i + 1) * 0.2 }}>
                                         <WarMachineAbilityItem
                                             gameAbility={ga}
                                             maxAbilityPriceMap={maxAbilityPriceMap}

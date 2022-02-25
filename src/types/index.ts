@@ -45,7 +45,7 @@ export interface BattleAbility {
 }
 
 export interface GameAbility {
-    id: string
+    identity: string
     label: string
     colour: string
     description: string
