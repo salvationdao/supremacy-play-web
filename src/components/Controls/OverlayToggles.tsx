@@ -30,7 +30,7 @@ export const OverlayToggles = () => {
             </TooltipHelper>
 
             {/* Map */}
-            <TooltipHelper text="Toggle the mini map.">
+            <TooltipHelper text="Toggle the mini map, it will show when the battle begins.">
                 <IconButton
                     size="small"
                     onClick={toggleIsMapOpen}
