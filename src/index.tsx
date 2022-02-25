@@ -62,6 +62,44 @@ const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
+    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
+
+    if (!watchedTrailer) {
+        return (
+            <Stack
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    width: "100vw",
+                    height: "100vh",
+                    backgroundColor: "#000000",
+                    "video::-internal-media-controls-overlay-cast-button": {
+                        display: "none",
+                    },
+                }}
+            >
+                <video
+                    disablePictureInPicture
+                    disableRemotePlayback
+                    playsInline
+                    controlsList="nodownload"
+                    controls={false}
+                    autoPlay
+                    onEnded={() => {
+                        setWatchedTrailer(true)
+                        localStorage.setItem("watchedTrailer", "true")
+                    }}
+                    style={{
+                        height: "100%",
+                        width: "100%",
+                    }}
+                    src={
+                        "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"
+                    }
+                />
+            </Stack>
+        )
+    }
 
     return (
         <>
