@@ -26,8 +26,4 @@ declare module "*.json" {
 }
 
 // ant media
-
-declare module "antmedia-vendor/js/external" {
-    const content: any
-    export default content
-}
+declare module "@antmedia/webrtc_adaptor"
