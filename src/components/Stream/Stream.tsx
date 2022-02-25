@@ -26,14 +26,33 @@ const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSu
                         : "You must connect your passport to view the battle stream."}
                 </Typography>
             </Box>
-            <iframe
-                src="https://stats.supremacy.game/#/"
-                style={{
+            <Box
+                sx={{
+                    position: "position",
                     flex: 1,
-                    width: "100%",
-                    border: 0,
                 }}
-            ></iframe>
+            >
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        boxShadow: "inset 0 0 1000px #000000",
+                        pointerEvents: "none",
+                    }}
+                />
+
+                <iframe
+                    src="https://stats.supremacy.game/#/"
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        border: 0,
+                    }}
+                ></iframe>
+            </Box>
         </Stack>
     )
 }
