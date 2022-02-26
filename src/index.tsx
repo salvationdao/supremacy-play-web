@@ -95,6 +95,7 @@ const Countdown = () => {
                 backgroundColor: "rgba(0,0,0,0.5)",
             }}
         >
+
             <Typography
                 variant="h5"
                 sx={{
@@ -156,10 +157,11 @@ const AppInner = () => {
                     backgroundSize: "cover",
                     backgroundPosition: "bottom right",
                     display: "flex",
+                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center"
                 }}
-            >
+            ><LoadMessage />
                 <Countdown />
             </Box>
         )
