@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from ".."
-import { GAME_SERVER_HOSTNAME } from "../../constants"
+import { PASSPORT_SERVER_HOST } from "../../constants"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
@@ -39,7 +39,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                                 <StyledImageText
                                     color={f.theme.primary}
                                     text={f.label}
-                                    imageUrl={f.logoBlobID ? `${GAME_SERVER_HOSTNAME}/api/files/${f.logoBlobID}` : undefined}
+                                    imageUrl={f.logoBlobID ? `${PASSPORT_SERVER_HOST}/api/files${f.logoBlobID}` : undefined}
                                     variant="h5"
                                     imageSize={29}
                                     imageBorderThickness="2px"

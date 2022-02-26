@@ -1,30 +1,33 @@
-import { Box, Button, Stack, ThemeProvider, Typography } from "@mui/material"
-import { Theme } from "@mui/material/styles"
-import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from "@ninjasoftware/passport-gamebar"
-import * as Sentry from "@sentry/react"
-import moment from "moment"
-import { useEffect, useState } from "react"
-import ReactDOM from "react-dom"
+import { Box, Button, Stack, ThemeProvider, Typography } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { DrawerProvider, GameBar, GAMEBAR_CONSTANTS, WalletProvider } from '@ninjasoftware/passport-gamebar'
+import * as Sentry from '@sentry/react'
+import moment from 'moment'
+import { useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
+import { Controls, LeftSideBar, LoadMessage, Stream, WarMachineQueue } from './components'
 import {
-	BattleEndScreen,
-	BattleHistory,
-	Controls,
-	LeftSideBar,
-	LiveVotingChart,
-	LoadMessage,
-	MiniMap,
-	Notifications,
-	Stream,
-	VotingSystem,
-	WarMachineQueue,
-	WarMachineStats,
-} from "./components"
-import { CONTROLS_HEIGHT, PASSPORT_SERVER_HOSTNAME, PASSPORT_WEB, SENTRY_CONFIG, SUPREMACY_PAGE, TOKEN_SALE_PAGE } from "./constants"
-import { AuthProvider, DimensionProvider, GameProvider, OverlayTogglesProvider, SocketProvider, StreamProvider, useAuth, useDimension } from "./containers"
-import { mergeDeep, shadeColor } from "./helpers"
-import { useInterval, useToggle } from "./hooks"
-import { colors, theme } from "./theme/theme"
-import { FactionThemeColor, UpdateTheme } from "./types"
+	CONTROLS_HEIGHT,
+	PASSPORT_SERVER_HOST,
+	PASSPORT_WEB,
+	SENTRY_CONFIG,
+	SUPREMACY_PAGE,
+	TOKEN_SALE_PAGE,
+} from './constants'
+import {
+	AuthProvider,
+	DimensionProvider,
+	GameProvider,
+	OverlayTogglesProvider,
+	SocketProvider,
+	StreamProvider,
+	useAuth,
+	useDimension,
+} from './containers'
+import { mergeDeep, shadeColor } from './helpers'
+import { useInterval, useToggle } from './hooks'
+import { colors, theme } from './theme/theme'
+import { FactionThemeColor, UpdateTheme } from './types'
 
 if (SENTRY_CONFIG) {
 	// import { Integrations } from '@sentry/tracing'
@@ -44,8 +47,8 @@ if (SENTRY_CONFIG) {
 }
 
 const Countdown = () => {
-	const [endTime, setEndTime] = useState<Date>(new Date("2022-03-01T04:00:00.000Z"))
-	const [timeRemain, setTimeRemain] = useState<number>(0)
+	const [endTime, ] = useState<Date>(new Date("2022-03-01T04:00:00.000Z"))
+	const [, setTimeRemain] = useState<number>(0)
 	const [delay, setDelay] = useState<number | null>(null)
 	const [hours, setHours] = useState<number>()
 	const [minutes, setMinutes] = useState<number>()
@@ -195,10 +198,10 @@ const AppInner = () => {
 			<GameBar
 				barPosition="top"
 				gameserverSessionID={gameserverSessionID}
-				tokenSalePage={TOKEN_SALE_PAGE}
+				tokenSalePage={`${TOKEN_SALE_PAGE}src/components/VotingSystem/FactionAbilities.tsx`}
 				supremacyPage={SUPREMACY_PAGE}
 				passportWeb={PASSPORT_WEB}
-				passportServerHost={PASSPORT_SERVER_HOSTNAME}
+				passportServerHost={PASSPORT_SERVER_HOST}
 				MechQueueComponent={<WarMachineQueue />}
 			/>
 

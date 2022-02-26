@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import { StyledImageText, StyledNormalText } from ".."
-import { GAME_SERVER_HOSTNAME } from "../../constants"
+import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST } from "../../constants"
 import { httpProtocol } from "../../containers"
 import { BattleAbility, User } from "../../types"
 
@@ -72,13 +72,13 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
         return (
             <Box>
                 <StyledImageText
-                    imageUrl={avatarID ? `${GAME_SERVER_HOSTNAME}/api/files/${avatarID}` : undefined}
+                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST}/api/files${avatarID}` : undefined}
                     text={username}
                     color={faction.theme.primary}
                 />
                 <StyledNormalText text=" failed to choose a target location in time. " />
                 <StyledImageText
-                    imageUrl={nextAvatarID ? `${GAME_SERVER_HOSTNAME}/api/files/${nextAvatarID}` : undefined}
+                    imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST}/api/files${nextAvatarID}` : undefined}
                     text={nextUsername}
                     color={nextFaction.theme.primary}
                 />
@@ -93,13 +93,13 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
         return (
             <Box>
                 <StyledImageText
-                    imageUrl={avatarID ? `${GAME_SERVER_HOSTNAME}/api/files/${avatarID}` : undefined}
+                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST}/api/files${avatarID}` : undefined}
                     text={username}
                     color={faction.theme.primary}
                 />
                 <StyledNormalText text=" has disconnected. " />
                 <StyledImageText
-                    imageUrl={nextAvatarID ? `${GAME_SERVER_HOSTNAME}/api/files/${nextAvatarID}` : undefined}
+                    imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST}/api/files${nextAvatarID}` : undefined}
                     text={nextUsername}
                     color={nextFaction.theme.primary}
                 />
@@ -114,7 +114,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
         return (
             <Box>
                 <StyledImageText
-                    imageUrl={avatarID ? `${GAME_SERVER_HOSTNAME}/api/files/${avatarID}` : undefined}
+                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST}/api/files${avatarID}` : undefined}
                     text={username}
                     color={faction.theme.primary}
                 />
