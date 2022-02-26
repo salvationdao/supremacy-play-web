@@ -3,7 +3,7 @@ import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
 import { useEffect, useState } from "react"
 import { FactionAbilityItem } from ".."
-import { NullUUID, PASSPORT_WEB } from "../../constants"
+import { NullUUID, GAME_SERVER_HOSTNAME } from "../../constants"
 import { useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { GameAbility } from "../../types"
@@ -34,7 +34,7 @@ export const FactionAbilities = () => {
                         sx={{
                             width: 19,
                             height: 19,
-                            backgroundImage: `url(${PASSPORT_WEB}/api/files/${user?.faction.logoBlobID})`,
+                            backgroundImage: `url(${GAME_SERVER_HOSTNAME}/api/files/${user?.faction.logoBlobID})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",

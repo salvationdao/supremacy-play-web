@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from ".."
 import { GenericWarMachinePNG } from "../../assets"
-import { PASSPORT_WEB } from "../../constants"
+import { GAME_SERVER_HOSTNAME } from "../../constants"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
@@ -33,7 +33,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 <StyledImageText
                     color={winningFaction.theme.primary}
                     text={winningFaction.label}
-                    imageUrl={`${PASSPORT_WEB}/api/files/${winningFaction.logoBlobID}`}
+                    imageUrl={`${GAME_SERVER_HOSTNAME}/api/files/${winningFaction.logoBlobID}`}
                     variant="h4"
                     imageSize={40}
                     imageBorderThickness="0px"

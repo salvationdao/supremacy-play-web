@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from ".."
-import { PASSPORT_WEB } from "../../constants"
+import { GAME_SERVER_HOSTNAME } from "../../constants"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
@@ -39,7 +39,7 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                                 <StyledImageText
                                     color={u.faction.theme.primary}
                                     text={u.username}
-                                    imageUrl={u.avatarID ? `${PASSPORT_WEB}/api/files/${u.avatarID}` : undefined}
+                                    imageUrl={u.avatarID ? `${GAME_SERVER_HOSTNAME}/api/files/${u.avatarID}` : undefined}
                                     variant="h5"
                                     imageSize={29}
                                     imageBorderThickness="2px"

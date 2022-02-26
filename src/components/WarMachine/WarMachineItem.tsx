@@ -11,7 +11,7 @@ import {
 } from ".."
 import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
-import { NullUUID, PASSPORT_WEB } from "../../constants"
+import { NullUUID, GAME_SERVER_HOSTNAME } from "../../constants"
 import HubKey from "../../keys"
 import { useToggle } from "../../hooks"
 import BigNumber from "bignumber.js"
@@ -226,7 +226,7 @@ export const WarMachineItem = ({
                                     sx={{
                                         width: 26,
                                         height: 26,
-                                        backgroundImage: `url(${PASSPORT_WEB}/api/files/${logoBlobID})`,
+                                        backgroundImage: `url(${GAME_SERVER_HOSTNAME}/api/files/${logoBlobID})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
