@@ -88,7 +88,7 @@ const Countdown = () => {
         <Stack
             alignItems="center"
             justifyContent="center"
-            sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}
+            sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, zIndex: 999 }}
         >
             <Stack sx={{ px: 4.2, py: 4, backgroundColor: "#00000060", borderRadius: 0.7 }}>
                 <Typography
