@@ -1,8 +1,8 @@
-export const GAME_SERVER_HOSTNAME = process.env.GAME_SERVER_HOSTNAME || "localhost:8084"
+export const GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "localhost:8084"
 export const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://sale.supremacy.game/"
 export const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
 export const PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003"
-export const PASSPORT_SERVER_HOST = process.env.PASSPORT_SERVER_HOST || "localhost:8086"
+export const PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
 export const VIDEO_SERVER_WEBSOCKET =
     process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
 export const VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
