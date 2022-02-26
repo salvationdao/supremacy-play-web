@@ -61,7 +61,7 @@ export const LiveCounts = () => {
                     color={factionsColor?.zaibatsu}
                     tooltip="Zaibatsu Heavy Industries"
                 />
-                <ReUsedText text={Math.abs(viewers.Other).toFixed()} color={"grey !important"} tooltip="Not enlisted" />
+                {/* <ReUsedText text={Math.abs(viewers.Other).toFixed()} color={"grey !important"} tooltip="Not enlisted" /> */}
             </Stack>
         </Stack>
     )
