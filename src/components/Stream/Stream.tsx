@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useWallet } from "@ninjasoftware/passport-gamebar"
+import { useWallet } from "../GameBar"
 import { useEffect } from "react"
 import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useAuth, useDimension, useStream } from "../../containers"

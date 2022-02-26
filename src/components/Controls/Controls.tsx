@@ -3,7 +3,7 @@ import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { ResolutionSelect } from "./ResolutionSelect"
 import { colors } from "../../theme/theme"
 import { StreamSelect } from "./StreamSelect"
-import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
+import { GAMEBAR_CONSTANTS } from "../GameBar"
 import { useAuth } from "../../containers"
 import { shadeColor } from "../../helpers"
 

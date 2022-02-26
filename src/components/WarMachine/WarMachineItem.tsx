@@ -15,7 +15,7 @@ import { NullUUID, PASSPORT_SERVER_HOST } from "../../constants"
 import HubKey from "../../keys"
 import { useToggle } from "../../hooks"
 import BigNumber from "bignumber.js"
-import { useDrawer } from "@ninjasoftware/passport-gamebar"
+import { useDrawer } from "../../components/GameBar"
 
 const WIDTH_WM_IMAGE = 92
 const WIDTH_CENTER = 142

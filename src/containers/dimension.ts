@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { GAMEBAR_CONSTANTS, useDrawer } from "@ninjasoftware/passport-gamebar"
+import { GAMEBAR_CONSTANTS } from "../components/GameBar"
+import { useDrawer } from "../components/GameBar/containers"
 import { CONTROLS_HEIGHT, STREAM_ASPECT_RATIO_W_H } from "../constants"
 import { useWindowDimensions } from "../hooks"
 

@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { useWallet } from "@ninjasoftware/passport-gamebar"
+import { useWallet } from "../../GameBar"
 import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 

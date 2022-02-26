@@ -104,3 +104,11 @@ export const rad2Deg = (rad: number): number => {
 export const clamp = (min: number, value: number, max: number) => {
     return Math.min(Math.max(value, min), max)
 }
+
+export function acronym(s: string): string {
+    const x = s.match(/\b(\w)/g)
+    if (!x) {
+        return ""
+    }
+    return x.join("").toUpperCase()
+}
