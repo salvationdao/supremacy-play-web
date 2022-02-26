@@ -15,7 +15,7 @@ export const StreamSelect = () => {
     const [streams, setStreams] = useState<Stream[]>([])
     const [streamOptions, setStreamOptions] = useState<Stream[]>([])
 
-    // Subscribe to list of streams
+    // Subscribe to list of streams``
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<Stream[]>(HubKey.GetStreamList, (payload) => {

@@ -89,10 +89,11 @@ const Countdown = () => {
         <Stack
             sx={{
                 position: "absolute",
-                bottom: 20,
-                left: 20,
+                bottom: "50%",
+                left: 0,
                 px: 4.2,
                 py: 4,
+                transform: "translateXY(-50%%, -50%)",
                 backgroundColor: "#00000060",
                 borderRadius: 0.7,
                 zIndex: 999,
@@ -107,7 +108,7 @@ const Countdown = () => {
                     textAlign: "center",
                 }}
             >
-                VERSION UPDATE INCOMING
+                GAME RESUMES
             </Typography>
             <Typography
                 variant="body1"
@@ -117,9 +118,9 @@ const Countdown = () => {
                     textAlign: "center",
                 }}
             >
-                TUESDAY 12 PM (PERTH)
+                SUNDAY 3:30 PM (PERTH)
                 <br />
-                MONDAY 8 PM PST
+                SUNDAY 7:30 AM PST
             </Typography>
 
             <Stack direction="row" justifyContent="space-around" sx={{ mt: 2 }}>
@@ -218,7 +219,7 @@ const AppInner = () => {
                 passportServerHost={PASSPORT_SERVER_HOST}
                 MechQueueComponent={<WarMachineQueue />}
             />
-
+            <Countdown />
             <Stack
                 sx={{
                     mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
@@ -254,17 +255,17 @@ const AppInner = () => {
                         <LoadMessage />
                         <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
-                        {user && haveSups && (
-                            <Box>
-                                <VotingSystem />
-                                <MiniMap />
-                                <Notifications />
-                                <LiveVotingChart />
-                                <WarMachineStats />
-                                <BattleEndScreen />
-                                <BattleHistory />
-                            </Box>
-                        )}
+                        {/*{user && haveSups && (*/}
+                        {/*    <Box>*/}
+                        {/*        <VotingSystem />*/}
+                        {/*        <MiniMap />*/}
+                        {/*        <Notifications />*/}
+                        {/*        <LiveVotingChart />*/}
+                        {/*        <WarMachineStats />*/}
+                        {/*        <BattleEndScreen />*/}
+                        {/*        <BattleHistory />*/}
+                        {/*    </Box>*/}
+                        {/*)}*/}
                     </Box>
                 </Stack>
 

@@ -214,7 +214,11 @@ export const BattleAbility = () => {
                                             cost={factionVotePrice.multipliedBy(1).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(1)}
-                                            Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
+                                            Suffix={<><SvgApplause size="14px" fill="#FFFFFF" />
+                                                <SvgApplause size="14px" fill="#FFFFFF" />
+                                                <SvgApplause size="14px" fill="#FFFFFF" />
+                                                (factionVotePrice.multipliedBy(1).toNumber())
+                                            </>}
                                         />
                                         <VotingButton
                                             color={colour}
