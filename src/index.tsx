@@ -250,7 +250,6 @@ const AppInner = () => {
                         }}
                     >
                         {/* Temporary */}
-                        <Countdown />
 
                         <LoadMessage />
                         <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
