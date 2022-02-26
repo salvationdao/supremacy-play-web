@@ -1,6 +1,6 @@
 import { Box, Button, Stack, ThemeProvider, Typography } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { DrawerProvider, GAMEBAR_CONSTANTS, WalletProvider } from './components/GameBar'
+import { DrawerProvider, GAMEBAR_CONSTANTS, WalletProvider } from "./components/GameBar"
 import GameBar from "./components/GameBar"
 import * as Sentry from "@sentry/react"
 import moment from "moment"
@@ -88,15 +88,11 @@ const Countdown = () => {
     return (
         <Stack
             sx={{
-                position: "absolute",
-                bottom: "50%",
-                left: 0,
                 px: 4.2,
                 py: 4,
-                transform: "translateXY(-50%%, -50%)",
-                backgroundColor: "#00000060",
-                borderRadius: 0.7,
+                borderRadius: 1,
                 zIndex: 999,
+                backgroundColor: "rgba(0,0,0,0.5)",
             }}
         >
             <Typography
@@ -148,8 +144,29 @@ const AppInner = () => {
     const [trailerEnded, toggleTrailerEnded] = useToggle(true)
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
+    if (haveSups !== "nello") {
+        return (
+            <Box
+                sx={{
+                    position: "fixed",
+                    left: 0, top: 0,
+                    height: "100vh", width: "100vw",
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                    backgroundImage: "url(/mech.jpeg)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "bottom right",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+            >
+                <Countdown />
+            </Box>
+        )
+    }
+
     // Trailer video
-    if (!trailerEnded)  {
+    if (!trailerEnded) {
         return (
             <Stack
                 alignItems="center"
