@@ -61,7 +61,7 @@ if (SENTRY_CONFIG) {
 }
 
 const Countdown = () => {
-    const [endTime] = useState<Date>(new Date("2022-03-01T04:00:00.000Z"))
+    const [endTime] = useState<Date>(new Date("2022-02-28T07:30:00.000Z"))
     const [, setTimeRemain] = useState<number>(0)
     const [delay, setDelay] = useState<number | null>(null)
     const [hours, setHours] = useState<number>()
