@@ -27,6 +27,7 @@ export const LoadMessage = () => {
                 left: 20,
                 px: 1.6,
                 py: 0.5,
+                backgroundColor: "#000000",
                 animation: `${pulseEffect} 5s infinite`,
                 filter: "drop-shadow(0 3px 3px #00000060)",
                 zIndex: 999,
