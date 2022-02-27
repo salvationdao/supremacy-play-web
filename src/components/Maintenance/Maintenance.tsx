@@ -85,7 +85,7 @@ export const Maintenance = () => {
                     (SUNDAY 3:30 PM PERTH TIME)
                 </Typography>
 
-                <Stack direction="row" justifyContent="space-around" sx={{ mt: 2 }}>
+                {/* <Stack direction="row" justifyContent="space-around" sx={{ mt: 2 }}>
                     <Stack alignItems="center" sx={{ px: 2, py: 1.5, backgroundColor: "#00000040" }}>
                         <Typography sx={{ color: colors.neonBlue }}>{hours}</Typography>
                         <Typography>HOURS</Typography>
@@ -98,7 +98,7 @@ export const Maintenance = () => {
                         <Typography sx={{ color: colors.neonBlue }}>{seconds}</Typography>
                         <Typography>SECONDS</Typography>
                     </Stack>
-                </Stack>
+                </Stack> */}
             </Stack>
         </Box>
     )
