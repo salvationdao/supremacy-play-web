@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import moment from "moment"
 import { useEffect, useState } from "react"
+import { MaintenanceJPG } from "../../assets"
 import { MAINTENANCE_END_TIME } from "../../constants"
 import { useInterval } from "../../hooks"
 import { colors } from "../../theme/theme"
@@ -39,7 +40,7 @@ export const Maintenance = () => {
                 left: 0,
                 right: 0,
                 backgroundColor: "rgba(0,0,0,0.5)",
-                backgroundImage: "url(/mech.jpeg)",
+                backgroundImage: `url(${MaintenanceJPG})`,
                 backgroundSize: "cover",
                 backgroundPosition: "bottom right",
                 display: "flex",

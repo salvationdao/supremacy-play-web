@@ -1,9 +1,9 @@
-import { Box, Button, Stack, ThemeProvider, Typography } from "@mui/material"
+import { Box, Stack, ThemeProvider, Typography } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GAMEBAR_CONSTANTS, WalletProvider } from "./components/GameBar"
 import GameBar from "./components/GameBar"
 import * as Sentry from "@sentry/react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import ReactDOM from "react-dom"
 import {
     MiniMap,
@@ -21,7 +21,6 @@ import {
     Maintenance,
 } from "./components"
 import {
-    CONTROLS_HEIGHT,
     PASSPORT_SERVER_HOST,
     PASSPORT_WEB,
     SENTRY_CONFIG,
@@ -44,7 +43,7 @@ import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
-import { SvgPlay } from "./assets"
+import { SvgPlay, TrailerThumbPNG } from "./assets"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -95,27 +94,41 @@ const AppInner = () => {
                 }}
             >
                 {!isPlaying && (
-                    <Stack
-                        direction="row"
-                        justifyContent="center"
-                        spacing={1.2}
+                    <Box
                         sx={{
                             position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                            px: 2.6,
-                            py: 1,
-                            borderRadius: 1,
-                            backgroundColor: colors.darkerNeonBlue,
-                            boxShadow: 3,
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            backgroundImage: `url(${TrailerThumbPNG})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "contain",
                         }}
                     >
-                        <SvgPlay size="19px" />
-                        <Typography variant="h6" sx={{ lineHeight: 2, fontWeight: "fontWeightBold" }}>
-                            PLAY TRAILER
-                        </Typography>
-                    </Stack>
+                        <Stack
+                            direction="row"
+                            justifyContent="center"
+                            spacing={1.2}
+                            sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                px: 2.6,
+                                py: 1,
+                                borderRadius: 1,
+                                backgroundColor: colors.darkerNeonBlue,
+                                boxShadow: 10,
+                            }}
+                        >
+                            <SvgPlay size="19px" />
+                            <Typography variant="h6" sx={{ lineHeight: 2, fontWeight: "fontWeightBold" }}>
+                                PLAY TRAILER
+                            </Typography>
+                        </Stack>
+                    </Box>
                 )}
 
                 <video
