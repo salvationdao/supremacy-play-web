@@ -72,7 +72,7 @@ const AppInner = () => {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [isPlaying, toggleIsPlaying] = useToggle()
 
-    if (!watchedTrailer || watchedTrailer) {
+    if (!watchedTrailer && watchedTrailer) {
         return (
             <Stack
                 onClick={() => {
