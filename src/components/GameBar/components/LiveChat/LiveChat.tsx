@@ -18,13 +18,11 @@ import { acronym, shadeColor } from "../../../../helpers"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 
 const DrawerContent = ({
-    passportWeb,
     tabValue,
     setTabValue,
     chatMessages,
     onNewMessage,
 }: {
-    passportWeb: string
     tabValue: number
     setTabValue: Dispatch<SetStateAction<number>>
     chatMessages: ChatData[]
@@ -115,7 +113,7 @@ const DrawerContent = ({
                                         height: 21,
                                         flexShrink: 0,
                                         mb: 0.2,
-                                        backgroundImage: `url(${passportWeb}/api/files/${user.faction.logoBlobID})`,
+                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
@@ -139,7 +137,6 @@ const DrawerContent = ({
             <ChatMessages
                 primaryColor={primaryColor}
                 chatMessages={chatMessages}
-                passportWeb={passportWeb}
                 sentMessages={sentMessages}
                 failedMessages={failedMessages}
             />
@@ -170,7 +167,7 @@ const DrawerContent = ({
     )
 }
 
-export const LiveChat = ({ passportWeb }: { passportWeb: string }) => {
+export const LiveChat = () => {
     const { isLiveChatOpen } = useDrawer()
     const { user } = useAuth()
     const { state, subscribe } = useWebsocket()
@@ -247,7 +244,6 @@ export const LiveChat = ({ passportWeb }: { passportWeb: string }) => {
                 <DrawerButtons isFixed={false} />
 
                 <DrawerContent
-                    passportWeb={passportWeb}
                     tabValue={tabValue}
                     setTabValue={setTabValue}
                     chatMessages={tabValue == 0 ? globalChatMessages : factionChatMessages}

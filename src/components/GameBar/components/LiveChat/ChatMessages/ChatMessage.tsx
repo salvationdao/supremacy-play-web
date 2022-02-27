@@ -5,24 +5,8 @@ import { colors } from "../../../theme"
 import { ChatData } from "../../../types"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
 
-export const ChatMessage = ({
-    chat,
-    passportWeb,
-    isSent,
-    isFailed,
-}: {
-    chat: ChatData
-    passportWeb: string
-    isSent?: boolean
-    isFailed?: boolean
-}) => {
+export const ChatMessage = ({ chat, isSent, isFailed }: { chat: ChatData; isSent?: boolean; isFailed?: boolean }) => {
     const { fromUsername, messageColor, factionColour, factionLogoBlobID, avatarID, message, sentAt } = chat
-    // const filter = new Filter({
-    // 	regex: /[^a-zA-z0-9:alnum:|$|@]|^/gi,
-    // })
-
-    // The "aaa" makes it so that clean() doesnt throw error on messages that only contain emojis
-    const cleanedMessage = message //filter.clean(message + "aaa").substring(0, message.length)
 
     return (
         <Stack direction="row" spacing={0.5} sx={{ opacity: isSent ? 1 : 0.45 }}>
@@ -72,7 +56,7 @@ export const ChatMessage = ({
                     userSelect: "text",
                 }}
             >
-                <span style={{ color: messageColor, fontWeight: 700 }}>{fromUsername}</span>: {cleanedMessage}{" "}
+                <span style={{ color: messageColor, fontWeight: 700 }}>{fromUsername}</span>: {message}{" "}
                 <span
                     style={{
                         display: "inline-block",

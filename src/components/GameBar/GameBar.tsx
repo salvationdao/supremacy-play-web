@@ -1,15 +1,7 @@
 import { Box, CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material"
 import { ReactNode } from "react"
 import { Assets, MechQueue, Bar, DrawerButtons, LiveChat } from "./components"
-import {
-    WalletProvider,
-    DrawerProvider,
-    AuthProvider,
-    BarProvider,
-    SocketProvider,
-    ThemeProvider,
-    useTheme,
-} from "./containers"
+import { AuthProvider, BarProvider, SocketProvider, ThemeProvider, useTheme } from "./containers"
 
 const Inner = (props: GameBarBaseProps) => {
     const { currentTheme } = useTheme()
@@ -20,7 +12,7 @@ const Inner = (props: GameBarBaseProps) => {
             <Box sx={{ zIndex: 99999 }}>
                 <Bar {...props} />
                 <DrawerButtons />
-                <LiveChat passportWeb={props.passportWeb} />
+                <LiveChat />
                 <Assets passportWeb={props.passportWeb} />
                 <MechQueue Content={props.MechQueueComponent} />
             </Box>

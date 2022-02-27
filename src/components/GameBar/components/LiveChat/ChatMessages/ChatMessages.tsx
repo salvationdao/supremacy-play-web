@@ -8,13 +8,11 @@ import { ChatData } from "../../../types"
 export const ChatMessages = ({
     primaryColor,
     chatMessages,
-    passportWeb,
     sentMessages,
     failedMessages,
 }: {
     primaryColor: string
     chatMessages: ChatData[]
-    passportWeb: string
     sentMessages: Date[]
     failedMessages: Date[]
 }) => {
@@ -74,7 +72,6 @@ export const ChatMessages = ({
                         <ChatMessage
                             key={`${c.fromUsername} - ${c.sentAt.toISOString()}`}
                             chat={c}
-                            passportWeb={passportWeb}
                             isSent={c.fromUserID != user?.id ? true : sentMessages.includes(c.sentAt)}
                             isFailed={c.fromUserID != user?.id ? false : failedMessages.includes(c.sentAt)}
                         />
