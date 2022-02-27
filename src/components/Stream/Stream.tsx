@@ -44,14 +44,14 @@ const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSu
                     }}
                 />
 
-                {/* <iframe
+                <iframe
                     src="https://stats.supremacy.game/#/"
                     style={{
                         width: "100%",
                         height: "100%",
                         border: 0,
                     }}
-                ></iframe> */}
+                ></iframe>
             </Box>
         </Stack>
     )

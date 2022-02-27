@@ -47,6 +47,9 @@ x map follows where the action is
 x improve notification styles (for the map select, reject counters etc.)
  tutorial guide for new users
  XX vs YY
+x remove the count down timer
+x turn on battle history
+x turn on on load battle history
 
 
 
@@ -63,9 +66,6 @@ Future nice to have:
 
 Things that had been turned off:
 - the who game ui
-- remove the count down timer
-- turn on battle history
-- turn on on load battle history
 - turn on not enlisted counters
 
 

@@ -1,10 +1,10 @@
-import { Stack, Typography } from '@mui/material'
-import moment from 'moment'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { GameAbility } from '../../types'
-import { useTheme } from '@mui/styles'
-import { Theme } from '@mui/material/styles'
-import { useInterval } from '../../hooks'
+import { Stack, Typography } from "@mui/material"
+import moment from "moment"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { GameAbility } from "../../types"
+import { useTheme } from "@mui/styles"
+import { Theme } from "@mui/material/styles"
+import { useInterval } from "../../hooks"
 
 export const TargetTimerCountdown = ({
     gameAbility,
@@ -46,18 +46,18 @@ export const TargetTimerCountdown = ({
             direction="row"
             spacing={1}
             sx={{
-                position: 'absolute',
-                top: 0,
+                position: "absolute",
+                bottom: 0,
                 left: 0,
                 right: 0,
                 px: 1.4,
                 py: 0.6,
-                backgroundColor: `${theme.factionTheme.background}99`,
+                backgroundColor: `${theme.factionTheme.background}`,
                 borderRadius: 0.5,
                 zIndex: 9,
             }}
         >
-            <Typography variant="body1" sx={{ span: { lineHeight: 1, fontWeight: 'fontWeightBold', color: colour } }}>
+            <Typography variant="h6" sx={{ span: { lineHeight: 1, fontWeight: "fontWeightBold", color: colour } }}>
                 {`You have ${Math.max(timeRemain, 0)}s to choose a location for `}
                 <span>{`${label}`}</span>
             </Typography>
