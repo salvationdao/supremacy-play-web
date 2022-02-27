@@ -1,8 +1,12 @@
 import { Box, Drawer, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import LanguageIcon from "@mui/icons-material/Language"
 import { SvgGlobal } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, LIVE_CHAT_DRAWER_WIDTH, MESSAGES_BUFFER_SIZE } from "../../constants"
+import {
+    DRAWER_TRANSITION_DURATION,
+    GAME_BAR_HEIGHT,
+    LIVE_CHAT_DRAWER_WIDTH,
+    MESSAGES_BUFFER_SIZE,
+} from "../../constants"
 import { useAuth, useDrawer, useWebsocket } from "../../containers"
 import { colors } from "../../theme"
 import { ChatData } from "../../types"
@@ -10,7 +14,7 @@ import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 import { DrawerButtons } from "../DrawerButtons"
 import HubKey from "../../keys"
-import { acronym } from "../../../../helpers"
+import { acronym, shadeColor } from "../../../../helpers"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 
 const DrawerContent = ({
@@ -50,34 +54,25 @@ const DrawerContent = ({
     const isEnlisted = user && user.factionID && user.faction
     let factionID
     let primaryColor
-    let secondaryColor
-    let bannerTitle
     let bannerBackgroundColor
-    let bannerLogo
 
     if (tabValue == 0) {
         factionID = null
         primaryColor = colors.globalChat
-        secondaryColor = colors.text
-        bannerTitle = "GLOBAL LIVE CHAT"
-        bannerBackgroundColor = colors.globalChat
-        bannerLogo = <SvgGlobal size="23px" fill={colors.text} />
+        bannerBackgroundColor = shadeColor(colors.globalChat, -30)
     } else if (tabValue == 1 && isEnlisted) {
         factionID = user.factionID
         primaryColor = user.faction.theme.primary
-        secondaryColor = user.faction.theme.secondary
-        bannerTitle = user.faction.label
-        bannerBackgroundColor = `${primaryColor}65`
+        bannerBackgroundColor = `${primaryColor}25`
     } else {
         return null
     }
-    let label = ""
+
+    let factionTabLabel = ""
     if (isEnlisted) {
-        label = user.faction.label
-        if (label.length > 8) {
-            label = acronym(label)
-        }
-        label += " CHAT"
+        factionTabLabel = user.faction.label
+        if (factionTabLabel.length > 8) factionTabLabel = acronym(factionTabLabel)
+        factionTabLabel += " CHAT"
     }
 
     return (
@@ -86,31 +81,57 @@ const DrawerContent = ({
                 value={tabValue}
                 variant="fullWidth"
                 sx={{
-                    ".MuiTabs-flexContainer": {
-                        background: bannerBackgroundColor,
+                    height: GAME_BAR_HEIGHT,
+                    background: bannerBackgroundColor,
+                    ".MuiButtonBase-root": {
+                        height: GAME_BAR_HEIGHT,
+                    },
+                    ".MuiTabs-indicator": {
+                        height: "3px",
+                        background: "#FFFFFF50",
                     },
                 }}
                 onChange={(event, newValue) => {
                     setTabValue(newValue)
                 }}
             >
-                <Tab icon={<LanguageIcon fontSize={"large"} />} label="GLOBAL CHAT" />
+                <Tab
+                    label={
+                        <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
+                            <SvgGlobal size="20px" fill={colors.text} />
+                            <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black" }}>
+                                GLOBAL CHAT
+                            </Typography>
+                        </Stack>
+                    }
+                />
                 {isEnlisted && (
                     <Tab
-                        icon={
-                            <Box
-                                sx={{
-                                    width: 32,
-                                    height: 32,
-                                    flexShrink: 0,
-                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "contain",
-                                }}
-                            />
+                        label={
+                            <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
+                                <Box
+                                    sx={{
+                                        width: 21,
+                                        height: 21,
+                                        flexShrink: 0,
+                                        mb: 0.2,
+                                        backgroundImage: `url(${passportWeb}/api/files/${user.faction.logoBlobID})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "contain",
+                                        backgroundColor: user.faction.theme.primary,
+                                        borderRadius: 0.5,
+                                        border: `${user.faction.theme.primary} solid 1px`,
+                                    }}
+                                />
+                                <Typography
+                                    variant="caption"
+                                    sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black" }}
+                                >
+                                    {factionTabLabel}
+                                </Typography>
+                            </Stack>
                         }
-                        label={label}
                     />
                 )}
             </Tabs>
