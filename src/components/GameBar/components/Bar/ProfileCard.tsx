@@ -157,7 +157,7 @@ export const ProfileCard = ({ passportWeb }: GameBarBaseProps) => {
                 <Link
                     aria-describedby={profileDropdownID}
                     href={"#"}
-                    sx={{ ":hover p": { color: colors.neonBlue } }}
+                    sx={{ height: "100%", ":hover p": { color: colors.neonBlue } }}
                     onClick={(e) => {
                         e.preventDefault()
                         setAnchorEl(e.currentTarget.closest("a"))
@@ -177,7 +177,7 @@ export const ProfileCard = ({ passportWeb }: GameBarBaseProps) => {
                                 height: 4,
                             },
                             "::-webkit-scrollbar-track": {
-                                boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
+                                background: "#FFFFFF15",
                                 borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {

@@ -56,7 +56,7 @@ export const WarMachineQueue = () => {
                         width: 4,
                     },
                     "::-webkit-scrollbar-track": {
-                        boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
+                        background: "#FFFFFF15",
                         borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {

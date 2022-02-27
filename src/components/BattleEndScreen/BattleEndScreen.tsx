@@ -107,7 +107,7 @@ export const BattleEndScreen = () => {
                                 height: 4,
                             },
                             "::-webkit-scrollbar-track": {
-                                backgroundColor: `${primaryColor}09`,
+                                background: "#FFFFFF15",
                                 borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
