@@ -22,7 +22,7 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
                 >
                     BATTLE INFLUENCERS
                     <BattleEndTooltip
-                        text="The players that had spent the most SUPs during the battle."
+                        text="The players that had spent the most SUPS during the battle."
                         color={colors.neonBlue}
                     />
                 </Typography>

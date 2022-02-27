@@ -22,7 +22,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                 >
                     MOST SUPS SPENT
                     <BattleEndTooltip
-                        text="The syndicates that had spent the most SUPs, ranked in order."
+                        text="The syndicates that had spent the most SUPS, ranked in order."
                         color={colors.neonBlue}
                     />
                 </Typography>
