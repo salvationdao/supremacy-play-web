@@ -8,11 +8,13 @@ import { ChatData } from "../../../types"
 
 export const ChatMessages = ({
     primaryColor,
+    secondaryColor,
     chatMessages,
     sentMessages,
     failedMessages,
 }: {
     primaryColor: string
+    secondaryColor: string
     chatMessages: ChatData[]
     sentMessages: Date[]
     failedMessages: Date[]
@@ -102,7 +104,7 @@ export const ChatMessages = ({
                 </Stack>
             </Box>
 
-            <Fade in={!autoScroll} timeout={2000}>
+            <Fade in={!autoScroll} timeout={2200} easing={{ exit: "cubic-bezier(0,.99,.28,1.01)" }}>
                 <IconButton
                     size="small"
                     onClick={onClickScrollToBottom}
@@ -117,7 +119,7 @@ export const ChatMessages = ({
                         },
                     }}
                 >
-                    <SvgScrolldown size="18px" sx={{ p: 0 }} />
+                    <SvgScrolldown size="18px" fill={secondaryColor} sx={{ p: 0 }} />
                 </IconButton>
             </Fade>
         </>
