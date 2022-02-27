@@ -144,31 +144,6 @@ const AppInner = () => {
     const [trailerEnded, toggleTrailerEnded] = useToggle(true)
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
-    if (haveSups !== "nello") {
-        return (
-            <Box
-                sx={{
-                    position: "fixed",
-                    left: 0,
-                    top: 0,
-                    height: "100vh",
-                    width: "100vw",
-                    backgroundColor: "rgba(0,0,0,0.5)",
-                    backgroundImage: "url(/mech.jpeg)",
-                    backgroundSize: "cover",
-                    backgroundPosition: "bottom right",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                <LoadMessage />
-                <Countdown />
-            </Box>
-        )
-    }
-
     // Trailer video
     if (!trailerEnded) {
         return (
@@ -240,7 +215,6 @@ const AppInner = () => {
                 passportServerHost={PASSPORT_SERVER_HOST}
                 MechQueueComponent={<WarMachineQueue />}
             />
-            <Countdown />
             <Stack
                 sx={{
                     mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
@@ -274,17 +248,18 @@ const AppInner = () => {
                         <LoadMessage />
                         <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
-                        {/* {user && haveSups && (
+                        {user && haveSups && (
                             <Box>
                                 <VotingSystem />
                                 <MiniMap />
                                 <Notifications />
+
                                 <LiveVotingChart />
                                 <WarMachineStats />
                                 <BattleEndScreen />
                                 <BattleHistory />
                             </Box>
-                        )} */}
+                        )}
                     </Box>
                 </Stack>
 
