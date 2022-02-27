@@ -22,7 +22,7 @@ const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSu
     useEffect(() => {
         setTimeout(() => {
             toggleRender(true)
-        }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS)
+        }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS + 1000)
     })
 
     return (
