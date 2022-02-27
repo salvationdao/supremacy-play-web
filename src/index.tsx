@@ -67,14 +67,12 @@ const AppInner = () => {
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
 
-    if (UNDER_MAINTENANCE) return <Maintenance />
-
     // Trailer stuff
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
     const videoRef = useRef<HTMLVideoElement>(null)
     const [isPlaying, toggleIsPlaying] = useToggle()
 
-    if (!watchedTrailer) {
+    if (!watchedTrailer || watchedTrailer) {
         return (
             <Stack
                 onClick={() => {
@@ -154,6 +152,8 @@ const AppInner = () => {
             </Stack>
         )
     }
+
+    if (UNDER_MAINTENANCE) return <Maintenance />
 
     return (
         <>
