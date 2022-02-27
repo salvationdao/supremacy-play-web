@@ -17,6 +17,7 @@ import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
+import Play from "!react-svg-loader!./svg/Play.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import History from "!react-svg-loader!./svg/History.svg"
@@ -258,5 +259,11 @@ export const SvgRobot: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgHistory: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <History />
+    </SvgWrapper>
+)
+
+export const SvgPlay: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Play />
     </SvgWrapper>
 )
