@@ -146,7 +146,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <TooltipHelper text={description}>
+                                <TooltipHelper placement="right" text={description}>
                                     <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
                                         <Box
                                             sx={{

@@ -151,7 +151,7 @@ export const BattleAbility = () => {
                                         justifyContent="space-between"
                                         alignSelf="stretch"
                                     >
-                                        <TooltipHelper text={description}>
+                                        <TooltipHelper placement="right" text={description}>
                                             <Stack
                                                 spacing={1}
                                                 direction="row"
