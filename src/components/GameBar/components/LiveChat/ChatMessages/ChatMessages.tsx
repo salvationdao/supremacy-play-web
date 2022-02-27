@@ -113,6 +113,7 @@ export const ChatMessages = ({
                         bottom: 78,
                         right: 25,
                         backgroundColor: primaryColor,
+                        boxShadow: 3,
                         ":hover": {
                             backgroundColor: primaryColor,
                             opacity: 0.7,
