@@ -49,6 +49,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                                 key={`${wm.hash}-${wm.participantID}`}
                                 color={colors.text}
                                 imageBorderColor={wm.faction.theme.primary}
+                                imageBackgroundColor={`${wm.faction.theme.primary}60`}
                                 text={wm.name.toUpperCase()}
                                 imageUrl={wm.imageUrl || GenericWarMachinePNG}
                                 variant="h5"
