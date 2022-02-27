@@ -125,7 +125,7 @@ const AppInner = () => {
                         >
                             <SvgPlay size="19px" />
                             <Typography variant="h6" sx={{ lineHeight: 2, fontWeight: "fontWeightBold" }}>
-                                PLAY TRAILER
+                                WATCH TRAILER TO ENTER
                             </Typography>
                         </Stack>
                     </Box>
