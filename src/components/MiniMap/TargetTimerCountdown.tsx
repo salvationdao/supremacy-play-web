@@ -23,7 +23,7 @@ export const TargetTimerCountdown = ({
 
     useEffect(() => {
         if (endTime) {
-            setDelay(1000)
+            setDelay(333)
             const d = moment.duration(moment(endTime).diff(moment()))
             setTimeRemain(Math.round(d.asSeconds()))
             return
