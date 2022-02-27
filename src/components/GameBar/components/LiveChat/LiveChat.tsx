@@ -5,7 +5,7 @@ import { SvgGlobal } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, LIVE_CHAT_DRAWER_WIDTH, MESSAGES_BUFFER_SIZE } from "../../constants"
 import { useAuth, useDrawer, useWebsocket } from "../../containers"
 import { colors } from "../../theme"
-import { ChatData, ChatStreamType } from "../../types"
+import { ChatData } from "../../types"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 import { DrawerButtons } from "../DrawerButtons"
@@ -15,14 +15,14 @@ import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 
 const DrawerContent = ({
     passportWeb,
-    selectedChatStream,
-    setSelectedChatStream,
+    tabValue,
+    setTabValue,
     chatMessages,
     onNewMessage,
 }: {
     passportWeb: string
-    selectedChatStream: ChatStreamType
-    setSelectedChatStream: Dispatch<SetStateAction<ChatStreamType>>
+    tabValue: number
+    setTabValue: Dispatch<SetStateAction<number>>
     chatMessages: ChatData[]
     onNewMessage: (newMessage: ChatData, factionID: string | null) => void
 }) => {
@@ -31,8 +31,6 @@ const DrawerContent = ({
     const [sentMessages, setSentMessages] = useState<Date[]>([])
     const [failedMessages, setFailedMessages] = useState<Date[]>([])
 
-    const [value, setValue] = useState(0)
-
     const onSentMessage = (sentAt: Date) => {
         setSentMessages((prev) => {
             // Buffer the array
@@ -40,10 +38,6 @@ const DrawerContent = ({
             return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
         })
     }
-
-    useEffect(() => {
-        setSelectedChatStream(value === 0 ? "GLOBAL" : "FACTION")
-    }, [value])
 
     const onFailedMessage = (sentAt: Date) => {
         setFailedMessages((prev) => {
@@ -61,14 +55,14 @@ const DrawerContent = ({
     let bannerBackgroundColor
     let bannerLogo
 
-    if (selectedChatStream == "GLOBAL") {
+    if (tabValue == 0) {
         factionID = null
         primaryColor = colors.globalChat
         secondaryColor = colors.text
         bannerTitle = "GLOBAL LIVE CHAT"
         bannerBackgroundColor = colors.globalChat
         bannerLogo = <SvgGlobal size="23px" fill={colors.text} />
-    } else if (selectedChatStream == "FACTION" && isEnlisted) {
+    } else if (tabValue == 1 && isEnlisted) {
         factionID = user.factionID
         primaryColor = user.faction.theme.primary
         secondaryColor = user.faction.theme.secondary
@@ -89,7 +83,7 @@ const DrawerContent = ({
     return (
         <Stack sx={{ flex: 1 }}>
             <Tabs
-                value={value}
+                value={tabValue}
                 variant="fullWidth"
                 sx={{
                     ".MuiTabs-flexContainer": {
@@ -97,7 +91,7 @@ const DrawerContent = ({
                     },
                 }}
                 onChange={(event, newValue) => {
-                    setValue(newValue)
+                    setTabValue(newValue)
                 }}
             >
                 <Tab icon={<LanguageIcon fontSize={"large"} />} label="GLOBAL CHAT" />
@@ -160,7 +154,8 @@ export const LiveChat = ({ passportWeb }: { passportWeb: string }) => {
     const { user } = useAuth()
     const { state, subscribe } = useWebsocket()
 
-    const [selectedChatStream, setSelectedChatStream] = useState<ChatStreamType>("GLOBAL")
+    // Tabs: 0 is global chat, 1 is faction chat
+    const [tabValue, setTabValue] = useState(0)
     const [globalChatMessages, setGlobalChatMessages] = useState<ChatData[]>([])
     const [factionChatMessages, setFactionChatMessages] = useState<ChatData[]>([])
 
@@ -223,7 +218,7 @@ export const LiveChat = ({ passportWeb }: { passportWeb: string }) => {
                     width: "100%",
                     height: "100%",
                     backgroundColor:
-                        selectedChatStream == "FACTION" && user && user.faction
+                        tabValue == 1 && user && user.faction
                             ? `${user?.faction.theme.primary}06`
                             : `${colors.globalChat}13`,
                 }}
@@ -232,9 +227,9 @@ export const LiveChat = ({ passportWeb }: { passportWeb: string }) => {
 
                 <DrawerContent
                     passportWeb={passportWeb}
-                    selectedChatStream={selectedChatStream}
-                    setSelectedChatStream={setSelectedChatStream}
-                    chatMessages={selectedChatStream == "GLOBAL" ? globalChatMessages : factionChatMessages}
+                    tabValue={tabValue}
+                    setTabValue={setTabValue}
+                    chatMessages={tabValue == 0 ? globalChatMessages : factionChatMessages}
                     onNewMessage={newMessageHandler}
                 />
             </Stack>

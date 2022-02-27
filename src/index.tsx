@@ -72,6 +72,7 @@ const AppInner = () => {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [isPlaying, toggleIsPlaying] = useToggle()
 
+    // Temporarily disabled
     if (!watchedTrailer && watchedTrailer) {
         return (
             <Stack
