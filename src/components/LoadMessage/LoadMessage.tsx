@@ -22,6 +22,9 @@ export const LoadMessage = () => {
     return (
         <Box
             sx={{
+                position: "absolute",
+                top: 15,
+                left: 20,
                 px: 1.6,
                 py: 0.5,
                 animation: `${pulseEffect} 5s infinite`,

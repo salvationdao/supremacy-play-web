@@ -1,29 +1,18 @@
 import { Stack, Typography } from "@mui/material"
 import { useWallet } from "../../GameBar"
 import { FancyButton } from "../.."
-import { SvgSupToken } from "../../../assets"
 
 interface VotingButtonProps {
-    amount: number
+    amount: number | string
     cost: number
     color: string
     isVoting: boolean
     onClick: () => void
     Prefix?: JSX.Element
     Suffix?: JSX.Element
-    disableHover?: boolean
 }
 
-export const VotingButton = ({
-    amount,
-    cost,
-    color,
-    isVoting,
-    onClick,
-    Prefix,
-    Suffix,
-    disableHover,
-}: VotingButtonProps) => {
+export const VotingButton = ({ amount, cost, color, isVoting, onClick, Prefix, Suffix }: VotingButtonProps) => {
     const { onWorldSups } = useWallet()
 
     const isVotable = isVoting && onWorldSups && onWorldSups.dividedBy(1000000000000000000).isGreaterThanOrEqualTo(cost)
@@ -39,39 +28,6 @@ export const VotingButton = ({
             borderColor={color || "#14182B"}
             onClick={onClick}
         >
-            {!disableHover && (
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(0, 0, 0, .9)",
-                        color: "white",
-                        opacity: 0,
-                        transition: "opacity .2s ease-out",
-                        ":hover": {
-                            opacity: 1,
-                        },
-                    }}
-                >
-                    <SvgSupToken size="14px" />
-                    <Typography
-                        sx={{
-                            lineHeight: 1,
-                            whiteSpace: "nowrap",
-                            color: "#FFFFFF",
-                        }}
-                    >
-                        {cost.toFixed(6)}
-                    </Typography>
-                </Stack>
-            )}
-
             <Stack alignItems="center" justifyContent="center" direction="row" spacing={0.2}>
                 {Prefix}
                 <Typography

@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, TooltipHelper, VotingButton } from ".."
-import { SvgCooldown, SvgApplause } from "../../assets"
+import { SvgCooldown, SvgSupToken } from "../../assets"
 import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
 import { httpProtocol, useAuth, useGame, useWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
@@ -210,31 +210,27 @@ export const BattleAbility = () => {
                                     <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                         <VotingButton
                                             color={colour}
-                                            amount={1}
+                                            amount={factionVotePrice.multipliedBy(1).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(1).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(1)}
-                                            Suffix={<><SvgApplause size="14px" fill="#FFFFFF" />
-                                                <SvgApplause size="14px" fill="#FFFFFF" />
-                                                <SvgApplause size="14px" fill="#FFFFFF" />
-                                                (factionVotePrice.multipliedBy(1).toNumber())
-                                            </>}
+                                            Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                         />
                                         <VotingButton
                                             color={colour}
-                                            amount={25}
+                                            amount={factionVotePrice.multipliedBy(25).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(25).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(25)}
-                                            Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
+                                            Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                         />
                                         <VotingButton
                                             color={colour}
-                                            amount={100}
+                                            amount={factionVotePrice.multipliedBy(100).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(100).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(100)}
-                                            Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
+                                            Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                         />
                                     </Stack>
                                 </Stack>

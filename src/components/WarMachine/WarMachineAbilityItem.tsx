@@ -228,7 +228,6 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     isVoting={isVoting}
                                     onClick={() => onContribute(1)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                                 <VotingButton
                                     color={colour}
@@ -237,7 +236,6 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     isVoting={isVoting}
                                     onClick={() => onContribute(25)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                                 <VotingButton
                                     color={colour}
@@ -246,7 +244,6 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     isVoting={isVoting}
                                     onClick={() => onContribute(100)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                             </Stack>
                         </Stack>
