@@ -102,7 +102,7 @@ export const ChatMessages = ({
                 </Stack>
             </Box>
 
-            <Fade in={!autoScroll}>
+            <Fade in={!autoScroll} timeout={2000}>
                 <IconButton
                     size="small"
                     onClick={onClickScrollToBottom}
