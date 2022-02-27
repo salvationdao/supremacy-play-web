@@ -122,7 +122,7 @@ export const WarMachineStats = () => {
                         sx={{ pl: 2.5, pr: 5, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
                     >
                         <ScrollContainer>
-                            <Stack spacing={-2} direction="row" alignItems="center" justifyContent="center">
+                            <Stack spacing={-3} direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
                                         key={`${wm.participantID} - ${wm.hash}`}
@@ -140,7 +140,7 @@ export const WarMachineStats = () => {
                     <Box sx={{ mb: 0.6, pr: 2, pl: haveFactionMechs ? 0 : 1.6, overflow: "hidden" }}>
                         <ScrollContainer>
                             <Stack
-                                spacing={haveFactionMechs ? -4.2 : -3.5}
+                                spacing={haveFactionMechs ? -5.2 : -4.5}
                                 direction="row"
                                 alignItems="center"
                                 sx={{ flex: 1, ml: haveFactionMechs ? -1.4 : 0, pb: haveFactionMechs ? 0 : 0.6 }}

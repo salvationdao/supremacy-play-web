@@ -21,7 +21,7 @@ const ConnectButton = ({ passportWeb }: { passportWeb: string }) => {
     useEffect(() => {
         setTimeout(() => {
             toggleRenderButton(true)
-        }, 1500)
+        }, 2000)
     }, [])
 
     // Check if login in the iframe has been successful (widnow closed), do clean up
