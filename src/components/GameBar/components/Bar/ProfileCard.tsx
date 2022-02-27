@@ -6,7 +6,7 @@ import { GameBarBaseProps } from "../../GameBar"
 import { colors } from "../../theme"
 import { useEffect } from "react"
 import { SvgAssets, SvgLogout, SvgProfile, SvgShop } from "../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
+import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 import { useToggle } from "../../hooks"
 
 const ConnectButton = ({ passportWeb }: { passportWeb: string }) => {
@@ -21,7 +21,7 @@ const ConnectButton = ({ passportWeb }: { passportWeb: string }) => {
     useEffect(() => {
         setTimeout(() => {
             toggleRenderButton(true)
-        }, 2000)
+        }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS)
     }, [])
 
     // Check if login in the iframe has been successful (widnow closed), do clean up

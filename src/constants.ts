@@ -26,6 +26,7 @@ export const SENTRY_CONFIG = {
 
 // UI related
 export const UI_OPACITY = 0.96
+export const GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS = 2000
 export const NOTIFICATION_TIME = 28000
 export const NOTIFICATION_LINGER = 400
 export const CONTROLS_HEIGHT = 30
