@@ -81,7 +81,7 @@ export const delayedPromiseResolve = (result: any, delay: number = 500): Promise
 export const supFormatter = (num: string, fixedAmount: number | undefined = 0): string => {
     const supTokens = new BigNumber(num)
     if (supTokens.isZero()) return supTokens.toFixed(fixedAmount)
-    return Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber()).toFixed(fixedAmount)
+    return supTokens.dividedBy(new BigNumber("1000000000000000000")).toFixed(fixedAmount)
 }
 
 export const hexToRGB = (hex: string, alpha?: number): string => {
