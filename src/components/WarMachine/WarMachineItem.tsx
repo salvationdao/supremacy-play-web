@@ -226,7 +226,7 @@ export const WarMachineItem = ({
                                     sx={{
                                         width: 26,
                                         height: 26,
-                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files${logoBlobID})`,
+                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logoBlobID})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",

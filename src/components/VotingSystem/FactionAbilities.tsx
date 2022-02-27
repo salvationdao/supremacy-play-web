@@ -34,7 +34,7 @@ export const FactionAbilities = () => {
                         sx={{
                             width: 19,
                             height: 19,
-                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files${user?.faction.logoBlobID})`,
+                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user?.faction.logoBlobID})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",

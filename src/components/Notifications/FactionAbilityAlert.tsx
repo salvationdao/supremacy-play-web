@@ -26,7 +26,7 @@ export const FactionAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertP
                 color={user ? user.faction.theme.primary : "grey !important"}
                 imageUrl={
                     user && user.faction.logoBlobID
-                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files${user.faction.logoBlobID}`
+                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID}`
                         : undefined
                 }
             />

@@ -33,7 +33,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 <StyledImageText
                     color={winningFaction.theme.primary}
                     text={winningFaction.label}
-                    imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files${winningFaction.logoBlobID}`}
+                    imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${winningFaction.logoBlobID}`}
                     variant="h4"
                     imageSize={40}
                     imageBorderThickness="0px"

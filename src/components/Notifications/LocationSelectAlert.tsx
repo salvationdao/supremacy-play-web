@@ -72,13 +72,13 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
         return (
             <Box>
                 <StyledImageText
-                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files${avatarID}` : undefined}
+                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
                     text={username}
                     color={faction.theme.primary}
                 />
                 <StyledNormalText text=" failed to choose a target location in time. " />
                 <StyledImageText
-                    imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files${nextAvatarID}` : undefined}
+                    imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextAvatarID}` : undefined}
                     text={nextUsername}
                     color={nextFaction.theme.primary}
                 />
@@ -93,13 +93,13 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
         return (
             <Box>
                 <StyledImageText
-                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files${avatarID}` : undefined}
+                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
                     text={username}
                     color={faction.theme.primary}
                 />
                 <StyledNormalText text=" has disconnected. " />
                 <StyledImageText
-                    imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files${nextAvatarID}` : undefined}
+                    imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextAvatarID}` : undefined}
                     text={nextUsername}
                     color={nextFaction.theme.primary}
                 />
@@ -114,7 +114,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
         return (
             <Box>
                 <StyledImageText
-                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files${avatarID}` : undefined}
+                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
                     text={username}
                     color={faction.theme.primary}
                 />

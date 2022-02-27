@@ -41,7 +41,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                                     text={f.label}
                                     imageUrl={
                                         f.logoBlobID
-                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files${f.logoBlobID}`
+                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${f.logoBlobID}`
                                             : undefined
                                     }
                                     variant="h5"
