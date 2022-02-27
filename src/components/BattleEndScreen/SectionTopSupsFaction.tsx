@@ -12,7 +12,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
             <Box sx={{ px: 2.5, py: 1.1, backgroundColor: "#00000083" }}>
                 <Typography
                     component="span"
-                    variant="h4"
+                    variant="h5"
                     sx={{
                         position: "relative",
                         fontFamily: "Nostromo Regular Black",

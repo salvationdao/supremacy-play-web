@@ -13,7 +13,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
             <Box sx={{ px: 2.5, py: 1.5, backgroundColor: "#00000083" }}>
                 <Typography
                     component="span"
-                    variant="h3"
+                    variant="h4"
                     sx={{
                         position: "relative",
                         fontFamily: "Nostromo Regular Black",
@@ -34,7 +34,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     color={winningFaction.theme.primary}
                     text={winningFaction.label}
                     imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${winningFaction.logoBlobID}`}
-                    variant="h4"
+                    variant="h5"
                     imageSize={40}
                     imageBorderThickness="0px"
                     noImageBackgroundColor

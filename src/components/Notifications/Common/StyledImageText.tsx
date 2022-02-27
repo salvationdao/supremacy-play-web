@@ -91,6 +91,7 @@ export const StyledImageText = ({
                 }}
             >
                 {text}
+                <span style={{ visibility: "hidden" }}>.</span>
             </Typography>
         </Box>
     )
