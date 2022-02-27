@@ -3,76 +3,133 @@ import { Avatar, Box, Button, Dialog, Stack, Typography, Link, Popover, SxProps,
 import { BarExpandable } from ".."
 import { useAuth } from "../../containers"
 import { GameBarBaseProps } from "../../GameBar"
-import { PassportLogin } from "../../passportLogin"
 import { colors } from "../../theme"
 import { useEffect } from "react"
 import { SvgAssets, SvgLogout, SvgProfile, SvgShop } from "../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from '../../../../constants'
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
+import { useToggle } from "../../hooks"
 
-export const ProfileCard = (props: GameBarBaseProps) => {
-    const { passportWeb } = props
-    const { user, authRingCheckError, setAuthRingCheckError } = useAuth()
+const ConnectButton = ({ passportWeb }: { passportWeb: string }) => {
+    const [isProcessing, setIsProcessing] = useState(false)
+    const [passportPopup, setPassportPopup] = useState<Window | null>(null)
+    const { sessionID, authRingCheckError, setAuthRingCheckError } = useAuth()
+    const [renderButton, toggleRenderButton] = useToggle()
+
+    const href = `${passportWeb}/nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`
+
+    // Don't show the connect button for couple seconds as it tries to do the auto login
+    useEffect(() => {
+        setTimeout(() => {
+            toggleRenderButton(true)
+        }, 1500)
+    }, [])
+
+    // Check if login in the iframe has been successful (widnow closed), do clean up
+    useEffect(() => {
+        if (!passportPopup) return
+
+        const popupCheckTimer = setInterval(() => {
+            if (!passportPopup) return
+
+            if (passportPopup.closed) {
+                popupCheckTimer && clearInterval(popupCheckTimer)
+                setIsProcessing(false)
+                setPassportPopup(null)
+            }
+        }, 1000)
+
+        return () => clearInterval(popupCheckTimer)
+    }, [passportPopup])
+
+    // Open iframe to passport web to login
+    const onClick = async () => {
+        if (isProcessing) return
+        setIsProcessing(true)
+
+        const width = 520
+        const height = 730
+        const top = window.screenY + (window.outerHeight - height) / 2.5
+        const left = window.screenX + (window.outerWidth - width) / 2
+        const popup = window.open(
+            href,
+            "Connect Gamebar to XSYN Passport",
+            `width=${width},height=${height},left=${left},top=${top},popup=1`,
+        )
+        if (!popup) {
+            setIsProcessing(false)
+            return
+        }
+
+        setPassportPopup(popup)
+    }
+
+    return (
+        <>
+            {renderButton ? (
+                <Button
+                    sx={{
+                        ml: 3,
+                        px: 2.2,
+                        pt: 0.4,
+                        pb: 0.2,
+                        flexShrink: 0,
+                        justifyContent: "flex-start",
+                        whiteSpace: "nowrap",
+                        borderRadius: 0.2,
+                        border: `1px solid ${colors.neonBlue}`,
+                        color: colors.darkestNeonBlue,
+                        backgroundColor: colors.neonBlue,
+                        ":hover": {
+                            opacity: 0.75,
+                            color: colors.darkestNeonBlue,
+                            backgroundColor: colors.neonBlue,
+                            transition: "all .2s",
+                        },
+                    }}
+                    disabled={isProcessing}
+                    onClick={onClick}
+                >
+                    Connect
+                </Button>
+            ) : (
+                <Typography sx={{ mr: 2 }} variant="caption">
+                    Signing in...
+                </Typography>
+            )}
+
+            {/* Auto login */}
+            <Box sx={{ display: "none" }}>
+                <iframe src={href}></iframe>
+            </Box>
+
+            {authRingCheckError && (
+                <Dialog
+                    maxWidth="xs"
+                    PaperProps={{ sx: { borderRadius: 1 } }}
+                    BackdropProps={{ sx: { backgroundColor: "#00000030" } }}
+                    onClose={() => setAuthRingCheckError(undefined)}
+                    open={!!authRingCheckError}
+                >
+                    <Box sx={{ px: 3, py: 2.5, pb: 3, backgroundColor: colors.darkNavy }}>
+                        <Typography variant="h6" gutterBottom>
+                            Login Failed...
+                        </Typography>
+                        <Typography sx={{ fontFamily: "Share Tech" }} variant="body1">
+                            The account that you have entered is invalid.
+                        </Typography>
+                    </Box>
+                </Dialog>
+            )}
+        </>
+    )
+}
+
+export const ProfileCard = ({ passportWeb }: GameBarBaseProps) => {
+    const { user } = useAuth()
     const [anchorEl, setAnchorEl] = useState<HTMLAnchorElement | null>(null)
 
     if (!user) {
-        return (
-            <>
-                <PassportLogin
-                    passportWeb={passportWeb}
-                    render={(props) => (
-                        <Button
-                            sx={{
-                                ml: 3,
-                                px: 2.2,
-                                pt: 0.4,
-                                pb: 0.2,
-                                flexShrink: 0,
-                                justifyContent: "flex-start",
-                                whiteSpace: "nowrap",
-                                borderRadius: 0.2,
-                                border: `1px solid ${colors.neonBlue}`,
-
-                                color: colors.darkestNeonBlue,
-                                backgroundColor: colors.neonBlue,
-
-                                ":hover": {
-                                    opacity: 0.75,
-                                    color:
-                                        props.isDisabled || props.isProcessing
-                                            ? `${colors.darkestNeonBlue}50 !important`
-                                            : colors.darkestNeonBlue,
-                                    backgroundColor: colors.neonBlue,
-                                    transition: "all .2s",
-                                },
-                            }}
-                            onClick={props.onClick}
-                            disabled={props.isDisabled || props.isProcessing}
-                        >
-                            Connect
-                        </Button>
-                    )}
-                />
-
-                {authRingCheckError && (
-                    <Dialog
-                        maxWidth="xs"
-                        PaperProps={{ sx: { borderRadius: 1 } }}
-                        BackdropProps={{ sx: { backgroundColor: "#00000030" } }}
-                        onClose={() => setAuthRingCheckError(undefined)}
-                        open={!!authRingCheckError}
-                    >
-                        <Box sx={{ px: 3, py: 2.5, pb: 3, backgroundColor: colors.darkNavy }}>
-                            <Typography variant="h6" gutterBottom>
-                                Login Failed...
-                            </Typography>
-                            <Typography sx={{ fontFamily: "Share Tech" }} variant="body1">
-                                The account that you have entered is invalid.
-                            </Typography>
-                        </Box>
-                    </Dialog>
-                )}
-            </>
-        )
+        return <ConnectButton passportWeb={passportWeb} />
     }
 
     const { username, avatarID, faction } = user
@@ -130,7 +187,7 @@ export const ProfileCard = (props: GameBarBaseProps) => {
                         }}
                     >
                         <Avatar
-                            src={avatarID ? `${props.passportWeb}/api/files/${avatarID}` : ""}
+                            src={avatarID ? `${passportWeb}/api/files/${avatarID}` : ""}
                             alt={`${username}'s Avatar`}
                             sx={{
                                 height: 26,
@@ -177,24 +234,21 @@ export const ProfileCard = (props: GameBarBaseProps) => {
             >
                 <Stack spacing={0.4} sx={{ p: 1, backgroundColor: colors.darkNavy }}>
                     <NavButton
-                        href={`${props.passportWeb}/collections`}
+                        href={`${passportWeb}/collections`}
                         startIcon={<SvgAssets size="16px" fill={colors.text} />}
                     >
                         My Inventory
                     </NavButton>
-                    <NavButton
-                        href={`${props.passportWeb}/stores`}
-                        startIcon={<SvgShop size="16px" fill={colors.text} />}
-                    >
+                    <NavButton href={`${passportWeb}/stores`} startIcon={<SvgShop size="16px" fill={colors.text} />}>
                         Purchase Assets
                     </NavButton>
                     <NavButton
-                        href={`${props.passportWeb}/profile/${user.username}/edit`}
+                        href={`${passportWeb}/profile/${user.username}/edit`}
                         startIcon={<SvgProfile size="16px" fill={colors.text} />}
                     >
                         Edit Profile
                     </NavButton>
-                    <LogoutButton passportWeb={props.passportWeb} />
+                    <LogoutButton passportWeb={passportWeb} />
                 </Stack>
             </Popover>
         </>
@@ -249,7 +303,7 @@ const LogoutButton = ({ passportWeb }: LogoutButtonProps) => {
 
         setIsProcessing(true)
 
-        const href = `${passportWeb}/nosidebar/logout?omitSideBar=true&&sessionID=${sessionID}`
+        const href = `${passportWeb}/logout`
         const width = 520
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5
