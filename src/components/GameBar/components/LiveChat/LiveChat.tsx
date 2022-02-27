@@ -2,11 +2,7 @@ import { Box, Drawer, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import LanguageIcon from "@mui/icons-material/Language"
 import { SvgGlobal } from "../../assets"
-import {
-    DRAWER_TRANSITION_DURATION,
-    LIVE_CHAT_DRAWER_WIDTH,
-    MESSAGES_BUFFER_SIZE,
-} from "../../constants"
+import { DRAWER_TRANSITION_DURATION, LIVE_CHAT_DRAWER_WIDTH, MESSAGES_BUFFER_SIZE } from "../../constants"
 import { useAuth, useDrawer, useWebsocket } from "../../containers"
 import { colors } from "../../theme"
 import { ChatData, ChatStreamType } from "../../types"
@@ -15,7 +11,7 @@ import { ChatSend } from "./ChatSend/ChatSend"
 import { DrawerButtons } from "../DrawerButtons"
 import HubKey from "../../keys"
 import { acronym } from "../../../../helpers"
-import { PASSPORT_SERVER_HOST, PASSPORT_SERVER_HOST_IMAGES } from '../../../../constants'
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 
 const DrawerContent = ({
     passportWeb,

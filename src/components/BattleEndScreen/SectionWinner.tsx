@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from ".."
 import { GenericWarMachinePNG } from "../../assets"
-import { PASSPORT_SERVER_HOST, PASSPORT_SERVER_HOST_IMAGES } from '../../constants'
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 

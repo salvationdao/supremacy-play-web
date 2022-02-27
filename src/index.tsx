@@ -61,7 +61,7 @@ if (SENTRY_CONFIG) {
 }
 
 const Countdown = () => {
-    const [endTime] = useState<Date>(new Date("2022-02-28T07:30:00.000Z"))
+    const [endTime] = useState<Date>(new Date("2022-02-27T07:30:00.000Z"))
     const [, setTimeRemain] = useState<number>(0)
     const [delay, setDelay] = useState<number | null>(null)
     const [hours, setHours] = useState<number>()
@@ -80,9 +80,9 @@ const Countdown = () => {
 
     useInterval(() => {
         setTimeRemain((t) => Math.max(t - 1, 0))
-        setHours(moment(endTime).diff(moment(), "hours"))
-        setMinutes(moment(endTime).diff(moment(), "minutes") % 24)
-        setSeconds(moment(endTime).diff(moment(), "seconds") % 60)
+        setHours(Math.max(moment(endTime).diff(moment(), "hours"), 0))
+        setMinutes(Math.max(moment(endTime).diff(moment(), "minutes") % 24, 0))
+        setSeconds(Math.max(moment(endTime).diff(moment(), "seconds") % 60, 0))
     }, delay)
 
     return (
@@ -95,7 +95,6 @@ const Countdown = () => {
                 backgroundColor: "rgba(0,0,0,0.5)",
             }}
         >
-
             <Typography
                 variant="h5"
                 sx={{
@@ -115,9 +114,9 @@ const Countdown = () => {
                     textAlign: "center",
                 }}
             >
-                SUNDAY 3:30 PM (PERTH)
-                <br />
                 SUNDAY 7:30 AM PST
+                <br />
+                (SUNDAY 3:30 PM PERTH TIME)
             </Typography>
 
             <Stack direction="row" justifyContent="space-around" sx={{ mt: 2 }}>
@@ -150,8 +149,10 @@ const AppInner = () => {
             <Box
                 sx={{
                     position: "fixed",
-                    left: 0, top: 0,
-                    height: "100vh", width: "100vw",
+                    left: 0,
+                    top: 0,
+                    height: "100vh",
+                    width: "100vw",
                     backgroundColor: "rgba(0,0,0,0.5)",
                     backgroundImage: "url(/mech.jpeg)",
                     backgroundSize: "cover",
@@ -159,9 +160,10 @@ const AppInner = () => {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: "center",
                 }}
-            ><LoadMessage />
+            >
+                <LoadMessage />
                 <Countdown />
             </Box>
         )
@@ -269,22 +271,20 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        {/* Temporary */}
-
                         <LoadMessage />
                         <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
-                        {/*{user && haveSups && (*/}
-                        {/*    <Box>*/}
-                        {/*        <VotingSystem />*/}
-                        {/*        <MiniMap />*/}
-                        {/*        <Notifications />*/}
-                        {/*        <LiveVotingChart />*/}
-                        {/*        <WarMachineStats />*/}
-                        {/*        <BattleEndScreen />*/}
-                        {/*        <BattleHistory />*/}
-                        {/*    </Box>*/}
-                        {/*)}*/}
+                        {/* {user && haveSups && (
+                            <Box>
+                                <VotingSystem />
+                                <MiniMap />
+                                <Notifications />
+                                <LiveVotingChart />
+                                <WarMachineStats />
+                                <BattleEndScreen />
+                                <BattleHistory />
+                            </Box>
+                        )} */}
                     </Box>
                 </Stack>
 
