@@ -1,12 +1,11 @@
 import { Box, Popover } from "@mui/material"
 import "emoji-mart/css/emoji-mart.css"
 import { BaseEmoji, Picker } from "emoji-mart"
-import { Dispatch, SetStateAction } from "react"
 import { colors } from "../../../theme"
 
 interface EnlistDetailsProps {
     primaryColor: string
-    setMessage: Dispatch<SetStateAction<string>>
+    setMessage: (a: string, b: boolean) => void
     popoverRef: React.MutableRefObject<null>
     isEmojiOpen: boolean
     toggleIsEmojiOpen: (_state: boolean) => void
@@ -101,7 +100,7 @@ export const EmojiPopover = ({
                         showSkinTones={false}
                         title=""
                         onSelect={(emoji: BaseEmoji) => {
-                            setMessage((prev) => prev + emoji.native)
+                            setMessage(emoji.native, true)
                         }}
                     />
                 </Box>
