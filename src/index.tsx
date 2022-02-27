@@ -69,7 +69,7 @@ const AppInner = () => {
     const [trailerEnded, toggleTrailerEnded] = useToggle()
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
-    if (UNDER_MAINTENANCE) return <Maintenance />
+    // if (UNDER_MAINTENANCE) return <Maintenance />
 
     // Trailer video
     if (!trailerEnded) {
@@ -181,6 +181,7 @@ const AppInner = () => {
                                 <VotingSystem />
                                 <MiniMap />
                                 <Notifications />
+
                                 <LiveVotingChart />
                                 <WarMachineStats />
                                 <BattleEndScreen />
