@@ -75,9 +75,10 @@ export const ChatSend = ({ primaryColor, factionID, onNewMessage, onSentMessage,
             <Stack
                 justifyContent="flex-end"
                 sx={{
+                    position: "relative",
                     px: 1.6,
                     pt: 0.4,
-                    pb: 2,
+                    pb: 3,
                 }}
             >
                 <TextField
@@ -144,6 +145,20 @@ export const ChatSend = ({ primaryColor, factionID, onNewMessage, onSentMessage,
                         ),
                     }}
                 />
+
+                <Typography
+                    variant="caption"
+                    sx={{
+                        position: "absolute",
+                        bottom: 5,
+                        right: 15,
+                        fontFamily: "Share Tech",
+                        opacity: message.length >= MAX_CHAT_MESSAGE_LENGTH ? 1 : 0.4,
+                        color: message.length >= MAX_CHAT_MESSAGE_LENGTH ? colors.red : colors.text,
+                    }}
+                >
+                    {message.length}/{MAX_CHAT_MESSAGE_LENGTH}
+                </Typography>
             </Stack>
 
             <EmojiPopover
