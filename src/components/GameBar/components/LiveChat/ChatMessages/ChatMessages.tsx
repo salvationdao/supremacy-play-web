@@ -37,19 +37,23 @@ export const ChatMessages = ({
 
     const scrollHandler = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
         const { currentTarget } = e
-        const scrollHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
+        const extraHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
+        const scrollUpTooMuch = currentTarget.scrollTop < extraHeight - 0.5 * currentTarget.offsetHeight
 
-        // Check whether auto scroll can be enabled
-        if (autoScroll && currentTarget.scrollTop < scrollHeight) {
+        // Enable autoscroll if they havent scroll more than half of the container
+        if (autoScroll && scrollUpTooMuch) {
             setAutoScroll(false)
-        } else if (!autoScroll && currentTarget.scrollTop === scrollHeight) {
+        } else if (!autoScroll && !scrollUpTooMuch) {
             setAutoScroll(true)
         }
     }
 
+    console.log(autoScroll)
+
     return (
         <>
             <Box
+                id="chat-container"
                 ref={scrollableRef}
                 onScroll={scrollHandler}
                 sx={{
