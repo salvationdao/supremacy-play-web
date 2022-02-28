@@ -296,14 +296,30 @@ const LogoutButton = ({ passportWeb }: LogoutButtonProps) => {
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const { user, sessionID } = useAuth()
 
-    const click = useCallback(async () => {
-        if (isProcessing) {
-            return
-        }
+    // Check if login in the iframe has been successful (widnow closed), do clean up
+    useEffect(() => {
+        if (!passportPopup) return
+
+        const popupCheckTimer = setInterval(() => {
+            if (!passportPopup) return
+
+            if (passportPopup.closed) {
+                popupCheckTimer && clearInterval(popupCheckTimer)
+                setIsProcessing(false)
+                setPassportPopup(null)
+                window.location.reload()
+            }
+        }, 1000)
+
+        return () => clearInterval(popupCheckTimer)
+    }, [passportPopup])
+
+    const onClick = useCallback(async () => {
+        if (isProcessing) return
 
         setIsProcessing(true)
 
-        const href = `${passportWeb}/logout`
+        const href = `${passportWeb}/nosidebar/logout?sessionID=${sessionID}`
         const width = 520
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5
@@ -317,11 +333,6 @@ const LogoutButton = ({ passportWeb }: LogoutButtonProps) => {
             setIsProcessing(false)
             return
         }
-
-        setTimeout(() => {
-            popup.close()
-            window.location.reload()
-        }, 3000)
 
         setPassportPopup(popup)
     }, [isProcessing, sessionID, passportWeb])
@@ -338,7 +349,7 @@ const LogoutButton = ({ passportWeb }: LogoutButtonProps) => {
     return (
         <Button
             startIcon={<SvgLogout size="16px" fill={colors.text} sx={{ ml: 0.1 }} />}
-            onClick={click}
+            onClick={onClick}
             sx={{
                 justifyContent: "flex-start",
                 width: "100%",
