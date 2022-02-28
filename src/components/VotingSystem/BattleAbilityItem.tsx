@@ -118,6 +118,7 @@ export const BattleAbilityItem = () => {
 
     const { label, colour, imageUrl, description, cooldownDurationSecond } = battleAbility
     const buttonColor = user && user.faction ? user.faction.theme.primary : colour
+    const buttonTextColor = user && user.faction ? user.faction.theme.secondary : "#FFFFFF"
 
     return (
         <Fade in={true}>

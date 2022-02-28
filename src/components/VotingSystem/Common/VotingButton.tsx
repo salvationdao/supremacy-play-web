@@ -6,13 +6,23 @@ interface VotingButtonProps {
     amount: number | string
     cost: number
     color: string
+    textColor?: string
     isVoting: boolean
     onClick: () => void
     Prefix?: JSX.Element
     Suffix?: JSX.Element
 }
 
-export const VotingButton = ({ amount, cost, color, isVoting, onClick, Prefix, Suffix }: VotingButtonProps) => {
+export const VotingButton = ({
+    amount,
+    cost,
+    color,
+    textColor,
+    isVoting,
+    onClick,
+    Prefix,
+    Suffix,
+}: VotingButtonProps) => {
     const { onWorldSups } = useWallet()
 
     const isVotable = isVoting && onWorldSups && onWorldSups.dividedBy(1000000000000000000).isGreaterThanOrEqualTo(cost)
@@ -37,7 +47,7 @@ export const VotingButton = ({ amount, cost, color, isVoting, onClick, Prefix, S
                         fontWeight: "fontWeightBold",
                         fontFamily: "Nostromo Regular Medium",
                         whiteSpace: "nowrap",
-                        color: "#FFFFFF",
+                        color: textColor || "#FFFFFF",
                     }}
                 >
                     {amount}
