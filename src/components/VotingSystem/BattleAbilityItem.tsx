@@ -208,27 +208,30 @@ export const BattleAbilityItem = () => {
                                     <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                         <VotingButton
                                             color={buttonColor}
+                                            textColor={buttonTextColor}
                                             amount={factionVotePrice.multipliedBy(1).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(1).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(1)}
-                                            Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
+                                            Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
                                             color={buttonColor}
+                                            textColor={buttonTextColor}
                                             amount={factionVotePrice.multipliedBy(25).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(25).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(25)}
-                                            Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
+                                            Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
                                             color={buttonColor}
+                                            textColor={buttonTextColor}
                                             amount={factionVotePrice.multipliedBy(100).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(100).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(100)}
-                                            Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
+                                            Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                     </Stack>
                                 </Stack>
