@@ -99,6 +99,7 @@ export const BattleEndScreen = () => {
                         sx={{
                             height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}px)`,
                             pr: 3.6,
+                            pb: 4,
                             overflowY: "auto",
                             overflowX: "auto",
                             scrollbarWidth: "none",

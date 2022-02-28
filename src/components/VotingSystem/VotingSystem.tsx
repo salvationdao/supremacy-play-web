@@ -1,9 +1,8 @@
 import { Box, Slide, Stack } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import { ClipThing, BattleAbility, Prices, FactionAbilities } from ".."
+import { ClipThing, BattleAbilityItem, Prices, FactionAbilities } from ".."
 import { useDimension, useGame } from "../../containers"
-import { colors } from "../../theme/theme"
 import { useAuth } from "../../containers"
 
 export const VotingSystem = () => {
@@ -63,7 +62,7 @@ export const VotingSystem = () => {
                                 }}
                             >
                                 <Stack spacing={2.5} sx={{ direction: "ltr" }}>
-                                    <BattleAbility />
+                                    <BattleAbilityItem />
                                     <FactionAbilities />
                                 </Stack>
                             </Box>

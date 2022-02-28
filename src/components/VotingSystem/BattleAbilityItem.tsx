@@ -81,11 +81,7 @@ const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: bo
     )
 }
 
-interface VoteRequest {
-    voteAmount: number // 1, 10, 100
-}
-
-export const BattleAbility = () => {
+export const BattleAbilityItem = () => {
     const { state, send, subscribe } = useWebsocket()
     const { factionID } = useAuth()
     const { votingState, factionVotePrice } = useGame()
@@ -115,7 +111,7 @@ export const BattleAbility = () => {
     }, [state, subscribe, factionID])
 
     const onVote = (voteAmount: number) => {
-        send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
+        send<boolean, { voteAmount: number }>(HubKey.SubmitVoteAbilityRight, { voteAmount })
     }
 
     if (!battleAbility) return null
