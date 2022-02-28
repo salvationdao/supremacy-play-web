@@ -77,7 +77,6 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
             </Stack>
         )
     }
-    console.log({ multipliers, supsMultipliers, multipliersCleaned })
 
     return (
         <BarExpandable

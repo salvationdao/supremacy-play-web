@@ -39,4 +39,3 @@ export const TRAILER_VIDEO =
 
 // Maintenance
 export const UNDER_MAINTENANCE = true
-export const MAINTENANCE_END_TIME = "2022-02-27T07:30:00.000Z"
