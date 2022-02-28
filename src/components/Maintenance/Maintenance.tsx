@@ -12,7 +12,7 @@ export const Maintenance = () => {
                 backgroundColor: "#040B10",
                 backgroundImage: `url(${MaintenanceJPG})`,
                 backgroundSize: "cover",
-                backgroundPosition: "bottom center",
+                backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
             }}
         >
@@ -36,7 +36,7 @@ export const Maintenance = () => {
                             height: "100%",
                             backgroundImage: `url(${LogoWEBP})`,
                             backgroundSize: "contain",
-                            backgroundPosition: "bottom center",
+                            backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
                         }}
                     />
