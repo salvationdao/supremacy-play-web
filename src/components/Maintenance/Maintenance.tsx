@@ -39,7 +39,7 @@ export const Maintenance = () => {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                backgroundColor: "rgba(0,0,0,0.5)",
+                backgroundColor: "#00000090",
                 backgroundImage: `url(${MaintenanceJPG})`,
                 backgroundSize: "cover",
                 backgroundPosition: "bottom right",
@@ -59,7 +59,7 @@ export const Maintenance = () => {
                     py: 4,
                     borderRadius: 1,
                     zIndex: 999,
-                    backgroundColor: "rgba(0,0,0,0.5)",
+                    backgroundColor: "#00000090",
                 }}
             >
                 <Typography
@@ -71,9 +71,9 @@ export const Maintenance = () => {
                         textAlign: "center",
                     }}
                 >
-                    GAME RESUMES
+                    COMING BACK ONLINE SOON
                 </Typography>
-                <Typography
+                {/* <Typography
                     variant="body1"
                     sx={{
                         color: colors.neonBlue,
@@ -84,7 +84,7 @@ export const Maintenance = () => {
                     SUNDAY 7:30 AM PST
                     <br />
                     (SUNDAY 3:30 PM PERTH TIME)
-                </Typography>
+                </Typography> */}
 
                 {/* <Stack direction="row" justifyContent="space-around" sx={{ mt: 2 }}>
                     <Stack alignItems="center" sx={{ px: 2, py: 1.5, backgroundColor: "#00000040" }}>

@@ -38,5 +38,5 @@ export const TRAILER_VIDEO =
     "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"
 
 // Maintenance
-export const UNDER_MAINTENANCE = false
+export const UNDER_MAINTENANCE = true
 export const MAINTENANCE_END_TIME = "2022-02-27T07:30:00.000Z"
