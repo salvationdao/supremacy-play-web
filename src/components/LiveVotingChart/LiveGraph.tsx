@@ -125,8 +125,8 @@ export const LiveGraph = (props: LiveGraphProps) => {
         <>
             <Box
                 sx={{
-                    ml: 2,
-                    width: `${maxWidthPx - 46}px`,
+                    ml: 3.5,
+                    width: `${maxWidthPx - (30 + 3.5 * 8)}px`,
                     height: `${maxHeightPx - 60}px`,
                 }}
             >
@@ -159,10 +159,10 @@ export const LiveGraph = (props: LiveGraphProps) => {
                 }}
             >
                 <Typography variant="caption" sx={{ lineHeight: 1 }}>
-                    {(Math.round(largest.current * 10000) / 10000).toFixed(4)}
+                    {(Math.round(largest.current * 10000) / 10000).toFixed(2)}
                 </Typography>
                 <Typography variant="caption" sx={{ lineHeight: 1 }}>
-                    {0}
+                    0.00
                 </Typography>
             </Stack>
         </>
