@@ -98,7 +98,7 @@ export const InteractiveMap = ({
     useEffect(() => {
         setDelay(null)
         if (endMoment) {
-            setDelay(360)
+            setDelay(600)
             const d = moment.duration(endMoment.diff(moment()))
             setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
             return

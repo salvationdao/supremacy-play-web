@@ -28,7 +28,7 @@ export const Maintenance = () => {
                     top: "50%",
                     left: 50,
                     right: 50,
-                    transform: "translateY(-100%)",
+                    transform: "translateY(-90%)",
                     zIndex: 3,
                 }}
             >

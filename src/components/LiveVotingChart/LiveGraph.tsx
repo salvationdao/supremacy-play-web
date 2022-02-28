@@ -3,8 +3,7 @@ import { NetMessageType } from "../../types"
 import BigNumber from "bignumber.js"
 import { useEffect, useRef, useState } from "react"
 import { colors } from "../../theme/theme"
-import { Box } from "@mui/system"
-import { Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 
 interface LiveGraphProps {
     maxHeightPx: number
@@ -124,26 +123,48 @@ export const LiveGraph = (props: LiveGraphProps) => {
 
     return (
         <>
-            <canvas
-                ref={canvasRef}
-                style={{
-                    display: "block",
-                    width: `${maxWidthPx - 30}px`,
-                    height: `${maxHeightPx - 60}px`,
-                    padding: 0,
-                    margin: 0,
-                }}
-            />
             <Box
+                sx={{
+                    ml: 2,
+                    width: `${maxWidthPx - 46}px`,
+                    height: `${maxHeightPx - 60}px`,
+                }}
+            >
+                <canvas
+                    ref={canvasRef}
+                    style={{
+                        display: "block",
+                        width: "100%",
+                        height: "100%",
+                        padding: 0,
+                        margin: 0,
+                    }}
+                />
+            </Box>
+
+            <Stack
+                alignItems="flex-start"
+                justifyContent="space-between"
                 sx={{
                     position: "absolute",
                     left: 0,
                     top: 0,
+                    bottom: 0,
+                    my: 0.9,
+                    ml: 0.6,
+                    pl: 0.6,
                     zIndex: 999,
+                    borderLeft: `${colors.text} 1px dashed`,
+                    opacity: 0.2,
                 }}
             >
-                <Typography>{Math.round(largest.current)}</Typography>
-            </Box>
+                <Typography variant="caption" sx={{ lineHeight: 1 }}>
+                    {(Math.round(largest.current * 10000) / 10000).toFixed(4)}
+                </Typography>
+                <Typography variant="caption" sx={{ lineHeight: 1 }}>
+                    {0}
+                </Typography>
+            </Stack>
         </>
     )
 }
