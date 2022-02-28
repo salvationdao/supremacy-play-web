@@ -70,13 +70,13 @@ const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSu
 export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
     const { user } = useAuth()
     const { iframeDimensions } = useDimension()
-    const { selectedWsURL, isMute, vidRefCallback } = useStream()
+    const { currentStream, isMute, vidRefCallback } = useStream()
 
     return (
         <Stack sx={{ width: "100%", height: "100%" }}>
             {user && haveSups ? (
                 <video
-                    key={selectedWsURL}
+                    key={currentStream?.url}
                     id={"remoteVideo"}
                     muted={isMute}
                     ref={vidRefCallback}

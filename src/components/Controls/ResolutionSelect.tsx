@@ -4,7 +4,7 @@ import { useStream } from "../../containers"
 import { colors } from "../../theme/theme"
 
 export const ResolutionSelect = () => {
-    const { webRtc, selectedStreamID, streamResolutions, setCurrentResolution } = useStream()
+    const { webRtc, currentStream, streamResolutions, setCurrentResolution } = useStream()
     const [options, setOptions] = useState<number[]>([])
 
     useMemo(() => {
@@ -13,8 +13,8 @@ export const ResolutionSelect = () => {
     }, [streamResolutions])
 
     const changeStreamQuality = (quality: number) => {
-        if (webRtc?.current) {
-            webRtc.current.forceStreamQuality(selectedStreamID, quality)
+        if (webRtc?.current && currentStream) {
+            webRtc.current.forceStreamQuality(currentStream.streamID, quality)
         }
     }
 
