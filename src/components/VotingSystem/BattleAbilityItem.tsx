@@ -83,7 +83,7 @@ const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: bo
 
 export const BattleAbilityItem = () => {
     const { state, send, subscribe } = useWebsocket()
-    const { factionID } = useAuth()
+    const { user, factionID } = useAuth()
     const { votingState, factionVotePrice } = useGame()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [fadeEffect, toggleFadeEffect] = useToggle()
@@ -117,6 +117,7 @@ export const BattleAbilityItem = () => {
     if (!battleAbility) return null
 
     const { label, colour, imageUrl, description, cooldownDurationSecond } = battleAbility
+    const buttonColor = user && user.faction ? user.faction.theme.primary : colour
 
     return (
         <Fade in={true}>
@@ -205,7 +206,7 @@ export const BattleAbilityItem = () => {
 
                                     <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                         <VotingButton
-                                            color={colour}
+                                            color={buttonColor}
                                             amount={factionVotePrice.multipliedBy(1).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(1).toNumber()}
                                             isVoting={isVoting}
@@ -213,7 +214,7 @@ export const BattleAbilityItem = () => {
                                             Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                         />
                                         <VotingButton
-                                            color={colour}
+                                            color={buttonColor}
                                             amount={factionVotePrice.multipliedBy(25).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(25).toNumber()}
                                             isVoting={isVoting}
@@ -221,7 +222,7 @@ export const BattleAbilityItem = () => {
                                             Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
                                         />
                                         <VotingButton
-                                            color={colour}
+                                            color={buttonColor}
                                             amount={factionVotePrice.multipliedBy(100).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(100).toNumber()}
                                             isVoting={isVoting}
