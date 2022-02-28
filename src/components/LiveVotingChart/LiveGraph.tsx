@@ -155,7 +155,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
                     pl: 0.6,
                     zIndex: 999,
                     borderLeft: `${colors.text} 1px dashed`,
-                    opacity: 0.2,
+                    opacity: 0.28,
                 }}
             >
                 <Typography variant="caption" sx={{ lineHeight: 1 }}>

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react"
 import { useInterval } from "../../hooks/useInterval"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgSupToken, SvgWallet } from "../../assets"
+import { useToggle } from "../../../../hooks"
 
 interface SupsMultiplier {
     key: string
@@ -19,11 +20,15 @@ interface SupsMultiplier {
 export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
     const { setOnWorldSupsRaw } = useWallet()
     const { barPosition } = useBar()
+    const { payload: sups } = useSecureSubscription<string>(HubKey.SubscribeWallet)
+    const { payload: multipliers } = useSecureSubscription<SupsMultiplier[]>(HubKey.SubscribeSupsMultiplier)
+
     const [supsMultipliers, setSupsMultipliers] = useState<Map<string, SupsMultiplier>>(
         new Map<string, SupsMultiplier>(),
     )
-    const { payload: sups } = useSecureSubscription<string>(HubKey.SubscribeWallet)
-    const { payload: multipliers } = useSecureSubscription<SupsMultiplier[]>(HubKey.SubscribeSupsMultiplier)
+    const [multipliersCleaned, setMultipliersCleaned] = useState<SupsMultiplier[]>([])
+    const [totalMultipliers, setTotalMultipliers] = useState(0)
+    const [reRender, toggleReRender] = useToggle()
 
     // Set the sups amount in wallet container
     useEffect(() => {
@@ -45,7 +50,21 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
 
             return prev
         })
-    }, [multipliers, setSupsMultipliers])
+        toggleReRender()
+    }, [multipliers])
+
+    useEffect(() => {
+        if (supsMultipliers.size <= 0) return
+        let sum = 0
+        const list: SupsMultiplier[] = []
+        supsMultipliers.forEach((sm) => {
+            sum += sm.value
+            list.push(sm)
+        })
+        setTotalMultipliers(sum)
+        // Sort longest expiring first before returning
+        setMultipliersCleaned(list.sort((a, b) => (b.expiredAt > a.expiredAt ? 1 : -1)))
+    }, [supsMultipliers, reRender])
 
     const selfDestroyed = (key: string) => {
         supsMultipliers.delete(key)
@@ -58,6 +77,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
             </Stack>
         )
     }
+    console.log({ multipliers, supsMultipliers, multipliersCleaned })
 
     return (
         <BarExpandable
@@ -108,6 +128,8 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                                 sups={sups}
                                 supsMultipliers={supsMultipliers}
                                 selfDestroyed={selfDestroyed}
+                                multipliersCleaned={multipliersCleaned}
+                                totalMultipliers={totalMultipliers}
                             />
                         }
                         componentsProps={{
@@ -120,6 +142,22 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                             <SvgWallet size="23px" sx={{ mr: 1.3 }} />
                             <SvgSupToken size="19px" fill={colors.yellow} sx={{ mr: 0.6 }} />
                             <Typography sx={{ lineHeight: 1 }}>{sups ? supFormatter(sups, 0) : "0.0000"}</Typography>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    ml: 1,
+                                    px: 1,
+                                    pt: 0.5,
+                                    pb: 0.3,
+                                    textAlign: "center",
+                                    lineHeight: 1,
+                                    border: `${colors.orange} 1px solid`,
+                                    color: colors.orange,
+                                    borderRadius: 0.6,
+                                }}
+                            >
+                                {totalMultipliers}x
+                            </Typography>
                         </Stack>
                     </Tooltip>
 
@@ -163,27 +201,15 @@ const SupsToolTipContent = ({
     sups,
     supsMultipliers,
     selfDestroyed,
+    multipliersCleaned,
+    totalMultipliers,
 }: {
     sups?: string
     supsMultipliers: Map<string, SupsMultiplier>
     selfDestroyed: (key: string) => void
+    multipliersCleaned: SupsMultiplier[]
+    totalMultipliers: number
 }) => {
-    const [totalMulti, setTotalMulti] = useState(0)
-    const [multipliers, setMultipliers] = useState<SupsMultiplier[]>([])
-
-    useEffect(() => {
-        if (supsMultipliers.size === 0) return
-        let sum = 0
-        const list: SupsMultiplier[] = []
-        supsMultipliers.forEach((sm) => {
-            sum += sm.value
-            list.push(sm)
-        })
-        setTotalMulti(sum)
-        // Sort longest expiring first before returning
-        setMultipliers(list.sort((a, b) => (b.expiredAt > a.expiredAt ? 1 : -1)))
-    }, [supsMultipliers, setTotalMulti, setMultipliers])
-
     return (
         <Stack spacing={1.5} sx={{ px: 1.3, py: 1 }}>
             <Box>
@@ -205,11 +231,11 @@ const SupsToolTipContent = ({
                         sx={{ fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}
                         variant="h6"
                     >
-                        MULTIPLIERS: {`${totalMulti}x`}
+                        MULTIPLIERS: {`${totalMultipliers}x`}
                     </Typography>
 
                     <Stack spacing={0.4}>
-                        {multipliers.map((sm, i) => (
+                        {multipliersCleaned.map((sm, i) => (
                             <MultiplierItem key={i} supsMultiplier={sm} selfDestroyed={selfDestroyed} />
                         ))}
                     </Stack>
