@@ -76,7 +76,7 @@ export const Maintenance = () => {
                                 textAlign: "center",
                             }}
                         >
-                            2022-03-01 10PM PST
+                            03/01/2022 10PM PST
                         </Typography>
 
                         <Stack direction="row" spacing={1.6} alignItems="center">
