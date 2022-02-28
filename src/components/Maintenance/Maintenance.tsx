@@ -1,17 +1,14 @@
 import { Box, IconButton, Link, Stack, Typography } from "@mui/material"
-import { BottomMechWEBP, LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube, MaintenanceJPG } from "../../assets"
+import { LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube, MaintenanceJPG } from "../../assets"
 import { SUPREMACY_PAGE } from "../../constants"
-import { colors } from "../../theme/theme"
 
 export const Maintenance = () => {
     return (
         <Box
             sx={{
-                position: "fixed",
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
+                position: "relative",
+                width: "100%",
+                height: "100%",
                 backgroundColor: "#040B10",
                 backgroundImage: `url(${MaintenanceJPG})`,
                 backgroundSize: "cover",
@@ -24,7 +21,7 @@ export const Maintenance = () => {
                 alignItems="center"
                 justifyContent="center"
                 sx={{
-                    position: "fixed",
+                    position: "absolute",
                     top: "50%",
                     left: 50,
                     right: 50,
@@ -32,16 +29,18 @@ export const Maintenance = () => {
                     zIndex: 3,
                 }}
             >
-                <Box
-                    sx={{
-                        width: "100%",
-                        height: 120,
-                        backgroundImage: `url(${LogoWEBP})`,
-                        backgroundSize: "contain",
-                        backgroundPosition: "bottom center",
-                        backgroundRepeat: "no-repeat",
-                    }}
-                />
+                <Link target="_blank" href={SUPREMACY_PAGE} sx={{ width: "100%", height: 120 }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundImage: `url(${LogoWEBP})`,
+                            backgroundSize: "contain",
+                            backgroundPosition: "bottom center",
+                            backgroundRepeat: "no-repeat",
+                        }}
+                    />
+                </Link>
 
                 <Stack
                     alignItems="center"
@@ -53,19 +52,17 @@ export const Maintenance = () => {
                         backgroundColor: "#00000099",
                     }}
                 >
-                    <Link target="_blank" href={SUPREMACY_PAGE}>
-                        <Typography
-                            sx={{
-                                mb: 0.5,
-                                color: "#FFFFFF",
-                                textAlign: "center",
-                                fontFamily: "Nostromo Regular Heavy",
-                                fontSize: "1.9rem",
-                            }}
-                        >
-                            {"WE'LL BE BACK SOON"}
-                        </Typography>
-                    </Link>
+                    <Typography
+                        sx={{
+                            mb: 0.5,
+                            color: "#FFFFFF",
+                            textAlign: "center",
+                            fontFamily: "Nostromo Regular Heavy",
+                            fontSize: "1.9rem",
+                        }}
+                    >
+                        {"WE'LL BE BACK SOON"}
+                    </Typography>
 
                     <Stack direction="row" spacing={1.6} alignItems="center">
                         <IconButton size="small" target="_blank" href="https://discord.com/invite/supremacygame">
