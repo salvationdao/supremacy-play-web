@@ -154,8 +154,6 @@ const AppInner = () => {
         )
     }
 
-    if (UNDER_MAINTENANCE) return <Maintenance />
-
     return (
         <>
             <GameBar
@@ -197,20 +195,26 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        <LoadMessage />
-                        <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
+                        {UNDER_MAINTENANCE ? (
+                            <Maintenance />
+                        ) : (
+                            <>
+                                <LoadMessage />
+                                <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
-                        {user && haveSups && (
-                            <Box>
-                                <VotingSystem />
-                                <MiniMap />
-                                <Notifications />
+                                {user && haveSups && (
+                                    <Box>
+                                        <VotingSystem />
+                                        <MiniMap />
+                                        <Notifications />
 
-                                <LiveVotingChart />
-                                <WarMachineStats />
-                                <BattleEndScreen />
-                                <BattleHistory />
-                            </Box>
+                                        <LiveVotingChart />
+                                        <WarMachineStats />
+                                        <BattleEndScreen />
+                                        <BattleHistory />
+                                    </Box>
+                                )}
+                            </>
                         )}
                     </Box>
                 </Stack>
