@@ -10,15 +10,25 @@ import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset } from "../../types/assets"
 
-const AmountItem = ({ title, value, tooltip }: { title: string; value: string | number; tooltip: string }) => {
+const AmountItem = ({
+    title,
+    color,
+    value,
+    tooltip,
+}: {
+    title: string
+    color: string
+    value: string | number
+    tooltip: string
+}) => {
     return (
         <Stack direction="row" alignItems="center">
             <Typography sx={{ mr: 0.5, fontFamily: "Share Tech" }}>{title}</Typography>
-            <SvgSupToken size="14px" fill={colors.yellow} />
-            <Typography sx={{ fontFamily: "Share Tech", ml: 0.2, mr: 4, color: colors.yellow }}>{value}</Typography>
+            <SvgSupToken size="14px" fill={color} />
+            <Typography sx={{ fontFamily: "Share Tech", ml: 0.2, mr: 4, color: color }}>{value}</Typography>
             <TooltipHelper placement="right-start" text={tooltip}>
                 <Box sx={{ ml: "auto" }}>
-                    <SvgInfoCircular size="12px" sx={{ opacity: 0.6, ":hover": { opacity: 1 } }} />
+                    <SvgInfoCircular size="12px" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
                 </Box>
             </TooltipHelper>
         </Stack>
@@ -154,13 +164,15 @@ export const DeployConfirmation = ({
                             <Stack spacing={0.1}>
                                 <AmountItem
                                     title={"CONTRACT REWARD: "}
+                                    color={colors.neonBlue}
                                     value={contractReward ? supFormatter(contractReward, 6) : "N/A"}
                                     tooltip="Your reward if your syndicate wins the battle."
                                 />
 
                                 <AmountItem
                                     title={"FEE: "}
-                                    value={queueCost ? `-${supFormatter(queueCost, 6)}` : "N/A"}
+                                    color={"#FF2B2B"}
+                                    value={queueCost ? `${supFormatter(queueCost, 6)}` : "N/A"}
                                     tooltip="The cost to place your war machine into the battle queue."
                                 />
                             </Stack>
@@ -202,7 +214,7 @@ export const DeployConfirmation = ({
                                     }
                                 >
                                     <Box sx={{ ml: "auto" }}>
-                                        <SvgInfoCircular size="12px" sx={{ opacity: 0.6, ":hover": { opacity: 1 } }} />
+                                        <SvgInfoCircular size="12px" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
                                     </Box>
                                 </TooltipHelper>
                             </Stack>
