@@ -95,43 +95,48 @@ export const DeployConfirmation = ({
                                 backgroundImage: `url(${image})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",
-                                backgroundSize: "cover",
+                                backgroundSize: "contain",
                             }}
-                        />
+                        >
+                            {user && (
+                                <Stack
+                                    spacing={0.6}
+                                    direction="row"
+                                    alignItems="center"
+                                    sx={{ position: "absolute", bottom: 0, left: 0, mb: 0.5 }}
+                                >
+                                    <Box
+                                        sx={{
+                                            mb: 0.3,
+                                            width: 16,
+                                            height: 16,
+                                            flexShrink: 0,
+                                            overflow: "hidden",
+                                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID})`,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
+                                            backgroundSize: "contain",
+                                            backgroundColor: user.faction.theme.primary,
+                                            borderRadius: 0.8,
+                                            border: `${user.faction.theme.primary} 1px solid`,
+                                        }}
+                                    />
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            lineHeight: 1,
+                                            color: user.faction.theme.primary,
+                                            fontFamily: "Nostromo Regular Heavy",
+                                        }}
+                                    >
+                                        {acronym(user.faction.label)}
+                                    </Typography>
+                                </Stack>
+                            )}
+                        </Box>
 
                         <Stack spacing={1}>
                             <Box>
-                                {user && (
-                                    <Stack spacing={0.6} direction="row" alignItems="center" sx={{ mb: 0.5 }}>
-                                        <Box
-                                            sx={{
-                                                mb: 0.3,
-                                                width: 16,
-                                                height: 16,
-                                                flexShrink: 0,
-                                                overflow: "hidden",
-                                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID})`,
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundPosition: "center",
-                                                backgroundSize: "contain",
-                                                backgroundColor: user.faction.theme.primary,
-                                                borderRadius: 0.8,
-                                                border: `${user.faction.theme.primary} 1px solid`,
-                                            }}
-                                        />
-                                        <Typography
-                                            variant="caption"
-                                            sx={{
-                                                lineHeight: 1,
-                                                color: user.faction.theme.primary,
-                                                fontFamily: "Nostromo Regular Heavy",
-                                            }}
-                                        >
-                                            {acronym(user.faction.label)}
-                                        </Typography>
-                                    </Stack>
-                                )}
-
                                 <Typography
                                     sx={{
                                         display: "-webkit-box",
@@ -231,7 +236,7 @@ export const DeployConfirmation = ({
                             </Button>
                         </Stack>
 
-                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 4, right: 3 }}>
+                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 3, right: 2 }}>
                             <SvgClose size="16px" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                         </IconButton>
                     </Stack>
