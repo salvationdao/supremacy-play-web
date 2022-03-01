@@ -15,7 +15,6 @@ import {
     LoadMessage,
     Stream,
     VotingSystem,
-    WarMachineQueue,
     WarMachineStats,
     Notifications,
     Maintenance,
@@ -163,7 +162,6 @@ const AppInner = () => {
                 supremacyPage={SUPREMACY_PAGE}
                 passportWeb={PASSPORT_WEB}
                 passportServerHost={PASSPORT_SERVER_HOST}
-                MechQueueComponent={<WarMachineQueue />}
             />
             <Stack
                 sx={{

@@ -2,7 +2,7 @@ import { Box, Button, Drawer, Fade, IconButton, Stack, Typography } from "@mui/m
 import { useEffect, useCallback, useState } from "react"
 import { AssetItem, DrawerButtons } from ".."
 import { useDrawer } from "../../containers/drawer"
-import { SvgAssets, SvgRefresh } from "../../assets"
+import { SvgAssets, SvgRefresh, SvgRobot } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_WIDTH, NilUUID } from "../../constants"
 import { useAuth, useWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
@@ -80,7 +80,7 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
                     boxShadow: 1.5,
                 }}
             >
-                <SvgAssets size="23px" fill={colors.text} />
+                <SvgRobot size="23px" fill={colors.text} />
                 <Typography
                     variant="caption"
                     sx={{ flex: 1, color: colors.text, fontFamily: "Nostromo Regular Black" }}

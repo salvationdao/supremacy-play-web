@@ -1,6 +1,5 @@
 import { Box, CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material"
-import { ReactNode } from "react"
-import { Assets, MechQueue, Bar, DrawerButtons, LiveChat } from "./components"
+import { Assets, Bar, DrawerButtons, LiveChat } from "./components"
 import { AuthProvider, BarProvider, SocketProvider, ThemeProvider, useTheme } from "./containers"
 
 const Inner = (props: GameBarBaseProps) => {
@@ -14,7 +13,6 @@ const Inner = (props: GameBarBaseProps) => {
                 <DrawerButtons />
                 <LiveChat />
                 <Assets passportWeb={props.passportWeb} />
-                <MechQueue Content={props.MechQueueComponent} />
             </Box>
         </MuiThemeProvider>
     )
@@ -29,7 +27,6 @@ export interface GameBarBaseProps {
     supremacyPage: string
     passportWeb: string
     passportServerHost: string
-    MechQueueComponent?: ReactNode
 }
 
 export const GameBar: React.FC<GameBarBaseProps> = (props) => {
