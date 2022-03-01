@@ -31,8 +31,8 @@ export const MiniMap = () => {
         if (width <= 0 || height <= 0) return
 
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
-        const newWidth = enlarged ? Math.min(width - 25, 1000) : MINI_MAP_DEFAULT_WIDTH
-        const newHeight = enlarged ? Math.min(height - 25, 700) : MINI_MAP_DEFAULT_HEIGHT
+        const newWidth = enlarged ? width - 25 : MINI_MAP_DEFAULT_WIDTH
+        const newHeight = enlarged ? height - 25 : MINI_MAP_DEFAULT_HEIGHT
         setDimensions({ width: newWidth, height: newHeight })
     }, [width, height, enlarged])
 
@@ -75,15 +75,7 @@ export const MiniMap = () => {
     const PADDING = 10
     const onResize = (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
         const { size } = data || { size: { width: dimensions.width, height: dimensions.height } }
-        if (size.width <= width - 2 * PADDING)
-            setDimensions((prevProps) => {
-                return { ...prevProps, width: size.width }
-            })
-
-        if (size.height <= height - 2 * PADDING)
-            setDimensions((prevProps) => {
-                return { ...prevProps, height: size.height }
-            })
+        setDimensions({ width: size.width, height: size.width / 1.0625 })
     }
 
     return (
@@ -101,13 +93,13 @@ export const MiniMap = () => {
                 height={dimensions.height}
                 width={dimensions.width}
                 minConstraints={[MINI_MAP_DEFAULT_WIDTH, MINI_MAP_DEFAULT_HEIGHT]}
-                maxConstraints={[690, 600]}
+                maxConstraints={[Math.min(height, 637.5), Math.min(height - 25, 637.5)]}
                 onResize={onResize}
                 resizeHandles={["nw"]}
                 handle={() => (
                     <Box
                         sx={{
-                            display: enlarged ? "none" : "unset",
+                            display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                             pointerEvents: "all",
                             position: "absolute",
                             top: 8.8,
@@ -198,7 +190,7 @@ export const MiniMap = () => {
                                                 enlarged={enlarged}
                                             />
                                         ) : (
-                                            <InteractiveMap windowDimension={dimensions} enlarged={true} />
+                                            <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
                                         )}
                                     </Box>
                                 </ClipThing>
