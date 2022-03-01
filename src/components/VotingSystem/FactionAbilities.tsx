@@ -29,7 +29,7 @@ export const FactionAbilities = () => {
     return (
         <Fade in={true}>
             <Box>
-                <Divider sx={{ mt: 1.6, borderColor: theme.factionTheme.primary, opacity: 0.28 }} />
+                <Divider sx={{ mb: 1.6, borderColor: theme.factionTheme.primary, opacity: 0.28 }} />
                 <Stack spacing={0.7}>
                     <Stack direction="row" spacing={0.6} alignItems="center">
                         <Box
