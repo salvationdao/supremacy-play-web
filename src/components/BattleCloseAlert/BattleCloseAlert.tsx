@@ -4,8 +4,6 @@ import { useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { ClipThing } from "../GameBar/components"
 
-export const BOTTOM_BUTTONS_HEIGHT = 50
-
 export const BattleCloseAlert = () => {
     const { state, subscribe } = useWebsocket()
     const theme = useTheme()
