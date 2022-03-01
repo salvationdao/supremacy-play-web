@@ -85,7 +85,7 @@ export const DeployConfirmation = ({
                 >
                     <Stack
                         direction="row"
-                        spacing={1.5}
+                        spacing={1.6}
                         sx={{
                             position: "relative",
                             pl: 2.2,
@@ -177,24 +177,16 @@ export const DeployConfirmation = ({
                             </Stack>
 
                             <Stack direction="row" alignItems="center">
-                                <TooltipHelper
-                                    text={`Insured war machines will repair in rapid mode. Insurance costs 10% of the contract reward${
-                                        contractReward ? ` (${contractReward}) SUPS` : ""
-                                    }.`}
+                                <Typography
+                                    sx={{
+                                        pt: 0.1,
+                                        fontFamily: "Share Tech",
+                                        lineHeight: 1,
+                                        color: colors.neonBlue,
+                                    }}
                                 >
-                                    <Box>
-                                        <Typography
-                                            sx={{
-                                                pt: 0.1,
-                                                fontFamily: "Share Tech",
-                                                lineHeight: 1,
-                                                color: colors.neonBlue,
-                                            }}
-                                        >
-                                            INSURANCE:
-                                        </Typography>
-                                    </Box>
-                                </TooltipHelper>
+                                    INSURANCE:
+                                </Typography>
                                 <Switch
                                     size="small"
                                     checked={needInsured}

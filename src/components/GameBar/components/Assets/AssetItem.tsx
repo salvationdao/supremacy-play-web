@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { DeployConfirmation } from ".."
 import { SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
+import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
@@ -165,14 +166,20 @@ export const AssetItem = ({
                     >
                         IN BATTLE
                     </Typography>
-
-                    <Stack direction="row" alignItems="center">
-                        <Typography sx={{ mr: 0.5, fontFamily: "Share Tech" }}>CONTRACT REWARD:&nbsp;</Typography>
-                        <SvgSupToken size="14px" fill={colors.neonBlue} />
-                        <Typography sx={{ fontFamily: "Share Tech", ml: 0.2, mr: 4, color: colors.neonBlue }}>
-                            {contractReward2}
-                        </Typography>
-                    </Stack>
+                    {contractReward2 && (
+                        <Stack direction="row" alignItems="center">
+                            <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
+                                REWARD:&nbsp;
+                            </Typography>
+                            <SvgSupToken size="12px" fill={colors.neonBlue} />
+                            <Typography
+                                variant="caption"
+                                sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.neonBlue }}
+                            >
+                                {supFormatter(contractReward2, 6)}
+                            </Typography>
+                        </Stack>
+                    )}
                 </>
             )
         }
@@ -194,15 +201,20 @@ export const AssetItem = ({
                     >
                         IN QUEUE
                     </Typography>
-                    <Typography>CONTRACT REWARD:&nbsp;</Typography>
-
-                    <Stack direction="row" alignItems="center">
-                        <Typography sx={{ mr: 0.5, fontFamily: "Share Tech" }}>CONTRACT REWARD:&nbsp;</Typography>
-                        <SvgSupToken size="14px" fill={colors.neonBlue} />
-                        <Typography sx={{ fontFamily: "Share Tech", ml: 0.2, mr: 4, color: colors.neonBlue }}>
-                            {contractReward2}
-                        </Typography>
-                    </Stack>
+                    {contractReward2 && (
+                        <Stack direction="row" alignItems="center">
+                            <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
+                                REWARD:&nbsp;
+                            </Typography>
+                            <SvgSupToken size="12px" fill={colors.neonBlue} />
+                            <Typography
+                                variant="caption"
+                                sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.neonBlue }}
+                            >
+                                {supFormatter(contractReward2, 6)}
+                            </Typography>
+                        </Stack>
+                    )}
                 </>
             )
         }
@@ -247,7 +259,7 @@ export const AssetItem = ({
                     {name}
                 </Typography>
 
-                <Stack direction="row" spacing={0.8}>
+                <Stack direction="row" spacing={1.2}>
                     <StatusArea />
                 </Stack>
             </Stack>
