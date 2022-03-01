@@ -1,9 +1,8 @@
-import { Box, Divider, Slide, Stack } from "@mui/material"
+import { Box, Slide, Stack } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import { ClipThing, BattleAbility, Prices, FactionAbilities } from ".."
+import { ClipThing, BattleAbilityItem, Prices, FactionAbilities } from ".."
 import { useDimension, useGame } from "../../containers"
-import { colors } from "../../theme/theme"
 import { useAuth } from "../../containers"
 
 export const VotingSystem = () => {
@@ -34,9 +33,8 @@ export const VotingSystem = () => {
                 <Box>
                     <ClipThing border={{ isFancy: true, borderThickness: "3px" }} clipSize="10px">
                         <Box sx={{ backgroundColor: theme.factionTheme.background, pl: 0.9, pr: 2, pt: 1.8, pb: 2 }}>
-                            <Box sx={{ ml: 1, mb: 2 }}>
+                            <Box sx={{ ml: 1, mb: 1 }}>
                                 <Prices />
-                                <Divider sx={{ mt: 1.6, borderColor: theme.factionTheme.primary, opacity: 0.28 }} />
                             </Box>
 
                             <Box
@@ -54,7 +52,7 @@ export const VotingSystem = () => {
                                         width: 4,
                                     },
                                     "::-webkit-scrollbar-track": {
-                                        boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
+                                        background: "#FFFFFF15",
                                         borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
@@ -64,7 +62,7 @@ export const VotingSystem = () => {
                                 }}
                             >
                                 <Stack spacing={2.5} sx={{ direction: "ltr" }}>
-                                    <BattleAbility />
+                                    <BattleAbilityItem />
                                     <FactionAbilities />
                                 </Stack>
                             </Box>

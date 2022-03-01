@@ -3,6 +3,7 @@ import { NetMessageType } from "../../types"
 import BigNumber from "bignumber.js"
 import { useEffect, useRef, useState } from "react"
 import { colors } from "../../theme/theme"
+import { Box, Stack, Typography } from "@mui/material"
 
 interface LiveGraphProps {
     maxHeightPx: number
@@ -21,6 +22,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
     const { state, subscribeNetMessage } = useWebsocket()
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [liveVotingData, setLiveVotingData] = useState<LiveVotingData[]>([])
+    const largest = useRef<number>(0.1)
 
     useEffect(() => {
         const zeroArray: LiveVotingData[] = []
@@ -66,10 +68,10 @@ export const LiveGraph = (props: LiveGraphProps) => {
     useEffect(() => {
         if (!liveVotingData || liveVotingData.length === 0 || !canvasRef.current) return
         // Calculate largest piece of data
-        let largest = 0.1
+        largest.current = 0.1
         liveVotingData.forEach((lvd) => {
-            if (lvd.rawData > largest) {
-                largest = lvd.rawData
+            if (lvd.rawData > largest.current) {
+                largest.current = lvd.rawData
             }
         })
 
@@ -101,13 +103,16 @@ export const LiveGraph = (props: LiveGraphProps) => {
             context.strokeStyle = colors.neonBlue
 
             // Add first point in the graph
-            context.moveTo(GRAPH_LEFT, GRAPH_HEIGHT - (liveVotingData[0].rawData / largest) * GRAPH_HEIGHT + GRAPH_TOP)
+            context.moveTo(
+                GRAPH_LEFT,
+                GRAPH_HEIGHT - (liveVotingData[0].rawData / largest.current) * GRAPH_HEIGHT + GRAPH_TOP,
+            )
 
             liveVotingData.forEach((lvd, i) => {
                 if (i === 0) return
                 context.lineTo(
                     (GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT,
-                    GRAPH_HEIGHT * (1 - lvd.rawData / largest) + GRAPH_TOP,
+                    GRAPH_HEIGHT * (1 - lvd.rawData / largest.current) + GRAPH_TOP,
                 )
             })
 
@@ -117,15 +122,49 @@ export const LiveGraph = (props: LiveGraphProps) => {
     }, [liveVotingData, canvasRef.current])
 
     return (
-        <canvas
-            ref={canvasRef}
-            style={{
-                display: "block",
-                width: `${maxWidthPx - 30}px`,
-                height: `${maxHeightPx - 60}px`,
-                padding: 0,
-                margin: 0,
-            }}
-        />
+        <>
+            <Box
+                sx={{
+                    ml: 3.5,
+                    width: `${maxWidthPx - (30 + 3.5 * 8)}px`,
+                    height: `${maxHeightPx - 60}px`,
+                }}
+            >
+                <canvas
+                    ref={canvasRef}
+                    style={{
+                        display: "block",
+                        width: "100%",
+                        height: "100%",
+                        padding: 0,
+                        margin: 0,
+                    }}
+                />
+            </Box>
+
+            <Stack
+                alignItems="flex-start"
+                justifyContent="space-between"
+                sx={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    my: 0.9,
+                    ml: 0.6,
+                    pl: 0.6,
+                    zIndex: 999,
+                    borderLeft: `${colors.text} 1px dashed`,
+                    opacity: 0.28,
+                }}
+            >
+                <Typography variant="caption" sx={{ lineHeight: 1 }}>
+                    {(Math.round(largest.current * 10000) / 10000).toFixed(2)}
+                </Typography>
+                <Typography variant="caption" sx={{ lineHeight: 1 }}>
+                    0.00
+                </Typography>
+            </Stack>
+        </>
     )
 }

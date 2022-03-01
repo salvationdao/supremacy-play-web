@@ -146,7 +146,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <TooltipHelper text={description}>
+                                <TooltipHelper placement="right" text={description}>
                                     <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
                                         <Box
                                             sx={{
@@ -227,7 +227,6 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     isVoting={isVoting}
                                     onClick={() => onContribute(1)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                                 <VotingButton
                                     color={colour}
@@ -236,7 +235,6 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     isVoting={isVoting}
                                     onClick={() => onContribute(25)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                                 <VotingButton
                                     color={colour}
@@ -245,7 +243,6 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     isVoting={isVoting}
                                     onClick={() => onContribute(100)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                             </Stack>
                         </Stack>

@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
+import { GAMEBAR_CONSTANTS } from "../GameBar"
 import { useEffect, useState } from "react"
 import { WarMachineQueueItem } from ".."
 import { SvgRobot } from "../../assets"
@@ -56,7 +56,7 @@ export const WarMachineQueue = () => {
                         width: 4,
                     },
                     "::-webkit-scrollbar-track": {
-                        boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
+                        background: "#FFFFFF15",
                         borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {

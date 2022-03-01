@@ -28,7 +28,9 @@ const SpoilOfWarAmount = () => {
 
     return (
         <>
-            <Typography variant="body1">SPOILS OF WAR:&nbsp;</Typography>
+            <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
+                SPOILS OF WAR:&nbsp;
+            </Typography>
             <SvgSupToken size="14px" fill={colors.yellow} />
             <Typography variant="body1" sx={{ ml: 0.2 }}>
                 {spoilOfWarAmount}

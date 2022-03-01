@@ -5,17 +5,31 @@ export const TooltipHelper = ({
     text,
     children,
     isCentered,
+    placement,
 }: {
     text: string
     children: ReactElement
     isCentered?: boolean
+    placement?:
+        | "bottom-end"
+        | "bottom-start"
+        | "bottom"
+        | "left-end"
+        | "left-start"
+        | "left"
+        | "right-end"
+        | "right-start"
+        | "right"
+        | "top-end"
+        | "top-start"
+        | "top"
 }) => {
     if (!text) return <>{children}</>
 
     return (
         <Tooltip
             arrow
-            placement={isCentered ? "bottom" : "bottom-start"}
+            placement={placement || (isCentered ? "bottom" : "bottom-start")}
             title={
                 <Box sx={{ px: 0.5, py: 0.2 }}>
                     <Typography

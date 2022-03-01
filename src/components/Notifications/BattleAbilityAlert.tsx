@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import { FallbackUser, StyledImageText, StyledNormalText } from ".."
-import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../../constants"
+import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { httpProtocol } from "../../containers"
 import { BattleAbility, User } from "../../types"
 
@@ -26,12 +26,14 @@ export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertPr
                 text={user ? user.faction.label : "GABS"}
                 color={user ? user.faction.theme.primary : "grey !important"}
                 imageUrl={
-                    user && user.faction.logoBlobID ? `${PASSPORT_WEB}/api/files/${user.faction.logoBlobID}` : undefined
+                    user && user.faction.logoBlobID
+                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID}`
+                        : undefined
                 }
             />
             <StyledNormalText text=". " />
             <StyledImageText
-                imageUrl={avatarID ? `${PASSPORT_WEB}/api/files/${avatarID}` : undefined}
+                imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
                 text={username}
                 color={faction.theme.primary}
             />

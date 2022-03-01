@@ -16,7 +16,7 @@ export const MiniMap = () => {
         streamDimensions: { width, height },
     } = useDimension()
     const { map, winner, setWinner, votingState } = useGame()
-    const [enlarged, toggleEnlarged] = useToggle(false)
+    const [enlarged, toggleEnlarged] = useToggle()
     const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
         width: MINI_MAP_DEFAULT_WIDTH,
         height: MINI_MAP_DEFAULT_HEIGHT,
@@ -25,7 +25,6 @@ export const MiniMap = () => {
     // For targeting map
     const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
     const [submitted, setSubmitted] = useState<boolean>(false)
-    const confirmed = useRef<boolean>(false)
 
     useEffect(() => {
         if (width <= 0 || height <= 0) return
@@ -40,7 +39,6 @@ export const MiniMap = () => {
         const endTime = winner?.endTime
 
         if (endTime) {
-            confirmed.current = false
             setSubmitted(false)
             setTimeReachZero(false)
         }
@@ -156,7 +154,6 @@ export const MiniMap = () => {
                                             windowDimension={dimensions}
                                             targeting
                                             setSubmitted={setSubmitted}
-                                            confirmed={confirmed}
                                             enlarged={enlarged}
                                         />
                                     ) : (

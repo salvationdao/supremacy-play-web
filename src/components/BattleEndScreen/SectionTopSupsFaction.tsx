@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from ".."
-import { PASSPORT_WEB } from "../../constants"
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
@@ -12,7 +12,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
             <Box sx={{ px: 2.5, py: 1.1, backgroundColor: "#00000083" }}>
                 <Typography
                     component="span"
-                    variant="h4"
+                    variant="h5"
                     sx={{
                         position: "relative",
                         fontFamily: "Nostromo Regular Black",
@@ -22,7 +22,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                 >
                     MOST SUPS SPENT
                     <BattleEndTooltip
-                        text="The syndicates that had spent the most SUPs, ranked in order."
+                        text="The syndicates that had spent the most SUPS, ranked in order."
                         color={colors.neonBlue}
                     />
                 </Typography>
@@ -39,7 +39,11 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                                 <StyledImageText
                                     color={f.theme.primary}
                                     text={f.label}
-                                    imageUrl={f.logoBlobID ? `${PASSPORT_WEB}/api/files/${f.logoBlobID}` : undefined}
+                                    imageUrl={
+                                        f.logoBlobID
+                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${f.logoBlobID}`
+                                            : undefined
+                                    }
                                     variant="h5"
                                     imageSize={29}
                                     imageBorderThickness="2px"

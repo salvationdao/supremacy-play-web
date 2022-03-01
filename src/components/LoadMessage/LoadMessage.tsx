@@ -9,12 +9,13 @@ export const LoadMessage = () => {
 
     let message = ""
     if (state !== WebSocket.OPEN) {
-        message = "CONNECTING TO THE GAME SERVER..."
+        message = "BATTLE STREAM OFFLINE."
     } else if (authSessionIDGetLoading) {
         message = "GETTING SESSION..."
-    } else if (authSessionIDGetError) {
-        message = "Failed to get session..."
     }
+    // } else if (authSessionIDGetError) {
+    //     message = "Failed to get session..."
+    // }
 
     if (!message) return null
 
@@ -22,8 +23,8 @@ export const LoadMessage = () => {
         <Box
             sx={{
                 position: "absolute",
-                top: 20,
-                left: 26,
+                top: 15,
+                left: 20,
                 px: 1.6,
                 py: 0.5,
                 backgroundColor: "#000000",

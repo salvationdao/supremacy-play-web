@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, TooltipHelper, VotingButton } from ".."
-import { SvgCooldown, SvgApplause } from "../../assets"
+import { SvgCooldown, SvgSupToken } from "../../assets"
 import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
 import { httpProtocol, useAuth, useGame, useWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
@@ -81,13 +81,9 @@ const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: bo
     )
 }
 
-interface VoteRequest {
-    voteAmount: number // 1, 10, 100
-}
-
-export const BattleAbility = () => {
+export const BattleAbilityItem = () => {
     const { state, send, subscribe } = useWebsocket()
-    const { factionID } = useAuth()
+    const { user, factionID } = useAuth()
     const { votingState, factionVotePrice } = useGame()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [fadeEffect, toggleFadeEffect] = useToggle()
@@ -115,12 +111,14 @@ export const BattleAbility = () => {
     }, [state, subscribe, factionID])
 
     const onVote = (voteAmount: number) => {
-        send<boolean, VoteRequest>(HubKey.SubmitVoteAbilityRight, { voteAmount })
+        send<boolean, { voteAmount: number }>(HubKey.SubmitVoteAbilityRight, { voteAmount })
     }
 
     if (!battleAbility) return null
 
     const { label, colour, imageUrl, description, cooldownDurationSecond } = battleAbility
+    const buttonColor = user && user.faction ? user.faction.theme.primary : colour
+    const buttonTextColor = user && user.faction ? user.faction.theme.secondary : "#FFFFFF"
 
     return (
         <Fade in={true}>
@@ -151,7 +149,7 @@ export const BattleAbility = () => {
                                         justifyContent="space-between"
                                         alignSelf="stretch"
                                     >
-                                        <TooltipHelper text={description}>
+                                        <TooltipHelper placement="right" text={description}>
                                             <Stack
                                                 spacing={1}
                                                 direction="row"
@@ -209,28 +207,31 @@ export const BattleAbility = () => {
 
                                     <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                         <VotingButton
-                                            color={colour}
-                                            amount={1}
+                                            color={buttonColor}
+                                            textColor={buttonTextColor}
+                                            amount={factionVotePrice.multipliedBy(1).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(1).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(1)}
-                                            Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
+                                            Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
-                                            color={colour}
-                                            amount={25}
+                                            color={buttonColor}
+                                            textColor={buttonTextColor}
+                                            amount={factionVotePrice.multipliedBy(25).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(25).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(25)}
-                                            Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
+                                            Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
-                                            color={colour}
-                                            amount={100}
+                                            color={buttonColor}
+                                            textColor={buttonTextColor}
+                                            amount={factionVotePrice.multipliedBy(100).toNumber().toFixed(4)}
                                             cost={factionVotePrice.multipliedBy(100).toNumber()}
                                             isVoting={isVoting}
                                             onClick={() => onVote(100)}
-                                            Suffix={<SvgApplause size="14px" fill="#FFFFFF" />}
+                                            Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                     </Stack>
                                 </Stack>
