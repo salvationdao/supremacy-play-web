@@ -1,6 +1,6 @@
 [context.production.environment] 
   CI="false"
-  REACT_APP_TOKEN_SALE_PAGE="https://sale.supremacy.game/"
+  REACT_APP_TOKEN_SALE_PAGE="https://sale.supremacy.game"
   REACT_APP_SUPREMACY_PAGE="https://supremacy.game/"
   REACT_APP_GAME_SERVER_HOSTNAME = "api.supremacy.game"
   REACT_APP_PASSPORT_WEB = "https://passport.xsyn.io"
