@@ -84,7 +84,7 @@ export const AssetItem = ({
             },
             { assetHash: asset.hash },
         )
-    }, [state, subscribe, asset])
+    }, [state, subscribe])
 
     // Subscribe on asset durability
     useEffect(() => {
@@ -97,7 +97,7 @@ export const AssetItem = ({
             },
             { assetHash: asset.hash },
         )
-    }, [state, subscribe, asset])
+    }, [state, subscribe])
 
     // Subscribe on asset queue position
     useEffect(() => {
@@ -110,7 +110,7 @@ export const AssetItem = ({
             },
             { assetHash: asset.hash },
         )
-    }, [state, subscribe, asset])
+    }, [state, subscribe])
 
     const isRepairing = !!durability?.repairType
     const isInBattle = queuePosition && queuePosition.position && queuePosition.position < 0
