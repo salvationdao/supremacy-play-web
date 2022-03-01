@@ -1,7 +1,7 @@
-import { Box, Button, Modal, Stack, Switch, Typography } from "@mui/material"
+import { Box, Button, IconButton, Modal, Stack, Switch, Typography } from "@mui/material"
 import { ClipThing, TooltipHelper } from ".."
 import { useToggle } from "../../../../hooks"
-import { SvgInfoCircular, SvgSupToken } from "../../assets"
+import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
 import { supFormatter } from "../../helpers"
 import HubKey from "../../keys"
@@ -73,6 +73,7 @@ export const DeployConfirmation = ({
                         direction="row"
                         spacing={1.5}
                         sx={{
+                            position: "relative",
                             pl: 2.2,
                             pr: 3.2,
                             pt: 2,
@@ -188,6 +189,10 @@ export const DeployConfirmation = ({
                                 </Typography>
                             </Button>
                         </Stack>
+
+                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 10, right: 10 }}>
+                            <SvgClose sx={{ opacity: 0.6, ":hover": { opacity: 1 } }} />
+                        </IconButton>
                     </Stack>
                 </ClipThing>
             </Box>

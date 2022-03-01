@@ -21,6 +21,7 @@ import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Chat from "!@svgr/webpack!./svg/Chat.svg"
 import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
+import Close from "!@svgr/webpack!./svg/Close.svg"
 import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Ability from "!@svgr/webpack!./svg/Ability.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
@@ -226,5 +227,11 @@ export const SvgFastRepair: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgScrolldown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Scrolldown />
+    </SvgWrapper>
+)
+
+export const SvgClose: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Close />
     </SvgWrapper>
 )
