@@ -61,3 +61,12 @@ export interface ChatData {
     message: string
     sentAt: Date
 }
+
+export interface Transaction {
+    amount: string
+    transactionReference: string
+    createdAt: Date
+    description: string
+    debit: string
+    credit: string
+}
