@@ -112,7 +112,7 @@ export const DeployConfirmation = ({
                                     spacing={0.6}
                                     direction="row"
                                     alignItems="center"
-                                    sx={{ position: "absolute", bottom: -5, left: 0 }}
+                                    sx={{ position: "absolute", bottom: -5, left: 5 }}
                                 >
                                     <Box
                                         sx={{
