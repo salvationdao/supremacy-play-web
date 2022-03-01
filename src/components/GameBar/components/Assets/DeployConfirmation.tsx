@@ -101,7 +101,6 @@ export const DeployConfirmation = ({
                                 width: 110,
                                 height: 150,
                                 flexShrink: 0,
-                                overflow: "hidden",
                                 backgroundImage: `url(${image})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",
@@ -113,7 +112,7 @@ export const DeployConfirmation = ({
                                     spacing={0.6}
                                     direction="row"
                                     alignItems="center"
-                                    sx={{ position: "absolute", bottom: 0, left: 0, mb: 0.5 }}
+                                    sx={{ position: "absolute", bottom: -5, left: 0 }}
                                 >
                                     <Box
                                         sx={{
