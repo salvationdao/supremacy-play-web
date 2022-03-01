@@ -28,7 +28,6 @@ enum HubKey {
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
     SubUserWarMachineQueueUpdated = "USER:WAR:MACHINE:QUEUE:UPDATED",
-    GetStreamList = "STREAMLIST:SUBSCRIBE",
 
     // Net message subscription
     TriggerLiveVoteUpdated = "LIVE:VOTE:UPDATED",
@@ -42,6 +41,10 @@ enum HubKey {
     // transactions
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
     SubscribeUserLatestTransactions = "USER:SUPS:LATEST_TRANSACTION:SUBSCRIBE",
+
+    // streams
+    SubscribeStreamClose = "STREAM:CLOSE:SUBSCRIBE",
+    GetStreamList = "STREAMLIST:SUBSCRIBE",
 }
 
 export default HubKey

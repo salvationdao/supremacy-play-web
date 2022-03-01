@@ -48,8 +48,6 @@ export const ChatMessages = ({
         }
     }
 
-    console.log(autoScroll)
-
     return (
         <>
             <Box
