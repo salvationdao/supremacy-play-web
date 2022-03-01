@@ -185,7 +185,7 @@ export const DeployConfirmation = ({
                                         color: colors.neonBlue,
                                     }}
                                 >
-                                    INSURANCE:
+                                    ADD INSURANCE:
                                 </Typography>
                                 <Switch
                                     size="small"
