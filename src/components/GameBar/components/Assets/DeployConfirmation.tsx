@@ -95,7 +95,7 @@ export const DeployConfirmation = ({
                                 backgroundImage: `url(${image})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",
-                                backgroundSize: "contain",
+                                backgroundSize: "cover",
                             }}
                         />
 
