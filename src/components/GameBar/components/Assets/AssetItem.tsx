@@ -2,7 +2,7 @@ import { Box, Button, Link, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useState } from "react"
 import { DeployConfirmation } from ".."
-import { SvgExternalLink, SvgFastRepair } from "../../assets"
+import { SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
@@ -169,20 +169,31 @@ export const AssetItem = ({
 
         if (isInQueue) {
             return (
-                <Typography
-                    sx={{
-                        px: 1,
-                        py: 0.34,
-                        color: colors.yellow,
-                        lineHeight: 1,
-                        border: `${colors.yellow} 1px solid`,
-                        borderRadius: 0.3,
-                        fontSize: ".75rem",
-                        fontFamily: "Share Tech",
-                    }}
-                >
-                    IN QUEUE
-                </Typography>
+                <>
+                    <Typography
+                        sx={{
+                            px: 1,
+                            py: 0.34,
+                            color: colors.yellow,
+                            lineHeight: 1,
+                            border: `${colors.yellow} 1px solid`,
+                            borderRadius: 0.3,
+                            fontSize: ".75rem",
+                            fontFamily: "Share Tech",
+                        }}
+                    >
+                        IN QUEUE
+                    </Typography>
+                    <Typography>CONTRACT REWARD:&nbsp;</Typography>
+
+                    <Stack direction="row" alignItems="center">
+                        <Typography sx={{ mr: 0.5, fontFamily: "Share Tech" }}>CONTRACT REWARD:&nbsp;</Typography>
+                        <SvgSupToken size="14px" fill={colors.neonBlue} />
+                        <Typography sx={{ fontFamily: "Share Tech", ml: 0.2, mr: 4, color: colors.neonBlue }}>
+                            {contractReward2}
+                        </Typography>
+                    </Stack>
+                </>
             )
         }
 
