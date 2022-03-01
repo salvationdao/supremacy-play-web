@@ -48,14 +48,12 @@ const RepairCountdown = ({ endTime }: { endTime: Date }) => {
 }
 
 export const AssetItem = ({
-    index,
     passportWeb,
     asset,
     queueCost,
     contractReward,
     renderQueuedOnly,
 }: {
-    index: number
     passportWeb: string
     asset: Asset
     queueCost?: string
@@ -115,7 +113,13 @@ export const AssetItem = ({
     const contractReward2 =
         queuePosition && queuePosition.contractReward ? queuePosition.contractReward : contractReward
 
-    if (!assetData || !user || (renderQueuedOnly && !isInQueue) || (!renderQueuedOnly && isInQueue)) return null
+    if (
+        !assetData ||
+        !user ||
+        (renderQueuedOnly && !isInQueue && !isInBattle) ||
+        (!renderQueuedOnly && (isInQueue || isInBattle))
+    )
+        return null
 
     const { hash, name, image } = assetData
 
@@ -141,7 +145,7 @@ export const AssetItem = ({
                         REPAIRING
                     </Typography>
 
-                    <Stack direction="row" alignItems="center" spacing={0.4}>
+                    <Stack direction="row" alignItems="center" spacing={0.4} sx={{ pt: 0.3 }}>
                         {isFastMode && <SvgFastRepair size="10px" fill={colors.neonBlue} />}
                         <SvgCooldown size="12px" fill={colors.neonBlue} />
                         <Typography
@@ -173,7 +177,7 @@ export const AssetItem = ({
                         IN BATTLE
                     </Typography>
                     {contractReward2 && (
-                        <Stack direction="row" alignItems="center">
+                        <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
                                 REWARD:&nbsp;
                             </Typography>
@@ -208,7 +212,7 @@ export const AssetItem = ({
                         IN QUEUE
                     </Typography>
                     {contractReward2 && (
-                        <Stack direction="row" alignItems="center">
+                        <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
                                 REWARD:&nbsp;
                             </Typography>
@@ -262,7 +266,8 @@ export const AssetItem = ({
                 position: "relative",
                 px: 2,
                 py: 1.8,
-                backgroundColor: index % 2 === 0 ? colors.navy : undefined,
+                // backgroundColor: index % 2 === 0 ? colors.navy : undefined,
+                backgroundColor: `${colors.navy}80`,
             }}
         >
             <Box

@@ -88,13 +88,12 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
                         },
                     }}
                 >
-                    <Stack>
+                    <Stack spacing={0.6}>
                         {assets && assets.length > 0 ? (
                             <>
                                 {assets.map((a, index) => (
                                     <AssetItem
                                         key={a.hash}
-                                        index={index}
                                         passportWeb={passportWeb}
                                         asset={a}
                                         queueCost={queueCost}
@@ -105,7 +104,6 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
                                 {assets.map((a, index) => (
                                     <AssetItem
                                         key={a.hash}
-                                        index={index}
                                         passportWeb={passportWeb}
                                         asset={a}
                                         queueCost={queueCost}
