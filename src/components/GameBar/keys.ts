@@ -16,15 +16,15 @@ enum HubKey {
     SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
 
     // Assets
-    CollectionList = "COLLECTION:LIST",
-    AssetList = "ASSET:LIST",
-    AssetUpdated = "ASSET:SUBSCRIBE",
-    AssetJoinQueue = "ASSET:QUEUE:JOIN",
-    AssetInsurancePay = "ASSET:INSURANCE:PAY",
-    AssetGetDurability = "ASSET:DURABILITY:SUBSCRIBE",
-    UserWarMachineQueuePositionSubscribe = "USER:WAR:MACHINE:QUEUE:POSITION:SUBSCRIBE",
+    SubAssetList = "USER:ASSET:LIST",
+    SubAssetData = "ASSET:SUBSCRIBE",
+    SubAssetQueuePosition = "WAR:MACHINE:QUEUE:POSITION:SUBSCRIBE",
+    SubAssetDurability = "ASSET:DURABILITY:SUBSCRIBE",
+    SubFactionQueueCost = "ASSET:QUEUE:COST:UPDATE",
+    SubFactionContractReward = "FACTION:CONTRACT:REWARD:SUBSCRIBE",
+    JoinQueue = "ASSET:QUEUE:JOIN",
 
-    // transactions
+    // Transactions
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
     SubscribeUserLatestTransactions = "USER:SUPS:LATEST_TRANSACTION:SUBSCRIBE",
 }

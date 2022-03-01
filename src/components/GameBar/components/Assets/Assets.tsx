@@ -1,72 +1,52 @@
-import { Box, Button, Drawer, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useEffect, useCallback, useState } from "react"
+import { Box, Button, Drawer, Fade, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
 import { AssetItem, DrawerButtons } from ".."
 import { useDrawer } from "../../containers/drawer"
-import { SvgAssets, SvgRefresh } from "../../assets"
+import { SvgRobot } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_WIDTH, NilUUID } from "../../constants"
 import { useAuth, useWebsocket } from "../../containers"
-import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
-import { QueuedWarMachine } from "../../types/assets"
+import { Asset } from "../../types/assets"
 
 const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
     const { state, send, subscribe } = useWebsocket()
-    const { user, factionID } = useAuth()
+    const { factionID } = useAuth()
 
-    const [refresh, toggleRefresh] = useToggle()
-    const [queuingList, setQueuingList] = useState<QueuedWarMachine[]>([])
-    const [supremacyAssetHashes, setSupremacyAssetsHashes] = useState<string[]>()
+    const [assets, setAssets] = useState<Asset[]>([])
+    const [queueCost, setQueueCost] = useState<string>()
+    const [contractReward, setContractReward] = useState<string>()
 
-    const queuedWarMachine = useCallback(
-        (hash: string) => queuingList.find((q) => q.warMachineMetadata.hash === hash),
-        [queuingList],
-    )
-
-    // Get list the mech queue of the user
+    // Subscribe to the list of mechs that the user owns
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NilUUID) return
-        return subscribe<QueuedWarMachine[]>(HubKey.UserWarMachineQueuePositionSubscribe, (payload) => {
+        return subscribe<Asset[]>(HubKey.SubAssetList, (payload) => {
             if (!payload) return
-            setQueuingList(payload)
+            setAssets(payload)
         })
-    }, [factionID, state, subscribe])
+    }, [state, subscribe, factionID])
 
-    // Get asset list for current user
-    const getAssets = async () => {
-        if (state !== WebSocket.OPEN || !send || !user) return
-        try {
-            const resp = await send<{ assetHashes: string[]; total: number }>(HubKey.AssetList, {
-                // pageSize: 6,
-                search: "",
-                filter: {
-                    linkOperator: "and",
-                    items: [
-                        // filter by user id
-                        {
-                            columnField: "username",
-                            operatorValue: "=",
-                            value: user.username,
-                        },
-                    ],
-                },
-            })
-
-            if (!resp || resp.assetHashes.length <= 0) return
-            setSupremacyAssetsHashes(resp.assetHashes)
-        } catch (e) {
-            setSupremacyAssetsHashes(undefined)
-        } finally {
-            toggleRefresh()
-        }
-    }
-
+    // Subscribe to the cost to queue a mech
     useEffect(() => {
-        getAssets()
-    }, [send, state, user])
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NilUUID) return
+        return subscribe<string>(HubKey.SubFactionQueueCost, (payload) => {
+            if (!payload) return
+            setQueueCost(payload)
+        })
+    }, [state, subscribe, factionID])
+
+    // Subscribe to the contract reward
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NilUUID) return
+        return subscribe<string>(HubKey.SubFactionContractReward, (payload) => {
+            if (!payload) return
+            console.log(payload)
+            setContractReward(payload)
+        })
+    }, [state, subscribe, factionID])
 
     return (
-        <Stack key={refresh} sx={{ flex: 1 }}>
+        <Stack sx={{ flex: 1 }}>
             <Stack
                 direction="row"
                 spacing={1.2}
@@ -80,29 +60,10 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
                     boxShadow: 1.5,
                 }}
             >
-                <SvgAssets size="23px" fill={colors.text} />
-                <Typography
-                    variant="caption"
-                    sx={{ flex: 1, color: colors.text, fontFamily: "Nostromo Regular Black" }}
-                >
-                    ASSETS
+                <SvgRobot size="23px" fill={colors.text} sx={{ pb: 0.7 }} />
+                <Typography variant="caption" sx={{ color: colors.text, fontFamily: "Nostromo Regular Black" }}>
+                    WAR MACHINES
                 </Typography>
-
-                <IconButton
-                    size="small"
-                    sx={{
-                        position: "absolute",
-                        top: "50%",
-                        right: 10,
-                        transform: "translateY(-50%)",
-                        color: "#FFFFFF",
-                        opacity: 0.6,
-                        ":hover": { opacity: 1, transition: "all .2s" },
-                    }}
-                    onClick={getAssets}
-                >
-                    <SvgRefresh fill="#FFFFFF" size="13px" />
-                </IconButton>
             </Stack>
 
             <Fade in={true}>
@@ -127,17 +88,29 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
                         },
                     }}
                 >
-                    <Stack>
-                        {supremacyAssetHashes && supremacyAssetHashes.length > 0 ? (
-                            supremacyAssetHashes.map((id, index) => (
-                                <AssetItem
-                                    key={id}
-                                    index={index}
-                                    hash={id}
-                                    queueDetail={queuedWarMachine(id)}
-                                    passportWeb={passportWeb}
-                                />
-                            ))
+                    <Stack spacing={0.6}>
+                        {assets && assets.length > 0 ? (
+                            <>
+                                {assets.map((a, index) => (
+                                    <AssetItem
+                                        key={a.hash}
+                                        passportWeb={passportWeb}
+                                        asset={a}
+                                        queueCost={queueCost}
+                                        contractReward={contractReward}
+                                        renderQueuedOnly
+                                    />
+                                ))}
+                                {assets.map((a, index) => (
+                                    <AssetItem
+                                        key={a.hash}
+                                        passportWeb={passportWeb}
+                                        asset={a}
+                                        queueCost={queueCost}
+                                        contractReward={contractReward}
+                                    />
+                                ))}
+                            </>
                         ) : (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Typography

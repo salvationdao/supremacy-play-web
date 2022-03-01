@@ -15,23 +15,25 @@ import InfoCircular from "!@svgr/webpack!./svg/InfoCircular.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
 import Profile from "!@svgr/webpack!./svg/Profile.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
+import Copy from "!@svgr/webpack!./svg/Copy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Chat from "!@svgr/webpack!./svg/Chat.svg"
 import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
+import Close from "!@svgr/webpack!./svg/Close.svg"
 import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Ability from "!@svgr/webpack!./svg/Ability.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Applause from "!@svgr/webpack!./svg/Applause.svg"
+import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import Death from "!@svgr/webpack!./svg/Death.svg"
 import Robot from "!@svgr/webpack!./svg/Robot.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import RedMountainLogo from "./images/RedMountainLogo.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
-import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 
 export { BostonCyberneticsLogo, RedMountainLogo, ZaibatsuLogo }
 
@@ -230,8 +232,20 @@ export const SvgScrolldown: React.VoidFunctionComponent<SvgWrapperProps> = (prop
     </SvgWrapper>
 )
 
+export const SvgClose: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Close />
+    </SvgWrapper>
+)
+
+export const SvgCooldown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <AccessTimeSharpIcon />
+    </SvgWrapper>
+)
+
 export const SvgContentCopyIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
-        <ContentCopyIcon />
+        <Copy />
     </SvgWrapper>
 )

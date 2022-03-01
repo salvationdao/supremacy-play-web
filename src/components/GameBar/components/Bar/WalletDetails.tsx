@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Divider, IconButton, Snackbar, Stack, Typography } from "@mui/material"
-import { BarExpandable } from ".."
+import { BarExpandable, TooltipHelper } from ".."
 import { supFormatter } from "../../helpers"
 import { colors } from "../../theme"
 import { useBar, useWallet } from "../../containers"
@@ -34,7 +34,6 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
     const [totalMultipliers, setTotalMultipliers] = useState(0)
     const [reRender, toggleReRender] = useToggle()
 
-    const [copySuccess, setCopySuccess] = useState(false)
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const { payload: transactionsPayload, setArguments } = useSecureSubscription<Transaction[]>(
         HubKey.SubscribeUserTransactions,
@@ -167,7 +166,6 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                                     selfDestroyed={selfDestroyed}
                                     multipliersCleaned={multipliersCleaned}
                                     totalMultipliers={totalMultipliers}
-                                    setCopySuccess={setCopySuccess}
                                     userID={userID || ""}
                                     transactions={transactions}
                                 />
@@ -236,11 +234,6 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                     />
                 </Stack>
             </BarExpandable>
-            <CopySuccessSnackbar
-                open={copySuccess}
-                setOpen={setCopySuccess}
-                handleClose={() => setCopySuccess(false)}
-            />
         </>
     )
 }
@@ -253,7 +246,6 @@ const SupsToolTipContent = ({
     totalMultipliers,
     transactions,
     userID,
-    setCopySuccess,
 }: {
     sups?: string
     supsMultipliers: Map<string, SupsMultiplier>
@@ -261,7 +253,6 @@ const SupsToolTipContent = ({
     multipliersCleaned: SupsMultiplier[]
     totalMultipliers: number
     transactions: Transaction[]
-    setCopySuccess: (b: boolean) => void
     userID: string
 }) => {
     return (
@@ -300,15 +291,14 @@ const SupsToolTipContent = ({
                 <Box>
                     <Typography
                         sx={{ fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}
-                        mb={1}
-                        variant="body1"
+                        variant="h6"
                     >
-                        TRANSACTIONS:
+                        RECENT TRANSACTIONS:
                     </Typography>
 
-                    <Stack spacing={0.4}>
+                    <Stack spacing={0.5}>
                         {transactions.map((t, i) => (
-                            <TransactionItem setCopySuccess={setCopySuccess} userID={userID} key={i} transaction={t} />
+                            <TransactionItem userID={userID} key={i} transaction={t} />
                         ))}
                     </Stack>
                 </Box>
@@ -371,60 +361,84 @@ const MultiplierItem = ({
     )
 }
 
-const TransactionItem = ({
-    transaction,
-    userID,
-    setCopySuccess,
-}: {
-    transaction: Transaction
-    userID: string
-    setCopySuccess: (b: boolean) => void
-}) => {
+const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const isCredit = userID === transaction.credit
-    const isDecimal = parseFloat(transaction.amount) % 1 !== 0
+    const [copySuccess, toggleCopySuccess] = useToggle()
+
+    useEffect(() => {
+        if (copySuccess) {
+            setTimeout(() => {
+                toggleCopySuccess(false)
+            }, 900)
+        }
+    }, [copySuccess])
 
     return (
-        <Stack direction="row" display={"flex"} justifyContent="space-between">
-            <Typography
-                sx={{ mt: 0.3, fontFamily: "Share Tech", lineHeight: 1, color: isCredit ? "#01FF70" : "#FF4136" }}
+        <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ px: 0.8, py: 0.15, backgroundColor: "#00000030", borderRadius: 1 }}
+        >
+            <TooltipHelper
+                placement="left"
+                text={transaction.description ? `  ${transaction.description.toUpperCase()}` : ""}
             >
-                {isCredit ? "+" : "-"} {supFormatter(`${transaction.amount}`, isDecimal ? 18 : 0)}{" "}
-                {transaction.description ? `  ${transaction.description}` : ""}
-            </Typography>
+                <Typography
+                    sx={{
+                        fontFamily: "Share Tech",
+                        lineHeight: 1,
+                        color: isCredit ? "#01FF70" : "#FF4136",
+                    }}
+                >
+                    {isCredit ? "+" : "-"}
+                    {supFormatter(`${transaction.amount}`, 18)}{" "}
+                </Typography>
+            </TooltipHelper>
 
-            <IconButton
-                onClick={() => {
-                    navigator.clipboard.writeText(transaction.transactionReference).then(
-                        () => {
-                            setCopySuccess(true)
-                        },
-                        (err) => {
-                            setCopySuccess(false)
-                        },
-                    )
+            <Tooltip
+                arrow
+                placement="right"
+                open={copySuccess}
+                sx={{
+                    zIndex: "9999999 !important",
+                    ".MuiTooltip-popper": {
+                        zIndex: "9999999 !important",
+                    },
+                }}
+                title={
+                    <Box sx={{ px: 0.5, py: 0.2 }}>
+                        <Typography
+                            variant="body1"
+                            sx={{ color: "#FFFFFF", fontFamily: "Share Tech", textAlign: "center" }}
+                        >
+                            Copied!
+                        </Typography>
+                    </Box>
+                }
+                componentsProps={{
+                    popper: {
+                        style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999, opacity: 0.92 },
+                    },
+                    arrow: { sx: { color: "#333333" } },
+                    tooltip: { sx: { maxWidth: 250, background: "#333333" } },
                 }}
             >
-                <SvgContentCopyIcon sx={{ marginTop: "-5px" }} />
-            </IconButton>
+                <Box>
+                    <IconButton
+                        size="small"
+                        sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
+                        onClick={() => {
+                            navigator.clipboard.writeText(transaction.transactionReference).then(
+                                () => toggleCopySuccess(true),
+                                (err) => toggleCopySuccess(false),
+                            )
+                        }}
+                    >
+                        <SvgContentCopyIcon size="13px" />
+                    </IconButton>
+                </Box>
+            </Tooltip>
         </Stack>
-    )
-}
-
-const CopySuccessSnackbar = ({
-    open,
-    handleClose,
-}: {
-    open: boolean
-    setOpen: (b: boolean) => void
-    handleClose: () => void
-}) => {
-    return (
-        <Snackbar
-            open={open}
-            color="success"
-            autoHideDuration={6000}
-            onClose={handleClose}
-            message={<span>Transaction reference copied</span>}
-        />
     )
 }

@@ -15,6 +15,7 @@ interface VtotingStateResponse {
 export interface GameSettingsResponse {
     gameMap: Map
     warMachines: WarMachineState[]
+    spawnedAI: WarMachineState[]
 }
 
 interface WinnerAnnouncementResponse {
@@ -35,6 +36,7 @@ export const GameContainer = createContainer(() => {
     const [factionsColor, setFactionsColor] = useState<FactionsColorResponse>()
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
+    const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
     const [factionVotePrice, setFactionVotePrice] = useState<BigNumber>(new BigNumber("0"))
     const [prevFactionVotePrice, setPrevFactionVotePrice] = useState<BigNumber>(new BigNumber("0"))
     const [votingState, setVotingState] = useState<VtotingStateResponse | undefined>()
@@ -50,6 +52,7 @@ export const GameContainer = createContainer(() => {
                 if (!payload) return
                 setMap(payload.gameMap)
                 setWarMachines(payload.warMachines)
+                setSpawnedAI(payload.spawnedAI)
             },
             null,
             true,
@@ -147,6 +150,19 @@ export const GameContainer = createContainer(() => {
         )
     }, [state, subscribe, factionID])
 
+    // Subscribe to spawned AI events
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<WarMachineState | undefined>(
+            HubKey.SubAISpawned,
+            (payload) => {
+                if (!payload) return
+                setSpawnedAI((prev) => (prev === undefined ? [payload] : [...prev, payload]))
+            },
+            null,
+        )
+    }, [state, subscribe])
+
     return {
         votingState,
         factionsColor,
@@ -157,6 +173,7 @@ export const GameContainer = createContainer(() => {
         map,
         setMap,
         warMachines,
+        spawnedAI,
         queuingWarMachines,
     }
 })

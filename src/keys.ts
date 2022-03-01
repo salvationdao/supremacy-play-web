@@ -28,6 +28,7 @@ enum HubKey {
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
     SubUserWarMachineQueueUpdated = "USER:WAR:MACHINE:QUEUE:UPDATED",
+    SubAISpawned = "AI:SPAWNED",
 
     // Net message subscription
     TriggerLiveVoteUpdated = "LIVE:VOTE:UPDATED",
@@ -38,11 +39,7 @@ enum HubKey {
     TriggerFactionAbilityPriceUpdated = "FACTION:ABILITY:PRICE:UPDATED",
     TriggerFactionVotePriceUpdated = "FACTION:VOTE:PRICE:UPDATED",
 
-    // transactions
-    SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
-    SubscribeUserLatestTransactions = "USER:SUPS:LATEST_TRANSACTION:SUBSCRIBE",
-
-    // streams
+    // Streams
     SubscribeStreamClose = "STREAM:CLOSE:SUBSCRIBE",
     GetStreamList = "STREAMLIST:SUBSCRIBE",
 }

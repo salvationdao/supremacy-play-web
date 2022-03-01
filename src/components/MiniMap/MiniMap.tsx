@@ -102,15 +102,15 @@ export const MiniMap = () => {
                             display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                             pointerEvents: "all",
                             position: "absolute",
-                            top: 8.8,
+                            top: 9.5,
                             left: 10,
                             cursor: "nwse-resize",
-                            opacity: 0.4,
-                            ":hover": { opacity: 1 },
-                            zIndex: 9999,
+                            color: colors.text,
+                            opacity: 0.8,
+                            zIndex: 50,
                         }}
                     >
-                        <SvgResizeXY size="12px" sx={{ transform: "rotate(90deg)" }} />
+                        <SvgResizeXY size="11px" sx={{ transform: "rotate(90deg)" }} />
                     </Box>
                 )}
             >
@@ -162,7 +162,7 @@ export const MiniMap = () => {
                                             size="small"
                                             sx={{
                                                 position: "absolute",
-                                                left: enlarged ? 25 : 50,
+                                                left: enlarged ? 25 : 48,
                                                 top: 2,
                                                 color: colors.text,
                                                 opacity: 0.8,
