@@ -103,7 +103,7 @@ export const DeployConfirmation = ({
                                 flexShrink: 0,
                                 backgroundImage: `url(${image})`,
                                 backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
+                                backgroundPosition: "top center",
                                 backgroundSize: "contain",
                             }}
                         >
