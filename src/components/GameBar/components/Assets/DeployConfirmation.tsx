@@ -85,7 +85,7 @@ export const DeployConfirmation = ({
                 >
                     <Stack
                         direction="row"
-                        spacing={1.6}
+                        spacing={2}
                         sx={{
                             position: "relative",
                             pl: 2.2,

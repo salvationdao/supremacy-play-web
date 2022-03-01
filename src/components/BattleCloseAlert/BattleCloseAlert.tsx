@@ -32,6 +32,7 @@ export const BattleCloseAlert = () => {
                 left: "50%",
                 transform: "translateX(-50%)",
                 filter: "drop-shadow(0 3px 3px #00000050)",
+                pointerEvents: "none",
             }}
         >
             <ClipThing
