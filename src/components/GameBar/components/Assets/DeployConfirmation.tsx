@@ -1,5 +1,7 @@
 import { Box, Button, IconButton, Modal, Stack, Switch, Typography } from "@mui/material"
 import { ClipThing, TooltipHelper } from ".."
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
+import { acronym } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
@@ -13,9 +15,11 @@ const AmountItem = ({ title, value, tooltip }: { title: string; value: string | 
         <Stack direction="row" alignItems="center">
             <Typography sx={{ mr: 0.5, fontFamily: "Share Tech" }}>{title}</Typography>
             <SvgSupToken size="14px" fill={colors.yellow} />
-            <Typography sx={{ fontFamily: "Share Tech", ml: 0.2, color: colors.yellow }}>{value}</Typography>
-            <TooltipHelper text={tooltip}>
-                <SvgInfoCircular size="12px" sx={{ ml: "auto", opacity: 0.6, ":hover": { opacity: 1 } }} />
+            <Typography sx={{ fontFamily: "Share Tech", ml: 0.2, mr: 4, color: colors.yellow }}>{value}</Typography>
+            <TooltipHelper placement="right-start" text={tooltip}>
+                <Box sx={{ ml: "auto" }}>
+                    <SvgInfoCircular size="12px" sx={{ opacity: 0.6, ":hover": { opacity: 1 } }} />
+                </Box>
             </TooltipHelper>
         </Stack>
     )
@@ -58,7 +62,7 @@ export const DeployConfirmation = ({
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    maxWidth: 400,
+                    maxWidth: 420,
                 }}
             >
                 <ClipThing
@@ -76,8 +80,7 @@ export const DeployConfirmation = ({
                             position: "relative",
                             pl: 2.2,
                             pr: 3.2,
-                            pt: 2,
-                            pb: 2.5,
+                            py: 3,
                             backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
                         }}
                     >
@@ -99,12 +102,34 @@ export const DeployConfirmation = ({
                         <Stack spacing={1}>
                             <Box>
                                 {user && (
-                                    <Typography
-                                        variant="caption"
-                                        sx={{ color: user.faction.theme.primary, fontFamily: "Nostromo Regular Heavy" }}
-                                    >
-                                        {user.faction.label}
-                                    </Typography>
+                                    <Stack spacing={0.6} direction="row" alignItems="center" sx={{ mb: 0.5 }}>
+                                        <Box
+                                            sx={{
+                                                mb: 0.3,
+                                                width: 16,
+                                                height: 16,
+                                                flexShrink: 0,
+                                                overflow: "hidden",
+                                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID})`,
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundPosition: "center",
+                                                backgroundSize: "contain",
+                                                backgroundColor: user.faction.theme.primary,
+                                                borderRadius: 0.8,
+                                                border: `${user.faction.theme.primary} 1px solid`,
+                                            }}
+                                        />
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                lineHeight: 1,
+                                                color: user.faction.theme.primary,
+                                                fontFamily: "Nostromo Regular Heavy",
+                                            }}
+                                        >
+                                            {acronym(user.faction.label)}
+                                        </Typography>
+                                    </Stack>
                                 )}
 
                                 <Typography
@@ -125,17 +150,17 @@ export const DeployConfirmation = ({
                                 <AmountItem
                                     title={"CONTRACT REWARD: "}
                                     value={contractReward ? supFormatter(contractReward, 6) : "N/A"}
-                                    tooltip="Your reward if your war machine wins the battle."
+                                    tooltip="Your reward if your syndicate wins the battle."
                                 />
 
                                 <AmountItem
                                     title={"FEE: "}
                                     value={queueCost ? `-${supFormatter(queueCost, 6)}` : "N/A"}
-                                    tooltip=""
+                                    tooltip="The cost to place your war machine into the battle queue."
                                 />
                             </Stack>
 
-                            <Stack direction="row" alignItems="center" spacing={0.6}>
+                            <Stack direction="row" alignItems="center">
                                 <TooltipHelper
                                     text={`Insured war machines will repair in rapid mode. Insurance costs 10% of the contract reward${
                                         contractReward ? ` (${contractReward}) SUPS` : ""
@@ -147,6 +172,7 @@ export const DeployConfirmation = ({
                                                 pt: 0.1,
                                                 fontFamily: "Share Tech",
                                                 lineHeight: 1,
+                                                color: colors.neonBlue,
                                             }}
                                         >
                                             INSURANCE:
@@ -157,8 +183,23 @@ export const DeployConfirmation = ({
                                     size="small"
                                     checked={needInsured}
                                     onChange={() => toggleNeedInsured()}
-                                    sx={{ transform: "scale(.84)" }}
+                                    sx={{ transform: "scale(.7)" }}
                                 />
+                                <TooltipHelper
+                                    placement="right-start"
+                                    text={
+                                        <>
+                                            Insurance costs&nbsp;
+                                            <span style={{ textDecoration: "line-through" }}>10%</span>&nbsp; of the
+                                            contract reward but allows your damaged war machine to be repair much faster
+                                            so it can be ready for the next battle much sooner.
+                                        </>
+                                    }
+                                >
+                                    <Box sx={{ ml: "auto" }}>
+                                        <SvgInfoCircular size="12px" sx={{ opacity: 0.6, ":hover": { opacity: 1 } }} />
+                                    </Box>
+                                </TooltipHelper>
                             </Stack>
 
                             <Button
@@ -190,8 +231,8 @@ export const DeployConfirmation = ({
                             </Button>
                         </Stack>
 
-                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 10, right: 10 }}>
-                            <SvgClose sx={{ opacity: 0.6, ":hover": { opacity: 1 } }} />
+                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 4, right: 3 }}>
+                            <SvgClose size="16px" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                         </IconButton>
                     </Stack>
                 </ClipThing>
