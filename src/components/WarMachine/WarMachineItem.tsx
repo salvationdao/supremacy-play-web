@@ -70,6 +70,13 @@ export const WarMachineItem = ({
         [highlightMech, isExpanded],
     )
 
+    /* Toggle out isExpanded if other mech is highlighted */
+    useEffect(() => {
+        if (highlightMech !== warMachine.hash && isExpanded && !shouldBeExpanded) {
+            toggleIsExpanded()
+        }
+    }, [highlightMech])
+
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
     }, [shouldBeExpanded, isAnyPanelOpen])
@@ -110,6 +117,8 @@ export const WarMachineItem = ({
     return (
         <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
             <Stack
+                onMouseEnter={() => toggleIsExpanded(true)}
+                onMouseLeave={() => !shouldBeExpanded && highlightMech !== warMachine.hash && toggleIsExpanded(false)}
                 ref={popoverRef}
                 direction="row"
                 alignItems="flex-end"
