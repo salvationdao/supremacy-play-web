@@ -1,87 +1,9 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import { useWebsocket } from "../../containers/socket"
 import { useStream } from "../../containers"
-import { getDistanceFromLatLonInKm, getObjectFromArrayByKey } from "../../helpers"
-import HubKey from "../../keys"
 import { colors } from "../../theme/theme"
-import { Stream } from "../../types"
-
-const MAX_OPTIONS = 7
 
 export const StreamSelect = () => {
-    const { state, subscribe } = useWebsocket()
-    const { currentStream, setCurrentStream, setSelectedWsURL, setSelectedStreamID } = useStream()
-    const [streams, setStreams] = useState<Stream[]>([])
-    const [streamOptions, setStreamOptions] = useState<Stream[]>([])
-
-    // Subscribe to list of streams
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<Stream[]>(HubKey.GetStreamList, (payload) => {
-            if (!payload) return
-            setStreams(payload)
-        })
-    }, [state, subscribe])
-
-    // Build stream options for the drop down
-    useEffect(() => {
-        if (!streams || streams.length <= 0) return
-
-        // Filter for servers that have capacity and is onlnine
-        const availStreams = streams.filter((x) => {
-            return x.usersNow < x.userMax && x.status === "online"
-        })
-
-        if (availStreams.length <= 0) return
-
-        // Reduce the list of options so it's not too many for the user
-        // By default its sorted by quietest servers first
-        const quietestStreams = availStreams.sort((a, b) => (a.usersNow / a.userMax > b.usersNow / b.userMax ? 1 : -1))
-        SetNewStreamOptions(quietestStreams)
-
-        // If we have access to user's location, then choose servers that are closest to user
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const closestStreams: Stream[] = []
-
-                availStreams.map((x) => {
-                    // Get distance between user and server and populate "distance" key
-                    const userLat = position.coords.latitude
-                    const userLong = position.coords.longitude
-                    const serverLat = x.latitude
-                    const serverLong = x.longitude
-                    const distance = getDistanceFromLatLonInKm(userLat, userLong, serverLat, serverLong)
-                    closestStreams.push({ ...x, distance })
-                })
-
-                closestStreams.sort((a, b) => {
-                    if (!a.distance || !b.distance) return 0
-                    return a.distance > b.distance ? 1 : -1
-                })
-
-                SetNewStreamOptions(closestStreams)
-            })
-        }
-    }, [streams])
-
-    const SetNewStreamOptions = (newStreamOptions: Stream[]) => {
-        // Limit to only a few for the dropdown and include our current selection if not already in the list
-        const temp = newStreamOptions.slice(0, MAX_OPTIONS)
-        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.host, "host")) {
-            newStreamOptions[newStreamOptions.length - 1] = currentStream
-        }
-
-        // If there is no current stream selected then pick the first use default stream
-        if (!currentStream && newStreamOptions && newStreamOptions.length > 0) {
-            setCurrentStream(newStreamOptions[0])
-            setSelectedStreamID(newStreamOptions[0].streamID)
-            setSelectedWsURL(newStreamOptions[0].url)
-        }
-
-        // Reverse the order for rendering so best is closer to user's mouse
-        setStreamOptions(temp.reverse())
-    }
+    const { currentStream, changeStream, streamOptions } = useStream()
 
     return (
         <Stack direction="row" spacing={0.3} alignItems="center">
@@ -121,9 +43,7 @@ export const StreamSelect = () => {
                             key={x.host}
                             value={x.host}
                             onClick={() => {
-                                setCurrentStream(x)
-                                setSelectedStreamID(x.streamID)
-                                setSelectedWsURL(x.url)
+                                changeStream(x)
                             }}
                             sx={{
                                 "&:hover": {

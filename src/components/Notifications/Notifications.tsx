@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material'
+import { Box, Stack } from "@mui/material"
 import {
     BattleAbilityAlert,
     FactionAbilityAlert,
@@ -6,15 +6,15 @@ import {
     NotificationItem,
     TextAlert,
     WarMachineAbilityAlert,
-} from '..'
-import { NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from '../../constants'
-import { colors } from '../../theme/theme'
-import { useTheme } from '@mui/styles'
-import { Theme } from '@mui/material/styles'
-import { makeid, useAuth, useDimension, useWebsocket } from '../../containers'
-import { useEffect } from 'react'
-import HubKey from '../../keys'
-import { useArray } from '../../hooks'
+} from ".."
+import { NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from "../../constants"
+import { colors } from "../../theme/theme"
+import { useTheme } from "@mui/styles"
+import { Theme } from "@mui/material/styles"
+import { makeid, useAuth, useDimension, useWebsocket } from "../../containers"
+import { useEffect } from "react"
+import HubKey from "../../keys"
+import { useArray } from "../../hooks"
 import {
     locationSelectNoti,
     locationSelectNoti2,
@@ -25,7 +25,7 @@ import {
     factionAbilityNoti,
     warMachineAbilityNoti,
     textNoti,
-} from '../../samepleData'
+} from "../../samepleData"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -38,7 +38,7 @@ WARMACHINE_ABILITY: when a faction has initiated a war machine ability
 TEXT: generic notification with no styles, just text
 */
 export interface NotificationResponse {
-    type: 'TEXT' | 'LOCATION_SELECT' | 'BATTLE_ABILITY' | 'FACTION_ABILITY' | 'WAR_MACHINE_ABILITY'
+    type: "TEXT" | "LOCATION_SELECT" | "BATTLE_ABILITY" | "FACTION_ABILITY" | "WAR_MACHINE_ABILITY"
     data: any
 }
 
@@ -51,7 +51,7 @@ export const Notifications = () => {
     } = useDimension()
 
     // Notification array
-    const { value: notifications, add: addNotification, removeByID } = useArray([], 'notiID')
+    const { value: notifications, add: addNotification, removeByID } = useArray([], "notiID")
 
     // Notifications
     useEffect(() => {
@@ -100,31 +100,31 @@ export const Notifications = () => {
             if (!n) return null
 
             switch (n.type) {
-                case 'TEXT':
+                case "TEXT":
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
                             <TextAlert data={n.data} />
                         </NotificationItem>
                     )
-                case 'LOCATION_SELECT':
+                case "LOCATION_SELECT":
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
                             <LocationSelectAlert data={n.data} />
                         </NotificationItem>
                     )
-                case 'BATTLE_ABILITY':
+                case "BATTLE_ABILITY":
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
                             <BattleAbilityAlert data={n.data} />
                         </NotificationItem>
                     )
-                case 'FACTION_ABILITY':
+                case "FACTION_ABILITY":
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
                             <FactionAbilityAlert data={n.data} />
                         </NotificationItem>
                     )
-                case 'WAR_MACHINE_ABILITY':
+                case "WAR_MACHINE_ABILITY":
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
                             <WarMachineAbilityAlert data={n.data} />
@@ -136,11 +136,11 @@ export const Notifications = () => {
     return (
         <Stack
             sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 10,
                 right: 10,
                 zIndex: 15,
-                overflow: 'hidden',
+                overflow: "hidden",
                 opacity: UI_OPACITY,
             }}
         >
@@ -150,26 +150,26 @@ export const Notifications = () => {
                         flex: 1,
                         // 100vh, 110px gap bottom
                         maxHeight: `calc(${height}px - 110px)`,
-                        overflowY: 'auto',
-                        overflowX: 'hidden',
+                        overflowY: "auto",
+                        overflowX: "hidden",
                         pr: 1,
                         py: 0.2,
-                        direction: 'ltr',
-                        scrollbarWidth: 'none',
-                        '::-webkit-scrollbar': {
+                        direction: "ltr",
+                        scrollbarWidth: "none",
+                        "::-webkit-scrollbar": {
                             width: 4,
                         },
-                        '::-webkit-scrollbar-track': {
-                            boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}`,
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
                             borderRadius: 3,
                         },
-                        '::-webkit-scrollbar-thumb': {
+                        "::-webkit-scrollbar-thumb": {
                             background: theme.factionTheme.primary,
                             borderRadius: 3,
                         },
                     }}
                 >
-                    <Box sx={{ direction: 'ltr' }}>
+                    <Box sx={{ direction: "ltr" }}>
                         <Stack spacing={0.6}>{notificationsJsx}</Stack>
                     </Box>
                 </Box>

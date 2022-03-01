@@ -3,6 +3,9 @@ enum HubKey {
     Welcome = "WELCOME",
     UserSubscribe = "USER:SUBSCRIBE",
     AuthSessionIDGet = "AUTH:SESSION:ID:GET",
+    GetSessionID = "GAMEBAR:SESSION:ID:GET",
+    AuthRingCheck = "GAMEBAR:AUTH:RING:CHECK",
+    SubscribeGamebarUser = "GAMEBAR:USER:SUBSCRIBE",
 
     // Game container
     GetFactionsColor = "FACTION:COLOUR",

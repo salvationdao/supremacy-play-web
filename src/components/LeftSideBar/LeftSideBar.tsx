@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { GAMEBAR_CONSTANTS } from "@ninjasoftware/passport-gamebar"
+import { GAMEBAR_CONSTANTS } from "../GameBar"
 import { ReactElement } from "react"
 import { useAuth, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"

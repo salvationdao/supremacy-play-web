@@ -1,26 +1,12 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { GAMEBAR_CONSTANTS, useDrawer } from "@ninjasoftware/passport-gamebar"
+import { GAMEBAR_CONSTANTS } from "../components/GameBar"
+import { useDrawer } from "../components/GameBar/containers"
 import { CONTROLS_HEIGHT, STREAM_ASPECT_RATIO_W_H } from "../constants"
 import { useWindowDimensions } from "../hooks"
 
-export interface DimensionContainerType {
-    mainDivDimensions: {
-        width: number
-        height: number
-    }
-    streamDimensions: {
-        width: number
-        height: number
-    }
-    iframeDimensions: {
-        width: string | number
-        height: string | number
-    }
-}
-
 // Contains dimensions for the overall layout of the divs, iframe etc.
-export const DimensionContainer = createContainer((): DimensionContainerType => {
+export const DimensionContainer = createContainer(() => {
     const { width: windowWidth, height: windowHeight } = useWindowDimensions()
     const { isAnyPanelOpen } = useDrawer()
 

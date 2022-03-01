@@ -1,12 +1,15 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { styled } from "@mui/system"
 import { Dispatch, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
 import { MapWarMachine, SelectionIcon } from ".."
-import { useGame } from "../../containers"
+import { useGame, useWebsocket } from "../../containers"
 import { GameAbility, Map, WarMachineState } from "../../types"
 import { animated, useSpring } from "react-spring"
 import { useGesture } from "@use-gesture/react"
 import { opacityEffect } from "../../theme/keyframes"
+import HubKey from "../../keys"
+import moment from "moment"
+import { useInterval } from "../../hooks"
 
 export interface MapSelection {
     x: number
@@ -48,7 +51,7 @@ const MapWarMachines = ({ warMachines, map, enlarged }: MapWarMachineProps) => {
     return (
         <>
             {warMachines.map((wm) => (
-                <div key={`${wm.participantID} - ${wm.tokenID}`}>
+                <div key={`${wm.participantID} - ${wm.hash}`}>
                     <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} />
                 </div>
             ))}
@@ -61,25 +64,70 @@ export const InteractiveMap = ({
     windowDimension,
     targeting,
     setSubmitted,
-    confirmed,
     enlarged,
 }: {
     gameAbility?: GameAbility
     windowDimension: { width: number; height: number }
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
-    confirmed?: MutableRefObject<boolean>
     enlarged: boolean
 }) => {
+    const { state, send } = useWebsocket()
     const { map, warMachines } = useGame()
     const [selection, setSelection] = useState<MapSelection>()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
 
+    const [endMoment, setEndMoment] = useState<moment.Moment>()
+    const [timeRemain, setTimeRemain] = useState<number>(-2)
+    const [delay, setDelay] = useState<number | null>(null)
+
     useEffect(() => {
         setSelection(undefined)
         prevSelection.current = undefined
     }, [targeting])
+
+    // --------------------------------------------------------------
+    // --------------------------------------------------------------
+    // Count down starts when user has selected a location, then fires if they don't change their mind
+    useEffect(() => {
+        if (!selection) return
+        setEndMoment(moment().add(3, "seconds"))
+    }, [selection])
+
+    useEffect(() => {
+        setDelay(null)
+        if (endMoment) {
+            setDelay(600)
+            const d = moment.duration(endMoment.diff(moment()))
+            setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
+            return
+        }
+    }, [endMoment])
+
+    useInterval(() => {
+        setTimeRemain((t) => Math.max(t - 1, -1))
+    }, delay)
+
+    useEffect(() => {
+        if (selection && gameAbility && timeRemain == -1) onConfirm()
+    }, [timeRemain])
+
+    const onConfirm = () => {
+        try {
+            if (state !== WebSocket.OPEN || !selection) return
+            send<boolean, { x: number; y: number }>(HubKey.SubmitAbilityLocationSelect, {
+                x: selection.x,
+                y: selection.y,
+            })
+            setSubmitted && setSubmitted(true)
+            setEndMoment(undefined)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    // --------------------------------------------------------------
+    // --------------------------------------------------------------
 
     // Generate grid ----------------------------------------
     const grid = useMemo(() => {
@@ -126,15 +174,13 @@ export const InteractiveMap = ({
     }, [targeting, map])
 
     const selectionIcon = useMemo(() => {
-        if (targeting && gameAbility && setSubmitted && confirmed) {
+        if (targeting && gameAbility && setSubmitted) {
             return (
                 <SelectionIcon
                     key={selection && `column-${selection.y}-row-${selection.x}`}
                     gameAbility={gameAbility}
                     selection={selection}
                     setSelection={setSelection}
-                    setSubmitted={setSubmitted}
-                    confirmed={confirmed}
                 />
             )
         }
@@ -296,36 +342,64 @@ export const InteractiveMap = ({
 
     if (!map) return null
     return (
-        <Stack
-            sx={{
-                position: "relative",
-                width: "100%",
-                height: "100%",
-                overflow: "hidden",
-            }}
-        >
-            {/* Map - can be dragged and zoomed/scaled */}
-            <animated.div ref={gestureRef} style={{ x, y, touchAction: "none", scale, transformOrigin: `0% 0%` }}>
-                <Box sx={{ cursor: enlarged ? "move" : "" }}>
-                    <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1` }}>
-                        <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
+        <>
+            <Stack
+                sx={{
+                    position: "relative",
+                    width: "100%",
+                    height: "100%",
+                    overflow: "hidden",
+                }}
+            >
+                {/* Map - can be dragged and zoomed/scaled */}
+                <animated.div ref={gestureRef} style={{ x, y, touchAction: "none", scale, transformOrigin: `0% 0%` }}>
+                    <Box sx={{ cursor: enlarged ? "move" : "" }}>
+                        <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1` }}>
+                            <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
+                        </Box>
+
+                        {selectionIcon}
+
+                        {grid}
+
+                        {/* Map Image */}
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                width: `${map.width}px`,
+                                height: `${map.height}px`,
+                                backgroundImage: `url(${map.imageUrl})`,
+                            }}
+                        />
                     </Box>
+                </animated.div>
+            </Stack>
 
-                    {selectionIcon}
-
-                    {grid}
-
-                    {/* Map Image */}
-                    <Box
+            {/* Count down timer for the selection */}
+            {timeRemain >= 0 && (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        pointerEvents: "none",
+                        zIndex: 999,
+                    }}
+                >
+                    <Typography
+                        variant="h1"
                         sx={{
-                            position: "absolute",
-                            width: `${map.width}px`,
-                            height: `${map.height}px`,
-                            backgroundImage: `url(${map.imageUrl})`,
+                            fontFamily: "Nostromo Regular Black",
+                            color: "#D90000",
+                            opacity: 0.9,
+                            filter: "drop-shadow(0 3px 3px #00000050)",
                         }}
-                    />
+                    >
+                        {timeRemain}
+                    </Typography>
                 </Box>
-            </animated.div>
-        </Stack>
+            )}
+        </>
     )
 }

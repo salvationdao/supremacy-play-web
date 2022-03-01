@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from ".."
 import { GenericWarMachinePNG } from "../../assets"
-import { PASSPORT_WEB } from "../../constants"
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
@@ -13,7 +13,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
             <Box sx={{ px: 2.5, py: 1.5, backgroundColor: "#00000083" }}>
                 <Typography
                     component="span"
-                    variant="h3"
+                    variant="h4"
                     sx={{
                         position: "relative",
                         fontFamily: "Nostromo Regular Black",
@@ -33,8 +33,8 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 <StyledImageText
                     color={winningFaction.theme.primary}
                     text={winningFaction.label}
-                    imageUrl={`${PASSPORT_WEB}/api/files/${winningFaction.logoBlobID}`}
-                    variant="h4"
+                    imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${winningFaction.logoBlobID}`}
+                    variant="h5"
                     imageSize={40}
                     imageBorderThickness="0px"
                     noImageBackgroundColor
@@ -46,9 +46,10 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     <Stack spacing={2} sx={{ pl: 1 }}>
                         {winningWarMachines.map((wm) => (
                             <StyledImageText
-                                key={`${wm.tokenID}-${wm.participantID}`}
+                                key={`${wm.hash}-${wm.participantID}`}
                                 color={colors.text}
                                 imageBorderColor={wm.faction.theme.primary}
+                                imageBackgroundColor={`${wm.faction.theme.primary}60`}
                                 text={wm.name.toUpperCase()}
                                 imageUrl={wm.imageUrl || GenericWarMachinePNG}
                                 variant="h5"

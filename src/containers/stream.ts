@@ -3,6 +3,11 @@ import { createContainer } from "unstated-next"
 import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { useToggle } from "../hooks"
 import { Stream } from "../types"
+import { getObjectFromArrayByKey, parseString } from "../helpers"
+import { useWebsocket } from "."
+import HubKey from "../keys"
+
+const MAX_OPTIONS = 7
 
 interface StreamInfoEntry {
     audioBitrate: number
@@ -35,29 +40,8 @@ interface WebRTCAdaptorType {
     closeWebSocket: (streamID: string) => void
 }
 
-export interface StreamContainerType {
-    webRtc: React.MutableRefObject<WebRTCAdaptorType | undefined>
-    vidRef: React.MutableRefObject<HTMLVideoElement | undefined>
-    vidRefCallback: (vid: HTMLVideoElement) => void
-    currentStream: Stream | undefined
-    setCurrentStream: React.Dispatch<React.SetStateAction<Stream | undefined>>
-    selectedWsURL: string
-    setSelectedWsURL: React.Dispatch<React.SetStateAction<string>>
-    selectedStreamID: string
-    setSelectedStreamID: React.Dispatch<React.SetStateAction<string>>
-    streamResolutions: number[]
-    setStreamResolutions: React.Dispatch<React.SetStateAction<number[]>>
-    volume: number
-    setVolume: React.Dispatch<React.SetStateAction<number>>
-    isMute: boolean
-    toggleIsMute: any
-    currentResolution: number | undefined
-    setCurrentResolution: React.Dispatch<React.SetStateAction<number | undefined>>
-    defaultResolution: number
-    noStreamExist: boolean
-}
-
-export const StreamContainer = createContainer((): StreamContainerType => {
+export const StreamContainer = createContainer(() => {
+    const { state, subscribe } = useWebsocket()
     const defaultResolution = 720
 
     // video
@@ -65,12 +49,12 @@ export const StreamContainer = createContainer((): StreamContainerType => {
     const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
 
     // stream
+    const [streams, setStreams] = useState<Stream[]>([])
+    const [streamOptions, setStreamOptions] = useState<Stream[]>([])
     const [currentStream, setCurrentStream] = useState<Stream>()
-    const [selectedWsURL, setSelectedWsURL] = useState("")
-    const [selectedStreamID, setSelectedStreamID] = useState("")
 
     // volume
-    const [volume, setVolume] = useState(0.0)
+    const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
     const [isMute, toggleIsMute] = useToggle(true)
 
     // resolution
@@ -81,19 +65,84 @@ export const StreamContainer = createContainer((): StreamContainerType => {
     const [noStreamExist, setNoStreamExist] = useState(false)
 
     useEffect(() => {
+        localStorage.setItem("streamVolume", volume.toString())
+
         if (volume <= 0) {
             toggleIsMute(true)
             return
         }
         if (vidRef && vidRef.current && vidRef.current.volume) {
             vidRef.current.volume = volume
-            toggleIsMute(false)
         }
+        toggleIsMute(false)
     }, [volume])
+
+    const changeStream = (s: Stream) => {
+        if (!s) return
+        setCurrentStream(s)
+        localStorage.setItem("streamStream", JSON.stringify(s))
+    }
+
+    // Subscribe to list of streams
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<Stream[]>(HubKey.GetStreamList, (payload) => {
+            if (!payload) return
+            setStreams(payload)
+        })
+    }, [state, subscribe])
+
+    // Build stream options for the drop down
+    useEffect(() => {
+        if (!streams || streams.length <= 0) return
+
+        // Filter for servers that have capacity and is onlnine
+        const availStreams = streams.filter((x) => {
+            return x.usersNow < x.userMax && x.status === "online"
+        })
+
+        if (availStreams.length <= 0) return
+
+        // Reduce the list of options so it's not too many for the user
+        // By default its sorted by quietest servers first
+        const quietestStreams = availStreams.sort((a, b) => (a.usersNow / a.userMax > b.usersNow / b.userMax ? 1 : -1))
+
+        // If the local storage stream is in the list, set as current stream
+        const localStream = localStorage.getItem("streamStream")
+        if (localStream) {
+            const savedStream = JSON.parse(localStream)
+            if (getObjectFromArrayByKey(availStreams, savedStream.streamID, "streamID")) {
+                setCurrentStream(savedStream)
+                SetNewStreamOptions(quietestStreams, true)
+            }
+            return
+        }
+
+        SetNewStreamOptions(quietestStreams)
+    }, [streams])
+
+    const SetNewStreamOptions = (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
+        // Limit to only a few for the dropdown and include our current selection if not already in the list
+        const temp = newStreamOptions.slice(0, MAX_OPTIONS)
+        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.streamID, "streamID")) {
+            newStreamOptions[newStreamOptions.length - 1] = currentStream
+        }
+
+        // If there is no current stream selected then pick the US one (for now)
+        if (!dontChangeCurrentStream && !currentStream && newStreamOptions && newStreamOptions.length > 0) {
+            const usaStreams = newStreamOptions.filter((s) => s.name == "USA")
+            if (usaStreams && usaStreams.length > 0) {
+                changeStream(usaStreams[0])
+            }
+        }
+
+        // Reverse the order for rendering so best is closer to user's mouse
+        setStreamOptions(temp.reverse())
+    }
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
-            if (!selectedWsURL || !selectedStreamID) return
+            if (!currentStream || !currentStream.url || !currentStream.streamID) return
             if (!vid || !vid.parentNode) {
                 vidRef.current = undefined
                 return
@@ -101,7 +150,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
             try {
                 vidRef.current = vid
                 webRtc.current = new WebRTCAdaptor({
-                    websocket_url: selectedWsURL,
+                    websocket_url: currentStream.url,
                     mediaConstraints: { video: false, audio: false },
                     sdp_constraints: {
                         OfferToReceiveAudio: true,
@@ -114,10 +163,10 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                     callback: (info: string, obj: any) => {
                         if (info == "initialized") {
                             if (!webRtc || !webRtc.current || !webRtc.current.play) return
-                            webRtc.current.play(selectedStreamID, "")
+                            webRtc.current.play(currentStream.streamID, "")
                         } else if (info == "play_started") {
                             if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
-                            webRtc.current.getStreamInfo(selectedStreamID)
+                            webRtc.current.getStreamInfo(currentStream.streamID)
                         } else if (info == "streamInformation") {
                             const resolutions: number[] = [0]
                             obj["streamInfo"].forEach((entry: StreamInfoEntry) => {
@@ -145,7 +194,7 @@ export const StreamContainer = createContainer((): StreamContainerType => {
                 webRtc.current = undefined
             }
         },
-        [selectedWsURL, selectedStreamID],
+        [currentStream],
     )
 
     return {
@@ -153,14 +202,10 @@ export const StreamContainer = createContainer((): StreamContainerType => {
         vidRef,
         vidRefCallback,
 
+        streamOptions,
+
         currentStream,
-        setCurrentStream,
-
-        selectedWsURL,
-        setSelectedWsURL,
-
-        selectedStreamID,
-        setSelectedStreamID,
+        changeStream,
 
         currentResolution,
         setCurrentResolution,

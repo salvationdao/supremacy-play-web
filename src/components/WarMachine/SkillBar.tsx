@@ -5,6 +5,7 @@ import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from 
 import { NullUUID } from "../../constants"
 import { useAuth, useWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
+import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityTargetPrice } from "../../types"
 
 export const SkillBar = ({
@@ -68,7 +69,7 @@ export const SkillBar = ({
             }}
         >
             <SlantedBar
-                backgroundColor={shadeColor("#4844A0", 100 - index * 28)}
+                backgroundColor={shadeColor(colors.warMachineSkillBar, 100 - index * 28)}
                 progressPercent={progressPercent}
                 costPercent={costPercent}
             />

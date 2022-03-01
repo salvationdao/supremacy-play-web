@@ -17,9 +17,15 @@ import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
+import Play from "!react-svg-loader!./svg/Play.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
+import History from "!react-svg-loader!./svg/History.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
+import Discord from "!react-svg-loader!./svg/Discord.svg"
+import Twitter from "!react-svg-loader!./svg/Twitter.svg"
+import YouTube from "!react-svg-loader!./svg/YouTube.svg"
+import Telegram from "!react-svg-loader!./svg/Telegram.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
 import Radar from "!react-svg-loader!./svg/Radar.svg"
 import CampaignSharpIcon from "@mui/icons-material/CampaignSharp"
@@ -34,8 +40,12 @@ import { Box, BoxProps } from "@mui/system"
 import { colors } from "../theme/theme"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
 import FlamesPNG from "./images/Flames.png"
+import MaintenanceJPG from "./images/Maintenance.jpeg"
+import TrailerThumbPNG from "./images/TrailerThumb.png"
+import LogoWEBP from "./images/Logo.webp"
+import BottomMechWEBP from "./images/BottomMech.webp"
 
-export { GenericWarMachinePNG, FlamesPNG }
+export { GenericWarMachinePNG, FlamesPNG, MaintenanceJPG, TrailerThumbPNG, LogoWEBP, BottomMechWEBP }
 
 interface SvgWrapperProps extends BoxProps {
     size?: string
@@ -251,5 +261,41 @@ export const SvgGoldBars: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgRobot: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Robot />
+    </SvgWrapper>
+)
+
+export const SvgHistory: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <History />
+    </SvgWrapper>
+)
+
+export const SvgPlay: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Play />
+    </SvgWrapper>
+)
+
+export const SvgDiscord: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Discord />
+    </SvgWrapper>
+)
+
+export const SvgTwitter: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Twitter />
+    </SvgWrapper>
+)
+
+export const SvgYouTube: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <YouTube />
+    </SvgWrapper>
+)
+
+export const SvgTelegram: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Telegram />
     </SvgWrapper>
 )

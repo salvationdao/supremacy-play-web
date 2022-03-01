@@ -1,5 +1,3 @@
-import { Theme } from "@mui/material/styles"
-import { useTheme } from "@mui/styles"
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useState } from "react"
@@ -67,18 +65,6 @@ const ContributionBar = ({
                     }}
                 />
             </Stack>
-            {/* 
-            <Typography
-                key={progressPercent}
-                variant="caption"
-                sx={{
-                    fontWeight: 'fontWeightBold',
-                    lineHeight: 1,
-                    animation: `${zoomEffect()} 300ms ease-out`,
-                }}
-            >
-                {Math.round(progressPercent)}%
-            </Typography> */}
         </Stack>
     )
 }
@@ -95,7 +81,6 @@ interface FactionAbilityItemProps {
 export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => {
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
-    const theme = useTheme<Theme>()
 
     const { label, colour, imageUrl, identity, description } = gameAbility
     const [refresh, toggleRefresh] = useToggle()
@@ -161,7 +146,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <TooltipHelper text={description}>
+                                <TooltipHelper placement="right" text={description}>
                                     <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
                                         <Box
                                             sx={{
@@ -242,7 +227,6 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     isVoting={isVoting}
                                     onClick={() => onContribute(1)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                                 <VotingButton
                                     color={colour}
@@ -251,7 +235,6 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     isVoting={isVoting}
                                     onClick={() => onContribute(25)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                                 <VotingButton
                                     color={colour}
@@ -260,7 +243,6 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     isVoting={isVoting}
                                     onClick={() => onContribute(100)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                             </Stack>
                         </Stack>

@@ -99,7 +99,7 @@ export const MapWarMachine = ({
                             width: "100%",
                             height: "100%",
                             background: "linear-gradient(#00000040, #00000090)",
-                            opacity: enlarged ? 1 : 0.76,
+                            opacity: enlarged ? 1 : 0.5,
                         }}
                     >
                         <SvgMapSkull

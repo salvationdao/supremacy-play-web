@@ -2,120 +2,120 @@ name: Staging Deployment
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the ci branch
-  push:
-    branches: [staging]
+    # Triggers the workflow on push or pull request events but only for the ci branch
+    push:
+        branches: [staging]
 
 env:
-  # hack to bypass node warning
-  CI: false
-  NINJA_NPM_TOKEN: ${{ secrets.NINJA_NPM_TOKEN }}
-  REACT_APP_GAME_SERVER_HOST: staging-api.supremacy.game
-  REACT_APP_PASSPORT_WEB: https://staging-passport.xsyn.io
-  REACT_APP_PASSPORT_SERVER_HOST: staging-passport.xsyn.io
-  REACT_APP_STREAM_SITE: https://staging-watch.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513
-  REACT_APP_STREAM_SITE_OFFICE: https://staging-watch-local-am.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513
+    # hack to bypass node warning
+    CI: false
+    NINJA_NPM_TOKEN: ${{ secrets.NINJA_NPM_TOKEN }}
+    REACT_APP_GAME_SERVER_HOST: staging-api.supremacy.game
+    REACT_APP_PASSPORT_WEB: https://staging-passport.xsyn.io
+    REACT_APP_PASSPORT_SERVER_HOST: staging-passport.xsyn.io
+    REACT_APP_STREAM_SITE: https://staging-watch.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513
+    REACT_APP_STREAM_SITE_OFFICE: https://staging-watch-local-am.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513
 
-  REACT_APP_SENTRY_DSN_FRONTEND: https://326f24205fe94d2093775e0228384359@o370480.ingest.sentry.io/6194703
-  REACT_APP_SENTRY_ENVIRONMENT: staging
-  REACT_APP_SENTRY_SAMPLERATE: 1
+    REACT_APP_SENTRY_DSN_FRONTEND: https://326f24205fe94d2093775e0228384359@o370480.ingest.sentry.io/6194703
+    REACT_APP_SENTRY_ENVIRONMENT: staging
+    REACT_APP_SENTRY_SAMPLERATE: 1
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
-    runs-on: ubuntu-20.04
-    outputs:
-      artifact_filename: ${{ steps.artifact.outputs.filename }}
-      version: ${{ steps.version.outputs.v }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: "0"
+    build:
+        runs-on: ubuntu-20.04
+        outputs:
+            artifact_filename: ${{ steps.artifact.outputs.filename }}
+            version: ${{ steps.version.outputs.v }}
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: "0"
 
-      - name: Setup nodejs
-        uses: actions/setup-node@v2
-        with:
-          node-version: "16.14"
+            - name: Setup nodejs
+              uses: actions/setup-node@v2
+              with:
+                  node-version: "16.14"
 
-      # cache npm dependencies
-      # https://www.voorhoede.nl/en/blog/super-fast-npm-install-on-github-actions/
-      - name: Cache npm
-        if: ${{ !env.ACT }} # if running in local test environment
-        id: cache
-        uses: actions/cache@v2
-        with:
-          path: ./node_modules
-          key: modules-${{ hashFiles('./package-lock.json') }}
+            # cache npm dependencies
+            # https://www.voorhoede.nl/en/blog/super-fast-npm-install-on-github-actions/
+            - name: Cache npm
+              if: ${{ !env.ACT }} # if running in local test environment
+              id: cache
+              uses: actions/cache@v2
+              with:
+                  path: ./node_modules
+                  key: modules-${{ hashFiles('./package-lock.json') }}
 
-      - name: Install npm packages
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci --ignore-scripts
+            - name: Install npm packages
+              if: steps.cache.outputs.cache-hit != 'true'
+              run: npm ci --ignore-scripts
 
-      - name: Set prerelease tag and push tag
-        run: |
-          git config --global user.name "Github CI"
-          git config --global user.email "team@supremacy.fi"
-          npm version prerelease --preid rc
-          echo "GITVERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-          echo "REACT_APP_SENTRY_CURRENT_RELEASE_NAME=supremacy-supremacy_stream_site@$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+            - name: Set prerelease tag and push tag
+              run: |
+                  git config --global user.name "Github CI"
+                  git config --global user.email "team@supremacy.fi"
+                  npm version prerelease --preid rc
+                  echo "GITVERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+                  echo "REACT_APP_SENTRY_CURRENT_RELEASE_NAME=supremacy-supremacy_stream_site@$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
-      - name: Build web
-        run: CI=false BUILD_PATH='deploy/web' npm run build
+            - name: Build web
+              run: CI=false BUILD_PATH='deploy/web' npm run build
 
-      - name: Push tags and commit
-        run: |
-          git push
-          git push --tags
+            - name: Push tags and commit
+              run: |
+                  git push
+                  git push --tags
 
-      - name: Add other files
-        run: |
-          cp -r ./config ./deploy/.
+            - name: Add other files
+              run: |
+                  cp -r ./config ./deploy/.
 
-      # list build folder recursively
-      - name: List build dir
-        run: find deploy
+            # list build folder recursively
+            - name: List build dir
+              run: find deploy
 
-      - id: artifact
-        run: echo "::set-output name=filename::passport-api_${{env.GITVERSION}}.tar"
-      - id: version
-        run: echo "::set-output name=v::${{env.GITVERSION}}"
+            - id: artifact
+              run: echo "::set-output name=filename::passport-api_${{env.GITVERSION}}.tar"
+            - id: version
+              run: echo "::set-output name=v::${{env.GITVERSION}}"
 
-      - name: tar deploy directory
-        run: tar -cvf ${{ steps.artifact.outputs.filename }} ./deploy
+            - name: tar deploy directory
+              run: tar -cvf ${{ steps.artifact.outputs.filename }} ./deploy
 
-      - name: save artifact
-        uses: actions/upload-artifact@v2
-        if: ${{ !env.ACT }} # if running in local test environment
-        with:
-          name: ${{ steps.artifact.outputs.filename }}
-          path: ${{ steps.artifact.outputs.filename }}
-  deploy:
-    needs: [build]
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/download-artifact@v2
-        if: ${{ !env.ACT }} # if running in local test environment
-        with:
-          name: ${{ needs.build.outputs.artifact_filename }}
+            - name: save artifact
+              uses: actions/upload-artifact@v2
+              if: ${{ !env.ACT }} # if running in local test environment
+              with:
+                  name: ${{ steps.artifact.outputs.filename }}
+                  path: ${{ steps.artifact.outputs.filename }}
+    deploy:
+        needs: [build]
+        runs-on: ubuntu-20.04
+        steps:
+            - uses: actions/download-artifact@v2
+              if: ${{ !env.ACT }} # if running in local test environment
+              with:
+                  name: ${{ needs.build.outputs.artifact_filename }}
 
-      - name: untar deploy directory
-        run: tar -xvf ${{ needs.build.outputs.artifact_filename }}
+            - name: untar deploy directory
+              run: tar -xvf ${{ needs.build.outputs.artifact_filename }}
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo -e "Host staging-watch.supremacy.game\n  StrictHostKeyChecking no\n  User ${{ secrets.STAGING_SSH_USER }}\n Port ${{ secrets.STAGING_SSH_PORT }}" >> ~/.ssh/config
-          echo '${{ secrets.STAGING_SSH_PKEY }}' > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+            - name: Setup SSH
+              run: |
+                  mkdir -p ~/.ssh
+                  echo -e "Host staging-watch.supremacy.game\n  StrictHostKeyChecking no\n  User ${{ secrets.STAGING_SSH_USER }}\n Port ${{ secrets.STAGING_SSH_PORT }}" >> ~/.ssh/config
+                  echo '${{ secrets.STAGING_SSH_PKEY }}' > ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
 
-      - name: Rsync to server
-        if: ${{ !env.ACT }} # if running in local test environment
-        run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }}
+            - name: Rsync to server
+              if: ${{ !env.ACT }} # if running in local test environment
+              run: rsync -av deploy/ staging-watch.supremacy.game:/usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }}
 
-      - name: Bring new version online
-        if: ${{ !env.ACT }} # if running in local test environment
-        run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }} /usr/share/supremacy/supremacy-stream-site_online'
+            - name: Bring new version online
+              if: ${{ !env.ACT }} # if running in local test environment
+              run: ssh staging-watch.supremacy.game 'ln -Tfsv /usr/share/supremacy/supremacy-stream-site_${{ needs.build.outputs.version }} /usr/share/supremacy/supremacy-stream-site_online'
 
-      - name: Reload nginx
-        if: ${{ !env.ACT }} # if running in local test environment
-        run: ssh staging-watch.supremacy.game 'sudo nginx -t && sudo nginx -s reload'
+            - name: Reload nginx
+              if: ${{ !env.ACT }} # if running in local test environment
+              run: ssh staging-watch.supremacy.game 'sudo nginx -t && sudo nginx -s reload'

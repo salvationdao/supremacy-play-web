@@ -64,18 +64,6 @@ const ContributionBar = ({
                     }}
                 />
             </Stack>
-            {/* 
-            <Typography
-                key={progressPercent}
-                variant="caption"
-                sx={{
-                    fontWeight: 'fontWeightBold',
-                    lineHeight: 1,
-                    animation: `${zoomEffect()} 300ms ease-out`,
-                }}
-            >
-                {Math.round(progressPercent)}%
-            </Typography> */}
         </Stack>
     )
 }
@@ -159,7 +147,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <TooltipHelper text={description}>
+                                <TooltipHelper placement="right" text={description}>
                                     <Stack spacing={0.9} direction="row" alignItems="center" justifyContent="center">
                                         <Box
                                             sx={{
@@ -240,7 +228,6 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     isVoting={isVoting}
                                     onClick={() => onContribute(1)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                                 <VotingButton
                                     color={colour}
@@ -249,7 +236,6 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     isVoting={isVoting}
                                     onClick={() => onContribute(25)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                                 <VotingButton
                                     color={colour}
@@ -258,7 +244,6 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                     isVoting={isVoting}
                                     onClick={() => onContribute(100)}
                                     Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
-                                    disableHover
                                 />
                             </Stack>
                         </Stack>

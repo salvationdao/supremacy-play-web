@@ -28,7 +28,7 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
                     height: 4,
                 },
                 "::-webkit-scrollbar-track": {
-                    boxShadow: `inset 0 0 5px ${colors.darkerNeonBlue}50`,
+                    background: "#FFFFFF15",
                     borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
@@ -95,8 +95,8 @@ export const WarMachineStats = () => {
 
     if (!warMachines || warMachines.length <= 0) return null
 
-    const factionMechs = warMachines.filter((wm) => wm.factionID == factionID)
-    const otherMechs = warMachines.filter((wm) => wm.factionID != factionID)
+    const factionMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == factionID)
+    const otherMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != factionID)
     const haveFactionMechs = factionMechs.length > 0
 
     return (
@@ -108,7 +108,7 @@ export const WarMachineStats = () => {
                     position: "absolute",
                     bottom: 0,
                     left: 0,
-                    right: isMapOpen ? MINI_MAP_DEFAULT_WIDTH + 12 : 0,
+                    right: isMapOpen ? MINI_MAP_DEFAULT_WIDTH + 20 : 0,
                     zIndex: 13,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",
@@ -119,15 +119,15 @@ export const WarMachineStats = () => {
                         clipSize="9px"
                         clipSlantSize="26px"
                         skipLeft
-                        sx={{ pl: 3.5, pr: 6, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
+                        sx={{ pl: 2, pr: 4, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
                     >
                         <ScrollContainer>
-                            <Stack spacing={-1} direction="row" alignItems="center" justifyContent="center">
+                            <Stack spacing={-3} direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
-                                        key={`${wm.participantID} - ${wm.tokenID}`}
+                                        key={`${wm.participantID} - ${wm.hash}`}
                                         warMachine={wm}
-                                        scale={0.9}
+                                        scale={0.8}
                                         shouldBeExpanded={shouldBeExpanded.shouldBeExpandedFaction}
                                     />
                                 ))}
@@ -137,19 +137,19 @@ export const WarMachineStats = () => {
                 )}
 
                 {otherMechs.length > 0 && (
-                    <Box sx={{ mb: 0.6, pr: 2, pl: haveFactionMechs ? 0 : 2, overflow: "hidden" }}>
+                    <Box sx={{ mb: 0.6, pr: 2, pl: haveFactionMechs ? 0 : 1.6, overflow: "hidden" }}>
                         <ScrollContainer>
                             <Stack
-                                spacing={haveFactionMechs ? -3.2 : -2.5}
+                                spacing={haveFactionMechs ? -5.2 : -4.5}
                                 direction="row"
                                 alignItems="center"
                                 sx={{ flex: 1, ml: haveFactionMechs ? -1.4 : 0, pb: haveFactionMechs ? 0 : 0.6 }}
                             >
                                 {otherMechs.map((wm) => (
                                     <WarMachineItem
-                                        key={`${wm.participantID} - ${wm.tokenID}`}
+                                        key={`${wm.participantID} - ${wm.hash}`}
                                         warMachine={wm}
-                                        scale={haveFactionMechs ? 0.8 : 0.8}
+                                        scale={haveFactionMechs ? 0.75 : 0.75}
                                         shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
                                     />
                                 ))}

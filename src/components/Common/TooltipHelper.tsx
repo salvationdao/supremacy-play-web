@@ -1,16 +1,41 @@
 import { Box, Tooltip, Typography } from "@mui/material"
 import { ReactElement } from "react"
 
-export const TooltipHelper = ({ text, children }: { text: string; children: ReactElement }) => {
+export const TooltipHelper = ({
+    text,
+    children,
+    isCentered,
+    placement,
+}: {
+    text: string
+    children: ReactElement
+    isCentered?: boolean
+    placement?:
+        | "bottom-end"
+        | "bottom-start"
+        | "bottom"
+        | "left-end"
+        | "left-start"
+        | "left"
+        | "right-end"
+        | "right-start"
+        | "right"
+        | "top-end"
+        | "top-start"
+        | "top"
+}) => {
     if (!text) return <>{children}</>
 
     return (
         <Tooltip
             arrow
-            placement={"bottom-start"}
+            placement={placement || (isCentered ? "bottom" : "bottom-start")}
             title={
                 <Box sx={{ px: 0.5, py: 0.2 }}>
-                    <Typography variant="body1" sx={{ fontFamily: "Share Tech" }}>
+                    <Typography
+                        variant="body1"
+                        sx={{ color: "#FFFFFF", fontFamily: "Share Tech", textAlign: isCentered ? "center" : "start" }}
+                    >
                         {text}
                     </Typography>
                 </Box>

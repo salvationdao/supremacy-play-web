@@ -47,6 +47,10 @@ x map follows where the action is
 x improve notification styles (for the map select, reject counters etc.)
  tutorial guide for new users
  XX vs YY
+x remove the count down timer
+x turn on battle history
+x turn on on load battle history
+x the whole game ui
 
 
 
@@ -56,5 +60,12 @@ Pending:
 
 
 Future nice to have:
+
+
+
+
+
+Things that had been turned off:
+- turn on not enlisted counters
 
 

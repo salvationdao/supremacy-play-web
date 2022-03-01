@@ -11,11 +11,11 @@ import {
 } from ".."
 import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
-import { NullUUID, PASSPORT_WEB } from "../../constants"
+import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import HubKey from "../../keys"
 import { useToggle } from "../../hooks"
 import BigNumber from "bignumber.js"
-import { useDrawer } from "@ninjasoftware/passport-gamebar"
+import { useDrawer } from "../../components/GameBar"
 
 const WIDTH_WM_IMAGE = 92
 const WIDTH_CENTER = 142
@@ -226,7 +226,7 @@ export const WarMachineItem = ({
                                     sx={{
                                         width: 26,
                                         height: 26,
-                                        backgroundImage: `url(${PASSPORT_WEB}/api/files/${logoBlobID})`,
+                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logoBlobID})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",

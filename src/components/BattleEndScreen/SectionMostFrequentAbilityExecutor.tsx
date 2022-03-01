@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from ".."
-import { PASSPORT_WEB } from "../../constants"
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
@@ -12,7 +12,7 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
             <Box sx={{ px: 2.5, py: 1.1, backgroundColor: "#00000083" }}>
                 <Typography
                     component="span"
-                    variant="h4"
+                    variant="h5"
                     sx={{
                         position: "relative",
                         fontFamily: "Nostromo Regular Black",
@@ -39,7 +39,11 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                                 <StyledImageText
                                     color={u.faction.theme.primary}
                                     text={u.username}
-                                    imageUrl={u.avatarID ? `${PASSPORT_WEB}/api/files/${u.avatarID}` : undefined}
+                                    imageUrl={
+                                        u.avatarID
+                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${u.avatarID}`
+                                            : undefined
+                                    }
                                     variant="h5"
                                     imageSize={29}
                                     imageBorderThickness="2px"

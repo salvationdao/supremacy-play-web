@@ -1,6 +1,7 @@
 import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { ClipThing, WarMachineAbilityItem } from ".."
+import { GenericWarMachinePNG } from "../../assets"
 import { colors } from "../../theme/theme"
 import { GameAbility, WarMachineState } from "../../types"
 
@@ -61,7 +62,7 @@ export const WarMachineAbilitiesPopover = ({
                                     sx={{
                                         width: 17,
                                         height: 17,
-                                        backgroundImage: `url(${warMachine.imageUrl})`,
+                                        backgroundImage: `url(${warMachine.imageUrl || GenericWarMachinePNG})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
