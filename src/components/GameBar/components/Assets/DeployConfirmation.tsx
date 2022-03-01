@@ -163,7 +163,7 @@ export const DeployConfirmation = ({
                             <Stack spacing={0.1}>
                                 <AmountItem
                                     title={"CONTRACT REWARD: "}
-                                    color={colors.neonBlue}
+                                    color={colors.yellow}
                                     value={contractReward ? supFormatter(contractReward, 6) : "N/A"}
                                     tooltip="Your reward if your syndicate wins the battle."
                                 />

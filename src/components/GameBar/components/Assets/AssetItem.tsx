@@ -1,53 +1,49 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material"
-import BigNumber from "bignumber.js"
+import moment from "moment"
 import { useEffect, useState } from "react"
 import { DeployConfirmation } from ".."
-import { SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
+import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
+import { useInterval } from "../../hooks/useInterval"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset, AssetDurability, AssetQueueStat } from "../../types/assets"
 
-const ActionButton = ({
-    text,
-    isOutlined,
-    color,
-    onClick,
-}: {
-    text: string
-    color: string
-    isOutlined?: boolean
-    onClick: () => void
-}) => {
+const RepairCountdown = ({ endTime }: { endTime: Date }) => {
+    const [, setTimeRemain] = useState<number>(0)
+    const [delay, setDelay] = useState<number | null>(null)
+    const [hours, setHours] = useState<number>()
+    const [minutes, setMinutes] = useState<number>()
+    const [seconds, setSeconds] = useState<number>()
+
+    useEffect(() => {
+        if (endTime) {
+            setDelay(1000)
+            const d = moment.duration(moment(endTime).diff(moment()))
+            setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
+            return
+        }
+        setDelay(null)
+    }, [])
+
+    useInterval(() => {
+        setTimeRemain((t) => Math.max(t - 1, 0))
+        const d = moment.duration(moment(endTime).diff(moment()))
+        const hours = Math.floor(d.asHours())
+        const minutes = Math.floor(d.asMinutes()) - hours * 60
+        const seconds = Math.floor(d.asSeconds()) - hours * 60 * 60 - minutes * 60
+        setHours(Math.max(hours, 0))
+        setMinutes(Math.max(minutes, 0))
+        setSeconds(Math.max(seconds, 0))
+    }, delay)
+
     return (
-        <Button
-            variant="contained"
-            size="small"
-            onClick={onClick}
-            sx={{
-                minWidth: 0,
-                px: 1,
-                py: 0.4,
-                boxShadow: 0,
-                backgroundColor: isOutlined ? "transparent" : color,
-                border: isOutlined ? `${color} 1px solid` : "unset",
-                borderRadius: 0.3,
-                ":hover": { backgroundColor: `${color}90` },
-            }}
-        >
-            <Typography
-                sx={{
-                    fontSize: ".75rem",
-                    fontFamily: "Share Tech",
-                    lineHeight: 1,
-                    color: isOutlined ? color : colors.text,
-                }}
-            >
-                {text}
-            </Typography>
-        </Button>
+        <>
+            {hours && hours > 0 ? `${hours}h` : ""} {minutes && minutes > 0 ? `${minutes}h` : ""}{" "}
+            {seconds && seconds > 0 ? `${seconds}h` : ""}
+        </>
     )
 }
 
@@ -126,16 +122,17 @@ export const AssetItem = ({
     const StatusArea = () => {
         if (isRepairing) {
             const { startedAt, expectCompletedAt } = durability
+            const isFastMode = durability.repairType == "FAST"
 
             return (
-                <Stack>
+                <>
                     <Typography
                         sx={{
                             px: 1,
                             py: 0.34,
-                            color: colors.yellow,
+                            color: colors.neonBlue,
                             lineHeight: 1,
-                            border: `${colors.yellow} 1px solid`,
+                            border: `${colors.neonBlue} 1px solid`,
                             borderRadius: 0.3,
                             fontSize: ".75rem",
                             fontFamily: "Share Tech",
@@ -144,8 +141,17 @@ export const AssetItem = ({
                         REPAIRING
                     </Typography>
 
-                    <div>show bar</div>
-                </Stack>
+                    <Stack direction="row" alignItems="center" spacing={0.4}>
+                        {isFastMode && <SvgFastRepair size="10px" fill={colors.neonBlue} />}
+                        <SvgCooldown size="12px" fill={colors.neonBlue} />
+                        <Typography
+                            variant="caption"
+                            sx={{ lineHeight: 1, fontFamily: "Share Tech", color: colors.neonBlue }}
+                        >
+                            <RepairCountdown endTime={expectCompletedAt} />
+                        </Typography>
+                    </Stack>
+                </>
             )
         }
 
@@ -171,10 +177,10 @@ export const AssetItem = ({
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
                                 REWARD:&nbsp;
                             </Typography>
-                            <SvgSupToken size="12px" fill={colors.neonBlue} />
+                            <SvgSupToken size="12px" fill={colors.yellow} />
                             <Typography
                                 variant="caption"
-                                sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.neonBlue }}
+                                sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.yellow }}
                             >
                                 {supFormatter(contractReward2, 6)}
                             </Typography>
@@ -206,10 +212,10 @@ export const AssetItem = ({
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
                                 REWARD:&nbsp;
                             </Typography>
-                            <SvgSupToken size="12px" fill={colors.neonBlue} />
+                            <SvgSupToken size="12px" fill={colors.yellow} />
                             <Typography
                                 variant="caption"
-                                sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.neonBlue }}
+                                sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.yellow }}
                             >
                                 {supFormatter(contractReward2, 6)}
                             </Typography>
@@ -219,7 +225,33 @@ export const AssetItem = ({
             )
         }
 
-        return <ActionButton text="DEPLOY" onClick={() => toggleIsDeployModal(true)} color={colors.green} />
+        return (
+            <Button
+                variant="contained"
+                size="small"
+                onClick={() => toggleIsDeployModal(true)}
+                sx={{
+                    minWidth: 0,
+                    px: 1,
+                    py: 0.4,
+                    boxShadow: 0,
+                    backgroundColor: colors.green,
+                    borderRadius: 0.3,
+                    ":hover": { backgroundColor: `${colors.green}90` },
+                }}
+            >
+                <Typography
+                    sx={{
+                        fontSize: ".75rem",
+                        fontFamily: "Share Tech",
+                        lineHeight: 1,
+                        color: colors.text,
+                    }}
+                >
+                    DEPLOY
+                </Typography>
+            </Button>
+        )
     }
 
     return (
@@ -259,7 +291,7 @@ export const AssetItem = ({
                     {name}
                 </Typography>
 
-                <Stack direction="row" spacing={1.2}>
+                <Stack alignItems="center" direction="row" spacing={1.2}>
                     <StatusArea />
                 </Stack>
             </Stack>

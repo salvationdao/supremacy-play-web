@@ -26,6 +26,7 @@ import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Ability from "!@svgr/webpack!./svg/Ability.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Applause from "!@svgr/webpack!./svg/Applause.svg"
+import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import Death from "!@svgr/webpack!./svg/Death.svg"
 import Robot from "!@svgr/webpack!./svg/Robot.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
@@ -233,5 +234,11 @@ export const SvgScrolldown: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgClose: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Close />
+    </SvgWrapper>
+)
+
+export const SvgCooldown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <AccessTimeSharpIcon />
     </SvgWrapper>
 )
