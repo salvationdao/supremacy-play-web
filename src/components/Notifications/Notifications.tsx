@@ -8,7 +8,6 @@ import {
     WarMachineAbilityAlert,
 } from ".."
 import { NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from "../../constants"
-import { colors } from "../../theme/theme"
 import { useTheme } from "@mui/styles"
 import { Theme } from "@mui/material/styles"
 import { makeid, useAuth, useDimension, useWebsocket } from "../../containers"

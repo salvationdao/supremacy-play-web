@@ -15,7 +15,6 @@ import {
     LoadMessage,
     Stream,
     VotingSystem,
-    WarMachineQueue,
     WarMachineStats,
     Notifications,
     Maintenance,
@@ -160,11 +159,10 @@ const AppInner = () => {
             <GameBar
                 barPosition="top"
                 gameserverSessionID={gameserverSessionID}
-                tokenSalePage={`${TOKEN_SALE_PAGE}src/components/VotingSystem/FactionAbilities.tsx`}
+                tokenSalePage={TOKEN_SALE_PAGE}
                 supremacyPage={SUPREMACY_PAGE}
                 passportWeb={PASSPORT_WEB}
                 passportServerHost={PASSPORT_SERVER_HOST}
-                MechQueueComponent={<WarMachineQueue />}
             />
             <Stack
                 sx={{
@@ -209,7 +207,6 @@ const AppInner = () => {
                                         <VotingSystem />
                                         <MiniMap />
                                         <Notifications />
-
                                         <LiveVotingChart />
                                         <WarMachineStats />
                                         <BattleEndScreen />

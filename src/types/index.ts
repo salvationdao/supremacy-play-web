@@ -85,11 +85,6 @@ export interface WarMachineState {
     rotation: number
 }
 
-export interface QueuedWarMachine {
-    position: number
-    warMachineMetadata: WarMachineMetadata
-}
-
 export interface WarMachineMetadata {
     hash: string
     isInsured: boolean

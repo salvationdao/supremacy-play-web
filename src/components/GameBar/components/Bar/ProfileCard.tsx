@@ -102,7 +102,7 @@ const ConnectButton = ({ passportWeb }: { passportWeb: string }) => {
                 <iframe src={href}></iframe>
             </Box>
 
-            {authRingCheckError && (
+            {!authRingCheckError && (
                 <Dialog
                     maxWidth="xs"
                     PaperProps={{ sx: { borderRadius: 1 } }}
