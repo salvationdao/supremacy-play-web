@@ -64,7 +64,6 @@ export const WarMachineItem = ({
             if (!isExpanded) toggleIsExpanded()
             else if (mechHash === highlightMech) {
                 setHighlightMech(undefined)
-                toggleIsExpanded()
             } else setHighlightMech(mechHash)
         },
         [highlightMech, isExpanded],
