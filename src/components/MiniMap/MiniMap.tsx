@@ -32,7 +32,7 @@ export const MiniMap = () => {
 
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
         const newWidth = enlarged ? width - 25 : MINI_MAP_DEFAULT_WIDTH
-        const newHeight = enlarged ? height - 25 : MINI_MAP_DEFAULT_HEIGHT
+        const newHeight = enlarged ? height - 125 : MINI_MAP_DEFAULT_HEIGHT
         setDimensions({ width: newWidth, height: newHeight })
     }, [width, height, enlarged])
 
@@ -72,7 +72,6 @@ export const MiniMap = () => {
     if (!map) return null
 
     const isTargeting = winner && !timeReachZero && !submitted && votingState?.phase == "LOCATION_SELECT"
-    const PADDING = 10
     const onResize = (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
         const { size } = data || { size: { width: dimensions.width, height: dimensions.height } }
         setDimensions({ width: size.width, height: size.width / 1.0625 })
