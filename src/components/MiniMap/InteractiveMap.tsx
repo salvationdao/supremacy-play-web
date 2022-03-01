@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { styled } from "@mui/system"
-import { Dispatch, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
 import { MapWarMachine, SelectionIcon } from ".."
 import { useGame, useWebsocket } from "../../containers"
 import { GameAbility, Map, WarMachineState } from "../../types"
@@ -41,15 +41,21 @@ const GridCell = styled("td", {
 
 interface MapWarMachineProps {
     warMachines: WarMachineState[]
+    spawnedAI: WarMachineState[]
     map: Map
     enlarged: boolean
 }
 
-const MapWarMachines = ({ warMachines, map, enlarged }: MapWarMachineProps) => {
+const MapWarMachines = ({ warMachines, spawnedAI, map, enlarged }: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
         <>
+            {spawnedAI.map((wm) => (
+                <div key={`${wm.participantID} - spawnedAI`}>
+                    <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} isSpawnedAI />
+                </div>
+            ))}
             {warMachines.map((wm) => (
                 <div key={`${wm.participantID} - ${wm.hash}`}>
                     <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} />
@@ -73,7 +79,7 @@ export const InteractiveMap = ({
     enlarged: boolean
 }) => {
     const { state, send } = useWebsocket()
-    const { map, warMachines } = useGame()
+    const { map, warMachines, spawnedAI } = useGame()
     const [selection, setSelection] = useState<MapSelection>()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
@@ -355,7 +361,12 @@ export const InteractiveMap = ({
                 <animated.div ref={gestureRef} style={{ x, y, touchAction: "none", scale, transformOrigin: `0% 0%` }}>
                     <Box sx={{ cursor: enlarged ? "move" : "" }}>
                         <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1` }}>
-                            <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
+                            <MapWarMachines
+                                map={map}
+                                warMachines={warMachines || []}
+                                spawnedAI={spawnedAI || []}
+                                enlarged={enlarged}
+                            />
                         </Box>
 
                         {selectionIcon}

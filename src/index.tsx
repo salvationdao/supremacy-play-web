@@ -43,6 +43,7 @@ import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
 import { SvgPlay, TrailerThumbPNG } from "./assets"
+import { BattleCloseAlert } from "./components/BattleCloseAlert/BattleCloseAlert"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -199,6 +200,7 @@ const AppInner = () => {
                             <>
                                 <LoadMessage />
                                 <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
+                                <BattleCloseAlert />
 
                                 {user && haveSups && (
                                     <Box>
