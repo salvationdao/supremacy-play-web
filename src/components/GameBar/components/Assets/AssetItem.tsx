@@ -108,8 +108,8 @@ export const AssetItem = ({
     }, [state, subscribe])
 
     const isRepairing = !!durability?.repairType
-    const isInBattle = queuePosition && queuePosition.position && queuePosition.position < 0
-    const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 0
+    const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
+    const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
     const contractReward2 =
         queuePosition && queuePosition.contractReward ? queuePosition.contractReward : contractReward
 
@@ -284,7 +284,7 @@ export const AssetItem = ({
                 }}
             >
                 {isInQueue && queuePosition && queuePosition.position && (
-                    <Box sx={{ position: "absolute" }}>{queuePosition.position + 1}</Box>
+                    <Box sx={{ position: "absolute" }}>{queuePosition.position}</Box>
                 )}
             </Box>
 
