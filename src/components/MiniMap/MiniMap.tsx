@@ -32,7 +32,7 @@ export const MiniMap = () => {
 
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
         const newWidth = enlarged ? width - 25 : MINI_MAP_DEFAULT_WIDTH
-        const newHeight = enlarged ? height - 125 : MINI_MAP_DEFAULT_HEIGHT
+        const newHeight = enlarged ? height - 140 : MINI_MAP_DEFAULT_HEIGHT
         setDimensions({ width: newWidth, height: newHeight })
     }, [width, height, enlarged])
 
