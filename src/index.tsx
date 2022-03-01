@@ -1,9 +1,9 @@
-import { Box, Stack, ThemeProvider, Typography } from "@mui/material"
+import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GAMEBAR_CONSTANTS, WalletProvider } from "./components/GameBar"
 import GameBar from "./components/GameBar"
 import * as Sentry from "@sentry/react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import {
     MiniMap,
@@ -18,6 +18,8 @@ import {
     WarMachineStats,
     Notifications,
     Maintenance,
+    BattleCloseAlert,
+    Trailer,
 } from "./components"
 import {
     PASSPORT_SERVER_HOST,
@@ -25,7 +27,6 @@ import {
     SENTRY_CONFIG,
     SUPREMACY_PAGE,
     TOKEN_SALE_PAGE,
-    TRAILER_VIDEO,
     UNDER_MAINTENANCE,
 } from "./constants"
 import {
@@ -42,8 +43,6 @@ import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
-import { SvgPlay, TrailerThumbPNG } from "./assets"
-import { BattleCloseAlert } from "./components/BattleCloseAlert/BattleCloseAlert"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -66,93 +65,6 @@ const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
-
-    // Trailer stuff
-    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
-    const videoRef = useRef<HTMLVideoElement>(null)
-    const [isPlaying, toggleIsPlaying] = useToggle()
-
-    // Temporarily disabled
-    if (!watchedTrailer && watchedTrailer) {
-        return (
-            <Stack
-                onClick={() => {
-                    videoRef.current && videoRef.current.play()
-                }}
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                    position: "relative",
-                    width: "100vw",
-                    height: "100vh",
-                    cursor: isPlaying ? "auto" : "pointer",
-                    backgroundColor: "#000000",
-                    "video::-internal-media-controls-overlay-cast-button": {
-                        display: "none",
-                    },
-                }}
-            >
-                {!isPlaying && (
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            backgroundImage: `url(${TrailerThumbPNG})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "contain",
-                        }}
-                    >
-                        <Stack
-                            direction="row"
-                            justifyContent="center"
-                            spacing={1.2}
-                            sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                px: 2.6,
-                                py: 1,
-                                borderRadius: 1,
-                                backgroundColor: colors.darkerNeonBlue,
-                                boxShadow: 10,
-                            }}
-                        >
-                            <SvgPlay size="19px" />
-                            <Typography variant="h6" sx={{ lineHeight: 2, fontWeight: "fontWeightBold" }}>
-                                WATCH TRAILER TO ENTER
-                            </Typography>
-                        </Stack>
-                    </Box>
-                )}
-
-                <video
-                    ref={videoRef}
-                    disablePictureInPicture
-                    disableRemotePlayback
-                    playsInline
-                    controlsList="nodownload"
-                    onPlay={() => toggleIsPlaying(true)}
-                    onEnded={() => {
-                        setWatchedTrailer(true)
-                        if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
-                    }}
-                    style={{
-                        height: "100%",
-                        width: "100%",
-                    }}
-                    controls={false}
-                    autoPlay
-                >
-                    <source src={TRAILER_VIDEO} type="video/mp4" />
-                </video>
-            </Stack>
-        )
-    }
 
     return (
         <>
@@ -198,9 +110,10 @@ const AppInner = () => {
                             <Maintenance />
                         ) : (
                             <>
+                                <Trailer />
                                 <LoadMessage />
-                                <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
                                 <BattleCloseAlert />
+                                <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
                                 {user && haveSups && (
                                     <Box>
@@ -221,7 +134,7 @@ const AppInner = () => {
                 <Controls />
             </Stack>
 
-            {/* Just the under background, glimpse of it is visible when drawers open / close */}
+            {/* Keep this. Just the under background, glimpse of it is visible when drawers open / close */}
             <Box
                 sx={{
                     position: "fixed",
