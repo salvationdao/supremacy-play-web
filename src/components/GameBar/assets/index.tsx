@@ -31,6 +31,7 @@ import Global from "!@svgr/webpack!./svg/Global.svg"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import RedMountainLogo from "./images/RedMountainLogo.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
+import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 
 export { BostonCyberneticsLogo, RedMountainLogo, ZaibatsuLogo }
 
@@ -226,5 +227,11 @@ export const SvgFastRepair: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgScrolldown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Scrolldown />
+    </SvgWrapper>
+)
+
+export const SvgContentCopyIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ContentCopyIcon />
     </SvgWrapper>
 )
