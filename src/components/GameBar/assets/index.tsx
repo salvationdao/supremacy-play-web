@@ -15,6 +15,7 @@ import InfoCircular from "!@svgr/webpack!./svg/InfoCircular.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
 import Profile from "!@svgr/webpack!./svg/Profile.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
+import Copy from "!@svgr/webpack!./svg/Copy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
@@ -33,7 +34,6 @@ import Global from "!@svgr/webpack!./svg/Global.svg"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import RedMountainLogo from "./images/RedMountainLogo.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
-import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 
 export { BostonCyberneticsLogo, RedMountainLogo, ZaibatsuLogo }
 
@@ -246,6 +246,6 @@ export const SvgCooldown: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 
 export const SvgContentCopyIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
-        <ContentCopyIcon />
+        <Copy />
     </SvgWrapper>
 )

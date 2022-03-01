@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Divider, IconButton, Snackbar, Stack, Typography } from "@mui/material"
-import { BarExpandable } from ".."
+import { BarExpandable, TooltipHelper } from ".."
 import { supFormatter } from "../../helpers"
 import { colors } from "../../theme"
 import { useBar, useWallet } from "../../containers"
@@ -300,13 +300,12 @@ const SupsToolTipContent = ({
                 <Box>
                     <Typography
                         sx={{ fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}
-                        mb={1}
-                        variant="body1"
+                        variant="h6"
                     >
-                        TRANSACTIONS:
+                        RECENT TRANSACTIONS:
                     </Typography>
 
-                    <Stack spacing={0.4}>
+                    <Stack spacing={0.5}>
                         {transactions.map((t, i) => (
                             <TransactionItem setCopySuccess={setCopySuccess} userID={userID} key={i} transaction={t} />
                         ))}
@@ -381,30 +380,41 @@ const TransactionItem = ({
     setCopySuccess: (b: boolean) => void
 }) => {
     const isCredit = userID === transaction.credit
-    const isDecimal = parseFloat(transaction.amount) % 1 !== 0
 
     return (
-        <Stack direction="row" display={"flex"} justifyContent="space-between">
-            <Typography
-                sx={{ mt: 0.3, fontFamily: "Share Tech", lineHeight: 1, color: isCredit ? "#01FF70" : "#FF4136" }}
+        <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ px: 0.8, py: 0.15, backgroundColor: "#00000030", borderRadius: 1 }}
+        >
+            <TooltipHelper
+                placement="left"
+                text={transaction.description ? `  ${transaction.description.toUpperCase()}` : ""}
             >
-                {isCredit ? "+" : "-"} {supFormatter(`${transaction.amount}`, isDecimal ? 18 : 0)}{" "}
-                {transaction.description ? `  ${transaction.description}` : ""}
-            </Typography>
+                <Typography
+                    sx={{
+                        fontFamily: "Share Tech",
+                        lineHeight: 1,
+                        color: isCredit ? "#01FF70" : "#FF4136",
+                    }}
+                >
+                    {isCredit ? "+" : "-"}
+                    {supFormatter(`${transaction.amount}`, 18)}{" "}
+                </Typography>
+            </TooltipHelper>
 
             <IconButton
+                size="small"
+                sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
                 onClick={() => {
                     navigator.clipboard.writeText(transaction.transactionReference).then(
-                        () => {
-                            setCopySuccess(true)
-                        },
-                        (err) => {
-                            setCopySuccess(false)
-                        },
+                        () => setCopySuccess(true),
+                        (err) => setCopySuccess(false),
                     )
                 }}
             >
-                <SvgContentCopyIcon sx={{ marginTop: "-5px" }} />
+                <SvgContentCopyIcon size="13px" />
             </IconButton>
         </Stack>
     )
