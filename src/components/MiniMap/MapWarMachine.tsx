@@ -6,23 +6,25 @@ import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
 
-const ICON_SIZE = 40
-const ARROW_LENGTH = ICON_SIZE / 2 + 20
-const DOT_SIZE = 70
-
 export const MapWarMachine = ({
     warMachine,
     map,
     enlarged,
+    isSpawnedAI,
 }: {
     warMachine: WarMachineState
     map: Map
     enlarged: boolean
+    isSpawnedAI?: boolean
 }) => {
     const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
 
     const wmImageUrl = imageUrl || GenericWarMachinePNG
+
+    const ICON_SIZE = isSpawnedAI ? 32 : 40
+    const ARROW_LENGTH = ICON_SIZE / 2 + 20
+    const DOT_SIZE = isSpawnedAI ? 45 : 70
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
@@ -59,6 +61,7 @@ export const MapWarMachine = ({
                 }px, 0)`,
                 transition: "transform 0.2s linear",
                 zIndex: isAlive ? 5 : 4,
+                opacity: isSpawnedAI ? 0.8 : 1,
             }}
         >
             <Box
@@ -104,7 +107,7 @@ export const MapWarMachine = ({
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size={enlarged ? "25px" : "90px"}
+                            size={enlarged ? "25px" : isSpawnedAI ? "65px" : "90px"}
                             sx={{
                                 position: "absolute",
                                 top: "52%",
@@ -154,15 +157,17 @@ export const MapWarMachine = ({
                         }}
                         spacing={0.3}
                     >
-                        <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
-                            <Box
-                                sx={{
-                                    width: `${(shield / maxShield) * 100}%`,
-                                    height: "100%",
-                                    backgroundColor: colors.shield,
-                                }}
-                            />
-                        </Box>
+                        {warMachine.maxShield > 0 && (
+                            <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
+                                <Box
+                                    sx={{
+                                        width: `${(shield / maxShield) * 100}%`,
+                                        height: "100%",
+                                        backgroundColor: colors.shield,
+                                    }}
+                                />
+                            </Box>
+                        )}
                         <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
                             <Box
                                 sx={{

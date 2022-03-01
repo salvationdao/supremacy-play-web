@@ -28,6 +28,7 @@ enum HubKey {
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
     SubUserWarMachineQueueUpdated = "USER:WAR:MACHINE:QUEUE:UPDATED",
+    SubAISpawned = "AI:SPAWNED",
 
     // Net message subscription
     TriggerLiveVoteUpdated = "LIVE:VOTE:UPDATED",
