@@ -111,7 +111,7 @@ export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
                         isEnabled={true}
                         isOpen={isAssetOpen}
                         toggleIsOpen={toggleIsAssetOpen}
-                        text="ASSETS"
+                        text="WAR MACHINES"
                         Svg={<SvgRobot size="12px" sx={{ pt: 0.1 }} />}
                     />
                 )}
