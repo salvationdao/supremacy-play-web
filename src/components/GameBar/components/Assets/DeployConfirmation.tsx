@@ -198,9 +198,9 @@ export const DeployConfirmation = ({
                                     text={
                                         <>
                                             Insurance costs&nbsp;
-                                            <span style={{ textDecoration: "line-through" }}>10%</span>&nbsp; of the
-                                            contract reward but allows your damaged war machine to be repair much faster
-                                            so it can be ready for the next battle much sooner.
+                                            <span style={{ textDecoration: "line-through" }}>10%</span> of the contract
+                                            reward but allows your damaged war machine to be repair much faster so it
+                                            can be ready for the next battle much sooner.
                                         </>
                                     }
                                 >
