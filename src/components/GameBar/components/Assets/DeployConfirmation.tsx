@@ -1,15 +1,14 @@
-import { Box, Button, IconButton, Modal, Stack, Switch, Typography } from "@mui/material"
-import { ClipThing, TooltipHelper } from ".."
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
-import { useQueue } from "../../../../containers/queue"
-import { acronym } from "../../../../helpers"
-import { useToggle } from "../../../../hooks"
-import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../assets"
-import { useAuth, useWebsocket } from "../../containers"
-import { supFormatter } from "../../helpers"
-import HubKey from "../../keys"
-import { colors } from "../../theme"
-import { Asset } from "../../types/assets"
+import { Box, Button, IconButton, Modal, Stack, Switch, Typography } from '@mui/material'
+import { ClipThing, TooltipHelper } from '..'
+import { PASSPORT_SERVER_HOST_IMAGES } from '../../../../constants'
+import { acronym } from '../../../../helpers'
+import { useToggle } from '../../../../hooks'
+import { SvgClose, SvgInfoCircular, SvgSupToken } from '../../assets'
+import { useAuth, useWebsocket } from '../../containers'
+import { supFormatter } from '../../helpers'
+import HubKey from '../../keys'
+import { colors } from '../../theme'
+import { Asset } from '../../types/assets'
 
 const AmountItem = ({
     title,
@@ -170,7 +169,7 @@ export const DeployConfirmation = ({
                                     color={colors.yellow}
                                     value={
                                         queueLength !== undefined
-                                            ? supFormatter(`${(queueLength + 1) * 2}000000000000000000`)
+                                            ? supFormatter(`${(queueLength) * 2}000000000000000000`)
                                             : "N/A"
                                     }
                                     tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
