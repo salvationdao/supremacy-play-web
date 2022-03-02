@@ -63,7 +63,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
         return (
             <Box>
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
-                <StyledNormalText text=" has been cancelled as there were no players available to choose a target location." />
+                <StyledNormalText text=" has been cancelled as there were no players available to choose a target location" />
             </Box>
         )
     }
@@ -84,7 +84,6 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
-                <StyledNormalText text="." />
             </Box>
         )
     }
@@ -105,7 +104,6 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
-                <StyledNormalText text="." />
             </Box>
         )
     }
@@ -120,7 +118,6 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                 />
                 <StyledNormalText text=" has chosen a target location for " />
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
-                <StyledNormalText text="." />
             </Box>
         )
     }

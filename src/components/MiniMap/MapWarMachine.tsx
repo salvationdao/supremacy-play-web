@@ -82,7 +82,7 @@ export const MapWarMachine = ({
                               borderRadius: 1,
                               boxShadow:
                                   highlightedMechHash === warMachine.hash
-                                      ? `0px 0px 20px 10px ${primaryColor}`
+                                      ? `0px 0px 20px 10px ${colors.neonBlue}`
                                       : isAlive
                                       ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70`
                                       : "none",
@@ -98,7 +98,7 @@ export const MapWarMachine = ({
                               borderRadius: "50%",
                               boxShadow:
                                   highlightedMechHash === warMachine.hash
-                                      ? `0px 0px 20px 20px ${primaryColor}`
+                                      ? `0px 0px 20px 20px ${colors.neonBlue}`
                                       : "unset",
                               zIndex: 2,
                           }

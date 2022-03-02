@@ -62,7 +62,7 @@ export const WarMachineItem = ({
     const handleClick = useCallback(
         (mechHash: string) => {
             if (!isExpanded) toggleIsExpanded()
-            else if (mechHash === highlightedMechHash) {
+            if (mechHash === highlightedMechHash) {
                 setHighlightedMechHash(undefined)
             } else setHighlightedMechHash(mechHash)
         },
@@ -116,10 +116,6 @@ export const WarMachineItem = ({
     return (
         <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
             <Stack
-                onMouseEnter={() => toggleIsExpanded(true)}
-                onMouseLeave={() =>
-                    !shouldBeExpanded && highlightedMechHash !== warMachine.hash && toggleIsExpanded(false)
-                }
                 ref={popoverRef}
                 direction="row"
                 alignItems="flex-end"
@@ -138,7 +134,7 @@ export const WarMachineItem = ({
                         : isExpanded
                         ? WIDTH_WM_IMAGE + WIDTH_CENTER
                         : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 6,
-                    transition: "all .3s",
+                    transition: "width .3s",
                 }}
             >
                 {!isAlive && (
