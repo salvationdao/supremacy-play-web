@@ -138,7 +138,7 @@ export const WarMachineItem = ({
                         : isExpanded
                         ? WIDTH_WM_IMAGE + WIDTH_CENTER
                         : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 6,
-                    transition: "all .3s",
+                    transition: "width .3s",
                 }}
             >
                 {!isAlive && (
