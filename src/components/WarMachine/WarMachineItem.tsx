@@ -39,7 +39,7 @@ export const WarMachineItem = ({
     const { participantID, faction, name, imageUrl } = warMachine
     const { state, subscribe } = useWebsocket()
     const { factionID } = useAuth()
-    const { highlightMech, setHighlightMech } = useGame()
+    const { highlightedMechHash, setHighlightedMechHash } = useGame()
     const { isAnyPanelOpen } = useDrawer()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
@@ -62,19 +62,19 @@ export const WarMachineItem = ({
     const handleClick = useCallback(
         (mechHash: string) => {
             if (!isExpanded) toggleIsExpanded()
-            else if (mechHash === highlightMech) {
-                setHighlightMech(undefined)
-            } else setHighlightMech(mechHash)
+            else if (mechHash === highlightedMechHash) {
+                setHighlightedMechHash(undefined)
+            } else setHighlightedMechHash(mechHash)
         },
-        [highlightMech, isExpanded],
+        [highlightedMechHash, isExpanded],
     )
 
     /* Toggle out isExpanded if other mech is highlighted */
     useEffect(() => {
-        if (highlightMech !== warMachine.hash && isExpanded && !shouldBeExpanded) {
+        if (highlightedMechHash !== warMachine.hash && isExpanded && !shouldBeExpanded) {
             toggleIsExpanded()
         }
-    }, [highlightMech])
+    }, [highlightedMechHash])
 
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
@@ -117,7 +117,9 @@ export const WarMachineItem = ({
         <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
             <Stack
                 onMouseEnter={() => toggleIsExpanded(true)}
-                onMouseLeave={() => !shouldBeExpanded && highlightMech !== warMachine.hash && toggleIsExpanded(false)}
+                onMouseLeave={() =>
+                    !shouldBeExpanded && highlightedMechHash !== warMachine.hash && toggleIsExpanded(false)
+                }
                 ref={popoverRef}
                 direction="row"
                 alignItems="flex-end"
@@ -230,7 +232,7 @@ export const WarMachineItem = ({
 
                             backgroundColor: !isExpanded
                                 ? "transparent"
-                                : highlightMech === warMachine.hash
+                                : highlightedMechHash === warMachine.hash
                                 ? primary
                                 : "#00000056",
                             opacity: isAlive ? 1 : DEAD_OPACITY,

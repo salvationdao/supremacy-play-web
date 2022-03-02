@@ -19,7 +19,6 @@ import {
     Notifications,
     Maintenance,
     BattleCloseAlert,
-    Trailer,
 } from "./components"
 import {
     PASSPORT_SERVER_HOST,

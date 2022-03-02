@@ -42,7 +42,7 @@ export const GameContainer = createContainer(() => {
     const [votingState, setVotingState] = useState<VtotingStateResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [queuingWarMachines, setQueuingWarMachines] = useState<WarMachineState[]>([])
-    const [highlightMech, setHighlightMech] = useState<string | undefined>(undefined)
+    const [highlightedMechHash, setHighlightedMechHash] = useState<string | undefined>(undefined)
 
     // Subscribe for game settings
     useEffect(() => {
@@ -176,8 +176,8 @@ export const GameContainer = createContainer(() => {
         warMachines,
         spawnedAI,
         queuingWarMachines,
-        highlightMech,
-        setHighlightMech,
+        highlightedMechHash,
+        setHighlightedMechHash,
     }
 })
 

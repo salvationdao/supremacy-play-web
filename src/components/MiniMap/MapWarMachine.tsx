@@ -19,7 +19,7 @@ export const MapWarMachine = ({
 }) => {
     const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
-    const { highlightMech } = useGame()
+    const { highlightedMechHash } = useGame()
 
     const wmImageUrl = imageUrl || GenericWarMachinePNG
 
@@ -81,7 +81,7 @@ export const MapWarMachine = ({
                               border: `${primaryColor} solid 1px`,
                               borderRadius: 1,
                               boxShadow:
-                                  highlightMech === warMachine.hash
+                                  highlightedMechHash === warMachine.hash
                                       ? `0px 0px 20px 10px ${primaryColor}`
                                       : isAlive
                                       ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70`
@@ -97,7 +97,9 @@ export const MapWarMachine = ({
                               border: `6px solid #000000${isAlive ? "" : "00"}`,
                               borderRadius: "50%",
                               boxShadow:
-                                  highlightMech === warMachine.hash ? `0px 0px 20px 20px ${primaryColor}` : "unset",
+                                  highlightedMechHash === warMachine.hash
+                                      ? `0px 0px 20px 20px ${primaryColor}`
+                                      : "unset",
                               zIndex: 2,
                           }
                 }
