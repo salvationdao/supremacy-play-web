@@ -1,10 +1,11 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useWallet } from "../GameBar"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useAuth, useDimension, useStream } from "../../containers"
 import { colors } from "../../theme/theme"
 import { useToggle } from "../GameBar/hooks"
+import { Trailer } from ".."
 
 const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
     const { user } = useAuth()
@@ -68,9 +69,14 @@ const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSu
 }
 
 export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
+    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
     const { user } = useAuth()
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
+
+    if (!watchedTrailer) {
+        return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
+    }
 
     return (
         <Stack sx={{ width: "100%", height: "100%" }}>

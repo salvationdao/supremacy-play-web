@@ -110,7 +110,6 @@ const AppInner = () => {
                             <Maintenance />
                         ) : (
                             <>
-                                <Trailer />
                                 <LoadMessage />
                                 <BattleCloseAlert />
                                 <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
