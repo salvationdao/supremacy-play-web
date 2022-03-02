@@ -14,6 +14,7 @@ enum HubKey {
     SubVoteStageUpdated = "VOTE:STAGE:UPDATED",
     SubVoteWinnerAnnouncement = "VOTE:WINNER:ANNOUNCEMENT",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
+    SubFactionQueueLength = "FACTION:QUEUE:JOIN",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",

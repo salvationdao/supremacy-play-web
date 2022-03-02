@@ -14,7 +14,6 @@ enum HubKey {
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
     SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
-    SubFactionQueueLength = "FACTION:QUEUE:JOIN",
 
     // Assets
     SubAssetList = "USER:ASSET:LIST",

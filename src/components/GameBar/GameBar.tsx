@@ -1,7 +1,7 @@
 import { Box, CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material"
+import { QueueProvider } from "../../containers/queue"
 import { Assets, Bar, DrawerButtons, LiveChat } from "./components"
 import { AuthProvider, BarProvider, SocketProvider, ThemeProvider, useTheme } from "./containers"
-import { QueueProvider } from "./containers/queue"
 
 const Inner = (props: GameBarBaseProps) => {
     const { currentTheme } = useTheme()
