@@ -68,23 +68,6 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
         setOnWorldSupsRaw(sups)
     }, [sups, setOnWorldSupsRaw])
 
-    // Subscription only sends back new multipliers, not including existing ones,
-    // so this useEffect adds new ones in.
-    useEffect(() => {
-        const mults: { [key: string]: SupsMultiplier } = {}
-
-        if (!multipliers || multipliers.length === 0) {
-            setSupsMultipliers(mults)
-            return
-        }
-
-        multipliers.forEach((m) => {
-            mults[m.key] = m
-        })
-
-        setSupsMultipliers(mults)
-        toggleReRender()
-    }, [multipliers])
 
     useEffect(() => {
         if (Object.keys(supsMultipliers).length <= 0) return
