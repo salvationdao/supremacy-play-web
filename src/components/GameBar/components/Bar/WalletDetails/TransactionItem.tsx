@@ -1,0 +1,90 @@
+import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { TooltipHelper } from "../.."
+import { supFormatter } from "../../../helpers"
+import { useToggle } from "../../../hooks"
+import { useEffect } from "react"
+import Tooltip from "@mui/material/Tooltip"
+import { SvgContentCopyIcon } from "../../../assets"
+import { Transaction } from "../../../types"
+
+export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
+    const isCredit = userID === transaction.credit
+    const [copySuccess, toggleCopySuccess] = useToggle()
+
+    useEffect(() => {
+        if (copySuccess) {
+            setTimeout(() => {
+                toggleCopySuccess(false)
+            }, 900)
+        }
+    }, [copySuccess])
+
+    return (
+        <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ px: 0.8, py: 0.15, backgroundColor: "#00000030", borderRadius: 1 }}
+        >
+            <TooltipHelper
+                placement="left"
+                text={transaction.description ? `  ${transaction.description.toUpperCase()}` : ""}
+            >
+                <Typography
+                    sx={{
+                        fontFamily: "Share Tech",
+                        lineHeight: 1,
+                        color: isCredit ? "#01FF70" : "#FF4136",
+                    }}
+                >
+                    {isCredit ? "+" : "-"}
+                    {supFormatter(`${transaction.amount}`, 18)}{" "}
+                </Typography>
+            </TooltipHelper>
+
+            <Tooltip
+                arrow
+                placement="right"
+                open={copySuccess}
+                sx={{
+                    zIndex: "9999999 !important",
+                    ".MuiTooltip-popper": {
+                        zIndex: "9999999 !important",
+                    },
+                }}
+                title={
+                    <Box sx={{ px: 0.5, py: 0.2 }}>
+                        <Typography
+                            variant="body1"
+                            sx={{ color: "#FFFFFF", fontFamily: "Share Tech", textAlign: "center" }}
+                        >
+                            Copied!
+                        </Typography>
+                    </Box>
+                }
+                componentsProps={{
+                    popper: {
+                        style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999, opacity: 0.92 },
+                    },
+                    arrow: { sx: { color: "#333333" } },
+                    tooltip: { sx: { maxWidth: 250, background: "#333333" } },
+                }}
+            >
+                <Box>
+                    <IconButton
+                        size="small"
+                        sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
+                        onClick={() => {
+                            navigator.clipboard.writeText(transaction.transactionReference).then(
+                                () => toggleCopySuccess(true),
+                                (err) => toggleCopySuccess(false),
+                            )
+                        }}
+                    >
+                        <SvgContentCopyIcon size="13px" />
+                    </IconButton>
+                </Box>
+            </Tooltip>
+        </Stack>
+    )
+}
