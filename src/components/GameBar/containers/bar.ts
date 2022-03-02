@@ -17,7 +17,7 @@ export const BarContainer = createContainer((initialState?: BarPosition) => {
     const { isAnyPanelOpen } = useDrawer()
 
     const [barPosition, setBarPosition] = useState<BarPosition>(initialState || "top")
-    const [below1380, toggleBelow1380] = useToggle()
+    const [below1500, toggleBelow1500] = useToggle()
     const [below925, toggleBelow925] = useToggle()
     const [below812, toggleBelow812] = useToggle()
     const [activeBars, setActiveBars] = useState<ActiveBars>({
@@ -47,7 +47,7 @@ export const BarContainer = createContainer((initialState?: BarPosition) => {
                     profile: false,
                     [barName]: newStatus,
                 })
-            } else if (below1380 && count > 2) {
+            } else if (below1500 && count > 2) {
                 setActiveBars({
                     enlist: barName !== "wallet",
                     wallet: barName === "wallet",
@@ -67,11 +67,11 @@ export const BarContainer = createContainer((initialState?: BarPosition) => {
         setTimeout(() => {
             const el = gameBarRef.current
             if (!el) return
-            toggleBelow1380(el.offsetWidth < 1380)
+            toggleBelow1500(el.offsetWidth < 1500)
             toggleBelow925(el.offsetWidth < 925)
             toggleBelow812(el.offsetWidth < 812)
         }, DRAWER_TRANSITION_DURATION + 50)
-    }, [windowDimensions, isAnyPanelOpen, toggleBelow1380, toggleBelow925, toggleBelow812])
+    }, [windowDimensions, isAnyPanelOpen, toggleBelow1500, toggleBelow925, toggleBelow812])
 
     useEffect(() => {
         if (below812) {
@@ -86,7 +86,7 @@ export const BarContainer = createContainer((initialState?: BarPosition) => {
                 wallet: true,
                 profile: false,
             })
-        } else if (below1380) {
+        } else if (below1500) {
             setActiveBars({
                 enlist: false,
                 wallet: true,
@@ -95,7 +95,7 @@ export const BarContainer = createContainer((initialState?: BarPosition) => {
         } else {
             activeAll()
         }
-    }, [below1380, below925, below812])
+    }, [below1500, below925, below812])
 
     return {
         gameBarRef,
