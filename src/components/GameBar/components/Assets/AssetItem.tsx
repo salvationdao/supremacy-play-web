@@ -10,6 +10,7 @@ import { useInterval } from "../../hooks/useInterval"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset, AssetDurability, AssetQueueStat } from "../../types/assets"
+import keys from "../../keys"
 
 const RepairCountdown = ({ endTime }: { endTime: Date }) => {
     const [, setTimeRemain] = useState<number>(0)
@@ -51,22 +52,27 @@ export const AssetItem = ({
     passportWeb,
     asset,
     queueCost,
+    queueLength,
     contractReward,
     renderQueuedOnly,
 }: {
     passportWeb: string
     asset: Asset
-    queueCost?: string
+    queueCost: string
+    queueLength: number
     contractReward?: string
     renderQueuedOnly?: boolean
 }) => {
     const { user } = useAuth()
-    const { state, subscribe } = useWebsocket()
+    const { state, subscribe, send } = useWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
 
     const [assetData, setAssetData] = useState<Asset>(asset)
     const [queuePosition, setQueuePosition] = useState<AssetQueueStat>()
     const [durability, setDurability] = useState<AssetDurability>()
+
+    const [mouseOver, setMouseOver] = useState<boolean>(false)
+    const [removing, setRemoving] = useState<boolean>(false)
 
     // Subscribe on asset data
     useEffect(() => {
@@ -200,30 +206,42 @@ export const AssetItem = ({
             return (
                 <>
                     <Typography
+                        onMouseOver={() => setMouseOver(true)}
+                        onMouseLeave={() => setMouseOver(false)}
+                        onClick={async () => {
+                            if (removing) return
+                            setRemoving(true)
+                            try {
+                                await send(keys.LeaveQueue, asset.hash)
+                            } catch(err) {
+                                setRemoving(false)
+                            }
+                            setRemoving(false)
+                        }}
                         sx={{
                             px: 1,
-                            py: 0.34,
-                            color: colors.yellow,
+                            py: 1,
+                            cursor: "pointer",
+                            width: "90px",
+                            textAlign: "center",
+                            color: mouseOver ? colors.red : colors.yellow,
                             lineHeight: 1,
-                            border: `${colors.yellow} 1px solid`,
+                            border: `${mouseOver ? colors.red : colors.yellow} 1px solid`,
                             borderRadius: 0.3,
                             fontSize: ".75rem",
                             fontFamily: "Share Tech",
                         }}
                     >
-                        IN QUEUE
+                        {removing ? "LOADING" : (mouseOver ? "LEAVE QUEUE" : "IN QUEUE")}
                     </Typography>
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
-                                REWARD:&nbsp;
+                                <Box sx={{ fontSize: "0.9rem" }}>REWARD:&nbsp;</Box>
                             </Typography>
-                            <SvgSupToken size="12px" fill={colors.yellow} />
-                            <Typography
-                                variant="caption"
-                                sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.yellow }}
-                            >
-                                {supFormatter(contractReward2)}
+                            <SvgSupToken size="15px" fill={colors.yellow} />
+                            <Typography variant="caption" sx={{ fontFamily: "Share Tech", color: colors.yellow }}>
+                                <Box sx={{ fontSize: "0.9rem" }}>{supFormatter(contractReward2)}</Box>
                             </Typography>
                         </Stack>
                     )}
@@ -315,6 +333,7 @@ export const AssetItem = ({
                 open={isDeployModal}
                 asset={asset}
                 queueCost={queueCost}
+                queueLength={queueLength}
                 contractReward={contractReward2}
                 onClose={() => toggleIsDeployModal(false)}
             />

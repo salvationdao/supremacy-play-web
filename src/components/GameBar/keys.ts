@@ -23,6 +23,7 @@ enum HubKey {
     SubFactionQueueCost = "ASSET:QUEUE:COST:UPDATE",
     SubFactionContractReward = "FACTION:CONTRACT:REWARD:SUBSCRIBE",
     JoinQueue = "ASSET:QUEUE:JOIN",
+    LeaveQueue = "WAR:WARMACHINE:QUEUE:LEAVE",
 
     // Transactions
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",

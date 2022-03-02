@@ -8,13 +8,15 @@ import { useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset } from "../../types/assets"
+import { useQueue } from '../../../../containers/queue'
 
 const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
     const { state, send, subscribe } = useWebsocket()
     const { factionID } = useAuth()
 
     const [assets, setAssets] = useState<Asset[]>([])
-    const [queueCost, setQueueCost] = useState<string>()
+    const { queueLength, queueCost } = useQueue()
+
     const [contractReward, setContractReward] = useState<string>()
 
     // Subscribe to the list of mechs that the user owns
@@ -23,15 +25,6 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
         return subscribe<Asset[]>(HubKey.SubAssetList, (payload) => {
             if (!payload) return
             setAssets(payload)
-        })
-    }, [state, subscribe, factionID])
-
-    // Subscribe to the cost to queue a mech
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NilUUID) return
-        return subscribe<string>(HubKey.SubFactionQueueCost, (payload) => {
-            if (!payload) return
-            setQueueCost(payload)
         })
     }, [state, subscribe, factionID])
 
@@ -97,6 +90,7 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
                                         passportWeb={passportWeb}
                                         asset={a}
                                         queueCost={queueCost}
+                                        queueLength={queueLength}
                                         contractReward={contractReward}
                                         renderQueuedOnly
                                     />
@@ -107,6 +101,7 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
                                         passportWeb={passportWeb}
                                         asset={a}
                                         queueCost={queueCost}
+                                        queueLength={queueLength}
                                         contractReward={contractReward}
                                     />
                                 ))}
