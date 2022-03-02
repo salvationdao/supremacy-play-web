@@ -185,6 +185,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                                     py: 1,
                                     cursor: "pointer",
                                     borderRadius: 1,
+                                    backgroundColor: isTooltipOpen ? "#FFFFFF12" : "unset",
                                     ":hover": {
                                         backgroundColor: "#FFFFFF12",
                                     },
