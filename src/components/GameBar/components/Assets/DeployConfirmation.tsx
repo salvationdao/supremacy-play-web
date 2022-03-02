@@ -5,12 +5,11 @@ import { acronym } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
+import { useQueue } from "../../containers/queue"
 import { supFormatter } from "../../helpers"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset } from "../../types/assets"
-import { useSecureSubscription } from "../../hooks";
-import {useQueue} from "../../../../containers/queue";
 
 const AmountItem = ({
     title,
@@ -52,12 +51,9 @@ export const DeployConfirmation = ({
 }) => {
     const { state, send } = useWebsocket()
     const { user } = useAuth()
+    const { queueLength } = useQueue()
     const { hash, name, image } = asset
     const [needInsured, toggleNeedInsured] = useToggle(false)
-
-    const {queueLength} = useQueue()
-
-    // const { payload: queueLength } = useSecureSubscription<number>(HubKey.HubKeyFactionQueueJoin)
 
     const onDeploy = async () => {
         if (state !== WebSocket.OPEN) return
@@ -69,8 +65,6 @@ export const DeployConfirmation = ({
             return
         }
     }
-
-    console.log(queueLength, "queuelength")
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -172,7 +166,9 @@ export const DeployConfirmation = ({
                                 <AmountItem
                                     title={"CONTRACT REWARD: "}
                                     color={colors.yellow}
-                                    value={supFormatter(`${(queueLength+1)*2}000000000000000000`)}
+                                    value={
+                                        queueLength ? supFormatter(`${(queueLength + 1) * 2}000000000000000000`) : "N/A"
+                                    }
                                     tooltip="Your reward if your syndicate wins the battle."
                                 />
 
