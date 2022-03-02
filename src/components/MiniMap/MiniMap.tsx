@@ -63,7 +63,7 @@ export const MiniMap = () => {
     const { xy } = useSpring({
         // Rounding is needed for the transform - otherwise it makes the element blurry
         xy: enlarged
-            ? [Math.round(-(width - dimensions.width - 25) / 2), Math.round(-(height - dimensions.height) / 1.2)]
+            ? [Math.round(-(width - dimensions.width - 25) / 2), Math.round(-(height - dimensions.height - 5) / 1.2)]
             : [0, 0],
         from: { xy: [0, 0] },
         config: { duration: 200 },
