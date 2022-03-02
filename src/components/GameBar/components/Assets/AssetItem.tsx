@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { DeployConfirmation } from ".."
 import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
+import { useWebsocket as useGSWebsocket } from "../../../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { useInterval } from "../../hooks/useInterval"
@@ -64,7 +65,8 @@ export const AssetItem = ({
     renderQueuedOnly?: boolean
 }) => {
     const { user } = useAuth()
-    const { state, subscribe, send } = useWebsocket()
+    const { state, subscribe } = useWebsocket()
+    const { send: sendGS } = useGSWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
 
     const [assetData, setAssetData] = useState<Asset>(asset)
@@ -212,8 +214,8 @@ export const AssetItem = ({
                             if (removing) return
                             setRemoving(true)
                             try {
-                                await send(keys.LeaveQueue, asset.hash)
-                            } catch(err) {
+                                await sendGS(keys.LeaveQueue, { hash: asset.hash })
+                            } catch (err) {
                                 setRemoving(false)
                             }
                             setRemoving(false)
@@ -232,7 +234,7 @@ export const AssetItem = ({
                             fontFamily: "Share Tech",
                         }}
                     >
-                        {removing ? "LOADING" : (mouseOver ? "LEAVE QUEUE" : "IN QUEUE")}
+                        {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
                     </Typography>
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
