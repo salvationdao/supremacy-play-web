@@ -1,7 +1,7 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { ChatMessage } from "../.."
-import { useWebsocket } from "../../../../../containers"
+import { useWebsocket, WebSocketProperties } from "../../../../../containers"
 import HubKey from "../../../../../keys"
 import { SvgScrolldown } from "../../../assets"
 import { useAuth } from "../../../containers"
@@ -16,25 +16,35 @@ interface GlobalMessage {
     duration: number
 }
 
-export const ChatMessages = ({
-    primaryColor,
-    secondaryColor,
-    chatMessages,
-    sentMessages,
-    failedMessages,
-    inGlobalChat,
-}: {
+interface ChatMessagesProps {
     primaryColor: string
     secondaryColor: string
     chatMessages: ChatData[]
     sentMessages: Date[]
     failedMessages: Date[]
     inGlobalChat: boolean
-}) => {
+}
+
+export const ChatMessages = (props: ChatMessagesProps) => {
+    const { state, subscribe } = useWebsocket()
+    return <ChatMessagesInner {...props} state={state} subscribe={subscribe} />
+}
+
+interface ChatMessagesPropsInner extends ChatMessagesProps, Partial<WebSocketProperties> {}
+
+const ChatMessagesInner = ({
+    primaryColor,
+    secondaryColor,
+    chatMessages,
+    sentMessages,
+    failedMessages,
+    inGlobalChat,
+    state,
+    subscribe,
+}: ChatMessagesPropsInner) => {
     const { user } = useAuth()
     const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
-    const { state, subscribe } = useWebsocket()
 
     // Subscribe to global messages
     const [globalMessage, setGlobalMessage] = useState<GlobalMessage>()
