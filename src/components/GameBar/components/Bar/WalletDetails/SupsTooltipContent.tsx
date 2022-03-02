@@ -16,7 +16,7 @@ export const SupsTooltipContent = ({
     onClose,
 }: {
     sups?: string
-    supsMultipliers: Map<string, SupsMultiplier>
+    supsMultipliers: {[key: string]:  SupsMultiplier}
     selfDestroyed: (key: string) => void
     multipliersCleaned: SupsMultiplier[]
     totalMultipliers: number
@@ -24,6 +24,7 @@ export const SupsTooltipContent = ({
     userID: string
     onClose: () => void
 }) => {
+    const size = Object.keys(supsMultipliers).length;
     return (
         <Stack spacing={1.5} sx={{ position: "relative", px: 1.3, py: 1 }}>
             <Box>
@@ -42,7 +43,7 @@ export const SupsTooltipContent = ({
                 </Stack>
             </Box>
 
-            {supsMultipliers.size > 0 && (
+            {size > 0 && (
                 <Box>
                     <Typography
                         sx={{ mb: 0.3, fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}

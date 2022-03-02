@@ -25,9 +25,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
     const { payload: sups } = useSecureSubscription<string>(HubKey.SubscribeWallet)
     const { payload: multipliers } = useSecureSubscription<SupsMultiplier[]>(HubKey.SubscribeSupsMultiplier)
 
-    const [supsMultipliers, setSupsMultipliers] = useState<Map<string, SupsMultiplier>>(
-        new Map<string, SupsMultiplier>(),
-    )
+    const [supsMultipliers, setSupsMultipliers] = useState<{ [key: string]: SupsMultiplier }>({})
     const [multipliersCleaned, setMultipliersCleaned] = useState<SupsMultiplier[]>([])
     const [totalMultipliers, setTotalMultipliers] = useState(0)
     const [reRender, toggleReRender] = useToggle()
@@ -73,27 +71,28 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
     // Subscription only sends back new multipliers, not including existing ones,
     // so this useEffect adds new ones in.
     useEffect(() => {
-        setSupsMultipliers((prev) => {
-            if (!multipliers || multipliers.length === 0) {
-                return new Map<string, SupsMultiplier>()
-            }
+        const mults: { [key: string]: SupsMultiplier } = {}
 
-            multipliers.forEach((m) => {
-                prev.set(m.key, { ...m, value: m.value / 100.0 })
-            })
+        if (!multipliers || multipliers.length === 0) {
+            setSupsMultipliers(mults)
+            return
+        }
 
-            return prev
+        multipliers.forEach((m) => {
+            mults[m.key] = m
         })
+
+        setSupsMultipliers(mults)
         toggleReRender()
     }, [multipliers])
 
     useEffect(() => {
-        if (supsMultipliers.size <= 0) return
+        if (Object.keys(supsMultipliers).length <= 0) return
         let sum = 0
         const list: SupsMultiplier[] = []
-        supsMultipliers.forEach((sm) => {
-            sum += sm.value
-            list.push(sm)
+        Object.keys(supsMultipliers).forEach((sm) => {
+            sum += supsMultipliers[sm].value
+            list.push(supsMultipliers[sm])
         })
         setTotalMultipliers(sum)
         // Sort longest expiring first before returning
@@ -101,7 +100,18 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
     }, [supsMultipliers, reRender])
 
     const selfDestroyed = (key: string) => {
-        supsMultipliers.delete(key)
+        const mults: { [key: string]: SupsMultiplier } = {}
+        if (!multipliers || multipliers.length === 0) {
+            setSupsMultipliers(mults)
+            return
+        }
+
+        multipliers.forEach((m) => {
+            if (m.key === key) return
+            mults[m.key] = m
+        })
+
+        setSupsMultipliers(mults)
     }
 
     if (!sups) {
