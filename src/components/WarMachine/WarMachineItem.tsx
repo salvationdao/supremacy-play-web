@@ -12,7 +12,7 @@ import {
 import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
 import { useDrawer } from "../../components/GameBar"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useAuth, useGame, useWebsocket } from "../../containers"
+import { useAuth, useGame, useWebsocket, WebSocketProperties } from "../../containers"
 import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
@@ -27,20 +27,50 @@ const HEIGHT = 76
 const SKILL_BUTTON_TEXT_ROTATION = 76.5
 const DEAD_OPACITY = 0.6
 
-export const WarMachineItem = ({
-    warMachine,
-    scale,
-    shouldBeExpanded,
-}: {
+interface Props {
     warMachine: WarMachineState
     scale: number
     shouldBeExpanded: boolean
-}) => {
-    const { participantID, faction, name, imageUrl } = warMachine
+}
+
+export const WarMachineItem = (props: Props) => {
     const { state, subscribe } = useWebsocket()
-    const { factionID } = useAuth()
     const { highlightedMechHash, setHighlightedMechHash } = useGame()
     const { isAnyPanelOpen } = useDrawer()
+    const { factionID } = useAuth()
+
+    return (
+        <WarMachineItemInner
+            {...props}
+            factionID={factionID}
+            isAnyPanelOpen={isAnyPanelOpen}
+            highlightedMechHash={highlightedMechHash}
+            setHighlightedMechHash={setHighlightedMechHash}
+            state={state}
+            subscribe={subscribe}
+        />
+    )
+}
+
+interface PropsInner extends Props, Partial<WebSocketProperties> {
+    factionID?: string
+    highlightedMechHash?: string
+    setHighlightedMechHash: (s?: string) => void
+    isAnyPanelOpen: boolean
+}
+
+const WarMachineItemInner = ({
+    warMachine,
+    scale,
+    shouldBeExpanded,
+    factionID,
+    highlightedMechHash,
+    setHighlightedMechHash,
+    isAnyPanelOpen,
+    state,
+    subscribe,
+}: PropsInner) => {
+    const { participantID, faction, name, imageUrl } = warMachine
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -87,7 +117,13 @@ export const WarMachineItem = ({
 
     // Subscribe to war machine ability updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !factionID || factionID === NullUUID || factionID !== warMachineFactionID)
+        if (
+            state !== WebSocket.OPEN ||
+            !factionID ||
+            factionID === NullUUID ||
+            factionID !== warMachineFactionID ||
+            !subscribe
+        )
             return
         return subscribe<GameAbility[] | undefined>(
             HubKey.SubWarMachineAbilitiesUpdated,

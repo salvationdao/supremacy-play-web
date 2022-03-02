@@ -7,7 +7,7 @@ import { useAuth } from "./auth"
 import { useWebsocket } from "./socket"
 import BigNumber from "bignumber.js"
 
-interface VtotingStateResponse {
+export interface VotingStateResponse {
     phase: VotingState
     endTime: Date
 }
@@ -18,12 +18,12 @@ export interface GameSettingsResponse {
     spawnedAI: WarMachineState[]
 }
 
-interface WinnerAnnouncementResponse {
+export interface WinnerAnnouncementResponse {
     gameAbility: GameAbility
     endTime: Date
 }
 
-interface FactionsColorResponse {
+export interface FactionsColorResponse {
     redMountain: string
     boston: string
     zaibatsu: string
@@ -39,7 +39,7 @@ export const GameContainer = createContainer(() => {
     const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
     const [factionVotePrice, setFactionVotePrice] = useState<BigNumber>(new BigNumber("0"))
     const [prevFactionVotePrice, setPrevFactionVotePrice] = useState<BigNumber>(new BigNumber("0"))
-    const [votingState, setVotingState] = useState<VtotingStateResponse | undefined>()
+    const [votingState, setVotingState] = useState<VotingStateResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [highlightedMechHash, setHighlightedMechHash] = useState<string | undefined>(undefined)
 
@@ -118,7 +118,7 @@ export const GameContainer = createContainer(() => {
     // Subscirbe on current voting state
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
-        return subscribe<VtotingStateResponse | undefined>(
+        return subscribe<VotingStateResponse | undefined>(
             HubKey.SubVoteStageUpdated,
             (payload) => {
                 setVotingState(payload)

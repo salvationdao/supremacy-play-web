@@ -55,7 +55,7 @@ export enum SocketState {
 
 export type WSSendFn = <Y = any, X = any>(key: string, payload?: X) => Promise<Y>
 
-interface WebSocketProperties {
+export interface WebSocketProperties {
     send: WSSendFn
     connect: () => Promise<undefined>
     state: SocketState

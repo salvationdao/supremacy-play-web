@@ -3,14 +3,24 @@ import { useEffect, useState } from "react"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
 import moment from "moment"
-import { useGame } from "../../containers"
+import { useGame, VotingStateResponse } from "../../containers"
 import { useInterval } from "../../hooks"
 import { BattleAbility } from "../../types"
 import { SvgBattleAbilityIcon } from "../../assets"
 
-export const BattleAbilityCountdown = ({ battleAbility }: { battleAbility: BattleAbility }) => {
-    const theme = useTheme<Theme>()
+export const BattleAbilityCountdown = (props: { battleAbility: BattleAbility }) => {
     const { votingState } = useGame()
+    return <BattleAbilityCountdownInner {...props} votingState={votingState} />
+}
+
+interface BattleAbilityCountdownInnerProps {
+    votingState?: VotingStateResponse
+    battleAbility: BattleAbility
+}
+
+const BattleAbilityCountdownInner = ({ battleAbility, votingState }: BattleAbilityCountdownInnerProps) => {
+    const theme = useTheme<Theme>()
+
     const [sentence, setSentence] = useState<string>("Loading...")
     const [timeRemain, setTimeRemain] = useState<number>(0)
     const [delay, setDelay] = useState<number | null>(null)

@@ -3,17 +3,37 @@ import { useCallback, useEffect, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgSupToken } from "../../assets"
 import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
-import { httpProtocol, useAuth, useGame, useWebsocket } from "../../containers"
+import {
+    FactionsColorResponse,
+    httpProtocol,
+    useAuth,
+    useGame,
+    useWebsocket,
+    VotingStateResponse,
+    WebSocketProperties,
+} from "../../containers"
 import { useToggle } from "../../hooks"
 import HubKey from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
-import { BattleAbility as BattleAbilityType, NetMessageType } from "../../types"
+import { BattleAbility as BattleAbilityType, NetMessageType, User } from "../../types"
+import BigNumber from "bignumber.js"
 
 const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: boolean }) => {
-    const { state, subscribeNetMessage } = useWebsocket()
     const { factionsColor } = useGame()
+    return <VotingBarInner isVoting={isVoting} isCooldown={isCooldown} factionsColor={factionsColor} />
+}
 
+const VotingBarInner = ({
+    isVoting,
+    isCooldown,
+    factionsColor,
+}: {
+    isVoting: boolean
+    isCooldown: boolean
+    factionsColor?: FactionsColorResponse
+}) => {
+    const { state, subscribeNetMessage } = useWebsocket()
     // Array order is (Red Mountain, Boston, Zaibatsu). [[colorArray], [ratioArray]]
     const [voteRatio, setVoteRatio] = useState<[number, number, number]>([33, 33, 33])
 
@@ -83,8 +103,38 @@ const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: bo
 
 export const BattleAbilityItem = () => {
     const { state, send, subscribe } = useWebsocket()
-    const { user, factionID } = useAuth()
     const { votingState, factionVotePrice } = useGame()
+    const { user, factionID } = useAuth()
+
+    return (
+        <BattleAbilityItemInner
+            state={state}
+            send={send}
+            subscribe={subscribe}
+            votingState={votingState}
+            factionVotePrice={factionVotePrice}
+            user={user}
+            factionID={factionID}
+        />
+    )
+}
+
+interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
+    votingState?: VotingStateResponse
+    factionVotePrice: BigNumber
+    user?: User
+    factionID?: string
+}
+
+const BattleAbilityItemInner = ({
+    state,
+    send,
+    subscribe,
+    votingState,
+    factionVotePrice,
+    user,
+    factionID,
+}: BattleAbilityItemProps) => {
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [fadeEffect, toggleFadeEffect] = useToggle()
 
@@ -111,7 +161,7 @@ export const BattleAbilityItem = () => {
     }, [state, subscribe, factionID])
 
     const onVote = (voteAmount: number) => {
-        send<boolean, { voteAmount: number }>(HubKey.SubmitVoteAbilityRight, { voteAmount })
+        if (send) send<boolean, { voteAmount: number }>(HubKey.SubmitVoteAbilityRight, { voteAmount })
     }
 
     if (!battleAbility) return null

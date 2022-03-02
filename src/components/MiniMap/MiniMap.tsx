@@ -6,22 +6,53 @@ import { animated, useSpring } from "react-spring"
 import { ClipThing, InteractiveMap, TargetTimerCountdown } from ".."
 import { SvgHide, SvgMapEnlarge, SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_HEIGHT, MINI_MAP_DEFAULT_WIDTH } from "../../constants"
-import { useDimension, useGame, useOverlayToggles } from "../../containers"
+import {
+    useDimension,
+    useGame,
+    useOverlayToggles,
+    VotingStateResponse,
+    WinnerAnnouncementResponse,
+} from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
+import { Map } from "../../types"
+
+interface MiniMapProps {
+    map?: Map
+    winner?: WinnerAnnouncementResponse
+    setWinner: (winner?: WinnerAnnouncementResponse) => void
+    votingState?: VotingStateResponse
+    isMapOpen: boolean
+    toggleIsMapOpen: (open?: boolean) => void
+}
 
 export const MiniMap = () => {
+    const { map, winner, setWinner, votingState } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const theme = useTheme<Theme>()
+    return (
+        <MiniMapInner
+            map={map}
+            winner={winner}
+            setWinner={setWinner}
+            votingState={votingState}
+            isMapOpen={isMapOpen}
+            toggleIsMapOpen={toggleIsMapOpen}
+        />
+    )
+}
+
+export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, toggleIsMapOpen }: MiniMapProps) => {
     const {
         streamDimensions: { width, height },
     } = useDimension()
-    const { map, winner, setWinner, votingState } = useGame()
     const [enlarged, toggleEnlarged] = useToggle()
     const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
         width: MINI_MAP_DEFAULT_WIDTH,
         height: MINI_MAP_DEFAULT_HEIGHT,
     })
+
+    const theme = useTheme()
 
     // For targeting map
     const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
@@ -167,7 +198,7 @@ export const MiniMap = () => {
                                                 opacity: 0.8,
                                                 zIndex: 50,
                                             }}
-                                            onClick={toggleIsMapOpen}
+                                            onClick={() => toggleIsMapOpen()}
                                         >
                                             <SvgHide size="13px" />
                                         </IconButton>

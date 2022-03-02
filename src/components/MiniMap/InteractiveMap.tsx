@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { styled } from "@mui/system"
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
 import { MapWarMachine, SelectionIcon } from ".."
-import { useGame, useWebsocket } from "../../containers"
+import { useGame, useWebsocket, WebSocketProperties } from "../../containers"
 import { GameAbility, Map, WarMachineState } from "../../types"
 import { animated, useSpring } from "react-spring"
 import { useGesture } from "@use-gesture/react"
@@ -65,21 +65,53 @@ const MapWarMachines = ({ warMachines, spawnedAI, map, enlarged }: MapWarMachine
     )
 }
 
-export const InteractiveMap = ({
-    gameAbility,
-    windowDimension,
-    targeting,
-    setSubmitted,
-    enlarged,
-}: {
+interface InteractiveMapProps extends Partial<WebSocketProperties> {
     gameAbility?: GameAbility
     windowDimension: { width: number; height: number }
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     enlarged: boolean
-}) => {
+}
+
+interface InteractiveMapInnerProps extends InteractiveMapProps {
+    gameAbility?: GameAbility
+    windowDimension: { width: number; height: number }
+    targeting?: boolean
+    setSubmitted?: Dispatch<SetStateAction<boolean>>
+    enlarged: boolean
+    map?: Map
+    spawnedAI?: WarMachineState[]
+    warMachines?: WarMachineState[]
+}
+
+export const InteractiveMap = (props: InteractiveMapProps) => {
     const { state, send } = useWebsocket()
     const { map, warMachines, spawnedAI } = useGame()
+
+    return (
+        <InteractiveMapInner
+            {...props}
+            send={send}
+            state={state}
+            map={map}
+            warMachines={warMachines}
+            spawnedAI={spawnedAI}
+        />
+    )
+}
+
+const InteractiveMapInner = ({
+    gameAbility,
+    windowDimension,
+    targeting,
+    setSubmitted,
+    enlarged,
+    map,
+    spawnedAI,
+    warMachines,
+    state,
+    send,
+}: InteractiveMapInnerProps) => {
     const [selection, setSelection] = useState<MapSelection>()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
@@ -121,7 +153,7 @@ export const InteractiveMap = ({
 
     const onConfirm = () => {
         try {
-            if (state !== WebSocket.OPEN || !selection) return
+            if (state !== WebSocket.OPEN || !selection || !send) return
             send<boolean, { x: number; y: number }>(HubKey.SubmitAbilityLocationSelect, {
                 x: selection.x,
                 y: selection.y,

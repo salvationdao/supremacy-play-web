@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useState, useEffect } from "react"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
-import { useGame, useWebsocket } from "../../containers"
+import {FactionsColorResponse, useGame, useWebsocket, WebSocketProperties} from "../../containers"
 import HubKey from "../../keys"
 import { colors } from "../../theme/theme"
 import { NetMessageType, ViewerLiveCount } from "../../types"
@@ -18,8 +18,17 @@ const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; to
 }
 
 export const LiveCounts = () => {
-    const { state, subscribe, subscribeNetMessage } = useWebsocket()
     const { factionsColor } = useGame()
+    const { state, subscribe, subscribeNetMessage } = useWebsocket()
+    
+    return <LiveCountsInner factionsColor={factionsColor} state={state} subscribe={subscribe} subscribeNetMessage={subscribeNetMessage} />
+}
+
+interface LiveCountsProps extends Partial<WebSocketProperties> {
+    factionsColor?: FactionsColorResponse
+}
+
+export const LiveCountsInner = ({factionsColor, subscribe, subscribeNetMessage, state}:LiveCountsProps) => {
     const [viewers, setViewers] = useState<ViewerLiveCount>()
 
     // Triggered live viewer count tick

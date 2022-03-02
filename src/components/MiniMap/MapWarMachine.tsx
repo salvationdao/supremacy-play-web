@@ -1,25 +1,43 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../assets"
-import { useGame, useWebsocket } from "../../containers"
+import { useGame, useWebsocket, WebSocketProperties } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
 
-export const MapWarMachine = ({
-    warMachine,
-    map,
-    enlarged,
-    isSpawnedAI,
-}: {
+interface MWMProps extends Partial<WebSocketProperties> {
     warMachine: WarMachineState
     map: Map
     enlarged: boolean
     isSpawnedAI?: boolean
-}) => {
-    const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
+    highlightedMechHash?: string
+}
+
+export const MapWarMachine = (props: MWMProps) => {
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
     const { highlightedMechHash } = useGame()
+
+    return (
+        <MapWarMachineInner
+            {...props}
+            state={state}
+            subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
+            highlightedMechHash={highlightedMechHash}
+        />
+    )
+}
+
+const MapWarMachineInner = ({
+    warMachine,
+    map,
+    enlarged,
+    isSpawnedAI,
+    subscribeWarMachineStatNetMessage,
+    state,
+    highlightedMechHash,
+}: MWMProps) => {
+    const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
 
     const wmImageUrl = imageUrl || GenericWarMachinePNG
 
