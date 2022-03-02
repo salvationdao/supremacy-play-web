@@ -233,7 +233,7 @@ export const WarMachineItem = ({
                             backgroundColor: !isExpanded
                                 ? "transparent"
                                 : highlightedMechHash === warMachine.hash
-                                ? primary
+                                ? `${primary}60`
                                 : "#00000056",
                             opacity: isAlive ? 1 : DEAD_OPACITY,
                             zIndex: 1,
