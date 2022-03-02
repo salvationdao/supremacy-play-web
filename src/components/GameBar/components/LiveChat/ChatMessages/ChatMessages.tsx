@@ -81,24 +81,18 @@ export const ChatMessages = ({
     return (
         <>
             {globalMessage && inGlobalChat && (
-                <Box sx={{ marginBottom: 2 }}>
+                <Box sx={{ mb: 2 }}>
                     <Stack
                         alignItems="center"
                         justifyContent="center"
                         sx={{
-                            px: 3,
-                            py: 3,
-                            borderRadius: 1,
+                            px: 1.6,
+                            py: 1.6,
                             backgroundColor: primaryColor,
                         }}
                     >
-                        <Box
-                            onClick={() => {
-                                setGlobalMessage(undefined)
-                            }}
-                        >
+                        <Box onClick={() => setGlobalMessage(undefined)}>
                             <Typography
-                                variant="h5"
                                 sx={{
                                     color: "#FFFFFF",
                                     textAlign: "center",
@@ -109,12 +103,7 @@ export const ChatMessages = ({
                             </Typography>
                         </Box>
 
-                        <Typography
-                            sx={{
-                                mb: 0.5,
-                                textAlign: "center",
-                            }}
-                        >
+                        <Typography sx={{ fontFamily: "Share Tech", textAlign: "center" }}>
                             {globalMessage.message}
                         </Typography>
                     </Stack>
