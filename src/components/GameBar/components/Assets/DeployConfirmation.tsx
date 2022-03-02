@@ -9,6 +9,8 @@ import { supFormatter } from "../../helpers"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset } from "../../types/assets"
+import { useSecureSubscription } from "../../hooks";
+import {useQueue} from "../../../../containers/queue";
 
 const AmountItem = ({
     title,
@@ -53,6 +55,10 @@ export const DeployConfirmation = ({
     const { hash, name, image } = asset
     const [needInsured, toggleNeedInsured] = useToggle(false)
 
+    const {queueLength} = useQueue()
+
+    // const { payload: queueLength } = useSecureSubscription<number>(HubKey.HubKeyFactionQueueJoin)
+
     const onDeploy = async () => {
         if (state !== WebSocket.OPEN) return
         try {
@@ -63,6 +69,8 @@ export const DeployConfirmation = ({
             return
         }
     }
+
+    console.log(queueLength, "queuelength")
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -164,14 +172,14 @@ export const DeployConfirmation = ({
                                 <AmountItem
                                     title={"CONTRACT REWARD: "}
                                     color={colors.yellow}
-                                    value={contractReward ? supFormatter(contractReward, 8) : "N/A"}
+                                    value={supFormatter(`${(queueLength+1)*2}000000000000000000`)}
                                     tooltip="Your reward if your syndicate wins the battle."
                                 />
 
                                 <AmountItem
                                     title={"FEE: "}
                                     color={"#FF2B2B"}
-                                    value={queueCost ? `${supFormatter(queueCost, 8)}` : "N/A"}
+                                    value={queueCost ? `${supFormatter(queueCost)}` : "N/A"}
                                     tooltip="The cost to place your war machine into the battle queue."
                                 />
                             </Stack>

@@ -6,7 +6,7 @@ enum HubKey {
     GetSessionID = "GAMEBAR:SESSION:ID:GET",
     AuthRingCheck = "GAMEBAR:AUTH:RING:CHECK",
     SubscribeGamebarUser = "GAMEBAR:USER:SUBSCRIBE",
-
+    HubKeyFactionQueueJoin = "FACTION:QUEUE:JOIN",
     // Game container
     GetFactionsColor = "FACTION:COLOUR",
     GetFactionVotePrice = "FACTION:VOTE:PRICE",
