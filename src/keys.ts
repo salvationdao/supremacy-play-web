@@ -39,11 +39,11 @@ enum HubKey {
     TriggerFactionAbilityPriceUpdated = "FACTION:ABILITY:PRICE:UPDATED",
     TriggerFactionVotePriceUpdated = "FACTION:VOTE:PRICE:UPDATED",
 
-    // transactions
+    // Transactions
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
     SubscribeUserLatestTransactions = "USER:SUPS:LATEST_TRANSACTION:SUBSCRIBE",
 
-    // global messages
+    // Global messages
     SubscribeGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
 
     // Streams

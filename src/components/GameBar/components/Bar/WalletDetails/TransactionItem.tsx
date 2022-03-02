@@ -46,6 +46,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 variant="caption"
                 sx={{
                     ml: "auto",
+                    mr: 0.3,
                     fontFamily: "Share Tech",
                     lineHeight: 1,
                     color: "grey !important",
