@@ -1,7 +1,7 @@
 import { Box, CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material"
+import { QueueProvider } from "../../containers/queue"
 import { Assets, Bar, DrawerButtons, LiveChat } from "./components"
 import { AuthProvider, BarProvider, SocketProvider, ThemeProvider, useTheme } from "./containers"
-import {QueueProvider} from "../../containers/queue";
 
 const Inner = (props: GameBarBaseProps) => {
     const { currentTheme } = useTheme()
@@ -39,9 +39,9 @@ export const GameBar: React.FC<GameBarBaseProps> = (props) => {
             <ThemeProvider>
                 <AuthProvider initialState={{ gameserverSessionID: props.gameserverSessionID }}>
                     <QueueProvider>
-                    <BarProvider initialState={props.barPosition}>
-                        <Inner {...props} />
-                    </BarProvider>
+                        <BarProvider initialState={props.barPosition}>
+                            <Inner {...props} />
+                        </BarProvider>
                     </QueueProvider>
                 </AuthProvider>
             </ThemeProvider>

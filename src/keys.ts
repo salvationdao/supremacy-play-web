@@ -6,7 +6,7 @@ enum HubKey {
     GetSessionID = "GAMEBAR:SESSION:ID:GET",
     AuthRingCheck = "GAMEBAR:AUTH:RING:CHECK",
     SubscribeGamebarUser = "GAMEBAR:USER:SUBSCRIBE",
-    HubKeyFactionQueueJoin = "FACTION:QUEUE:JOIN",
+
     // Game container
     GetFactionsColor = "FACTION:COLOUR",
     GetFactionVotePrice = "FACTION:VOTE:PRICE",
@@ -14,6 +14,7 @@ enum HubKey {
     SubVoteStageUpdated = "VOTE:STAGE:UPDATED",
     SubVoteWinnerAnnouncement = "VOTE:WINNER:ANNOUNCEMENT",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
+    SubFactionQueueLength = "FACTION:QUEUE:JOIN",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
@@ -37,6 +38,13 @@ enum HubKey {
     TriggerAbilityRightRatio = "ABILITY:RIGHT:RATIO:UPDATED",
     TriggerFactionAbilityPriceUpdated = "FACTION:ABILITY:PRICE:UPDATED",
     TriggerFactionVotePriceUpdated = "FACTION:VOTE:PRICE:UPDATED",
+
+    // Transactions
+    SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
+    SubscribeUserLatestTransactions = "USER:SUPS:LATEST_TRANSACTION:SUBSCRIBE",
+
+    // Global messages
+    SubscribeGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
 
     // Streams
     SubscribeStreamClose = "STREAM:CLOSE:SUBSCRIBE",

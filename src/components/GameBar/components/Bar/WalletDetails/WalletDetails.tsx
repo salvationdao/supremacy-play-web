@@ -21,6 +21,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
     const { setOnWorldSupsRaw } = useWallet()
     const { userID } = useAuth()
     const { barPosition } = useBar()
+    const [isTooltipOpen, toggleIsTooltipOpen] = useToggle()
     const { payload: sups } = useSecureSubscription<string>(HubKey.SubscribeWallet)
     const { payload: multipliers } = useSecureSubscription<SupsMultiplier[]>(HubKey.SubscribeSupsMultiplier)
 
@@ -155,6 +156,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                     >
                         <Tooltip
                             arrow
+                            open={isTooltipOpen}
                             placement={barPosition === "top" ? "bottom-start" : "top-start"}
                             title={
                                 <SupsTooltipContent
@@ -165,6 +167,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                                     totalMultipliers={totalMultipliers}
                                     userID={userID || ""}
                                     transactions={transactions}
+                                    onClose={() => toggleIsTooltipOpen(false)}
                                 />
                             }
                             componentsProps={{
@@ -173,7 +176,24 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                                 tooltip: { sx: { width: 320, maxWidth: 320, background: colors.darkNavy } },
                             }}
                         >
-                            <Stack direction="row" alignItems="center">
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                onClick={toggleIsTooltipOpen}
+                                sx={{
+                                    px: 1.2,
+                                    py: 1,
+                                    cursor: "pointer",
+                                    borderRadius: 1,
+                                    backgroundColor: isTooltipOpen ? "#FFFFFF12" : "unset",
+                                    ":hover": {
+                                        backgroundColor: "#FFFFFF12",
+                                    },
+                                    ":active": {
+                                        opacity: 0.8,
+                                    },
+                                }}
+                            >
                                 <SvgWallet size="23px" sx={{ mr: 1.3 }} />
                                 <SvgSupToken size="19px" fill={colors.yellow} sx={{ mr: 0.6 }} />
                                 <Typography sx={{ lineHeight: 1 }}>

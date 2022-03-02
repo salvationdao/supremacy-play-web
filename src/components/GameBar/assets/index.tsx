@@ -35,6 +35,35 @@ import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import RedMountainLogo from "./images/RedMountainLogo.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 
+// Multiplier images
+import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
+import MultiplierAFoolAndHisMoney from "./images/Multipliers/A fool and his money.png"
+import MultiplierAirSupport from "./images/Multipliers/Air Support.png"
+import MultiplierCitizen from "./images/Multipliers/Citizen.png"
+import MultiplierContributor from "./images/Multipliers/Contributor.png"
+import MultiplierDestroyerOfWorlds from "./images/Multipliers/Destroyer of worlds.png"
+import MultiplierFieldMechanic from "./images/Multipliers/Field Mechanic.png"
+import MultiplierGreaseMonkey from "./images/Multipliers/Grease Monkey.png"
+import MultiplierMechCommander from "./images/Multipliers/Mech Commander.png"
+import MultiplierNowIAmBecomeDeath from "./images/Multipliers/Now i am become death.png"
+import MultiplierSuperContributor from "./images/Multipliers/Super Contributor.png"
+import MultiplierSupporter from "./images/Multipliers/Supporter.png"
+export {
+    MultiplierAdmiral,
+    MultiplierAFoolAndHisMoney,
+    MultiplierAirSupport,
+    MultiplierCitizen,
+    MultiplierContributor,
+    MultiplierDestroyerOfWorlds,
+    MultiplierFieldMechanic,
+    MultiplierGreaseMonkey,
+    MultiplierMechCommander,
+    MultiplierNowIAmBecomeDeath,
+    MultiplierSuperContributor,
+    MultiplierSupporter,
+}
+// End multiplier images
+
 export { BostonCyberneticsLogo, RedMountainLogo, ZaibatsuLogo }
 
 export interface SvgWrapperProps extends BoxProps {

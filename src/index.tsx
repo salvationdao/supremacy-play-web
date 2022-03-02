@@ -1,4 +1,4 @@
-import { Box, Stack, ThemeProvider } from "@mui/material"
+import { Box, Stack, ThemeProvider, Typography } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GAMEBAR_CONSTANTS, WalletProvider } from "./components/GameBar"
 import GameBar from "./components/GameBar"

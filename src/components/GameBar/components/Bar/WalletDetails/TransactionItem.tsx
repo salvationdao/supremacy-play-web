@@ -6,6 +6,7 @@ import { useEffect } from "react"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgContentCopyIcon } from "../../../assets"
 import { Transaction } from "../../../types"
+import moment from "moment"
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const isCredit = userID === transaction.credit
@@ -23,7 +24,6 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
         <Stack
             direction="row"
             alignItems="center"
-            justifyContent="space-between"
             sx={{ px: 0.8, py: 0.15, backgroundColor: "#00000030", borderRadius: 1 }}
         >
             <TooltipHelper
@@ -41,6 +41,19 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                     {supFormatter(`${transaction.amount}`, 18)}{" "}
                 </Typography>
             </TooltipHelper>
+
+            <Typography
+                variant="caption"
+                sx={{
+                    ml: "auto",
+                    mr: 0.3,
+                    fontFamily: "Share Tech",
+                    lineHeight: 1,
+                    color: "grey !important",
+                }}
+            >
+                {moment(transaction.createdAt).format("h:mm:ss A")}
+            </Typography>
 
             <Tooltip
                 arrow

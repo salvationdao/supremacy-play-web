@@ -148,7 +148,7 @@ const InteractiveMapInner = ({
     }, delay)
 
     useEffect(() => {
-        if (selection && gameAbility && timeRemain == -1) onConfirm()
+        if (selection && gameAbility && timeRemain === -1) onConfirm()
     }, [timeRemain])
 
     const onConfirm = () => {
@@ -437,6 +437,7 @@ const InteractiveMapInner = ({
                             color: "#D90000",
                             opacity: 0.9,
                             filter: "drop-shadow(0 3px 3px #00000050)",
+                            fontSize: "8rem",
                         }}
                     >
                         {timeRemain}
