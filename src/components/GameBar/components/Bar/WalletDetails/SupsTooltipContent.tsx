@@ -26,7 +26,10 @@ export const SupsTooltipContent = ({
     return (
         <Stack spacing={1.5} sx={{ px: 1.3, py: 1 }}>
             <Box>
-                <Typography sx={{ fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }} variant="h6">
+                <Typography
+                    sx={{ mb: 0.3, fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}
+                    variant="h6"
+                >
                     TOTAL SUPS:
                 </Typography>
 
@@ -41,7 +44,7 @@ export const SupsTooltipContent = ({
             {supsMultipliers.size > 0 && (
                 <Box>
                     <Typography
-                        sx={{ fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}
+                        sx={{ mb: 0.3, fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}
                         variant="h6"
                     >
                         MULTIPLIERS: {`${totalMultipliers.toFixed(2)}x`}
@@ -58,7 +61,7 @@ export const SupsTooltipContent = ({
             {transactions.length > 0 && (
                 <Box>
                     <Typography
-                        sx={{ fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}
+                        sx={{ mb: 0.3, fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}
                         variant="h6"
                     >
                         RECENT TRANSACTIONS:
