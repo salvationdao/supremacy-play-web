@@ -1,16 +1,24 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useRef, useState } from "react"
+import { Box, Button, Stack, Typography } from "@mui/material"
+import { Dispatch, SetStateAction, useRef } from "react"
 import { SvgPlay, TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
 import { colors } from "../../theme/theme"
 import { useToggle } from "../GameBar/hooks"
 
-export const Trailer = () => {
-    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
+export const Trailer = ({
+    watchedTrailer,
+    setWatchedTrailer,
+}: {
+    watchedTrailer: boolean
+    setWatchedTrailer: Dispatch<SetStateAction<boolean>>
+}) => {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [isPlaying, toggleIsPlaying] = useToggle()
 
-    if (watchedTrailer) return null
+    const onEnded = () => {
+        setWatchedTrailer(true)
+        if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
+    }
 
     return (
         <Stack
@@ -31,7 +39,7 @@ export const Trailer = () => {
                 zIndex: 99999999,
             }}
         >
-            {!isPlaying && (
+            {!isPlaying ? (
                 <Box
                     sx={{
                         position: "absolute",
@@ -67,6 +75,27 @@ export const Trailer = () => {
                         </Typography>
                     </Stack>
                 </Box>
+            ) : (
+                <Button
+                    variant="contained"
+                    sx={{
+                        position: "absolute",
+                        top: 30,
+                        right: 30,
+                        zIndex: 99,
+                        backgroundColor: colors.darkNavy,
+                        borderRadius: 0.7,
+                        ":hover": { opacity: 0.8, backgroundColor: colors.darkNavy },
+                        ":disabled": {
+                            color: "#FFFFFF80",
+                            backgroundColor: colors.darkNavy,
+                            opacity: 0.6,
+                        },
+                    }}
+                    onClick={onEnded}
+                >
+                    SKIP
+                </Button>
             )}
 
             <video
@@ -76,10 +105,7 @@ export const Trailer = () => {
                 playsInline
                 controlsList="nodownload"
                 onPlay={() => toggleIsPlaying(true)}
-                onEnded={() => {
-                    setWatchedTrailer(true)
-                    if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
-                }}
+                onEnded={onEnded}
                 style={{
                     height: "100%",
                     width: "100%",
