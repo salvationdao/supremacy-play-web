@@ -164,6 +164,7 @@ export const DeployConfirmation = ({
 
                             <Stack spacing={0.1}>
                                 <AmountItem
+                                    key={`${queueLength}-contract_reward`}
                                     title={"CONTRACT REWARD: "}
                                     color={colors.yellow}
                                     value={
