@@ -1,6 +1,6 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material"
 import moment from "moment"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { DeployConfirmation } from ".."
 import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
@@ -110,8 +110,10 @@ export const AssetItem = ({
     const isRepairing = !!durability?.repairType
     const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
     const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
-    const contractReward2 =
-        queuePosition && queuePosition.contractReward ? queuePosition.contractReward : contractReward
+    const contractReward2 = useMemo(
+        () => (queuePosition && queuePosition.contractReward ? queuePosition.contractReward : contractReward),
+        [queuePosition, contractReward],
+    )
 
     if (
         !assetData ||
