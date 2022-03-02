@@ -90,52 +90,51 @@ export const MultiplierItem = ({
 const getMutiplierImage = (multiplierKey: string) => {
     let image
 
-    switch (multiplierKey) {
-        case "Citizen":
+    switch (multiplierKey.toLowerCase()) {
+        case "citizen":
             image = MultiplierCitizen
             break
-        case "Supporter":
+        case "supporter":
             image = MultiplierSupporter
             break
-        case "Contributor":
+        case "contributor":
             image = MultiplierSuperContributor
             break
-        case "Super Contributor":
+        case "super contributor":
             image = MultiplierContributor
             break
-        case "A fool and his money":
+        case "a fool and his money":
             image = MultiplierAFoolAndHisMoney
             break
-        case "Air Support":
+        case "air support":
             image = MultiplierAirSupport
             break
-        case "Now I am become Death":
+        case "now i am become death":
             image = MultiplierNowIAmBecomeDeath
             break
-        case "Destroyer of worlds":
+        case "destroyer of worlds":
             image = MultiplierDestroyerOfWorlds
             break
-        case "Grease Monkey":
+        case "grease monkey":
             image = MultiplierGreaseMonkey
             break
-        case "Field Mechanic":
+        case "field mechanic":
             image = MultiplierFieldMechanic
             break
-        case "Mech Commander":
+        case "mech commander":
             image = MultiplierMechCommander
             break
-        case "Admiral":
+        case "admiral":
             image = MultiplierAdmiral
             break
 
-        case "Online":
-        case "Offline":
-        case "Applause":
-        case "Picked Location":
-        case "BattleRewardUpdate":
-        case "SupsMultiplierGet":
-        case "CheckMultiplierUpdate":
-        case "SupsTick":
+        case "offline":
+        case "applause":
+        case "picked location":
+        case "battlerewardupdate":
+        case "supsmultiplierget":
+        case "checkmultiplierupdate":
+        case "supstick":
         default:
             image = MultiplierCitizen
             break
