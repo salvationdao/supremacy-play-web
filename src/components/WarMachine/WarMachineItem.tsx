@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react"
 import { Box, Stack, Typography } from "@mui/material"
-import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
+import BigNumber from "bignumber.js"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
     BoxSlanted,
     ClipThing,
@@ -10,12 +10,12 @@ import {
     WarMachineDestroyedInfo,
 } from ".."
 import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
-import { useAuth, useWebsocket } from "../../containers"
-import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import HubKey from "../../keys"
-import { useToggle } from "../../hooks"
-import BigNumber from "bignumber.js"
 import { useDrawer } from "../../components/GameBar"
+import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
+import { useAuth, useGame, useWebsocket } from "../../containers"
+import { useToggle } from "../../hooks"
+import HubKey from "../../keys"
+import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 const WIDTH_WM_IMAGE = 92
 const WIDTH_CENTER = 142
@@ -39,6 +39,7 @@ export const WarMachineItem = ({
     const { participantID, faction, name, imageUrl } = warMachine
     const { state, subscribe } = useWebsocket()
     const { factionID } = useAuth()
+    const { highlightMech, setHighlightMech } = useGame()
     const { isAnyPanelOpen } = useDrawer()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
@@ -57,6 +58,23 @@ export const WarMachineItem = ({
     const isOwnFaction = factionID == warMachine.factionID
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord
+
+    const handleClick = useCallback(
+        (mechHash: string) => {
+            if (!isExpanded) toggleIsExpanded()
+            else if (mechHash === highlightMech) {
+                setHighlightMech(undefined)
+            } else setHighlightMech(mechHash)
+        },
+        [highlightMech, isExpanded],
+    )
+
+    /* Toggle out isExpanded if other mech is highlighted */
+    useEffect(() => {
+        if (highlightMech !== warMachine.hash && isExpanded && !shouldBeExpanded) {
+            toggleIsExpanded()
+        }
+    }, [highlightMech])
 
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
@@ -98,6 +116,8 @@ export const WarMachineItem = ({
     return (
         <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
             <Stack
+                onMouseEnter={() => toggleIsExpanded(true)}
+                onMouseLeave={() => !shouldBeExpanded && highlightMech !== warMachine.hash && toggleIsExpanded(false)}
                 ref={popoverRef}
                 direction="row"
                 alignItems="flex-end"
@@ -165,7 +185,7 @@ export const WarMachineItem = ({
                 >
                     <Box sx={{ background: `linear-gradient(${primary}, #000000)` }}>
                         <Box
-                            onClick={toggleIsExpanded}
+                            onClick={() => handleClick(warMachine.hash)}
                             sx={{
                                 position: "relative",
                                 width: WIDTH_WM_IMAGE,
@@ -208,7 +228,11 @@ export const WarMachineItem = ({
                             alignSelf: "stretch",
                             ml: -2.5,
 
-                            backgroundColor: isExpanded ? "#00000056" : "transparent",
+                            backgroundColor: !isExpanded
+                                ? "transparent"
+                                : highlightMech === warMachine.hash
+                                ? primary
+                                : "#00000056",
                             opacity: isAlive ? 1 : DEAD_OPACITY,
                             zIndex: 1,
                         }}

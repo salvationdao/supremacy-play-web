@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgMapSkull, GenericWarMachinePNG, SvgMapWarMachine } from "../../assets"
-import { useWebsocket } from "../../containers"
+import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../assets"
+import { useGame, useWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
@@ -19,6 +19,7 @@ export const MapWarMachine = ({
 }) => {
     const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
+    const { highlightMech } = useGame()
 
     const wmImageUrl = imageUrl || GenericWarMachinePNG
 
@@ -79,7 +80,12 @@ export const MapWarMachine = ({
                               backgroundSize: "cover",
                               border: `${primaryColor} solid 1px`,
                               borderRadius: 1,
-                              boxShadow: isAlive ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70` : "none",
+                              boxShadow:
+                                  highlightMech === warMachine.hash
+                                      ? `0px 0px 20px 10px ${primaryColor}`
+                                      : isAlive
+                                      ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70`
+                                      : "none",
                               zIndex: 2,
                           }
                         : {
@@ -90,6 +96,8 @@ export const MapWarMachine = ({
                               backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
                               border: `6px solid #000000${isAlive ? "" : "00"}`,
                               borderRadius: "50%",
+                              boxShadow:
+                                  highlightMech === warMachine.hash ? `0px 0px 20px 20px ${primaryColor}` : "unset",
                               zIndex: 2,
                           }
                 }
