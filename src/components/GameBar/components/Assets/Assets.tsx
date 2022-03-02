@@ -8,7 +8,7 @@ import { useAuth, useWebsocket } from "../../containers"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset } from "../../types/assets"
-import { useQueue } from '../../../../containers/queue'
+import { useQueue } from "../../../../containers/queue"
 
 const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
     const { state, send, subscribe } = useWebsocket()
@@ -33,7 +33,6 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
         if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NilUUID) return
         return subscribe<string>(HubKey.SubFactionContractReward, (payload) => {
             if (!payload) return
-            console.log(payload)
             setContractReward(payload)
         })
     }, [state, subscribe, factionID])
