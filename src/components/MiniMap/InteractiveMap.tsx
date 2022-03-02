@@ -116,7 +116,7 @@ export const InteractiveMap = ({
     }, delay)
 
     useEffect(() => {
-        if (selection && gameAbility && timeRemain == -1) onConfirm()
+        if (selection && gameAbility && timeRemain === -1) onConfirm()
     }, [timeRemain])
 
     const onConfirm = () => {
