@@ -234,16 +234,16 @@ export const ProfileCard = ({ passportWeb }: GameBarBaseProps) => {
             >
                 <Stack spacing={0.4} sx={{ p: 1, backgroundColor: colors.darkNavy }}>
                     <NavButton
-                        href={`${passportWeb}/collections/${user.username}`}
+                        href={`${passportWeb}collections/${user.username}`}
                         startIcon={<SvgAssets size="16px" fill={colors.text} />}
                     >
                         My Inventory
                     </NavButton>
-                    <NavButton href={`${passportWeb}/stores`} startIcon={<SvgShop size="16px" fill={colors.text} />}>
+                    <NavButton href={`${passportWeb}stores`} startIcon={<SvgShop size="16px" fill={colors.text} />}>
                         Purchase Assets
                     </NavButton>
                     <NavButton
-                        href={`${passportWeb}/profile/${user.username}/edit`}
+                        href={`${passportWeb}profile/${user.username}/edit`}
                         startIcon={<SvgProfile size="16px" fill={colors.text} />}
                     >
                         Edit Profile
