@@ -80,7 +80,7 @@ export const MultiplierItem = ({
                     sx={{ fontFamily: "Share Tech", textAlign: "center", lineHeight: 1, color: "grey !important" }}
                     variant="caption"
                 >
-                    {supsMultiplier.key !== "Online" ? `${timeRemain}s` : "∞"}
+                    {timeRemain < 86400 ? `${timeRemain}s` : "∞"}
                 </Typography>
             </Stack>
         </Stack>
