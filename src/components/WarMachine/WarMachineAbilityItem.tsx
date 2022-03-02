@@ -82,7 +82,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
     const { factionID } = useAuth()
     const { state, send, subscribeAbilityNetMessage } = useWebsocket()
 
-    const { label, colour, imageUrl, identity, description } = gameAbility
+    const { label, colour, textColour, imageUrl, identity, description } = gameAbility
     // const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
     const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
@@ -223,6 +223,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                             <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                 <VotingButton
                                     color={colour}
+                                    textColor={textColour || "#FFFFFF"}
                                     amount={1}
                                     cost={1}
                                     isVoting={isVoting}
@@ -231,6 +232,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                 />
                                 <VotingButton
                                     color={colour}
+                                    textColor={textColour || "#FFFFFF"}
                                     amount={25}
                                     cost={25}
                                     isVoting={isVoting}
@@ -239,6 +241,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
                                 />
                                 <VotingButton
                                     color={colour}
+                                    textColor={textColour || "#FFFFFF"}
                                     amount={100}
                                     cost={100}
                                     isVoting={isVoting}
