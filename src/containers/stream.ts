@@ -7,7 +7,7 @@ import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useWebsocket } from "."
 import HubKey from "../keys"
 
-const MAX_OPTIONS = 7
+const MAX_OPTIONS = 10
 
 interface StreamInfoEntry {
     audioBitrate: number
@@ -87,6 +87,7 @@ export const StreamContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<Stream[]>(HubKey.GetStreamList, (payload) => {
+            console.log("playload", payload)
             if (!payload) return
             setStreams(payload)
         })
@@ -130,7 +131,7 @@ export const StreamContainer = createContainer(() => {
 
         // If there is no current stream selected then pick the US one (for now)
         if (!dontChangeCurrentStream && !currentStream && newStreamOptions && newStreamOptions.length > 0) {
-            const usaStreams = newStreamOptions.filter((s) => s.name == "USA")
+            const usaStreams = newStreamOptions.filter((s) => s.name == "USA AZ")
             if (usaStreams && usaStreams.length > 0) {
                 changeStream(usaStreams[0])
             }
