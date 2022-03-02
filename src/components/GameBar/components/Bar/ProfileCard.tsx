@@ -14,7 +14,7 @@ const ConnectButton = ({ renderButton, passportWeb }: { renderButton: boolean; p
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const { sessionID, authRingCheckError, setAuthRingCheckError } = useAuth()
 
-    const href = `${passportWeb}nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`
+    const href = `${passportWeb}/nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`
 
     // Check if login in the iframe has been successful (widnow closed), do clean up
     useEffect(() => {
@@ -42,6 +42,7 @@ const ConnectButton = ({ renderButton, passportWeb }: { renderButton: boolean; p
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
+        console.log(href)
         const popup = window.open(
             href,
             "Connect Gamebar to XSYN Passport",
