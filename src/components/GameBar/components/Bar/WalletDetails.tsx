@@ -255,6 +255,7 @@ const SupsToolTipContent = ({
     transactions: Transaction[]
     userID: string
 }) => {
+    console.log(transactions)
     return (
         <Stack spacing={1.5} sx={{ px: 1.3, py: 1 }}>
             <Box>
