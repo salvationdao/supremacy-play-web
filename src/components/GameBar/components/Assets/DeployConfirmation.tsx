@@ -167,7 +167,9 @@ export const DeployConfirmation = ({
                                     title={"CONTRACT REWARD: "}
                                     color={colors.yellow}
                                     value={
-                                        queueLength ? supFormatter(`${(queueLength + 1) * 2}000000000000000000`) : "N/A"
+                                        queueLength !== undefined
+                                            ? supFormatter(`${(queueLength + 1) * 2}000000000000000000`)
+                                            : "N/A"
                                     }
                                     tooltip="Your reward if your syndicate wins the battle."
                                 />
