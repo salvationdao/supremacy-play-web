@@ -41,7 +41,6 @@ export const GameContainer = createContainer(() => {
     const [prevFactionVotePrice, setPrevFactionVotePrice] = useState<BigNumber>(new BigNumber("0"))
     const [votingState, setVotingState] = useState<VtotingStateResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
-    const [queuingWarMachines, setQueuingWarMachines] = useState<WarMachineState[]>([])
     const [highlightedMechHash, setHighlightedMechHash] = useState<string | undefined>(undefined)
 
     // Subscribe for game settings
@@ -138,19 +137,6 @@ export const GameContainer = createContainer(() => {
         )
     }, [state, subscribe, factionID])
 
-    // Subscribe on war machine queue updates
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
-        return subscribe<WarMachineState[]>(
-            HubKey.SubFactionWarMachineQueueUpdated,
-            (payload) => {
-                if (!payload) return
-                setQueuingWarMachines(payload)
-            },
-            null,
-        )
-    }, [state, subscribe, factionID])
-
     // Subscribe to spawned AI events
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -175,7 +161,6 @@ export const GameContainer = createContainer(() => {
         setMap,
         warMachines,
         spawnedAI,
-        queuingWarMachines,
         highlightedMechHash,
         setHighlightedMechHash,
     }
