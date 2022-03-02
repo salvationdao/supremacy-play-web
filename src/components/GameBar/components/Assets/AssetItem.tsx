@@ -186,7 +186,7 @@ export const AssetItem = ({
                                 variant="caption"
                                 sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.yellow }}
                             >
-                                {supFormatter(contractReward2, 6)}
+                                {supFormatter(contractReward2)}
                             </Typography>
                         </Stack>
                     )}
@@ -221,7 +221,7 @@ export const AssetItem = ({
                                 variant="caption"
                                 sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.yellow }}
                             >
-                                {supFormatter(contractReward2, 6)}
+                                {supFormatter(contractReward2)}
                             </Typography>
                         </Stack>
                     )}
