@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { styled } from "@mui/system"
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
+import { Dispatch, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
 import { MapWarMachine, SelectionIcon } from ".."
-import { useGame, useWebsocket, WebSocketProperties } from "../../containers"
+import { useGame, useWebsocket } from "../../containers"
 import { GameAbility, Map, WarMachineState } from "../../types"
 import { animated, useSpring } from "react-spring"
 import { useGesture } from "@use-gesture/react"
@@ -41,21 +41,15 @@ const GridCell = styled("td", {
 
 interface MapWarMachineProps {
     warMachines: WarMachineState[]
-    spawnedAI: WarMachineState[]
     map: Map
     enlarged: boolean
 }
 
-const MapWarMachines = ({ warMachines, spawnedAI, map, enlarged }: MapWarMachineProps) => {
+const MapWarMachines = ({ warMachines, map, enlarged }: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
         <>
-            {spawnedAI.map((wm) => (
-                <div key={`${wm.participantID} - spawnedAI`}>
-                    <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} isSpawnedAI />
-                </div>
-            ))}
             {warMachines.map((wm) => (
                 <div key={`${wm.participantID} - ${wm.hash}`}>
                     <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} />
@@ -65,53 +59,21 @@ const MapWarMachines = ({ warMachines, spawnedAI, map, enlarged }: MapWarMachine
     )
 }
 
-interface InteractiveMapProps extends Partial<WebSocketProperties> {
-    gameAbility?: GameAbility
-    windowDimension: { width: number; height: number }
-    targeting?: boolean
-    setSubmitted?: Dispatch<SetStateAction<boolean>>
-    enlarged: boolean
-}
-
-interface InteractiveMapInnerProps extends InteractiveMapProps {
-    gameAbility?: GameAbility
-    windowDimension: { width: number; height: number }
-    targeting?: boolean
-    setSubmitted?: Dispatch<SetStateAction<boolean>>
-    enlarged: boolean
-    map?: Map
-    spawnedAI?: WarMachineState[]
-    warMachines?: WarMachineState[]
-}
-
-export const InteractiveMap = (props: InteractiveMapProps) => {
-    const { state, send } = useWebsocket()
-    const { map, warMachines, spawnedAI } = useGame()
-
-    return (
-        <InteractiveMapInner
-            {...props}
-            send={send}
-            state={state}
-            map={map}
-            warMachines={warMachines}
-            spawnedAI={spawnedAI}
-        />
-    )
-}
-
-const InteractiveMapInner = ({
+export const InteractiveMap = ({
     gameAbility,
     windowDimension,
     targeting,
     setSubmitted,
     enlarged,
-    map,
-    spawnedAI,
-    warMachines,
-    state,
-    send,
-}: InteractiveMapInnerProps) => {
+}: {
+    gameAbility?: GameAbility
+    windowDimension: { width: number; height: number }
+    targeting?: boolean
+    setSubmitted?: Dispatch<SetStateAction<boolean>>
+    enlarged: boolean
+}) => {
+    const { state, send } = useWebsocket()
+    const { map, warMachines } = useGame()
     const [selection, setSelection] = useState<MapSelection>()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
@@ -130,7 +92,7 @@ const InteractiveMapInner = ({
     // Count down starts when user has selected a location, then fires if they don't change their mind
     useEffect(() => {
         if (!selection) return
-        setEndMoment(moment().add(3, "seconds"))
+        if (!endMoment) setEndMoment(moment().add(3, "seconds"))
     }, [selection])
 
     useEffect(() => {
@@ -148,12 +110,12 @@ const InteractiveMapInner = ({
     }, delay)
 
     useEffect(() => {
-        if (selection && gameAbility && timeRemain === -1) onConfirm()
+        if (selection && gameAbility && timeRemain == -1) onConfirm()
     }, [timeRemain])
 
     const onConfirm = () => {
         try {
-            if (state !== WebSocket.OPEN || !selection || !send) return
+            if (state !== WebSocket.OPEN || !selection) return
             send<boolean, { x: number; y: number }>(HubKey.SubmitAbilityLocationSelect, {
                 x: selection.x,
                 y: selection.y,
@@ -393,12 +355,7 @@ const InteractiveMapInner = ({
                 <animated.div ref={gestureRef} style={{ x, y, touchAction: "none", scale, transformOrigin: `0% 0%` }}>
                     <Box sx={{ cursor: enlarged ? "move" : "" }}>
                         <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1` }}>
-                            <MapWarMachines
-                                map={map}
-                                warMachines={warMachines || []}
-                                spawnedAI={spawnedAI || []}
-                                enlarged={enlarged}
-                            />
+                            <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
                         </Box>
 
                         {selectionIcon}
@@ -437,7 +394,6 @@ const InteractiveMapInner = ({
                             color: "#D90000",
                             opacity: 0.9,
                             filter: "drop-shadow(0 3px 3px #00000050)",
-                            fontSize: "8rem",
                         }}
                     >
                         {timeRemain}
