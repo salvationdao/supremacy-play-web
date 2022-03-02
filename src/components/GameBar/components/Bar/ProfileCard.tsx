@@ -14,7 +14,7 @@ const ConnectButton = ({ renderButton, passportWeb }: { renderButton: boolean; p
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const { sessionID, authRingCheckError, setAuthRingCheckError } = useAuth()
 
-    const href = `${passportWeb}/nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`
+    const href = `${passportWeb}nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`
 
     // Check if login in the iframe has been successful (widnow closed), do clean up
     useEffect(() => {
@@ -187,7 +187,7 @@ export const ProfileCard = ({ passportWeb }: GameBarBaseProps) => {
                         }}
                     >
                         <Avatar
-                            src={avatarID ? `${passportWeb}/api/files/${avatarID}` : ""}
+                            src={avatarID ? `${passportWeb}api/files/${avatarID}` : ""}
                             alt={`${username}'s Avatar`}
                             sx={{
                                 height: 26,
@@ -234,16 +234,16 @@ export const ProfileCard = ({ passportWeb }: GameBarBaseProps) => {
             >
                 <Stack spacing={0.4} sx={{ p: 1, backgroundColor: colors.darkNavy }}>
                     <NavButton
-                        href={`${passportWeb}/collections/${user.username}`}
+                        href={`${passportWeb}collections/${user.username}`}
                         startIcon={<SvgAssets size="16px" fill={colors.text} />}
                     >
                         My Inventory
                     </NavButton>
-                    <NavButton href={`${passportWeb}/stores`} startIcon={<SvgShop size="16px" fill={colors.text} />}>
+                    <NavButton href={`${passportWeb}stores`} startIcon={<SvgShop size="16px" fill={colors.text} />}>
                         Purchase Assets
                     </NavButton>
                     <NavButton
-                        href={`${passportWeb}/profile/${user.username}/edit`}
+                        href={`${passportWeb}profile/${user.username}/edit`}
                         startIcon={<SvgProfile size="16px" fill={colors.text} />}
                     >
                         Edit Profile
@@ -319,7 +319,7 @@ const LogoutButton = ({ passportWeb }: LogoutButtonProps) => {
 
         setIsProcessing(true)
 
-        const href = `${passportWeb}/nosidebar/logout?sessionID=${sessionID}`
+        const href = `${passportWeb}nosidebar/logout?sessionID=${sessionID}`
         const width = 520
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5

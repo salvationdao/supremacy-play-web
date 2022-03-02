@@ -127,7 +127,7 @@ const DrawerContent = ({ passportWeb }: { passportWeb: string }) => {
                                 >
                                     {"You don't own any assets yet."}
                                 </Typography>
-                                <Button href={`${passportWeb}/stores`} target="_blank" size="small" variant="outlined">
+                                <Button href={`${passportWeb}stores`} target="_blank" size="small" variant="outlined">
                                     <Typography
                                         variant="body2"
                                         sx={{

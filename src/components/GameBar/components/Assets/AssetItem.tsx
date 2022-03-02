@@ -302,7 +302,7 @@ export const AssetItem = ({
             </Stack>
 
             <Link
-                href={`${passportWeb}/profile/${user.username}/asset/${hash}`}
+                href={`${passportWeb}profile/${user.username}/asset/${hash}`}
                 target="_blank"
                 sx={{ position: "absolute", top: 6, right: 4 }}
             >
