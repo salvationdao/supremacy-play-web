@@ -91,7 +91,7 @@ interface HubError {
 const UseWebsocket = (): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
-    const [outgoing, setOutgoing] = useDebounce<Message<any>[]>([], 100)
+    const [outgoing, setOutgoing] = useState<Message<any>[]>([])
 
     const webSocket = useRef<WebSocket | null>(null)
 
