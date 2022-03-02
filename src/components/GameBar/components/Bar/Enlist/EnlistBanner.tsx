@@ -137,8 +137,8 @@ export const EnlistBanner = (props: GameBarBaseProps) => {
                         }}
                     />
                     <BannerInfo
-                        title={`Applause`}
-                        tooltip="The number of times you have applaused."
+                        title={`BATTLE VOTES`}
+                        tooltip="The number of times you have voted for a battle ability."
                         content={`${totalVoteCount}`}
                         PrefixSvg={<SvgApplause size="12px" />}
                     />
