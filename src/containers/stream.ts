@@ -106,6 +106,8 @@ export const StreamContainer = createContainer(() => {
         // Reduce the list of options so it's not too many for the user
         // By default its sorted by quietest servers first
         const quietestStreams = availStreams.sort((a, b) => (a.usersNow / a.userMax > b.usersNow / b.userMax ? 1 : -1))
+        setCurrentStream(quietestStreams[0])
+
         SetNewStreamOptions(quietestStreams)
     }, [streams])
 
