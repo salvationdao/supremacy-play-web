@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react"
-import { Avatar, Box, Button, Dialog, Stack, Typography, Link, Popover, SxProps, Theme, Tooltip } from "@mui/material"
+import { Avatar, Box, Button, Dialog, Stack, Typography, Link, Popover, SxProps, Theme } from "@mui/material"
 import { BarExpandable } from ".."
 import { useAuth } from "../../containers"
 import { GameBarBaseProps } from "../../GameBar"
@@ -9,20 +9,12 @@ import { SvgAssets, SvgLogout, SvgProfile, SvgShop } from "../../assets"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 import { useToggle } from "../../hooks"
 
-const ConnectButton = ({ passportWeb }: { passportWeb: string }) => {
+const ConnectButton = ({ renderButton, passportWeb }: { renderButton: boolean; passportWeb: string }) => {
     const [isProcessing, setIsProcessing] = useState(false)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const { sessionID, authRingCheckError, setAuthRingCheckError } = useAuth()
-    const [renderButton, toggleRenderButton] = useToggle()
 
     const href = `${passportWeb}/nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`
-
-    // Don't show the connect button for couple seconds as it tries to do the auto login
-    useEffect(() => {
-        setTimeout(() => {
-            toggleRenderButton(true)
-        }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS)
-    }, [])
 
     // Check if login in the iframe has been successful (widnow closed), do clean up
     useEffect(() => {
@@ -126,10 +118,18 @@ const ConnectButton = ({ passportWeb }: { passportWeb: string }) => {
 
 export const ProfileCard = ({ passportWeb }: GameBarBaseProps) => {
     const { user } = useAuth()
+    const [renderConnectButton, toggleRenderConnectButton] = useToggle()
     const [anchorEl, setAnchorEl] = useState<HTMLAnchorElement | null>(null)
 
+    // Don't show the connect button for couple seconds as it tries to do the auto login
+    useEffect(() => {
+        setTimeout(() => {
+            toggleRenderConnectButton(true)
+        }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS)
+    }, [])
+
     if (!user) {
-        return <ConnectButton passportWeb={passportWeb} />
+        return <ConnectButton renderButton={renderConnectButton} passportWeb={passportWeb} />
     }
 
     const { username, avatarID, faction } = user
@@ -234,16 +234,16 @@ export const ProfileCard = ({ passportWeb }: GameBarBaseProps) => {
             >
                 <Stack spacing={0.4} sx={{ p: 1, backgroundColor: colors.darkNavy }}>
                     <NavButton
-                        href={`${passportWeb}collections/${user.username}`}
+                        href={`${passportWeb}/collections/${user.username}`}
                         startIcon={<SvgAssets size="16px" fill={colors.text} />}
                     >
                         My Inventory
                     </NavButton>
-                    <NavButton href={`${passportWeb}stores`} startIcon={<SvgShop size="16px" fill={colors.text} />}>
+                    <NavButton href={`${passportWeb}/stores`} startIcon={<SvgShop size="16px" fill={colors.text} />}>
                         Purchase Assets
                     </NavButton>
                     <NavButton
-                        href={`${passportWeb}profile/${user.username}/edit`}
+                        href={`${passportWeb}/profile/${user.username}/edit`}
                         startIcon={<SvgProfile size="16px" fill={colors.text} />}
                     >
                         Edit Profile

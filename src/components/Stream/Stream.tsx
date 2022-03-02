@@ -7,10 +7,9 @@ import { colors } from "../../theme/theme"
 import { useToggle } from "../GameBar/hooks"
 import { Trailer } from ".."
 
-const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
+const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
     const { user } = useAuth()
     const { onWorldSups } = useWallet()
-    const [render, toggleRender] = useToggle()
 
     const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
 
@@ -19,12 +18,6 @@ const Message = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSu
         if (supsAboveZero && !haveSups) toggleHaveSups(true)
         if (!supsAboveZero && haveSups) toggleHaveSups(false)
     }, [onWorldSups, supsAboveZero, haveSups])
-
-    useEffect(() => {
-        setTimeout(() => {
-            toggleRender(true)
-        }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS + 2000)
-    })
 
     return (
         <Fade in={render}>
@@ -73,6 +66,14 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
     const { user } = useAuth()
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
+    const [renderTopMessage, toggleRenderTopMessage] = useToggle()
+
+    // Don't show for couple seconds as it tries to do the auto login
+    useEffect(() => {
+        setTimeout(() => {
+            toggleRenderTopMessage(true)
+        }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS + 2000)
+    })
 
     if (!watchedTrailer) {
         return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
@@ -100,7 +101,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
                     }}
                 />
             ) : (
-                <Message haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
+                <Message render={renderTopMessage} haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
             )}
         </Stack>
     )
