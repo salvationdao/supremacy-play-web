@@ -26,7 +26,7 @@ import {
     textNoti,
 } from "../../samepleData"
 
-const SPAWN_TEST_NOTIFICATIONS = false
+const SPAWN_TEST_NOTIFICATIONS = true
 
 /*
 KILL: when a war machine is destroyed
