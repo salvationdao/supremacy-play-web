@@ -7,7 +7,7 @@ export const TooltipHelper = ({
     isCentered,
     placement,
 }: {
-    text: string
+    text: string | React.ReactNode
     children: ReactElement
     isCentered?: boolean
     placement?:

@@ -27,7 +27,6 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
             />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText text={name} color={faction.theme.primary} imageUrl={wmImageUrl} />
-            <StyledNormalText text="." />
         </Box>
     )
 }

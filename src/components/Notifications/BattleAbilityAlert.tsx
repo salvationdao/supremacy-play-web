@@ -37,7 +37,7 @@ export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertPr
                 text={username}
                 color={faction.theme.primary}
             />
-            <StyledNormalText text=" has been assigned to choose a target location." />
+            <StyledNormalText text=" has been assigned to choose a target location" />
         </Box>
     )
 }

@@ -9,7 +9,7 @@ export const LoadMessage = () => {
 
     let message = ""
     if (state !== WebSocket.OPEN) {
-        message = "BATTLE STREAM OFFLINE."
+        message = "GAME SERVER OFFLINE."
     } else if (authSessionIDGetLoading) {
         message = "GETTING SESSION..."
     }
@@ -31,6 +31,7 @@ export const LoadMessage = () => {
                 animation: `${pulseEffect} 5s infinite`,
                 filter: "drop-shadow(0 3px 3px #00000060)",
                 zIndex: 999,
+                pointerEvents: "none",
             }}
         >
             <Typography

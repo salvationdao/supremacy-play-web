@@ -29,7 +29,7 @@ export const Maintenance = () => {
                     top: "50%",
                     left: 50,
                     right: 50,
-                    transform: "translateY(-90%)",
+                    transform: "translateY(-60%)",
                     zIndex: 3,
                 }}
             >
@@ -68,7 +68,7 @@ export const Maintenance = () => {
                             {"WE'LL BE BACK SOON"}
                         </Typography>
 
-                        <Typography
+                        {/* <Typography
                             variant="h5"
                             sx={{
                                 mb: 0.5,
@@ -76,8 +76,8 @@ export const Maintenance = () => {
                                 textAlign: "center",
                             }}
                         >
-                            SERVER IN FINAL TESTING
-                        </Typography>
+                            03/01/2022 10PM PST
+                        </Typography> */}
 
                         <Stack direction="row" spacing={1.6} alignItems="center">
                             <IconButton size="small" target="_blank" href="https://discord.com/invite/supremacygame">

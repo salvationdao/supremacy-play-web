@@ -13,8 +13,8 @@ enum HubKey {
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubVoteStageUpdated = "VOTE:STAGE:UPDATED",
     SubVoteWinnerAnnouncement = "VOTE:WINNER:ANNOUNCEMENT",
-    SubFactionWarMachineQueueUpdated = "FACTION:WAR:MACHINE:QUEUE:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
+    SubFactionQueueLength = "FACTION:QUEUE:JOIN",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
@@ -28,7 +28,7 @@ enum HubKey {
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
     SubUserWarMachineQueueUpdated = "USER:WAR:MACHINE:QUEUE:UPDATED",
-    GetStreamList = "STREAMLIST:SUBSCRIBE",
+    SubAISpawned = "AI:SPAWNED",
 
     // Net message subscription
     TriggerLiveVoteUpdated = "LIVE:VOTE:UPDATED",
@@ -38,6 +38,17 @@ enum HubKey {
     TriggerAbilityRightRatio = "ABILITY:RIGHT:RATIO:UPDATED",
     TriggerFactionAbilityPriceUpdated = "FACTION:ABILITY:PRICE:UPDATED",
     TriggerFactionVotePriceUpdated = "FACTION:VOTE:PRICE:UPDATED",
+
+    // Transactions
+    SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
+    SubscribeUserLatestTransactions = "USER:SUPS:LATEST_TRANSACTION:SUBSCRIBE",
+
+    // Global messages
+    SubscribeGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
+
+    // Streams
+    SubscribeStreamClose = "STREAM:CLOSE:SUBSCRIBE",
+    GetStreamList = "STREAMLIST:SUBSCRIBE",
 }
 
 export default HubKey

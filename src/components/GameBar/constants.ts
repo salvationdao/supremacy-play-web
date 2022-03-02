@@ -1,4 +1,3 @@
-export const LOG_API_CALLS = process.env.REACT_APP_LOG_API_CALLS
 export const GAME_BAR_HEIGHT = 61
 export const NilUUID = "00000000-0000-0000-0000-000000000000"
 export const LIVE_CHAT_DRAWER_WIDTH = 340

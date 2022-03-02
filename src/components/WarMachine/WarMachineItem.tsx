@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react"
 import { Box, Stack, Typography } from "@mui/material"
-import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
+import BigNumber from "bignumber.js"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
     BoxSlanted,
     ClipThing,
@@ -10,12 +10,12 @@ import {
     WarMachineDestroyedInfo,
 } from ".."
 import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
-import { useAuth, useWebsocket } from "../../containers"
-import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import HubKey from "../../keys"
-import { useToggle } from "../../hooks"
-import BigNumber from "bignumber.js"
 import { useDrawer } from "../../components/GameBar"
+import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
+import { useAuth, useGame, useWebsocket, WebSocketProperties } from "../../containers"
+import { useToggle } from "../../hooks"
+import HubKey from "../../keys"
+import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 const WIDTH_WM_IMAGE = 92
 const WIDTH_CENTER = 142
@@ -27,19 +27,50 @@ const HEIGHT = 76
 const SKILL_BUTTON_TEXT_ROTATION = 76.5
 const DEAD_OPACITY = 0.6
 
-export const WarMachineItem = ({
-    warMachine,
-    scale,
-    shouldBeExpanded,
-}: {
+interface Props {
     warMachine: WarMachineState
     scale: number
     shouldBeExpanded: boolean
-}) => {
-    const { participantID, faction, name, imageUrl } = warMachine
+}
+
+export const WarMachineItem = (props: Props) => {
     const { state, subscribe } = useWebsocket()
-    const { factionID } = useAuth()
+    const { highlightedMechHash, setHighlightedMechHash } = useGame()
     const { isAnyPanelOpen } = useDrawer()
+    const { factionID } = useAuth()
+
+    return (
+        <WarMachineItemInner
+            {...props}
+            factionID={factionID}
+            isAnyPanelOpen={isAnyPanelOpen}
+            highlightedMechHash={highlightedMechHash}
+            setHighlightedMechHash={setHighlightedMechHash}
+            state={state}
+            subscribe={subscribe}
+        />
+    )
+}
+
+interface PropsInner extends Props, Partial<WebSocketProperties> {
+    factionID?: string
+    highlightedMechHash?: string
+    setHighlightedMechHash: (s?: string) => void
+    isAnyPanelOpen: boolean
+}
+
+const WarMachineItemInner = ({
+    warMachine,
+    scale,
+    shouldBeExpanded,
+    factionID,
+    highlightedMechHash,
+    setHighlightedMechHash,
+    isAnyPanelOpen,
+    state,
+    subscribe,
+}: PropsInner) => {
+    const { participantID, faction, name, imageUrl } = warMachine
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -58,6 +89,23 @@ export const WarMachineItem = ({
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord
 
+    const handleClick = useCallback(
+        (mechHash: string) => {
+            if (!isExpanded) toggleIsExpanded()
+            if (mechHash === highlightedMechHash) {
+                setHighlightedMechHash(undefined)
+            } else setHighlightedMechHash(mechHash)
+        },
+        [highlightedMechHash, isExpanded],
+    )
+
+    /* Toggle out isExpanded if other mech is highlighted */
+    useEffect(() => {
+        if (highlightedMechHash !== warMachine.hash && isExpanded && !shouldBeExpanded) {
+            toggleIsExpanded()
+        }
+    }, [highlightedMechHash])
+
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
     }, [shouldBeExpanded, isAnyPanelOpen])
@@ -69,7 +117,13 @@ export const WarMachineItem = ({
 
     // Subscribe to war machine ability updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !factionID || factionID === NullUUID || factionID !== warMachineFactionID)
+        if (
+            state !== WebSocket.OPEN ||
+            !factionID ||
+            factionID === NullUUID ||
+            factionID !== warMachineFactionID ||
+            !subscribe
+        )
             return
         return subscribe<GameAbility[] | undefined>(
             HubKey.SubWarMachineAbilitiesUpdated,
@@ -116,6 +170,7 @@ export const WarMachineItem = ({
                         : isExpanded
                         ? WIDTH_WM_IMAGE + WIDTH_CENTER
                         : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 6,
+                    transition: "width .3s",
                 }}
             >
                 {!isAlive && (
@@ -165,7 +220,7 @@ export const WarMachineItem = ({
                 >
                     <Box sx={{ background: `linear-gradient(${primary}, #000000)` }}>
                         <Box
-                            onClick={toggleIsExpanded}
+                            onClick={() => handleClick(warMachine.hash)}
                             sx={{
                                 position: "relative",
                                 width: WIDTH_WM_IMAGE,
@@ -208,7 +263,11 @@ export const WarMachineItem = ({
                             alignSelf: "stretch",
                             ml: -2.5,
 
-                            backgroundColor: isExpanded ? "#00000056" : "transparent",
+                            backgroundColor: !isExpanded
+                                ? "transparent"
+                                : highlightedMechHash === warMachine.hash
+                                ? `${primary}60`
+                                : "#00000056",
                             opacity: isAlive ? 1 : DEAD_OPACITY,
                             zIndex: 1,
                         }}

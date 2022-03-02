@@ -4,10 +4,20 @@ import { SvgPriceDownArrow, SvgPriceUpArrow, SvgSupToken } from "../../assets"
 import { useGame } from "../../containers"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
+import BigNumber from "bignumber.js"
 
 export const Prices = () => {
     const { factionVotePrice: price, prevFactionVotePrice: prevPrice } = useGame()
 
+    return <PricesInner price={price} prevPrice={prevPrice} />
+}
+
+interface PricesInnerProps {
+    price: BigNumber
+    prevPrice: BigNumber
+}
+
+export const PricesInner = ({ price, prevPrice }: PricesInnerProps) => {
     return (
         <TooltipHelper
             placement="right-start"

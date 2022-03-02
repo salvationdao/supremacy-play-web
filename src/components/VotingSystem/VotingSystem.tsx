@@ -2,12 +2,20 @@ import { Box, Slide, Stack } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
 import { ClipThing, BattleAbilityItem, Prices, FactionAbilities } from ".."
-import { useDimension, useGame } from "../../containers"
+import { useDimension, useGame, VotingStateResponse } from "../../containers"
 import { useAuth } from "../../containers"
 
 export const VotingSystem = () => {
-    const { user } = useAuth()
     const { votingState } = useGame()
+    return <VotingSystemInner votingState={votingState} />
+}
+
+interface VotingSystemProps {
+    votingState?: VotingStateResponse
+}
+
+const VotingSystemInner = ({ votingState }: VotingSystemProps) => {
+    const { user } = useAuth()
     const theme = useTheme<Theme>()
     const {
         streamDimensions: { height },

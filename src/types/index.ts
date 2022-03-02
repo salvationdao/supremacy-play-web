@@ -40,6 +40,7 @@ export interface BattleAbility {
     id: string
     label: string
     colour: string
+    textColour: string
     description: string
     imageUrl: string
     cooldownDurationSecond: number
@@ -49,6 +50,7 @@ export interface GameAbility {
     identity: string
     label: string
     colour: string
+    textColour: string
     description: string
     imageUrl: string
     supsCost: string
@@ -83,11 +85,6 @@ export interface WarMachineState {
     shield: number
     position: Vector2i
     rotation: number
-}
-
-export interface QueuedWarMachine {
-    position: number
-    warMachineMetadata: WarMachineMetadata
 }
 
 export interface WarMachineMetadata {

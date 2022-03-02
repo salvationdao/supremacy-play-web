@@ -1,276 +1,240 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { LOG_API_CALLS } from "../constants"
 import { useDebounce } from "../hooks/useDebounce"
 import HubKey from "../keys"
 
 // makeid is used to generate a random transactionID for the websocket
 export function makeid(length = 12): string {
-	let result = ""
-	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-	for (let i = 0; i < length; i++) {
-		result += characters.charAt(Math.floor(Math.random() * characters.length))
-	}
-	return result
+    let result = ""
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length))
+    }
+    return result
 }
 
 const DateParse = () => {
-	const reISO =
-		/^([0-9]+)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])[Tt]([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\.[0-9]+)?(([Zz])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/
+    const reISO =
+        /^([0-9]+)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])[Tt]([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\.[0-9]+)?(([Zz])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/
 
-	return function (key: string, value: any) {
-		if (typeof value === "string") {
-			const a = reISO.exec(value)
-			if (a) return new Date(value)
-		}
-		return value
-	}
+    return function (key: string, value: any) {
+        if (typeof value === "string") {
+            const a = reISO.exec(value)
+            if (a) return new Date(value)
+        }
+        return value
+    }
 }
 
 const dp = DateParse()
 
 export function protocol() {
-	return window.location.protocol.match(/^https/) ? "wss" : "ws"
+    return window.location.protocol.match(/^https/) ? "wss" : "ws"
 }
 
 enum SocketState {
-	CONNECTING = WebSocket.CONNECTING,
-	OPEN = WebSocket.OPEN,
-	CLOSING = WebSocket.CLOSING,
-	CLOSED = WebSocket.CLOSED,
+    CONNECTING = WebSocket.CONNECTING,
+    OPEN = WebSocket.OPEN,
+    CLOSING = WebSocket.CLOSING,
+    CLOSED = WebSocket.CLOSED,
 }
 
 export type WSSendFn = <Y = any, X = any>(key: string, payload?: X) => Promise<Y>
 
 interface WebSocketProperties {
-	send: WSSendFn
-	connect: () => Promise<undefined>
-	state: SocketState
-	subscribe: <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => () => void
-	onReconnect: () => void
+    send: WSSendFn
+    connect: () => Promise<undefined>
+    state: SocketState
+    subscribe: <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => () => void
+    onReconnect: () => void
 }
 
 type SubscribeCallback = (payload: any) => void
 
 export interface Message<T> {
-	transactionID?: string
-	key: string
-	payload: T
+    transactionID?: string
+    key: string
+    payload: T
 }
 
 type WSCallback<T = any> = (data: T) => void
 
 interface HubError {
-	transactionID: string
-	key: string
-	message: string
+    transactionID: string
+    key: string
+    message: string
 }
 
 const UseWebsocket = (initialState?: string): WebSocketProperties => {
-	const [state, setState] = useState<SocketState>(SocketState.CLOSED)
-	const callbacks = useRef<{ [key: string]: WSCallback }>({})
-	const [outgoing, setOutgoing] = useDebounce<Message<any>[]>([], 100)
+    const [state, setState] = useState<SocketState>(SocketState.CLOSED)
+    const callbacks = useRef<{ [key: string]: WSCallback }>({})
+    const [outgoing, setOutgoing] = useState<Message<any>[]>([])
 
-	const webSocket = useRef<WebSocket | null>(null)
+    const webSocket = useRef<WebSocket | null>(null)
 
-	const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
-		const transactionID = makeid()
+    const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
+        const transactionID = makeid()
 
-		if (LOG_API_CALLS) {
-			console.log(`%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GAMEBAR REQUEST: "${key}"`, "background: #D1E5FF; color: #000000")
-			console.log({
-				key,
-				payload,
-			})
-		}
+        return new Promise(function (resolve, reject) {
+            callbacks.current[transactionID] = (data: Message<Y> | HubError) => {
+                if (data.key === "HUB:ERROR") {
+                    reject((data as HubError).message)
+                    return
+                }
+                const result = (data as Message<Y>).payload
+                resolve(result)
+            }
 
-		return new Promise(function (resolve, reject) {
-			callbacks.current[transactionID] = (data: Message<Y> | HubError) => {
-				if (data.key === "HUB:ERROR") {
-					reject((data as HubError).message)
-					return
-				}
-				const result = (data as Message<Y>).payload
+            setOutgoing((prev) => [
+                ...prev,
+                {
+                    key,
+                    payload,
+                    transactionID,
+                },
+            ])
+        })
+    })
 
-				if (LOG_API_CALLS) {
-					console.log(`%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GAMEBAR RESPONSE: "${key}"`, "background: #FFD5C7; color: #000000")
-					console.log(result)
-				}
+    const subs = useRef<{ [key: string]: SubscribeCallback[] }>({})
 
-				resolve(result)
-			}
+    const subscribe = useMemo(() => {
+        return <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => {
+            const transactionID = makeid()
 
-			setOutgoing((prev) => [
-				...prev,
-				{
-					key,
-					payload,
-					transactionID,
-				},
-			])
-		})
-	})
+            let subKey = key
+            if (!listenOnly) {
+                subKey = transactionID
+            }
 
-	const subs = useRef<{ [key: string]: SubscribeCallback[] }>({})
+            const callback2 = (payload: T) => {
+                callback(payload)
+            }
 
-	const subscribe = useMemo(() => {
-		return <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => {
-			const transactionID = makeid()
+            if (subs.current[subKey]) {
+                subs.current[subKey].push(callback2)
+            } else {
+                subs.current[subKey] = [callback2]
+            }
 
-			let subKey = key
-			if (!listenOnly) {
-				subKey = transactionID
-			}
+            const setSubscribeState = (key: string, open: boolean, args?: any) => {
+                setOutgoing((prev) => [
+                    ...prev,
+                    {
+                        key: key + (open ? "" : ":UNSUBSCRIBE"),
+                        payload: open ? args : undefined,
+                        transactionID,
+                    },
+                ])
+            }
 
-			if (LOG_API_CALLS) {
-				console.log(
-					`%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GAMEBAR REQUEST (${listenOnly ? "LISTEN" : "SUBSCRIPTION"}): "${key}"`,
-					"background: #D1E5FF; color: #000000",
-				)
-				console.log({
-					key,
-					payload: args,
-				})
-			}
+            if (!listenOnly) setSubscribeState(key, true, args)
 
-			const callback2 = (payload: T) => {
-				if (LOG_API_CALLS) {
-					console.log(
-						`%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GAMEBAR RESPONSE (${listenOnly ? "LISTEN" : "SUBSCRIPTION"}): "${key}"`,
-						"background: #FFD5C7; color: #000000",
-					)
-					console.log({
-						key,
-						payload,
-					})
-				}
-				callback(payload)
-			}
+            return () => {
+                const i = subs.current[subKey].indexOf(callback2)
+                if (i === -1) return
+                subs.current[subKey].splice(i, 1)
 
-			if (subs.current[subKey]) {
-				subs.current[subKey].push(callback2)
-			} else {
-				subs.current[subKey] = [callback2]
-			}
+                if (!listenOnly) setSubscribeState(key, false)
+            }
+        }
+    }, [setOutgoing])
 
-			const setSubscribeState = (key: string, open: boolean, args?: any) => {
-				setOutgoing((prev) => [
-					...prev,
-					{
-						key: key + (open ? "" : ":UNSUBSCRIBE"),
-						payload: open ? args : undefined,
-						transactionID,
-					},
-				])
-			}
+    const sendOutgoingMessages = useCallback(() => {
+        if (outgoing.length === 0) return
+        if (!webSocket.current) throw new Error("no websocket")
 
-			if (!listenOnly) setSubscribeState(key, true, args)
+        outgoing.forEach((og) => {
+            if (!webSocket.current) throw new Error("no websocket")
+            webSocket.current.send(JSON.stringify(og))
+        })
 
-			return () => {
-				const i = subs.current[subKey].indexOf(callback2)
-				if (i === -1) return
-				subs.current[subKey].splice(i, 1)
+        setOutgoing([])
+    }, [outgoing, setOutgoing])
 
-				if (!listenOnly) setSubscribeState(key, false)
-			}
-		}
-	}, [setOutgoing])
+    const setupWS = useMemo(
+        () => (ws: WebSocket, onopen?: () => void) => {
+            ;(window as any).ws = ws
 
-	const sendOutgoingMessages = useCallback(() => {
-		if (outgoing.length === 0) return
-		if (!webSocket.current) throw new Error("no websocket")
+            ws.onopen = (e) => {
+                // Use network sub menu to see payloads traveling between client and server
+                // https://stackoverflow.com/a/5757171
+                // console.info("WebSocket open.")
+            }
+            ws.onerror = (e) => {
+                // Use network sub menu to see payloads traveling between client and server
+                // https://stackoverflow.com/a/5757171
+                // console.error("onerror", e)
+                ws.close()
+            }
+            ws.onmessage = (message) => {
+                const msgData = JSON.parse(message.data, dp)
+                // Use network sub menu to see payloads traveling between client and server
+                // https://stackoverflow.com/a/5757171
+                if (msgData.key === HubKey.Welcome) {
+                    setReadyState()
+                    if (onopen) {
+                        onopen()
+                    }
+                }
+                if (subs.current[msgData.transactionID]) {
+                    for (const callback of subs.current[msgData.transactionID]) {
+                        callback(msgData.payload)
+                    }
+                } else if (subs.current[msgData.key]) {
+                    for (const callback of subs.current[msgData.key]) {
+                        callback(msgData.payload)
+                    }
+                } else if (msgData.transactionID) {
+                    const { [msgData.transactionID]: cb, ...withoutCb } = callbacks.current
+                    if (cb) {
+                        cb(msgData)
+                        callbacks.current = withoutCb
+                    }
+                }
+            }
+            ws.onclose = (e) => {
+                setReadyState()
+            }
+        },
+        [],
+    )
 
-		outgoing.forEach((og) => {
-			if (!webSocket.current) throw new Error("no websocket")
-			webSocket.current.send(JSON.stringify(og))
-		})
+    const connect = useMemo(() => {
+        return (): Promise<undefined> => {
+            return new Promise(function (resolve, reject) {
+                setState(WebSocket.CONNECTING)
+                setTimeout(() => {
+                    webSocket.current = new WebSocket(`${protocol()}://${initialState}/api/ws`)
+                    setupWS(webSocket.current)
+                    resolve(undefined)
+                }, 2000)
+            })
+        }
+    }, [setupWS, initialState])
 
-		setOutgoing([])
-	}, [outgoing, setOutgoing])
+    const setReadyState = () => {
+        if (!webSocket.current) {
+            setState(WebSocket.CLOSED)
+            return
+        }
+        setState(webSocket.current.readyState)
+    }
 
-	const setupWS = useMemo(
-		() => (ws: WebSocket, onopen?: () => void) => {
-			;(window as any).ws = ws
+    useEffect(() => {
+        webSocket.current = new WebSocket(`${protocol()}://${initialState}/api/ws`)
+        setupWS(webSocket.current)
 
-			ws.onopen = (e) => {
-				// Use network sub menu to see payloads traveling between client and server
-				// https://stackoverflow.com/a/5757171
-				// console.info("WebSocket open.")
-			}
-			ws.onerror = (e) => {
-				// Use network sub menu to see payloads traveling between client and server
-				// https://stackoverflow.com/a/5757171
-				// console.error("onerror", e)
-				ws.close()
-			}
-			ws.onmessage = (message) => {
-				const msgData = JSON.parse(message.data, dp)
-				// Use network sub menu to see payloads traveling between client and server
-				// https://stackoverflow.com/a/5757171
-				if (msgData.key === HubKey.Welcome) {
-					setReadyState()
-					if (onopen) {
-						onopen()
-					}
-				}
-				if (subs.current[msgData.transactionID]) {
-					for (const callback of subs.current[msgData.transactionID]) {
-						callback(msgData.payload)
-					}
-				} else if (subs.current[msgData.key]) {
-					for (const callback of subs.current[msgData.key]) {
-						callback(msgData.payload)
-					}
-				} else if (msgData.transactionID) {
-					const { [msgData.transactionID]: cb, ...withoutCb } = callbacks.current
-					if (cb) {
-						cb(msgData)
-						callbacks.current = withoutCb
-					}
-				}
-			}
-			ws.onclose = (e) => {
-				setReadyState()
-			}
-		},
-		[],
-	)
+        return () => {
+            if (webSocket.current) webSocket.current.close()
+        }
+    }, [initialState, setupWS])
 
-	const connect = useMemo(() => {
-		return (): Promise<undefined> => {
-			return new Promise(function (resolve, reject) {
-				setState(WebSocket.CONNECTING)
-				setTimeout(() => {
-					webSocket.current = new WebSocket(`${protocol()}://${initialState}/api/ws`)
-					setupWS(webSocket.current)
-					resolve(undefined)
-				}, 2000)
-			})
-		}
-	}, [setupWS, initialState])
+    useEffect(() => {
+        if (webSocket.current) sendOutgoingMessages()
+    }, [webSocket, sendOutgoingMessages])
 
-	const setReadyState = () => {
-		if (!webSocket.current) {
-			setState(WebSocket.CLOSED)
-			return
-		}
-		setState(webSocket.current.readyState)
-	}
-
-	useEffect(() => {
-		webSocket.current = new WebSocket(`${protocol()}://${initialState}/api/ws`)
-		setupWS(webSocket.current)
-
-		return () => {
-			if (webSocket.current) webSocket.current.close()
-		}
-	}, [initialState, setupWS])
-
-	useEffect(() => {
-		if (webSocket.current) sendOutgoingMessages()
-	}, [webSocket, sendOutgoingMessages])
-
-	return { send: send.current, state, connect, subscribe, onReconnect: sendOutgoingMessages }
+    return { send: send.current, state, connect, subscribe, onReconnect: sendOutgoingMessages }
 }
 
 const WebsocketContainer = createContainer(UseWebsocket)

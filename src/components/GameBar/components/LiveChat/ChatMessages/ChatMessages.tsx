@@ -1,27 +1,67 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { ChatMessage } from "../.."
+import { useWebsocket, WebSocketProperties } from "../../../../../containers"
+import HubKey from "../../../../../keys"
 import { SvgScrolldown } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { colors } from "../../../theme"
 import { ChatData } from "../../../types"
 
-export const ChatMessages = ({
-    primaryColor,
-    secondaryColor,
-    chatMessages,
-    sentMessages,
-    failedMessages,
-}: {
+interface GlobalMessage {
+    title: string
+    gamesUntil: number
+    showUntil: Date
+    message: string
+    duration: number
+}
+
+interface ChatMessagesProps {
     primaryColor: string
     secondaryColor: string
     chatMessages: ChatData[]
     sentMessages: Date[]
     failedMessages: Date[]
-}) => {
+    inGlobalChat: boolean
+}
+
+export const ChatMessages = (props: ChatMessagesProps) => {
+    const { state, subscribe } = useWebsocket()
+    return <ChatMessagesInner {...props} state={state} subscribe={subscribe} />
+}
+
+interface ChatMessagesPropsInner extends ChatMessagesProps, Partial<WebSocketProperties> {}
+
+const ChatMessagesInner = ({
+    primaryColor,
+    secondaryColor,
+    chatMessages,
+    sentMessages,
+    failedMessages,
+    inGlobalChat,
+    state,
+    subscribe,
+}: ChatMessagesPropsInner) => {
     const { user } = useAuth()
     const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
+
+    // Subscribe to global messages
+    const [globalMessage, setGlobalMessage] = useState<GlobalMessage>()
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<GlobalMessage>(
+            HubKey.SubscribeGlobalAnnouncement,
+            (payload: GlobalMessage) => {
+                if (!payload || !payload.message) {
+                    setGlobalMessage(undefined)
+                    return
+                }
+                setGlobalMessage(payload)
+            },
+            null,
+        )
+    }, [state, subscribe])
 
     useLayoutEffect(() => {
         if (!autoScroll || !scrollableRef.current || chatMessages.length === 0) {
@@ -48,10 +88,38 @@ export const ChatMessages = ({
         }
     }
 
-    console.log(autoScroll)
-
     return (
         <>
+            {globalMessage && inGlobalChat && (
+                <Box sx={{ mb: 2 }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            px: 1.6,
+                            py: 1.6,
+                            backgroundColor: primaryColor,
+                        }}
+                    >
+                        <Box onClick={() => setGlobalMessage(undefined)}>
+                            <Typography
+                                sx={{
+                                    color: "#FFFFFF",
+                                    textAlign: "center",
+                                    fontFamily: "Nostromo Regular Heavy",
+                                }}
+                            >
+                                {globalMessage.title}
+                            </Typography>
+                        </Box>
+
+                        <Typography sx={{ fontFamily: "Share Tech", textAlign: "center" }}>
+                            {globalMessage.message}
+                        </Typography>
+                    </Stack>
+                </Box>
+            )}
+
             <Box
                 id="chat-container"
                 ref={scrollableRef}

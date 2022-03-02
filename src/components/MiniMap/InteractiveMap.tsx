@@ -92,7 +92,7 @@ export const InteractiveMap = ({
     // Count down starts when user has selected a location, then fires if they don't change their mind
     useEffect(() => {
         if (!selection) return
-        setEndMoment(moment().add(3, "seconds"))
+        if (!endMoment) setEndMoment(moment().add(3, "seconds"))
     }, [selection])
 
     useEffect(() => {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { GAME_SERVER_HOSTNAME, LOG_API_CALLS } from "../constants"
+import { GAME_SERVER_HOSTNAME } from "../constants"
 import { parseNetMessage } from "../helpers/netMessages"
 import { useDebounce } from "../hooks/useDebounce"
 import HubKey from "../keys"
@@ -55,7 +55,7 @@ export enum SocketState {
 
 export type WSSendFn = <Y = any, X = any>(key: string, payload?: X) => Promise<Y>
 
-interface WebSocketProperties {
+export interface WebSocketProperties {
     send: WSSendFn
     connect: () => Promise<undefined>
     state: SocketState
@@ -91,23 +91,12 @@ interface HubError {
 const UseWebsocket = (): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
-    const [outgoing, setOutgoing] = useDebounce<Message<any>[]>([], 100)
+    const [outgoing, setOutgoing] = useState<Message<any>[]>([])
 
     const webSocket = useRef<WebSocket | null>(null)
 
     const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
         const transactionID = makeid()
-
-        if (LOG_API_CALLS) {
-            console.log(
-                `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE REQUEST: "${key}"`,
-                "background: #D1E5FF; color: #000000",
-            )
-            console.log({
-                key,
-                payload,
-            })
-        }
 
         return new Promise(function (resolve, reject) {
             callbacks.current[transactionID] = (data: Message<Y> | HubError) => {
@@ -116,15 +105,6 @@ const UseWebsocket = (): WebSocketProperties => {
                     return
                 }
                 const result = (data as Message<Y>).payload
-
-                if (LOG_API_CALLS) {
-                    console.log(
-                        `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE RESPONSE: "${key}"`,
-                        "background: #FFD5C7; color: #000000",
-                    )
-                    console.log(result)
-                }
-
                 resolve(result)
             }
 
@@ -156,34 +136,7 @@ const UseWebsocket = (): WebSocketProperties => {
                 subKey = transactionID
             }
 
-            if (LOG_API_CALLS) {
-                console.log(
-                    `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE REQUEST (${
-                        listenOnly ? "LISTEN" : "SUBSCRIPTION"
-                    }): "${key}"`,
-                    "background: #D1E5FF; color: #000000",
-                )
-                console.log({
-                    key,
-                    subKey,
-                    payload: args,
-                })
-            }
-
             const callback2 = (payload: T) => {
-                if (LOG_API_CALLS && !disableLog) {
-                    console.log(
-                        `%c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STREAM SITE RESPONSE (${
-                            listenOnly ? "LISTEN" : "SUBSCRIPTION"
-                        }): "${key}"`,
-                        "background: #FFD5C7; color: #000000",
-                    )
-                    console.log({
-                        key,
-                        subKey,
-                        payload,
-                    })
-                }
                 callback(payload)
             }
 

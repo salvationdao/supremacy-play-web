@@ -1,28 +1,49 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgMapSkull, GenericWarMachinePNG, SvgMapWarMachine } from "../../assets"
-import { useWebsocket } from "../../containers"
+import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../assets"
+import { useGame, useWebsocket, WebSocketProperties } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
 
-const ICON_SIZE = 40
-const ARROW_LENGTH = ICON_SIZE / 2 + 20
-const DOT_SIZE = 70
-
-export const MapWarMachine = ({
-    warMachine,
-    map,
-    enlarged,
-}: {
+interface MWMProps extends Partial<WebSocketProperties> {
     warMachine: WarMachineState
     map: Map
     enlarged: boolean
-}) => {
-    const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
+    isSpawnedAI?: boolean
+    highlightedMechHash?: string
+}
+
+export const MapWarMachine = (props: MWMProps) => {
     const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
+    const { highlightedMechHash } = useGame()
+
+    return (
+        <MapWarMachineInner
+            {...props}
+            state={state}
+            subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
+            highlightedMechHash={highlightedMechHash}
+        />
+    )
+}
+
+const MapWarMachineInner = ({
+    warMachine,
+    map,
+    enlarged,
+    isSpawnedAI,
+    subscribeWarMachineStatNetMessage,
+    state,
+    highlightedMechHash,
+}: MWMProps) => {
+    const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
 
     const wmImageUrl = imageUrl || GenericWarMachinePNG
+
+    const ICON_SIZE = isSpawnedAI ? 32 : 40
+    const ARROW_LENGTH = ICON_SIZE / 2 + 20
+    const DOT_SIZE = isSpawnedAI ? 45 : 70
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
@@ -59,6 +80,7 @@ export const MapWarMachine = ({
                 }px, 0)`,
                 transition: "transform 0.2s linear",
                 zIndex: isAlive ? 5 : 4,
+                opacity: isSpawnedAI ? 0.8 : 1,
             }}
         >
             <Box
@@ -76,7 +98,12 @@ export const MapWarMachine = ({
                               backgroundSize: "cover",
                               border: `${primaryColor} solid 1px`,
                               borderRadius: 1,
-                              boxShadow: isAlive ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70` : "none",
+                              boxShadow:
+                                  highlightedMechHash === warMachine.hash
+                                      ? `0px 0px 20px 10px ${colors.neonBlue}`
+                                      : isAlive
+                                      ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70`
+                                      : "none",
                               zIndex: 2,
                           }
                         : {
@@ -87,6 +114,10 @@ export const MapWarMachine = ({
                               backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
                               border: `6px solid #000000${isAlive ? "" : "00"}`,
                               borderRadius: "50%",
+                              boxShadow:
+                                  highlightedMechHash === warMachine.hash
+                                      ? `0px 0px 20px 20px ${colors.neonBlue}`
+                                      : "unset",
                               zIndex: 2,
                           }
                 }
@@ -104,7 +135,7 @@ export const MapWarMachine = ({
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size={enlarged ? "25px" : "90px"}
+                            size={enlarged ? "25px" : isSpawnedAI ? "65px" : "90px"}
                             sx={{
                                 position: "absolute",
                                 top: "52%",
@@ -154,15 +185,17 @@ export const MapWarMachine = ({
                         }}
                         spacing={0.3}
                     >
-                        <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
-                            <Box
-                                sx={{
-                                    width: `${(shield / maxShield) * 100}%`,
-                                    height: "100%",
-                                    backgroundColor: colors.shield,
-                                }}
-                            />
-                        </Box>
+                        {warMachine.maxShield > 0 && (
+                            <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
+                                <Box
+                                    sx={{
+                                        width: `${(shield / maxShield) * 100}%`,
+                                        height: "100%",
+                                        backgroundColor: colors.shield,
+                                    }}
+                                />
+                            </Box>
+                        )}
                         <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
                             <Box
                                 sx={{

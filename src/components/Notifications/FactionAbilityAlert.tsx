@@ -30,7 +30,6 @@ export const FactionAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertP
                         : undefined
                 }
             />
-            <StyledNormalText text="." />
         </Box>
     )
 }
