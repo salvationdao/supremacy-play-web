@@ -170,7 +170,7 @@ export const DeployConfirmation = ({
                                     color={colors.yellow}
                                     value={
                                         queueLength !== undefined
-                                            ? supFormatter(`${(queueLength + 1) * 2}000000000000000000`)
+                                            ? supFormatter(`${queueLength * 2}000000000000000000`)
                                             : "N/A"
                                     }
                                     tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
