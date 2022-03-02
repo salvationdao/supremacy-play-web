@@ -68,7 +68,7 @@ export const Maintenance = () => {
                             {"WE'LL BE BACK SOON"}
                         </Typography>
 
-                        <Typography
+                        {/* <Typography
                             variant="h5"
                             sx={{
                                 mb: 0.5,
@@ -77,7 +77,7 @@ export const Maintenance = () => {
                             }}
                         >
                             03/01/2022 10PM PST
-                        </Typography>
+                        </Typography> */}
 
                         <Stack direction="row" spacing={1.6} alignItems="center">
                             <IconButton size="small" target="_blank" href="https://discord.com/invite/supremacygame">
@@ -94,7 +94,7 @@ export const Maintenance = () => {
                 </Box>
 
                 {/* Perth time */}
-                <CountdownTimer endTime={new Date("Wed Mar 02 2022 14:00:00 GMT+0800")} />
+                {/* <CountdownTimer endTime={new Date("Wed Mar 02 2022 14:00:00 GMT+0800")} /> */}
             </Stack>
         </Box>
     )
