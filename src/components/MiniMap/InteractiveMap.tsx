@@ -405,7 +405,7 @@ export const InteractiveMap = ({
                             color: "#D90000",
                             opacity: 0.9,
                             filter: "drop-shadow(0 3px 3px #00000050)",
-                            fontSize: "7.2rem",
+                            fontSize: "8rem",
                         }}
                     >
                         {timeRemain}
