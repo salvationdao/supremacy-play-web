@@ -41,17 +41,18 @@ export const DeployConfirmation = ({
     asset,
     queueCost,
     contractReward,
+    queueLength,
     onClose,
 }: {
     open: boolean
     asset: Asset
-    queueCost?: string
+    queueCost: string
     contractReward?: string
+    queueLength: number
     onClose: () => void
 }) => {
     const { state, send } = useWebsocket()
     const { user } = useAuth()
-    const { queueLength } = useQueue()
     const { hash, name, image } = asset
     const [needInsured, toggleNeedInsured] = useToggle(false)
 
@@ -172,13 +173,13 @@ export const DeployConfirmation = ({
                                             ? supFormatter(`${(queueLength + 1) * 2}000000000000000000`)
                                             : "N/A"
                                     }
-                                    tooltip="Your reward if your syndicate wins the battle."
+                                    tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
                                 />
 
                                 <AmountItem
                                     title={"FEE: "}
                                     color={"#FF2B2B"}
-                                    value={queueCost ? `${supFormatter(queueCost)}` : "N/A"}
+                                    value={queueCost}
                                     tooltip="The cost to place your war machine into the battle queue."
                                 />
                             </Stack>
