@@ -1,4 +1,4 @@
-import { Box, Stack, ThemeProvider } from "@mui/material"
+import { Box, Snackbar, Stack, ThemeProvider, Typography } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { DrawerProvider, GAMEBAR_CONSTANTS, WalletProvider } from "./components/GameBar"
 import GameBar from "./components/GameBar"
@@ -37,11 +37,14 @@ import {
     StreamProvider,
     useAuth,
     useDimension,
+    useWebsocket,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme } from "./types"
+import { SvgPlay, TrailerThumbPNG } from "./assets"
+import HubKey from "./keys"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -62,6 +65,7 @@ if (SENTRY_CONFIG) {
 
 const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
+
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
 
