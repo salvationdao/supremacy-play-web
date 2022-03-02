@@ -193,7 +193,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                                         borderRadius: 0.6,
                                     }}
                                 >
-                                    {totalMultipliers}x
+                                    {totalMultipliers.toFixed(2)}x
                                 </Typography>
                             </Stack>
                         </Tooltip>

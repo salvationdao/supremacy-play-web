@@ -44,7 +44,7 @@ export const SupsTooltipContent = ({
                         sx={{ fontFamily: "Share Tech", fontWeight: "bold", color: colors.textBlue }}
                         variant="h6"
                     >
-                        MULTIPLIERS: {`${totalMultipliers}x`}
+                        MULTIPLIERS: {`${totalMultipliers.toFixed(2)}x`}
                     </Typography>
 
                     <Stack spacing={0.4}>
