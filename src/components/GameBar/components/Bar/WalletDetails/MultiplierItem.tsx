@@ -54,7 +54,7 @@ export const MultiplierItem = ({
                         width: 20,
                         height: 20,
                         flexShrink: 0,
-                        backgroundImage: `url(${getMutiplierImage(supsMultiplier.key)})`,
+                        backgroundImage: `url(${getMutiplierImage(keyTitle(supsMultiplier.key))})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "contain",
