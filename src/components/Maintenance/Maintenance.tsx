@@ -76,7 +76,7 @@ export const Maintenance = () => {
                                 textAlign: "center",
                             }}
                         >
-                            03/01/2022 10PM PST
+                            SERVER IN FINAL TESTING
                         </Typography>
 
                         <Stack direction="row" spacing={1.6} alignItems="center">
@@ -94,7 +94,7 @@ export const Maintenance = () => {
                 </Box>
 
                 {/* Perth time */}
-                <CountdownTimer endTime={new Date("Wed Mar 02 2022 14:00:00 GMT+0800")} />
+                {/* <CountdownTimer endTime={new Date("Wed Mar 02 2022 14:00:00 GMT+0800")} /> */}
             </Stack>
         </Box>
     )
