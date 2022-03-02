@@ -167,6 +167,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                                     totalMultipliers={totalMultipliers}
                                     userID={userID || ""}
                                     transactions={transactions}
+                                    onClose={() => toggleIsTooltipOpen(false)}
                                 />
                             }
                             componentsProps={{
