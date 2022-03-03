@@ -35,7 +35,7 @@ export const SupsTooltipContent = ({
                     TOTAL SUPS:
                 </Typography>
 
-                <Stack direction="row" alignItems="center" spacing={0.4}>
+                <Stack direction="row" alignItems="center">
                     <SvgSupToken size="16px" fill={colors.yellow} sx={{ pb: 0 }} />
                     <Typography sx={{ fontFamily: "Share Tech", lineHeight: 1 }} variant="body2">
                         {sups ? supFormatterNoFixed(sups) : "0.00"}
