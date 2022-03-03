@@ -65,7 +65,7 @@ export const AssetItem = ({
     renderQueuedOnly?: boolean
 }) => {
     const { user } = useAuth()
-    const { state, subscribe } = useWebsocket()
+    const { state, send, subscribe } = useWebsocket()
     const { state: gsState } = useGSWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
 
@@ -227,6 +227,13 @@ export const AssetItem = ({
             return (
                 <>
                     <Typography
+                        onClick={async () => {
+                            try {
+                                await send(HubKey.LeaveQueue, asset.hash)
+                            } catch (e) {
+                                console.log(e)
+                            }
+                        }}
                         sx={{
                             px: 1,
                             py: 0.34,
