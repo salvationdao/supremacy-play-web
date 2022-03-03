@@ -14,7 +14,7 @@ export const Maintenance = () => {
                 backgroundColor: "#040B10",
                 backgroundImage: `url(${MaintenanceJPG})`,
                 backgroundSize: "cover",
-                backgroundPosition: "bottom left",
+                backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
             }}
         >
