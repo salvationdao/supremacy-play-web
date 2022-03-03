@@ -18,7 +18,7 @@ export const Bar = (props: GameBarBaseProps) => {
         if (state !== WebSocket.OPEN) {
             return (
                 <>
-                    <Logo supremacyPage={props.supremacyPage} />
+                    <Logo />
                     <Box sx={{ flexGrow: 1 }} />
                     <Typography sx={{ mr: 2 }} variant="caption">
                         Connecting to server...
@@ -29,7 +29,7 @@ export const Bar = (props: GameBarBaseProps) => {
 
         return (
             <>
-                {<Logo supremacyPage={props.supremacyPage} />}
+                {<Logo />}
                 <Box sx={{ flexGrow: 1 }} />
                 {user && (
                     <>

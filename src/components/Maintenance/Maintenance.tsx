@@ -1,5 +1,5 @@
 import { Box, IconButton, Link, Stack, Typography } from "@mui/material"
-import { LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube, MaintenanceJPG } from "../../assets"
+import { LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube, MaintenancePNG } from "../../assets"
 import { SUPREMACY_PAGE } from "../../constants"
 import { useTimer } from "../../hooks"
 import { colors } from "../../theme/theme"
@@ -12,7 +12,7 @@ export const Maintenance = () => {
                 width: "100%",
                 height: "100%",
                 backgroundColor: "#040B10",
-                backgroundImage: `url(${MaintenanceJPG})`,
+                backgroundImage: `url(${MaintenancePNG})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",

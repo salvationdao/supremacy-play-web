@@ -40,12 +40,12 @@ import { Box, BoxProps } from "@mui/system"
 import { colors } from "../theme/theme"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
 import FlamesPNG from "./images/Flames.png"
-import MaintenanceJPG from "./images/Maintenance.jpeg"
+import MaintenancePNG from "./images/Maintenance.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import LogoWEBP from "./images/Logo.webp"
 import BottomMechWEBP from "./images/BottomMech.webp"
 
-export { GenericWarMachinePNG, FlamesPNG, MaintenanceJPG, TrailerThumbPNG, LogoWEBP, BottomMechWEBP }
+export { GenericWarMachinePNG, FlamesPNG, MaintenancePNG, TrailerThumbPNG, LogoWEBP, BottomMechWEBP }
 
 interface SvgWrapperProps extends BoxProps {
     size?: string
