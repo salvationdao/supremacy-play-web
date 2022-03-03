@@ -34,7 +34,7 @@ const VotingSystemInner = ({ votingState }: VotingSystemProps) => {
                 zIndex: 14,
                 overflow: "hidden",
                 filter: "drop-shadow(0 3px 3px #00000050)",
-                minWidth: 280,
+                minWidth: 390,
             }}
         >
             <Slide in={isBattleStarted} direction="right">

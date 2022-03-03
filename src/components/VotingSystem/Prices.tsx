@@ -23,14 +23,20 @@ export const PricesInner = ({ price, prevPrice }: PricesInnerProps) => {
             placement="right-start"
             text="The cost to vote for a battle ability in your Syndicate is dynamic. When the demand is high within your Syndicate in a 10 second period compared to the average 100 second time period (all Syndicates), SUPS vote price increases, if demand is low, then the price of voting decreases."
         >
-            <Stack spacing={2.5} direction="row" alignItems="center" sx={{ width: "100%" }}>
+            <Stack
+                spacing={2.5}
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ width: "100%" }}
+            >
                 <Stack direction="row" alignItems="center" justifyContent="center">
                     <Typography variant="body1" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                         BATTLE ABILITY VOTING COST:
                     </Typography>
                 </Stack>
 
-                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ ml: "auto" }}>
+                <Stack direction="row" alignItems="center" justifyContent="center">
                     <SvgSupToken size="15.5px" fill={colors.yellow} />
                     <Typography
                         key={price.toFixed()}
