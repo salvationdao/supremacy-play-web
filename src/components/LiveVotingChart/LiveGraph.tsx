@@ -165,7 +165,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
                         pb: 0.1,
                         lineHeight: 1,
                         color: `${colors.text}80`,
-                        backgroundColor: "#000000",
+                        backgroundColor: "#111111",
                         borderRadius: 0.5,
                     }}
                 >
@@ -179,7 +179,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
                         pb: 0.1,
                         lineHeight: 1,
                         color: `${colors.text}80`,
-                        backgroundColor: "#000000",
+                        backgroundColor: "#111111",
                         borderRadius: 0.5,
                     }}
                 >

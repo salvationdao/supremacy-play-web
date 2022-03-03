@@ -2,7 +2,7 @@ import moment from "moment"
 import { useState, useEffect } from "react"
 import { useInterval } from "."
 
-export const useTimer = (endTime: Date, speed: number = 1000) => {
+export const useTimer = (endTime: Date | undefined, speed: number = 1000) => {
     const [totalSecRemain, setTotalSecRemain] = useState<number>(0)
     const [delay, setDelay] = useState<number | null>(null)
     const [hours, setHours] = useState<number>()

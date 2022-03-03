@@ -106,7 +106,17 @@ export const StreamContainer = createContainer(() => {
         // Reduce the list of options so it's not too many for the user
         // By default its sorted by quietest servers first
         const quietestStreams = availStreams.sort((a, b) => (a.usersNow / a.userMax > b.usersNow / b.userMax ? 1 : -1))
-        setCurrentStream(quietestStreams[0])
+
+        // If the local storage stream is in the list, set as current stream
+        const localStream = localStorage.getItem("streamStream")
+        if (localStream) {
+            const savedStream = JSON.parse(localStream)
+            if (getObjectFromArrayByKey(availStreams, savedStream.streamID, "streamID")) {
+                setCurrentStream(savedStream)
+                SetNewStreamOptions(quietestStreams, true)
+            }
+            return
+        }
 
         SetNewStreamOptions(quietestStreams)
     }, [streams])
