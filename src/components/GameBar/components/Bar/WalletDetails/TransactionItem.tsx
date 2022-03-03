@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { supFormatter } from "../../../helpers"
+import { supFormatter, supFormatterNoFixed } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useEffect } from "react"
 import Tooltip from "@mui/material/Tooltip"
@@ -38,7 +38,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                     }}
                 >
                     {isCredit ? "+" : "-"}
-                    {supFormatter(`${transaction.amount}`, 18)}{" "}
+                    {supFormatterNoFixed(transaction.amount)}
                 </Typography>
             </TooltipHelper>
 

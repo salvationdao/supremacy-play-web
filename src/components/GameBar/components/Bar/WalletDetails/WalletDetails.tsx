@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, Divider, Stack, Typography } from "@mui/material"
 import { BarExpandable, SupsTooltipContent } from "../.."
-import { supFormatter } from "../../../helpers"
+import { supFormatter, supFormatterNoFixed } from '../../../helpers'
 import { colors } from "../../../theme"
 import { useBar, useWallet, useAuth } from "../../../containers"
 import { useSecureSubscription, useToggle } from "../../../hooks"
@@ -201,7 +201,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                                 <SvgWallet size="23px" sx={{ mr: 1.3 }} />
                                 <SvgSupToken size="19px" fill={colors.yellow} sx={{ mr: 0.6 }} />
                                 <Typography sx={{ lineHeight: 1 }}>
-                                    {sups ? supFormatter(sups, 0) : "0.0000"}
+                                    {sups ? supFormatterNoFixed(sups, 2) : "0.00"}
                                 </Typography>
                                 <Typography
                                     variant="caption"

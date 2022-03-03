@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { supFormatter } from "../../../helpers"
+import { supFormatterNoFixed } from "../../../helpers"
 import { colors } from "../../../theme"
 import { SvgClose, SvgSupToken } from "../../../assets"
 import { Transaction } from "../../../types"
@@ -38,7 +38,7 @@ export const SupsTooltipContent = ({
                 <Stack direction="row" alignItems="center" spacing={0.4} sx={{ mt: 0.4 }}>
                     <SvgSupToken size="14px" fill={colors.yellow} />
                     <Typography sx={{ fontFamily: "Share Tech", lineHeight: 1 }} variant="body2">
-                        {sups ? supFormatter(sups, 18) : "0.0000"}
+                        {sups ? supFormatterNoFixed(sups) : "0.00"}
                     </Typography>
                 </Stack>
             </Box>
