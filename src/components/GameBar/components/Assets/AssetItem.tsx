@@ -208,7 +208,7 @@ export const AssetItem = ({
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
                                 REWARD:&nbsp;
                             </Typography>
-                            <SvgSupToken size="12px" fill={colors.yellow} />
+                            <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography
                                 variant="caption"
                                 sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.yellow }}
@@ -243,7 +243,7 @@ export const AssetItem = ({
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
                                 REWARD:&nbsp;
                             </Typography>
-                            <SvgSupToken size="12px" fill={colors.yellow} />
+                            <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography
                                 variant="caption"
                                 sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.yellow }}

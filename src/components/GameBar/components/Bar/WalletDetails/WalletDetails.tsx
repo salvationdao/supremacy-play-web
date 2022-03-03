@@ -167,7 +167,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                         <Tooltip
                             arrow
                             open={isTooltipOpen}
-                            placement={barPosition === "top" ? "bottom-start" : "top-start"}
+                            placement={barPosition === "top" ? "bottom-end" : "top-end"}
                             title={
                                 <SupsTooltipContent
                                     sups={sups}

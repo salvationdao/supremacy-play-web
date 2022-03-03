@@ -54,6 +54,7 @@ export const DeployConfirmation = ({
     const { user } = useAuth()
     const { hash, name, image } = asset
     const [needInsured, toggleNeedInsured] = useToggle(false)
+    const [deployFailed, toggleDeployFailed] = useToggle()
 
     const onDeploy = async () => {
         if (state !== WebSocket.OPEN) return
@@ -61,7 +62,7 @@ export const DeployConfirmation = ({
             const resp = await send(HubKey.JoinQueue, { assetHash: hash, needInsured })
             if (resp) onClose()
         } catch (e) {
-            console.log(e)
+            toggleDeployFailed(true)
             return
         }
     }
