@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { DeployConfirmation } from ".."
 import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
+import { useWebsocket as useGSWebsocket } from "../../../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { useInterval } from "../../hooks/useInterval"
@@ -64,6 +65,7 @@ export const AssetItem = ({
 }) => {
     const { user } = useAuth()
     const { state, subscribe } = useWebsocket()
+    const { state: gsState } = useGSWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
 
     const [assetData, setAssetData] = useState<Asset>(asset)
@@ -128,6 +130,27 @@ export const AssetItem = ({
     const { hash, name, image } = assetData
 
     const StatusArea = () => {
+        // If game server is down, don't show deploy button
+        if (gsState !== WebSocket.OPEN) {
+            return (
+                <Typography
+                    sx={{
+                        px: 1,
+                        py: 0.34,
+                        color: "grey",
+                        lineHeight: 1,
+                        border: `${"grey"} 1px solid`,
+                        borderRadius: 0.3,
+                        fontSize: ".75rem",
+                        fontFamily: "Share Tech",
+                        opacity: 0.6,
+                    }}
+                >
+                    GAME OFFLINE
+                </Typography>
+            )
+        }
+
         if (isRepairing) {
             const { startedAt, expectCompletedAt } = durability
             const isFastMode = durability.repairType == "FAST"
