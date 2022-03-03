@@ -112,6 +112,7 @@ export const AssetItem = ({
         )
     }, [state, subscribe])
 
+    const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
     const isRepairing = !!durability?.repairType
     const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
     const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
@@ -132,7 +133,7 @@ export const AssetItem = ({
 
     const StatusArea = () => {
         // If game server is down, don't show deploy button
-        if (gsState !== WebSocket.OPEN || UNDER_MAINTENANCE) {
+        if (!isGameServerUp) {
             return (
                 <Typography
                     sx={{
@@ -310,7 +311,7 @@ export const AssetItem = ({
                     backgroundSize: "contain",
                 }}
             >
-                {isInQueue && queuePosition && queuePosition.position && (
+                {isGameServerUp && isInQueue && queuePosition && queuePosition.position && (
                     <Box sx={{ position: "absolute" }}>{queuePosition.position}</Box>
                 )}
             </Box>
