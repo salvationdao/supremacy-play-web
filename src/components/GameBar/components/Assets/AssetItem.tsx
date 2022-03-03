@@ -215,14 +215,13 @@ export const AssetItem = ({
                             setRemoving(true)
                             try {
                                 await sendGS(keys.LeaveQueue, { hash: asset.hash })
-                            } catch (err) {
+                            } finally {
                                 setRemoving(false)
                             }
-                            setRemoving(false)
                         }}
                         sx={{
                             px: 1,
-                            py: 1,
+                            py: 0.34,
                             cursor: "pointer",
                             width: "90px",
                             textAlign: "center",
@@ -288,7 +287,6 @@ export const AssetItem = ({
                 position: "relative",
                 px: 2,
                 py: 1.8,
-                // backgroundColor: index % 2 === 0 ? colors.navy : undefined,
                 backgroundColor: `${colors.navy}80`,
             }}
         >
