@@ -51,7 +51,6 @@ export const PassportLogin: React.FC<PassportLoginProps> = (props) => {
             }
 
             const href = `${passportWeb}nosidebar/login?omitSideBar=true&&sessionID=${gameserverSessionID}`
-            console.log("re", href)
 
             const width = 520
             const height = 730

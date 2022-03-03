@@ -42,7 +42,6 @@ const ConnectButton = ({ renderButton, passportWeb }: { renderButton: boolean; p
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
-        console.log(href)
         const popup = window.open(
             href,
             "Connect Gamebar to XSYN Passport",

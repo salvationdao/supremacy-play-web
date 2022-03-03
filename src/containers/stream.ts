@@ -7,7 +7,7 @@ import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useWebsocket } from "."
 import HubKey from "../keys"
 
-const MAX_OPTIONS = 7
+const MAX_OPTIONS = 10
 
 interface StreamInfoEntry {
     audioBitrate: number
@@ -106,17 +106,7 @@ export const StreamContainer = createContainer(() => {
         // Reduce the list of options so it's not too many for the user
         // By default its sorted by quietest servers first
         const quietestStreams = availStreams.sort((a, b) => (a.usersNow / a.userMax > b.usersNow / b.userMax ? 1 : -1))
-
-        // If the local storage stream is in the list, set as current stream
-        const localStream = localStorage.getItem("streamStream")
-        if (localStream) {
-            const savedStream = JSON.parse(localStream)
-            if (getObjectFromArrayByKey(availStreams, savedStream.streamID, "streamID")) {
-                setCurrentStream(savedStream)
-                SetNewStreamOptions(quietestStreams, true)
-            }
-            return
-        }
+        setCurrentStream(quietestStreams[0])
 
         SetNewStreamOptions(quietestStreams)
     }, [streams])
@@ -130,7 +120,7 @@ export const StreamContainer = createContainer(() => {
 
         // If there is no current stream selected then pick the US one (for now)
         if (!dontChangeCurrentStream && !currentStream && newStreamOptions && newStreamOptions.length > 0) {
-            const usaStreams = newStreamOptions.filter((s) => s.name == "USA")
+            const usaStreams = newStreamOptions.filter((s) => s.name == "USA AZ")
             if (usaStreams && usaStreams.length > 0) {
                 changeStream(usaStreams[0])
             }
