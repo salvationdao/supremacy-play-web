@@ -66,7 +66,7 @@ export const Maintenance = () => {
                             {"WE'LL BE BACK SOON"}
                         </Typography>
 
-                        {/* <Typography
+                        <Typography
                             variant="h5"
                             sx={{
                                 mb: 0.5,
@@ -74,8 +74,8 @@ export const Maintenance = () => {
                                 textAlign: "center",
                             }}
                         >
-                            03/01/2022 10PM PST
-                        </Typography> */}
+                            FOLLOW OUR SOCIALS FOR MORE UPDATES
+                        </Typography>
 
                         <Stack direction="row" spacing={1.6} alignItems="center">
                             <IconButton size="small" target="_blank" href="https://discord.com/invite/supremacygame">
