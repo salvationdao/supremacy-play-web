@@ -31,18 +31,12 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
     const [reRender, toggleReRender] = useToggle()
 
     const [transactions, setTransactions] = useState<Transaction[]>([])
-    const { payload: transactionsPayload, setArguments } = useSecureSubscription<Transaction[]>(
+    const { payload: transactionsPayload } = useSecureSubscription<Transaction[]>(
         HubKey.SubscribeUserTransactions,
     )
     const { payload: latestTransactionPayload, setArguments: latestTransactionArguments } = useSecureSubscription<
         Transaction[]
     >(HubKey.SubscribeUserLatestTransactions)
-
-    useEffect(() => {
-        if (!userID || userID === NilUUID) return
-        setArguments({ id: userID })
-        latestTransactionArguments({ id: userID })
-    }, [userID])
 
     // get initial 5 transactions
     useEffect(() => {
