@@ -11,6 +11,7 @@ import { useInterval } from "../../hooks/useInterval"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset, AssetDurability, AssetQueueStat } from "../../types/assets"
+import { UNDER_MAINTENANCE } from "../../../../constants"
 
 const RepairCountdown = ({ endTime }: { endTime: Date }) => {
     const [, setTimeRemain] = useState<number>(0)
@@ -131,7 +132,7 @@ export const AssetItem = ({
 
     const StatusArea = () => {
         // If game server is down, don't show deploy button
-        if (gsState !== WebSocket.OPEN) {
+        if (gsState !== WebSocket.OPEN || UNDER_MAINTENANCE) {
             return (
                 <Typography
                     sx={{
