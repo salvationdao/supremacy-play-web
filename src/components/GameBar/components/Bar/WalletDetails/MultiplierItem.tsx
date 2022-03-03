@@ -14,6 +14,12 @@ import {
     MultiplierNowIAmBecomeDeath,
     MultiplierSuperContributor,
     MultiplierSupporter,
+    MultiplierFiend,
+    MultiplierJunkE,
+    MultiplierMechHead,
+    MultiplierSniper,
+    MultiplierWonBattle,
+    MultiplierWonLastThreeBattles,
 } from "../../../assets"
 import { useInterval } from "../../../hooks/useInterval"
 
@@ -114,32 +120,31 @@ const getMutiplierDeets = (multiplierKey: string): { image: string; description:
             break
         case "a fool and his money":
             image = MultiplierAFoolAndHisMoney
-            description = "For the player who has put the most individual SUPS in to vote but still lost."
+            description = "For a player who has put the most individual SUPS in to vote but still lost."
             break
         case "air support":
             image = MultiplierAirSupport
-            description = "For the player who won an airstrike."
+            description = "For a player who won an airstrike."
             break
         case "now i am become death":
             image = MultiplierNowIAmBecomeDeath
-            description = "For the player who won a nuke."
+            description = "For a player who won a nuke."
             break
         case "destroyer of worlds":
             image = MultiplierDestroyerOfWorlds
-            description = "For the player who has won the previous three nukes."
+            description = "For a player who has won the previous three nukes."
             break
         case "grease monkey":
             image = MultiplierGreaseMonkey
-            description = "For the player who won a repair drop."
+            description = "For a player who won a repair drop."
             break
         case "field mechanic":
             image = MultiplierFieldMechanic
-            description = "For the player who has won the previous three repair drops."
+            description = "For a player who has won the previous three repair drops."
             break
         case "combo breaker":
             image = MultiplierFieldMechanic
-            description =
-                "For the player who wins the vote for their syndicate after it has lost the last three rounds."
+            description = "For a player who wins the vote for their syndicate after it has lost the last three rounds."
             break
         case "mech commander":
             image = MultiplierMechCommander
@@ -148,6 +153,30 @@ const getMutiplierDeets = (multiplierKey: string): { image: string; description:
         case "admiral":
             image = MultiplierAdmiral
             description = "When a player's mech wins the last 3 battles."
+            break
+        case "fiend":
+            image = MultiplierFiend
+            description = "3 hours of active playing."
+            break
+        case "juke-e":
+            image = MultiplierJunkE
+            description = "6 hours of active playing."
+            break
+        case "mech head":
+            image = MultiplierMechHead
+            description = "10 hours of active playing."
+            break
+        case "sniper":
+            image = MultiplierSniper
+            description = "For a player who has won the vote by dropping in big."
+            break
+        case "won battle":
+            image = MultiplierWonBattle
+            description = "When a player's syndicate has won the last."
+            break
+        case "won last three battles":
+            image = MultiplierWonLastThreeBattles
+            description = "When a player's syndicate has won the last 3 battles."
             break
         case "offline":
         case "applause":
