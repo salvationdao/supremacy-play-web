@@ -31,7 +31,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 placement="left"
                 text={transaction.description ? `  ${transaction.description.toUpperCase()}` : ""}
             >
-                <Stack direction="row" alignItems="center" spacing={0.4}>
+                <Stack direction="row" alignItems="center">
                     <Typography sx={{ fontFamily: "Share Tech", lineHeight: 1, color }}>
                         {isCredit ? "+" : "-"}
                     </Typography>
