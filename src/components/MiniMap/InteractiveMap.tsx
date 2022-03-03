@@ -98,7 +98,7 @@ export const InteractiveMap = ({
     useEffect(() => {
         setDelay(null)
         if (endMoment) {
-            setDelay(600)
+            setDelay(600) // Counts faster than 1 second
             const d = moment.duration(endMoment.diff(moment()))
             setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
             return
