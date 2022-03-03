@@ -48,6 +48,12 @@ import MultiplierMechCommander from "./images/Multipliers/MechCommander.png"
 import MultiplierNowIAmBecomeDeath from "./images/Multipliers/NowIAmBecomeDeath.png"
 import MultiplierSuperContributor from "./images/Multipliers/SuperContributor.png"
 import MultiplierSupporter from "./images/Multipliers/Supporter.png"
+import MultiplierFiend from "./images/Multipliers/Fiend.png"
+import MultiplierJunkE from "./images/Multipliers/JunkE.png"
+import MultiplierMechHead from "./images/Multipliers/Supporter.png"
+import MultiplierSniper from "./images/Multipliers/Sniper.png"
+import MultiplierWonBattle from "./images/Multipliers/WonBattle.png"
+import MultiplierWonLastThreeBattles from "./images/Multipliers/WonLastThreeBattles.png"
 export {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
@@ -61,6 +67,12 @@ export {
     MultiplierNowIAmBecomeDeath,
     MultiplierSuperContributor,
     MultiplierSupporter,
+    MultiplierFiend,
+    MultiplierJunkE,
+    MultiplierMechHead,
+    MultiplierSniper,
+    MultiplierWonBattle,
+    MultiplierWonLastThreeBattles,
 }
 // End multiplier images
 
