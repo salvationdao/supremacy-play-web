@@ -63,7 +63,6 @@ export const DeployConfirmation = ({
             toggleIsDeploying(true)
             const resp = await send(HubKey.JoinQueue, { assetHash: hash, needInsured })
             if (resp) {
-                toggleDeployFailed(false)
                 onClose()
             }
         } catch (e) {

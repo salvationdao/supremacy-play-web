@@ -40,9 +40,12 @@ export const AssetItem = ({
 }) => {
     const { user } = useAuth()
     const { state, subscribe } = useWebsocket()
-    const { send } = useGSWebsocket()
+    const { send: sendGS } = useGSWebsocket()
     const { state: gsState } = useGSWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
+
+    const [mouseOver, setMouseOver] = useState<boolean>(false)
+    const [removing, setRemoving] = useState<boolean>(false)
 
     const [assetData, setAssetData] = useState<Asset>(asset)
     const [queuePosition, setQueuePosition] = useState<AssetQueueStat>()
@@ -202,27 +205,32 @@ export const AssetItem = ({
             return (
                 <>
                     <Typography
-                        // Leave queue
+                        onMouseOver={() => setMouseOver(true)}
+                        onMouseLeave={() => setMouseOver(false)}
                         onClick={async () => {
+                            if (removing) return
+                            setRemoving(true)
                             try {
-                                console.log("leaving")
-                                await send(HubKey.LeaveQueue, asset.hash)
-                            } catch (e) {
-                                console.log(e)
+                                await sendGS(HubKey.LeaveQueue, { hash: asset.hash })
+                            } finally {
+                                setRemoving(false)
                             }
                         }}
                         sx={{
                             px: 1,
                             py: 0.34,
-                            color: colors.yellow,
+                            cursor: "pointer",
+                            width: 82,
+                            textAlign: "center",
+                            color: mouseOver ? colors.red : colors.yellow,
                             lineHeight: 1,
-                            border: `${colors.yellow} 1px solid`,
+                            border: `${mouseOver ? colors.red : colors.yellow} 1px solid`,
                             borderRadius: 0.3,
                             fontSize: ".75rem",
                             fontFamily: "Share Tech",
                         }}
                     >
-                        IN QUEUE
+                        {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
                     </Typography>
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
