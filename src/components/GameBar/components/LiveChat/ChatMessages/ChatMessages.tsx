@@ -22,7 +22,6 @@ interface ChatMessagesProps {
     chatMessages: ChatData[]
     sentMessages: Date[]
     failedMessages: Date[]
-    inGlobalChat: boolean
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
@@ -38,7 +37,6 @@ const ChatMessagesInner = ({
     chatMessages,
     sentMessages,
     failedMessages,
-    inGlobalChat,
     state,
     subscribe,
 }: ChatMessagesPropsInner) => {
@@ -90,28 +88,28 @@ const ChatMessagesInner = ({
 
     return (
         <>
-            {globalMessage && inGlobalChat && (
-                <Box sx={{ mb: 2 }}>
+            {globalMessage && (
+                <Box>
                     <Stack
                         alignItems="center"
                         justifyContent="center"
+                        spacing={0.3}
                         sx={{
                             px: 1.6,
                             py: 1.6,
-                            backgroundColor: primaryColor,
+                            backgroundColor: colors.red,
+                            boxShadow: 2,
                         }}
                     >
-                        <Box onClick={() => setGlobalMessage(undefined)}>
-                            <Typography
-                                sx={{
-                                    color: "#FFFFFF",
-                                    textAlign: "center",
-                                    fontFamily: "Nostromo Regular Heavy",
-                                }}
-                            >
-                                {globalMessage.title}
-                            </Typography>
-                        </Box>
+                        <Typography
+                            sx={{
+                                color: "#FFFFFF",
+                                textAlign: "center",
+                                fontFamily: "Nostromo Regular Heavy",
+                            }}
+                        >
+                            {globalMessage.title}
+                        </Typography>
 
                         <Typography sx={{ fontFamily: "Share Tech", textAlign: "center" }}>
                             {globalMessage.message}

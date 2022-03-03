@@ -54,20 +54,17 @@ const DrawerContent = ({
     let primaryColor
     let secondaryColor
     let bannerBackgroundColor
-    let inGlobalChat
 
     if (tabValue == 0) {
         factionID = null
         primaryColor = colors.globalChat
         secondaryColor = "#FFFFFF"
         bannerBackgroundColor = shadeColor(colors.globalChat, -30)
-        inGlobalChat = true
     } else if (tabValue == 1 && isEnlisted) {
         factionID = user.factionID
         primaryColor = user.faction.theme.primary
         secondaryColor = user.faction.theme.secondary
         bannerBackgroundColor = `${primaryColor}25`
-        inGlobalChat = false
     } else {
         return null
     }
@@ -146,7 +143,6 @@ const DrawerContent = ({
                 chatMessages={chatMessages}
                 sentMessages={sentMessages}
                 failedMessages={failedMessages}
-                inGlobalChat={inGlobalChat}
             />
 
             {user ? (

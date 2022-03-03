@@ -11,7 +11,6 @@ import { useInterval } from "../../hooks/useInterval"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset, AssetDurability, AssetQueueStat } from "../../types/assets"
-import keys from "../../keys"
 
 const RepairCountdown = ({ endTime }: { endTime: Date }) => {
     const [, setTimeRemain] = useState<number>(0)
@@ -66,15 +65,12 @@ export const AssetItem = ({
 }) => {
     const { user } = useAuth()
     const { state, subscribe } = useWebsocket()
-    const { send: sendGS } = useGSWebsocket()
+    const { state: gsState } = useGSWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
 
     const [assetData, setAssetData] = useState<Asset>(asset)
     const [queuePosition, setQueuePosition] = useState<AssetQueueStat>()
     const [durability, setDurability] = useState<AssetDurability>()
-
-    const [mouseOver, setMouseOver] = useState<boolean>(false)
-    const [removing, setRemoving] = useState<boolean>(false)
 
     // Subscribe on asset data
     useEffect(() => {
@@ -134,6 +130,27 @@ export const AssetItem = ({
     const { hash, name, image } = assetData
 
     const StatusArea = () => {
+        // If game server is down, don't show deploy button
+        if (gsState !== WebSocket.OPEN) {
+            return (
+                <Typography
+                    sx={{
+                        px: 1,
+                        py: 0.34,
+                        color: "grey",
+                        lineHeight: 1,
+                        border: `${"grey"} 1px solid`,
+                        borderRadius: 0.3,
+                        fontSize: ".75rem",
+                        fontFamily: "Share Tech",
+                        opacity: 0.6,
+                    }}
+                >
+                    GAME OFFLINE
+                </Typography>
+            )
+        }
+
         if (isRepairing) {
             const { startedAt, expectCompletedAt } = durability
             const isFastMode = durability.repairType == "FAST"
@@ -208,42 +225,30 @@ export const AssetItem = ({
             return (
                 <>
                     <Typography
-                        onMouseOver={() => setMouseOver(true)}
-                        onMouseLeave={() => setMouseOver(false)}
-                        onClick={async () => {
-                            if (removing) return
-                            setRemoving(true)
-                            try {
-                                await sendGS(keys.LeaveQueue, { hash: asset.hash })
-                            } catch (err) {
-                                setRemoving(false)
-                            }
-                            setRemoving(false)
-                        }}
                         sx={{
                             px: 1,
-                            py: 1,
-                            cursor: "pointer",
-                            width: "90px",
-                            textAlign: "center",
-                            color: mouseOver ? colors.red : colors.yellow,
+                            py: 0.34,
+                            color: colors.yellow,
                             lineHeight: 1,
-                            border: `${mouseOver ? colors.red : colors.yellow} 1px solid`,
+                            border: `${colors.yellow} 1px solid`,
                             borderRadius: 0.3,
                             fontSize: ".75rem",
                             fontFamily: "Share Tech",
                         }}
                     >
-                        {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
+                        IN QUEUE
                     </Typography>
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
-                                <Box sx={{ fontSize: "0.9rem" }}>REWARD:&nbsp;</Box>
+                                REWARD:&nbsp;
                             </Typography>
-                            <SvgSupToken size="15px" fill={colors.yellow} />
-                            <Typography variant="caption" sx={{ fontFamily: "Share Tech", color: colors.yellow }}>
-                                <Box sx={{ fontSize: "0.9rem" }}>{supFormatter(contractReward2)}</Box>
+                            <SvgSupToken size="12px" fill={colors.yellow} />
+                            <Typography
+                                variant="caption"
+                                sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.yellow }}
+                            >
+                                {supFormatter(contractReward2)}
                             </Typography>
                         </Stack>
                     )}
@@ -288,7 +293,6 @@ export const AssetItem = ({
                 position: "relative",
                 px: 2,
                 py: 1.8,
-                // backgroundColor: index % 2 === 0 ? colors.navy : undefined,
                 backgroundColor: `${colors.navy}80`,
             }}
         >
