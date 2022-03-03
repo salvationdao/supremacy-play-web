@@ -39,7 +39,8 @@ export const AssetItem = ({
     renderQueuedOnly?: boolean
 }) => {
     const { user } = useAuth()
-    const { state, send, subscribe } = useWebsocket()
+    const { state, subscribe } = useWebsocket()
+    const { send } = useGSWebsocket()
     const { state: gsState } = useGSWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
 
