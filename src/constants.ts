@@ -37,4 +37,4 @@ export const TRAILER_VIDEO =
     "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"
 
 // Maintenance. The local stroage is a hack to let the team members in
-export const UNDER_MAINTENANCE = false && !localStorage.getItem("NinjaSecrets@!")
+export const UNDER_MAINTENANCE = true && !localStorage.getItem("NinjaSecrets@!")
