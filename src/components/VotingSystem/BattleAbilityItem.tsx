@@ -161,7 +161,7 @@ const BattleAbilityItemInner = ({
     }, [state, subscribe, factionID])
 
     const onVote = (voteAmount: number) => {
-        if (send) send<boolean, { voteAmount: number }>(HubKey.SubmitVoteAbilityRight, { voteAmount })
+        if (send) send<boolean, { voteAmount: number }>(HubKey.SubmitVoteAbilityRight, { voteAmount }, true)
     }
 
     if (!battleAbility) return null
