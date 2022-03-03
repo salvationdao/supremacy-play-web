@@ -48,7 +48,7 @@ export const MultiplierItem = ({
     const multiplierDeets = getMutiplierDeets(keyTitle(supsMultiplier.key))
 
     return (
-        <TooltipHelper text={multiplierDeets.description} placement="right">
+        <TooltipHelper text={multiplierDeets.description} placement="left">
             <Stack direction="row" alignItems="center" spacing={2}>
                 <Stack direction="row" spacing={0.5} sx={{ flex: 1 }}>
                     <Box
@@ -158,7 +158,7 @@ const getMutiplierDeets = (multiplierKey: string): { image: string; description:
         case "supstick":
         default:
             image = MultiplierCitizen
-            description = ""
+            description = multiplierKey
             break
     }
 
