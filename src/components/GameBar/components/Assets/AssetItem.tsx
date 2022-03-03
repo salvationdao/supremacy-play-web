@@ -227,8 +227,10 @@ export const AssetItem = ({
             return (
                 <>
                     <Typography
+                        // Leave queue
                         onClick={async () => {
                             try {
+                                console.log("leaving")
                                 await send(HubKey.LeaveQueue, asset.hash)
                             } catch (e) {
                                 console.log(e)
