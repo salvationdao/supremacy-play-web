@@ -223,7 +223,7 @@ export const AssetItem = ({
                             px: 1,
                             py: 0.34,
                             cursor: "pointer",
-                            width: "90px",
+                            width: 82,
                             textAlign: "center",
                             color: mouseOver ? colors.red : colors.yellow,
                             lineHeight: 1,
@@ -238,11 +238,11 @@ export const AssetItem = ({
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
-                                <Box sx={{ fontSize: "0.9rem" }}>REWARD:&nbsp;</Box>
+                                REWARD:&nbsp;
                             </Typography>
-                            <SvgSupToken size="15px" fill={colors.yellow} />
+                            <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech", color: colors.yellow }}>
-                                <Box sx={{ fontSize: "0.9rem" }}>{supFormatter(contractReward2)}</Box>
+                                {supFormatter(contractReward2)}
                             </Typography>
                         </Stack>
                     )}
