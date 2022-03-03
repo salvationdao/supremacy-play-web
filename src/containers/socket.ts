@@ -53,7 +53,7 @@ export enum SocketState {
     CLOSED = WebSocket.CLOSED,
 }
 
-export type WSSendFn = <Y = any, X = any>(key: string, payload?: X) => Promise<Y>
+export type WSSendFn = <Y = any, X = any>(key: string, payload?: X, instant?: boolean) => Promise<Y>
 
 export interface WebSocketProperties {
     send: WSSendFn
@@ -95,7 +95,11 @@ const UseWebsocket = (): WebSocketProperties => {
 
     const webSocket = useRef<WebSocket | null>(null)
 
-    const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
+    const send = useRef<WSSendFn>(function send<Y = any, X = any>(
+        key: string,
+        payload?: X,
+        instant?: boolean,
+    ): Promise<Y> {
         const transactionID = makeid()
 
         return new Promise(function (resolve, reject) {
@@ -108,6 +112,15 @@ const UseWebsocket = (): WebSocketProperties => {
                 resolve(result)
             }
 
+            if (instant) {
+                sendMessage({
+                    key,
+                    payload,
+                    transactionID,
+                })
+                return
+            }
+
             setOutgoing((prev) => [
                 ...prev,
                 {
@@ -118,6 +131,14 @@ const UseWebsocket = (): WebSocketProperties => {
             ])
         })
     })
+
+    const sendMessage = useCallback(
+        (msg: Message<any>) => {
+            if (!webSocket || !webSocket.current) throw new Error("no websocket")
+            webSocket.current.send(JSON.stringify(msg))
+        },
+        [webSocket.current],
+    )
 
     const subs = useRef<{ [key: string]: SubscribeCallback[] }>({})
 

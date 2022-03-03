@@ -35,18 +35,18 @@ import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import RedMountainLogo from "./images/RedMountainLogo.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 
-// Multiplier images
+// Multiplier images (no spaces in file names, won't work!)
 import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
-import MultiplierAFoolAndHisMoney from "./images/Multipliers/A fool and his money.png"
-import MultiplierAirSupport from "./images/Multipliers/Air Support.png"
+import MultiplierAFoolAndHisMoney from "./images/Multipliers/AFoolAndHisMoney.png"
+import MultiplierAirSupport from "./images/Multipliers/AirSupport.png"
 import MultiplierCitizen from "./images/Multipliers/Citizen.png"
 import MultiplierContributor from "./images/Multipliers/Contributor.png"
-import MultiplierDestroyerOfWorlds from "./images/Multipliers/Destroyer of worlds.png"
-import MultiplierFieldMechanic from "./images/Multipliers/Field Mechanic.png"
-import MultiplierGreaseMonkey from "./images/Multipliers/Grease Monkey.png"
-import MultiplierMechCommander from "./images/Multipliers/Mech Commander.png"
-import MultiplierNowIAmBecomeDeath from "./images/Multipliers/Now i am become death.png"
-import MultiplierSuperContributor from "./images/Multipliers/Super Contributor.png"
+import MultiplierDestroyerOfWorlds from "./images/Multipliers/DestroyerOfWorlds.png"
+import MultiplierFieldMechanic from "./images/Multipliers/FieldMechanic.png"
+import MultiplierGreaseMonkey from "./images/Multipliers/GreaseMonkey.png"
+import MultiplierMechCommander from "./images/Multipliers/MechCommander.png"
+import MultiplierNowIAmBecomeDeath from "./images/Multipliers/NowIAmBecomeDeath.png"
+import MultiplierSuperContributor from "./images/Multipliers/SuperContributor.png"
 import MultiplierSupporter from "./images/Multipliers/Supporter.png"
 export {
     MultiplierAdmiral,

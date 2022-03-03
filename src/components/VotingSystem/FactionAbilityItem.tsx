@@ -116,10 +116,14 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
     }, [gameAbilityTargetPrice])
 
     const onContribute = async (amount: number) => {
-        send<boolean, GameAbilityContributeRequest>(HubKey.GameAbilityContribute, {
-            gameAbilityID: identity,
-            amount: new BigNumber(amount),
-        })
+        send<boolean, GameAbilityContributeRequest>(
+            HubKey.GameAbilityContribute,
+            {
+                gameAbilityID: identity,
+                amount: new BigNumber(amount),
+            },
+            true,
+        )
     }
 
     return (
