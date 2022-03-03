@@ -1,8 +1,8 @@
 import { Box, Stack, Typography, useTheme } from "@mui/material"
 import { useEffect, useState } from "react"
+import { ClipThing } from ".."
 import { useWebsocket } from "../../containers"
 import HubKey from "../../keys"
-import { ClipThing } from "../GameBar/components"
 
 export const BattleCloseAlert = () => {
     const { state, subscribe } = useWebsocket()

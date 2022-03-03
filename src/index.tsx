@@ -37,6 +37,7 @@ import {
     StreamProvider,
     useAuth,
     useDimension,
+    useWebsocket,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
@@ -61,6 +62,7 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
+    const { state } = useWebsocket()
     const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
@@ -113,7 +115,7 @@ const AppInner = () => {
                                 <BattleCloseAlert />
                                 <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
-                                {user && haveSups && (
+                                {user && haveSups && state === WebSocket.OPEN && (
                                     <Box>
                                         <VotingSystem />
                                         <MiniMap />

@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Modal, Stack, Switch, Typography } from "@mui/material"
-import { ClipThing, TooltipHelper } from ".."
+import { TooltipHelper, ClipThing } from "../../.."
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 import { acronym } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -63,7 +63,6 @@ export const DeployConfirmation = ({
             toggleIsDeploying(true)
             const resp = await send(HubKey.JoinQueue, { assetHash: hash, needInsured })
             if (resp) {
-                toggleDeployFailed(false)
                 onClose()
             }
         } catch (e) {

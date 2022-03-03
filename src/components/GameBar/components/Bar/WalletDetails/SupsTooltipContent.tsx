@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { supFormatter } from "../../../helpers"
+import { supFormatterNoFixed } from "../../../helpers"
 import { colors } from "../../../theme"
 import { SvgClose, SvgSupToken } from "../../../assets"
 import { Transaction } from "../../../types"
@@ -16,7 +16,7 @@ export const SupsTooltipContent = ({
     onClose,
 }: {
     sups?: string
-    supsMultipliers: {[key: string]:  SupsMultiplier}
+    supsMultipliers: { [key: string]: SupsMultiplier }
     selfDestroyed: (key: string) => void
     multipliersCleaned: SupsMultiplier[]
     totalMultipliers: number
@@ -24,7 +24,7 @@ export const SupsTooltipContent = ({
     userID: string
     onClose: () => void
 }) => {
-    const size = Object.keys(supsMultipliers).length;
+    const size = Object.keys(supsMultipliers).length
     return (
         <Stack spacing={1.5} sx={{ position: "relative", px: 1.3, py: 1 }}>
             <Box>
@@ -35,10 +35,10 @@ export const SupsTooltipContent = ({
                     TOTAL SUPS:
                 </Typography>
 
-                <Stack direction="row" alignItems="center" spacing={0.4} sx={{ mt: 0.4 }}>
-                    <SvgSupToken size="14px" fill={colors.yellow} />
+                <Stack direction="row" alignItems="center">
+                    <SvgSupToken size="16px" fill={colors.yellow} sx={{ pb: 0 }} />
                     <Typography sx={{ fontFamily: "Share Tech", lineHeight: 1 }} variant="body2">
-                        {sups ? supFormatter(sups, 18) : "0.0000"}
+                        {sups ? supFormatterNoFixed(sups) : "0.00"}
                     </Typography>
                 </Stack>
             </Box>

@@ -87,6 +87,18 @@ export const supFormatter = (num: string, fixedAmount: number | undefined = 0): 
         fixedAmount,
     )
 }
+export const supFormatterNoFixed = (num: string, maxDecimals?: number): string => {
+    const supTokens = new BigNumber(num).shiftedBy(-18)
+    if (maxDecimals) {
+        const split = supTokens.toString().split(".")
+        if ( split[1] ? split[1].length : 0 > maxDecimals) {
+            if (supTokens.isZero()) return supTokens.toFixed(maxDecimals)
+            return supTokens.toFormat(maxDecimals)
+        }
+    }
+    if (supTokens.isZero()) return supTokens.toFixed()
+    return supTokens.toFormat()
+}
 
 export const hexToRGB = (hex: string, alpha?: number): string => {
     const h = "0123456789ABCDEF"

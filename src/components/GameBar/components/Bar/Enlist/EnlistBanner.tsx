@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { BarExpandable, TooltipHelper } from "../.."
+import { BarExpandable } from "../.."
 import HubKey from "../../../keys"
 import { colors } from "../../../theme"
 import { UserStat } from "../../../types"
@@ -8,6 +8,7 @@ import { SvgAbility, SvgApplause, SvgDeath, SvgView, SvgWrapperProps } from "../
 import { useAuth, useWebsocket } from "../../../containers"
 import { useEffect, useState } from "react"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
+import { TooltipHelper } from "../../../.."
 
 const BannerInfo = ({
     title,

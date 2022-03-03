@@ -30,6 +30,12 @@ export const TooltipHelper = ({
         <Tooltip
             arrow
             placement={placement || (isCentered ? "bottom" : "bottom-start")}
+            sx={{
+                zIndex: "9999999 !important",
+                ".MuiTooltip-popper": {
+                    zIndex: "9999999 !important",
+                },
+            }}
             title={
                 <Box sx={{ px: 0.5, py: 0.2 }}>
                     <Typography

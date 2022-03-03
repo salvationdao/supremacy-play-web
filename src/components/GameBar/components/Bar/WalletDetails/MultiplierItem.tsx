@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { SupsMultiplier, TooltipHelper } from "../.."
+import { SupsMultiplier } from "../.."
+import { TooltipHelper } from "../../../.."
 import {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
