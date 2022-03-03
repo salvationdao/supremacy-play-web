@@ -3,13 +3,14 @@ import { supFormatter, supFormatterNoFixed } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useEffect } from "react"
 import Tooltip from "@mui/material/Tooltip"
-import { SvgContentCopyIcon } from "../../../assets"
+import { SvgContentCopyIcon, SvgSupToken } from "../../../assets"
 import { Transaction } from "../../../types"
 import moment from "moment"
 import { TooltipHelper } from "../../../.."
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const isCredit = userID === transaction.credit
+    const color = isCredit ? "#01FF70" : "#FF4136"
     const [copySuccess, toggleCopySuccess] = useToggle()
 
     useEffect(() => {
@@ -30,16 +31,15 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 placement="left"
                 text={transaction.description ? `  ${transaction.description.toUpperCase()}` : ""}
             >
-                <Typography
-                    sx={{
-                        fontFamily: "Share Tech",
-                        lineHeight: 1,
-                        color: isCredit ? "#01FF70" : "#FF4136",
-                    }}
-                >
-                    {isCredit ? "+" : "-"}
-                    {supFormatterNoFixed(transaction.amount)}
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={0.4}>
+                    <Typography sx={{ fontFamily: "Share Tech", lineHeight: 1, color }}>
+                        {isCredit ? "+" : "-"}
+                    </Typography>
+                    <SvgSupToken size="13px" fill={color} />
+                    <Typography sx={{ fontFamily: "Share Tech", lineHeight: 1, color }}>
+                        {supFormatterNoFixed(transaction.amount)}
+                    </Typography>
+                </Stack>
             </TooltipHelper>
 
             <Typography
