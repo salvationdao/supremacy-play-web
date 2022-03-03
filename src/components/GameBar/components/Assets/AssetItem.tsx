@@ -4,14 +4,12 @@ import { useEffect, useMemo, useState } from "react"
 import { DeployConfirmation } from ".."
 import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
 import { useAuth, useWebsocket } from "../../containers"
-import { useWebsocket as useGSWebsocket } from "../../../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { useInterval } from "../../hooks/useInterval"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset, AssetDurability, AssetQueueStat } from "../../types/assets"
-import keys from "../../keys"
 
 const RepairCountdown = ({ endTime }: { endTime: Date }) => {
     const [, setTimeRemain] = useState<number>(0)
@@ -66,15 +64,11 @@ export const AssetItem = ({
 }) => {
     const { user } = useAuth()
     const { state, subscribe } = useWebsocket()
-    const { send: sendGS } = useGSWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
 
     const [assetData, setAssetData] = useState<Asset>(asset)
     const [queuePosition, setQueuePosition] = useState<AssetQueueStat>()
     const [durability, setDurability] = useState<AssetDurability>()
-
-    const [mouseOver, setMouseOver] = useState<boolean>(false)
-    const [removing, setRemoving] = useState<boolean>(false)
 
     // Subscribe on asset data
     useEffect(() => {
@@ -208,40 +202,29 @@ export const AssetItem = ({
             return (
                 <>
                     <Typography
-                        onMouseOver={() => setMouseOver(true)}
-                        onMouseLeave={() => setMouseOver(false)}
-                        onClick={async () => {
-                            if (removing) return
-                            setRemoving(true)
-                            try {
-                                await sendGS(keys.LeaveQueue, { hash: asset.hash })
-                            } finally {
-                                setRemoving(false)
-                            }
-                        }}
                         sx={{
                             px: 1,
                             py: 0.34,
-                            cursor: "pointer",
-                            width: 82,
-                            textAlign: "center",
-                            color: mouseOver ? colors.red : colors.yellow,
+                            color: colors.yellow,
                             lineHeight: 1,
-                            border: `${mouseOver ? colors.red : colors.yellow} 1px solid`,
+                            border: `${colors.yellow} 1px solid`,
                             borderRadius: 0.3,
                             fontSize: ".75rem",
                             fontFamily: "Share Tech",
                         }}
                     >
-                        {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
+                        IN QUEUE
                     </Typography>
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption" sx={{ fontFamily: "Share Tech" }}>
                                 REWARD:&nbsp;
                             </Typography>
-                            <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
-                            <Typography variant="caption" sx={{ fontFamily: "Share Tech", color: colors.yellow }}>
+                            <SvgSupToken size="12px" fill={colors.yellow} />
+                            <Typography
+                                variant="caption"
+                                sx={{ fontFamily: "Share Tech", ml: 0.1, color: colors.yellow }}
+                            >
                                 {supFormatter(contractReward2)}
                             </Typography>
                         </Stack>
