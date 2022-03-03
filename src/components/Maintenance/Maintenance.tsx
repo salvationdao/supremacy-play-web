@@ -1,9 +1,7 @@
 import { Box, IconButton, Link, Stack, Typography } from "@mui/material"
-import moment from "moment"
-import { useEffect, useState } from "react"
 import { LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube, MaintenanceJPG } from "../../assets"
 import { SUPREMACY_PAGE } from "../../constants"
-import { useInterval } from "../../hooks"
+import { useTimer } from "../../hooks"
 import { colors } from "../../theme/theme"
 
 export const Maintenance = () => {
@@ -101,32 +99,7 @@ export const Maintenance = () => {
 }
 
 const CountdownTimer = ({ endTime }: { endTime: Date }) => {
-    const [, setTimeRemain] = useState<number>(0)
-    const [delay, setDelay] = useState<number | null>(null)
-    const [hours, setHours] = useState<number>()
-    const [minutes, setMinutes] = useState<number>()
-    const [seconds, setSeconds] = useState<number>()
-
-    useEffect(() => {
-        if (endTime) {
-            setDelay(1000)
-            const d = moment.duration(moment(endTime).diff(moment()))
-            setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
-            return
-        }
-        setDelay(null)
-    }, [])
-
-    useInterval(() => {
-        setTimeRemain((t) => Math.max(t - 1, 0))
-        const d = moment.duration(moment(endTime).diff(moment()))
-        const hours = Math.floor(d.asHours())
-        const minutes = Math.floor(d.asMinutes()) - hours * 60
-        const seconds = Math.floor(d.asSeconds()) - hours * 60 * 60 - minutes * 60
-        setHours(Math.max(hours, 0))
-        setMinutes(Math.max(minutes, 0))
-        setSeconds(Math.max(seconds, 0))
-    }, delay)
+    const { hours, minutes, seconds } = useTimer(endTime)
 
     return (
         <Stack

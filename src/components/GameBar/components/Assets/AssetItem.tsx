@@ -1,5 +1,4 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material"
-import moment from "moment"
 import { useEffect, useMemo, useState } from "react"
 import { DeployConfirmation } from ".."
 import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
@@ -7,39 +6,14 @@ import { useAuth, useWebsocket } from "../../containers"
 import { useWebsocket as useGSWebsocket } from "../../../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { useInterval } from "../../hooks/useInterval"
 import HubKey from "../../keys"
 import { colors } from "../../theme"
 import { Asset, AssetDurability, AssetQueueStat } from "../../types/assets"
 import { UNDER_MAINTENANCE } from "../../../../constants"
+import { useTimer } from "../../../../hooks"
 
 const RepairCountdown = ({ endTime }: { endTime: Date }) => {
-    const [, setTimeRemain] = useState<number>(0)
-    const [delay, setDelay] = useState<number | null>(null)
-    const [hours, setHours] = useState<number>()
-    const [minutes, setMinutes] = useState<number>()
-    const [seconds, setSeconds] = useState<number>()
-
-    useEffect(() => {
-        if (endTime) {
-            setDelay(1000)
-            const d = moment.duration(moment(endTime).diff(moment()))
-            setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
-            return
-        }
-        setDelay(null)
-    }, [])
-
-    useInterval(() => {
-        setTimeRemain((t) => Math.max(t - 1, 0))
-        const d = moment.duration(moment(endTime).diff(moment()))
-        const hours = Math.floor(d.asHours())
-        const minutes = Math.floor(d.asMinutes()) - hours * 60
-        const seconds = Math.floor(d.asSeconds()) - hours * 60 * 60 - minutes * 60
-        setHours(Math.max(hours, 0))
-        setMinutes(Math.max(minutes, 0))
-        setSeconds(Math.max(seconds, 0))
-    }, delay)
+    const { hours, minutes, seconds } = useTimer(endTime)
 
     return (
         <>
