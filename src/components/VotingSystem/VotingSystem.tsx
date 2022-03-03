@@ -39,7 +39,10 @@ const VotingSystemInner = ({ votingState }: VotingSystemProps) => {
         >
             <Slide in={isBattleStarted} direction="right">
                 <Box>
-                    <ClipThing border={{ isFancy: true, borderThickness: "3px" }} clipSize="10px">
+                    <ClipThing
+                        border={{ isFancy: true, borderThickness: "3px", borderColor: user.faction.theme.primary }}
+                        clipSize="10px"
+                    >
                         <Box sx={{ backgroundColor: theme.factionTheme.background, pl: 0.9, pr: 2, pt: 1.8, pb: 2 }}>
                             <Box sx={{ ml: 1, mb: 1 }}>
                                 <Prices />

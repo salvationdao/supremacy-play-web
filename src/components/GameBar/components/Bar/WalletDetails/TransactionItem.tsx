@@ -1,5 +1,4 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { TooltipHelper } from "../.."
 import { supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useEffect } from "react"
@@ -7,6 +6,7 @@ import Tooltip from "@mui/material/Tooltip"
 import { SvgContentCopyIcon } from "../../../assets"
 import { Transaction } from "../../../types"
 import moment from "moment"
+import { TooltipHelper } from "../../../.."
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const isCredit = userID === transaction.credit
