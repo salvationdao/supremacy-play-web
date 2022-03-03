@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { SupsMultiplier } from "../.."
+import { SupsMultiplier, TooltipHelper } from "../.."
 import {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
@@ -45,89 +45,110 @@ export const MultiplierItem = ({
 
     if (timeRemain <= 0) return null
 
+    const multiplierDeets = getMutiplierDeets(keyTitle(supsMultiplier.key))
+
     return (
-        <Stack direction="row" alignItems="center" spacing={2}>
-            <Stack direction="row" spacing={0.5} sx={{ flex: 1 }}>
-                <Box
-                    sx={{
-                        mt: "-0.8px !important",
-                        width: 20,
-                        height: 20,
-                        flexShrink: 0,
-                        backgroundImage: `url(${getMutiplierImage(keyTitle(supsMultiplier.key))})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "contain",
-                        borderRadius: 0.8,
-                        border: "#FFFFFF60 1px solid",
-                    }}
-                />
-                <Typography sx={{ fontFamily: "Share Tech" }} variant="body2">
-                    {keyTitle(supsMultiplier.key).toUpperCase()}:
+        <TooltipHelper text={multiplierDeets.description} placement="right">
+            <Stack direction="row" alignItems="center" spacing={2}>
+                <Stack direction="row" spacing={0.5} sx={{ flex: 1 }}>
+                    <Box
+                        sx={{
+                            mt: "-0.8px !important",
+                            width: 20,
+                            height: 20,
+                            flexShrink: 0,
+                            backgroundImage: `url(${multiplierDeets.image})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "contain",
+                            borderRadius: 0.8,
+                            border: "#FFFFFF60 1px solid",
+                        }}
+                    />
+                    <Typography sx={{ fontFamily: "Share Tech" }} variant="body2">
+                        {keyTitle(supsMultiplier.key).toUpperCase()}:
+                    </Typography>
+                </Stack>
+
+                <Typography sx={{ fontFamily: "Share Tech", minWidth: 25, textAlign: "end" }} variant="body2">
+                    +{supsMultiplier.value}x
                 </Typography>
-            </Stack>
 
-            <Typography sx={{ fontFamily: "Share Tech", minWidth: 25, textAlign: "end" }} variant="body2">
-                +{supsMultiplier.value}x
-            </Typography>
-
-            <Stack
-                alignItems="center"
-                justifyContent="center"
-                sx={{ minWidth: 50, alignSelf: "stretch", background: "#00000075", borderRadius: 1 }}
-            >
-                <Typography
-                    sx={{ fontFamily: "Share Tech", textAlign: "center", lineHeight: 1, color: "grey !important" }}
-                    variant="caption"
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{ minWidth: 50, alignSelf: "stretch", background: "#00000075", borderRadius: 1 }}
                 >
-                    {timeRemain < 86400 ? `${timeRemain}s` : "∞"}
-                </Typography>
+                    <Typography
+                        sx={{ fontFamily: "Share Tech", textAlign: "center", lineHeight: 1, color: "grey !important" }}
+                        variant="caption"
+                    >
+                        {timeRemain < 86400 ? `${timeRemain}s` : "∞"}
+                    </Typography>
+                </Stack>
             </Stack>
-        </Stack>
+        </TooltipHelper>
     )
 }
 
-const getMutiplierImage = (multiplierKey: string) => {
+const getMutiplierDeets = (multiplierKey: string): { image: string; description: string } => {
     let image
+    let description
 
     switch (multiplierKey.toLowerCase()) {
         case "citizen":
             image = MultiplierCitizen
+            description = "When a player is within the top 80% of voting average."
             break
         case "supporter":
             image = MultiplierSupporter
+            description = "When a player is within the top 50% of voting average."
             break
         case "contributor":
             image = MultiplierSuperContributor
+            description = "When a player is within the top 75% of voting average."
             break
         case "super contributor":
             image = MultiplierContributor
+            description = "When a player is within the top 10% of voting average."
             break
         case "a fool and his money":
             image = MultiplierAFoolAndHisMoney
+            description = "For the player who has put the most individual SUPS in to vote but still lost."
             break
         case "air support":
             image = MultiplierAirSupport
+            description = "For the player who won an airstrike."
             break
         case "now i am become death":
             image = MultiplierNowIAmBecomeDeath
+            description = "For the player who won a nuke."
             break
         case "destroyer of worlds":
             image = MultiplierDestroyerOfWorlds
+            description = "For the player who has won the previous three nukes."
             break
         case "grease monkey":
             image = MultiplierGreaseMonkey
+            description = "For the player who won a repair drop."
             break
         case "field mechanic":
             image = MultiplierFieldMechanic
+            description = "For the player who has won the previous three repair drops."
+            break
+        case "combo breaker":
+            image = MultiplierFieldMechanic
+            description =
+                "For the player who wins the vote for their syndicate after it has lost the last three rounds."
             break
         case "mech commander":
             image = MultiplierMechCommander
+            description = "When a player's mech wins the battles."
             break
         case "admiral":
             image = MultiplierAdmiral
+            description = "When a player's mech wins the last 3 battles."
             break
-
         case "offline":
         case "applause":
         case "picked location":
@@ -137,8 +158,9 @@ const getMutiplierImage = (multiplierKey: string) => {
         case "supstick":
         default:
             image = MultiplierCitizen
+            description = ""
             break
     }
 
-    return image
+    return { image, description }
 }
