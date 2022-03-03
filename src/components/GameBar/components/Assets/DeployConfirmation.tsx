@@ -53,17 +53,24 @@ export const DeployConfirmation = ({
     const { state, send } = useWebsocket()
     const { user } = useAuth()
     const { hash, name, image } = asset
-    const [needInsured, toggleNeedInsured] = useToggle(false)
+    const [needInsured, toggleNeedInsured] = useToggle()
+    const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, toggleDeployFailed] = useToggle()
 
     const onDeploy = async () => {
         if (state !== WebSocket.OPEN) return
         try {
+            toggleIsDeploying(true)
             const resp = await send(HubKey.JoinQueue, { assetHash: hash, needInsured })
-            if (resp) onClose()
+            if (resp) {
+                toggleDeployFailed(false)
+                onClose()
+            }
         } catch (e) {
             toggleDeployFailed(true)
             return
+        } finally {
+            toggleIsDeploying(false)
         }
     }
 
@@ -219,6 +226,7 @@ export const DeployConfirmation = ({
                             <Button
                                 variant="contained"
                                 size="small"
+                                disabled={isDeploying}
                                 onClick={onDeploy}
                                 sx={{
                                     mt: "auto",
@@ -237,12 +245,25 @@ export const DeployConfirmation = ({
                                         fontSize: ".75rem",
                                         fontFamily: "Share Tech",
                                         lineHeight: 1,
-                                        color: "#FFFFFF",
+                                        color: isDeploying ? colors.green : "#FFFFFF",
                                     }}
                                 >
-                                    DEPLOY
+                                    {isDeploying ? "DEPLOYING..." : "DEPLOY"}
                                 </Typography>
                             </Button>
+
+                            {deployFailed && (
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        fontFamily: "Share Tech",
+                                        lineHeight: 1,
+                                        color: "red",
+                                    }}
+                                >
+                                    Failed to deploy.
+                                </Typography>
+                            )}
                         </Stack>
 
                         <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 3, right: 2 }}>
