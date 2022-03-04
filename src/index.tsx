@@ -56,7 +56,7 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
-    const { state, reconnecting, isServerUp } = useGameServerWebsocket()
+    const { state, isServerUp } = useGameServerWebsocket()
     const { user, gameserverSessionID } = useGameServerAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
@@ -94,7 +94,7 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        {!isServerUp ? (
+                        {!isServerUp || UNDER_MAINTENANCE ? (
                             <Maintenance />
                         ) : (
                             <>
