@@ -6,7 +6,7 @@ import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 
 export const Bar = () => {
-    const { state } = usePassportServerWebsocket()
+    const { state, isServerUp } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
     const { gameBarRef } = useBar()
     const { isAnyPanelOpen } = useDrawer()
@@ -18,7 +18,7 @@ export const Bar = () => {
                     <Logo />
                     <Box sx={{ flexGrow: 1 }} />
                     <Typography sx={{ mr: 2, fontFamily: "Nostromo Regular Bold" }} variant="caption">
-                        Passport offline
+                        {isServerUp ? "Attempting to reconnect..." : "Passport offline."}
                     </Typography>
                 </>
             )

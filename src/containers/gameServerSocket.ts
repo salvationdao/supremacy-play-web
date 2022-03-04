@@ -70,7 +70,6 @@ export interface WebSocketProperties {
     subscribeAbilityNetMessage: <T>(abilityID: string, callback: (payload: T) => void) => () => void
     subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
     onReconnect: () => void
-    reconnecting: boolean
     isServerUp: boolean
 }
 
@@ -104,11 +103,10 @@ const GameServerWebsocket = (): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
     const [outgoing, setOutgoing] = useDebounce<Message<any>[]>([], 100)
-    const [reconnecting, setReconnecting] = useState(false)
-    const [isServerUp, setIsServerUp] = useState<boolean>(true)
 
     const webSocket = useRef<WebSocket | null>(null)
-    const reconnectInterval = useRef<NodeJS.Timeout>()
+    const [reconnect, setIsReconnect] = useState<boolean>(false)
+    const [isServerUp, setIsServerUp] = useState<boolean>(true)
 
     // ******* Reconnect Logic Start ******* //
     // Check to see if server is up, if yes conenct WS, else don't
@@ -118,7 +116,6 @@ const GameServerWebsocket = (): WebSocketProperties => {
                 const resp = await fetch(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/check`)
                 const body = resp.ok as boolean
                 if (body) {
-                    setIsServerUp(true)
                     webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
                     webSocket.current.binaryType = "arraybuffer"
                     setupWS(webSocket.current)
@@ -128,15 +125,18 @@ const GameServerWebsocket = (): WebSocketProperties => {
                     }
                 }
             } catch {
-                setIsServerUp(false)
+                setIsReconnect(true)
             }
         })()
     }, [])
 
     useEffect(() => {
-        if (isServerUp) return
+        if (!reconnect) return
         serverCheckInterval(1)
-    }, [isServerUp])
+        setTimeout(() => {
+            setIsServerUp(false)
+        }, 120000)
+    }, [reconnect])
 
     const serverCheckInterval = async (num: number) => {
         const i = await backoffIntervalCalc(num)
@@ -321,11 +321,6 @@ const GameServerWebsocket = (): WebSocketProperties => {
                 // Use network sub menu to see payloads traveling between client and server
                 // https://stackoverflow.com/a/5757171
                 // console.info("WebSocket open.")
-                if (reconnectInterval.current) {
-                    clearInterval(reconnectInterval.current)
-                }
-                setIsServerUp(true)
-                setReconnecting(false)
             }
             ws.onerror = (e) => {
                 // Use network sub menu to see payloads traveling between client and server
@@ -394,8 +389,7 @@ const GameServerWebsocket = (): WebSocketProperties => {
             }
             ws.onclose = (e) => {
                 setReadyState()
-                setReconnecting(true)
-                setIsServerUp(false)
+                setIsReconnect(true)
             }
         },
         [],
@@ -418,7 +412,6 @@ const GameServerWebsocket = (): WebSocketProperties => {
     const setReadyState = () => {
         if (!webSocket.current) {
             setState(WebSocket.CLOSED)
-            setReconnecting(true)
             return
         }
         setState(webSocket.current.readyState)
@@ -437,7 +430,6 @@ const GameServerWebsocket = (): WebSocketProperties => {
         subscribeAbilityNetMessage,
         subscribeWarMachineStatNetMessage,
         onReconnect: sendOutgoingMessages,
-        reconnecting,
         isServerUp,
     }
 }

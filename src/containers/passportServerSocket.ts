@@ -46,6 +46,7 @@ interface WebSocketProperties {
     state: SocketState
     subscribe: <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => () => void
     onReconnect: () => void
+    isServerUp: boolean
 }
 
 type SubscribeCallback = (payload: any) => void
@@ -78,9 +79,33 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
     const [outgoing, setOutgoing] = useState<Message<any>[]>([])
-    const [isServerUp, setIsServerUp] = useState<boolean>(true)
 
     const webSocket = useRef<WebSocket | null>(null)
+    const [reconnect, setIsReconnect] = useState<boolean>(false)
+    const [isServerUp, setIsServerUp] = useState<boolean>(true)
+
+    useEffect(() => {
+        if (!reconnect) return
+        serverCheckInterval(1)
+        setTimeout(() => {
+            setIsServerUp(false)
+        }, 120000)
+    }, [reconnect])
+
+    const serverCheckInterval = async (num: number) => {
+        const i = await backoffIntervalCalc(num)
+        setTimeout(async () => {
+            try {
+                const resp = await fetch(`${window.location.protocol}//${initialState}/api/check`)
+                const body = resp.ok as boolean
+                if (body) {
+                    window.location.reload()
+                }
+            } catch {
+                serverCheckInterval(num + 1)
+            }
+        }, i)
+    }
 
     const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
         const transactionID = makeid()
@@ -105,26 +130,6 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
             ])
         })
     })
-
-    useEffect(() => {
-        if (isServerUp) return
-        serverCheckInterval(1)
-    }, [isServerUp])
-
-    const serverCheckInterval = async (num: number) => {
-        const i = await backoffIntervalCalc(num)
-        setTimeout(async () => {
-            try {
-                const resp = await fetch(`${window.location.protocol}//${initialState}/api/check`)
-                const body = resp.ok as boolean
-                if (body) {
-                    window.location.reload()
-                }
-            } catch {
-                serverCheckInterval(num + 1)
-            }
-        }, i)
-    }
 
     const subs = useRef<{ [key: string]: SubscribeCallback[] }>({})
 
@@ -225,7 +230,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
             }
             ws.onclose = (e) => {
                 setReadyState()
-                setIsServerUp(false)
+                setIsReconnect(true)
             }
         },
         [],
@@ -258,7 +263,6 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                 const resp = await fetch(`${window.location.protocol}//${initialState}/api/check`)
                 const body = resp.ok as boolean
                 if (body) {
-                    setIsServerUp(true)
                     webSocket.current = new WebSocket(`${protocol()}://${initialState}/api/ws`)
                     setupWS(webSocket.current)
 
@@ -267,7 +271,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                     }
                 }
             } catch {
-                setIsServerUp(false)
+                setIsReconnect(true)
             }
         })()
     }, [initialState, setupWS])
@@ -276,7 +280,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
         if (webSocket.current) sendOutgoingMessages()
     }, [webSocket, sendOutgoingMessages])
 
-    return { send: send.current, state, connect, subscribe, onReconnect: sendOutgoingMessages }
+    return { send: send.current, state, connect, subscribe, onReconnect: sendOutgoingMessages, isServerUp }
 }
 
 const WebsocketContainer = createContainer(PassportServerWebsocket)
