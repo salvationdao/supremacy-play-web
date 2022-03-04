@@ -15,9 +15,13 @@ import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import Robot from "!react-svg-loader!./svg/Robot.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
+import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
+import Hourglass from "!react-svg-loader!./svg/Hourglass.svg"
+import Location from "!react-svg-loader!./svg/Location.svg"
+import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import History from "!react-svg-loader!./svg/History.svg"
@@ -25,8 +29,10 @@ import Hide from "!react-svg-loader!./svg/Hide.svg"
 import Discord from "!react-svg-loader!./svg/Discord.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
+import Skull2 from "!react-svg-loader!./svg/Skull2.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
+import Disconnected from "!react-svg-loader!./svg/Disconnected.svg"
 import Radar from "!react-svg-loader!./svg/Radar.svg"
 import CampaignSharpIcon from "@mui/icons-material/CampaignSharp"
 import FlagSharpIcon from "@mui/icons-material/FlagSharp"
@@ -297,5 +303,41 @@ export const SvgYouTube: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
 export const SvgTelegram: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Telegram />
+    </SvgWrapper>
+)
+
+export const SvgSkull2: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Skull2 />
+    </SvgWrapper>
+)
+
+export const SvgDisconnected: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Disconnected />
+    </SvgWrapper>
+)
+
+export const SvgLocation: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Location />
+    </SvgWrapper>
+)
+
+export const SvgHourglass: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Hourglass />
+    </SvgWrapper>
+)
+
+export const SvgEmergency: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Emergency />
+    </SvgWrapper>
+)
+
+export const SvgCancelled: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Cancelled />
     </SvgWrapper>
 )
