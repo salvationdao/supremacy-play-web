@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import { StyledImageText, StyledNormalText } from ".."
-import { GenericWarMachinePNG } from "../../assets"
+import { GenericWarMachinePNG, SvgEmergency } from "../../assets"
 import { GAME_SERVER_HOSTNAME } from "../../constants"
 import { httpProtocol } from "../../containers"
 import { BattleAbility, User, WarMachineState } from "../../types"
@@ -20,6 +20,7 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
 
     return (
         <Box>
+            <SvgEmergency size="12px" sx={{ display: "inline", mr: 0.5 }} />
             <StyledImageText
                 text={label}
                 color={colour}
