@@ -15,6 +15,7 @@ export const NavButton: React.FC<NavButtonProps> = ({ href, active, sx, startIco
             sx={{
                 alignItems: "center",
                 justifyContent: "start",
+                fontFamily: "Nostromo Regular Bold",
                 color: "#FFFFFF",
                 backgroundColor: active ? colors.darkNavyBlue : undefined,
                 ":hover": {

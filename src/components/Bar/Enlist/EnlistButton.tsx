@@ -26,6 +26,7 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                     alignItems: "center",
                     px: 1.2,
                     py: 0.5,
+                    fontFamily: "Nostromo Regular Bold",
                     backgroundColor: "transparent",
                     borderRadius: 0.2,
                     border: `1px solid ${primary}`,

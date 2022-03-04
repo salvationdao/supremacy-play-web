@@ -65,6 +65,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
                         whiteSpace: "nowrap",
                         borderRadius: 0.2,
                         border: `1px solid ${colors.neonBlue}`,
+                        fontFamily: "Nostromo Regular Bold",
                         color: colors.darkestNeonBlue,
                         backgroundColor: colors.neonBlue,
                         ":hover": {

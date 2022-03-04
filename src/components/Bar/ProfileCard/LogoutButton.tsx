@@ -72,6 +72,7 @@ export const LogoutButton = () => {
                 ":hover": {
                     backgroundColor: colors.red,
                 },
+                fontFamily: "Nostromo Regular Bold",
             }}
         >
             Logout
