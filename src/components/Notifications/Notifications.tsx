@@ -2,6 +2,7 @@ import { Box, Stack } from "@mui/material"
 import {
     BattleAbilityAlert,
     FactionAbilityAlert,
+    KillAlert,
     LocationSelectAlert,
     NotificationItem,
     TextAlert,
@@ -10,9 +11,9 @@ import {
 import { MINI_MAP_DEFAULT_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from "../../constants"
 import { useTheme } from "@mui/styles"
 import { Theme } from "@mui/material/styles"
-import { makeid, useAuth, useDimension, useWebsocket } from "../../containers"
+import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket } from "../../containers"
 import { useEffect } from "react"
-import HubKey from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { useArray } from "../../hooks"
 import {
     locationSelectNoti,
@@ -24,12 +25,14 @@ import {
     factionAbilityNoti,
     warMachineAbilityNoti,
     textNoti,
+    killNoti,
+    killNoti2,
 } from "../../samepleData"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
 /*
-KILL: when a war machine is destroyed
+WAR_MACHINE_DESTROYED: when a war machine is destroyed
 LOCATION_SELECTING: user is choosing a target location on map
 BATTLE_ABILITY: when a faction has initiated a battle ability
 FACTION_ABILITY: when a faction has initiated a faction ability
@@ -37,13 +40,19 @@ WARMACHINE_ABILITY: when a faction has initiated a war machine ability
 TEXT: generic notification with no styles, just text
 */
 export interface NotificationResponse {
-    type: "TEXT" | "LOCATION_SELECT" | "BATTLE_ABILITY" | "FACTION_ABILITY" | "WAR_MACHINE_ABILITY"
+    type:
+        | "TEXT"
+        | "LOCATION_SELECT"
+        | "BATTLE_ABILITY"
+        | "FACTION_ABILITY"
+        | "WAR_MACHINE_ABILITY"
+        | "WAR_MACHINE_DESTROYED"
     data: any
 }
 
 export const Notifications = () => {
-    const { state, subscribe } = useWebsocket()
-    const { user } = useAuth()
+    const { state, subscribe } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
     const theme = useTheme<Theme>()
     const {
         streamDimensions: { height },
@@ -56,10 +65,9 @@ export const Notifications = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<NotificationResponse | undefined>(
-            HubKey.SubGameNotification,
+            GameServerKeys.SubGameNotification,
             (payload) => newNotification(payload),
             null,
-            true,
         )
     }, [state, subscribe, user])
 
@@ -76,6 +84,8 @@ export const Notifications = () => {
         newNotification(factionAbilityNoti)
         newNotification(warMachineAbilityNoti)
         newNotification(textNoti)
+        newNotification(killNoti)
+        newNotification(killNoti2)
     }, [])
 
     // Function to add new notification to array, and will clear itself out after certain time
@@ -127,6 +137,12 @@ export const Notifications = () => {
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
                             <WarMachineAbilityAlert data={n.data} />
+                        </NotificationItem>
+                    )
+                case "WAR_MACHINE_DESTROYED":
+                    return (
+                        <NotificationItem key={n.notiID} duration={n.duration}>
+                            <KillAlert data={n.data} />
                         </NotificationItem>
                     )
             }

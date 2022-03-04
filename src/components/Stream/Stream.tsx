@@ -1,14 +1,13 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useWallet } from "../GameBar"
 import { useEffect, useState } from "react"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useAuth, useDimension, useStream } from "../../containers"
+import { useGameServerAuth, useDimension, useStream, useWallet } from "../../containers"
 import { colors } from "../../theme/theme"
-import { useToggle } from "../GameBar/hooks"
 import { Trailer } from ".."
+import { useToggle } from "../../hooks"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
-    const { user } = useAuth()
+    const { user } = useGameServerAuth()
     const { onWorldSups } = useWallet()
 
     const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
@@ -63,7 +62,7 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
 
 export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
-    const { user } = useAuth()
+    const { user } = useGameServerAuth()
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
     const [renderTopMessage, toggleRenderTopMessage] = useToggle()

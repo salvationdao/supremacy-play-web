@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../assets"
-import { useGame, useWebsocket, WebSocketProperties } from "../../containers"
+import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
@@ -15,7 +15,7 @@ interface MWMProps extends Partial<WebSocketProperties> {
 }
 
 export const MapWarMachine = (props: MWMProps) => {
-    const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
+    const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
     const { highlightedMechHash } = useGame()
 
     return (

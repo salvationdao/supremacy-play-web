@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
-import { useWallet } from "../../GameBar"
 import { FancyButton } from "../.."
+import { useWallet } from "../../../containers"
 
 interface VotingButtonProps {
     amount: number | string

@@ -1,24 +1,24 @@
 import { createContainer } from "unstated-next"
-import { useWebsocket } from "./socket"
+import { useGameServerWebsocket } from "."
 import { useEffect, useState } from "react"
-import HubKey from "../keys"
-import { useAuth } from "./auth"
-import { supFormatter } from "../components/GameBar/helpers"
+import { GameServerKeys } from "../keys"
+import { useGameServerAuth } from "."
+import { supFormatter } from "../helpers"
 
 interface QueueFeed {
     queue_length: number
     queue_cost: string
 }
 
-export const QueueContainer = createContainer(() => {
-    const { state, subscribe } = useWebsocket()
-    const { user } = useAuth()
+const QueueContainer = createContainer(() => {
+    const { state, subscribe } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
     const [queueLength, setQueueLength] = useState<number>(-1)
     const [queueCost, setQueueCost] = useState<string>("")
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !user) return
-        return subscribe<QueueFeed>(HubKey.SubFactionQueueLength, (payload) => {
+        return subscribe<QueueFeed>(GameServerKeys.SubFactionQueueLength, (payload) => {
             setQueueLength(payload.queue_length)
             setQueueCost(`${parseFloat(supFormatter(`${payload.queue_cost}`, 18))}`)
         })

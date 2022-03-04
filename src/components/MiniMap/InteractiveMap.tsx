@@ -2,12 +2,12 @@ import { Box, Stack, Typography } from "@mui/material"
 import { styled } from "@mui/system"
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
 import { MapWarMachine, SelectionIcon } from ".."
-import { useGame, useWebsocket } from "../../containers"
+import { useGame, useGameServerWebsocket } from "../../containers"
 import { GameAbility, Map, WarMachineState } from "../../types"
 import { animated, useSpring } from "react-spring"
 import { useGesture } from "@use-gesture/react"
 import { opacityEffect } from "../../theme/keyframes"
-import HubKey from "../../keys"
+import { GameServerKeys } from "../../keys"
 import moment from "moment"
 import { useInterval } from "../../hooks"
 
@@ -72,7 +72,7 @@ export const InteractiveMap = ({
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     enlarged: boolean
 }) => {
-    const { state, send } = useWebsocket()
+    const { state, send } = useGameServerWebsocket()
     const { map, warMachines } = useGame()
     const [selection, setSelection] = useState<MapSelection>()
     const prevSelection = useRef<MapSelection>()
@@ -116,7 +116,7 @@ export const InteractiveMap = ({
     const onConfirm = () => {
         try {
             if (state !== WebSocket.OPEN || !selection) return
-            send<boolean, { x: number; y: number }>(HubKey.SubmitAbilityLocationSelect, {
+            send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
                 x: selection.x,
                 y: selection.y,
             })

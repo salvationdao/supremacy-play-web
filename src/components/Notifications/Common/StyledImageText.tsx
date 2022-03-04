@@ -47,24 +47,15 @@ export const StyledImageText = ({
     )
 
     return (
-        <Box
-            sx={{
-                position: "relative",
-                display: "inline-flex",
-                alignItems: "center",
-                pl: imageUrl ? `${imageSize + 0.2 * imageSize}px` : 0,
-            }}
-        >
+        <span>
             {imageUrl && (
                 <Box
                     sx={{
-                        position: "absolute",
-                        left: 0,
-                        bottom: 0,
                         display: "inline-block",
-                        flexShrink: 0,
                         width: imageSize,
                         height: imageSize,
+                        mb: -0.2,
+                        mr: `${0.3 * imageSize}px`,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
@@ -93,6 +84,6 @@ export const StyledImageText = ({
                 {text}
                 <span style={{ marginLeft: -1.5, visibility: "hidden" }}>.</span>
             </Typography>
-        </Box>
+        </span>
     )
 }

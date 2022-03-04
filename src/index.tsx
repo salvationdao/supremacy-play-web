@@ -1,7 +1,6 @@
-import { Box, Stack, ThemeProvider, Typography } from "@mui/material"
+import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { DrawerProvider, GAMEBAR_CONSTANTS, WalletProvider } from "./components/GameBar"
-import GameBar from "./components/GameBar"
+import { GameBar } from "./components/GameBar/GameBar"
 import * as Sentry from "@sentry/react"
 import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
@@ -20,24 +19,19 @@ import {
     Maintenance,
     BattleCloseAlert,
 } from "./components"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
-    PASSPORT_SERVER_HOST,
-    PASSPORT_WEB,
-    SENTRY_CONFIG,
-    SUPREMACY_PAGE,
-    TOKEN_SALE_PAGE,
-    UNDER_MAINTENANCE,
-} from "./constants"
-import {
-    AuthProvider,
+    GameServerAuthProvider,
     DimensionProvider,
+    DrawerProvider,
     GameProvider,
     OverlayTogglesProvider,
-    SocketProvider,
+    GameServerSocketProvider,
     StreamProvider,
-    useAuth,
+    useGameServerAuth,
     useDimension,
-    useWebsocket,
+    useGameServerWebsocket,
+    WalletProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
@@ -62,27 +56,20 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
-    const { state } = useWebsocket()
-    const { user, gameserverSessionID } = useAuth()
+    const { state, reconnecting, isServerUp } = useGameServerWebsocket()
+    const { user, gameserverSessionID } = useGameServerAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
 
     return (
         <>
-            <GameBar
-                barPosition="top"
-                gameserverSessionID={gameserverSessionID}
-                tokenSalePage={TOKEN_SALE_PAGE}
-                supremacyPage={SUPREMACY_PAGE}
-                passportWeb={PASSPORT_WEB}
-                passportServerHost={PASSPORT_SERVER_HOST}
-            />
+            <GameBar gameserverSessionID={gameserverSessionID} />
             <Stack
                 sx={{
-                    mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
+                    mt: `${GAME_BAR_HEIGHT}px`,
                     width: mainDivDimensions.width,
                     height: mainDivDimensions.height,
-                    transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
+                    transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
             >
                 <Stack
@@ -103,11 +90,11 @@ const AppInner = () => {
                             height: streamDimensions.height,
                             width: streamDimensions.width,
                             backgroundColor: colors.darkNavy,
-                            transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
+                            transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        {UNDER_MAINTENANCE ? (
+                        {!isServerUp ? (
                             <Maintenance />
                         ) : (
                             <>
@@ -166,8 +153,8 @@ const App = () => {
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
-                <SocketProvider>
-                    <AuthProvider>
+                <GameServerSocketProvider>
+                    <GameServerAuthProvider>
                         <StreamProvider>
                             <WalletProvider>
                                 <DrawerProvider>
@@ -181,8 +168,8 @@ const App = () => {
                                 </DrawerProvider>
                             </WalletProvider>
                         </StreamProvider>
-                    </AuthProvider>
-                </SocketProvider>
+                    </GameServerAuthProvider>
+                </GameServerSocketProvider>
             </ThemeProvider>
         </UpdateTheme.Provider>
     )

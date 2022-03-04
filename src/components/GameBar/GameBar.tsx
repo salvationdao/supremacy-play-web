@@ -1,33 +1,22 @@
-import { Box, CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material"
-import { QueueProvider } from "../../containers/queue"
-import { Assets, Bar, DrawerButtons, LiveChat } from "./components"
-import { AuthProvider, BarProvider, SocketProvider, ThemeProvider, useTheme } from "./containers"
+import { Box } from "@mui/material"
+import { Bar, DrawerButtons, LiveChat, Assets } from ".."
+import { PASSPORT_SERVER_HOST } from "../../constants"
+import { BarProvider, PassportServerAuthProvider, QueueProvider } from "../../containers"
+import { PassportServerSocketProvider } from "../../containers/passportServerSocket"
 
-const Inner = (props: GameBarBaseProps) => {
-    const { currentTheme } = useTheme()
-
+const Inner = () => {
     return (
-        <MuiThemeProvider theme={currentTheme}>
-            <CssBaseline />
-            <Box sx={{ zIndex: 99999 }}>
-                <Bar {...props} />
-                <DrawerButtons />
-                <LiveChat />
-                <Assets passportWeb={props.passportWeb} />
-            </Box>
-        </MuiThemeProvider>
+        <Box sx={{ zIndex: 99999 }}>
+            <Bar />
+            <DrawerButtons />
+            <LiveChat />
+            <Assets />
+        </Box>
     )
 }
 
-export type BarPosition = "top" | "bottom"
-
 export interface GameBarBaseProps {
-    barPosition: BarPosition
     gameserverSessionID?: string
-    tokenSalePage: string
-    supremacyPage: string
-    passportWeb: string
-    passportServerHost: string
 }
 
 export const GameBar: React.FC<GameBarBaseProps> = (props) => {
@@ -35,16 +24,14 @@ export const GameBar: React.FC<GameBarBaseProps> = (props) => {
     // or being used by 3rd party
 
     return (
-        <SocketProvider initialState={props.passportServerHost}>
-            <ThemeProvider>
-                <AuthProvider initialState={{ gameserverSessionID: props.gameserverSessionID }}>
-                    <QueueProvider>
-                        <BarProvider initialState={props.barPosition}>
-                            <Inner {...props} />
-                        </BarProvider>
-                    </QueueProvider>
-                </AuthProvider>
-            </ThemeProvider>
-        </SocketProvider>
+        <PassportServerSocketProvider initialState={PASSPORT_SERVER_HOST}>
+            <PassportServerAuthProvider initialState={{ gameserverSessionID: props.gameserverSessionID }}>
+                <QueueProvider>
+                    <BarProvider>
+                        <Inner />
+                    </BarProvider>
+                </QueueProvider>
+            </PassportServerAuthProvider>
+        </PassportServerSocketProvider>
     )
 }

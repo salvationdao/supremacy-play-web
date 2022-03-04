@@ -10,11 +10,10 @@ import {
     WarMachineDestroyedInfo,
 } from ".."
 import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
-import { useDrawer } from "../../components/GameBar"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useAuth, useGame, useWebsocket, WebSocketProperties } from "../../containers"
+import { useGameServerAuth, useDrawer, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { useToggle } from "../../hooks"
-import HubKey from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 const WIDTH_WM_IMAGE = 92
@@ -34,10 +33,10 @@ interface Props {
 }
 
 export const WarMachineItem = (props: Props) => {
-    const { state, subscribe } = useWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
     const { highlightedMechHash, setHighlightedMechHash } = useGame()
     const { isAnyPanelOpen } = useDrawer()
-    const { factionID } = useAuth()
+    const { factionID } = useGameServerAuth()
 
     return (
         <WarMachineItemInner
@@ -126,7 +125,7 @@ const WarMachineItemInner = ({
         )
             return
         return subscribe<GameAbility[] | undefined>(
-            HubKey.SubWarMachineAbilitiesUpdated,
+            GameServerKeys.SubWarMachineAbilitiesUpdated,
             (payload) => {
                 if (payload) setGameAbilities(payload)
             },
@@ -140,7 +139,7 @@ const WarMachineItemInner = ({
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<WarMachineDestroyedRecord>(
-            HubKey.SubWarMachineDestroyed,
+            GameServerKeys.SubWarMachineDestroyed,
             (payload) => {
                 if (!payload) return
                 setWarMachineDestroyedRecord(payload)

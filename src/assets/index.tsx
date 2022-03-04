@@ -15,9 +15,13 @@ import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import Robot from "!react-svg-loader!./svg/Robot.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
+import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
+import Hourglass from "!react-svg-loader!./svg/Hourglass.svg"
+import Location from "!react-svg-loader!./svg/Location.svg"
+import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import History from "!react-svg-loader!./svg/History.svg"
@@ -25,8 +29,10 @@ import Hide from "!react-svg-loader!./svg/Hide.svg"
 import Discord from "!react-svg-loader!./svg/Discord.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
+import Skull2 from "!react-svg-loader!./svg/Skull2.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
+import Disconnected from "!react-svg-loader!./svg/Disconnected.svg"
 import Radar from "!react-svg-loader!./svg/Radar.svg"
 import CampaignSharpIcon from "@mui/icons-material/CampaignSharp"
 import FlagSharpIcon from "@mui/icons-material/FlagSharp"
@@ -36,23 +42,104 @@ import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import CloseSharpIcon from "@mui/icons-material/CloseSharp"
+import AppsIcon from "@mui/icons-material/Apps"
+import HorizontalRuleSharpIcon from "@mui/icons-material/HorizontalRuleSharp"
+import ArrowRightAltSharpIcon from "@mui/icons-material/ArrowRightAltSharp"
+import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
+import SupremacyLogo from "!@svgr/webpack!./svg/SupremacyLogo.svg"
+import Send from "!@svgr/webpack!./svg/Send.svg"
+import Wallet from "!@svgr/webpack!./svg/Wallet.svg"
+import Plus from "!@svgr/webpack!./svg/Plus.svg"
+import Rank from "!@svgr/webpack!./svg/Rank.svg"
+import Assets from "!@svgr/webpack!./svg/Assets.svg"
+import Shop from "!@svgr/webpack!./svg/Shop.svg"
+import Profile from "!@svgr/webpack!./svg/Profile.svg"
+import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
+import Copy from "!@svgr/webpack!./svg/Copy.svg"
+import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
+import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
+import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
+import Logout from "!@svgr/webpack!./svg/Logout.svg"
+import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
+import Close from "!@svgr/webpack!./svg/Close.svg"
+import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
+import Ability from "!@svgr/webpack!./svg/Ability.svg"
+import View from "!@svgr/webpack!./svg/View.svg"
+import Death from "!@svgr/webpack!./svg/Death.svg"
+import Global from "!@svgr/webpack!./svg/Global.svg"
+import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
+import RedMountainLogo from "./images/RedMountainLogo.png"
+import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 import { Box, BoxProps } from "@mui/system"
 import { colors } from "../theme/theme"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
 import FlamesPNG from "./images/Flames.png"
-import MaintenanceJPG from "./images/Maintenance.jpeg"
+import MaintenancePNG from "./images/Maintenance.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import LogoWEBP from "./images/Logo.webp"
 import BottomMechWEBP from "./images/BottomMech.webp"
 
-export { GenericWarMachinePNG, FlamesPNG, MaintenanceJPG, TrailerThumbPNG, LogoWEBP, BottomMechWEBP }
+// Multiplier images (no spaces in file names, won't work!)
+import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
+import MultiplierAFoolAndHisMoney from "./images/Multipliers/AFoolAndHisMoney.png"
+import MultiplierAirSupport from "./images/Multipliers/AirSupport.png"
+import MultiplierCitizen from "./images/Multipliers/Citizen.png"
+import MultiplierContributor from "./images/Multipliers/Contributor.png"
+import MultiplierDestroyerOfWorlds from "./images/Multipliers/DestroyerOfWorlds.png"
+import MultiplierFieldMechanic from "./images/Multipliers/FieldMechanic.png"
+import MultiplierGreaseMonkey from "./images/Multipliers/GreaseMonkey.png"
+import MultiplierMechCommander from "./images/Multipliers/MechCommander.png"
+import MultiplierNowIAmBecomeDeath from "./images/Multipliers/NowIAmBecomeDeath.png"
+import MultiplierSuperContributor from "./images/Multipliers/SuperContributor.png"
+import MultiplierSupporter from "./images/Multipliers/Supporter.png"
+import MultiplierFiend from "./images/Multipliers/Fiend.png"
+import MultiplierJunkE from "./images/Multipliers/JunkE.png"
+import MultiplierMechHead from "./images/Multipliers/Supporter.png"
+import MultiplierSniper from "./images/Multipliers/Sniper.png"
+import MultiplierWonBattle from "./images/Multipliers/WonBattle.png"
+import MultiplierWonLastThreeBattles from "./images/Multipliers/WonLastThreeBattles.png"
+export {
+    MultiplierAdmiral,
+    MultiplierAFoolAndHisMoney,
+    MultiplierAirSupport,
+    MultiplierCitizen,
+    MultiplierContributor,
+    MultiplierDestroyerOfWorlds,
+    MultiplierFieldMechanic,
+    MultiplierGreaseMonkey,
+    MultiplierMechCommander,
+    MultiplierNowIAmBecomeDeath,
+    MultiplierSuperContributor,
+    MultiplierSupporter,
+    MultiplierFiend,
+    MultiplierJunkE,
+    MultiplierMechHead,
+    MultiplierSniper,
+    MultiplierWonBattle,
+    MultiplierWonLastThreeBattles,
+}
+// End multiplier images
 
-interface SvgWrapperProps extends BoxProps {
-    size?: string
-    fill?: string
+export {
+    GenericWarMachinePNG,
+    FlamesPNG,
+    MaintenancePNG,
+    TrailerThumbPNG,
+    LogoWEBP,
+    BottomMechWEBP,
+    BostonCyberneticsLogo,
+    RedMountainLogo,
+    ZaibatsuLogo,
 }
 
-export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, ...props }: SvgWrapperProps) => {
+export interface SvgWrapperProps extends BoxProps {
+    size?: string
+    fill?: string
+    height?: string
+    width?: string
+}
+
+export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, width, height, ...props }: SvgWrapperProps) => {
     return (
         <Box
             sx={{
@@ -61,9 +148,9 @@ export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, ...props
                 alignItems: "center",
                 pb: 0.3,
                 "& > svg": {
-                    width: size || "20px",
-                    height: size || "20px",
-                    fill: fill || colors.text,
+                    width: width || size || "20px",
+                    height: height || size || "20px",
+                    fill: fill || "#FFFFFF",
                 },
                 ...sx,
             }}
@@ -297,5 +384,203 @@ export const SvgYouTube: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
 export const SvgTelegram: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Telegram />
+    </SvgWrapper>
+)
+
+export const SvgSkull2: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Skull2 />
+    </SvgWrapper>
+)
+
+export const SvgDisconnected: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Disconnected />
+    </SvgWrapper>
+)
+
+export const SvgLocation: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Location />
+    </SvgWrapper>
+)
+
+export const SvgHourglass: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Hourglass />
+    </SvgWrapper>
+)
+
+export const SvgEmergency: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Emergency />
+    </SvgWrapper>
+)
+
+export const SvgCancelled: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Cancelled />
+    </SvgWrapper>
+)
+
+export const SvgNinjaSyndicateLogo: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <NinjaSyndicateLogo />
+    </SvgWrapper>
+)
+
+export const SvgSupremacyLogo: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <SupremacyLogo />
+    </SvgWrapper>
+)
+
+export const SvgWallet: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Wallet />
+    </SvgWrapper>
+)
+
+export const SvgPlus: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Plus />
+    </SvgWrapper>
+)
+
+export const SvgRank: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Rank />
+    </SvgWrapper>
+)
+
+export const SvgHorizontalRuleSharpIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <HorizontalRuleSharpIcon />
+    </SvgWrapper>
+)
+
+export const SvgArrowRightAltSharpIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ArrowRightAltSharpIcon />
+    </SvgWrapper>
+)
+
+export const SvgChat: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Chat />
+    </SvgWrapper>
+)
+
+export const SvgSend: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Send />
+    </SvgWrapper>
+)
+
+export const SvgGlobal: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Global />
+    </SvgWrapper>
+)
+
+export const SvgDropdownArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <DropdownArrow />
+    </SvgWrapper>
+)
+
+export const SvgAbility: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Ability />
+    </SvgWrapper>
+)
+
+export const SvgView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <View />
+    </SvgWrapper>
+)
+
+export const SvgDeath: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Death />
+    </SvgWrapper>
+)
+
+export const SvgAssets: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Assets />
+    </SvgWrapper>
+)
+
+export const SvgShop: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Shop />
+    </SvgWrapper>
+)
+
+export const SvgProfile: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Profile />
+    </SvgWrapper>
+)
+
+export const SvgLogout: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Logout />
+    </SvgWrapper>
+)
+
+export const SvgAppsIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <AppsIcon />
+    </SvgWrapper>
+)
+
+export const SvgExternalLink: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ExternalLink />
+    </SvgWrapper>
+)
+
+export const SvgRefresh: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Refresh />
+    </SvgWrapper>
+)
+
+export const SvgEmoji: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Emoji />
+    </SvgWrapper>
+)
+
+export const SvgInfoCircular: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <InfoCircular />
+    </SvgWrapper>
+)
+
+export const SvgFastRepair: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <FastRepair />
+    </SvgWrapper>
+)
+
+export const SvgScrolldown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Scrolldown />
+    </SvgWrapper>
+)
+
+export const SvgClose: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Close />
+    </SvgWrapper>
+)
+
+export const SvgContentCopyIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Copy />
     </SvgWrapper>
 )

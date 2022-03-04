@@ -8,9 +8,9 @@ import {
     SectionTopSupsFaction,
     SectionWinner,
 } from ".."
-import { useWebsocket, useOverlayToggles } from "../../containers"
+import { useGameServerWebsocket, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
-import HubKey from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { sampleBattleEndDetail } from "../../samepleData"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
@@ -20,7 +20,7 @@ const SPAWN_TEST_DATA = false
 export const BOTTOM_BUTTONS_HEIGHT = 50
 
 export const BattleEndScreen = () => {
-    const { state, subscribe } = useWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
 
@@ -28,7 +28,7 @@ export const BattleEndScreen = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<BattleEndDetail>(
-            HubKey.SubBattleEndDetailUpdated,
+            GameServerKeys.SubBattleEndDetailUpdated,
             (payload) => {
                 if (!payload) {
                     toggleIsEndBattleDetailOpen(false)

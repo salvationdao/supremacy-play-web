@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useAuth } from "./containers"
+import { useGameServerAuth } from "./containers"
 
 interface LoginButtonRenderProps {
     onClick: (event: any) => void
@@ -29,7 +29,7 @@ interface PassportLoginProps {
 }
 
 export const PassportLogin: React.FC<PassportLoginProps> = (props) => {
-    const { gameserverSessionID } = useAuth()
+    const { gameserverSessionID } = useGameServerAuth()
 
     const [isProcessing, setIsProcessing] = useState(false)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)

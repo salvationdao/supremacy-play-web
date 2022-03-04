@@ -4,8 +4,8 @@ import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { useToggle } from "../hooks"
 import { Stream } from "../types"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
-import { useWebsocket } from "."
-import HubKey from "../keys"
+import { useGameServerWebsocket } from "."
+import { GameServerKeys } from "../keys"
 
 const MAX_OPTIONS = 10
 
@@ -41,7 +41,7 @@ interface WebRTCAdaptorType {
 }
 
 export const StreamContainer = createContainer(() => {
-    const { state, subscribe } = useWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
     const defaultResolution = 720
 
     // video
@@ -86,7 +86,7 @@ export const StreamContainer = createContainer(() => {
     // Subscribe to list of streams
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<Stream[]>(HubKey.GetStreamList, (payload) => {
+        return subscribe<Stream[]>(GameServerKeys.GetStreamList, (payload) => {
             if (!payload) return
             setStreams(payload)
         })

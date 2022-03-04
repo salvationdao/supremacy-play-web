@@ -1,11 +1,11 @@
 import { Box, Stack, Typography, useTheme } from "@mui/material"
 import { useEffect, useState } from "react"
 import { ClipThing } from ".."
-import { useWebsocket } from "../../containers"
-import HubKey from "../../keys"
+import { useGameServerWebsocket } from "../../containers"
+import { GameServerKeys } from "../../keys"
 
 export const BattleCloseAlert = () => {
-    const { state, subscribe } = useWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme()
     const [gamesToClose, setGamesToClose] = useState<number>()
 
@@ -13,7 +13,7 @@ export const BattleCloseAlert = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<number>(
-            HubKey.SubscribeStreamClose,
+            GameServerKeys.SubscribeStreamClose,
             (payload) => {
                 if (!payload || payload === -1) return
                 setGamesToClose(payload)
