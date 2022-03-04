@@ -23,7 +23,13 @@ export const SENTRY_CONFIG = {
     },
 }
 
-// UI related
+// UI related stuff
+export const GAME_BAR_HEIGHT = 61
+export const LIVE_CHAT_DRAWER_WIDTH = 340
+export const LIVE_CHAT_DRAWER_BUTTON_WIDTH = 20
+export const DRAWER_TRANSITION_DURATION = 250
+export const MESSAGES_BUFFER_SIZE = 300
+export const MAX_CHAT_MESSAGE_LENGTH = 280
 export const UI_OPACITY = 0.96
 export const GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS = 2000
 export const NOTIFICATION_TIME = 28000
@@ -32,6 +38,8 @@ export const CONTROLS_HEIGHT = 30
 export const STREAM_ASPECT_RATIO_W_H = 16 / 9
 export const MINI_MAP_DEFAULT_WIDTH = 230
 export const MINI_MAP_DEFAULT_HEIGHT = 200
+
+// Other stuff
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const TRAILER_VIDEO =
     "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"

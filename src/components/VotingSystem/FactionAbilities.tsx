@@ -4,21 +4,21 @@ import { useTheme } from "@mui/styles"
 import { useEffect, useState } from "react"
 import { FactionAbilityItem } from ".."
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useAuth, useWebsocket } from "../../containers"
-import HubKey from "../../keys"
+import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { GameServerKeys } from "../../keys"
 import { GameAbility } from "../../types"
 
 export const FactionAbilities = () => {
-    const { state, subscribe } = useWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
-    const { user, factionID } = useAuth()
+    const { user, factionID } = useGameServerAuth()
 
     // Subscribe to faction ability updates
     useEffect(() => {
         if (state !== WebSocket.OPEN || !factionID || factionID === NullUUID) return
         return subscribe<GameAbility[] | undefined>(
-            HubKey.SubFactionAbilities,
+            GameServerKeys.SubFactionAbilities,
             (payload) => setGameAbilities(payload),
             null,
         )

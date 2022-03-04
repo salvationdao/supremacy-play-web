@@ -2,8 +2,8 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useState } from "react"
 import { ClipThing, TooltipHelper, VotingButton } from ".."
-import { httpProtocol, useAuth, useWebsocket } from "../../containers"
-import HubKey from "../../keys"
+import { httpProtocol, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityTargetPrice } from "../../types"
@@ -79,8 +79,8 @@ interface WarMachineAbilityItemProps {
 }
 
 export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMachineAbilityItemProps) => {
-    const { factionID } = useAuth()
-    const { state, send, subscribeAbilityNetMessage } = useWebsocket()
+    const { factionID } = useGameServerAuth()
+    const { state, send, subscribeAbilityNetMessage } = useGameServerWebsocket()
 
     const { label, colour, textColour, imageUrl, identity, description } = gameAbility
     // const [refresh, toggleRefresh] = useToggle()
@@ -118,7 +118,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
 
     const onContribute = async (amount: number) => {
         send<boolean, GameAbilityContributeRequest>(
-            HubKey.GameAbilityContribute,
+            GameServerKeys.GameAbilityContribute,
             {
                 gameAbilityID: identity,
                 amount: new BigNumber(amount),

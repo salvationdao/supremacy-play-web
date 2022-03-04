@@ -3,13 +3,12 @@ import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { ResolutionSelect } from "./ResolutionSelect"
 import { colors } from "../../theme/theme"
 import { StreamSelect } from "./StreamSelect"
-import { GAMEBAR_CONSTANTS } from "../GameBar"
-import { useAuth } from "../../containers"
+import { useGameServerAuth } from "../../containers"
 import { shadeColor } from "../../helpers"
-import { CONTROLS_HEIGHT } from "../../constants"
+import { CONTROLS_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../constants"
 
 export const Controls = () => {
-    const { user } = useAuth()
+    const { user } = useGameServerAuth()
 
     return (
         <Stack
@@ -21,7 +20,7 @@ export const Controls = () => {
                 position: "relative",
                 width: "100%",
                 height: CONTROLS_HEIGHT,
-                pl: `${GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth}px`,
+                pl: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}px`,
                 pt: 0.3,
                 pb: 0.2,
                 backgroundColor:

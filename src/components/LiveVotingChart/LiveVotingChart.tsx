@@ -3,10 +3,10 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig, TooltipHelper } from ".."
 import { SvgInfoCircularIcon, SvgSupToken } from "../../assets"
-import { useWebsocket, useOverlayToggles } from "../../containers"
+import { useGameServerWebsocket, useOverlayToggles } from "../../containers"
 import { parseString } from "../../helpers"
 import { useToggle } from "../../hooks"
-import HubKey from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { NetMessageType } from "../../types"
@@ -15,7 +15,7 @@ import { LiveGraph } from "./LiveGraph"
 const DefaultMaxLiveVotingDataLength = 100
 
 const SpoilOfWarAmount = () => {
-    const { state, subscribeNetMessage } = useWebsocket()
+    const { state, subscribeNetMessage } = useGameServerWebsocket()
     const [spoilOfWarAmount, setSpoilOfWarAmount] = useState<string>("0")
 
     useEffect(() => {
@@ -57,7 +57,7 @@ export const LiveVotingChart = () => {
 }
 
 const Content = () => {
-    const { state, subscribe } = useWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
     const [curWidth, setCurWidth] = useState(0)
     const [curHeight, setCurHeight] = useState(0)
@@ -68,13 +68,13 @@ const Content = () => {
     // Triggered spoil of war update
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(HubKey.TriggerSpoilOfWarUpdated, () => console.log(), null)
+        return subscribe(GameServerKeys.TriggerSpoilOfWarUpdated, () => console.log(), null)
     }, [state, subscribe])
 
     // Trigger live voting data coming through
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(HubKey.TriggerLiveVoteUpdated, () => console.log(), null)
+        return subscribe(GameServerKeys.TriggerLiveVoteUpdated, () => console.log(), null)
     }, [state, subscribe])
 
     const onResize = useCallback((width: number, height: number) => {

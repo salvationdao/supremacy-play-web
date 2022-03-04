@@ -11,9 +11,9 @@ import {
 import { MINI_MAP_DEFAULT_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from "../../constants"
 import { useTheme } from "@mui/styles"
 import { Theme } from "@mui/material/styles"
-import { makeid, useAuth, useDimension, useWebsocket } from "../../containers"
+import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket } from "../../containers"
 import { useEffect } from "react"
-import HubKey from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { useArray } from "../../hooks"
 import {
     locationSelectNoti,
@@ -51,8 +51,8 @@ export interface NotificationResponse {
 }
 
 export const Notifications = () => {
-    const { state, subscribe } = useWebsocket()
-    const { user } = useAuth()
+    const { state, subscribe } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
     const theme = useTheme<Theme>()
     const {
         streamDimensions: { height },
@@ -65,7 +65,7 @@ export const Notifications = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<NotificationResponse | undefined>(
-            HubKey.SubGameNotification,
+            GameServerKeys.SubGameNotification,
             (payload) => newNotification(payload),
             null,
         )

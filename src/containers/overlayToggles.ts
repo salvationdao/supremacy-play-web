@@ -8,7 +8,7 @@ enum LeftDrawerPanels {
 }
 
 // Control left side bar button and open states
-export const OverlayTogglesContainer = createContainer(() => {
+const OverlayTogglesContainer = createContainer(() => {
     const [activePanel, setActivePanel] = useState<LeftDrawerPanels>(LeftDrawerPanels.None)
 
     const [isEndBattleDetailEnabled, toggleIsEndBattleDetailEnabled] = useToggle()

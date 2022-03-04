@@ -1,9 +1,8 @@
 import { Box } from "@mui/material"
 import { StyledImageText } from ".."
-import { SvgSkull2 } from "../../assets"
+import { SvgDeath, SvgSkull2 } from "../../assets"
 import { colors } from "../../theme/theme"
 import { WarMachineState } from "../../types"
-import { SvgDeath } from "../GameBar/assets"
 
 interface KillAlertProps {
     destroyedWarMachine: WarMachineState

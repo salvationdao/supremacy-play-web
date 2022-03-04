@@ -3,7 +3,7 @@ import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
 import { ClipThing, BattleAbilityItem, Prices, FactionAbilities } from ".."
 import { useDimension, useGame, VotingStateResponse } from "../../containers"
-import { useAuth } from "../../containers"
+import { useGameServerAuth } from "../../containers"
 
 export const VotingSystem = () => {
     const { votingState } = useGame()
@@ -15,7 +15,7 @@ interface VotingSystemProps {
 }
 
 const VotingSystemInner = ({ votingState }: VotingSystemProps) => {
-    const { user } = useAuth()
+    const { user } = useGameServerAuth()
     const theme = useTheme<Theme>()
     const {
         streamDimensions: { height },

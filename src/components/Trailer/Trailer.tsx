@@ -2,8 +2,8 @@ import { Box, Button, Stack, Typography } from "@mui/material"
 import { Dispatch, SetStateAction, useRef } from "react"
 import { SvgPlay, TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
+import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
-import { useToggle } from "../GameBar/hooks"
 
 export const Trailer = ({
     watchedTrailer,

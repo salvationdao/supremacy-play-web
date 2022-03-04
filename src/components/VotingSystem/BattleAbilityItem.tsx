@@ -6,14 +6,14 @@ import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
 import {
     FactionsColorResponse,
     httpProtocol,
-    useAuth,
+    useGameServerAuth,
     useGame,
-    useWebsocket,
+    useGameServerWebsocket,
     VotingStateResponse,
     WebSocketProperties,
 } from "../../containers"
 import { useToggle } from "../../hooks"
-import HubKey from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { BattleAbility as BattleAbilityType, NetMessageType, User } from "../../types"
@@ -33,7 +33,7 @@ const VotingBarInner = ({
     isCooldown: boolean
     factionsColor?: FactionsColorResponse
 }) => {
-    const { state, subscribeNetMessage } = useWebsocket()
+    const { state, subscribeNetMessage } = useGameServerWebsocket()
     // Array order is (Red Mountain, Boston, Zaibatsu). [[colorArray], [ratioArray]]
     const [voteRatio, setVoteRatio] = useState<[number, number, number]>([33, 33, 33])
 
@@ -102,9 +102,9 @@ const VotingBarInner = ({
 }
 
 export const BattleAbilityItem = () => {
-    const { state, send, subscribe } = useWebsocket()
+    const { state, send, subscribe } = useGameServerWebsocket()
     const { votingState, factionVotePrice } = useGame()
-    const { user, factionID } = useAuth()
+    const { user, factionID } = useGameServerAuth()
 
     return (
         <BattleAbilityItemInner
@@ -144,14 +144,14 @@ const BattleAbilityItemInner = ({
     // Subscribe to the result of the vote
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
-        return subscribe(HubKey.TriggerAbilityRightRatio, () => console.log(""), null)
+        return subscribe(GameServerKeys.TriggerAbilityRightRatio, () => console.log(""), null)
     }, [state, subscribe, factionID])
 
     // Subscribe to battle ability updates
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe<BattleAbilityType>(
-            HubKey.SubBattleAbility,
+            GameServerKeys.SubBattleAbility,
             (payload) => {
                 setBattleAbility(payload)
                 toggleFadeEffect()
@@ -161,7 +161,7 @@ const BattleAbilityItemInner = ({
     }, [state, subscribe, factionID])
 
     const onVote = (voteAmount: number) => {
-        if (send) send<boolean, { voteAmount: number }>(HubKey.SubmitVoteAbilityRight, { voteAmount }, true)
+        if (send) send<boolean, { voteAmount: number }>(GameServerKeys.SubmitVoteAbilityRight, { voteAmount }, true)
     }
 
     if (!battleAbility) return null

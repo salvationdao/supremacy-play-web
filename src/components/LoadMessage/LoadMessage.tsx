@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material"
-import { useAuth, useWebsocket } from "../../containers"
+import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 
 export const LoadMessage = () => {
-    const { state, reconnecting, isServerUp } = useWebsocket()
-    const { authSessionIDGetLoading } = useAuth()
+    const { state, reconnecting, isServerUp } = useGameServerWebsocket()
+    const { authSessionIDGetLoading } = useGameServerAuth()
 
     let message = ""
     if (state !== WebSocket.OPEN) {

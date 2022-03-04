@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useEffect, useState } from "react"
 import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
 import { NullUUID } from "../../constants"
-import { useAuth, useWebsocket } from "../../containers"
+import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityTargetPrice } from "../../types"
@@ -17,8 +17,8 @@ export const SkillBar = ({
     gameAbility: GameAbility
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
 }) => {
-    const { factionID } = useAuth()
-    const { state, subscribeAbilityNetMessage } = useWebsocket()
+    const { factionID } = useGameServerAuth()
+    const { state, subscribeAbilityNetMessage } = useGameServerWebsocket()
 
     const { identity } = gameAbility
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))

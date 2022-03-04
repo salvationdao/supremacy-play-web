@@ -31,6 +31,7 @@ export const colors = {
     red: "#C24242",
     green: "#2BA172",
     yellow: "#FFE200",
+    orange: "#E04F00",
 
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
@@ -46,6 +47,9 @@ export const colors = {
     grey: "#89898d",
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
+
+    globalChat: "#1A6044",
+    assetsBanner: "#4E1A61",
 }
 
 const factionTheme: FactionTheme = {
