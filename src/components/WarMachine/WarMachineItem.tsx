@@ -69,7 +69,7 @@ const WarMachineItemInner = ({
     state,
     subscribe,
 }: PropsInner) => {
-    const { participantID, faction, name, imageUrl } = warMachine
+    const { participantID, faction, name, imageAvatar } = warMachine
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -83,7 +83,7 @@ const WarMachineItemInner = ({
         theme: { primary, secondary, background },
     } = faction
 
-    const wmImageUrl = imageUrl || GenericWarMachinePNG
+    const wmImageUrl = imageAvatar || GenericWarMachinePNG
     const isOwnFaction = factionID == warMachine.factionID
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord

@@ -14,7 +14,7 @@ interface WarMachineAbilityAlertProps {
 export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertProps }) => {
     const { ability, warMachine } = data
     const { label, colour, imageUrl } = ability
-    const { name, imageUrl: warMachineImageUrl, faction } = warMachine
+    const { name, imageAvatar: warMachineImageUrl, faction } = warMachine
 
     const wmImageUrl = warMachineImageUrl || GenericWarMachinePNG
 

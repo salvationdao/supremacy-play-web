@@ -37,9 +37,9 @@ const MapWarMachineInner = ({
     state,
     highlightedMechHash,
 }: MWMProps) => {
-    const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
+    const { participantID, faction, maxHealth, maxShield, imageAvatar } = warMachine
 
-    const wmImageUrl = imageUrl || GenericWarMachinePNG
+    const wmImageUrl = imageAvatar || GenericWarMachinePNG
 
     const ICON_SIZE = isSpawnedAI ? 32 : 40
     const ARROW_LENGTH = ICON_SIZE / 2 + 20
