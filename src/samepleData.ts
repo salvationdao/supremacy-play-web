@@ -541,3 +541,88 @@ export const textNoti: NotificationResponse = {
     type: "TEXT",
     data: "Just a test notification text to see how it looks.",
 }
+
+export const killNoti: NotificationResponse = {
+    type: "WAR_MACHINE_DESTROYED",
+    data: {
+        destroyedWarMachine: {
+            imageUrl: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
+            name: "Olympus Mons LY07",
+            faction: {
+                id: "1",
+                backgroundBlobID: "",
+                label: "Red Mountain Offworld Mining Corporation",
+                logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+                theme: {
+                    primary: "#C24242",
+                    secondary: "#FFFFFF",
+                    background: "#120E0E",
+                },
+            },
+            hash: "3",
+            participantID: 3,
+            factionID: "",
+            maxHealth: 100,
+            maxShield: 100,
+            health: 60,
+            shield: 50,
+            position: { x: 0, y: 0 },
+            rotation: 10,
+        },
+        killedByWarMachine: {
+            imageUrl: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
+            name: "MR Olympics",
+            faction: {
+                id: "1",
+                backgroundBlobID: "",
+                label: "Boston Cybernetics",
+                logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+                theme: {
+                    primary: "#428EC1",
+                    secondary: "#FFFFFF",
+                    background: "#120E0E",
+                },
+            },
+            hash: "3",
+            participantID: 3,
+            factionID: "",
+            maxHealth: 100,
+            maxShield: 100,
+            health: 60,
+            shield: 50,
+            position: { x: 0, y: 0 },
+            rotation: 10,
+        },
+    },
+}
+
+export const killNoti2: NotificationResponse = {
+    type: "WAR_MACHINE_DESTROYED",
+    data: {
+        destroyedWarMachine: {
+            imageUrl: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
+            name: "Olympus Mons LY07",
+            faction: {
+                id: "1",
+                backgroundBlobID: "",
+                label: "Red Mountain Offworld Mining Corporation",
+                logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+                theme: {
+                    primary: "#C24242",
+                    secondary: "#FFFFFF",
+                    background: "#120E0E",
+                },
+            },
+            hash: "3",
+            participantID: 3,
+            factionID: "",
+            maxHealth: 100,
+            maxShield: 100,
+            health: 60,
+            shield: 50,
+            position: { x: 0, y: 0 },
+            rotation: 10,
+        },
+        killedBy: "HEAVY DUTY MACHINE GUN",
+    },
+}

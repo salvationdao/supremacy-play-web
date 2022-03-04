@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, Divider, Stack, Typography } from "@mui/material"
 import { BarExpandable, SupsTooltipContent } from "../.."
-import { supFormatter, supFormatterNoFixed } from '../../../helpers'
+import { shadeColor, supFormatter, supFormatterNoFixed } from "../../../helpers"
 import { colors } from "../../../theme"
 import { useBar, useWallet, useAuth } from "../../../containers"
 import { useSecureSubscription, useToggle } from "../../../hooks"
@@ -19,7 +19,7 @@ export interface SupsMultiplier {
 
 export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
     const { setOnWorldSupsRaw } = useWallet()
-    const { userID } = useAuth()
+    const { user, userID } = useAuth()
     const { barPosition } = useBar()
     const [isTooltipOpen, toggleIsTooltipOpen] = useToggle()
     const { payload: sups } = useSecureSubscription<string>(HubKey.SubscribeWallet)
@@ -31,9 +31,7 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
     const [reRender, toggleReRender] = useToggle()
 
     const [transactions, setTransactions] = useState<Transaction[]>([])
-    const { payload: transactionsPayload } = useSecureSubscription<Transaction[]>(
-        HubKey.SubscribeUserTransactions,
-    )
+    const { payload: transactionsPayload } = useSecureSubscription<Transaction[]>(HubKey.SubscribeUserTransactions)
     const { payload: latestTransactionPayload, setArguments: latestTransactionArguments } = useSecureSubscription<
         Transaction[]
     >(HubKey.SubscribeUserLatestTransactions)
@@ -116,6 +114,8 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
         )
     }
 
+    const tooltipBackgroundColor = user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy
+
     return (
         <>
             <BarExpandable
@@ -176,8 +176,8 @@ export const WalletDetails = ({ tokenSalePage }: { tokenSalePage: string }) => {
                             }
                             componentsProps={{
                                 popper: { style: { zIndex: 99999, filter: "drop-shadow(0 3px 3px #00000050)" } },
-                                arrow: { sx: { color: colors.darkNavy } },
-                                tooltip: { sx: { width: 320, maxWidth: 320, background: colors.darkNavy } },
+                                arrow: { sx: { color: tooltipBackgroundColor } },
+                                tooltip: { sx: { width: 320, maxWidth: 320, background: tooltipBackgroundColor } },
                             }}
                         >
                             <Stack
