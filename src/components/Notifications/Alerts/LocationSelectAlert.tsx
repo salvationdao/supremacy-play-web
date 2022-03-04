@@ -1,10 +1,9 @@
 import { Box, Divider } from "@mui/material"
-import { StyledImageText, StyledNormalText } from ".."
-import { SvgCancelled, SvgDisconnected, SvgHourglass, SvgLocation } from "../../assets"
-import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { httpProtocol } from "../../containers"
-import { colors } from "../../theme/theme"
-import { BattleAbility, User } from "../../types"
+import { StyledImageText, StyledNormalText } from "../.."
+import { SvgCancelled, SvgDisconnected, SvgHourglass, SvgLocation } from "../../../assets"
+import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { httpProtocol } from "../../../containers"
+import { BattleAbility, User } from "../../../types"
 
 /*
 NOTE:
@@ -64,7 +63,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
     if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
         return (
             <Box>
-                <SvgCancelled size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <SvgCancelled size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
                 <StyledNormalText text=" has been cancelled as there were no players available to choose a target location" />
             </Box>
@@ -74,7 +73,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
     if (type == "FAILED_TIMEOUT") {
         return (
             <Box>
-                <SvgHourglass size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <SvgHourglass size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
                     imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
                     text={username}
@@ -82,7 +81,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                 />
                 <StyledNormalText text=" failed to choose a target location in time. " />
                 <Divider sx={{ my: 1.2, borderColor: "#000000", opacity: 0.1 }} />
-                <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <SvgLocation size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
                     imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextAvatarID}` : undefined}
                     text={nextUsername}
@@ -97,7 +96,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
     if (type == "FAILED_DISCONNECTED") {
         return (
             <Box>
-                <SvgDisconnected size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <SvgDisconnected size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
                     imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
                     text={username}
@@ -105,7 +104,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                 />
                 <StyledNormalText text=" has disconnected" />
                 <Divider sx={{ my: 1.2, borderColor: "#000000", opacity: 0.1 }} />
-                <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <SvgLocation size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
                     imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextAvatarID}` : undefined}
                     text={nextUsername}
@@ -120,7 +119,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
     if (type == "TRIGGER") {
         return (
             <Box>
-                <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <SvgLocation size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
                     imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
                     text={username}

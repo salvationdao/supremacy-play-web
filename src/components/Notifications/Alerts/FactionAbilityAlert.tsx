@@ -1,9 +1,9 @@
 import { Box } from "@mui/material"
-import { StyledImageText, StyledNormalText } from ".."
-import { SvgEmergency } from "../../assets"
-import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { httpProtocol } from "../../containers"
-import { BattleAbility, User } from "../../types"
+import { StyledImageText, StyledNormalText } from "../.."
+import { SvgEmergency } from "../../../assets"
+import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { httpProtocol } from "../../../containers"
+import { BattleAbility, User } from "../../../types"
 
 interface BattleFactionAbilityAlertProps {
     user?: User
@@ -16,7 +16,7 @@ export const FactionAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertP
 
     return (
         <Box>
-            <SvgEmergency size="12px" sx={{ display: "inline", mr: 0.5 }} />
+            <SvgEmergency size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
             <StyledImageText
                 text={label}
                 color={colour}

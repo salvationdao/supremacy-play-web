@@ -1,9 +1,9 @@
 import { Box, Divider } from "@mui/material"
-import { FallbackUser, StyledImageText, StyledNormalText } from ".."
-import { SvgEmergency, SvgLocation } from "../../assets"
-import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { httpProtocol } from "../../containers"
-import { BattleAbility, User } from "../../types"
+import { FallbackUser, StyledImageText, StyledNormalText } from "../.."
+import { SvgEmergency, SvgLocation } from "../../../assets"
+import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { httpProtocol } from "../../../containers"
+import { BattleAbility, User } from "../../../types"
 
 interface BattleFactionAbilityAlertProps {
     user?: User
@@ -17,7 +17,7 @@ export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertPr
 
     return (
         <Box>
-            <SvgEmergency size="12px" sx={{ display: "inline", mr: 0.5 }} />
+            <SvgEmergency size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
             <StyledImageText
                 text={label}
                 color={colour}
@@ -35,7 +35,7 @@ export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertPr
             />
             <StyledNormalText text=". " />
             <Divider sx={{ my: 1.2, borderColor: "#000000", opacity: 0.1 }} />
-            <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
+            <SvgLocation size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
             <StyledImageText
                 imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
                 text={username}
