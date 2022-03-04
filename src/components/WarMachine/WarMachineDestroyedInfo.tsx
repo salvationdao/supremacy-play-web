@@ -88,7 +88,7 @@ const WarMachineBig = ({
                 <WarMachineIcon
                     color={color}
                     size={75}
-                    imageUrl={warMachine.imageUrl || GenericWarMachinePNG}
+                    imageUrl={warMachine.imageAvatar || GenericWarMachinePNG}
                     isDead={isDead}
                 />
             ) : (
@@ -127,7 +127,7 @@ const WarMachineSmall = ({
     return (
         <Stack direction="row" alignItems="center" spacing={1.2}>
             {warMachine ? (
-                <WarMachineIcon color={color} size={38} imageUrl={warMachine.imageUrl || GenericWarMachinePNG} />
+                <WarMachineIcon color={color} size={38} imageUrl={warMachine.imageAvatar || GenericWarMachinePNG} />
             ) : (
                 <WarMachineIcon color={"#444444"} size={38} />
             )}

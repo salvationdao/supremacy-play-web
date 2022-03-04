@@ -79,6 +79,7 @@ export interface WarMachineState {
     imageUrl: string
     maxHealth: number
     maxShield: number
+    imageAvatar: string
 
     // Updated in subscription
     health: number
