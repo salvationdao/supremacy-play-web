@@ -4,18 +4,17 @@ import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 
 export const LoadMessage = () => {
-    const { state } = useWebsocket()
-    const { authSessionIDGetLoading, authSessionIDGetError } = useAuth()
+    const { state, reconnecting, isServerUp } = useWebsocket()
+    const { authSessionIDGetLoading } = useAuth()
 
     let message = ""
     if (state !== WebSocket.OPEN) {
-        message = "GAME SERVER OFFLINE."
+        if (reconnecting) {
+            message = "ATTEMPTING TO RECONNECT..."
+        } else if (!isServerUp) message = "GAME SERVER OFFLINE."
     } else if (authSessionIDGetLoading) {
         message = "GETTING SESSION..."
     }
-    // } else if (authSessionIDGetError) {
-    //     message = "Failed to get session..."
-    // }
 
     if (!message) return null
 

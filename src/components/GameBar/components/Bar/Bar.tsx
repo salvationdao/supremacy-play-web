@@ -21,7 +21,7 @@ export const Bar = (props: GameBarBaseProps) => {
                     <Logo />
                     <Box sx={{ flexGrow: 1 }} />
                     <Typography sx={{ mr: 2 }} variant="caption">
-                        Connecting to server...
+                        Passport offline
                     </Typography>
                 </>
             )

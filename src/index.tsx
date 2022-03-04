@@ -20,14 +20,7 @@ import {
     Maintenance,
     BattleCloseAlert,
 } from "./components"
-import {
-    PASSPORT_SERVER_HOST,
-    PASSPORT_WEB,
-    SENTRY_CONFIG,
-    SUPREMACY_PAGE,
-    TOKEN_SALE_PAGE,
-    UNDER_MAINTENANCE,
-} from "./constants"
+import { PASSPORT_SERVER_HOST, PASSPORT_WEB, SENTRY_CONFIG, SUPREMACY_PAGE, TOKEN_SALE_PAGE } from "./constants"
 import {
     AuthProvider,
     DimensionProvider,
@@ -66,6 +59,7 @@ const AppInner = () => {
     const { user, gameserverSessionID } = useAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
+    const { reconnecting, isServerUp } = useWebsocket()
 
     return (
         <>
@@ -107,7 +101,7 @@ const AppInner = () => {
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        {UNDER_MAINTENANCE ? (
+                        {!isServerUp ? (
                             <Maintenance />
                         ) : (
                             <>

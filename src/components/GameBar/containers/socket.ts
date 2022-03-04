@@ -65,10 +65,21 @@ interface HubError {
     message: string
 }
 
+const backoffIntervalCalc = async (num: number) => {
+    const calc = new Promise<number>((resolve, reject) => {
+        const jitter = Math.floor((Math.random() * 1000000) / 1000)
+        const backoffInterval = 2 ** (num - 1) * 5 + jitter
+        resolve(backoffInterval)
+    })
+    const i = await calc
+    return i
+}
+
 const UseWebsocket = (initialState?: string): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
     const [outgoing, setOutgoing] = useState<Message<any>[]>([])
+    const [isServerUp, setIsServerUp] = useState<boolean>(true)
 
     const webSocket = useRef<WebSocket | null>(null)
 
@@ -95,6 +106,26 @@ const UseWebsocket = (initialState?: string): WebSocketProperties => {
             ])
         })
     })
+
+    useEffect(() => {
+        if (isServerUp) return
+        serverCheckInterval(1)
+    }, [isServerUp])
+
+    const serverCheckInterval = async (num: number) => {
+        const i = await backoffIntervalCalc(num)
+        setTimeout(async () => {
+            try {
+                const resp = await fetch(`${window.location.protocol}//${initialState}/api/check`)
+                const body = resp.ok as boolean
+                if (body) {
+                    window.location.reload()
+                }
+            } catch {
+                serverCheckInterval(num + 1)
+            }
+        }, i)
+    }
 
     const subs = useRef<{ [key: string]: SubscribeCallback[] }>({})
 
@@ -195,6 +226,7 @@ const UseWebsocket = (initialState?: string): WebSocketProperties => {
             }
             ws.onclose = (e) => {
                 setReadyState()
+                setIsServerUp(false)
             }
         },
         [],
@@ -222,12 +254,23 @@ const UseWebsocket = (initialState?: string): WebSocketProperties => {
     }
 
     useEffect(() => {
-        webSocket.current = new WebSocket(`${protocol()}://${initialState}/api/ws`)
-        setupWS(webSocket.current)
+        ;(async () => {
+            try {
+                const resp = await fetch(`${window.location.protocol}//${initialState}/api/check`)
+                const body = resp.ok as boolean
+                if (body) {
+                    setIsServerUp(true)
+                    webSocket.current = new WebSocket(`${protocol()}://${initialState}/api/ws`)
+                    setupWS(webSocket.current)
 
-        return () => {
-            if (webSocket.current) webSocket.current.close()
-        }
+                    return () => {
+                        if (webSocket.current) webSocket.current.close()
+                    }
+                }
+            } catch {
+                setIsServerUp(false)
+            }
+        })()
     }, [initialState, setupWS])
 
     useEffect(() => {
