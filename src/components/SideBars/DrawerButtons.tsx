@@ -55,6 +55,7 @@ const SideButton = ({
                     lineHeight: 1,
                     fontWeight: "fontWeightBold",
                     whiteSpace: "nowrap",
+                    color: "#FFFFFF",
                 }}
             >
                 {text}
