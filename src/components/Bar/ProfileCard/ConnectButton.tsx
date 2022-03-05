@@ -81,7 +81,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
                     Connect
                 </Button>
             ) : (
-                <Typography sx={{ mr: 2, fontFamily: "Nostromo Regular Bold", color: "#FFFFFF" }} variant="caption">
+                <Typography sx={{ mr: 2, fontFamily: "Nostromo Regular Bold" }} variant="caption">
                     Signing in...
                 </Typography>
             )}

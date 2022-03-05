@@ -20,8 +20,8 @@ export const KillAlert = ({ data }: { data: KillAlertProps }) => {
                 color={killedByWarMachine ? killedByWarMachine.faction.theme.primary : "grey !important"}
                 imageUrl={killedByWarMachine ? killedByWarMachine.imageUrl : ""}
             />
-            <SvgDeath size="11px" fill="#FFFFFF" sx={{ display: "inline", mx: 0.6 }} />
-            <SvgSkull2 size="11px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.8 }} />
+            <SvgDeath size="11px" sx={{ display: "inline", mx: 0.6 }} />
+            <SvgSkull2 size="11px" sx={{ display: "inline", mr: 0.8 }} />
             <StyledImageText
                 text={destroyedWarMachine.name}
                 color={destroyedWarMachine.faction.theme.primary}

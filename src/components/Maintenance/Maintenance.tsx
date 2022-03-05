@@ -57,7 +57,6 @@ export const Maintenance = () => {
                     >
                         <Typography
                             sx={{
-                                color: "#FFFFFF",
                                 textAlign: "center",
                                 fontFamily: "Nostromo Regular Heavy",
                                 fontSize: "1.9rem",
@@ -79,13 +78,13 @@ export const Maintenance = () => {
 
                         <Stack direction="row" spacing={1.6} alignItems="center">
                             <IconButton size="small" target="_blank" href="https://discord.com/invite/supremacygame">
-                                <SvgDiscord size="32px" fill="#FFFFFF" />
+                                <SvgDiscord size="32px" />
                             </IconButton>
                             <IconButton size="small" target="_blank" href="https://twitter.com/SupremacyMeta">
-                                <SvgTwitter size="32px" fill="#FFFFFF" />
+                                <SvgTwitter size="32px" />
                             </IconButton>
                             <IconButton size="small" target="_blank" href="https://youtube.com/supremacygame">
-                                <SvgYouTube size="32px" fill="#FFFFFF" />
+                                <SvgYouTube size="32px" />
                             </IconButton>
                         </Stack>
                     </Stack>

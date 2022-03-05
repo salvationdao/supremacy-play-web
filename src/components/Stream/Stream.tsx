@@ -22,7 +22,7 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
         <Fade in={render}>
             <Stack sx={{ flex: 1, width: "100%" }}>
                 <Box sx={{ px: 2, py: 0.5, backgroundColor: colors.red, boxShadow: 6, zIndex: 99 }}>
-                    <Typography variant="h6" sx={{ textAlign: "center", color: "#FFFFFF" }}>
+                    <Typography variant="h6" sx={{ textAlign: "center" }}>
                         {user && !haveSups
                             ? "You must have SUPS in order to view the battle stream."
                             : "You must connect your passport to view the battle stream."}

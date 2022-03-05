@@ -64,9 +64,10 @@ export const WarMachineAbilitiesPopover = ({
                                         backgroundImage: `url(${warMachine.imageAvatar || GenericWarMachinePNG})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
-                                        backgroundSize: "contain",
+                                        backgroundSize: "cover",
                                         backgroundColor: factionTheme.primary,
                                         mb: 0.3,
+                                        borderRadius: 0.5,
                                     }}
                                 />
                                 <Typography

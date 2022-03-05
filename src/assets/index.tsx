@@ -150,7 +150,7 @@ export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, width, h
                 "& > svg": {
                     width: width || size || "20px",
                     height: height || size || "20px",
-                    fill: fill || "#FFFFFF",
+                    fill: fill || colors.text,
                 },
                 ...sx,
             }}

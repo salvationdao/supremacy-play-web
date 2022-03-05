@@ -39,7 +39,7 @@ const BannerInfo = ({
                 {PrefixSvg}
                 <Typography
                     variant="subtitle2"
-                    sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap", color: "#FFFFFF" }}
+                    sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}
                 >
                     {content}
                 </Typography>

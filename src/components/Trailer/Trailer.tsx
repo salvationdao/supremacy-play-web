@@ -70,7 +70,7 @@ export const Trailer = ({
                         }}
                     >
                         <SvgPlay size="19px" />
-                        <Typography variant="h6" sx={{ lineHeight: 2, fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
+                        <Typography variant="h6" sx={{ lineHeight: 2, fontWeight: "fontWeightBold" }}>
                             WATCH TRAILER TO ENTER
                         </Typography>
                     </Stack>

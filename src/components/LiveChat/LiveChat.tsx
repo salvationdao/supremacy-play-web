@@ -99,13 +99,12 @@ const DrawerContent = ({
                 <Tab
                     label={
                         <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
-                            <SvgGlobal size="20px" fill="#FFFFFF" />
+                            <SvgGlobal size="20px" />
                             <Typography
                                 variant="caption"
                                 sx={{
                                     lineHeight: 1,
                                     fontFamily: "Nostromo Regular Black",
-                                    color: "#FFFFFF",
                                 }}
                             >
                                 GLOBAL CHAT
@@ -134,7 +133,7 @@ const DrawerContent = ({
                                 />
                                 <Typography
                                     variant="caption"
-                                    sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", color: "#FFFFFF" }}
+                                    sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black" }}
                                 >
                                     {factionTabLabel}
                                 </Typography>
@@ -166,7 +165,6 @@ const DrawerContent = ({
                         sx={{
                             textAlign: "center",
                             lineHeight: 1,
-                            color: "#FFFFFF",
                             fontSize: (theme) => theme.typography.pxToRem(15),
                         }}
                     >

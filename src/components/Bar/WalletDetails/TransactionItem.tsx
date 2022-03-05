@@ -62,7 +62,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 }}
                 title={
                     <Box sx={{ px: 0.5, py: 0.2 }}>
-                        <Typography variant="body1" sx={{ color: "#FFFFFF", textAlign: "center" }}>
+                        <Typography variant="body1" sx={{ textAlign: "center" }}>
                             Copied!
                         </Typography>
                     </Box>

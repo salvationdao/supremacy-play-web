@@ -179,9 +179,7 @@ export const AssetItem = ({
                     </Typography>
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
-                            <Typography variant="caption" sx={{ color: "#FFFFFF" }}>
-                                REWARD:&nbsp;
-                            </Typography>
+                            <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
                                 {supFormatter(contractReward2)}
@@ -224,9 +222,7 @@ export const AssetItem = ({
                     </Typography>
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
-                            <Typography variant="caption" sx={{ color: "#FFFFFF" }}>
-                                REWARD:&nbsp;
-                            </Typography>
+                            <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
                                 {supFormatter(contractReward2)}
@@ -256,7 +252,6 @@ export const AssetItem = ({
                     sx={{
                         fontSize: ".75rem",
                         lineHeight: 1,
-                        color: "#FFFFFF",
                     }}
                 >
                     DEPLOY
@@ -291,9 +286,7 @@ export const AssetItem = ({
             >
                 {isGameServerUp && isInQueue && queuePosition && queuePosition.position && (
                     <Box sx={{ position: "absolute" }}>
-                        <Typography sx={{ fontFamily: "Nostromo Regular Black", color: "#FFFFFF" }}>
-                            {queuePosition.position}
-                        </Typography>
+                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{queuePosition.position}</Typography>
                     </Box>
                 )}
             </Box>
@@ -302,7 +295,6 @@ export const AssetItem = ({
                 <Typography
                     variant="caption"
                     sx={{
-                        color: "#FFFFFF",
                         fontFamily: "Nostromo Regular Bold",
                         fontWeight: "fontWeightBold",
                         wordBreak: "break-word",
@@ -321,7 +313,7 @@ export const AssetItem = ({
                 target="_blank"
                 sx={{ position: "absolute", top: 6, right: 4 }}
             >
-                <SvgExternalLink fill="#FFFFFF" size="10px" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                <SvgExternalLink size="10px" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
             </Link>
 
             <DeployConfirmation

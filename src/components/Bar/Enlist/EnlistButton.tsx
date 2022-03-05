@@ -4,6 +4,7 @@ import { EnlistDetailsPopover } from "../.."
 import { SvgPlus } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useToggle } from "../../../hooks"
+import { colors } from "../../../theme/theme"
 import { FactionGeneralData } from "../../../types/passport"
 
 export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
@@ -49,7 +50,7 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                             backgroundSize: "cover",
                         }}
                     />
-                    <SvgPlus size="10px" fill={primary || "#FFFFFF"} sx={{ pb: 0 }} />
+                    <SvgPlus size="10px" fill={primary || colors.text} sx={{ pb: 0 }} />
                 </Stack>
             </Button>
 

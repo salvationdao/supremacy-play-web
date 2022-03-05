@@ -40,7 +40,7 @@ export const TooltipHelper = ({
                 <Box sx={{ px: 0.5, py: 0.2 }}>
                     <Typography
                         variant="body1"
-                        sx={{ color: "#FFFFFF", fontFamily: "Share Tech", textAlign: isCentered ? "center" : "start" }}
+                        sx={{ fontFamily: "Share Tech", textAlign: isCentered ? "center" : "start" }}
                     >
                         {text}
                     </Typography>

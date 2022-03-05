@@ -247,7 +247,7 @@ const WarMachineItemInner = ({
                                     },
                                 }}
                             >
-                                {!isAlive && <SvgSkull fill="#FFFFFF" size="100%" />}
+                                {!isAlive && <SvgSkull size="100%" />}
                             </Stack>
                         </Box>
                     </Box>
@@ -301,7 +301,6 @@ const WarMachineItemInner = ({
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        color: "#FFFFFF",
                                         lineHeight: 1,
                                         fontWeight: "fontWeightBold",
                                         fontFamily: "Nostromo Regular Black",

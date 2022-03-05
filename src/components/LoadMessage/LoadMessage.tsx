@@ -34,10 +34,7 @@ export const LoadMessage = () => {
                 pointerEvents: "none",
             }}
         >
-            <Typography
-                variant="h6"
-                sx={{ fontFamily: "Nostromo Regular Bold", fontWeight: "fontWeightBold", color: "#FFFFFF" }}
-            >
+            <Typography variant="h6" sx={{ fontFamily: "Nostromo Regular Bold", fontWeight: "fontWeightBold" }}>
                 {message}
             </Typography>
         </Box>

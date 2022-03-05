@@ -71,12 +71,10 @@ export const MultiplierItem = ({
                             border: "#FFFFFF60 1px solid",
                         }}
                     />
-                    <Typography variant="body1" sx={{ color: "#FFFFFF" }}>
-                        {keyTitle(supsMultiplier.key).toUpperCase()}:
-                    </Typography>
+                    <Typography variant="body1">{keyTitle(supsMultiplier.key).toUpperCase()}:</Typography>
                 </Stack>
 
-                <Typography sx={{ minWidth: 25, textAlign: "end", color: "#FFFFFF" }} variant="body2">
+                <Typography sx={{ minWidth: 25, textAlign: "end" }} variant="body2">
                     +{supsMultiplier.value}x
                 </Typography>
 

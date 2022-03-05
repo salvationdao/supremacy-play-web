@@ -28,13 +28,13 @@ export const SupsTooltipContent = ({
     return (
         <Stack spacing={1.5} sx={{ position: "relative", px: 1.3, py: 1 }}>
             <Box>
-                <Typography sx={{ mb: 0.3, fontWeight: "bold", color: colors.text }} variant="h6">
+                <Typography sx={{ mb: 0.3, fontWeight: "bold", color: colors.offWhite }} variant="h6">
                     TOTAL SUPS:
                 </Typography>
 
                 <Stack direction="row" alignItems="center">
                     <SvgSupToken size="16px" fill={colors.yellow} sx={{ pb: 0 }} />
-                    <Typography sx={{ lineHeight: 1, color: "#FFFFFF" }} variant="body1">
+                    <Typography sx={{ lineHeight: 1 }} variant="body1">
                         {sups ? supFormatterNoFixed(sups) : "0.00"}
                     </Typography>
                 </Stack>
@@ -42,7 +42,7 @@ export const SupsTooltipContent = ({
 
             {size > 0 && (
                 <Box>
-                    <Typography sx={{ mb: 0.3, fontWeight: "bold", color: colors.text }} variant="h6">
+                    <Typography sx={{ mb: 0.3, fontWeight: "bold", color: colors.offWhite }} variant="h6">
                         MULTIPLIERS: {`${totalMultipliers.toFixed(2)}x`}
                     </Typography>
 
@@ -56,7 +56,7 @@ export const SupsTooltipContent = ({
 
             {transactions.length > 0 && (
                 <Box>
-                    <Typography sx={{ mb: 0.3, fontWeight: "bold", color: colors.text }} variant="h6">
+                    <Typography sx={{ mb: 0.3, fontWeight: "bold", color: colors.offWhite }} variant="h6">
                         RECENT TRANSACTIONS:
                     </Typography>
 

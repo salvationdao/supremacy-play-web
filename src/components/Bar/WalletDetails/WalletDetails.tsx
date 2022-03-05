@@ -125,7 +125,7 @@ export const WalletDetails = () => {
                 barName={"wallet"}
                 iconComponent={
                     <Box sx={{ p: 0.4, backgroundColor: colors.grey, borderRadius: 1 }}>
-                        <SvgSupToken size="20px" fill="#FFFFFF" />
+                        <SvgSupToken size="20px" />
                     </Box>
                 }
             >
@@ -202,9 +202,7 @@ export const WalletDetails = () => {
                             >
                                 <SvgWallet size="23px" sx={{ mr: 1.3 }} />
                                 <SvgSupToken size="19px" fill={colors.yellow} sx={{ mr: 0.6 }} />
-                                <Typography
-                                    sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, color: "#FFFFFF" }}
-                                >
+                                <Typography sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1 }}>
                                     {sups ? supFormatterNoFixed(sups, 2) : "0.00"}
                                 </Typography>
                                 <Typography

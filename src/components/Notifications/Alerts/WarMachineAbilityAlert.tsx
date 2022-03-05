@@ -20,7 +20,7 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
 
     return (
         <Box>
-            <SvgEmergency size="12px" fill="#FFFFFF" sx={{ display: "inline", mr: 0.5 }} />
+            <SvgEmergency size="12px" sx={{ display: "inline", mr: 0.5 }} />
             <StyledImageText
                 text={label}
                 color={colour}

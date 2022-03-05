@@ -102,7 +102,6 @@ const ChatMessagesInner = ({
                     >
                         <Typography
                             sx={{
-                                color: "#FFFFFF",
                                 textAlign: "center",
                                 fontFamily: "Nostromo Regular Heavy",
                             }}

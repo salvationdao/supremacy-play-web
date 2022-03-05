@@ -48,7 +48,6 @@ export const ChatMessage = ({ chat, isSent, isFailed }: { chat: ChatData; isSent
             <Typography
                 variant="body2"
                 sx={{
-                    color: "#FFFFFF",
                     fontSize: "0.8rem",
                     wordBreak: "break-word",
                     userSelect: "text",
