@@ -32,7 +32,7 @@ export const PricesInner = ({ price, prevPrice }: PricesInnerProps) => {
             >
                 <Stack direction="row" alignItems="center" justifyContent="center">
                     <Typography variant="body1" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                        BATTLE ABILITY VOTING COST:
+                        COST PER BATTLE ABILITY VOTE:
                     </Typography>
                 </Stack>
 

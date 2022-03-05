@@ -179,7 +179,9 @@ export const AssetItem = ({
                     </Typography>
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
-                            <Typography variant="caption">REWARD:&nbsp;</Typography>
+                            <Typography variant="caption" sx={{ color: "#FFFFFF" }}>
+                                REWARD:&nbsp;
+                            </Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
                                 {supFormatter(contractReward2)}
@@ -222,7 +224,9 @@ export const AssetItem = ({
                     </Typography>
                     {contractReward2 && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
-                            <Typography variant="caption">REWARD:&nbsp;</Typography>
+                            <Typography variant="caption" sx={{ color: "#FFFFFF" }}>
+                                REWARD:&nbsp;
+                            </Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
                                 {supFormatter(contractReward2)}
@@ -286,7 +290,11 @@ export const AssetItem = ({
                 }}
             >
                 {isGameServerUp && isInQueue && queuePosition && queuePosition.position && (
-                    <Box sx={{ position: "absolute" }}>{queuePosition.position}</Box>
+                    <Box sx={{ position: "absolute" }}>
+                        <Typography sx={{ fontFamily: "Nostromo Regular Black", color: "#FFFFFF" }}>
+                            {queuePosition.position}
+                        </Typography>
+                    </Box>
                 )}
             </Box>
 

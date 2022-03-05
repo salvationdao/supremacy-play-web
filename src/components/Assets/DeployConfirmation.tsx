@@ -22,7 +22,7 @@ const AmountItem = ({
 }) => {
     return (
         <Stack direction="row" alignItems="center">
-            <Typography sx={{ mr: 0.5 }}>{title}</Typography>
+            <Typography sx={{ mr: 0.5, color: "#FFFFFF" }}>{title}</Typography>
             <SvgSupToken size="14px" fill={color} />
             <Typography sx={{ ml: 0.2, mr: 4, color: color }}>{value}</Typography>
             <TooltipHelper placement="right-start" text={tooltip}>
@@ -163,6 +163,7 @@ export const DeployConfirmation = ({
                                         textOverflow: "ellipsis",
                                         WebkitLineClamp: 2,
                                         WebkitBoxOrient: "vertical",
+                                        color: "#FFFFFF",
                                     }}
                                 >
                                     {name}

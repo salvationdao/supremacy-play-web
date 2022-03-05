@@ -34,7 +34,7 @@ export const SupsTooltipContent = ({
 
                 <Stack direction="row" alignItems="center">
                     <SvgSupToken size="16px" fill={colors.yellow} sx={{ pb: 0 }} />
-                    <Typography sx={{ lineHeight: 1 }} variant="body1">
+                    <Typography sx={{ lineHeight: 1, color: "#FFFFFF" }} variant="body1">
                         {sups ? supFormatterNoFixed(sups) : "0.00"}
                     </Typography>
                 </Stack>
