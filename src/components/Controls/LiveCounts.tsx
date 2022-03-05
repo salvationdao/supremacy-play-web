@@ -56,7 +56,7 @@ export const LiveCountsInner = ({ factionsColor, subscribe, subscribeNetMessage,
 
     return (
         <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center">
-            <SvgUser size="9px" />
+            <SvgUser size="9px" fill={colors.text} />
             <Typography variant="body2" sx={{ lineHeight: 1, whiteSpace: "nowrap" }}>
                 LIVE VIEWERS:{" "}
             </Typography>

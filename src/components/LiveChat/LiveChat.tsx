@@ -166,6 +166,7 @@ const DrawerContent = ({
                         sx={{
                             textAlign: "center",
                             lineHeight: 1,
+                            color: "#FFFFFF",
                             fontSize: (theme) => theme.typography.pxToRem(15),
                         }}
                     >
