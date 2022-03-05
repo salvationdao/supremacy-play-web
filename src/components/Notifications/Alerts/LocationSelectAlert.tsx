@@ -80,7 +80,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={faction.theme.primary}
                 />
                 <StyledNormalText text=" failed to choose a target location in time. " />
-                <Divider sx={{ my: 1.2, borderColor: "#000000", opacity: 0.1 }} />
+                <Divider sx={{ my: 1.2, borderColor: "#FFFFFF", opacity: 0.15 }} />
                 <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
                     imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextAvatarID}` : undefined}
@@ -103,7 +103,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     color={faction.theme.primary}
                 />
                 <StyledNormalText text=" has disconnected" />
-                <Divider sx={{ my: 1.2, borderColor: "#000000", opacity: 0.1 }} />
+                <Divider sx={{ my: 1.2, borderColor: "#FFFFFF", opacity: 0.15 }} />
                 <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
                     imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextAvatarID}` : undefined}
