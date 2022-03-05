@@ -105,6 +105,7 @@ const DrawerContent = ({
                                 sx={{
                                     lineHeight: 1,
                                     fontFamily: "Nostromo Regular Black",
+                                    color: "#FFFFFF",
                                 }}
                             >
                                 GLOBAL CHAT
@@ -133,7 +134,7 @@ const DrawerContent = ({
                                 />
                                 <Typography
                                     variant="caption"
-                                    sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black" }}
+                                    sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", color: "#FFFFFF" }}
                                 >
                                     {factionTabLabel}
                                 </Typography>

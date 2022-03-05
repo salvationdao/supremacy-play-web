@@ -17,7 +17,7 @@ export const Bar = () => {
                 <>
                     <Logo />
                     <Box sx={{ flexGrow: 1 }} />
-                    <Typography sx={{ mr: 2, fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                    <Typography sx={{ mr: 2, fontFamily: "Nostromo Regular Bold", color: "#FFFFFF" }} variant="caption">
                         {isServerUp ? "Attempting to reconnect..." : "Passport offline."}
                     </Typography>
                 </>

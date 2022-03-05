@@ -37,7 +37,7 @@ export const LoadMessage = () => {
         >
             <Typography
                 variant="h6"
-                sx={{ fontFamily: "Nostromo Regular Bold", fontWeight: "fontWeightBold", color: colors.text }}
+                sx={{ fontFamily: "Nostromo Regular Bold", fontWeight: "fontWeightBold", color: "#FFFFFF" }}
             >
                 {message}
             </Typography>
