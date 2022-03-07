@@ -13,8 +13,8 @@ interface WarMachineAbilityAlertProps {
 
 export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertProps }) => {
     const { ability, warMachine } = data
-    const { label, colour, imageUrl } = ability
-    const { name, imageAvatar: warMachineImageUrl, faction } = warMachine
+    const { label, colour, image_url } = ability
+    const { name, image_avatar: warMachineImageUrl, faction } = warMachine
 
     const wmImageUrl = warMachineImageUrl || GenericWarMachinePNG
 
@@ -24,7 +24,7 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
             <StyledImageText
                 text={label}
                 color={colour}
-                imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl}`}
+                imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`}
             />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText text={name} color={faction.theme.primary} imageUrl={wmImageUrl} />

@@ -6,7 +6,7 @@ import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
 export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { battleIdentifier, winningFaction, winningWarMachines } = battleEndDetail
+    const { battle_identifier, winning_faction, winning_war_machines } = battleEndDetail
 
     return (
         <Stack spacing={3}>
@@ -23,7 +23,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 >
                     VICTORY!
                     <BattleEndTooltip
-                        text={`The syndicate that had won the battle #${battleIdentifier}.`}
+                        text={`The syndicate that had won the battle #${battle_identifier}.`}
                         color={colors.yellow}
                     />
                 </Typography>
@@ -31,9 +31,9 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
 
             <Stack spacing={3.2} sx={{ px: 1.2 }}>
                 <StyledImageText
-                    color={winningFaction.theme.primary}
-                    text={winningFaction.label}
-                    imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${winningFaction.logoBlobID}`}
+                    color={winning_faction.theme.primary}
+                    text={winning_faction.label}
+                    imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${winning_faction.logo_blob_id}`}
                     variant="h5"
                     imageSize={40}
                     imageBorderThickness="0px"
@@ -42,16 +42,16 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     truncateLine
                 />
 
-                {winningWarMachines && winningWarMachines.length > 0 ? (
+                {winning_war_machines && winning_war_machines.length > 0 ? (
                     <Stack spacing={2} sx={{ pl: 1 }}>
-                        {winningWarMachines.map((wm) => (
+                        {winning_war_machines.map((wm) => (
                             <StyledImageText
-                                key={`${wm.hash}-${wm.participantID}`}
+                                key={`${wm.hash}-${wm.participant_id}`}
                                 color={colors.text}
                                 imageBorderColor={wm.faction.theme.primary}
                                 imageBackgroundColor={`${wm.faction.theme.primary}60`}
                                 text={wm.name.toUpperCase()}
-                                imageUrl={wm.imageAvatar || GenericWarMachinePNG}
+                                imageUrl={wm.image_avatar || GenericWarMachinePNG}
                                 variant="h5"
                                 imageSize={29}
                                 imageBorderThickness="2px"

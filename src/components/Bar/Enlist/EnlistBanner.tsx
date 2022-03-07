@@ -53,10 +53,10 @@ export const EnlistBanner = () => {
     const { state, subscribe } = usePassportServerWebsocket()
     const [userStat, setUserStat] = useState<UserStat>({
         id: "",
-        totalAbilityTriggered: 0,
-        killCount: 0,
-        totalVoteCount: 0,
-        viewBattleCount: 0,
+        total_ability_triggered: 0,
+        kill_count: 0,
+        total_vote_count: 0,
+        view_battle_count: 0,
     })
 
     // start to subscribe user update
@@ -78,10 +78,10 @@ export const EnlistBanner = () => {
 
     const {
         theme: { primary },
-        logoBlobID,
+        logo_blob_id,
     } = user.faction
 
-    const { totalAbilityTriggered, killCount, totalVoteCount, viewBattleCount } = userStat
+    const { total_ability_triggered, kill_count, total_vote_count, view_battle_count } = userStat
 
     return (
         <BarExpandable
@@ -92,7 +92,7 @@ export const EnlistBanner = () => {
                     sx={{
                         width: 28,
                         height: 28,
-                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logoBlobID})`,
+                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "contain",
@@ -138,7 +138,7 @@ export const EnlistBanner = () => {
                             width: 38,
                             height: 38,
                             flexShrink: 0,
-                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logoBlobID})`,
+                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
@@ -147,28 +147,28 @@ export const EnlistBanner = () => {
                     <BannerInfo
                         title={`BATTLE VOTES`}
                         tooltip="The number of times you have voted for a battle ability."
-                        content={`${totalVoteCount}`}
+                        content={`${total_vote_count}`}
                         PrefixSvg={<SvgApplause size="12px" />}
                     />
 
                     <BannerInfo
                         title={`ABILITIES`}
                         tooltip="The number of abilities you have triggered."
-                        content={`${totalAbilityTriggered}`}
+                        content={`${total_ability_triggered}`}
                         PrefixSvg={<SvgAbility size="11px" />}
                     />
 
                     <BannerInfo
                         title={`KILLS`}
                         tooltip="The number of times you have killed a War Machine with an ability."
-                        content={`${killCount}`}
+                        content={`${kill_count}`}
                         PrefixSvg={<SvgDeath size="11px" />}
                     />
 
                     <BannerInfo
                         title={`SPECTATED`}
                         tooltip="The number of battles you have watched."
-                        content={`${viewBattleCount}`}
+                        content={`${view_battle_count}`}
                         PrefixSvg={<SvgView size="11px" />}
                     />
                 </Stack>

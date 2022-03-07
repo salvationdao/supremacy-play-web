@@ -17,7 +17,7 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
     const userID = user?.id
-    const factionID = user?.factionID
+    const factionID = user?.faction_id
 
     const [sessionID, setSessionID] = useState("")
     const [sessionIDLoading, setSessionIDLoading] = useState(true)

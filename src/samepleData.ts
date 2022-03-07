@@ -1,7 +1,7 @@
 import { NotificationResponse } from "./components"
-import { BattleEndDetail } from "./types"
+import { BattleEndDetail, User } from './types'
 
-const playerArray = [
+const playerArray: User[] = [
     {
         id: "311c6f68-498c-449b-b012-5ae3d114d619",
         username: "jayli3n",
@@ -10,9 +10,9 @@ const playerArray = [
         sups: 0,
         faction: {
             id: "1",
-            backgroundBlobID: "",
+            background_blob_id: "",
             label: "Red Mountain Offworld Mining Corporation",
-            logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
             theme: {
                 primary: "#C24242",
                 secondary: "#FFFFFF",
@@ -28,9 +28,9 @@ const playerArray = [
         sups: 0,
         faction: {
             id: "1",
-            backgroundBlobID: "",
+            background_blob_id: "",
             label: "Boston Cybernetics",
-            logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
             theme: {
                 primary: "#428EC1",
                 secondary: "#FFFFFF",
@@ -46,9 +46,9 @@ const playerArray = [
         sups: 0,
         faction: {
             id: "1",
-            backgroundBlobID: "",
+            background_blob_id: "",
             label: "Zaibatsu Heavy Industries",
-            logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
             theme: {
                 primary: "#FFFFFF",
                 secondary: "#000000",
@@ -64,9 +64,9 @@ const playerArray = [
         sups: 0,
         faction: {
             id: "1",
-            backgroundBlobID: "",
+            background_blob_id: "",
             label: "Boston Cybernetics",
-            logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
             theme: {
                 primary: "#428EC1",
                 secondary: "#FFFFFF",
@@ -82,9 +82,9 @@ const playerArray = [
         sups: 0,
         faction: {
             id: "1",
-            backgroundBlobID: "",
+            background_blob_id: "",
             label: "Red Mountain Offworld Mining Corporation",
-            logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
             theme: {
                 primary: "#C24242",
                 secondary: "#FFFFFF",
@@ -111,9 +111,9 @@ const gameAbilityEvent: any = {
         sups: 0,
         faction: {
             id: "1",
-            backgroundBlobID: "",
+            background_blob_id: "",
             label: "Boston Cybernetics",
-            logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
             theme: {
                 primary: "#428EC1",
                 secondary: "#FFFFFF",
@@ -124,32 +124,32 @@ const gameAbilityEvent: any = {
 }
 
 export const sampleBattleEndDetail: BattleEndDetail = {
-    battleID: "2f1f14f2-b89a-4c15-a197-a86c013399f4",
-    battleIdentifier: 3,
+    battle_id: "2f1f14f2-b89a-4c15-a197-a86c013399f4",
+    battle_identifier: 3,
     startedAt: new Date("2022-02-22T07:54:11.944Z"),
     endedAt: new Date("2022-02-22T08:06:30.762Z"),
-    winningCondition: "LAST_ALIVE",
-    winningFaction: {
+    winning_condition: "LAST_ALIVE",
+    winning_faction: {
         id: "1",
-        backgroundBlobID: "",
+        background_blob_id: "",
         label: "Red Mountain Offworld Mining Corporation",
-        logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+        logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
         theme: {
             primary: "#C24242",
             secondary: "#FFFFFF",
             background: "#120E0E",
         },
     },
-    winningWarMachines: [
+    winning_war_machines: [
         {
-            imageUrl: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
-            imageAvatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
+            image_url: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
+            image_avatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
             name: "Olympus Mons LY07",
             faction: {
                 id: "1",
-                backgroundBlobID: "",
+                background_blob_id: "",
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+                logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -157,24 +157,24 @@ export const sampleBattleEndDetail: BattleEndDetail = {
                 },
             },
             hash: "3",
-            participantID: 3,
-            factionID: "",
-            maxHealth: 100,
-            maxShield: 100,
+            participant_id: 3,
+            faction_id: "",
+            max_health: 100,
+            max_shield: 100,
             health: 60,
             shield: 50,
             position: { x: 0, y: 0 },
             rotation: 10,
         },
         {
-            imageUrl: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
-            imageAvatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
+            image_url: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
+            image_avatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
             name: "Tenshi Mk1 B",
             faction: {
                 id: "1",
-                backgroundBlobID: "",
+                background_blob_id: "",
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+                logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -182,24 +182,24 @@ export const sampleBattleEndDetail: BattleEndDetail = {
                 },
             },
             hash: "",
-            participantID: 1,
-            factionID: "",
-            maxHealth: 100,
-            maxShield: 100,
+            participant_id: 1,
+            faction_id: "",
+            max_health: 100,
+            max_shield: 100,
             health: 60,
             shield: 50,
             position: { x: 0, y: 0 },
             rotation: 10,
         },
         {
-            imageUrl: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
-            imageAvatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
+            image_url: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
+            image_avatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
             name: "Law Enforcer X-1000",
             faction: {
                 id: "1",
-                backgroundBlobID: "",
+                background_blob_id: "",
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+                logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -207,22 +207,22 @@ export const sampleBattleEndDetail: BattleEndDetail = {
                 },
             },
             hash: "2",
-            participantID: 2,
-            factionID: "",
-            maxHealth: 100,
-            maxShield: 100,
+            participant_id: 2,
+            faction_id: "",
+            max_health: 100,
+            max_shield: 100,
             health: 60,
             shield: 50,
             position: { x: 0, y: 0 },
             rotation: 10,
         },
     ],
-    topSupsContributeFactions: [
+    top_sups_contribute_factions: [
         {
             id: "1",
-            backgroundBlobID: "",
+            background_blob_id: "",
             label: "Red Mountain Offworld Mining Corporation",
-            logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
             theme: {
                 primary: "#C24242",
                 secondary: "#FFFFFF",
@@ -231,9 +231,9 @@ export const sampleBattleEndDetail: BattleEndDetail = {
         },
         {
             id: "2",
-            backgroundBlobID: "",
+            background_blob_id: "",
             label: "Boston Cybernetics",
-            logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
             theme: {
                 primary: "#428EC1",
                 secondary: "#FFFFFF",
@@ -242,9 +242,9 @@ export const sampleBattleEndDetail: BattleEndDetail = {
         },
         {
             id: "3",
-            backgroundBlobID: "",
+            background_blob_id: "",
             label: "Zaibatsu Heavy Industries",
-            logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
             theme: {
                 primary: "#FFFFFF",
                 secondary: "#000000",
@@ -252,27 +252,27 @@ export const sampleBattleEndDetail: BattleEndDetail = {
             },
         },
     ],
-    topSupsContributors: playerArray,
-    mostFrequentAbilityExecutors: playerArray,
-    battleEvents: [
+    top_sups_contributors: playerArray,
+    most_frequent_ability_executors: playerArray,
+    battle_events: [
         {
             type: "GAME_ABILITY",
-            createdAt: new Date("2022-02-17T07:54:06.727Z"),
+            created_at: new Date("2022-02-17T07:54:06.727Z"),
             event: gameAbilityEvent,
         },
         {
             type: "GAME_ABILITY",
-            createdAt: new Date("2022-02-17T07:54:11.944Z"),
+            created_at: new Date("2022-02-17T07:54:11.944Z"),
             event: gameAbilityEvent,
         },
         {
             type: "GAME_ABILITY",
-            createdAt: new Date("2022-02-17T07:54:28.923Z"),
+            created_at: new Date("2022-02-17T07:54:28.923Z"),
             event: gameAbilityEvent,
         },
         {
             type: "GAME_ABILITY",
-            createdAt: new Date("2022-02-17T07:54:33.366Z"),
+            created_at: new Date("2022-02-17T07:54:33.366Z"),
             event: gameAbilityEvent,
         },
     ],
@@ -291,7 +291,7 @@ export const locationSelectNoti: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -320,7 +320,7 @@ export const locationSelectNoti2: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -334,7 +334,7 @@ export const locationSelectNoti2: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Boston Cybernetics",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -363,7 +363,7 @@ export const locationSelectNoti3: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -377,7 +377,7 @@ export const locationSelectNoti3: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Boston Cybernetics",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -406,7 +406,7 @@ export const locationSelectNoti4: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -435,7 +435,7 @@ export const locationSelectNoti5: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -461,7 +461,7 @@ export const battleAbilityNoti: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Zaibatsu Industries",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#FFFFF",
                     secondary: "#00000",
@@ -486,7 +486,7 @@ export const factionAbilityNoti: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -511,7 +511,7 @@ export const warMachineAbilityNoti: NotificationResponse = {
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -529,7 +529,7 @@ export const warMachineAbilityNoti: NotificationResponse = {
             imageUrl: "",
             faction: {
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "91dae11d-eb07-4906-bbdd-6417b880770a",
+                logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -553,9 +553,9 @@ export const killNoti: NotificationResponse = {
             name: "Olympus Mons LY07",
             faction: {
                 id: "1",
-                backgroundBlobID: "",
+                background_blob_id: "",
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+                logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",
@@ -577,9 +577,9 @@ export const killNoti: NotificationResponse = {
             name: "MR Olympics",
             faction: {
                 id: "1",
-                backgroundBlobID: "",
+                background_blob_id: "",
                 label: "Boston Cybernetics",
-                logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+                logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
                 theme: {
                     primary: "#428EC1",
                     secondary: "#FFFFFF",
@@ -607,9 +607,9 @@ export const killNoti2: NotificationResponse = {
             name: "Olympus Mons LY07",
             faction: {
                 id: "1",
-                backgroundBlobID: "",
+                background_blob_id: "",
                 label: "Red Mountain Offworld Mining Corporation",
-                logoBlobID: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
+                logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
                 theme: {
                     primary: "#C24242",
                     secondary: "#FFFFFF",

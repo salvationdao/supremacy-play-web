@@ -43,8 +43,8 @@ export const FallbackUser: User = {
     faction: {
         id: "",
         label: "xxx",
-        logoBlobID: "",
-        backgroundBlobID: "",
+        logo_blob_id: "",
+        background_blob_id: "",
         theme: {
             primary: "grey !important",
             secondary: "#FFFFFF",
@@ -55,11 +55,11 @@ export const FallbackUser: User = {
 
 export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }) => {
     const { type, currentUser, nextUser, ability } = data
-    const { label, colour, imageUrl } = ability
+    const { label, colour, image_url } = ability
     const { username, avatarID, faction } = currentUser || FallbackUser
     const { username: nextUsername, avatarID: nextAvatarID, faction: nextFaction } = nextUser || FallbackUser
 
-    const abilityImageUrl = `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl}`
+    const abilityImageUrl = `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`
 
     if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
         return (

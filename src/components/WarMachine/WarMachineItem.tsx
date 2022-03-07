@@ -69,7 +69,7 @@ const WarMachineItemInner = ({
     state,
     subscribe,
 }: PropsInner) => {
-    const { participantID, faction, name, imageAvatar } = warMachine
+    const { participant_id, faction, name, image_avatar } = warMachine
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -79,12 +79,12 @@ const WarMachineItemInner = ({
     const maxAbilityPriceMap = useRef<Map<string, BigNumber>>(new Map<string, BigNumber>())
     const {
         id: warMachineFactionID,
-        logoBlobID,
+        logo_blob_id,
         theme: { primary, secondary, background },
     } = faction
 
-    const wmImageUrl = imageAvatar || GenericWarMachinePNG
-    const isOwnFaction = factionID == warMachine.factionID
+    const wmImageUrl = image_avatar || GenericWarMachinePNG
+    const isOwnFaction = factionID == warMachine.faction_id
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord
 
@@ -130,10 +130,10 @@ const WarMachineItemInner = ({
                 if (payload) setGameAbilities(payload)
             },
             {
-                participantID,
+                participant_id,
             },
         )
-    }, [subscribe, state, factionID, participantID, warMachineFactionID])
+    }, [subscribe, state, factionID, participant_id, warMachineFactionID])
 
     // Subscribe to whether the war machine has been destroyed
     useEffect(() => {
@@ -144,12 +144,12 @@ const WarMachineItemInner = ({
                 if (!payload) return
                 setWarMachineDestroyedRecord(payload)
             },
-            { participantID },
+            { participant_id },
         )
-    }, [state, subscribe, participantID])
+    }, [state, subscribe, participant_id])
 
     return (
-        <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
+        <BoxSlanted key={`WarMachineItem-${participant_id}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
             <Stack
                 ref={popoverRef}
                 direction="row"
@@ -284,7 +284,7 @@ const WarMachineItemInner = ({
                                     sx={{
                                         width: 26,
                                         height: 26,
-                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logoBlobID})`,
+                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",

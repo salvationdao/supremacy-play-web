@@ -44,14 +44,14 @@ export const ChatSend = ({ primaryColor, factionID, onNewMessage, onSentMessage,
 
         onNewMessage(
             {
-                fromUserID: user.id,
-                fromUsername: user.username,
-                messageColor,
-                factionColour: user && user.faction ? user.faction.theme.primary : messageColor,
-                factionLogoBlobID: user && user.faction ? user.faction.logoBlobID : "",
-                avatarID: user.avatarID,
+                from_user_id: user.id,
+                from_username: user.username,
+                message_color: messageColor,
+                faction_colour: user && user.faction ? user.faction.theme.primary : messageColor,
+                faction_logo_blob_id: user && user.faction ? user.faction.logo_blob_id : "",
+                avatar_id: user.avatar_id,
                 message,
-                sentAt,
+                sent_at: sentAt,
             },
             factionID,
         )

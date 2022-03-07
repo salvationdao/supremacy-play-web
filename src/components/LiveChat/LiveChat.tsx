@@ -49,7 +49,7 @@ const DrawerContent = ({
         })
     }
 
-    const isEnlisted = user && user.factionID && user.faction
+    const isEnlisted = user && user.faction_id && user.faction
     let factionID
     let primaryColor
     let secondaryColor
@@ -61,7 +61,7 @@ const DrawerContent = ({
         secondaryColor = "#FFFFFF"
         bannerBackgroundColor = shadeColor(colors.globalChat, -30)
     } else if (tabValue == 1 && isEnlisted) {
-        factionID = user.factionID
+        factionID = user.faction_id
         primaryColor = user.faction.theme.primary
         secondaryColor = user.faction.theme.secondary
         bannerBackgroundColor = `${primaryColor}25`
@@ -122,7 +122,7 @@ const DrawerContent = ({
                                         height: 21,
                                         flexShrink: 0,
                                         mb: 0.2,
-                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID})`,
+                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
@@ -206,7 +206,7 @@ export const LiveChat = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
         return subscribe<ChatData>(PassportServerKeys.SubscribeGlobalChat, (m) => {
-            if (!m || m.fromUserID === user?.id) return
+            if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, null)
         })
     }, [state, user, subscribe])
@@ -214,12 +214,12 @@ export const LiveChat = () => {
     // Subscribe to faction chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
-        if (!user || !user.factionID || !user.faction) {
+        if (!user || !user.faction_id || !user.faction) {
             return
         }
         return subscribe<ChatData>(PassportServerKeys.SubscribeFactionChat, (m) => {
-            if (!m || m.fromUserID === user?.id) return
-            newMessageHandler(m, m.fromUserID)
+            if (!m || m.from_user_id === user?.id) return
+            newMessageHandler(m, m.from_user_id)
         })
     }, [user, state, subscribe])
 

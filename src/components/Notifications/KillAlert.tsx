@@ -18,14 +18,14 @@ export const KillAlert = ({ data }: { data: KillAlertProps }) => {
             <StyledImageText
                 text={killedByWarMachine ? killedByWarMachine.name : killedBy || "UNKNOWN"}
                 color={killedByWarMachine ? killedByWarMachine.faction.theme.primary : "grey !important"}
-                imageUrl={killedByWarMachine ? killedByWarMachine.imageUrl : ""}
+                imageUrl={killedByWarMachine ? killedByWarMachine.image_url : ""}
             />
             <SvgDeath size="11px" fill={colors.text} sx={{ display: "inline", mx: 0.6 }} />
             <SvgSkull2 size="11px" sx={{ display: "inline", mr: 0.8 }} />
             <StyledImageText
                 text={destroyedWarMachine.name}
                 color={destroyedWarMachine.faction.theme.primary}
-                imageUrl={destroyedWarMachine.imageUrl}
+                imageUrl={destroyedWarMachine.image_url}
             />
         </Box>
     )

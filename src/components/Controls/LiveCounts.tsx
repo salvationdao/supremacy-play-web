@@ -63,17 +63,17 @@ export const LiveCountsInner = ({ factionsColor, subscribe, subscribeNetMessage,
 
             <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center">
                 <ReUsedText
-                    text={Math.abs(viewers.RedMountain).toFixed()}
+                    text={Math.abs(viewers.red_mountain).toFixed()}
                     color={factionsColor?.redMountain}
                     tooltip="Red Mountain"
                 />
                 <ReUsedText
-                    text={Math.abs(viewers.Boston).toFixed()}
+                    text={Math.abs(viewers.boston).toFixed()}
                     color={factionsColor?.boston}
                     tooltip="Boston Cybernetics"
                 />
                 <ReUsedText
-                    text={Math.abs(viewers.Zaibatsu).toFixed()}
+                    text={Math.abs(viewers.zaibatsu).toFixed()}
                     color={factionsColor?.zaibatsu}
                     tooltip="Zaibatsu Heavy Industries"
                 />

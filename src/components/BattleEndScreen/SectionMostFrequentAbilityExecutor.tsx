@@ -5,7 +5,7 @@ import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
 export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { mostFrequentAbilityExecutors } = battleEndDetail
+    const { most_frequent_ability_executors } = battleEndDetail
 
     return (
         <Stack spacing={2}>
@@ -28,10 +28,10 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                 </Typography>
             </Box>
 
-            {mostFrequentAbilityExecutors && mostFrequentAbilityExecutors.length > 0 ? (
+            {most_frequent_ability_executors && most_frequent_ability_executors.length > 0 ? (
                 <Stack spacing={2}>
                     <Stack spacing={2} sx={{ pl: 1 }}>
-                        {mostFrequentAbilityExecutors.map((u, index) => (
+                        {most_frequent_ability_executors.map((u, index) => (
                             <Stack key={index} direction="row" spacing={1.3} alignItems="center">
                                 <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                     {index + 1}.

@@ -51,12 +51,12 @@ export const BattleEndScreen = () => {
     }, [])
 
     const primaryColor =
-        battleEndDetail && battleEndDetail.winningFaction
-            ? battleEndDetail.winningFaction.theme.primary
+        battleEndDetail && battleEndDetail.winning_faction
+            ? battleEndDetail.winning_faction.theme.primary
             : colors.neonBlue
     const backgroundColor =
-        battleEndDetail && battleEndDetail.winningFaction
-            ? shadeColor(battleEndDetail.winningFaction.theme.primary, -96)
+        battleEndDetail && battleEndDetail.winning_faction
+            ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96)
             : colors.darkNavyBlue
 
     const backgroundColorGradient = useMemo(
@@ -66,10 +66,10 @@ export const BattleEndScreen = () => {
         [backgroundColor],
     )
 
-    if (!battleEndDetail || !battleEndDetail.winningFaction) return null
+    if (!battleEndDetail || !battleEndDetail.winning_faction) return null
 
     return (
-        <Slide key={battleEndDetail.battleID} in={isEndBattleDetailOpen} direction="right">
+        <Slide key={battleEndDetail.battle_id} in={isEndBattleDetailOpen} direction="right">
             <Box
                 sx={{
                     position: "absolute",

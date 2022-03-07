@@ -42,12 +42,12 @@ export const SkillBar = ({
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
-        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy("1000000000000000000")
-        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy("1000000000000000000")
+        const currentSups = new BigNumber(gameAbilityTargetPrice.current_sups).dividedBy("1000000000000000000")
+        const supsCost = new BigNumber(gameAbilityTargetPrice.sups_cost).dividedBy("1000000000000000000")
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
 
-        if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
+        if (gameAbilityTargetPrice.should_reset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
 
             // Cache max price for the popover

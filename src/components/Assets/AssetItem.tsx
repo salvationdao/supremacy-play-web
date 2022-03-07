@@ -88,11 +88,11 @@ export const AssetItem = ({
     }, [state, subscribe])
 
     const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
-    const isRepairing = !!durability?.repairType
+    const isRepairing = !!durability?.repair_type
     const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
     const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
     const contractReward2 = useMemo(
-        () => (queuePosition && queuePosition.contractReward ? queuePosition.contractReward : contractReward),
+        () => (queuePosition && queuePosition.contract_reward ? queuePosition.contract_reward : contractReward),
         [queuePosition, contractReward],
     )
 
@@ -128,8 +128,8 @@ export const AssetItem = ({
         }
 
         if (isRepairing) {
-            const { startedAt, expectCompletedAt } = durability
-            const isFastMode = durability.repairType == "FAST"
+            const { started_at, expect_completed_at } = durability
+            const isFastMode = durability.repair_type == "FAST"
 
             return (
                 <>
@@ -154,7 +154,7 @@ export const AssetItem = ({
                             variant="caption"
                             sx={{ lineHeight: 1, color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}
                         >
-                            <RepairCountdown endTime={expectCompletedAt} />
+                            <RepairCountdown endTime={expect_completed_at} />
                         </Typography>
                     </Stack>
                 </>

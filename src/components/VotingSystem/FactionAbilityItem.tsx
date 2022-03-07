@@ -82,7 +82,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
     const { factionID } = useGameServerAuth()
     const { state, send, subscribeAbilityNetMessage } = useGameServerWebsocket()
 
-    const { label, colour, textColour, imageUrl, identity, description } = gameAbility
+    const { label, colour, text_colour, image_url, identity, description } = gameAbility
     const [refresh, toggleRefresh] = useToggle()
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
     const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
@@ -103,13 +103,13 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
-        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy("1000000000000000000")
-        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy("1000000000000000000")
+        const currentSups = new BigNumber(gameAbilityTargetPrice.current_sups).dividedBy("1000000000000000000")
+        const supsCost = new BigNumber(gameAbilityTargetPrice.sups_cost).dividedBy("1000000000000000000")
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
         setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
 
-        if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
+        if (gameAbilityTargetPrice.should_reset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
             toggleRefresh()
         }
@@ -156,7 +156,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                             sx={{
                                                 height: 18,
                                                 width: 18,
-                                                backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
+                                                backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
                                                 backgroundRepeat: "no-repeat",
                                                 backgroundPosition: "center",
                                                 backgroundSize: "cover",
@@ -226,7 +226,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                             <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                 <VotingButton
                                     color={colour}
-                                    textColor={textColour || "#FFFFFF"}
+                                    textColor={text_colour || "#FFFFFF"}
                                     amount={1}
                                     cost={1}
                                     isVoting={isVoting}
@@ -235,7 +235,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                 />
                                 <VotingButton
                                     color={colour}
-                                    textColor={textColour || "#FFFFFF"}
+                                    textColor={text_colour || "#FFFFFF"}
                                     amount={25}
                                     cost={25}
                                     isVoting={isVoting}
@@ -244,7 +244,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                 />
                                 <VotingButton
                                     color={colour}
-                                    textColor={textColour || "#FFFFFF"}
+                                    textColor={text_colour || "#FFFFFF"}
                                     amount={100}
                                     cost={100}
                                     isVoting={isVoting}

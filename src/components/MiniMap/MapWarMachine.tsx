@@ -37,9 +37,9 @@ const MapWarMachineInner = ({
     state,
     highlightedMechHash,
 }: MWMProps) => {
-    const { participantID, faction, maxHealth, maxShield, imageAvatar } = warMachine
+    const { participant_id, faction, max_health, max_shield, image_avatar } = warMachine
 
-    const wmImageUrl = imageAvatar || GenericWarMachinePNG
+    const wmImageUrl = image_avatar || GenericWarMachinePNG
 
     const ICON_SIZE = isSpawnedAI ? 32 : 40
     const ARROW_LENGTH = ICON_SIZE / 2 + 20
@@ -57,19 +57,19 @@ const MapWarMachineInner = ({
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
 
-        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
+        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participant_id, (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
             if (payload?.rotation !== undefined) setRotation(payload.rotation)
         })
-    }, [participantID, state, subscribeWarMachineStatNetMessage])
+    }, [participant_id, state, subscribeWarMachineStatNetMessage])
 
     if (!position) return null
 
     return (
         <Stack
-            key={`warMachine-${participantID}`}
+            key={`warMachine-${participant_id}`}
             alignItems="center"
             justifyContent="center"
             sx={{
@@ -185,11 +185,11 @@ const MapWarMachineInner = ({
                         }}
                         spacing={0.3}
                     >
-                        {warMachine.maxShield > 0 && (
+                        {warMachine.max_shield > 0 && (
                             <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
                                 <Box
                                     sx={{
-                                        width: `${(shield / maxShield) * 100}%`,
+                                        width: `${(shield / max_shield) * 100}%`,
                                         height: "100%",
                                         backgroundColor: colors.shield,
                                     }}
@@ -199,9 +199,9 @@ const MapWarMachineInner = ({
                         <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
                             <Box
                                 sx={{
-                                    width: `${(health / maxHealth) * 100}%`,
+                                    width: `${(health / max_health) * 100}%`,
                                     height: "100%",
-                                    backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
+                                    backgroundColor: health / max_health <= 0.45 ? colors.red : colors.health,
                                 }}
                             />
                         </Box>

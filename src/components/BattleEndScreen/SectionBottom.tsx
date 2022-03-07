@@ -7,15 +7,15 @@ import { BattleEndDetail } from "../../types"
 
 export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { toggleIsEndBattleDetailOpen } = useOverlayToggles()
-    const { battleIdentifier, startedAt, endedAt } = battleEndDetail
+    const { battle_identifier, startedAt, endedAt } = battleEndDetail
 
     const primaryColor =
-        battleEndDetail && battleEndDetail.winningFaction
-            ? battleEndDetail && battleEndDetail.winningFaction.theme.primary
+        battleEndDetail && battleEndDetail.winning_faction
+            ? battleEndDetail && battleEndDetail.winning_faction.theme.primary
             : colors.darkNavyBlue
     const secondaryColor =
-        battleEndDetail && battleEndDetail.winningFaction
-            ? battleEndDetail && battleEndDetail.winningFaction.theme.secondary
+        battleEndDetail && battleEndDetail.winning_faction
+            ? battleEndDetail && battleEndDetail.winning_faction.theme.secondary
             : colors.text
 
     return (
@@ -39,7 +39,7 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 sx={{ mr: "auto", pb: 0.6, height: "100%", opacity: 0.5 }}
             >
                 <Typography variant="body2" sx={{ color: "grey !important" }}>
-                    BATTLE #{battleIdentifier.toString().padStart(4, "0")} ({moment(startedAt).format("h:mm A")} to{" "}
+                    BATTLE #{battle_identifier.toString().padStart(4, "0")} ({moment(startedAt).format("h:mm A")} to{" "}
                     {moment(endedAt).format("h:mm A")})
                 </Typography>
             </Stack>

@@ -5,7 +5,7 @@ import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
 export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { topSupsContributors } = battleEndDetail
+    const { top_sups_contributors } = battleEndDetail
 
     return (
         <Stack spacing={2}>
@@ -28,10 +28,10 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
                 </Typography>
             </Box>
 
-            {topSupsContributors && topSupsContributors.length > 0 ? (
+            {top_sups_contributors && top_sups_contributors.length > 0 ? (
                 <Stack spacing={2}>
                     <Stack spacing={2} sx={{ pl: 1 }}>
-                        {topSupsContributors.map((u, index) => (
+                        {top_sups_contributors.map((u, index) => (
                             <Stack key={index} direction="row" spacing={1.3} alignItems="center">
                                 <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                     {index + 1}.

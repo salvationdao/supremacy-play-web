@@ -19,7 +19,7 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
             for (let c = 0; c < count; c++) {
                 const warmachineUpdate: NetMessageTickWarMachine = {}
 
-                warmachineUpdate.participantID = dv.getUint8(offset)
+                warmachineUpdate.participant_id = dv.getUint8(offset)
                 offset++
 
                 // Get Sync byte (tells us which data was updated for this warmachine)
@@ -81,9 +81,9 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                     const strArr = str.split("_")
                     return {
                         id: strArr[0],
-                        supsCost: strArr[1],
-                        currentSups: strArr[2],
-                        shouldReset: strArr[3] == "1",
+                        sups_cost: strArr[1],
+                        current_sups: strArr[2],
+                        should_reset: strArr[3] == "1",
                     }
                 })
             return { type, payload }
@@ -92,9 +92,9 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
             const enc = new TextDecoder("utf-8")
             const arr = new Uint8Array(buffer)
             const payload: ViewerLiveCount = {
-                RedMountain: 0,
-                Boston: 0,
-                Zaibatsu: 0,
+                red_mountain: 0,
+                boston: 0,
+                zaibatsu: 0,
                 Other: 0,
             }
             enc.decode(arr)
@@ -104,13 +104,13 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                     const strArr = str.split("_")
                     switch (strArr[0]) {
                         case "R":
-                            payload.RedMountain = parseInt(strArr[1])
+                            payload.red_mountain = parseInt(strArr[1])
                             break
                         case "B":
-                            payload.Boston = parseInt(strArr[1])
+                            payload.boston = parseInt(strArr[1])
                             break
                         case "Z":
-                            payload.Zaibatsu = parseInt(strArr[1])
+                            payload.zaibatsu = parseInt(strArr[1])
                             break
                         case "O":
                             payload.Other = parseInt(strArr[1])

@@ -12,7 +12,7 @@ interface BattleFactionAbilityAlertProps {
 
 export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertProps }) => {
     const { user, ability } = data
-    const { label, colour, imageUrl } = ability
+    const { label, colour, image_url } = ability
     const { username, avatarID, faction } = user || FallbackUser
 
     return (
@@ -21,15 +21,15 @@ export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertPr
             <StyledImageText
                 text={label}
                 color={colour}
-                imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl}`}
+                imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`}
             />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText
                 text={user ? user.faction.label : "GABS"}
                 color={user ? user.faction.theme.primary : "grey !important"}
                 imageUrl={
-                    user && user.faction.logoBlobID
-                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID}`
+                    user && user.faction.logo_blob_id
+                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id}`
                         : undefined
                 }
             />

@@ -51,7 +51,7 @@ const MapWarMachines = ({ warMachines, map, enlarged }: MapWarMachineProps) => {
     return (
         <>
             {warMachines.map((wm) => (
-                <div key={`${wm.participantID} - ${wm.hash}`}>
+                <div key={`${wm.participant_id} - ${wm.hash}`}>
                     <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} />
                 </div>
             ))}
@@ -138,15 +138,15 @@ export const InteractiveMap = ({
         return (
             <MapGrid map={map}>
                 <tbody>
-                    {Array(map.cellsY)
+                    {Array(map.cells_y)
                         .fill(1)
                         .map((_el, y) => (
                             <tr key={`column-${y}`}>
-                                {Array(map.cellsX)
+                                {Array(map.cells_x)
                                     .fill(1)
                                     .map((_el, x) => {
                                         const disabled =
-                                            map.disabledCells.indexOf(Math.max(y, 0) * map.cellsX + x) != -1
+                                            map.disabled_cells.indexOf(Math.max(y, 0) * map.cells_x + x) != -1
                                         return (
                                             <GridCell
                                                 key={`column-${y}-row-${x}`}
@@ -368,7 +368,7 @@ export const InteractiveMap = ({
                                 position: "absolute",
                                 width: `${map.width}px`,
                                 height: `${map.height}px`,
-                                backgroundImage: `url(${map.imageUrl})`,
+                                backgroundImage: `url(${map.image_url})`,
                             }}
                         />
                     </Box>

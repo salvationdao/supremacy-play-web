@@ -1,8 +1,8 @@
 export interface AssetDurability {
     hash: string
-    startedAt: Date
-    expectCompletedAt: Date
-    repairType: "FAST" | "STANDARD" | ""
+    started_at: Date
+    expect_completed_at: Date
+    repair_type: "FAST" | "STANDARD" | ""
 }
 
 // position = undefined	 	// currently not queuing
@@ -10,28 +10,28 @@ export interface AssetDurability {
 // position >= 0         	// current queuing position
 export interface AssetQueueStat {
     position?: number
-    contractReward?: string
+    contract_reward?: string
 }
 
 export interface Asset {
     hash: string
-    userID: string
+    user_id: string
     username: string
     name: string
     game_object?: any
     description: string
-    externalURL: string
+    external_url: string
     image: string
     animation_url: string
     attributes: Attribute[]
     additional_metadata?: any
-    createdAt: Date
-    updatedAt: Date
-    frozenAt?: Date
-    lockedByID?: string
-    deletedAt?: Date
-    mintingSignature?: string
-    txHistory: any[]
+    created_at: Date
+    updated_at: Date
+    frozen_at?: Date
+    locked_by_id?: string
+    deleted_at?: Date
+    minting_signature?: string
+    tx_history: any[]
 }
 
 export interface Attribute {

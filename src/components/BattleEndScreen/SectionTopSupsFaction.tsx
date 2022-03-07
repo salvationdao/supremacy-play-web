@@ -5,7 +5,7 @@ import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
 export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { topSupsContributeFactions } = battleEndDetail
+    const { top_sups_contribute_factions } = battleEndDetail
 
     return (
         <Stack spacing={2}>
@@ -28,10 +28,10 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                 </Typography>
             </Box>
 
-            {topSupsContributeFactions && topSupsContributeFactions.length > 0 ? (
+            {top_sups_contribute_factions && top_sups_contribute_factions.length > 0 ? (
                 <Stack spacing={2}>
                     <Stack spacing={2} sx={{ pl: 1 }}>
-                        {topSupsContributeFactions.map((f, index) => (
+                        {top_sups_contribute_factions.map((f, index) => (
                             <Stack key={index} direction="row" spacing={1.3} alignItems="center">
                                 <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                     {index + 1}.
@@ -40,8 +40,8 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                                     color={f.theme.primary}
                                     text={f.label}
                                     imageUrl={
-                                        f.logoBlobID
-                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${f.logoBlobID}`
+                                        f.logo_blob_id
+                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${f.logo_blob_id}`
                                             : undefined
                                     }
                                     variant="h5"

@@ -166,7 +166,7 @@ const BattleAbilityItemInner = ({
 
     if (!battleAbility) return null
 
-    const { label, colour, imageUrl, description, cooldownDurationSecond } = battleAbility
+    const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
     const buttonColor = user && user.faction ? user.faction.theme.primary : colour
     const buttonTextColor = user && user.faction ? user.faction.theme.secondary : "#FFFFFF"
 
@@ -210,7 +210,7 @@ const BattleAbilityItemInner = ({
                                                     sx={{
                                                         height: 18,
                                                         width: 18,
-                                                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
+                                                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
                                                         backgroundRepeat: "no-repeat",
                                                         backgroundPosition: "center",
                                                         backgroundSize: "cover",
@@ -248,7 +248,7 @@ const BattleAbilityItemInner = ({
                                                 variant="body2"
                                                 sx={{ lineHeight: 1, color: "grey !important" }}
                                             >
-                                                {cooldownDurationSecond}s
+                                                {cooldown_duration_second}s
                                             </Typography>
                                         </Stack>
                                     </Stack>

@@ -345,9 +345,9 @@ const GameServerWebsocket = (): WebSocketProperties => {
                     } else if (parsedNetMessage.type === NetMessageType.Tick) {
                         const parsed = parsedNetMessage.payload as NetMessageTick
                         for (const data of parsed.warmachines) {
-                            if (data.participantID) {
-                                if (warMachineStatSubs.current[data.participantID]) {
-                                    for (const callback of warMachineStatSubs.current[data.participantID]) {
+                            if (data.participant_id) {
+                                if (warMachineStatSubs.current[data.participant_id]) {
+                                    for (const callback of warMachineStatSubs.current[data.participant_id]) {
                                         callback(data)
                                     }
                                 }

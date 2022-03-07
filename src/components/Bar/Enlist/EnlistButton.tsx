@@ -14,7 +14,7 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
         id,
         label,
         theme: { primary },
-        logoBlobID,
+        logo_blob_id,
     } = faction
 
     return (
@@ -42,7 +42,7 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                         sx={{
                             width: 24,
                             height: 24,
-                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logoBlobID})`,
+                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
