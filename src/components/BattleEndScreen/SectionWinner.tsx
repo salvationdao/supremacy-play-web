@@ -10,7 +10,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
 
     return (
         <Stack spacing={3}>
-            <Box sx={{ px: 2.5, py: 1.5, backgroundColor: "#00000083" }}>
+            <Box sx={{ px: 2.5, py: 1.5, backgroundColor: "#FFFFFF15" }}>
                 <Typography
                     component="span"
                     variant="h4"
