@@ -55,7 +55,7 @@ export const GameContainer = createContainer(() => {
                 setSpawnedAI(payload.spawned_ai)
             },
             null,
-            true,
+            false,
         )
     }, [state, subscribe])
 
