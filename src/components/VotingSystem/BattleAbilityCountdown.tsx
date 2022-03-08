@@ -25,7 +25,7 @@ const BattleAbilityCountdownInner = ({ battleAbility, votingState }: BattleAbili
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
 
     useEffect(() => {
-        const endTime = votingState?.endTime
+        const endTime = votingState?.end_time
         setEndTimeState(endTime)
         doSentence()
     }, [votingState])

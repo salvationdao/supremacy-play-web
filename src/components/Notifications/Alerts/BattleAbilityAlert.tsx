@@ -13,7 +13,7 @@ interface BattleFactionAbilityAlertProps {
 export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertProps }) => {
     const { user, ability } = data
     const { label, colour, image_url } = ability
-    const { username, avatarID, faction } = user || FallbackUser
+    const { username, avatar_id, faction } = user || FallbackUser
 
     return (
         <Box>
@@ -37,7 +37,7 @@ export const BattleAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertPr
             <Divider sx={{ my: 1.2, borderColor: "#FFFFFF", opacity: 0.15 }} />
             <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
             <StyledImageText
-                imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
+                imageUrl={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : undefined}
                 text={username}
                 color={faction.theme.primary}
             />

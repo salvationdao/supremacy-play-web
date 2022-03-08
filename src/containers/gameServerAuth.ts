@@ -7,7 +7,7 @@ import { useGameServerWebsocket } from "."
 export interface AuthContainerType {
     user: User | undefined
     userID: string | undefined
-    factionID: string | undefined
+    faction_id: string | undefined
     gameserverSessionID: string
     authSessionIDGetLoading: boolean
     authSessionIDGetError: undefined
@@ -56,7 +56,7 @@ const AuthContainer = createContainer((): AuthContainerType => {
     return {
         user,
         userID: user?.id,
-        factionID: user?.factionID,
+        faction_id: user?.faction_id,
         gameserverSessionID,
         authSessionIDGetLoading,
         authSessionIDGetError,

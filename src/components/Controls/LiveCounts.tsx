@@ -64,7 +64,7 @@ export const LiveCountsInner = ({ factionsColor, subscribe, subscribeNetMessage,
             <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center">
                 <ReUsedText
                     text={Math.abs(viewers.red_mountain).toFixed()}
-                    color={factionsColor?.redMountain}
+                    color={factionsColor?.red_mountain}
                     tooltip="Red Mountain"
                 />
                 <ReUsedText

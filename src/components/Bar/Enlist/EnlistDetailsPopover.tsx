@@ -13,7 +13,7 @@ interface EnlistDetailsProps {
     popoverRef: React.MutableRefObject<null>
     popoverOpen: boolean
     togglePopoverOpen: (_state: boolean) => void
-    factionID: string
+    faction_id: string
     factionData: FactionGeneralData
 }
 
@@ -46,12 +46,12 @@ const Stat = ({
 }
 
 interface EnlistFactionRequest {
-    factionID: string
+    faction_id: string
 }
 
 const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) => {
     const factionStat = usePassportServerSubscription<FactionStat>(PassportServerKeys.SubscribeFactionStat, {
-        factionID: factionData.id,
+        faction_id: factionData.id,
     }).payload
 
     const [page, setPage] = useState(0)
@@ -62,7 +62,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
             return
         }
         try {
-            await send<any, EnlistFactionRequest>(PassportServerKeys.EnlistFaction, { factionID: factionData.id })
+            await send<any, EnlistFactionRequest>(PassportServerKeys.EnlistFaction, { faction_id: factionData.id })
         } catch (e) {
             throw typeof e === "string" ? e : "Something went wrong, please try again."
         }
@@ -204,7 +204,7 @@ export const EnlistDetailsPopover = ({
     popoverRef,
     popoverOpen,
     togglePopoverOpen,
-    factionID,
+    faction_id,
     factionData,
 }: EnlistDetailsProps) => {
     const {

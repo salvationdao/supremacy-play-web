@@ -9,22 +9,22 @@ import BigNumber from "bignumber.js"
 
 export interface VotingStateResponse {
     phase: VotingState
-    endTime: Date
+    end_time: Date
 }
 
 export interface GameSettingsResponse {
-    gameMap: Map
-    warMachines: WarMachineState[]
-    spawnedAI: WarMachineState[]
+    game_map: Map
+    war_machines: WarMachineState[]
+    spawned_ai: WarMachineState[]
 }
 
 export interface WinnerAnnouncementResponse {
-    gameAbility: GameAbility
-    endTime: Date
+    game_ability: GameAbility
+    end_time: Date
 }
 
 export interface FactionsColorResponse {
-    redMountain: string
+    red_mountain: string
     boston: string
     zaibatsu: string
 }
@@ -32,7 +32,7 @@ export interface FactionsColorResponse {
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
     const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
-    const { factionID } = useGameServerAuth()
+    const { faction_id } = useGameServerAuth()
     const [factionsColor, setFactionsColor] = useState<FactionsColorResponse>()
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
@@ -50,9 +50,9 @@ export const GameContainer = createContainer(() => {
             GameServerKeys.SubGameSettings,
             (payload) => {
                 if (!payload) return
-                setMap(payload.gameMap)
-                setWarMachines(payload.warMachines)
-                setSpawnedAI(payload.spawnedAI)
+                setMap(payload.game_map)
+                setWarMachines(payload.war_machines)
+                setSpawnedAI(payload.spawned_ai)
             },
             null,
             true,
@@ -61,9 +61,9 @@ export const GameContainer = createContainer(() => {
 
     // Triggered faction ability or war machine ability price ticking
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe(GameServerKeys.TriggerFactionAbilityPriceUpdated, () => console.log(""), null)
-    }, [state, subscribe, factionID])
+    }, [state, subscribe, faction_id])
 
     // Get main color of each factions
     useEffect(() => {
@@ -83,7 +83,7 @@ export const GameContainer = createContainer(() => {
 
     // Get very first faction vote price
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !faction_id || faction_id === NullUUID) return
         ;(async () => {
             try {
                 const resp = await send<string>(GameServerKeys.GetFactionVotePrice)
@@ -95,17 +95,17 @@ export const GameContainer = createContainer(() => {
                 return false
             }
         })()
-    }, [send, state, factionID])
+    }, [send, state, faction_id])
 
     // Trigger faction vote price net message listener
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe(GameServerKeys.TriggerFactionVotePriceUpdated, () => console.log("just placeholder"))
-    }, [state, subscribe, factionID])
+    }, [state, subscribe, faction_id])
 
     // Listen on current price change
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeNetMessage || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribeNetMessage || !faction_id || faction_id === NullUUID) return
         return subscribeNetMessage<string | undefined>(NetMessageType.VotePriceTick, (payload) => {
             if (!payload) return
             setFactionVotePrice((prev) => {
@@ -113,11 +113,11 @@ export const GameContainer = createContainer(() => {
                 return new BigNumber(payload).dividedBy(new BigNumber("1000000000000000000"))
             })
         })
-    }, [state, subscribeNetMessage, factionID])
+    }, [state, subscribeNetMessage, faction_id])
 
     // Subscirbe on current voting state
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe<VotingStateResponse | undefined>(
             GameServerKeys.SubVoteStageUpdated,
             (payload) => {
@@ -125,17 +125,17 @@ export const GameContainer = createContainer(() => {
             },
             null,
         )
-    }, [state, subscribe, factionID])
+    }, [state, subscribe, faction_id])
 
     // Subscribe on winner announcements
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe<WinnerAnnouncementResponse | undefined>(
             GameServerKeys.SubVoteWinnerAnnouncement,
             (payload) => setWinner(payload),
             null,
         )
-    }, [state, subscribe, factionID])
+    }, [state, subscribe, faction_id])
 
     // Subscribe to spawned AI events
     useEffect(() => {

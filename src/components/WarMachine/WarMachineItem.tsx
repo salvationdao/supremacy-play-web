@@ -36,12 +36,12 @@ export const WarMachineItem = (props: Props) => {
     const { state, subscribe } = useGameServerWebsocket()
     const { highlightedMechHash, setHighlightedMechHash } = useGame()
     const { isAnyPanelOpen } = useDrawer()
-    const { factionID } = useGameServerAuth()
+    const { faction_id } = useGameServerAuth()
 
     return (
         <WarMachineItemInner
             {...props}
-            factionID={factionID}
+            faction_id={faction_id}
             isAnyPanelOpen={isAnyPanelOpen}
             highlightedMechHash={highlightedMechHash}
             setHighlightedMechHash={setHighlightedMechHash}
@@ -52,7 +52,7 @@ export const WarMachineItem = (props: Props) => {
 }
 
 interface PropsInner extends Props, Partial<WebSocketProperties> {
-    factionID?: string
+    faction_id?: string
     highlightedMechHash?: string
     setHighlightedMechHash: (s?: string) => void
     isAnyPanelOpen: boolean
@@ -62,7 +62,7 @@ const WarMachineItemInner = ({
     warMachine,
     scale,
     shouldBeExpanded,
-    factionID,
+    faction_id,
     highlightedMechHash,
     setHighlightedMechHash,
     isAnyPanelOpen,
@@ -78,13 +78,13 @@ const WarMachineItemInner = ({
     const [isDestroyedInfoOpen, toggleIsDestroyedInfoOpen] = useToggle()
     const maxAbilityPriceMap = useRef<Map<string, BigNumber>>(new Map<string, BigNumber>())
     const {
-        id: warMachineFactionID,
+        id: warMachinefaction_id,
         logo_blob_id,
         theme: { primary, secondary, background },
     } = faction
 
     const wmImageUrl = image_avatar || GenericWarMachinePNG
-    const isOwnFaction = factionID == warMachine.faction_id
+    const isOwnFaction = faction_id == warMachine.faction_id
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord
 
@@ -118,9 +118,9 @@ const WarMachineItemInner = ({
     useEffect(() => {
         if (
             state !== WebSocket.OPEN ||
-            !factionID ||
-            factionID === NullUUID ||
-            factionID !== warMachineFactionID ||
+            !faction_id ||
+            faction_id === NullUUID ||
+            faction_id !== warMachinefaction_id ||
             !subscribe
         )
             return
@@ -133,7 +133,7 @@ const WarMachineItemInner = ({
                 participant_id,
             },
         )
-    }, [subscribe, state, factionID, participant_id, warMachineFactionID])
+    }, [subscribe, state, faction_id, participant_id, warMachinefaction_id])
 
     // Subscribe to whether the war machine has been destroyed
     useEffect(() => {

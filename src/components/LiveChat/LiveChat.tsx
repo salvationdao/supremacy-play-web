@@ -26,7 +26,7 @@ const DrawerContent = ({
     tabValue: number
     setTabValue: Dispatch<SetStateAction<number>>
     chatMessages: ChatData[]
-    onNewMessage: (newMessage: ChatData, factionID: string | null) => void
+    onNewMessage: (newMessage: ChatData, faction_id: string | null) => void
 }) => {
     const { user } = usePassportServerAuth()
     // Store list of messages that were successfully sent or failed
@@ -50,18 +50,18 @@ const DrawerContent = ({
     }
 
     const isEnlisted = user && user.faction_id && user.faction
-    let factionID
+    let faction_id
     let primaryColor
     let secondaryColor
     let bannerBackgroundColor
 
     if (tabValue == 0) {
-        factionID = null
+        faction_id = null
         primaryColor = colors.globalChat
         secondaryColor = "#FFFFFF"
         bannerBackgroundColor = shadeColor(colors.globalChat, -30)
     } else if (tabValue == 1 && isEnlisted) {
-        factionID = user.faction_id
+        faction_id = user.faction_id
         primaryColor = user.faction.theme.primary
         secondaryColor = user.faction.theme.secondary
         bannerBackgroundColor = `${primaryColor}25`
@@ -154,7 +154,7 @@ const DrawerContent = ({
             {user ? (
                 <ChatSend
                     primaryColor={primaryColor}
-                    factionID={factionID}
+                    faction_id={faction_id}
                     onNewMessage={onNewMessage}
                     onSentMessage={onSentMessage}
                     onFailedMessage={onFailedMessage}
@@ -186,8 +186,8 @@ export const LiveChat = () => {
     const [globalChatMessages, setGlobalChatMessages] = useState<ChatData[]>([])
     const [factionChatMessages, setFactionChatMessages] = useState<ChatData[]>([])
 
-    const newMessageHandler = (message: ChatData, factionID: string | null) => {
-        if (factionID === null) {
+    const newMessageHandler = (message: ChatData, faction_id: string | null) => {
+        if (faction_id === null) {
             setGlobalChatMessages((prev) => {
                 // Buffer the messages
                 const newArray = prev.concat(message)

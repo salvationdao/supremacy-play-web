@@ -68,7 +68,7 @@ export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, t
     }, [width, height, enlarged])
 
     useEffect(() => {
-        const endTime = winner?.endTime
+        const endTime = winner?.end_time
 
         if (endTime) {
             setSubmitted(false)
@@ -158,7 +158,7 @@ export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, t
                                         isFancy: true,
                                         borderThickness: "3px",
                                         borderColor: isTargeting
-                                            ? winner.gameAbility.colour
+                                            ? winner.game_ability.colour
                                             : theme.factionTheme.primary,
                                     }}
                                 >
@@ -205,15 +205,15 @@ export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, t
 
                                         {isTargeting && (
                                             <TargetTimerCountdown
-                                                gameAbility={winner.gameAbility}
+                                                gameAbility={winner.game_ability}
                                                 setTimeReachZero={setTimeReachZero}
-                                                endTime={winner.endTime}
+                                                endTime={winner.end_time}
                                             />
                                         )}
 
                                         {isTargeting ? (
                                             <InteractiveMap
-                                                gameAbility={winner.gameAbility}
+                                                gameAbility={winner.game_ability}
                                                 windowDimension={dimensions}
                                                 targeting
                                                 setSubmitted={setSubmitted}

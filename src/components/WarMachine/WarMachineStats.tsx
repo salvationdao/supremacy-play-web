@@ -44,7 +44,7 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
 }
 
 export const WarMachineStats = () => {
-    const { factionID } = useGameServerAuth()
+    const { faction_id } = useGameServerAuth()
     const { warMachines } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
@@ -70,8 +70,8 @@ export const WarMachineStats = () => {
                 shouldBeExpandedOthers,
             }
 
-        const factionMechs = warMachines.filter((wm) => wm.faction_id == factionID)
-        const otherMechs = warMachines.filter((wm) => wm.faction_id != factionID)
+        const factionMechs = warMachines.filter((wm) => wm.faction_id == faction_id)
+        const otherMechs = warMachines.filter((wm) => wm.faction_id != faction_id)
 
         if (
             factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
@@ -91,12 +91,12 @@ export const WarMachineStats = () => {
         }
 
         return { shouldBeExpandedFaction, shouldBeExpandedOthers }
-    }, [width, factionID, warMachines])
+    }, [width, faction_id, warMachines])
 
     if (!warMachines || warMachines.length <= 0) return null
 
-    const factionMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.faction_id == factionID)
-    const otherMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.faction_id != factionID)
+    const factionMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.faction_id == faction_id)
+    const otherMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.faction_id != faction_id)
     const haveFactionMechs = factionMechs.length > 0
 
     return (

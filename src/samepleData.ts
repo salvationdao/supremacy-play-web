@@ -1,12 +1,12 @@
 import { NotificationResponse } from "./components"
-import { BattleEndDetail, User } from './types'
+import { BattleEndDetail, User } from "./types"
 
 const playerArray: User[] = [
     {
         id: "311c6f68-498c-449b-b012-5ae3d114d619",
         username: "jayli3n",
-        avatarID: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        factionID: "1",
+        avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_id: "1",
         sups: 0,
         faction: {
             id: "1",
@@ -23,8 +23,8 @@ const playerArray: User[] = [
     {
         id: "af50eb52-8ed2-4c4c-8cdd-b8db8cade622",
         username: "lolivise",
-        avatarID: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        factionID: "1",
+        avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_id: "1",
         sups: 0,
         faction: {
             id: "1",
@@ -41,8 +41,8 @@ const playerArray: User[] = [
     {
         id: "af50eb52-8ed2-4c4c-8cdd-b8db8cade622",
         username: "Grumpy-oldi218",
-        avatarID: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        factionID: "1",
+        avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_id: "1",
         sups: 0,
         faction: {
             id: "1",
@@ -59,8 +59,8 @@ const playerArray: User[] = [
     {
         id: "af50eb52-8ed2-4c4c-8cdd-b8db8cade622",
         username: "pewdiepie2",
-        avatarID: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        factionID: "1",
+        avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_id: "1",
         sups: 0,
         faction: {
             id: "1",
@@ -77,8 +77,8 @@ const playerArray: User[] = [
     {
         id: "311c6f68-498c-449b-b012-5ae3d114d619",
         username: "markiplier83",
-        avatarID: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        factionID: "1",
+        avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_id: "1",
         sups: 0,
         faction: {
             id: "1",
@@ -106,8 +106,8 @@ const gameAbilityEvent: any = {
     triggeredByUser: {
         id: "00000000-0000-0000-0000-000000000000",
         username: "lolivise",
-        avatarID: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        factionID: "1",
+        avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_id: "1",
         sups: 0,
         faction: {
             id: "1",
@@ -126,8 +126,8 @@ const gameAbilityEvent: any = {
 export const sampleBattleEndDetail: BattleEndDetail = {
     battle_id: "2f1f14f2-b89a-4c15-a197-a86c013399f4",
     battle_identifier: 3,
-    startedAt: new Date("2022-02-22T07:54:11.944Z"),
-    endedAt: new Date("2022-02-22T08:06:30.762Z"),
+    started_at: new Date("2022-02-22T07:54:11.944Z"),
+    ended_at: new Date("2022-02-22T08:06:30.762Z"),
     winning_condition: "LAST_ALIVE",
     winning_faction: {
         id: "1",
@@ -287,7 +287,7 @@ export const locationSelectNoti: NotificationResponse = {
         y: 5,
         currentUser: {
             username: "Jayli3n",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
@@ -316,7 +316,7 @@ export const locationSelectNoti2: NotificationResponse = {
         y: 5,
         currentUser: {
             username: "Jayli3n",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
@@ -330,7 +330,7 @@ export const locationSelectNoti2: NotificationResponse = {
         },
         nextUser: {
             username: "Darren-Hung",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Boston Cybernetics",
@@ -359,7 +359,7 @@ export const locationSelectNoti3: NotificationResponse = {
         y: 5,
         currentUser: {
             username: "Jayli3n",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
@@ -373,7 +373,7 @@ export const locationSelectNoti3: NotificationResponse = {
         },
         nextUser: {
             username: "Darren-Hung",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Boston Cybernetics",
@@ -402,7 +402,7 @@ export const locationSelectNoti4: NotificationResponse = {
         y: 5,
         currentUser: {
             username: "Jayli3n",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
@@ -431,7 +431,7 @@ export const locationSelectNoti5: NotificationResponse = {
         y: 5,
         currentUser: {
             username: "Jayli3n",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
@@ -457,7 +457,7 @@ export const battleAbilityNoti: NotificationResponse = {
     data: {
         user: {
             username: "Jayli3n",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Zaibatsu Industries",
@@ -482,7 +482,7 @@ export const factionAbilityNoti: NotificationResponse = {
     data: {
         user: {
             username: "Jayli3n",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
@@ -507,7 +507,7 @@ export const warMachineAbilityNoti: NotificationResponse = {
     data: {
         user: {
             username: "Jayli3n",
-            avatarID: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
+            avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
                 label: "Red Mountain Offworld Mining Corporation",
@@ -564,7 +564,7 @@ export const killNoti: NotificationResponse = {
             },
             hash: "3",
             participantID: 3,
-            factionID: "",
+            faction_id: "",
             maxHealth: 100,
             maxShield: 100,
             health: 60,
@@ -588,7 +588,7 @@ export const killNoti: NotificationResponse = {
             },
             hash: "3",
             participantID: 3,
-            factionID: "",
+            faction_id: "",
             maxHealth: 100,
             maxShield: 100,
             health: 60,
@@ -618,7 +618,7 @@ export const killNoti2: NotificationResponse = {
             },
             hash: "3",
             participantID: 3,
-            factionID: "",
+            faction_id: "",
             maxHealth: 100,
             maxShield: 100,
             health: 60,

@@ -12,17 +12,17 @@ export const FactionAbilities = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
-    const { user, factionID } = useGameServerAuth()
+    const { user, faction_id } = useGameServerAuth()
 
     // Subscribe to faction ability updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !faction_id || faction_id === NullUUID) return
         return subscribe<GameAbility[] | undefined>(
             GameServerKeys.SubFactionAbilities,
             (payload) => setGameAbilities(payload),
             null,
         )
-    }, [subscribe, state, factionID])
+    }, [subscribe, state, faction_id])
 
     if (!gameAbilities || gameAbilities.length <= 0) return null
 

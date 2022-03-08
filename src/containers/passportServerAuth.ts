@@ -17,7 +17,7 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
     const userID = user?.id
-    const factionID = user?.faction_id
+    const faction_id = user?.faction_id
 
     const [sessionID, setSessionID] = useState("")
     const [sessionIDLoading, setSessionIDLoading] = useState(true)
@@ -50,7 +50,7 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
             (u) => {
                 setUser(u)
             },
-            { sessionID: sessionID },
+            { session_id: sessionID },
         )
     }, [state, sessionID, subscribe])
 
@@ -60,7 +60,7 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
         ;(async () => {
             try {
                 setAuthRingCheckLoading(true)
-                await send(PassportServerKeys.AuthRingCheck, { gameserverSessionID })
+                await send(PassportServerKeys.AuthRingCheck, { gameserver_session_id: gameserverSessionID })
                 setAuthRingCheckSuccess(true)
             } catch (e: any) {
                 console.log(e)
@@ -88,7 +88,7 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
     return {
         user,
         userID,
-        factionID,
+        faction_id,
         sessionID,
         sessionIDLoading,
         sessionIDError,

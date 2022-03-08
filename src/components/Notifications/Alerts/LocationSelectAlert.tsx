@@ -35,9 +35,9 @@ interface LocationSelectAlertProps {
 
 export const FallbackUser: User = {
     id: "",
-    factionID: "",
+    faction_id: "",
     username: "Unknown User",
-    avatarID: "",
+    avatar_id: "",
     sups: 0,
     faction: {
         id: "",
@@ -55,8 +55,8 @@ export const FallbackUser: User = {
 export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }) => {
     const { type, currentUser, nextUser, ability } = data
     const { label, colour, image_url } = ability
-    const { username, avatarID, faction } = currentUser || FallbackUser
-    const { username: nextUsername, avatarID: nextAvatarID, faction: nextFaction } = nextUser || FallbackUser
+    const { username, avatar_id, faction } = currentUser || FallbackUser
+    const { username: nextUsername, avatar_id: nextavatar_id, faction: nextFaction } = nextUser || FallbackUser
 
     const abilityImageUrl = `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`
 
@@ -75,7 +75,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
             <Box>
                 <SvgHourglass size="12px" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
-                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
+                    imageUrl={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : undefined}
                     text={username}
                     color={faction.theme.primary}
                 />
@@ -83,7 +83,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                 <Divider sx={{ my: 1.2, borderColor: "#FFFFFF", opacity: 0.15 }} />
                 <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
-                    imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextAvatarID}` : undefined}
+                    imageUrl={nextavatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextavatar_id}` : undefined}
                     text={nextUsername}
                     color={nextFaction.theme.primary}
                 />
@@ -98,7 +98,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
             <Box>
                 <SvgDisconnected size="12px" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
-                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
+                    imageUrl={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : undefined}
                     text={username}
                     color={faction.theme.primary}
                 />
@@ -106,7 +106,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                 <Divider sx={{ my: 1.2, borderColor: "#FFFFFF", opacity: 0.15 }} />
                 <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
-                    imageUrl={nextAvatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextAvatarID}` : undefined}
+                    imageUrl={nextavatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextavatar_id}` : undefined}
                     text={nextUsername}
                     color={nextFaction.theme.primary}
                 />
@@ -121,7 +121,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
             <Box>
                 <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
                 <StyledImageText
-                    imageUrl={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : undefined}
+                    imageUrl={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : undefined}
                     text={username}
                     color={faction.theme.primary}
                 />

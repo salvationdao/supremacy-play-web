@@ -69,7 +69,7 @@ const ContributionBar = ({
 }
 
 interface GameAbilityContributeRequest {
-    gameAbilityID: string
+    game_ability_id: string
     amount: BigNumber
 }
 
@@ -79,7 +79,7 @@ interface WarMachineAbilityItemProps {
 }
 
 export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMachineAbilityItemProps) => {
-    const { factionID } = useGameServerAuth()
+    const { faction_id } = useGameServerAuth()
     const { state, send, subscribeAbilityNetMessage } = useGameServerWebsocket()
 
     const { label, colour, text_colour, image_url, identity, description } = gameAbility
@@ -95,13 +95,13 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
 
     // Listen on current faction ability price change
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !faction_id || faction_id === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(identity, (payload) => {
             if (!payload) return
             setGameAbilityTargetPrice(payload)
         })
-    }, [identity, state, subscribeAbilityNetMessage, factionID])
+    }, [identity, state, subscribeAbilityNetMessage, faction_id])
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return
@@ -120,7 +120,7 @@ export const WarMachineAbilityItem = ({ gameAbility, maxAbilityPriceMap }: WarMa
         send<boolean, GameAbilityContributeRequest>(
             GameServerKeys.GameAbilityContribute,
             {
-                gameAbilityID: identity,
+                game_ability_id: identity,
                 amount: new BigNumber(amount),
             },
             true,

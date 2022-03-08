@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { PassportServerKeys } from "../keys"
 
-// makeid is used to generate a random transactionID for the websocket
+// makeid is used to generate a random transaction_id for the websocket
 function makeid(length = 12): string {
     let result = ""
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -52,7 +52,7 @@ interface WebSocketProperties {
 type SubscribeCallback = (payload: any) => void
 
 interface Message<T> {
-    transactionID?: string
+    transaction_id?: string
     key: string
     payload: T
 }
@@ -60,7 +60,7 @@ interface Message<T> {
 type WSCallback<T = any> = (data: T) => void
 
 interface HubError {
-    transactionID: string
+    transaction_id: string
     key: string
     message: string
 }
@@ -108,10 +108,10 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
     }
 
     const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
-        const transactionID = makeid()
+        const transaction_id = makeid()
 
         return new Promise(function (resolve, reject) {
-            callbacks.current[transactionID] = (data: Message<Y> | HubError) => {
+            callbacks.current[transaction_id] = (data: Message<Y> | HubError) => {
                 if (data.key === "HUB:ERROR") {
                     reject((data as HubError).message)
                     return
@@ -125,7 +125,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                 {
                     key,
                     payload,
-                    transactionID,
+                    transaction_id,
                 },
             ])
         })
@@ -135,11 +135,11 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
 
     const subscribe = useMemo(() => {
         return <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => {
-            const transactionID = makeid()
+            const transaction_id = makeid()
 
             let subKey = key
             if (!listenOnly) {
-                subKey = transactionID
+                subKey = transaction_id
             }
 
             const callback2 = (payload: T) => {
@@ -158,7 +158,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                     {
                         key: key + (open ? "" : ":UNSUBSCRIBE"),
                         payload: open ? args : undefined,
-                        transactionID,
+                        transaction_id,
                     },
                 ])
             }
@@ -212,16 +212,16 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                         onopen()
                     }
                 }
-                if (subs.current[msgData.transactionID]) {
-                    for (const callback of subs.current[msgData.transactionID]) {
+                if (subs.current[msgData.transaction_id]) {
+                    for (const callback of subs.current[msgData.transaction_id]) {
                         callback(msgData.payload)
                     }
                 } else if (subs.current[msgData.key]) {
                     for (const callback of subs.current[msgData.key]) {
                         callback(msgData.payload)
                     }
-                } else if (msgData.transactionID) {
-                    const { [msgData.transactionID]: cb, ...withoutCb } = callbacks.current
+                } else if (msgData.transaction_id) {
+                    const { [msgData.transaction_id]: cb, ...withoutCb } = callbacks.current
                     if (cb) {
                         cb(msgData)
                         callbacks.current = withoutCb

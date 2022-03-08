@@ -57,7 +57,7 @@ export const AssetItem = ({
                 if (!payload) return
                 setAssetData(payload)
             },
-            { assetHash: asset.hash },
+            { asset_hash: asset.hash },
         )
     }, [state, subscribe])
 
@@ -70,7 +70,7 @@ export const AssetItem = ({
                 if (!payload) return
                 setDurability(payload)
             },
-            { assetHash: asset.hash },
+            { asset_hash: asset.hash },
         )
     }, [state, subscribe])
 
@@ -83,7 +83,7 @@ export const AssetItem = ({
                 if (!payload) return
                 setQueuePosition(payload)
             },
-            { assetHash: asset.hash },
+            { asset_hash: asset.hash },
         )
     }, [state, subscribe])
 

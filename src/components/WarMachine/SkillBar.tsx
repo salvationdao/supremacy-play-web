@@ -17,7 +17,7 @@ export const SkillBar = ({
     gameAbility: GameAbility
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
 }) => {
-    const { factionID } = useGameServerAuth()
+    const { faction_id } = useGameServerAuth()
     const { state, subscribeAbilityNetMessage } = useGameServerWebsocket()
 
     const { identity } = gameAbility
@@ -32,13 +32,13 @@ export const SkillBar = ({
 
     // Listen on current faction ability price change
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !faction_id || faction_id === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(identity, (payload) => {
             if (!payload) return
             setGameAbilityTargetPrice(payload)
         })
-    }, [identity, state, subscribeAbilityNetMessage, factionID])
+    }, [identity, state, subscribeAbilityNetMessage, faction_id])
 
     useEffect(() => {
         if (!gameAbilityTargetPrice) return

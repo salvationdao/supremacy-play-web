@@ -40,8 +40,8 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
                                     color={u.faction.theme.primary}
                                     text={u.username}
                                     imageUrl={
-                                        u.avatarID
-                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${u.avatarID}`
+                                        u.avatar_id
+                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${u.avatar_id}`
                                             : undefined
                                     }
                                     variant="h5"

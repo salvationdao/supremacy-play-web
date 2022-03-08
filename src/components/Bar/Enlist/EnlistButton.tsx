@@ -59,7 +59,7 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                     popoverRef={popoverRef}
                     popoverOpen={popoverOpen}
                     togglePopoverOpen={togglePopoverOpen}
-                    factionID={id}
+                    faction_id={id}
                     factionData={faction}
                 />
             )}

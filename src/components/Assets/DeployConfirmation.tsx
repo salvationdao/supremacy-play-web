@@ -60,7 +60,7 @@ export const DeployConfirmation = ({
         if (state !== WebSocket.OPEN) return
         try {
             toggleIsDeploying(true)
-            const resp = await send(PassportServerKeys.JoinQueue, { assetHash: hash, needInsured })
+            const resp = await send(PassportServerKeys.JoinQueue, { asset_hash: hash, need_insured: needInsured })
             if (resp) {
                 onClose()
             }

@@ -8,8 +8,8 @@ export const UpdateTheme = React.createContext({} as UpdateThemeContextProps)
 export interface User {
     id: string
     username: string
-    avatarID: string
-    factionID: string
+    avatar_id: string
+    faction_id: string
     faction: Faction
     sups: number
 }
@@ -54,7 +54,7 @@ export interface GameAbility {
     description: string
     image_url: string
     sups_cost: string
-    currentSups: string
+    current_sups: string
 }
 
 export interface GameAbilityTargetPrice {
@@ -144,8 +144,8 @@ export interface NetMessageTick {
 export interface BattleEndDetail {
     battle_id: string
     battle_identifier: number
-    startedAt: Date
-    endedAt: Date
+    started_at: Date
+    ended_at: Date
     winning_condition: string
     winning_faction: Faction
     winning_war_machines: WarMachineState[]

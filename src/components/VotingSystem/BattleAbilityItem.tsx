@@ -93,7 +93,7 @@ const VotingBarInner = ({
                 justifyContent="center"
                 sx={{ mt: 1.6, height: 5.5, px: 0.5 }}
             >
-                {subBar(factionsColor?.redMountain || "#C24242", voteRatio[0])}
+                {subBar(factionsColor?.red_mountain || "#C24242", voteRatio[0])}
                 {subBar(factionsColor?.boston || "#428EC1", voteRatio[1])}
                 {subBar(factionsColor?.zaibatsu || "#FFFFFF", voteRatio[2])}
             </Stack>
@@ -104,7 +104,7 @@ const VotingBarInner = ({
 export const BattleAbilityItem = () => {
     const { state, send, subscribe } = useGameServerWebsocket()
     const { votingState, factionVotePrice } = useGame()
-    const { user, factionID } = useGameServerAuth()
+    const { user, faction_id } = useGameServerAuth()
 
     return (
         <BattleAbilityItemInner
@@ -114,7 +114,7 @@ export const BattleAbilityItem = () => {
             votingState={votingState}
             factionVotePrice={factionVotePrice}
             user={user}
-            factionID={factionID}
+            faction_id={faction_id}
         />
     )
 }
@@ -123,7 +123,7 @@ interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
     votingState?: VotingStateResponse
     factionVotePrice: BigNumber
     user?: User
-    factionID?: string
+    faction_id?: string
 }
 
 const BattleAbilityItemInner = ({
@@ -133,7 +133,7 @@ const BattleAbilityItemInner = ({
     votingState,
     factionVotePrice,
     user,
-    factionID,
+    faction_id,
 }: BattleAbilityItemProps) => {
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [fadeEffect, toggleFadeEffect] = useToggle()
@@ -143,13 +143,13 @@ const BattleAbilityItemInner = ({
 
     // Subscribe to the result of the vote
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe(GameServerKeys.TriggerAbilityRightRatio, () => console.log(""), null)
-    }, [state, subscribe, factionID])
+    }, [state, subscribe, faction_id])
 
     // Subscribe to battle ability updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe<BattleAbilityType>(
             GameServerKeys.SubBattleAbility,
             (payload) => {
@@ -158,10 +158,15 @@ const BattleAbilityItemInner = ({
             },
             null,
         )
-    }, [state, subscribe, factionID])
+    }, [state, subscribe, faction_id])
 
     const onVote = (voteAmount: number) => {
-        if (send) send<boolean, { voteAmount: number }>(GameServerKeys.SubmitVoteAbilityRight, { voteAmount }, true)
+        if (send)
+            send<boolean, { vote_amount: number }>(
+                GameServerKeys.SubmitVoteAbilityRight,
+                { vote_amount: voteAmount },
+                true,
+            )
     }
 
     if (!battleAbility) return null

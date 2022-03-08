@@ -9,8 +9,8 @@ import { ChatData } from "../../../types/passport"
 
 interface GlobalMessage {
     title: string
-    gamesUntil: number
-    showUntil: Date
+    games_until: number
+    show_until: Date
     message: string
     duration: number
 }
