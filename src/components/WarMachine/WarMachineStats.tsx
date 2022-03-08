@@ -119,7 +119,7 @@ export const WarMachineStats = () => {
                         clipSize="9px"
                         clipSlantSize="26px"
                         skipLeft
-                        sx={{ pl: 2, pr: 4, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
+                        sx={{ pl: 2, pr: 3.4, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
                     >
                         <ScrollContainer>
                             <Stack spacing={-3} direction="row" alignItems="center" justifyContent="center">
@@ -146,12 +146,16 @@ export const WarMachineStats = () => {
                                 sx={{ flex: 1, ml: haveFactionMechs ? -1.4 : 0, pb: haveFactionMechs ? 0 : 0.6 }}
                             >
                                 {otherMechs.map((wm) => (
-                                    <WarMachineItem
+                                    <Box
                                         key={`${wm.participantID} - ${wm.hash}`}
-                                        warMachine={wm}
-                                        scale={haveFactionMechs ? 0.75 : 0.75}
-                                        shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
-                                    />
+                                        sx={{ ":not(:last-child)": { pr: 2 } }}
+                                    >
+                                        <WarMachineItem
+                                            warMachine={wm}
+                                            scale={haveFactionMechs ? 0.75 : 0.75}
+                                            shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
+                                        />
+                                    </Box>
                                 ))}
                             </Stack>
                         </ScrollContainer>
