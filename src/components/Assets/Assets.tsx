@@ -15,7 +15,7 @@ import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
 
 const DrawerContent = () => {
-    const { state, send, subscribe } = usePassportServerWebsocket()
+    const { state, subscribe } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
 
     const [assets, setAssets] = useState<Asset[]>([])

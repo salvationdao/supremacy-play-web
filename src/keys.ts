@@ -64,7 +64,6 @@ export enum PassportServerKeys {
     SubscribeGamebarUser = "GAMEBAR:USER:SUBSCRIBE",
     SubscribeUser = "USER:SUBSCRIBE",
     SubscribeWallet = "USER:SUPS:SUBSCRIBE",
-    SubscribeFaction = "FACTION:SUBSCRIBE",
     SubscribeFactionStat = "FACTION:STAT:SUBSCRIBE",
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",

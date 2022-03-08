@@ -5,13 +5,13 @@ import { ClipThing, BattleAbilityItem, Prices, FactionAbilities } from ".."
 import { useDimension, useGame, VotingStateResponse } from "../../containers"
 import { useGameServerAuth } from "../../containers"
 
+interface VotingSystemProps {
+    votingState?: VotingStateResponse
+}
+
 export const VotingSystem = () => {
     const { votingState } = useGame()
     return <VotingSystemInner votingState={votingState} />
-}
-
-interface VotingSystemProps {
-    votingState?: VotingStateResponse
 }
 
 const VotingSystemInner = ({ votingState }: VotingSystemProps) => {

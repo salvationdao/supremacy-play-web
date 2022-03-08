@@ -51,11 +51,11 @@ export const AssetItem = ({
     // Subscribe on asset data
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !asset) return
-        return subscribe<Asset>(
+        return subscribe<{ purchased_item: Asset }>(
             PassportServerKeys.SubAssetData,
             (payload) => {
-                if (!payload) return
-                setAssetData(payload)
+                if (!payload || !payload.purchased_item) return
+                setAssetData(payload.purchased_item)
             },
             { asset_hash: asset.hash },
         )
@@ -104,7 +104,7 @@ export const AssetItem = ({
     )
         return null
 
-    const { hash, name, image } = assetData
+    const { hash, name, label, image_url } = assetData.data.mech
 
     const StatusArea = () => {
         // If game server is down, don't show deploy button
@@ -278,7 +278,7 @@ export const AssetItem = ({
                     height: 55,
                     flexShrink: 0,
                     overflow: "hidden",
-                    backgroundImage: `url(${image})`,
+                    backgroundImage: `url(${image_url})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "contain",
@@ -300,7 +300,7 @@ export const AssetItem = ({
                         wordBreak: "break-word",
                     }}
                 >
-                    {name}
+                    {name || label}
                 </Typography>
 
                 <Stack alignItems="center" direction="row" spacing={1.2}>

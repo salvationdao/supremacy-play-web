@@ -14,7 +14,7 @@ import { TOKEN_SALE_PAGE } from "../../../constants"
 export interface SupsMultiplier {
     key: string
     value: number
-    expiredAt: Date
+    expired_at: Date
 }
 
 export const WalletDetails = () => {
@@ -90,7 +90,7 @@ export const WalletDetails = () => {
         })
         setTotalMultipliers(sum)
         // Sort longest expiring first before returning
-        setMultipliersCleaned(list.sort((a, b) => (b.expiredAt > a.expiredAt ? 1 : -1)))
+        setMultipliersCleaned(list.sort((a, b) => (b.expired_at > a.expired_at ? 1 : -1)))
     }, [supsMultipliers, reRender])
 
     const selfDestroyed = (key: string) => {

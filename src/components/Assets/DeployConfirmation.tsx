@@ -51,7 +51,7 @@ export const DeployConfirmation = ({
 }) => {
     const { state, send } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
-    const { hash, name, image } = asset
+    const { hash, name, label, image_url } = asset.data.mech
     const [needInsured, toggleNeedInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, toggleDeployFailed] = useToggle()
@@ -109,7 +109,7 @@ export const DeployConfirmation = ({
                                 width: 110,
                                 height: 150,
                                 flexShrink: 0,
-                                backgroundImage: `url(${image})`,
+                                backgroundImage: `url(${image_url})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "top center",
                                 backgroundSize: "contain",
@@ -165,7 +165,7 @@ export const DeployConfirmation = ({
                                         WebkitBoxOrient: "vertical",
                                     }}
                                 >
-                                    {name}
+                                    {name || label}
                                 </Typography>
                             </Box>
 

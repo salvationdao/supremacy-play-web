@@ -31,16 +31,16 @@ export const MultiplierItem = ({
     selfDestroyed: (key: string) => void
 }) => {
     const getRemainSecond = (date: Date): number => {
-        return Math.floor((supsMultiplier.expiredAt.getTime() - new Date().getTime()) / 1000)
+        return Math.floor((supsMultiplier.expired_at.getTime() - new Date().getTime()) / 1000)
     }
 
-    const [timeRemain, setTimeRemain] = useState<number>(getRemainSecond(supsMultiplier.expiredAt))
+    const [timeRemain, setTimeRemain] = useState<number>(getRemainSecond(supsMultiplier.expired_at))
     useInterval(() => {
-        const t = getRemainSecond(supsMultiplier.expiredAt)
+        const t = getRemainSecond(supsMultiplier.expired_at)
         if (t <= 0) {
             selfDestroyed(supsMultiplier.key)
         }
-        setTimeRemain(getRemainSecond(supsMultiplier.expiredAt))
+        setTimeRemain(getRemainSecond(supsMultiplier.expired_at))
     }, 1000)
 
     const keyTitle = (key: string) => {
