@@ -15,7 +15,6 @@ export enum GameServerKeys {
     SubVoteWinnerAnnouncement = "VOTE:WINNER:ANNOUNCEMENT",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubFactionQueueLength = "FACTION:QUEUE:JOIN",
-    SubFactionQueueLeaveLength = "FACTION:QUEUE:LEAVE",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
