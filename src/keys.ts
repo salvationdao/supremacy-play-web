@@ -40,10 +40,6 @@ export enum GameServerKeys {
     TriggerFactionAbilityPriceUpdated = "FACTION:ABILITY:PRICE:UPDATED",
     TriggerFactionVotePriceUpdated = "FACTION:VOTE:PRICE:UPDATED",
 
-    // Transactions
-    SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
-    SubscribeUserLatestTransactions = "USER:SUPS:LATEST_TRANSACTION:SUBSCRIBE",
-
     // Global messages
     SubscribeGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
 
@@ -75,7 +71,6 @@ export enum PassportServerKeys {
     SubAssetData = "ASSET:SUBSCRIBE",
     SubAssetQueuePosition = "WAR:MACHINE:QUEUE:POSITION:SUBSCRIBE",
     SubAssetDurability = "ASSET:DURABILITY:SUBSCRIBE",
-    SubFactionQueueCost = "ASSET:QUEUE:COST:UPDATE",
     SubFactionContractReward = "FACTION:CONTRACT:REWARD:SUBSCRIBE",
     JoinQueue = "ASSET:QUEUE:JOIN",
 

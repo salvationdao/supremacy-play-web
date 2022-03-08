@@ -66,6 +66,7 @@ export const DeployConfirmation = ({
             }
         } catch (e) {
             toggleDeployFailed(true)
+            console.log(e)
             return
         } finally {
             toggleIsDeploying(false)
