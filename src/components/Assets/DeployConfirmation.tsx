@@ -2,10 +2,10 @@ import { Box, Button, IconButton, Modal, Stack, Switch, Typography } from "@mui/
 import { ClipThing, TooltipHelper } from ".."
 import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
+import { usePassportServerAuth, useGameServerWebsocket } from "../../containers"
 import { acronym, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { PassportServerKeys } from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
 
@@ -49,7 +49,7 @@ export const DeployConfirmation = ({
     queueLength: number
     onClose: () => void
 }) => {
-    const { state, send } = usePassportServerWebsocket()
+    const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url } = asset.data.mech
     const [needInsured, toggleNeedInsured] = useToggle()
@@ -60,7 +60,7 @@ export const DeployConfirmation = ({
         if (state !== WebSocket.OPEN) return
         try {
             toggleIsDeploying(true)
-            const resp = await send(PassportServerKeys.JoinQueue, { asset_hash: hash, need_insured: needInsured })
+            const resp = await send(GameServerKeys.JoinQueue, { asset_hash: hash, need_insured: needInsured })
             if (resp) {
                 onClose()
             }

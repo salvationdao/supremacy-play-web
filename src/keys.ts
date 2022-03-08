@@ -47,6 +47,7 @@ export enum GameServerKeys {
     SubscribeStreamClose = "STREAM:CLOSE:SUBSCRIBE",
     GetStreamList = "STREAMLIST:SUBSCRIBE",
 
+    JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "WAR:WARMACHINE:QUEUE:LEAVE",
 }
 
@@ -72,7 +73,6 @@ export enum PassportServerKeys {
     SubAssetQueuePosition = "WAR:MACHINE:QUEUE:POSITION:SUBSCRIBE",
     SubAssetDurability = "ASSET:DURABILITY:SUBSCRIBE",
     SubFactionContractReward = "FACTION:CONTRACT:REWARD:SUBSCRIBE",
-    JoinQueue = "ASSET:QUEUE:JOIN",
 
     // Transactions
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
