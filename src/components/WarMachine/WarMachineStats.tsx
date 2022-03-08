@@ -145,18 +145,20 @@ export const WarMachineStats = () => {
                                 alignItems="center"
                                 sx={{ flex: 1, ml: haveFactionMechs ? -1.4 : 0, pb: haveFactionMechs ? 0 : 0.6 }}
                             >
-                                {otherMechs.map((wm) => (
-                                    <Box
-                                        key={`${wm.participantID} - ${wm.hash}`}
-                                        sx={{ ":not(:last-child)": { pr: 2 } }}
-                                    >
-                                        <WarMachineItem
-                                            warMachine={wm}
-                                            scale={haveFactionMechs ? 0.75 : 0.75}
-                                            shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
-                                        />
-                                    </Box>
-                                ))}
+                                {otherMechs
+                                    .sort((a, b) => a.factionID.localeCompare(b.factionID))
+                                    .map((wm) => (
+                                        <Box
+                                            key={`${wm.participantID} - ${wm.hash}`}
+                                            sx={{ ":not(:last-child)": { pr: 2 } }}
+                                        >
+                                            <WarMachineItem
+                                                warMachine={wm}
+                                                scale={haveFactionMechs ? 0.75 : 0.75}
+                                                shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
+                                            />
+                                        </Box>
+                                    ))}
                             </Stack>
                         </ScrollContainer>
                     </Box>
