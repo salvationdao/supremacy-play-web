@@ -85,6 +85,7 @@ export const Trailer = ({
                         zIndex: 99,
                         backgroundColor: colors.darkNavy,
                         borderRadius: 0.7,
+                        fontFamily: "Nostromo Regular Bold",
                         ":hover": { opacity: 0.8, backgroundColor: colors.darkNavy },
                         ":disabled": {
                             color: "#FFFFFF80",

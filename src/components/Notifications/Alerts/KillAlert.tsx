@@ -1,8 +1,8 @@
 import { Box } from "@mui/material"
-import { StyledImageText } from ".."
-import { SvgDeath, SvgSkull2 } from "../../assets"
-import { colors } from "../../theme/theme"
-import { WarMachineState } from "../../types"
+import { StyledImageText } from "../.."
+import { SvgDeath, SvgSkull2 } from "../../../assets"
+import { colors } from "../../../theme/theme"
+import { WarMachineState } from "../../../types"
 
 interface KillAlertProps {
     destroyedWarMachine: WarMachineState
@@ -20,7 +20,7 @@ export const KillAlert = ({ data }: { data: KillAlertProps }) => {
                 color={killedByWarMachine ? killedByWarMachine.faction.theme.primary : "grey !important"}
                 imageUrl={killedByWarMachine ? killedByWarMachine.image_url : ""}
             />
-            <SvgDeath size="11px" fill={colors.text} sx={{ display: "inline", mx: 0.6 }} />
+            <SvgDeath size="11px" sx={{ display: "inline", mx: 0.6 }} />
             <SvgSkull2 size="11px" sx={{ display: "inline", mr: 0.8 }} />
             <StyledImageText
                 text={destroyedWarMachine.name}

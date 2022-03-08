@@ -31,8 +31,11 @@ export const PricesInner = ({ price, prevPrice }: PricesInnerProps) => {
                 sx={{ width: "100%" }}
             >
                 <Stack direction="row" alignItems="center" justifyContent="center">
-                    <Typography variant="body1" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                        BATTLE ABILITY VOTING COST:
+                    <Typography
+                        variant="body1"
+                        sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: colors.offWhite }}
+                    >
+                        COST PER BATTLE ABILITY VOTE:
                     </Typography>
                 </Stack>
 
@@ -41,7 +44,7 @@ export const PricesInner = ({ price, prevPrice }: PricesInnerProps) => {
                     <Typography
                         key={price.toFixed()}
                         variant="body1"
-                        sx={{ lineHeight: 1, animation: `${zoomEffect(1.05)} 300ms ease-out` }}
+                        sx={{ lineHeight: 1, color: colors.offWhite, animation: `${zoomEffect(1.05)} 300ms ease-out` }}
                     >
                         {price.toFixed()}
                     </Typography>

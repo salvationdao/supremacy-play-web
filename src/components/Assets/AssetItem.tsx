@@ -252,7 +252,6 @@ export const AssetItem = ({
                     sx={{
                         fontSize: ".75rem",
                         lineHeight: 1,
-                        color: "#FFFFFF",
                     }}
                 >
                     DEPLOY
@@ -286,7 +285,9 @@ export const AssetItem = ({
                 }}
             >
                 {isGameServerUp && isInQueue && queuePosition && queuePosition.position && (
-                    <Box sx={{ position: "absolute" }}>{queuePosition.position}</Box>
+                    <Box sx={{ position: "absolute" }}>
+                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{queuePosition.position}</Typography>
+                    </Box>
                 )}
             </Box>
 
@@ -294,7 +295,6 @@ export const AssetItem = ({
                 <Typography
                     variant="caption"
                     sx={{
-                        color: "#FFFFFF",
                         fontFamily: "Nostromo Regular Bold",
                         fontWeight: "fontWeightBold",
                         wordBreak: "break-word",
@@ -313,7 +313,7 @@ export const AssetItem = ({
                 target="_blank"
                 sx={{ position: "absolute", top: 6, right: 4 }}
             >
-                <SvgExternalLink fill="#FFFFFF" size="10px" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                <SvgExternalLink size="10px" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
             </Link>
 
             <DeployConfirmation

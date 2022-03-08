@@ -99,7 +99,7 @@ const DrawerContent = ({
                 <Tab
                     label={
                         <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
-                            <SvgGlobal size="20px" fill="#FFFFFF" />
+                            <SvgGlobal size="20px" />
                             <Typography
                                 variant="caption"
                                 sx={{

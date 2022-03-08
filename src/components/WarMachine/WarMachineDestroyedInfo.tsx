@@ -148,13 +148,7 @@ const WarMachineSmall = ({
                 >
                     {name}
                 </Typography>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: "Nostromo Regular Bold",
-                        color: "#FFFFFF",
-                    }}
-                >
+                <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                     {damagePercent}%
                 </Typography>
             </Stack>
@@ -179,7 +173,6 @@ const DamageList = ({
                     sx={{
                         textAlign: "center",
                         fontFamily: "Nostromo Regular Heavy",
-                        color: "#FFFFFF",
                     }}
                 >
                     {title}
@@ -295,12 +288,11 @@ export const WarMachineDestroyedInfo = ({
                                 />
 
                                 <Stack alignItems="center" sx={{ flex: 1 }}>
-                                    <SvgSkull fill="#FFFFFF" size="120px" sx={{ mb: 1 }} />
+                                    <SvgSkull size="120px" sx={{ mb: 1 }} />
                                     <Typography
                                         sx={{
                                             fontFamily: "Nostromo Regular Heavy",
                                             fontSize: "1.5rem",
-                                            color: "#FFFFFF",
                                         }}
                                     >
                                         DESTROYED

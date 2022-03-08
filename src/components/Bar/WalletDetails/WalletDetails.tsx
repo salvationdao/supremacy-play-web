@@ -125,7 +125,7 @@ export const WalletDetails = () => {
                 barName={"wallet"}
                 iconComponent={
                     <Box sx={{ p: 0.4, backgroundColor: colors.grey, borderRadius: 1 }}>
-                        <SvgSupToken size="20px" fill="#FFFFFF" />
+                        <SvgSupToken size="20px" />
                     </Box>
                 }
             >

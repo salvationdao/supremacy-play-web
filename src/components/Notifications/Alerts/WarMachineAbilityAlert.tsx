@@ -1,9 +1,9 @@
 import { Box } from "@mui/material"
-import { StyledImageText, StyledNormalText } from ".."
-import { GenericWarMachinePNG, SvgEmergency } from "../../assets"
-import { GAME_SERVER_HOSTNAME } from "../../constants"
-import { httpProtocol } from "../../containers"
-import { BattleAbility, User, WarMachineState } from "../../types"
+import { StyledImageText, StyledNormalText } from "../.."
+import { GenericWarMachinePNG, SvgEmergency } from "../../../assets"
+import { GAME_SERVER_HOSTNAME } from "../../../constants"
+import { httpProtocol } from "../../../containers"
+import { BattleAbility, User, WarMachineState } from "../../../types"
 
 interface WarMachineAbilityAlertProps {
     user?: User

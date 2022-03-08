@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material"
 import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { pulseEffect } from "../../theme/keyframes"
-import { colors } from "../../theme/theme"
 
 export const LoadMessage = () => {
     const { state, isServerUp } = useGameServerWebsocket()
@@ -12,7 +11,7 @@ export const LoadMessage = () => {
         if (!isServerUp) {
             message = "GAME SERVER OFFLINE."
         } else {
-            message = "ATTEMPTING TO RECONNECT..."
+            message = "CONNECTING TO SERVER..."
         }
     } else if (authSessionIDGetLoading) {
         message = "GETTING SESSION..."
@@ -35,10 +34,7 @@ export const LoadMessage = () => {
                 pointerEvents: "none",
             }}
         >
-            <Typography
-                variant="h6"
-                sx={{ fontFamily: "Nostromo Regular Bold", fontWeight: "fontWeightBold", color: colors.text }}
-            >
+            <Typography variant="h6" sx={{ fontFamily: "Nostromo Regular Bold", fontWeight: "fontWeightBold" }}>
                 {message}
             </Typography>
         </Box>

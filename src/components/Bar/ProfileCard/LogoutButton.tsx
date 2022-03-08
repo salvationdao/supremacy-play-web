@@ -63,7 +63,7 @@ export const LogoutButton = () => {
     }
     return (
         <Button
-            startIcon={<SvgLogout size="16px" fill="#FFFFFF" sx={{ ml: 0.1 }} />}
+            startIcon={<SvgLogout size="16px" sx={{ ml: 0.1 }} />}
             onClick={onClick}
             sx={{
                 justifyContent: "flex-start",
@@ -72,6 +72,7 @@ export const LogoutButton = () => {
                 ":hover": {
                     backgroundColor: colors.red,
                 },
+                fontFamily: "Nostromo Regular Bold",
             }}
         >
             Logout

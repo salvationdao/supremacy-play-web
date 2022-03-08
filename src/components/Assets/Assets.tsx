@@ -56,8 +56,8 @@ const DrawerContent = () => {
                     boxShadow: 1.5,
                 }}
             >
-                <SvgRobot size="23px" fill="#FFFFFF" sx={{ pb: 0.7 }} />
-                <Typography variant="caption" sx={{ color: "#FFFFFF", fontFamily: "Nostromo Regular Black" }}>
+                <SvgRobot size="23px" fill={colors.text} sx={{ pb: 0.7 }} />
+                <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
                     WAR MACHINES
                 </Typography>
             </Stack>

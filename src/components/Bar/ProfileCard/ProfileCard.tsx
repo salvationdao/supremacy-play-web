@@ -128,16 +128,16 @@ export const ProfileCard = () => {
                 <Stack spacing={0.4} sx={{ p: 1, backgroundColor: colors.darkNavy }}>
                     <NavButton
                         href={`${PASSPORT_WEB}collections/${user.username}`}
-                        startIcon={<SvgAssets size="16px" fill="#FFFFFF" />}
+                        startIcon={<SvgAssets size="16px" />}
                     >
                         My Inventory
                     </NavButton>
-                    <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop size="16px" fill="#FFFFFF" />}>
+                    <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop size="16px" />}>
                         Purchase Assets
                     </NavButton>
                     <NavButton
                         href={`${PASSPORT_WEB}profile/${user.username}/edit`}
-                        startIcon={<SvgProfile size="16px" fill="#FFFFFF" />}
+                        startIcon={<SvgProfile size="16px" />}
                     >
                         Edit Profile
                     </NavButton>
