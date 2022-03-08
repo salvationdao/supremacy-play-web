@@ -70,8 +70,8 @@ export const WarMachineStats = () => {
                 shouldBeExpandedOthers,
             }
 
-        const factionMechs = warMachines.filter((wm) => wm.faction_id == faction_id)
-        const otherMechs = warMachines.filter((wm) => wm.faction_id != faction_id)
+        const factionMechs = warMachines.filter((wm) => wm.factionID == faction_id)
+        const otherMechs = warMachines.filter((wm) => wm.factionID != faction_id)
 
         if (
             factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
@@ -95,8 +95,8 @@ export const WarMachineStats = () => {
 
     if (!warMachines || warMachines.length <= 0) return null
 
-    const factionMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.faction_id == faction_id)
-    const otherMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.faction_id != faction_id)
+    const factionMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == faction_id)
+    const otherMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != faction_id)
     const haveFactionMechs = factionMechs.length > 0
 
     return (
@@ -125,7 +125,7 @@ export const WarMachineStats = () => {
                             <Stack spacing={-3} direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
-                                        key={`${wm.participant_id} - ${wm.hash}`}
+                                        key={`${wm.participantID} - ${wm.hash}`}
                                         warMachine={wm}
                                         scale={0.8}
                                         shouldBeExpanded={shouldBeExpanded.shouldBeExpandedFaction}
@@ -147,7 +147,7 @@ export const WarMachineStats = () => {
                             >
                                 {otherMechs.map((wm) => (
                                     <WarMachineItem
-                                        key={`${wm.participant_id} - ${wm.hash}`}
+                                        key={`${wm.participantID} - ${wm.hash}`}
                                         warMachine={wm}
                                         scale={haveFactionMechs ? 0.75 : 0.75}
                                         shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}

@@ -72,14 +72,14 @@ export interface Vector2i {
 export interface WarMachineState {
     // One off fetch on inital load
     hash: string
-    participant_id: number
-    faction_id: string
+    participantID: number
+    factionID: string
     faction: Faction
     name: string
-    image_url: string
-    max_health: number
-    max_shield: number
-    image_avatar: string
+    image: string
+    maxHealth: number
+    maxShield: number
+    imageAvatar: string
 
     // Updated in subscription
     health: number

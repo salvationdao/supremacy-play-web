@@ -69,7 +69,7 @@ const WarMachineItemInner = ({
     state,
     subscribe,
 }: PropsInner) => {
-    const { participant_id, faction, name, image_avatar } = warMachine
+    const { participantID, faction, name, imageAvatar } = warMachine
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -83,8 +83,8 @@ const WarMachineItemInner = ({
         theme: { primary, secondary, background },
     } = faction
 
-    const wmImageUrl = image_avatar || GenericWarMachinePNG
-    const isOwnFaction = faction_id == warMachine.faction_id
+    const wmImageUrl = imageAvatar || GenericWarMachinePNG
+    const isOwnFaction = faction_id == warMachine.factionID
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord
 
@@ -130,10 +130,10 @@ const WarMachineItemInner = ({
                 if (payload) setGameAbilities(payload)
             },
             {
-                participant_id,
+                participantID,
             },
         )
-    }, [subscribe, state, faction_id, participant_id, warMachinefaction_id])
+    }, [subscribe, state, faction_id, participantID, warMachinefaction_id])
 
     // Subscribe to whether the war machine has been destroyed
     useEffect(() => {
@@ -144,12 +144,12 @@ const WarMachineItemInner = ({
                 if (!payload) return
                 setWarMachineDestroyedRecord(payload)
             },
-            { participant_id },
+            { participantID },
         )
-    }, [state, subscribe, participant_id])
+    }, [state, subscribe, participantID])
 
     return (
-        <BoxSlanted key={`WarMachineItem-${participant_id}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
+        <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
             <Stack
                 ref={popoverRef}
                 direction="row"

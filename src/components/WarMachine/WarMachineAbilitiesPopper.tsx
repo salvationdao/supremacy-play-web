@@ -61,7 +61,7 @@ export const WarMachineAbilitiesPopover = ({
                                     sx={{
                                         width: 17,
                                         height: 17,
-                                        backgroundImage: `url(${warMachine.image_avatar || GenericWarMachinePNG})`,
+                                        backgroundImage: `url(${warMachine.imageAvatar || GenericWarMachinePNG})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "cover",

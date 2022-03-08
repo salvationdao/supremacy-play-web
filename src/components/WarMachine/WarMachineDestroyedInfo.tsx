@@ -88,7 +88,7 @@ const WarMachineBig = ({
                 <WarMachineIcon
                     color={color}
                     size={75}
-                    imageUrl={warMachine.image_avatar || GenericWarMachinePNG}
+                    imageUrl={warMachine.imageAvatar || GenericWarMachinePNG}
                     isDead={isDead}
                 />
             ) : (
@@ -127,7 +127,7 @@ const WarMachineSmall = ({
     return (
         <Stack direction="row" alignItems="center" spacing={1.2}>
             {warMachine ? (
-                <WarMachineIcon color={color} size={38} imageUrl={warMachine.image_avatar || GenericWarMachinePNG} />
+                <WarMachineIcon color={color} size={38} imageUrl={warMachine.imageAvatar || GenericWarMachinePNG} />
             ) : (
                 <WarMachineIcon color={"#444444"} size={38} />
             )}
@@ -217,13 +217,15 @@ export const WarMachineDestroyedInfo = ({
             .filter(
                 (dr) =>
                     (dr.caused_by_war_machine &&
-                        dr.caused_by_war_machine.participant_id == killed_by_war_machine?.participant_id) ||
+                        dr.caused_by_war_machine.participantID == killed_by_war_machine?.participantID) ||
                     dr.source_name == killed_by,
             )
             .reduce((acc, dr) => acc + dr.amount, 0) / 100
     const assistDamageMechs = damage_records
         .filter(
-            (dr) => dr.caused_by_war_machine && dr.caused_by_war_machine.participant_id != killed_by_war_machine?.participant_id,
+            (dr) =>
+                dr.caused_by_war_machine &&
+                dr.caused_by_war_machine.participantID != killed_by_war_machine?.participantID,
         )
         .sort((a, b) => (b.amount > a.amount ? 1 : -1))
     const assistDamageOthers = damage_records

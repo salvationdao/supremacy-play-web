@@ -12,25 +12,25 @@ export const HealthShieldBars = ({
     type?: "vertical" | "horizontal"
     warMachine: WarMachineState
 }) => {
-    const { participant_id, max_health, max_shield } = warMachine
+    const { participantID, maxHealth, maxShield } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
 
-    const healthPercent = (health / max_health) * 100
-    const shieldPercent = (shield / max_shield) * 100
+    const healthPercent = (health / maxHealth) * 100
+    const shieldPercent = (shield / maxShield) * 100
 
     // Listen on current war machine changes
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
 
-        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participant_id, (payload) => {
+        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
             if (payload?.health !== undefined) {
                 setHealth(payload.health)
             }
             if (payload?.shield !== undefined) setShield(payload.shield)
         })
-    }, [participant_id, state, subscribeWarMachineStatNetMessage])
+    }, [participantID, state, subscribeWarMachineStatNetMessage])
 
     if (type == "vertical") {
         return (
@@ -59,7 +59,7 @@ export const HealthShieldBars = ({
                     }}
                 >
                     <SlantedBar
-                        backgroundColor={health / max_health <= 0.45 ? colors.red : colors.health}
+                        backgroundColor={health / maxHealth <= 0.45 ? colors.red : colors.health}
                         progressPercent={healthPercent}
                     />
                 </Box>
@@ -92,7 +92,7 @@ export const HealthShieldBars = ({
                         sx={{
                             width: `${healthPercent}%`,
                             height: "100%",
-                            backgroundColor: health / max_health <= 0.45 ? colors.red : colors.health,
+                            backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
                         }}
                     />
                 </BoxSlanted>

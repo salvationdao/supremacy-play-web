@@ -46,12 +46,12 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     <Stack spacing={2} sx={{ pl: 1 }}>
                         {winning_war_machines.map((wm) => (
                             <StyledImageText
-                                key={`${wm.hash}-${wm.participant_id}`}
+                                key={`${wm.hash}-${wm.participantID}`}
                                 color={colors.text}
                                 imageBorderColor={wm.faction.theme.primary}
                                 imageBackgroundColor={`${wm.faction.theme.primary}60`}
                                 text={wm.name.toUpperCase()}
-                                imageUrl={wm.image_avatar || GenericWarMachinePNG}
+                                imageUrl={wm.imageAvatar || GenericWarMachinePNG}
                                 variant="h5"
                                 imageSize={29}
                                 imageBorderThickness="2px"
