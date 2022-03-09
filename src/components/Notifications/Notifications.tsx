@@ -29,7 +29,7 @@ import {
     killNoti2,
 } from "../../samepleData"
 
-const SPAWN_TEST_NOTIFICATIONS = false
+const SPAWN_TEST_NOTIFICATIONS = true
 
 /*
 WAR_MACHINE_DESTROYED: when a war machine is destroyed

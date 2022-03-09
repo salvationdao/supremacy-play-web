@@ -9,7 +9,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
 
     return (
         <Stack spacing={2}>
-            <Box sx={{ px: 2.5, py: 1.1, backgroundColor: "#FFFFFF15" }}>
+            <Box sx={{ px: 2.5, py: 1.1, pr: 4, backgroundColor: "#FFFFFF15" }}>
                 <Typography
                     component="span"
                     variant="h5"
@@ -49,6 +49,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                                     imageBorderThickness="2px"
                                     fontWeight="normal"
                                     truncateLine
+                                    imageMb={-0.8}
                                 />
                             </Stack>
                         ))}

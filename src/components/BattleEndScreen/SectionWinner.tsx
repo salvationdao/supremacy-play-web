@@ -10,7 +10,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
 
     return (
         <Stack spacing={3}>
-            <Box sx={{ px: 2.5, py: 1.5, backgroundColor: "#FFFFFF15" }}>
+            <Box sx={{ px: 2.5, py: 1.5, pr: 4, backgroundColor: "#FFFFFF15" }}>
                 <Typography
                     component="span"
                     variant="h4"
@@ -40,6 +40,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     noImageBackgroundColor
                     imageBackgroundSize="contain"
                     truncateLine
+                    imageMb={-1.4}
                 />
 
                 {winning_war_machines && winning_war_machines.length > 0 ? (
@@ -57,6 +58,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                                 imageBorderThickness="2px"
                                 fontWeight="normal"
                                 truncateLine
+                                imageMb={-0.8}
                             />
                         ))}
                     </Stack>
