@@ -45,6 +45,8 @@ export enum GameServerKeys {
 
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "WAR:WARMACHINE:QUEUE:LEAVE",
+
+    SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
 }
 
 export enum PassportServerKeys {
@@ -61,7 +63,6 @@ export enum PassportServerKeys {
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
-    SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
 
     // Assets
     SubAssetList = "USER:ASSET:LIST",

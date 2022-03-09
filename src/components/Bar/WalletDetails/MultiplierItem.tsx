@@ -1,38 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useState } from "react"
-import { SupsMultiplier, TooltipHelper } from "../.."
+import { TooltipHelper } from "../.."
 import { getMutiplierDeets } from "../../../helpers"
-import { useInterval } from "../../../hooks"
 
-export const MultiplierItem = ({
-    supsMultiplier,
-    selfDestroyed,
-}: {
-    supsMultiplier: SupsMultiplier
-    selfDestroyed: (key: string) => void
-}) => {
-    const getRemainSecond = (date: Date): number => {
-        return Math.floor((supsMultiplier.expired_at.getTime() - new Date().getTime()) / 1000)
-    }
-
-    const [timeRemain, setTimeRemain] = useState<number>(getRemainSecond(supsMultiplier.expired_at))
-    useInterval(() => {
-        const t = getRemainSecond(supsMultiplier.expired_at)
-        if (t <= 0) {
-            selfDestroyed(supsMultiplier.key)
-        }
-        setTimeRemain(getRemainSecond(supsMultiplier.expired_at))
-    }, 1000)
-
-    const keyTitle = (key: string) => {
-        const index = supsMultiplier.key.indexOf("_")
-        if (index === -1) return key
-        return key.substring(0, index)
-    }
-
-    if (timeRemain <= 0) return null
-
-    const multiplierDeets = getMutiplierDeets(keyTitle(supsMultiplier.key))
+export const MultiplierItem = ({ multipliers }: { multipliers: { key: string; value: string } }) => {
+    const multiplierDeets = getMutiplierDeets(multipliers.key)
 
     return (
         <TooltipHelper text={multiplierDeets.description} placement="left">
@@ -52,22 +23,12 @@ export const MultiplierItem = ({
                             border: "#FFFFFF60 1px solid",
                         }}
                     />
-                    <Typography variant="body1">{keyTitle(supsMultiplier.key).toUpperCase()}:</Typography>
+                    <Typography variant="body1">{multipliers.key.toUpperCase()}:</Typography>
                 </Stack>
 
                 <Typography sx={{ minWidth: 25, textAlign: "end" }} variant="body2">
-                    +{supsMultiplier.value}x
+                    {multipliers.value}
                 </Typography>
-
-                <Stack
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{ minWidth: 50, alignSelf: "stretch", background: "#00000075", borderRadius: 1 }}
-                >
-                    <Typography sx={{ textAlign: "center", lineHeight: 1, color: "grey !important" }} variant="caption">
-                        {timeRemain < 86400 ? `${timeRemain}s` : "∞"}
-                    </Typography>
-                </Stack>
             </Stack>
         </TooltipHelper>
     )
