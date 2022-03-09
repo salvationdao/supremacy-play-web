@@ -466,7 +466,7 @@ export const battleAbilityNoti: NotificationResponse = {
                 label: "Zaibatsu Industries",
                 logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
-                    primary: "#FFFFF",
+                    primary: "#FFFFFF",
                     secondary: "#00000",
                     background: "#0D0404",
                 },

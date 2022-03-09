@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import moment from "moment"
-import { BOTTOM_BUTTONS_HEIGHT, FancyButton } from ".."
-import { useOverlayToggles } from "../../containers"
-import { colors } from "../../theme/theme"
-import { BattleEndDetail } from "../../types"
+import { BOTTOM_BUTTONS_HEIGHT, FancyButton } from "../.."
+import { useOverlayToggles } from "../../../containers"
+import { colors } from "../../../theme/theme"
+import { BattleEndDetail } from "../../../types"
 
 export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { toggleIsEndBattleDetailOpen } = useOverlayToggles()

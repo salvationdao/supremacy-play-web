@@ -1,11 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { BattleEndTooltip, StyledImageText } from ".."
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { colors } from "../../theme/theme"
-import { BattleEndDetail } from "../../types"
+import { BattleEndTooltip, StyledImageText } from "../.."
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { colors } from "../../../theme/theme"
+import { BattleEndDetail } from "../../../types"
 
-export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { most_frequent_ability_executors } = battleEndDetail
+export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
+    const { top_sups_contributors } = battleEndDetail
 
     return (
         <Stack spacing={2}>
@@ -20,18 +20,18 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                         color: colors.neonBlue,
                     }}
                 >
-                    EXECUTORS
+                    BATTLE INFLUENCERS
                     <BattleEndTooltip
-                        text="The players that had executed the most abilities during the battle."
+                        text="The players that had spent the most SUPS during the battle."
                         color={colors.neonBlue}
                     />
                 </Typography>
             </Box>
 
-            {most_frequent_ability_executors && most_frequent_ability_executors.length > 0 ? (
+            {top_sups_contributors && top_sups_contributors.length > 0 ? (
                 <Stack spacing={2}>
                     <Stack spacing={2} sx={{ pl: 1 }}>
-                        {most_frequent_ability_executors.map((u, index) => (
+                        {top_sups_contributors.map((u, index) => (
                             <Stack key={index} direction="row" spacing={1.3} alignItems="center">
                                 <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                     {index + 1}.

@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { BattleEndTooltip, StyledImageText } from ".."
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { colors } from "../../theme/theme"
-import { BattleEndDetail } from "../../types"
+import { BattleEndTooltip, StyledImageText } from "../.."
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { colors } from "../../../theme/theme"
+import { BattleEndDetail } from "../../../types"
 
 export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { top_sups_contribute_factions } = battleEndDetail
