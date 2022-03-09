@@ -1,11 +1,11 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Divider, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText, TooltipHelper } from "../.."
 import { getMutiplierDeets } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { multipliers } = battleEndDetail
+    const { total_multipliers, multipliers } = battleEndDetail
 
     return (
         <Stack>
@@ -28,7 +28,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                 </Typography>
             </Box>
 
-            <Stack spacing={3.2} sx={{ pl: 1.8, pr: 2.3, py: 2.5, backgroundColor: "#FFFFFF05" }}>
+            <Stack spacing={3.2} sx={{ pl: 1.8, pr: 2.3, pt: 2.5, pb: 2, backgroundColor: "#FFFFFF05" }}>
                 {multipliers && multipliers.length > 0 ? (
                     <Stack spacing={1.5} sx={{ pl: 1 }}>
                         {multipliers.map((m) => {
@@ -49,11 +49,22 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                             truncateLine
                                             imageMb={-0.8}
                                         />
-                                        <Typography variant="h6">+{m.value / 100}x</Typography>
+                                        <Typography variant="h6">{m.value}</Typography>
                                     </Stack>
                                 </TooltipHelper>
                             )
                         })}
+
+                        <Divider sx={{ py: 0.3, borderColor: "#FFFFFF", opacity: 0.15 }} />
+
+                        <Stack direction="row" alignItems="center" justifyContent="space-between">
+                            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                TOTAL:{" "}
+                            </Typography>
+                            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                {total_multipliers}
+                            </Typography>
+                        </Stack>
                     </Stack>
                 ) : (
                     <Typography variant="h6" sx={{ pl: 1, opacity: 0.8 }}>

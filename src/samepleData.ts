@@ -68,12 +68,13 @@ export const sampleBattleEndDetail: BattleEndDetail = {
     battle_identifier: 3,
     started_at: new Date("2022-02-22T07:54:11.944Z"),
     ended_at: new Date("2022-02-22T08:06:30.762Z"),
+    total_multipliers: "+5600x",
     multipliers: [
-        { key: "contributor", value: 100 },
-        { key: "super contributor", value: 1000 },
-        { key: "grease monkey", value: 500 },
-        { key: "combo breaker", value: 1500 },
-        { key: "won battle", value: 2500 },
+        { key: "contributor", value: "+100x" },
+        { key: "super contributor", value: "+1000x" },
+        { key: "grease monkey", value: "+500x" },
+        { key: "combo breaker", value: "+1500x" },
+        { key: "won battle", value: "+2500x" },
     ],
     winning_condition: "LAST_ALIVE",
     winning_faction: {

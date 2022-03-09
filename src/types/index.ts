@@ -147,9 +147,10 @@ export interface BattleEndDetail {
     battle_identifier: number
     started_at: Date
     ended_at: Date
+    total_multipliers: string
     multipliers: {
         key: string
-        value: number
+        value: string
     }[]
     winning_condition: string
     winning_faction: Faction
