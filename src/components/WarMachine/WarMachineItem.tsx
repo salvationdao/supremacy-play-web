@@ -13,6 +13,7 @@ import {
 import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { useGameServerAuth, useDrawer, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
@@ -84,6 +85,10 @@ const WarMachineItemInner = ({
         logo_blob_id,
         theme: { primary, secondary, background },
     } = faction
+
+    // TODO: this is placeholder
+    const rarity = "DEUS_EX"
+    const rarityDeets = getRarityDeets(rarity)
 
     const wmImageUrl = imageAvatar || GenericWarMachinePNG
     const isOwnFaction = faction_id == warMachine.factionID
@@ -234,7 +239,7 @@ const WarMachineItemInner = ({
                                 cursor: "pointer",
                             }}
                         >
-                            <TooltipHelper text="LEGENDARY" placement="right">
+                            <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
                                 <Stack
                                     direction="row"
                                     spacing={0.1}
@@ -243,7 +248,7 @@ const WarMachineItemInner = ({
                                         bottom: -9,
                                         left: 5,
                                         height: 42,
-                                        transform: "rotate(-42deg)",
+                                        transform: "rotate(-40deg)",
                                         zIndex: 3,
                                     }}
                                 >
@@ -251,7 +256,7 @@ const WarMachineItemInner = ({
                                         sx={{
                                             width: 6,
                                             height: "100%",
-                                            backgroundColor: colors.rarity.DEUS_EX,
+                                            backgroundColor: rarityDeets.color,
                                             border: "#00000090 1.5px solid",
                                         }}
                                     />
@@ -259,7 +264,7 @@ const WarMachineItemInner = ({
                                         sx={{
                                             width: 6,
                                             height: "100%",
-                                            backgroundColor: colors.rarity.DEUS_EX,
+                                            backgroundColor: rarityDeets.color,
                                             border: "#00000090 1.5px solid",
                                         }}
                                     />

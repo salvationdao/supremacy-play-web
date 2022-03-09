@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js"
+import { colors } from "../theme/theme"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -147,4 +148,32 @@ export const hexToRGB = (hex: string, alpha?: number): string => {
     const b = h.indexOf(hex[5]) * 16 + h.indexOf(hex[6])
     if (alpha) return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")"
     else return "rgb(" + r + ", " + g + ", " + b + ")"
+}
+
+export const getRarityDeets = (rarityKey: string): { label: string; color: string } => {
+    switch (rarityKey) {
+        case "COLOSSAL":
+            return { label: "Colossal", color: colors.rarity.COLOSSAL }
+        case "RARE":
+            return { label: "Rare", color: colors.rarity.RARE }
+        case "LEGENDARY":
+            return { label: "Legendary", color: colors.rarity.LEGENDARY }
+        case "ELITE_LEGENDARY":
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY }
+        case "ULTRA_RARE":
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE }
+        case "EXOTIC":
+            return { label: "Exotic", color: colors.rarity.EXOTIC }
+        case "GUARDIAN":
+            return { label: "Guardian", color: colors.rarity.GUARDIAN }
+        case "MYTHIC":
+            return { label: "Mythic", color: colors.rarity.MYTHIC }
+        case "DEUS_EX":
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX }
+        case "TITAN":
+            return { label: "Titan", color: colors.rarity.TITAN }
+        case "MEGA":
+        default:
+            return { label: "Mega", color: colors.rarity.MEGA }
+    }
 }
