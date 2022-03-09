@@ -1,12 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../.."
 import { GenericWarMachinePNG } from "../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { colors } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { battle_identifier, winning_faction, winning_war_machines } = battleEndDetail
+    const { winning_war_machines } = battleEndDetail
 
     return (
         <Stack>
@@ -29,7 +28,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                 </Typography>
             </Box>
 
-            <Stack spacing={3.2} sx={{ px: 2.8, py: 2.5, backgroundColor: "#FFFFFF05" }}>
+            <Stack spacing={3.2} sx={{ px: 2.3, py: 2.5, backgroundColor: "#FFFFFF05" }}>
                 {winning_war_machines && winning_war_machines.length > 0 ? (
                     <Stack spacing={2} sx={{ pl: 1 }}>
                         {winning_war_machines.map((wm) => (
