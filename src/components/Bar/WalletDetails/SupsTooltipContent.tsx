@@ -41,7 +41,7 @@ export const SupsTooltipContent = ({
 
                     <Stack spacing={0.4}>
                         {multipliers.multipliers.map((m, i) => (
-                            <MultiplierItem key={i} multipliers={m} />
+                            <MultiplierItem key={i} multiplier={m} />
                         ))}
                     </Stack>
                 </Box>

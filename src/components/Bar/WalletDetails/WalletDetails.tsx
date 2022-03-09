@@ -13,7 +13,7 @@ import { TOKEN_SALE_PAGE } from "../../../constants"
 
 export interface SupsMultipliers {
     total_multipliers: string
-    multipliers: { key: string; value: string }[]
+    multipliers: { key: string; value: string; description: string }[]
 }
 
 export const WalletDetails = () => {

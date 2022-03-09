@@ -2,11 +2,11 @@ import { Box, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from "../.."
 import { getMutiplierDeets } from "../../../helpers"
 
-export const MultiplierItem = ({ multipliers }: { multipliers: { key: string; value: string } }) => {
-    const multiplierDeets = getMutiplierDeets(multipliers.key)
+export const MultiplierItem = ({ multiplier }: { multiplier: { key: string; value: string; description: string } }) => {
+    const multiplierDeets = getMutiplierDeets(multiplier.key)
 
     return (
-        <TooltipHelper text={multiplierDeets.description} placement="left">
+        <TooltipHelper text={multiplier.description} placement="left">
             <Stack direction="row" alignItems="center" spacing={2}>
                 <Stack direction="row" spacing={0.5} sx={{ flex: 1 }}>
                     <Box
@@ -23,11 +23,11 @@ export const MultiplierItem = ({ multipliers }: { multipliers: { key: string; va
                             border: "#FFFFFF60 1px solid",
                         }}
                     />
-                    <Typography variant="body1">{multipliers.key.toUpperCase()}:</Typography>
+                    <Typography variant="body1">{multiplier.key.toUpperCase()}:</Typography>
                 </Stack>
 
                 <Typography sx={{ minWidth: 25, textAlign: "end" }} variant="body2">
-                    {multipliers.value}
+                    {multiplier.value}
                 </Typography>
             </Stack>
         </TooltipHelper>

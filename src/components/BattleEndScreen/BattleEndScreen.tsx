@@ -16,7 +16,7 @@ import { sampleBattleEndDetail } from "../../samepleData"
 import { colors } from "../../theme/theme"
 import { BattleEndDetail } from "../../types"
 
-const SPAWN_TEST_DATA = false
+const SPAWN_TEST_DATA = true
 
 export const BOTTOM_BUTTONS_HEIGHT = 50
 

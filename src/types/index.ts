@@ -151,6 +151,7 @@ export interface BattleEndDetail {
     multipliers: {
         key: string
         value: string
+        description: string
     }[]
     winning_condition: string
     winning_faction: Faction

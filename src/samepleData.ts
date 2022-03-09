@@ -70,11 +70,11 @@ export const sampleBattleEndDetail: BattleEndDetail = {
     ended_at: new Date("2022-02-22T08:06:30.762Z"),
     total_multipliers: "+5600x",
     multipliers: [
-        { key: "contributor", value: "+100x" },
-        { key: "super contributor", value: "+1000x" },
-        { key: "grease monkey", value: "+500x" },
-        { key: "combo breaker", value: "+1500x" },
-        { key: "won battle", value: "+2500x" },
+        { key: "contributor", value: "+100x", description: "XXXXXXXXXXXXXXXXx" },
+        { key: "super contributor", value: "+1000x", description: "XXXXXXXXXXXXXXXXx" },
+        { key: "grease monkey", value: "+500x", description: "XXXXXXXXXXXXXXXXx" },
+        { key: "combo breaker", value: "+1500x", description: "XXXXXXXXXXXXXXXXx" },
+        { key: "won battle", value: "+2500x", description: "XXXXXXXXXXXXXXXXx" },
     ],
     winning_condition: "LAST_ALIVE",
     winning_faction: {
