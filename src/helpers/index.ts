@@ -173,7 +173,8 @@ export const getRarityDeets = (rarityKey: string): { label: string; color: strin
         case "TITAN":
             return { label: "Titan", color: colors.rarity.TITAN }
         case "MEGA":
-        default:
             return { label: "Mega", color: colors.rarity.MEGA }
+        default:
+            return { label: "", color: colors.rarity.MEGA }
     }
 }

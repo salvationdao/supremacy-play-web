@@ -279,7 +279,7 @@ export const AssetItem = ({
                     flexShrink: 0,
                     px: 0.6,
                     py: 1,
-                    boxShadow: "inset 0 0 8px 6px #00000060",
+                    boxShadow: "inset 0 0 8px 6px #00000055",
                     overflow: "hidden",
                     borderRadius: 0.5,
                 }}

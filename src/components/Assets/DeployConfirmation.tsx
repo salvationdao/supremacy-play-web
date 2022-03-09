@@ -3,7 +3,7 @@ import { ClipThing, TooltipHelper } from ".."
 import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { usePassportServerAuth, useGameServerWebsocket } from "../../containers"
-import { acronym, supFormatter } from "../../helpers"
+import { acronym, getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
@@ -51,10 +51,12 @@ export const DeployConfirmation = ({
 }) => {
     const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
-    const { hash, name, label, image_url } = asset.data.mech
+    const { hash, name, label, image_url, tier } = asset.data.mech
     const [needInsured, toggleNeedInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, toggleDeployFailed] = useToggle()
+
+    const rarityDeets = getRarityDeets(tier)
 
     const onDeploy = async () => {
         if (state !== WebSocket.OPEN) return
@@ -106,22 +108,31 @@ export const DeployConfirmation = ({
                         <Box
                             sx={{
                                 position: "relative",
-                                my: "auto",
-                                width: 110,
-                                height: 150,
                                 flexShrink: 0,
-                                backgroundImage: `url(${image_url})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "top center",
-                                backgroundSize: "contain",
+                                px: 0.8,
+                                py: 1.5,
+                                pt: 2,
+                                borderRadius: 0.6,
+                                boxShadow: "inset 0 0 12px 6px #00000055",
                             }}
                         >
-                            {user && (
+                            <Box
+                                sx={{
+                                    my: "auto",
+                                    width: 110,
+                                    height: 132,
+                                    backgroundImage: `url(${image_url})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "top center",
+                                    backgroundSize: "contain",
+                                }}
+                            />
+                            {/* {user && (
                                 <Stack
                                     spacing={0.6}
                                     direction="row"
                                     alignItems="center"
-                                    sx={{ position: "absolute", bottom: -5, left: 5 }}
+                                    sx={{ position: "absolute", bottom: 5, left: 9 }}
                                 >
                                     <Box
                                         sx={{
@@ -150,7 +161,26 @@ export const DeployConfirmation = ({
                                         {acronym(user.faction.label)}
                                     </Typography>
                                 </Stack>
-                            )}
+                            )} */}
+
+                            <Stack
+                                spacing={0.6}
+                                direction="row"
+                                alignItems="center"
+                                sx={{ position: "absolute", bottom: 8, left: "50%", transform: "translateX(-50%)" }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        lineHeight: 1,
+                                        color: rarityDeets.color,
+                                        fontFamily: "Nostromo Regular Heavy",
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    {rarityDeets.label}
+                                </Typography>
+                            </Stack>
                         </Box>
 
                         <Stack spacing={1}>
@@ -173,7 +203,7 @@ export const DeployConfirmation = ({
                             <Stack spacing={0.1}>
                                 <AmountItem
                                     key={`${queueLength}-contract_reward`}
-                                    title={"CONTRACT REWARD: "}
+                                    title={"Contract reward: "}
                                     color={colors.yellow}
                                     value={
                                         queueLength > 0 ? supFormatter(`${queueLength * 2}000000000000000000`) : "---"
@@ -182,7 +212,7 @@ export const DeployConfirmation = ({
                                 />
 
                                 <AmountItem
-                                    title={"FEE: "}
+                                    title={"Fee: "}
                                     color={"#FF2B2B"}
                                     value={queueCost || "---"}
                                     tooltip="The cost to place your war machine into the battle queue."
@@ -194,16 +224,20 @@ export const DeployConfirmation = ({
                                     sx={{
                                         pt: 0.1,
                                         lineHeight: 1,
-                                        color: colors.neonBlue,
+                                        color: colors.green,
                                     }}
                                 >
-                                    ADD INSURANCE:
+                                    Add insurance:
                                 </Typography>
                                 <Switch
                                     size="small"
                                     checked={needInsured}
                                     onChange={() => toggleNeedInsured()}
-                                    sx={{ transform: "scale(.7)" }}
+                                    sx={{
+                                        transform: "scale(.7)",
+                                        ".Mui-checked": { color: colors.green },
+                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
+                                    }}
                                 />
                                 <TooltipHelper
                                     placement="right-start"
@@ -263,7 +297,7 @@ export const DeployConfirmation = ({
                             )}
                         </Stack>
 
-                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 3, right: 2 }}>
+                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 2, right: 2 }}>
                             <SvgClose size="16px" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                         </IconButton>
                     </Stack>
