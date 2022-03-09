@@ -37,7 +37,6 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     variant="h5"
                     imageSize={40}
                     imageBorderThickness="0px"
-                    noImageBackgroundColor
                     imageBackgroundSize="contain"
                     truncateLine
                     imageMb={-1.4}

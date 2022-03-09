@@ -150,24 +150,19 @@ export interface BattleEndDetail {
     winning_condition: string
     winning_faction: Faction
     winning_war_machines: WarMachineState[]
-    top_sups_contributors: User[]
+    top_sups_contributors: {
+        username: string
+        avatar_id: string
+        faction_color: string
+        faction_logo_id: string
+    }[]
     top_sups_contribute_factions: Faction[]
-    most_frequent_ability_executors: User[]
-    battle_events: BattleEvent[]
-}
-
-export interface BattleEvent {
-    type: "GAME_ABILITY" | "WAR_MACHINE_DESTROYED"
-    created_at: Date
-    event: GameAbility | WarMachineDestroyedRecord
-}
-
-export interface GameAbilityEvent {
-    ability: GameAbility
-    triggered_by_user?: User
-    x?: number
-    y?: number
-    triggered_on_war_machine?: WarMachineState
+    most_frequent_ability_executors: {
+        username: string
+        avatar_id: string
+        faction_color: string
+        faction_logo_id: string
+    }[]
 }
 
 export interface WarMachineDestroyedRecord {

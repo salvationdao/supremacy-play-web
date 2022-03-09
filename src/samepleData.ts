@@ -1,96 +1,36 @@
 import { NotificationResponse } from "./components"
-import { BattleEndDetail, User } from "./types"
+import { BattleEndDetail } from "./types"
 
-const playerArray: User[] = [
+const playerArray = [
     {
-        id: "311c6f68-498c-449b-b012-5ae3d114d619",
         username: "jayli3n",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_id: "1",
-        sups: 0,
-        faction: {
-            id: "1",
-            background_blob_id: "",
-            label: "Red Mountain Offworld Mining Corporation",
-            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
-            theme: {
-                primary: "#C24242",
-                secondary: "#FFFFFF",
-                background: "#120E0E",
-            },
-        },
+        faction_color: "#C24242",
+        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
     {
-        id: "af50eb52-8ed2-4c4c-8cdd-b8db8cade622",
         username: "lolivise",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_id: "1",
-        sups: 0,
-        faction: {
-            id: "1",
-            background_blob_id: "",
-            label: "Boston Cybernetics",
-            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
-            theme: {
-                primary: "#428EC1",
-                secondary: "#FFFFFF",
-                background: "#080C12",
-            },
-        },
+        faction_color: "#428EC1",
+        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
     {
-        id: "af50eb52-8ed2-4c4c-8cdd-b8db8cade622",
         username: "Grumpy-oldi218",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_id: "1",
-        sups: 0,
-        faction: {
-            id: "1",
-            background_blob_id: "",
-            label: "Zaibatsu Heavy Industries",
-            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
-            theme: {
-                primary: "#FFFFFF",
-                secondary: "#000000",
-                background: "#080C12",
-            },
-        },
+        faction_color: "#FFFFFF",
+        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
     {
-        id: "af50eb52-8ed2-4c4c-8cdd-b8db8cade622",
         username: "pewdiepie2",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_id: "1",
-        sups: 0,
-        faction: {
-            id: "1",
-            background_blob_id: "",
-            label: "Boston Cybernetics",
-            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
-            theme: {
-                primary: "#428EC1",
-                secondary: "#FFFFFF",
-                background: "#080C12",
-            },
-        },
+        faction_color: "#428EC1",
+        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
     {
-        id: "311c6f68-498c-449b-b012-5ae3d114d619",
         username: "markiplier83",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_id: "1",
-        sups: 0,
-        faction: {
-            id: "1",
-            background_blob_id: "",
-            label: "Red Mountain Offworld Mining Corporation",
-            logo_blob_id: "ac540e1f-98a2-44b3-babf-779b4a9d595f",
-            theme: {
-                primary: "#C24242",
-                secondary: "#FFFFFF",
-                background: "#120E0E",
-            },
-        },
+        faction_color: "#C24242",
+        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
 ]
 
@@ -257,28 +197,6 @@ export const sampleBattleEndDetail: BattleEndDetail = {
     ],
     top_sups_contributors: playerArray,
     most_frequent_ability_executors: playerArray,
-    battle_events: [
-        {
-            type: "GAME_ABILITY",
-            created_at: new Date("2022-02-17T07:54:06.727Z"),
-            event: gameAbilityEvent,
-        },
-        {
-            type: "GAME_ABILITY",
-            created_at: new Date("2022-02-17T07:54:11.944Z"),
-            event: gameAbilityEvent,
-        },
-        {
-            type: "GAME_ABILITY",
-            created_at: new Date("2022-02-17T07:54:28.923Z"),
-            event: gameAbilityEvent,
-        },
-        {
-            type: "GAME_ABILITY",
-            created_at: new Date("2022-02-17T07:54:33.366Z"),
-            event: gameAbilityEvent,
-        },
-    ],
 }
 
 // Notifications

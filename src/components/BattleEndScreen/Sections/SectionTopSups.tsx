@@ -37,11 +37,11 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
                                     {index + 1}.
                                 </Typography>
                                 <StyledImageText
-                                    color={u.faction.theme.primary}
+                                    color={u.faction_color}
                                     text={u.username}
                                     imageUrl={
                                         u.avatar_id
-                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${u.avatar_id}`
+                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${u.faction_logo_id}`
                                             : undefined
                                     }
                                     variant="h5"
