@@ -43,7 +43,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 />
 
                 {winning_war_machines && winning_war_machines.length > 0 ? (
-                    <Stack spacing={2} sx={{ pl: 1 }}>
+                    <Stack spacing={1.5} sx={{ pl: 1 }}>
                         {winning_war_machines.map((wm) => (
                             <StyledImageText
                                 key={`${wm.hash}-${wm.participantID}`}

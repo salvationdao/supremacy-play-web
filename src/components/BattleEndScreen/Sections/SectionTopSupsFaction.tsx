@@ -29,7 +29,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
             </Box>
 
             {top_sups_contribute_factions && top_sups_contribute_factions.length > 0 ? (
-                <Stack spacing={2} sx={{ pl: 1 }}>
+                <Stack spacing={1.5} sx={{ pl: 1 }}>
                     {top_sups_contribute_factions.map((f, index) => (
                         <Stack key={index} direction="row" spacing={1.3} alignItems="center">
                             <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
