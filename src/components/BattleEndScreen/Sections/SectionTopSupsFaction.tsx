@@ -20,7 +20,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                         color: colors.neonBlue,
                     }}
                 >
-                    MOST SUPS SPENT
+                    MOST SUPS SPENT (SYNDICATE)
                     <BattleEndTooltip
                         text="The syndicates that had spent the most SUPS, ranked in order."
                         color={colors.neonBlue}
@@ -29,31 +29,29 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
             </Box>
 
             {top_sups_contribute_factions && top_sups_contribute_factions.length > 0 ? (
-                <Stack spacing={2}>
-                    <Stack spacing={2} sx={{ pl: 1 }}>
-                        {top_sups_contribute_factions.map((f, index) => (
-                            <Stack key={index} direction="row" spacing={1.3} alignItems="center">
-                                <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                    {index + 1}.
-                                </Typography>
-                                <StyledImageText
-                                    color={f.theme.primary}
-                                    text={f.label}
-                                    imageUrl={
-                                        f.logo_blob_id
-                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${f.logo_blob_id}`
-                                            : undefined
-                                    }
-                                    variant="h5"
-                                    imageSize={29}
-                                    imageBorderThickness="2px"
-                                    fontWeight="normal"
-                                    truncateLine
-                                    imageMb={-0.8}
-                                />
-                            </Stack>
-                        ))}
-                    </Stack>
+                <Stack spacing={2} sx={{ pl: 1 }}>
+                    {top_sups_contribute_factions.map((f, index) => (
+                        <Stack key={index} direction="row" spacing={1.3} alignItems="center">
+                            <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                {index + 1}.
+                            </Typography>
+                            <StyledImageText
+                                color={f.theme.primary}
+                                text={f.label}
+                                imageUrl={
+                                    f.logo_blob_id
+                                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${f.logo_blob_id}`
+                                        : undefined
+                                }
+                                variant="h5"
+                                imageSize={29}
+                                imageBorderThickness="2px"
+                                fontWeight="normal"
+                                truncateLine
+                                imageMb={-0.8}
+                            />
+                        </Stack>
+                    ))}
                 </Stack>
             ) : (
                 <Typography variant="h5" sx={{ pl: 1 }}>

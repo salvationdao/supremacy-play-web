@@ -149,6 +149,7 @@ export interface BattleEndDetail {
     ended_at: Date
     winning_condition: string
     winning_faction: Faction
+
     winning_war_machines: WarMachineState[]
     top_sups_contributors: {
         username: string

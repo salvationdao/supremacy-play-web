@@ -29,31 +29,29 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
             </Box>
 
             {top_sups_contributors && top_sups_contributors.length > 0 ? (
-                <Stack spacing={2}>
-                    <Stack spacing={2} sx={{ pl: 1 }}>
-                        {top_sups_contributors.map((u, index) => (
-                            <Stack key={index} direction="row" spacing={1.3} alignItems="center">
-                                <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                    {index + 1}.
-                                </Typography>
-                                <StyledImageText
-                                    color={u.faction_color}
-                                    text={u.username}
-                                    imageUrl={
-                                        u.avatar_id
-                                            ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${u.faction_logo_id}`
-                                            : undefined
-                                    }
-                                    variant="h5"
-                                    imageSize={29}
-                                    imageBorderThickness="2px"
-                                    fontWeight="normal"
-                                    truncateLine
-                                    imageMb={-0.8}
-                                />
-                            </Stack>
-                        ))}
-                    </Stack>
+                <Stack spacing={2} sx={{ pl: 1 }}>
+                    {top_sups_contributors.map((u, index) => (
+                        <Stack key={index} direction="row" spacing={1.3} alignItems="center">
+                            <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                {index + 1}.
+                            </Typography>
+                            <StyledImageText
+                                color={u.faction_color}
+                                text={u.username}
+                                imageUrl={
+                                    u.avatar_id
+                                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${u.faction_logo_id}`
+                                        : undefined
+                                }
+                                variant="h5"
+                                imageSize={29}
+                                imageBorderThickness="2px"
+                                fontWeight="normal"
+                                truncateLine
+                                imageMb={-0.8}
+                            />
+                        </Stack>
+                    ))}
                 </Stack>
             ) : (
                 <Typography variant="h5" sx={{ pl: 1 }}>

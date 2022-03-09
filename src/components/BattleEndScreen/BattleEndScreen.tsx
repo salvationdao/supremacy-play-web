@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import {
     SectionBottom,
     SectionMostFrequentAbilityExecutor,
+    SectionMultipliers,
     SectionTopSups,
     SectionTopSupsFaction,
     SectionWinner,
@@ -117,6 +118,7 @@ export const BattleEndScreen = () => {
                             },
                         }}
                     >
+                        <SectionMultipliers battleEndDetail={battleEndDetail} />
                         <SectionWinner battleEndDetail={battleEndDetail} />
                         <SectionTopSups battleEndDetail={battleEndDetail} />
                         <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
