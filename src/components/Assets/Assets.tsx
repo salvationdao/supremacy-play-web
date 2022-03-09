@@ -79,7 +79,6 @@ const DrawerContent = () => {
                                 {assets.map((a, index) => (
                                     <AssetItem
                                         key={a.hash}
-                                        passportWeb={PASSPORT_WEB}
                                         asset={a}
                                         queueCost={queueCost}
                                         queueLength={queueLength}
@@ -87,13 +86,7 @@ const DrawerContent = () => {
                                     />
                                 ))}
                                 {assets.map((a, index) => (
-                                    <AssetItem
-                                        key={a.hash}
-                                        passportWeb={PASSPORT_WEB}
-                                        asset={a}
-                                        queueCost={queueCost}
-                                        queueLength={queueLength}
-                                    />
+                                    <AssetItem key={a.hash} asset={a} queueCost={queueCost} queueLength={queueLength} />
                                 ))}
                             </>
                         ) : (

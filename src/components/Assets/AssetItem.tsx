@@ -2,7 +2,7 @@ import { Box, Button, Link, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
 import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
-import { UNDER_MAINTENANCE } from "../../constants"
+import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
@@ -22,13 +22,11 @@ const RepairCountdown = ({ endTime }: { endTime: Date }) => {
 }
 
 export const AssetItem = ({
-    passportWeb,
     asset,
     queueCost,
     queueLength,
     renderQueuedOnly,
 }: {
-    passportWeb: string
     asset: Asset
     queueCost: string
     queueLength: number
@@ -352,7 +350,7 @@ export const AssetItem = ({
             </Stack>
 
             <Link
-                href={`${passportWeb}profile/${user.username}/asset/${hash}`}
+                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
                 target="_blank"
                 sx={{ position: "absolute", top: 6, right: 4 }}
             >

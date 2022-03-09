@@ -1,8 +1,8 @@
-import { Box, Button, IconButton, Modal, Stack, Switch, Typography } from "@mui/material"
+import { Box, Button, IconButton, Link, Modal, Stack, Switch, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { ClipThing, TooltipHelper } from ".."
-import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
+import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
+import { PASSPORT_SERVER_HOST_IMAGES, PASSPORT_WEB } from "../../constants"
 import { usePassportServerAuth, useGameServerWebsocket } from "../../containers"
 import { acronym, getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
@@ -164,6 +164,21 @@ export const DeployConfirmation = ({
                                     }}
                                 >
                                     {name || label}
+
+                                    {user && (
+                                        <span>
+                                            <Link
+                                                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
+                                                target="_blank"
+                                                sx={{ ml: 0.6 }}
+                                            >
+                                                <SvgExternalLink
+                                                    size="10px"
+                                                    sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}
+                                                />
+                                            </Link>
+                                        </span>
+                                    )}
                                 </Typography>
                             </Box>
 
