@@ -35,7 +35,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             const deets = getMutiplierDeets(m.key)
                             return (
                                 <TooltipHelper key={m.key} placement="right" text={deets.description}>
-                                    <Box sx={{ width: "fit-content" }}>
+                                    <Stack direction="row" alignItems="center" justifyContent="space-between">
                                         <StyledImageText
                                             color={colors.text}
                                             imageBorderColor="#FFFFFF60"
@@ -49,7 +49,8 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                             truncateLine
                                             imageMb={-0.8}
                                         />
-                                    </Box>
+                                        <Typography variant="h6">+{m.value / 100}x</Typography>
+                                    </Stack>
                                 </TooltipHelper>
                             )
                         })}

@@ -96,7 +96,7 @@ export const BattleEndScreen = () => {
                     }}
                 >
                     <Stack
-                        spacing={5}
+                        spacing={4}
                         sx={{
                             height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}px)`,
                             pr: 3.6,

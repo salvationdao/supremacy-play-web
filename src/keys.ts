@@ -3,6 +3,7 @@ export enum GameServerKeys {
     Welcome = "WELCOME",
     UserSubscribe = "USER:SUBSCRIBE",
     AuthSessionIDGet = "AUTH:SESSION:ID:GET",
+    GameOnline = "GAME:ONLINE",
 
     // Game container
     GetFactionsColor = "FACTION:COLOUR",
