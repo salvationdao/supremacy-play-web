@@ -3,9 +3,6 @@ export enum GameServerKeys {
     Welcome = "WELCOME",
     UserSubscribe = "USER:SUBSCRIBE",
     AuthSessionIDGet = "AUTH:SESSION:ID:GET",
-    GetSessionID = "GAMEBAR:SESSION:ID:GET",
-    AuthRingCheck = "GAMEBAR:AUTH:RING:CHECK",
-    SubscribeGamebarUser = "GAMEBAR:USER:SUBSCRIBE",
 
     // Game container
     GetFactionsColor = "FACTION:COLOUR",
@@ -27,7 +24,6 @@ export enum GameServerKeys {
     GameAbilityContribute = "GAME:ABILITY:CONTRIBUTE",
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
-    SubUserWarMachineQueueUpdated = "USER:WAR:MACHINE:QUEUE:UPDATED",
     SubAISpawned = "AI:SPAWNED",
 
     // Net message subscription

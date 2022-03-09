@@ -99,7 +99,7 @@ export const GameContainer = createContainer(() => {
     // Trigger faction vote price net message listener
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
-        return subscribe(GameServerKeys.TriggerFactionVotePriceUpdated, () => console.log("just placeholder"))
+        return subscribe(GameServerKeys.TriggerFactionVotePriceUpdated, () => console.log(""))
     }, [state, subscribe, faction_id])
 
     // Listen on current price change
