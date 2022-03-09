@@ -147,9 +147,11 @@ export interface BattleEndDetail {
     battle_identifier: number
     started_at: Date
     ended_at: Date
+    multipliers: {
+        key: string
+    }[]
     winning_condition: string
     winning_faction: Faction
-
     winning_war_machines: WarMachineState[]
     top_sups_contributors: {
         username: string

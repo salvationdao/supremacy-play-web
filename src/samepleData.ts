@@ -68,6 +68,13 @@ export const sampleBattleEndDetail: BattleEndDetail = {
     battle_identifier: 3,
     started_at: new Date("2022-02-22T07:54:11.944Z"),
     ended_at: new Date("2022-02-22T08:06:30.762Z"),
+    multipliers: [
+        { key: "contributor" },
+        { key: "super contributor" },
+        { key: "grease monkey" },
+        { key: "combo breaker" },
+        { key: "won battle" },
+    ],
     winning_condition: "LAST_ALIVE",
     winning_faction: {
         id: "1",

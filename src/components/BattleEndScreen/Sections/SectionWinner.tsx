@@ -62,7 +62,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                         ))}
                     </Stack>
                 ) : (
-                    <Typography variant="h5" sx={{ pl: 1 }}>
+                    <Typography variant="h6" sx={{ pl: 1, opacity: 0.8 }}>
                         Nothing to show...
                     </Typography>
                 )}
