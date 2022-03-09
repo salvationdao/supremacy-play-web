@@ -6,6 +6,7 @@ import {
     ClipThing,
     HealthShieldBars,
     SkillBar,
+    TooltipHelper,
     WarMachineAbilitiesPopover,
     WarMachineDestroyedInfo,
 } from ".."
@@ -14,6 +15,7 @@ import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { useGameServerAuth, useDrawer, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
+import { colors } from "../../theme/theme"
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 const WIDTH_WM_IMAGE = 92
@@ -232,16 +234,52 @@ const WarMachineItemInner = ({
                                 cursor: "pointer",
                             }}
                         >
+                            <TooltipHelper text="LEGENDARY" placement="right">
+                                <Stack
+                                    direction="row"
+                                    spacing={0.1}
+                                    sx={{
+                                        position: "absolute",
+                                        bottom: -9,
+                                        left: 5,
+                                        height: 42,
+                                        transform: "rotate(-42deg)",
+                                        zIndex: 3,
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            width: 6,
+                                            height: "100%",
+                                            backgroundColor: colors.rarity.DEUS_EX,
+                                            border: "#00000090 1.5px solid",
+                                        }}
+                                    />
+                                    <Box
+                                        sx={{
+                                            width: 6,
+                                            height: "100%",
+                                            backgroundColor: colors.rarity.DEUS_EX,
+                                            border: "#00000090 1.5px solid",
+                                        }}
+                                    />
+                                </Stack>
+                            </TooltipHelper>
+
                             <Stack
                                 alignItems="center"
                                 justifyContent="center"
                                 sx={{
                                     px: 3.3,
-                                    width: "100%",
-                                    height: "100%",
+                                    position: "absolute",
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
                                     background: "linear-gradient(#00000090, #000000)",
                                     opacity: isAlive ? 0 : 1,
                                     transition: "all .2s",
+                                    zIndex: 2,
                                     ":hover": {
                                         opacity: isAlive ? 0.2 : 1,
                                     },
