@@ -28,7 +28,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                 </Typography>
             </Box>
 
-            <Stack spacing={3.2} sx={{ px: 2.3, py: 2.5, backgroundColor: "#FFFFFF05" }}>
+            <Stack spacing={3.2} sx={{ pl: 1.8, pr: 2.3, py: 2.5, backgroundColor: "#FFFFFF05" }}>
                 {multipliers && multipliers.length > 0 ? (
                     <Stack spacing={1.5} sx={{ pl: 1 }}>
                         {multipliers.map((m) => {
