@@ -72,7 +72,7 @@ const WarMachineItemInner = ({
     state,
     subscribe,
 }: PropsInner) => {
-    const { participantID, faction, name, imageAvatar } = warMachine
+    const { participantID, faction, name, imageAvatar, tier } = warMachine
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -86,9 +86,7 @@ const WarMachineItemInner = ({
         theme: { primary, secondary, background },
     } = faction
 
-    // TODO: this is placeholder
-    const rarity = "DEUS_EX"
-    const rarityDeets = getRarityDeets(rarity)
+    const rarityDeets = getRarityDeets(tier)
 
     const wmImageUrl = imageAvatar || GenericWarMachinePNG
     const isOwnFaction = faction_id == warMachine.factionID
@@ -246,7 +244,7 @@ const WarMachineItemInner = ({
                                     sx={{
                                         position: "absolute",
                                         bottom: -9,
-                                        left: 5,
+                                        left: 4,
                                         height: 42,
                                         transform: "rotate(-40deg)",
                                         zIndex: 3,
@@ -254,7 +252,7 @@ const WarMachineItemInner = ({
                                 >
                                     <Box
                                         sx={{
-                                            width: 6,
+                                            width: 5,
                                             height: "100%",
                                             backgroundColor: rarityDeets.color,
                                             border: "#00000090 1.5px solid",
@@ -262,7 +260,7 @@ const WarMachineItemInner = ({
                                     />
                                     <Box
                                         sx={{
-                                            width: 6,
+                                            width: 5,
                                             height: "100%",
                                             backgroundColor: rarityDeets.color,
                                             border: "#00000090 1.5px solid",

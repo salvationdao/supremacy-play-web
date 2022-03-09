@@ -165,6 +165,7 @@ export const sampleBattleEndDetail: BattleEndDetail = {
             shield: 50,
             position: { x: 0, y: 0 },
             rotation: 10,
+            tier: "MEGA",
         },
         {
             image: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
@@ -190,6 +191,7 @@ export const sampleBattleEndDetail: BattleEndDetail = {
             shield: 50,
             position: { x: 0, y: 0 },
             rotation: 10,
+            tier: "MEGA",
         },
         {
             image: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
@@ -215,6 +217,7 @@ export const sampleBattleEndDetail: BattleEndDetail = {
             shield: 50,
             position: { x: 0, y: 0 },
             rotation: 10,
+            tier: "MEGA",
         },
     ],
     top_sups_contribute_factions: [

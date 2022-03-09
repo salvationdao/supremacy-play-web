@@ -1,10 +1,10 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { DeployConfirmation } from ".."
+import { DeployConfirmation, TooltipHelper } from ".."
 import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
 import { UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
-import { supFormatter } from "../../helpers"
+import { getRarityDeets, supFormatter } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
@@ -47,6 +47,8 @@ export const AssetItem = ({
     const [assetData, setAssetData] = useState<Asset>(asset)
     const [queuePosition, setQueuePosition] = useState<AssetQueueStat>()
     const [durability, setDurability] = useState<AssetDurability>()
+
+    const rarityDeets = getRarityDeets(assetData.tier)
 
     // Subscribe on asset data
     useEffect(() => {
@@ -263,32 +265,75 @@ export const AssetItem = ({
     return (
         <Stack
             direction="row"
-            spacing={1.5}
+            spacing={1.2}
             sx={{
                 position: "relative",
-                px: 2,
-                py: 1.8,
+                px: 1.3,
+                py: 1,
                 backgroundColor: `${colors.navy}80`,
             }}
         >
             <Box
                 sx={{
                     position: "relative",
-                    width: 55,
-                    height: 55,
                     flexShrink: 0,
+                    px: 0.6,
+                    py: 1,
+                    boxShadow: "inset 0 0 8px 6px #00000060",
                     overflow: "hidden",
-                    backgroundImage: `url(${image_url})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "contain",
+                    borderRadius: 0.5,
                 }}
             >
+                <Box
+                    sx={{
+                        width: 55,
+                        height: 55,
+                        flexShrink: 0,
+                        overflow: "hidden",
+                        backgroundImage: `url(${image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                    }}
+                />
+
                 {isGameServerUp && isInQueue && queuePosition && queuePosition.position && (
                     <Box sx={{ position: "absolute" }}>
                         <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{queuePosition.position}</Typography>
                     </Box>
                 )}
+
+                <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
+                    <Stack
+                        direction="row"
+                        spacing={0.1}
+                        sx={{
+                            position: "absolute",
+                            bottom: -14,
+                            left: 1,
+                            height: 42,
+                            transform: "rotate(-40deg)",
+                            zIndex: 3,
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                width: 3,
+                                height: "100%",
+                                backgroundColor: rarityDeets.color,
+                                border: "#00000090 1.5px solid",
+                            }}
+                        />
+                        <Box
+                            sx={{
+                                width: 3,
+                                height: "100%",
+                                backgroundColor: rarityDeets.color,
+                                border: "#00000090 1.5px solid",
+                            }}
+                        />
+                    </Stack>
+                </TooltipHelper>
             </Box>
 
             <Stack spacing={0.5}>
