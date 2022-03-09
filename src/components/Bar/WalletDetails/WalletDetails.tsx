@@ -174,7 +174,7 @@ export const WalletDetails = () => {
                                             borderRadius: 0.6,
                                         }}
                                     >
-                                        {multipliers.total_multipliers}x
+                                        {multipliers.total_multipliers}
                                     </Typography>
                                 )}
                             </Stack>
