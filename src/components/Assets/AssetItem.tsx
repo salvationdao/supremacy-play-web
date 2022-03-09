@@ -26,14 +26,12 @@ export const AssetItem = ({
     asset,
     queueCost,
     queueLength,
-    contractReward,
     renderQueuedOnly,
 }: {
     passportWeb: string
     asset: Asset
     queueCost: string
     queueLength: number
-    contractReward?: string
     renderQueuedOnly?: boolean
 }) => {
     const { user } = usePassportServerAuth()
@@ -93,9 +91,9 @@ export const AssetItem = ({
     const isRepairing = !!durability?.repair_type
     const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
     const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
-    const contractReward2 = useMemo(
-        () => (queuePosition && queuePosition.contract_reward ? queuePosition.contract_reward : contractReward),
-        [queuePosition, contractReward],
+    const contractReward = useMemo(
+        () => (queuePosition && queuePosition.contract_reward ? queuePosition.contract_reward : undefined),
+        [queuePosition],
     )
 
     if (
@@ -179,12 +177,12 @@ export const AssetItem = ({
                     >
                         IN BATTLE
                     </Typography>
-                    {contractReward2 && (
+                    {contractReward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
-                                {supFormatter(contractReward2)}
+                                {supFormatter(contractReward)}
                             </Typography>
                         </Stack>
                     )}
@@ -222,12 +220,12 @@ export const AssetItem = ({
                     >
                         {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
                     </Typography>
-                    {contractReward2 && (
+                    {contractReward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
-                                {supFormatter(contractReward2)}
+                                {supFormatter(contractReward)}
                             </Typography>
                         </Stack>
                     )}
@@ -366,7 +364,6 @@ export const AssetItem = ({
                 asset={asset}
                 queueCost={queueCost}
                 queueLength={queueLength}
-                contractReward={contractReward2}
                 onClose={() => toggleIsDeployModal(false)}
             />
         </Stack>

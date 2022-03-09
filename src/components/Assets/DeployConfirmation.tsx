@@ -1,4 +1,5 @@
 import { Box, Button, IconButton, Modal, Stack, Switch, Typography } from "@mui/material"
+import { useEffect } from "react"
 import { ClipThing, TooltipHelper } from ".."
 import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
@@ -38,14 +39,12 @@ export const DeployConfirmation = ({
     open,
     asset,
     queueCost,
-    contractReward,
     queueLength,
     onClose,
 }: {
     open: boolean
     asset: Asset
     queueCost: string
-    contractReward?: string
     queueLength: number
     onClose: () => void
 }) => {
@@ -57,6 +56,10 @@ export const DeployConfirmation = ({
     const [deployFailed, toggleDeployFailed] = useToggle()
 
     const rarityDeets = getRarityDeets(tier)
+
+    useEffect(() => {
+        if (!open) toggleDeployFailed(false)
+    }, [open])
 
     const onDeploy = async () => {
         if (state !== WebSocket.OPEN) return
@@ -111,7 +114,6 @@ export const DeployConfirmation = ({
                                 flexShrink: 0,
                                 px: 0.8,
                                 py: 1.5,
-                                pt: 2,
                                 borderRadius: 0.6,
                                 boxShadow: "inset 0 0 12px 6px #00000055",
                             }}
@@ -127,41 +129,6 @@ export const DeployConfirmation = ({
                                     backgroundSize: "contain",
                                 }}
                             />
-                            {/* {user && (
-                                <Stack
-                                    spacing={0.6}
-                                    direction="row"
-                                    alignItems="center"
-                                    sx={{ position: "absolute", bottom: 5, left: 9 }}
-                                >
-                                    <Box
-                                        sx={{
-                                            mb: 0.3,
-                                            width: 16,
-                                            height: 16,
-                                            flexShrink: 0,
-                                            overflow: "hidden",
-                                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            backgroundSize: "contain",
-                                            backgroundColor: user.faction.theme.primary,
-                                            borderRadius: 0.8,
-                                            border: `${user.faction.theme.primary} 1px solid`,
-                                        }}
-                                    />
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            lineHeight: 1,
-                                            color: user.faction.theme.primary,
-                                            fontFamily: "Nostromo Regular Heavy",
-                                        }}
-                                    >
-                                        {acronym(user.faction.label)}
-                                    </Typography>
-                                </Stack>
-                            )} */}
 
                             <Stack
                                 spacing={0.6}
@@ -213,7 +180,7 @@ export const DeployConfirmation = ({
 
                                 <AmountItem
                                     title={"Fee: "}
-                                    color={"#FF2B2B"}
+                                    color={"#FF4136"}
                                     value={queueCost || "---"}
                                     tooltip="The cost to place your war machine into the battle queue."
                                 />

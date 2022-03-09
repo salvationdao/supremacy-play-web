@@ -21,23 +21,12 @@ const DrawerContent = () => {
     const [assets, setAssets] = useState<Asset[]>([])
     const { queueLength, queueCost } = useQueue()
 
-    const [contractReward, setContractReward] = useState<string>()
-
     // Subscribe to the list of mechs that the user owns
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe<Asset[]>(PassportServerKeys.SubAssetList, (payload) => {
             if (!payload) return
             setAssets(payload)
-        })
-    }, [state, subscribe, faction_id])
-
-    // Subscribe to the contract reward
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
-        return subscribe<string>(PassportServerKeys.SubFactionContractReward, (payload) => {
-            if (!payload) return
-            setContractReward(payload)
         })
     }, [state, subscribe, faction_id])
 
@@ -94,7 +83,6 @@ const DrawerContent = () => {
                                         asset={a}
                                         queueCost={queueCost}
                                         queueLength={queueLength}
-                                        contractReward={contractReward}
                                         renderQueuedOnly
                                     />
                                 ))}
@@ -105,7 +93,6 @@ const DrawerContent = () => {
                                         asset={a}
                                         queueCost={queueCost}
                                         queueLength={queueLength}
-                                        contractReward={contractReward}
                                     />
                                 ))}
                             </>
