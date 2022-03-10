@@ -19,7 +19,6 @@ export enum GameServerKeys {
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
     // Net message subscription
-    TriggerLiveVoteUpdated = "LIVE:VOTE:UPDATED",
     TriggerWarMachineLocationUpdated = "WAR:MACHINE:LOCATION:UPDATED",
     TriggerViewerLiveCountUpdated = "VIEWER:LIVE:COUNT:UPDATED",
     TriggerSpoilOfWarUpdated = "SPOIL:OF:WAR:UPDATED",
