@@ -198,7 +198,7 @@ export const AssetItem = ({
                             if (removing) return
                             setRemoving(true)
                             try {
-                                await sendGS(GameServerKeys.LeaveQueue, { hash: asset.hash })
+                                await sendGS(GameServerKeys.LeaveQueue, { asset_hash: asset.hash })
                             } finally {
                                 setRemoving(false)
                             }
