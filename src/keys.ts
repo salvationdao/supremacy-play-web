@@ -12,10 +12,10 @@ export enum GameServerKeys {
     SubVoteWinnerAnnouncement = "VOTE:WINNER:ANNOUNCEMENT",
     SubBattleAbility = "VOTE:BATTLE:ABILITY:UPDATED",
     SubFactionAbilities = "FACTION:ABILITIES:UPDATED",
+    SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
+    GameAbilityContribute = "GAME:ABILITY:CONTRIBUTE",
     SubmitVoteAbilityRight = "VOTE:ABILITY:RIGHT",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
-    GameAbilityContribute = "GAME:ABILITY:CONTRIBUTE",
-    SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
 
     // Net message subscription
     TriggerLiveVoteUpdated = "LIVE:VOTE:UPDATED",
@@ -49,6 +49,7 @@ export enum GameServerKeys {
 }
 
 export enum PassportServerKeys {
+    // Auth container
     Welcome = "WELCOME",
     GetSessionID = "GAMEBAR:SESSION:ID:GET",
     AuthRingCheck = "GAMEBAR:AUTH:RING:CHECK",
@@ -60,12 +61,12 @@ export enum PassportServerKeys {
     EnlistFaction = "FACTION:ENLIST",
     SubscribeWallet = "USER:SUPS:SUBSCRIBE",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
+    SubscribeFactionStat = "FACTION:STAT:SUBSCRIBE",
 
     // Chat
-    SendChatMessage = "CHAT:MESSAGE",
-    SubscribeFactionStat = "FACTION:STAT:SUBSCRIBE",
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
+    SendChatMessage = "CHAT:MESSAGE",
 
     // Assets
     SubAssetList = "USER:ASSET:LIST",
