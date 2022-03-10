@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { BarExpandable, TooltipHelper } from "../.."
-import { SvgAbility, SvgApplause, SvgDeath, SvgView, SvgWrapperProps } from "../../../assets"
+import { SvgAbility, SvgDeath, SvgView, SvgWrapperProps } from "../../../assets"
 import { useEffect, useState } from "react"
 import { colors } from "../../../theme/theme"
 import { usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
@@ -55,7 +55,6 @@ export const EnlistBanner = () => {
         id: "",
         total_ability_triggered: 0,
         kill_count: 0,
-        total_vote_count: 0,
         view_battle_count: 0,
     })
 
@@ -81,7 +80,7 @@ export const EnlistBanner = () => {
         logo_blob_id,
     } = user.faction
 
-    const { total_ability_triggered, kill_count, total_vote_count, view_battle_count } = userStat
+    const { total_ability_triggered, kill_count, view_battle_count } = userStat
 
     return (
         <BarExpandable
@@ -143,12 +142,6 @@ export const EnlistBanner = () => {
                             backgroundPosition: "center",
                             backgroundSize: "contain",
                         }}
-                    />
-                    <BannerInfo
-                        title={`BATTLE VOTES`}
-                        tooltip="The number of times you have voted for a battle ability."
-                        content={`${total_vote_count}`}
-                        PrefixSvg={<SvgApplause size="12px" />}
                     />
 
                     <BannerInfo

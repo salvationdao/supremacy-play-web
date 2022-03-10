@@ -1,151 +1,69 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
-import { BattleAbilityCountdown, ClipThing, TooltipHelper, VotingButton } from ".."
+import { useEffect, useMemo, useState } from "react"
+import BigNumber from "bignumber.js"
+import { BattleAbilityCountdown, ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgSupToken } from "../../assets"
-import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
+import { GAME_SERVER_HOSTNAME, NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import {
-    FactionsColorResponse,
     httpProtocol,
     useGameServerAuth,
     useGame,
     useGameServerWebsocket,
-    VotingStateResponse,
+    BribeStageResponse,
     WebSocketProperties,
+    FactionsAll,
 } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
-import { BattleAbility as BattleAbilityType, NetMessageType, User } from "../../types"
-import BigNumber from "bignumber.js"
-
-const VotingBar = ({ isVoting, isCooldown }: { isVoting: boolean; isCooldown: boolean }) => {
-    const { factionsColor } = useGame()
-    return <VotingBarInner isVoting={isVoting} isCooldown={isCooldown} factionsColor={factionsColor} />
-}
-
-const VotingBarInner = ({
-    isVoting,
-    isCooldown,
-    factionsColor,
-}: {
-    isVoting: boolean
-    isCooldown: boolean
-    factionsColor?: FactionsColorResponse
-}) => {
-    const { state, subscribeNetMessage } = useGameServerWebsocket()
-    // Array order is (Red Mountain, Boston, Zaibatsu). [[colorArray], [ratioArray]]
-    const [voteRatio, setVoteRatio] = useState<[number, number, number]>([33, 33, 33])
-
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<[number, number, number] | undefined>(
-            NetMessageType.AbilityRightRatioTick,
-            (payload) => {
-                if (!payload) return
-                setVoteRatio(payload)
-            },
-        )
-    }, [state, subscribeNetMessage])
-
-    useEffect(() => {
-        setVoteRatio([33, 33, 33])
-    }, [isCooldown])
-
-    const subBar = useCallback(
-        (color: string, ratio: number) => (
-            <Box
-                sx={{
-                    position: "relative",
-                    width: isCooldown ? "33.33%" : `${ratio}%`,
-                    height: "100%",
-                    transition: "all .25s",
-                    opacity: isVoting ? 1 : 0.4,
-                    backgroundColor: color,
-                }}
-            >
-                <Typography
-                    key={ratio}
-                    variant="caption"
-                    sx={{
-                        position: "absolute",
-                        top: -16,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        color,
-                        fontWeight: "fontWeightBold",
-                        animation: `${zoomEffect()} 300ms ease-out`,
-                    }}
-                >
-                    {Math.round(ratio)}%
-                </Typography>
-            </Box>
-        ),
-        [isVoting, isCooldown],
-    )
-
-    return (
-        <Box sx={{ width: "100%", px: 1.5, pt: 1, pb: 1.2, backgroundColor: "#00000050", borderRadius: 1 }}>
-            <Stack
-                direction="row"
-                alignSelf="stretch"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ mt: 1.6, height: 5.5, px: 0.5 }}
-            >
-                {subBar(factionsColor?.red_mountain || "#C24242", voteRatio[0])}
-                {subBar(factionsColor?.boston || "#428EC1", voteRatio[1])}
-                {subBar(factionsColor?.zaibatsu || "#FFFFFF", voteRatio[2])}
-            </Stack>
-        </Box>
-    )
-}
+import { BattleAbility as BattleAbilityType, BattleAbilityProgress, NetMessageType, User } from "../../types"
+import { zoomEffect } from "../../theme/keyframes"
 
 export const BattleAbilityItem = () => {
-    const { state, send, subscribe } = useGameServerWebsocket()
-    const { votingState, factionVotePrice } = useGame()
+    const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
     const { user, faction_id } = useGameServerAuth()
+    const { bribeStage, factionsAll } = useGame()
 
     return (
         <BattleAbilityItemInner
             state={state}
             send={send}
             subscribe={subscribe}
-            votingState={votingState}
-            factionVotePrice={factionVotePrice}
+            subscribeNetMessage={subscribeNetMessage}
+            bribeStage={bribeStage}
             user={user}
             faction_id={faction_id}
+            factionsAll={factionsAll}
         />
     )
 }
 
+interface BattleAbilityProgressBigNum {
+    faction_id: string
+    sups_cost: BigNumber
+    current_sups: BigNumber
+}
+
 interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
-    votingState?: VotingStateResponse
-    factionVotePrice: BigNumber
+    bribeStage?: BribeStageResponse
     user?: User
     faction_id?: string
+    factionsAll: FactionsAll
 }
 
 const BattleAbilityItemInner = ({
     state,
     send,
     subscribe,
-    votingState,
-    factionVotePrice,
+    subscribeNetMessage,
+    bribeStage,
     user,
     faction_id,
+    factionsAll,
 }: BattleAbilityItemProps) => {
-    const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [fadeEffect, toggleFadeEffect] = useToggle()
-
-    const isVoting = votingState?.phase == "VOTE_ABILITY_RIGHT" || votingState?.phase == "NEXT_VOTE_WIN"
-    const isCooldown = votingState?.phase == "VOTE_COOLDOWN"
-
-    // Subscribe to the result of the vote
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
-        return subscribe(GameServerKeys.TriggerAbilityRightRatio, () => console.log(""), null)
-    }, [state, subscribe, faction_id])
+    const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
+    const [battleAbilityProgress, setBattleAbilityProgress] = useState<BattleAbilityProgressBigNum[]>([])
 
     // Subscribe to battle ability updates
     useEffect(() => {
@@ -160,16 +78,48 @@ const BattleAbilityItemInner = ({
         )
     }, [state, subscribe, faction_id])
 
-    const onVote = (voteAmount: number) => {
-        if (send)
-            send<boolean, { vote_amount: number }>(
-                GameServerKeys.SubmitVoteAbilityRight,
-                { vote_amount: voteAmount },
-                true,
-            )
+    // Trigger the subscribe to the progress bars net message
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
+        return subscribe(GameServerKeys.TriggerBattleAbilityProgressUpdated, () => null, null)
+    }, [state, subscribe, faction_id])
+
+    // Listen on the progress of the votes
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
+        return subscribeNetMessage<BattleAbilityProgress[] | undefined>(
+            NetMessageType.BattleAbilityProgressTick,
+            (payload) => {
+                if (!payload) return
+                // Put own faction progress first, then convert string to big number and set state
+                setBattleAbilityProgress(
+                    payload
+                        .sort((a, b) => (b.faction_id == faction_id ? 1 : b.faction_id.localeCompare(a.faction_id)))
+                        .map((a) => ({
+                            faction_id: a.faction_id,
+                            sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
+                            current_sups: new BigNumber(a.current_sups).dividedBy("1000000000000000000"),
+                        })),
+                )
+            },
+        )
+    }, [state, subscribeNetMessage])
+
+    const onBribe = (voteAmount: number) => {
+        if (send) send<boolean, { amount: number }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount }, true)
     }
 
-    if (!battleAbility) return null
+    const isVoting = useMemo(
+        () =>
+            bribeStage?.phase == "BRIBE" &&
+            battleAbilityProgress &&
+            battleAbilityProgress.length > 0 &&
+            battleAbilityProgress[0].sups_cost.isGreaterThanOrEqualTo(battleAbilityProgress[0].current_sups),
+        [battleAbilityProgress, bribeStage],
+    )
+    const isCooldown = useMemo(() => bribeStage?.phase == "COOLDOWN", [bribeStage])
+
+    if (!battleAbility || !battleAbilityProgress || battleAbilityProgress.length <= 0) return null
 
     const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
     const buttonColor = user && user.faction ? user.faction.theme.primary : colour
@@ -178,7 +128,7 @@ const BattleAbilityItemInner = ({
     return (
         <Fade in={true}>
             <Stack spacing={0.7}>
-                <BattleAbilityCountdown battleAbility={battleAbility} />
+                <BattleAbilityCountdown />
 
                 <Stack key={fadeEffect} spacing={1.3}>
                     <Fade in={true}>
@@ -194,7 +144,7 @@ const BattleAbilityItemInner = ({
                                         px: 2,
                                         pt: 1.4,
                                         pb: 1.6,
-                                        opacity: isVoting ? 1 : 0.32,
+                                        opacity: isVoting ? 1 : 0.36,
                                     }}
                                 >
                                     <Stack
@@ -213,8 +163,8 @@ const BattleAbilityItemInner = ({
                                             >
                                                 <Box
                                                     sx={{
-                                                        height: 18,
-                                                        width: 18,
+                                                        height: 19,
+                                                        width: 19,
                                                         backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
                                                         backgroundRepeat: "no-repeat",
                                                         backgroundPosition: "center",
@@ -222,6 +172,7 @@ const BattleAbilityItemInner = ({
                                                         backgroundColor: colour || "#030409",
                                                         border: `${colour} 1px solid`,
                                                         borderRadius: 0.6,
+                                                        mb: 0.3,
                                                     }}
                                                 />
                                                 <Typography
@@ -248,7 +199,7 @@ const BattleAbilityItemInner = ({
                                             alignItems="center"
                                             justifyContent="center"
                                         >
-                                            <SvgCooldown component="span" size="13px" fill={"grey"} sx={{ mb: 0.2 }} />
+                                            <SvgCooldown component="span" size="13px" fill={"grey"} sx={{ pb: 0.4 }} />
                                             <Typography
                                                 variant="body2"
                                                 sx={{ lineHeight: 1, color: "grey !important" }}
@@ -258,34 +209,129 @@ const BattleAbilityItemInner = ({
                                         </Stack>
                                     </Stack>
 
-                                    <VotingBar isVoting={isVoting} isCooldown={isCooldown} />
+                                    <Stack
+                                        spacing={0.5}
+                                        sx={{
+                                            width: "100%",
+                                            px: 1.5,
+                                            py: 1.2,
+                                            backgroundColor: "#00000030",
+                                            borderRadius: 1,
+                                        }}
+                                    >
+                                        {battleAbilityProgress &&
+                                            battleAbilityProgress.length > 0 &&
+                                            battleAbilityProgress.map((a) => {
+                                                const primaryColor = factionsAll[a.faction_id].theme.primary
+                                                return (
+                                                    <Stack
+                                                        key={a.faction_id}
+                                                        spacing={1.2}
+                                                        direction="row"
+                                                        alignItems="center"
+                                                    >
+                                                        <Box
+                                                            sx={{
+                                                                height: 16,
+                                                                width: 16,
+                                                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
+                                                                    factionsAll[a.faction_id].logo_blob_id
+                                                                })`,
+                                                                backgroundRepeat: "no-repeat",
+                                                                backgroundPosition: "center",
+                                                                backgroundSize: "cover",
+                                                                backgroundColor: primaryColor,
+                                                                border: `${primaryColor} 1px solid`,
+                                                                borderRadius: 0.6,
+                                                                mb: 0.3,
+                                                            }}
+                                                        />
+                                                        <ContributionBar
+                                                            color={primaryColor}
+                                                            initialTargetCost={a.sups_cost}
+                                                            currentSups={a.current_sups}
+                                                            supsCost={a.sups_cost}
+                                                            hideRedBar
+                                                        />
+
+                                                        <Stack
+                                                            direction="row"
+                                                            alignItems="center"
+                                                            justifyContent="center"
+                                                            sx={{ minWidth: 90 }}
+                                                        >
+                                                            <Typography
+                                                                key={`currentSups-${a.current_sups.toFixed()}`}
+                                                                variant="body2"
+                                                                sx={{
+                                                                    lineHeight: 1,
+                                                                    color: `${primaryColor} !important`,
+                                                                    animation: `${zoomEffect(1.2)} 300ms ease-out`,
+                                                                }}
+                                                            >
+                                                                {a.current_sups.toFixed(2)}
+                                                            </Typography>
+                                                            <Typography
+                                                                variant="body2"
+                                                                sx={{
+                                                                    lineHeight: 1,
+                                                                    color: `${primaryColor} !important`,
+                                                                }}
+                                                            >
+                                                                &nbsp;/&nbsp;
+                                                            </Typography>
+                                                            <Typography
+                                                                key={`supsCost-${a.sups_cost.toFixed()}`}
+                                                                variant="body2"
+                                                                sx={{
+                                                                    lineHeight: 1,
+                                                                    color: `${primaryColor} !important`,
+                                                                    animation: `${zoomEffect(1.2)} 300ms ease-out`,
+                                                                }}
+                                                            >
+                                                                {a.sups_cost.toFixed(2)}
+                                                            </Typography>
+                                                            <Typography
+                                                                variant="body2"
+                                                                sx={{
+                                                                    lineHeight: 1,
+                                                                    color: `${primaryColor} !important`,
+                                                                }}
+                                                            >
+                                                                &nbsp;SUP{a.sups_cost.eq(1) ? "" : "S"}
+                                                            </Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                )
+                                            })}
+                                    </Stack>
 
                                     <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
-                                            amount={factionVotePrice.multipliedBy(1).toNumber().toFixed(4)}
-                                            cost={factionVotePrice.multipliedBy(1).toNumber()}
+                                            amount={1}
+                                            cost={1}
                                             isVoting={isVoting}
-                                            onClick={() => onVote(1)}
+                                            onClick={() => onBribe(1)}
                                             Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
-                                            amount={factionVotePrice.multipliedBy(25).toNumber().toFixed(4)}
-                                            cost={factionVotePrice.multipliedBy(25).toNumber()}
+                                            amount={25}
+                                            cost={25}
                                             isVoting={isVoting}
-                                            onClick={() => onVote(25)}
+                                            onClick={() => onBribe(25)}
                                             Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
-                                            amount={factionVotePrice.multipliedBy(100).toNumber().toFixed(4)}
-                                            cost={factionVotePrice.multipliedBy(100).toNumber()}
+                                            amount={100}
+                                            cost={100}
                                             isVoting={isVoting}
-                                            onClick={() => onVote(100)}
+                                            onClick={() => onBribe(100)}
                                             Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                     </Stack>

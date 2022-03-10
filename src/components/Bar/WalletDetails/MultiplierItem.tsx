@@ -24,10 +24,10 @@ export const MultiplierItem = ({ multiplier }: { multiplier: Multipliers }) => {
                             border: "#FFFFFF60 1px solid",
                         }}
                     />
-                    <Typography variant="body1">{multiplier.key.toUpperCase()}:</Typography>
+                    <Typography variant="body1">{multiplier.key.toUpperCase()}</Typography>
                 </Stack>
 
-                <Typography sx={{ minWidth: 25, textAlign: "end" }} variant="body2">
+                <Typography sx={{ minWidth: 25, textAlign: "end" }} variant="body1">
                     {multiplier.value}
                 </Typography>
             </Stack>

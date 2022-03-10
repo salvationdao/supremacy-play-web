@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useState, useEffect } from "react"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
-import { FactionsColorResponse, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { FactionsAll, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { NetMessageType, ViewerLiveCount } from "../../types"
@@ -18,12 +18,12 @@ const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; to
 }
 
 export const LiveCounts = () => {
-    const { factionsColor } = useGame()
+    const { factionsAll } = useGame()
     const { state, subscribe, subscribeNetMessage } = useGameServerWebsocket()
 
     return (
         <LiveCountsInner
-            factionsColor={factionsColor}
+            factionsAll={factionsAll}
             state={state}
             subscribe={subscribe}
             subscribeNetMessage={subscribeNetMessage}
@@ -32,16 +32,16 @@ export const LiveCounts = () => {
 }
 
 interface LiveCountsProps extends Partial<WebSocketProperties> {
-    factionsColor?: FactionsColorResponse
+    factionsAll?: FactionsAll
 }
 
-export const LiveCountsInner = ({ factionsColor, subscribe, subscribeNetMessage, state }: LiveCountsProps) => {
+export const LiveCountsInner = ({ factionsAll, subscribe, subscribeNetMessage, state }: LiveCountsProps) => {
     const [viewers, setViewers] = useState<ViewerLiveCount>()
 
     // Triggered live viewer count tick
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerViewerLiveCountUpdated, () => console.log(""), null)
+        return subscribe(GameServerKeys.TriggerViewerLiveCountUpdated, () => null, null)
     }, [state, subscribe])
 
     useEffect(() => {
@@ -52,7 +52,7 @@ export const LiveCountsInner = ({ factionsColor, subscribe, subscribeNetMessage,
         })
     }, [state, subscribeNetMessage])
 
-    if (!viewers) return null
+    if (!viewers || !factionsAll) return null
 
     return (
         <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center">
@@ -64,22 +64,22 @@ export const LiveCountsInner = ({ factionsColor, subscribe, subscribeNetMessage,
             <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center">
                 <ReUsedText
                     text={Math.abs(viewers.red_mountain).toFixed()}
-                    color={factionsColor?.red_mountain}
+                    color={factionsAll["red_mountain"]?.theme.primary}
                     tooltip="Red Mountain"
                 />
                 <ReUsedText
                     text={Math.abs(viewers.boston).toFixed()}
-                    color={factionsColor?.boston}
+                    color={factionsAll["boston"]?.theme.primary}
                     tooltip="Boston Cybernetics"
                 />
                 <ReUsedText
                     text={Math.abs(viewers.zaibatsu).toFixed()}
-                    color={factionsColor?.zaibatsu}
+                    color={factionsAll["zaibatsu"]?.theme.primary}
                     tooltip="Zaibatsu Heavy Industries"
                 />
                 <Stack sx={{ display: "none" }}>
                     <ReUsedText
-                        text={Math.abs(viewers.Other).toFixed()}
+                        text={Math.abs(viewers.other).toFixed()}
                         color={"grey !important"}
                         tooltip="Not enlisted"
                     />

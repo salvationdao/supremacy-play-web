@@ -4,21 +4,16 @@ import { PassportServerKeys } from "../keys"
 import { UserData } from "../types/passport"
 import { usePassportServerWebsocket } from "./passportServerSocket"
 
-interface AuthInitialState {
-    gameserverSessionID?: string
-}
-
 /**
  * A Container that handles Authorisation
  */
-const AuthContainer = createContainer((initialState?: AuthInitialState) => {
-    const gameserverSessionID = initialState?.gameserverSessionID
-
+const AuthContainer = createContainer(() => {
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
     const userID = user?.id
     const faction_id = user?.faction_id
 
+    const [gameserverSessionID, setGameserverSessionID] = useState("")
     const [sessionID, setSessionID] = useState("")
     const [sessionIDLoading, setSessionIDLoading] = useState(true)
     const [sessionIDError, setSessionIDError] = useState()
@@ -89,6 +84,8 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
         user,
         userID,
         faction_id,
+        gameserverSessionID,
+        setGameserverSessionID,
         sessionID,
         sessionIDLoading,
         sessionIDError,
