@@ -41,16 +41,14 @@ export const LiveCountsInner = ({ factionsColor, subscribe, subscribeNetMessage,
     // Triggered live viewer count tick
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerViewerLiveCountUpdated, () => console.log(""), null)
+        return subscribe<ViewerLiveCount>(
+            GameServerKeys.TriggerViewerLiveCountUpdated,
+            (payload) => {
+                setViewers(payload)
+            },
+            null,
+        )
     }, [state, subscribe])
-
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<ViewerLiveCount | undefined>(NetMessageType.ViewerLiveCountTick, (payload) => {
-            if (!payload) return
-            setViewers(payload)
-        })
-    }, [state, subscribeNetMessage])
 
     if (!viewers) return null
 

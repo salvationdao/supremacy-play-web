@@ -53,10 +53,12 @@ export const GameContainer = createContainer(() => {
                 setMap(payload.game_map)
                 setWarMachines(payload.war_machines)
                 setSpawnedAI(payload.spawned_ai)
+
+                send(GameServerKeys.GameUserOnline)
             },
             null,
         )
-    }, [state, subscribe])
+    }, [state, subscribe, send])
 
     // Triggered faction ability or war machine ability price ticking
     useEffect(() => {

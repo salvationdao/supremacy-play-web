@@ -17,6 +17,9 @@ export enum GameServerKeys {
     SubmitVoteAbilityRight = "VOTE:ABILITY:RIGHT",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
+    // Game Use
+    GameUserOnline = "GAME:ONLINE",
+
     // Net message subscription
     TriggerLiveVoteUpdated = "LIVE:VOTE:UPDATED",
     TriggerWarMachineLocationUpdated = "WAR:MACHINE:LOCATION:UPDATED",
