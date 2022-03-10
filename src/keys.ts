@@ -3,29 +3,19 @@ export enum GameServerKeys {
     Welcome = "WELCOME",
     UserSubscribe = "USER:SUBSCRIBE",
     AuthSessionIDGet = "AUTH:SESSION:ID:GET",
-    GameOnline = "GAME:ONLINE",
-
-    // Game container
-    GetFactionsColor = "FACTION:COLOUR",
-    GetFactionVotePrice = "FACTION:VOTE:PRICE",
-    SubGameSettings = "GAME:SETTINGS:UPDATED",
-    SubVoteStageUpdated = "VOTE:STAGE:UPDATED",
-    SubVoteWinnerAnnouncement = "VOTE:WINNER:ANNOUNCEMENT",
-    SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
-    SubFactionQueueLength = "FACTION:QUEUE:JOIN",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
 
-    // In components
+    // Voting abilities
+    SubVoteStageUpdated = "VOTE:STAGE:UPDATED",
+    SubVoteWinnerAnnouncement = "VOTE:WINNER:ANNOUNCEMENT",
     SubBattleAbility = "VOTE:BATTLE:ABILITY:UPDATED",
     SubFactionAbilities = "FACTION:ABILITIES:UPDATED",
     SubmitVoteAbilityRight = "VOTE:ABILITY:RIGHT",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
     GameAbilityContribute = "GAME:ABILITY:CONTRIBUTE",
-    SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
-    SubAISpawned = "AI:SPAWNED",
 
     // Net message subscription
     TriggerLiveVoteUpdated = "LIVE:VOTE:UPDATED",
@@ -40,29 +30,42 @@ export enum GameServerKeys {
     SubscribeGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
 
     // Streams
-    SubscribeStreamClose = "STREAM:CLOSE:SUBSCRIBE",
     GetStreamList = "STREAMLIST:SUBSCRIBE",
+    SubscribeStreamClose = "STREAM:CLOSE:SUBSCRIBE",
 
+    // Queue
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "WAR:WARMACHINE:QUEUE:LEAVE",
 
+    // Get / sub to data
+    SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
+    SubAISpawned = "AI:SPAWNED",
+    GetFactionsColor = "FACTION:COLOUR",
+    GetFactionVotePrice = "FACTION:VOTE:PRICE",
+    SubGameSettings = "GAME:SETTINGS:UPDATED",
+    SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
+    SubFactionQueueLength = "FACTION:QUEUE:JOIN",
     SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
 }
 
 export enum PassportServerKeys {
     Welcome = "WELCOME",
     GetSessionID = "GAMEBAR:SESSION:ID:GET",
-    GetFactionsAll = "FACTION:ALL",
-    EnlistFaction = "FACTION:ENLIST",
-    SendChatMessage = "CHAT:MESSAGE",
     AuthRingCheck = "GAMEBAR:AUTH:RING:CHECK",
     SubscribeGamebarUser = "GAMEBAR:USER:SUBSCRIBE",
     SubscribeUser = "USER:SUBSCRIBE",
+
+    // Bar
+    GetFactionsAll = "FACTION:ALL",
+    EnlistFaction = "FACTION:ENLIST",
     SubscribeWallet = "USER:SUPS:SUBSCRIBE",
+    SubscribeUserStat = "USER:STAT:SUBSCRIBE",
+
+    // Chat
+    SendChatMessage = "CHAT:MESSAGE",
     SubscribeFactionStat = "FACTION:STAT:SUBSCRIBE",
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
-    SubscribeUserStat = "USER:STAT:SUBSCRIBE",
 
     // Assets
     SubAssetList = "USER:ASSET:LIST",
