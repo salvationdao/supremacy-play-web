@@ -87,9 +87,11 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
             )}
 
             {/* Auto login */}
-            <Box sx={{ display: "none" }}>
-                <iframe src={href}></iframe>
-            </Box>
+            {!!sessionID && (
+                <Box sx={{ display: "none" }}>
+                    <iframe src={href}></iframe>
+                </Box>
+            )}
 
             {!authRingCheckError && (
                 <Dialog

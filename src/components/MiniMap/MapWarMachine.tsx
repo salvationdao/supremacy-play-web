@@ -56,7 +56,6 @@ const MapWarMachineInner = ({
     // Listen on current war machine changes
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
-
         return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)

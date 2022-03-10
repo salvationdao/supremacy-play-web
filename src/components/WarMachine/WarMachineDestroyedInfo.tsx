@@ -217,15 +217,16 @@ export const WarMachineDestroyedInfo = ({
             .filter(
                 (dr) =>
                     (dr.caused_by_war_machine &&
-                        dr.caused_by_war_machine.participantID == killed_by_war_machine?.participantID) ||
+                        dr.caused_by_war_machine.participantID === killed_by_war_machine?.participantID) ||
                     dr.source_name == killed_by,
             )
             .reduce((acc, dr) => acc + dr.amount, 0) / 100
+
     const assistDamageMechs = damage_records
         .filter(
             (dr) =>
                 dr.caused_by_war_machine &&
-                dr.caused_by_war_machine.participantID != killed_by_war_machine?.participantID,
+                dr.caused_by_war_machine.participantID !== killed_by_war_machine?.participantID,
         )
         .sort((a, b) => (b.amount > a.amount ? 1 : -1))
     const assistDamageOthers = damage_records

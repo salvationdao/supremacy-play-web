@@ -24,19 +24,27 @@ const AuthContainer = createContainer(() => {
 
     // get user by session id
     useEffect(() => {
-        if (state !== WebSocket.OPEN || user || sessionID) return
+        console.log("state is open?", state === WebSocket.OPEN)
+        console.log("userID", userID)
+        console.log("sessionID", sessionID)
+        console.log("sessionID", !!sessionID)
+        if (state !== WebSocket.OPEN || !!userID || sessionID) return
         ;(async () => {
             try {
+                console.log("triggered")
                 setSessionIDLoading(true)
+                console.log(state, "STATE")
                 const resp = await send<string>(PassportServerKeys.GetSessionID)
+                console.log("response", resp)
                 setSessionID(resp)
             } catch (e: any) {
+                console.log("error:", e)
                 setSessionIDError(e)
             } finally {
                 setSessionIDLoading(false)
             }
         })()
-    }, [send, state, user, sessionID])
+    }, [send, state, userID, sessionID])
 
     useEffect(() => {
         if (!subscribe || !sessionID || state !== WebSocket.OPEN) return

@@ -9,7 +9,7 @@ import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 
 export const ProfileCard = () => {
-    const { user } = usePassportServerAuth()
+    const { user, sessionID } = usePassportServerAuth()
     const [renderConnectButton, toggleRenderConnectButton] = useToggle()
     const [anchorEl, setAnchorEl] = useState<HTMLAnchorElement | null>(null)
 
