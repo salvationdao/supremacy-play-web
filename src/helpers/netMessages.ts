@@ -50,6 +50,7 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 }
                 payload.warmachines.push(warmachineUpdate)
             }
+
             return { type, payload }
         }
         case NetMessageType.LiveVoting:

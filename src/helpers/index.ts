@@ -33,6 +33,8 @@ export const isObject = (item: any) => {
     return item && typeof item === "object" && !Array.isArray(item)
 }
 
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
 /**
  * Deep merge two objects.
  * @param target
