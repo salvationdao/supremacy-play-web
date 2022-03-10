@@ -40,6 +40,7 @@ export const BattleEndScreen = () => {
                 toggleIsEndBattleDetailOpen(true)
             },
             null,
+            true,
         )
     }, [state, subscribe])
 
