@@ -52,6 +52,8 @@ export const GameContainer = createContainer(() => {
                 setMap(payload.game_map)
                 setWarMachines(payload.war_machines)
                 setSpawnedAI(payload.spawned_ai)
+
+                send(GameServerKeys.GameUserOnline)
             },
             null,
         )

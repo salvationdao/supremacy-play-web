@@ -48,6 +48,7 @@ export const LiveCountsInner = ({ factionsAll, subscribe, subscribeNetMessage, s
                 setViewers(payload)
             },
             null,
+            true,
         )
     }, [state, subscribe, userID])
 
