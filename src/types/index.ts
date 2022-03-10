@@ -28,13 +28,7 @@ export interface Faction {
     theme: FactionThemeColor
 }
 
-export type VotingState =
-    | "HOLD"
-    | "VOTE_COOLDOWN"
-    | "VOTE_ABILITY_RIGHT"
-    | "NEXT_VOTE_WIN"
-    | "LOCATION_SELECT"
-    | "WAIT_MECH_INTRO"
+export type BribeStage = "BRIBE" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
 
 export interface BattleAbility {
     id: string
@@ -57,11 +51,17 @@ export interface GameAbility {
     current_sups: string
 }
 
-export interface GameAbilityTargetPrice {
+export interface GameAbilityProgress {
     id: string
     sups_cost: string
     current_sups: string
     should_reset: boolean
+}
+
+export interface BattleAbilityProgress {
+    faction_id: string
+    sups_cost: string
+    current_sups: string
 }
 
 export interface Vector2i {
@@ -115,19 +115,17 @@ export interface ViewerLiveCount {
     red_mountain: number
     boston: number
     zaibatsu: number
-    Other: number
+    other: number
 }
 
 export enum NetMessageType {
     Default,
     Tick,
     LiveVoting,
-    AbilityRightRatioTick,
-    VotePriceTick,
-    VotePriceForecastTick,
-    GameAbilityTargetPriceTick,
     ViewerLiveCountTick,
     SpoilOfWarTick,
+    GameAbilityProgressTick,
+    BattleAbilityProgressTick,
 }
 
 export interface NetMessageTickWarMachine {

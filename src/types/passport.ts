@@ -46,7 +46,6 @@ export interface UserData {
 export interface UserStat {
     id: string
     view_battle_count: number
-    total_vote_count: number
     total_ability_triggered: number
     kill_count: number
 }

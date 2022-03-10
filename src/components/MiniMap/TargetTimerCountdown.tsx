@@ -41,7 +41,7 @@ export const TargetTimerCountdown = ({
             }}
         >
             <Typography variant="h6" sx={{ span: { lineHeight: 1, fontWeight: "fontWeightBold", color: colour } }}>
-                {`You have ${totalSecRemain - 2}s to choose a location for `}
+                {`You have ${Math.max(totalSecRemain - 2, 0)}s to choose a location for `}
                 <span>{`${label}`}</span>
             </Typography>
         </Stack>

@@ -1,6 +1,6 @@
 import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ClipThing, WarMachineAbilityItem } from ".."
+import { ClipThing, FactionAbilityItem } from ".."
 import { GenericWarMachinePNG } from "../../assets"
 import { GameAbility, WarMachineState } from "../../types"
 
@@ -80,9 +80,10 @@ export const WarMachineAbilitiesPopover = ({
                             <Stack spacing={0.9}>
                                 {gameAbilities.map((ga, i) => (
                                     <Box key={ga.identity} sx={{ ml: (i + 1) * 0.2 }}>
-                                        <WarMachineAbilityItem
+                                        <FactionAbilityItem
                                             gameAbility={ga}
-                                            maxAbilityPriceMap={maxAbilityPriceMap}
+                                            abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
+                                            clipSlantSize="5px"
                                         />
                                     </Box>
                                 ))}
