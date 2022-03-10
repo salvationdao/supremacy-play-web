@@ -2,7 +2,13 @@ import { Stack, Typography } from "@mui/material"
 import { useState, useEffect } from "react"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
-import { FactionsColorResponse, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import {
+    FactionsColorResponse,
+    useGame,
+    useGameServerAuth,
+    useGameServerWebsocket,
+    WebSocketProperties,
+} from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { NetMessageType, ViewerLiveCount } from "../../types"
@@ -37,10 +43,11 @@ interface LiveCountsProps extends Partial<WebSocketProperties> {
 
 export const LiveCountsInner = ({ factionsColor, subscribe, subscribeNetMessage, state }: LiveCountsProps) => {
     const [viewers, setViewers] = useState<ViewerLiveCount>()
+    const { userID } = useGameServerAuth()
 
     // Triggered live viewer count tick
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<ViewerLiveCount>(
             GameServerKeys.TriggerViewerLiveCountUpdated,
             (payload) => {
@@ -48,7 +55,7 @@ export const LiveCountsInner = ({ factionsColor, subscribe, subscribeNetMessage,
             },
             null,
         )
-    }, [state, subscribe])
+    }, [state, subscribe, userID])
 
     if (!viewers) return null
 

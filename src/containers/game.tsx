@@ -32,7 +32,7 @@ export interface FactionsColorResponse {
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
     const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
-    const { faction_id } = useGameServerAuth()
+    const { faction_id, userID } = useGameServerAuth()
     const [factionsColor, setFactionsColor] = useState<FactionsColorResponse>()
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
@@ -45,7 +45,7 @@ export const GameContainer = createContainer(() => {
 
     // Subscribe for game settings
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<GameSettingsResponse | undefined>(
             GameServerKeys.SubGameSettings,
             (payload) => {
@@ -53,12 +53,10 @@ export const GameContainer = createContainer(() => {
                 setMap(payload.game_map)
                 setWarMachines(payload.war_machines)
                 setSpawnedAI(payload.spawned_ai)
-
-                send(GameServerKeys.GameUserOnline)
             },
             null,
         )
-    }, [state, subscribe, send])
+    }, [state, subscribe, userID])
 
     // Triggered faction ability or war machine ability price ticking
     useEffect(() => {
