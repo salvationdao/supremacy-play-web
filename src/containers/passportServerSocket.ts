@@ -122,8 +122,8 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
             }
 
             const sendFn = () => {
-                if (!webSocket.current) {
-                    setTimeout(sendFn, 1000)
+                if (!webSocket.current || state !== WebSocket.OPEN) {
+                    setTimeout(sendFn, 3000)
                     return
                 }
                 webSocket.current.send(

@@ -194,8 +194,14 @@ const GameServerWebsocket = (): WebSocketProperties => {
 
     const sendMessage = useCallback(
         (msg: Message<any>) => {
-            if (!webSocket || !webSocket.current) throw new Error("no websocket")
-            webSocket.current.send(JSON.stringify(msg))
+            const sendFn = () => {
+                if (!webSocket.current || state !== WebSocket.OPEN) {
+                    setTimeout(sendFn, 3000)
+                    return
+                }
+                webSocket.current.send(JSON.stringify(msg))
+            }
+            sendFn()
         },
         [webSocket.current],
     )
