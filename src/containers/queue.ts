@@ -1,9 +1,8 @@
-import { createContainer } from "unstated-next"
-import { useGameServerWebsocket } from "."
 import { useEffect, useState } from "react"
-import { GameServerKeys } from "../keys"
-import { useGameServerAuth } from "."
+import { createContainer } from "unstated-next"
+import { useGameServerAuth, useGameServerWebsocket } from "."
 import { supFormatter } from "../helpers"
+import { GameServerKeys } from "../keys"
 
 interface QueueFeed {
     queue_length: number

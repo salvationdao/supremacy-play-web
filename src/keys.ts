@@ -35,7 +35,7 @@ export enum GameServerKeys {
 
     // Queue
     JoinQueue = "BATTLE:QUEUE:JOIN",
-    LeaveQueue = "WAR:WARMACHINE:QUEUE:LEAVE",
+    LeaveQueue = "BATTLE:QUEUE:LEAVE",
 
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
