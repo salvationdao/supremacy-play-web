@@ -27,11 +27,11 @@ export enum GameServerKeys {
     TriggerFactionVotePriceUpdated = "FACTION:VOTE:PRICE:UPDATED",
 
     // Global messages
-    SubscribeGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
+    SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
+    SubStreamClose = "STREAM:CLOSE:SUBSCRIBE",
 
     // Streams
     GetStreamList = "STREAMLIST:SUBSCRIBE",
-    SubscribeStreamClose = "STREAM:CLOSE:SUBSCRIBE",
 
     // Queue
     JoinQueue = "BATTLE:QUEUE:JOIN",

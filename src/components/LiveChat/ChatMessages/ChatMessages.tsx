@@ -48,7 +48,7 @@ const ChatMessagesInner = ({
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<GlobalMessage>(
-            GameServerKeys.SubscribeGlobalAnnouncement,
+            GameServerKeys.SubGlobalAnnouncement,
             (payload: GlobalMessage) => {
                 if (!payload || !payload.message) {
                     setGlobalMessage(undefined)
