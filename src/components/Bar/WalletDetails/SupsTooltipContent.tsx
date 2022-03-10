@@ -1,9 +1,10 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { SvgClose, SvgSupToken } from "../../../assets"
-import { MultiplierItem, SupsMultipliers, TransactionItem } from "../.."
+import { MultiplierItem, TransactionItem } from "../.."
 import { Transaction } from "../../../types/passport"
 import { colors } from "../../../theme/theme"
 import { supFormatterNoFixed } from "../../../helpers"
+import { MultipliersAll } from "../../../types"
 
 export const SupsTooltipContent = ({
     sups,
@@ -13,7 +14,7 @@ export const SupsTooltipContent = ({
     onClose,
 }: {
     sups?: string
-    multipliers?: SupsMultipliers
+    multipliers?: MultipliersAll
     transactions: Transaction[]
     userID: string
     onClose: () => void

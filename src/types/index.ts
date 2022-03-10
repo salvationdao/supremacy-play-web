@@ -200,3 +200,14 @@ export interface Stream {
     longitude: number
     distance?: number
 }
+
+export interface Multipliers {
+    key: string
+    value: string
+    description: string
+}
+
+export interface MultipliersAll {
+    total_multipliers: string
+    multipliers: Multipliers[]
+}

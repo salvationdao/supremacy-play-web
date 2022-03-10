@@ -1,8 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from "../.."
 import { getMutiplierDeets } from "../../../helpers"
+import { Multipliers } from "../../../types"
 
-export const MultiplierItem = ({ multiplier }: { multiplier: { key: string; value: string; description: string } }) => {
+export const MultiplierItem = ({ multiplier }: { multiplier: Multipliers }) => {
     const multiplierDeets = getMutiplierDeets(multiplier.key)
 
     return (

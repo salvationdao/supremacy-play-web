@@ -10,11 +10,7 @@ import { Transaction } from "../../../types/passport"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { TOKEN_SALE_PAGE } from "../../../constants"
-
-export interface SupsMultipliers {
-    total_multipliers: string
-    multipliers: { key: string; value: string; description: string }[]
-}
+import { MultipliersAll } from "../../../types"
 
 export const WalletDetails = () => {
     const { state, subscribe } = useGameServerWebsocket()
@@ -22,7 +18,7 @@ export const WalletDetails = () => {
     const { user, userID } = usePassportServerAuth()
     const [isTooltipOpen, toggleIsTooltipOpen] = useToggle()
     const { payload: sups } = usePassportServerSecureSubscription<string>(PassportServerKeys.SubscribeWallet)
-    const [multipliers, setMultipliers] = useState<SupsMultipliers>()
+    const [multipliers, setMultipliers] = useState<MultipliersAll>()
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const { payload: transactionsPayload } = usePassportServerSecureSubscription<Transaction[]>(
         PassportServerKeys.SubscribeUserTransactions,
@@ -33,7 +29,7 @@ export const WalletDetails = () => {
     // Subscribe to multipliers
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<SupsMultipliers>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
+        return subscribe<MultipliersAll>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
             if (!payload) return
             setMultipliers(payload)
         })
