@@ -195,8 +195,8 @@ const GameServerWebsocket = (): WebSocketProperties => {
     const sendMessage = useCallback(
         (msg: Message<any>) => {
             const sendFn = () => {
-                if (!webSocket.current || state !== WebSocket.OPEN) {
-                    setTimeout(sendFn, 3000)
+                if (!webSocket.current || webSocket.current.readyState !== WebSocket.OPEN) {
+                    setTimeout(sendFn, 500)
                     return
                 }
                 webSocket.current.send(JSON.stringify(msg))
