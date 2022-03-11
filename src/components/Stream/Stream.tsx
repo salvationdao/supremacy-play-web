@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useGameServerAuth, useDimension, useStream, useWallet, usePassportServerAuth } from "../../containers"
+import { useGameServerAuth, useDimension, useStream, useWallet } from "../../containers"
 import { colors } from "../../theme/theme"
 import { Trailer } from ".."
 import { useToggle } from "../../hooks"

@@ -60,8 +60,12 @@ export const EnlistBanner = () => {
 
     // start to subscribe user update
     useEffect(() => {
+        console.log("here")
+
         if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<UserStat>(PassportServerKeys.SubscribeUserStat, (us) => {
+            console.log("this is us", us)
+
             if (!us) return
             setUserStat(us)
         })

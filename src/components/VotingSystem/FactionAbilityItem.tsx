@@ -84,7 +84,6 @@ export const FactionAbilityItemInner = ({
 
         return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
             if (!payload) return
-            console.log(payload)
             setGameAbilityProgress(payload)
         })
     }, [identity, state, subscribeAbilityNetMessage, faction_id])
