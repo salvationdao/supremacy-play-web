@@ -11,7 +11,7 @@ import {
 import { MINI_MAP_DEFAULT_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from "../../constants"
 import { useTheme } from "@mui/styles"
 import { Theme } from "@mui/material/styles"
-import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket } from "../../containers"
+import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useGame } from "../../containers"
 import { useEffect } from "react"
 import { GameServerKeys } from "../../keys"
 import { useArray } from "../../hooks"
@@ -51,6 +51,7 @@ export interface NotificationResponse {
 }
 
 export const Notifications = () => {
+    const { factionsAll } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
     const theme = useTheme<Theme>()
@@ -124,13 +125,13 @@ export const Notifications = () => {
                 case "BATTLE_ABILITY":
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
-                            <BattleAbilityAlert data={n.data} />
+                            <BattleAbilityAlert data={n.data} factionsAll={factionsAll} />
                         </NotificationItem>
                     )
                 case "FACTION_ABILITY":
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
-                            <FactionAbilityAlert data={n.data} />
+                            <FactionAbilityAlert data={n.data} factionsAll={factionsAll} />
                         </NotificationItem>
                     )
                 case "WAR_MACHINE_ABILITY":

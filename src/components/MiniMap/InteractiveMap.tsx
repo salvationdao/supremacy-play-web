@@ -40,19 +40,27 @@ const GridCell = styled("td", {
 }))
 
 interface MapWarMachineProps {
+    gridWidth: number
+    gridHeight: number
     warMachines: WarMachineState[]
     map: Map
     enlarged: boolean
 }
 
-const MapWarMachines = ({ warMachines, map, enlarged }: MapWarMachineProps) => {
+const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged }: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
         <>
             {warMachines.map((wm) => (
                 <div key={`${wm.participantID} - ${wm.hash}`}>
-                    <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} />
+                    <MapWarMachine
+                        gridWidth={gridWidth}
+                        gridHeight={gridHeight}
+                        warMachine={wm}
+                        map={map}
+                        enlarged={enlarged}
+                    />
                 </div>
             ))}
         </>
@@ -81,6 +89,9 @@ export const InteractiveMap = ({
     const [endMoment, setEndMoment] = useState<moment.Moment>()
     const [timeRemain, setTimeRemain] = useState<number>(-2)
     const [delay, setDelay] = useState<number | null>(null)
+
+    const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
+    const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
@@ -138,9 +149,6 @@ export const InteractiveMap = ({
             return <div />
         }
 
-        const width = map.width / map.cells_x
-        const height = map.height / map.cells_y
-
         return (
             <MapGrid map={map}>
                 <tbody>
@@ -157,8 +165,8 @@ export const InteractiveMap = ({
                                             <GridCell
                                                 key={`column-${y}-row-${x}`}
                                                 disabled={disabled}
-                                                width={width}
-                                                height={height}
+                                                width={gridWidth}
+                                                height={gridHeight}
                                                 onClick={
                                                     disabled
                                                         ? undefined
@@ -187,6 +195,8 @@ export const InteractiveMap = ({
                 <SelectionIcon
                     key={selection && `column-${selection.y}-row-${selection.x}`}
                     gameAbility={gameAbility}
+                    gridWidth={gridWidth}
+                    gridHeight={gridHeight}
                     selection={selection}
                     setSelection={setSelection}
                 />
@@ -363,7 +373,13 @@ export const InteractiveMap = ({
                 <animated.div ref={gestureRef} style={{ x, y, touchAction: "none", scale, transformOrigin: `0% 0%` }}>
                     <Box sx={{ cursor: enlarged ? "move" : "" }}>
                         <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1` }}>
-                            <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
+                            <MapWarMachines
+                                map={map}
+                                gridWidth={gridWidth}
+                                gridHeight={gridHeight}
+                                warMachines={warMachines || []}
+                                enlarged={enlarged}
+                            />
                         </Box>
 
                         {selectionIcon}

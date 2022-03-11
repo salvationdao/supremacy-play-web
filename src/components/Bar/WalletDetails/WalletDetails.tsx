@@ -4,7 +4,7 @@ import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
 import { useEffect, useState } from "react"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgSupToken, SvgWallet } from "../../../assets"
-import { useGameServerWebsocket, usePassportServerAuth, useWallet } from "../../../containers"
+import { useGame, useGameServerWebsocket, usePassportServerAuth, useWallet } from "../../../containers"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { Transaction } from "../../../types/passport"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
@@ -15,6 +15,7 @@ import { MultipliersAll } from "../../../types"
 export const WalletDetails = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { setOnWorldSupsRaw } = useWallet()
+    const { battleEndDetail } = useGame()
     const { user, userID } = usePassportServerAuth()
     const [isTooltipOpen, toggleIsTooltipOpen] = useToggle()
     const { payload: sups } = usePassportServerSecureSubscription<string>(PassportServerKeys.SubscribeWallet)
@@ -26,11 +27,19 @@ export const WalletDetails = () => {
     const { payload: latestTransactionPayload, setArguments: latestTransactionArguments } =
         usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions)
 
+    useEffect(() => {
+        if (battleEndDetail && battleEndDetail.multipliers.length > 0)
+            setMultipliers({
+                total_multipliers: battleEndDetail.total_multipliers,
+                multipliers: battleEndDetail.multipliers,
+            })
+    }, [battleEndDetail])
+
     // Subscribe to multipliers
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<MultipliersAll>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
-            if (!payload) return
+            if (!payload || payload.multipliers.length <= 0) return
             setMultipliers(payload)
         })
     }, [state, subscribe])
