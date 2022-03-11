@@ -77,13 +77,7 @@ export const LiveCountsInner = ({ factionsAll, subscribe, state }: LiveCountsPro
                     color={factionsAll["880db344-e405-428d-84e5-6ebebab1fe6d"]?.theme.primary}
                     tooltip="Zaibatsu Heavy Industries"
                 />
-                <Stack sx={{ display: "none" }}>
-                    <ReUsedText
-                        text={Math.abs(viewers.other).toFixed()}
-                        color={"grey !important"}
-                        tooltip="Not enlisted"
-                    />
-                </Stack>
+                <ReUsedText text={Math.abs(viewers.other).toFixed()} color={"grey !important"} tooltip="Not enlisted" />
             </Stack>
         </Stack>
     )
