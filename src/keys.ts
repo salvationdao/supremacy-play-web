@@ -72,7 +72,6 @@ export enum PassportServerKeys {
     SubAssetList = "USER:ASSET:LIST",
     SubAssetData = "ASSET:SUBSCRIBE",
     SubAssetQueuePosition = "WAR:MACHINE:QUEUE:POSITION:SUBSCRIBE",
-    SubAssetDurability = "ASSET:DURABILITY:SUBSCRIBE",
 
     // Transactions
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
