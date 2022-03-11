@@ -8,7 +8,7 @@ import { getRarityDeets, supFormatter } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { Asset, AssetDurability, AssetQueueStat } from "../../types/assets"
+import { Asset, AssetQueueStat } from "../../types/assets"
 
 const RepairCountdown = ({ endTime }: { endTime: Date }) => {
     const { hours, minutes, seconds } = useTimer(endTime)
@@ -42,7 +42,6 @@ export const AssetItem = ({
 
     const [assetData, setAssetData] = useState<Asset>(asset)
     const [queueStatus, setQueueStatus] = useState<AssetQueueStat>()
-    const [durability, setDurability] = useState<AssetDurability>()
 
     const rarityDeets = getRarityDeets(assetData.tier)
 
@@ -156,12 +155,12 @@ export const AssetItem = ({
                     >
                         IN BATTLE
                     </Typography>
-                    {contractReward && (
+                    {queueStatus.contract_reward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
-                                {supFormatter(contractReward)}
+                                {supFormatter(queueStatus.contract_reward, 2)}
                             </Typography>
                         </Stack>
                     )}
@@ -199,12 +198,12 @@ export const AssetItem = ({
                     >
                         {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
                     </Typography>
-                    {contractReward && (
+                    {queueStatus.contract_reward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
-                                {supFormatter(contractReward)}
+                                {supFormatter(queueStatus.contract_reward, 2)}
                             </Typography>
                         </Stack>
                     )}
