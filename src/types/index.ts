@@ -146,11 +146,7 @@ export interface BattleEndDetail {
     started_at: Date
     ended_at: Date
     total_multipliers: string
-    multipliers: {
-        key: string
-        value: string
-        description: string
-    }[]
+    multipliers: Multiplier[]
     winning_condition: string
     winning_faction: Faction
     winning_war_machines: WarMachineState[]
@@ -199,7 +195,7 @@ export interface Stream {
     distance?: number
 }
 
-export interface Multipliers {
+export interface Multiplier {
     key: string
     value: string
     description: string
@@ -207,5 +203,5 @@ export interface Multipliers {
 
 export interface MultipliersAll {
     total_multipliers: string
-    multipliers: Multipliers[]
+    multipliers: Multiplier[]
 }

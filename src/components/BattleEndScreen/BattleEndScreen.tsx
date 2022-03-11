@@ -1,6 +1,6 @@
 import { Slide, Stack } from "@mui/material"
 import { Box } from "@mui/system"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 import {
     SectionBottom,
     SectionMostFrequentAbilityExecutor,
@@ -9,38 +9,25 @@ import {
     SectionTopSupsFaction,
     SectionWinner,
 } from ".."
-import { useGame, useGameServerWebsocket, useOverlayToggles } from "../../containers"
+import { useGame, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
-import { GameServerKeys } from "../../keys"
 import { sampleBattleEndDetail } from "../../samepleData"
 import { colors } from "../../theme/theme"
-import { BattleEndDetail } from "../../types"
 
 const SPAWN_TEST_DATA = false
 
 export const BOTTOM_BUTTONS_HEIGHT = 50
 
 export const BattleEndScreen = () => {
-    const { bribeStage } = useGame()
-    const { state, subscribe } = useGameServerWebsocket()
+    const { bribeStage, battleEndDetail, setBattleEndDetail } = useGame()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
-    const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
 
-    // Subscribe on battle end information
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<BattleEndDetail>(
-            GameServerKeys.SubBattleEndDetailUpdated,
-            (payload) => {
-                if (!payload) return
-                setBattleEndDetail(payload)
-                toggleIsEndBattleDetailEnabled(true)
-                toggleIsEndBattleDetailOpen(true)
-            },
-            null,
-            true,
-        )
-    }, [state, subscribe])
+        if (battleEndDetail) {
+            toggleIsEndBattleDetailEnabled(true)
+            toggleIsEndBattleDetailOpen(true)
+        }
+    }, [battleEndDetail])
 
     useEffect(() => {
         if (SPAWN_TEST_DATA) {

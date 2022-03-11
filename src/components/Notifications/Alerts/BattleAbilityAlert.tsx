@@ -40,7 +40,6 @@ export const BattleAbilityAlert = ({
                         : undefined
                 }
             />
-            <StyledNormalText text=". " />
             <Divider sx={{ my: 1.2, borderColor: "#FFFFFF", opacity: 0.15 }} />
             <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
             <StyledImageText

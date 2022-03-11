@@ -28,7 +28,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
         const zeroArray: LiveVotingData[] = []
         for (let i = 0; i < maxLiveVotingDataLength; i++) zeroArray.push({ rawData: 0, smoothData: 0 })
         setLiveVotingData(zeroArray)
-    }, [])
+    }, [maxLiveVotingDataLength])
 
     // Live voting data
     useEffect(() => {

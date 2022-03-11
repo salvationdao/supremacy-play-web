@@ -103,7 +103,11 @@ export const InteractiveMap = ({
             return
         }
 
+<<<<<<< HEAD
+        if (!endMoment) setEndMoment(moment().add(3, "seconds"))
+=======
         if (!endMoment) return setEndMoment(moment().add(3, "seconds"))
+>>>>>>> e06f732ed0262efd87824b14349a7f0a734d751b
     }, [selection])
 
     useEffect(() => {

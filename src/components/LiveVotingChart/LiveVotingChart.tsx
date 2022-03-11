@@ -71,6 +71,11 @@ const Content = () => {
         return subscribe(GameServerKeys.TriggerSpoilOfWarUpdated, () => null, null)
     }, [state, subscribe])
 
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe(GameServerKeys.TriggerLiveVoteCountUpdated, () => null, null)
+    }, [state, subscribe])
+
     const onResize = useCallback((width: number, height: number) => {
         setCurWidth(width)
         setCurHeight(height)

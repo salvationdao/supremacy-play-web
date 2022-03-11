@@ -4,18 +4,26 @@ import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
 import { useEffect, useState } from "react"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgSupToken, SvgWallet } from "../../../assets"
-import { useGameServerWebsocket, usePassportServerAuth, useWallet } from "../../../containers"
+import {
+    useGame,
+    useGameServerAuth,
+    useGameServerWebsocket,
+    usePassportServerAuth,
+    useWallet,
+} from "../../../containers"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { Transaction } from "../../../types/passport"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { TOKEN_SALE_PAGE } from "../../../constants"
+import { NullUUID, TOKEN_SALE_PAGE } from "../../../constants"
 import { MultipliersAll } from "../../../types"
 
 export const WalletDetails = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { setOnWorldSupsRaw } = useWallet()
+    const { battleEndDetail } = useGame()
     const { user, userID } = usePassportServerAuth()
+    const { userID: gameserverUserID } = useGameServerAuth()
     const [isTooltipOpen, toggleIsTooltipOpen] = useToggle()
     const { payload: sups } = usePassportServerSecureSubscription<string>(PassportServerKeys.SubscribeWallet)
     const [multipliers, setMultipliers] = useState<MultipliersAll>()
@@ -26,14 +34,22 @@ export const WalletDetails = () => {
     const { payload: latestTransactionPayload, setArguments: latestTransactionArguments } =
         usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions)
 
+    useEffect(() => {
+        if (battleEndDetail && battleEndDetail.multipliers.length > 0)
+            setMultipliers({
+                total_multipliers: battleEndDetail.total_multipliers,
+                multipliers: battleEndDetail.multipliers,
+            })
+    }, [battleEndDetail])
+
     // Subscribe to multipliers
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
+        if (state !== WebSocket.OPEN || !subscribe || !gameserverUserID || gameserverUserID === NullUUID) return
         return subscribe<MultipliersAll>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
-            if (!payload) return
+            if (!payload || payload.multipliers.length <= 0) return
             setMultipliers(payload)
         })
-    }, [state, subscribe])
+    }, [state, subscribe, gameserverUserID])
 
     // get initial 5 transactions
     useEffect(() => {

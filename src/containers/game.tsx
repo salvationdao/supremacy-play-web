@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { NullUUID } from "../constants"
 import { GameServerKeys, PassportServerKeys } from "../keys"
-import { BribeStage, Map, WarMachineState, GameAbility } from "../types"
+import { BribeStage, Map, WarMachineState, GameAbility, BattleEndDetail } from "../types"
 import { useGameServerAuth, usePassportServerWebsocket } from "."
 import { useGameServerWebsocket } from "."
 import { FactionGeneralData } from "../types/passport"
@@ -41,6 +41,7 @@ export const GameContainer = createContainer(() => {
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [highlightedMechHash, setHighlightedMechHash] = useState<string | undefined>(undefined)
+    const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
 
     // Subscribe for game settings
     useEffect(() => {
@@ -78,6 +79,20 @@ export const GameContainer = createContainer(() => {
             }
         })()
     }, [send, state])
+
+    // Subscribe on battle end information
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<BattleEndDetail>(
+            GameServerKeys.SubBattleEndDetailUpdated,
+            (payload) => {
+                if (!payload) return
+                setBattleEndDetail(payload)
+            },
+            null,
+            true,
+        )
+    }, [state, subscribe])
 
     // Subscirbe on current voting state
     useEffect(() => {
@@ -125,6 +140,8 @@ export const GameContainer = createContainer(() => {
         spawnedAI,
         highlightedMechHash,
         setHighlightedMechHash,
+        battleEndDetail,
+        setBattleEndDetail,
     }
 })
 

@@ -42,6 +42,7 @@ const MapWarMachineInner = ({
     highlightedMechHash,
 }: MWMProps) => {
     const { participantID, faction, maxHealth, maxShield, imageAvatar } = warMachine
+    const mapScale = map.width / (map.cells_x * 2000)
 
     const wmImageUrl = imageAvatar || GenericWarMachinePNG
 
@@ -79,8 +80,8 @@ const MapWarMachineInner = ({
             sx={{
                 position: "absolute",
                 pointerEvents: "none",
-                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * map.scale}px, ${
-                    (position.y - map.top) * map.scale
+                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * mapScale}px, ${
+                    (position.y - map.top) * mapScale
                 }px, 0)`,
                 transition: "transform 0.2s linear",
                 zIndex: isAlive ? 5 : 4,
