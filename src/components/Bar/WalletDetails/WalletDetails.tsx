@@ -15,7 +15,7 @@ import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { Transaction } from "../../../types/passport"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { TOKEN_SALE_PAGE } from "../../../constants"
+import { NullUUID, TOKEN_SALE_PAGE } from "../../../constants"
 import { MultipliersAll } from "../../../types"
 
 export const WalletDetails = () => {
