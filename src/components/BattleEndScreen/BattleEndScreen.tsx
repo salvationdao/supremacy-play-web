@@ -102,7 +102,7 @@ export const BattleEndScreen = () => {
                         spacing={4}
                         sx={{
                             height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}px)`,
-                            pr: 3.6,
+                            pr: 2.2,
                             pb: 4,
                             overflowY: "auto",
                             overflowX: "auto",

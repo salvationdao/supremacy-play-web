@@ -164,7 +164,7 @@ const MapWarMachineInner = ({
                         <Box sx={{ position: "relative", height: ARROW_LENGTH }}>
                             <SvgMapWarMachine
                                 fill={primaryColor}
-                                size="15px"
+                                size={`${0.3 * SIZE}px`}
                                 sx={{
                                     position: "absolute",
                                     top: -6,
@@ -184,13 +184,20 @@ const MapWarMachineInner = ({
                             bottom: 0,
                             left: "50%",
                             transform: "translate(-50%, calc(100% + 10px))",
-                            width: 50,
+                            width: SIZE,
                             zIndex: 1,
                         }}
                         spacing={0.3}
                     >
                         {warMachine.maxShield > 0 && (
-                            <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
+                            <Box
+                                sx={{
+                                    width: "100%",
+                                    height: `${0.25 * SIZE}px`,
+                                    border: "1px solid #00000080",
+                                    overflow: "hidden",
+                                }}
+                            >
                                 <Box
                                     sx={{
                                         width: `${(shield / maxShield) * 100}%`,
@@ -200,7 +207,14 @@ const MapWarMachineInner = ({
                                 />
                             </Box>
                         )}
-                        <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
+                        <Box
+                            sx={{
+                                width: "100%",
+                                height: `${0.25 * SIZE}px`,
+                                border: "1px solid #00000080",
+                                overflow: "hidden",
+                            }}
+                        >
                             <Box
                                 sx={{
                                     width: `${(health / maxHealth) * 100}%`,
