@@ -12,6 +12,8 @@ interface KillAlertProps {
 export const KillAlert = ({ data }: { data: KillAlertProps }) => {
     const { destroyedWarMachine, killedByWarMachine, killedBy } = data
 
+    if (!destroyedWarMachine) return null
+
     return (
         <Box>
             <StyledImageText

@@ -19,7 +19,13 @@ import {
     Maintenance,
     BattleCloseAlert,
 } from "./components"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
+import {
+    DRAWER_TRANSITION_DURATION,
+    GAME_BAR_HEIGHT,
+    PASSPORT_SERVER_HOST,
+    SENTRY_CONFIG,
+    UNDER_MAINTENANCE,
+} from "./constants"
 import {
     GameServerAuthProvider,
     DimensionProvider,
@@ -32,6 +38,8 @@ import {
     useDimension,
     useGameServerWebsocket,
     WalletProvider,
+    PassportServerSocketProvider,
+    PassportServerAuthProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
@@ -57,13 +65,13 @@ if (SENTRY_CONFIG) {
 
 const AppInner = () => {
     const { state, isServerUp } = useGameServerWebsocket()
-    const { user, gameserverSessionID } = useGameServerAuth()
+    const { user } = useGameServerAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
 
     return (
         <>
-            <GameBar gameserverSessionID={gameserverSessionID} />
+            <GameBar />
             <Stack
                 sx={{
                     mt: `${GAME_BAR_HEIGHT}px`,
@@ -153,23 +161,27 @@ const App = () => {
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
-                <GameServerSocketProvider>
-                    <GameServerAuthProvider>
-                        <StreamProvider>
-                            <WalletProvider>
-                                <DrawerProvider>
-                                    <GameProvider>
-                                        <DimensionProvider>
-                                            <OverlayTogglesProvider>
-                                                <AppInner />
-                                            </OverlayTogglesProvider>
-                                        </DimensionProvider>
-                                    </GameProvider>
-                                </DrawerProvider>
-                            </WalletProvider>
-                        </StreamProvider>
-                    </GameServerAuthProvider>
-                </GameServerSocketProvider>
+                <PassportServerSocketProvider initialState={PASSPORT_SERVER_HOST}>
+                    <PassportServerAuthProvider>
+                        <GameServerSocketProvider>
+                            <GameServerAuthProvider>
+                                <StreamProvider>
+                                    <WalletProvider>
+                                        <DrawerProvider>
+                                            <GameProvider>
+                                                <DimensionProvider>
+                                                    <OverlayTogglesProvider>
+                                                        <AppInner />
+                                                    </OverlayTogglesProvider>
+                                                </DimensionProvider>
+                                            </GameProvider>
+                                        </DrawerProvider>
+                                    </WalletProvider>
+                                </StreamProvider>
+                            </GameServerAuthProvider>
+                        </GameServerSocketProvider>
+                    </PassportServerAuthProvider>
+                </PassportServerSocketProvider>
             </ThemeProvider>
         </UpdateTheme.Provider>
     )

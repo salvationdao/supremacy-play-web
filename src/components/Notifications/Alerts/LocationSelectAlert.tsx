@@ -36,7 +36,7 @@ interface LocationSelectAlertProps {
 export const FallbackUser: User = {
     id: "",
     faction_id: "",
-    username: "Unknown User",
+    username: "Unknown user",
     avatar_id: "",
     sups: 0,
     faction: {

@@ -71,7 +71,7 @@ const WarMachineItemInner = ({
     state,
     subscribe,
 }: PropsInner) => {
-    const { participantID, faction, name, imageAvatar, tier } = warMachine
+    const { hash, participantID, faction, name, imageAvatar, tier } = warMachine
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -134,7 +134,7 @@ const WarMachineItemInner = ({
                 if (payload) setGameAbilities(payload)
             },
             {
-                participantID,
+                hash,
             },
         )
     }, [subscribe, state, faction_id, participantID, warMachinefaction_id])

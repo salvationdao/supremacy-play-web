@@ -4,13 +4,15 @@ import { useTheme } from "@mui/styles"
 import { useEffect, useState } from "react"
 import { FactionAbilityItem } from ".."
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
+import { colors } from "../../theme/theme"
 import { GameAbility } from "../../types"
 
 export const FactionAbilities = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
+    const { factionsAll } = useGame()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const { user, faction_id } = useGameServerAuth()
 
@@ -18,7 +20,7 @@ export const FactionAbilities = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !faction_id || faction_id === NullUUID) return
         return subscribe<GameAbility[] | undefined>(
-            GameServerKeys.SubFactionAbilities,
+            GameServerKeys.SubFactionUniqueAbilities,
             (payload) => setGameAbilities(payload),
             null,
         )
@@ -29,23 +31,25 @@ export const FactionAbilities = () => {
     return (
         <Fade in={true}>
             <Box>
-                <Divider sx={{ mb: 1.6, borderColor: theme.factionTheme.primary, opacity: 0.28 }} />
+                <Divider sx={{ mb: 2.3, borderColor: theme.factionTheme.primary, opacity: 0.28 }} />
                 <Stack spacing={0.7}>
                     <Stack direction="row" spacing={0.6} alignItems="center">
-                        <Box
-                            sx={{
-                                width: 19,
-                                height: 19,
-                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user?.faction.logo_blob_id})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "contain",
-                                mb: 0.3,
-                            }}
-                        />
-                        <Typography
-                            sx={{ lineHeight: 1, color: theme.factionTheme.primary, fontWeight: "fontWeightBold" }}
-                        >
+                        {user && (
+                            <Box
+                                sx={{
+                                    width: 19,
+                                    height: 19,
+                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
+                                        factionsAll[user.faction_id].logo_blob_id
+                                    })`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "contain",
+                                    mb: 0.3,
+                                }}
+                            />
+                        )}
+                        <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>
                             SYNDICATE UNIQUE SKILLS
                         </Typography>
                     </Stack>

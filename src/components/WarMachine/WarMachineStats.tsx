@@ -55,7 +55,7 @@ export const WarMachineStats = () => {
     // Subscribe to the result of the vote
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerWarMachineLocationUpdated, () => console.log(""), null)
+        return subscribe(GameServerKeys.TriggerWarMachineLocationUpdated, () => null, null)
     }, [state, subscribe])
 
     // Determine whether the mech items should be expanded out or collapsed

@@ -17,7 +17,7 @@
   REACT_APP_TOKEN_SALE_PAGE="https://sale.supremacy.game"
   REACT_APP_SUPREMACY_PAGE="https://supremacy.game/"
   REACT_APP_GAME_SERVER_HOSTNAME = "staging-api.supremacy.game"
-  REACT_APP_PASSPORT_WEB = "https://staging.deltaforce.xsyn.io/"
+  REACT_APP_PASSPORT_WEB = "https://staging.xsyn.dev/"
   REACT_APP_PASSPORT_SERVER_HOST = "staging-passport.xsyn.io"
   REACT_APP_STREAM_SITE = "https://video.ninja-cdn.com:5443/WebRTCAppEE/play.html?name=R3dvaIhZOxRr1645381571194"
   REACT_APP_STREAM_SITE_OFFICE = "https://watch-local-am.supremacy.game:5443/WebRTCAppEE/play.html?name=524280586954581049507513"

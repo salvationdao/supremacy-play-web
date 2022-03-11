@@ -4,21 +4,16 @@ import { PassportServerKeys } from "../keys"
 import { UserData } from "../types/passport"
 import { usePassportServerWebsocket } from "./passportServerSocket"
 
-interface AuthInitialState {
-    gameserverSessionID?: string
-}
-
 /**
  * A Container that handles Authorisation
  */
-const AuthContainer = createContainer((initialState?: AuthInitialState) => {
-    const gameserverSessionID = initialState?.gameserverSessionID
-
+const AuthContainer = createContainer(() => {
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
     const userID = user?.id
     const faction_id = user?.faction_id
 
+    const [gameserverSessionID, setGameserverSessionID] = useState("")
     const [sessionID, setSessionID] = useState("")
     const [sessionIDLoading, setSessionIDLoading] = useState(true)
     const [sessionIDError, setSessionIDError] = useState()
@@ -29,19 +24,27 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
 
     // get user by session id
     useEffect(() => {
-        if (state !== WebSocket.OPEN || user || sessionID) return
+        console.log("state is open?", state === WebSocket.OPEN)
+        console.log("userID", userID)
+        console.log("sessionID", sessionID)
+        console.log("sessionID", !!sessionID)
+        if (state !== WebSocket.OPEN || !!userID || sessionID) return
         ;(async () => {
             try {
+                console.log("triggered")
                 setSessionIDLoading(true)
+                console.log(state, "STATE")
                 const resp = await send<string>(PassportServerKeys.GetSessionID)
+                console.log("response", resp)
                 setSessionID(resp)
             } catch (e: any) {
+                console.log("error:", e)
                 setSessionIDError(e)
             } finally {
                 setSessionIDLoading(false)
             }
         })()
-    }, [send, state, user, sessionID])
+    }, [send, state, userID, sessionID])
 
     useEffect(() => {
         if (!subscribe || !sessionID || state !== WebSocket.OPEN) return
@@ -89,6 +92,8 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
         user,
         userID,
         faction_id,
+        gameserverSessionID,
+        setGameserverSessionID,
         sessionID,
         sessionIDLoading,
         sessionIDError,

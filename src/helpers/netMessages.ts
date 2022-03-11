@@ -1,9 +1,7 @@
 import {
-    GameAbilityTargetPrice,
-    NetMessageTick,
+    BattleAbilityProgress, GameAbilityProgress, NetMessageTick,
     NetMessageTickWarMachine,
-    NetMessageType,
-    ViewerLiveCount,
+    NetMessageType, ViewerLiveCount
 } from "../types"
 
 export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; payload: unknown } | undefined => {
@@ -49,35 +47,24 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 }
                 payload.warmachines.push(warmachineUpdate)
             }
+
             return { type, payload }
         }
         case NetMessageType.LiveVoting:
-        case NetMessageType.VotePriceTick:
-        case NetMessageType.SpoilOfWarTick:
-        case NetMessageType.VotePriceForecastTick: {
+        case NetMessageType.SpoilOfWarTick: {
             const enc = new TextDecoder("utf-8")
             const arr = new Uint8Array(buffer)
             const payload = enc.decode(arr).substring(1)
             return { type, payload }
         }
-        case NetMessageType.AbilityRightRatioTick: {
-            const enc = new TextDecoder("utf-8")
-            const arr = new Uint8Array(buffer)
-            const payload = enc
-                .decode(arr)
-                .substring(1)
-                .split(",")
-                .map<number>((str) => parseInt(str) / 10000)
-            return { type, payload }
-        }
-        case NetMessageType.GameAbilityTargetPriceTick: {
+        case NetMessageType.GameAbilityProgressTick: {
             const enc = new TextDecoder("utf-8")
             const arr = new Uint8Array(buffer)
             const payload = enc
                 .decode(arr)
                 .substring(1)
                 .split("|")
-                .map<GameAbilityTargetPrice>((str) => {
+                .map<GameAbilityProgress>((str) => {
                     const strArr = str.split("_")
                     return {
                         id: strArr[0],
@@ -88,6 +75,25 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 })
             return { type, payload }
         }
+        case NetMessageType.BattleAbilityProgressTick: {
+            const enc = new TextDecoder("utf-8")
+            const arr = new Uint8Array(buffer)
+
+            const payload: BattleAbilityProgress[] = enc
+                .decode(arr)
+                .substring(1)
+                .split("|")
+                .map<BattleAbilityProgress>((str) => {
+                    const strArr = str.split("_")
+                    return {
+                        faction_id: strArr[0],
+                        sups_cost: strArr[1],
+                        current_sups: strArr[2],
+                    }
+                })
+
+            return { type, payload }
+        }
         case NetMessageType.ViewerLiveCountTick: {
             const enc = new TextDecoder("utf-8")
             const arr = new Uint8Array(buffer)
@@ -95,7 +101,7 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 red_mountain: 0,
                 boston: 0,
                 zaibatsu: 0,
-                Other: 0,
+                other: 0,
             }
             enc.decode(arr)
                 .substring(1)
@@ -113,7 +119,7 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                             payload.zaibatsu = parseInt(strArr[1])
                             break
                         case "O":
-                            payload.Other = parseInt(strArr[1])
+                            payload.other = parseInt(strArr[1])
                             break
                     }
                 })

@@ -3,28 +3,30 @@ export enum GameServerKeys {
     Welcome = "WELCOME",
     UserSubscribe = "USER:SUBSCRIBE",
     AuthSessionIDGet = "AUTH:SESSION:ID:GET",
+    RingCheck = "RING:CHECK",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
 
     // Voting abilities
-    SubVoteStageUpdated = "VOTE:STAGE:UPDATED",
-    SubVoteWinnerAnnouncement = "VOTE:WINNER:ANNOUNCEMENT",
-    SubBattleAbility = "VOTE:BATTLE:ABILITY:UPDATED",
-    SubFactionAbilities = "FACTION:ABILITIES:UPDATED",
+    SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
+    SubBribeWinnerAnnouncement = "BRIBE:WINNER:SUBSCRIBE",
+    SubBattleAbility = "BATTLE:ABILITY:UPDATED",
+    SubFactionUniqueAbilities = "FACTION:UNIQUE:ABILITIES:UPDATED",
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
-    GameAbilityContribute = "GAME:ABILITY:CONTRIBUTE",
-    SubmitVoteAbilityRight = "VOTE:ABILITY:RIGHT",
+    ContributeFactionUniqueAbility = "FACTION:UNIQUE:ABILITY:CONTRIBUTE",
+    BribeBattleAbility = "BATTLE:ABILITY:BRIBE",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
+    // Game Use
+    GameUserOnline = "GAME:ONLINE",
+
     // Net message subscription
-    TriggerLiveVoteUpdated = "LIVE:VOTE:UPDATED",
     TriggerWarMachineLocationUpdated = "WAR:MACHINE:LOCATION:UPDATED",
     TriggerViewerLiveCountUpdated = "VIEWER:LIVE:COUNT:UPDATED",
     TriggerSpoilOfWarUpdated = "SPOIL:OF:WAR:UPDATED",
-    TriggerAbilityRightRatio = "ABILITY:RIGHT:RATIO:UPDATED",
-    TriggerFactionAbilityPriceUpdated = "FACTION:ABILITY:PRICE:UPDATED",
-    TriggerFactionVotePriceUpdated = "FACTION:VOTE:PRICE:UPDATED",
+    TriggerFactionAbilityPriceUpdated = "ABILITY:PRICE:UPDATED",
+    TriggerBattleAbilityProgressUpdated = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
 
     // Global messages
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
@@ -40,8 +42,6 @@ export enum GameServerKeys {
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubAISpawned = "AI:SPAWNED",
-    GetFactionsColor = "FACTION:COLOUR",
-    GetFactionVotePrice = "FACTION:VOTE:PRICE",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubFactionQueueLength = "FACTION:QUEUE:JOIN",

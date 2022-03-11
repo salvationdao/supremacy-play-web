@@ -4,7 +4,7 @@ import { GAME_SERVER_HOSTNAME } from "../constants"
 import { parseNetMessage } from "../helpers/netMessages"
 import { useDebounce } from "../hooks"
 import { GameServerKeys } from "../keys"
-import { GameAbilityTargetPrice, NetMessageTick, NetMessageType } from "../types"
+import { GameAbilityProgress, NetMessageTick, NetMessageType } from "../types"
 
 // websocket message struct
 interface MessageData {
@@ -194,8 +194,16 @@ const GameServerWebsocket = (): WebSocketProperties => {
 
     const sendMessage = useCallback(
         (msg: Message<any>) => {
-            if (!webSocket || !webSocket.current) throw new Error("no websocket")
-            webSocket.current.send(JSON.stringify(msg))
+            const sendFn = () => {
+                console.log(webSocket.current && webSocket.current.readyState )
+
+                if (!webSocket.current || webSocket.current.readyState !== WebSocket.OPEN) {
+                    setTimeout(sendFn, 500)
+                    return
+                }
+                webSocket.current.send(JSON.stringify(msg))
+            }
+            sendFn()
         },
         [webSocket.current],
     )
@@ -334,8 +342,8 @@ const GameServerWebsocket = (): WebSocketProperties => {
                     const parsedNetMessage = parseNetMessage(message.data)
                     if (parsedNetMessage === undefined) return
                     // parse faction ability net message individually
-                    if (parsedNetMessage.type === NetMessageType.GameAbilityTargetPriceTick) {
-                        for (const data of parsedNetMessage.payload as GameAbilityTargetPrice[]) {
+                    if (parsedNetMessage.type === NetMessageType.GameAbilityProgressTick) {
+                        for (const data of parsedNetMessage.payload as GameAbilityProgress[]) {
                             if (abilitySubs.current[data.id]) {
                                 for (const callback of abilitySubs.current[data.id]) {
                                     callback(data)

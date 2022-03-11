@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { NullUUID } from "../constants"
-import { GameServerKeys } from "../keys"
-import { VotingState, Map, WarMachineState, NetMessageType, GameAbility } from "../types"
-import { useGameServerAuth } from "."
+import { GameServerKeys, PassportServerKeys } from "../keys"
+import { BribeStage, Map, WarMachineState, GameAbility } from "../types"
+import { useGameServerAuth, usePassportServerWebsocket } from "."
 import { useGameServerWebsocket } from "."
-import BigNumber from "bignumber.js"
+import { FactionGeneralData } from "../types/passport"
 
-export interface VotingStateResponse {
-    phase: VotingState
+export interface BribeStageResponse {
+    phase: BribeStage
     end_time: Date
 }
 
@@ -23,29 +23,28 @@ export interface WinnerAnnouncementResponse {
     end_time: Date
 }
 
-export interface FactionsColorResponse {
-    red_mountain: string
-    boston: string
-    zaibatsu: string
+export interface FactionsAll {
+    [faction_id: string]: FactionGeneralData
 }
 
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
-    const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
-    const { faction_id } = useGameServerAuth()
-    const [factionsColor, setFactionsColor] = useState<FactionsColorResponse>()
+    const { state, send, subscribe } = useGameServerWebsocket()
+    const { send: sendPassportWS } = usePassportServerWebsocket()
+    const { faction_id, userID } = useGameServerAuth()
+
+    // States
+    const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
-    const [factionVotePrice, setFactionVotePrice] = useState<BigNumber>(new BigNumber("0"))
-    const [prevFactionVotePrice, setPrevFactionVotePrice] = useState<BigNumber>(new BigNumber("0"))
-    const [votingState, setVotingState] = useState<VotingStateResponse | undefined>()
+    const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [highlightedMechHash, setHighlightedMechHash] = useState<string | undefined>(undefined)
 
     // Subscribe for game settings
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<GameSettingsResponse | undefined>(
             GameServerKeys.SubGameSettings,
             (payload) => {
@@ -53,25 +52,25 @@ export const GameContainer = createContainer(() => {
                 setMap(payload.game_map)
                 setWarMachines(payload.war_machines)
                 setSpawnedAI(payload.spawned_ai)
+
+                send(GameServerKeys.GameUserOnline)
             },
             null,
         )
-    }, [state, subscribe])
-
-    // Triggered faction ability or war machine ability price ticking
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
-        return subscribe(GameServerKeys.TriggerFactionAbilityPriceUpdated, () => console.log(""), null)
-    }, [state, subscribe, faction_id])
+    }, [state, subscribe, userID])
 
     // Get main color of each factions
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
         ;(async () => {
             try {
-                const resp = await send<FactionsColorResponse>(GameServerKeys.GetFactionsColor)
+                const resp = await sendPassportWS<FactionGeneralData[]>(PassportServerKeys.GetFactionsAll)
                 if (resp) {
-                    setFactionsColor(resp)
+                    const currentData = {} as FactionsAll
+                    resp.forEach((f) => {
+                        currentData[f.id] = f
+                    })
+                    setFactionsAll(currentData)
                 }
             } catch (e) {
                 console.log(e)
@@ -80,47 +79,13 @@ export const GameContainer = createContainer(() => {
         })()
     }, [send, state])
 
-    // Get very first faction vote price
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !faction_id || faction_id === NullUUID) return
-        ;(async () => {
-            try {
-                const resp = await send<string>(GameServerKeys.GetFactionVotePrice)
-                if (resp) {
-                    setFactionVotePrice(new BigNumber(resp).dividedBy(new BigNumber("1000000000000000000")))
-                }
-            } catch (e) {
-                console.log(e)
-                return false
-            }
-        })()
-    }, [send, state, faction_id])
-
-    // Trigger faction vote price net message listener
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
-        return subscribe(GameServerKeys.TriggerFactionVotePriceUpdated, () => console.log(""))
-    }, [state, subscribe, faction_id])
-
-    // Listen on current price change
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeNetMessage || !faction_id || faction_id === NullUUID) return
-        return subscribeNetMessage<string | undefined>(NetMessageType.VotePriceTick, (payload) => {
-            if (!payload) return
-            setFactionVotePrice((prev) => {
-                setPrevFactionVotePrice(prev)
-                return new BigNumber(payload).dividedBy(new BigNumber("1000000000000000000"))
-            })
-        })
-    }, [state, subscribeNetMessage, faction_id])
-
     // Subscirbe on current voting state
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
-        return subscribe<VotingStateResponse | undefined>(
-            GameServerKeys.SubVoteStageUpdated,
+        return subscribe<BribeStageResponse | undefined>(
+            GameServerKeys.SubBribeStageUpdated,
             (payload) => {
-                setVotingState(payload)
+                setBribeStage(payload)
             },
             null,
         )
@@ -130,7 +95,7 @@ export const GameContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe<WinnerAnnouncementResponse | undefined>(
-            GameServerKeys.SubVoteWinnerAnnouncement,
+            GameServerKeys.SubBribeWinnerAnnouncement,
             (payload) => setWinner(payload),
             null,
         )
@@ -150,10 +115,8 @@ export const GameContainer = createContainer(() => {
     }, [state, subscribe])
 
     return {
-        votingState,
-        factionsColor,
-        factionVotePrice,
-        prevFactionVotePrice,
+        bribeStage,
+        factionsAll,
         winner,
         setWinner,
         map,

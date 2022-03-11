@@ -18,6 +18,7 @@ const QueueContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !user) return
         return subscribe<QueueFeed>(GameServerKeys.SubFactionQueueLength, (payload) => {
+            if (!payload) return
             setQueueLength(payload.queue_length)
             setQueueCost(`${parseFloat(supFormatter(`${payload.queue_cost}`, 18))}`)
         })

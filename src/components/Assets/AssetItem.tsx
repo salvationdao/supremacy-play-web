@@ -261,7 +261,7 @@ export const AssetItem = ({
     return (
         <Stack
             direction="row"
-            spacing={1.2}
+            spacing={1.8}
             sx={{
                 position: "relative",
                 px: 1.3,
