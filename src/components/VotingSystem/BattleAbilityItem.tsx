@@ -19,6 +19,19 @@ import { colors } from "../../theme/theme"
 import { BattleAbility as BattleAbilityType, BattleAbilityProgress, NetMessageType, User } from "../../types"
 import { zoomEffect } from "../../theme/keyframes"
 
+interface BattleAbilityProgressBigNum {
+    faction_id: string
+    sups_cost: BigNumber
+    current_sups: BigNumber
+}
+
+interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
+    bribeStage?: BribeStageResponse
+    user?: User
+    faction_id?: string
+    factionsAll: FactionsAll
+}
+
 export const BattleAbilityItem = () => {
     const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
     const { user, faction_id } = useGameServerAuth()
@@ -36,19 +49,6 @@ export const BattleAbilityItem = () => {
             factionsAll={factionsAll}
         />
     )
-}
-
-interface BattleAbilityProgressBigNum {
-    faction_id: string
-    sups_cost: BigNumber
-    current_sups: BigNumber
-}
-
-interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
-    bribeStage?: BribeStageResponse
-    user?: User
-    faction_id?: string
-    factionsAll: FactionsAll
 }
 
 const BattleAbilityItemInner = ({
@@ -94,7 +94,7 @@ const BattleAbilityItemInner = ({
                 // Put own faction progress first, then convert string to big number and set state
                 setBattleAbilityProgress(
                     payload
-                        .sort((a, b) => (b.faction_id == faction_id ? 1 : b.faction_id.localeCompare(a.faction_id)))
+                        .sort((a, b) => a.faction_id.localeCompare(b.faction_id))
                         .map((a) => ({
                             faction_id: a.faction_id,
                             sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
@@ -117,7 +117,6 @@ const BattleAbilityItemInner = ({
             battleAbilityProgress[0].sups_cost.isGreaterThanOrEqualTo(battleAbilityProgress[0].current_sups),
         [battleAbilityProgress, bribeStage],
     )
-    const isCooldown = useMemo(() => bribeStage?.phase == "COOLDOWN", [bribeStage])
 
     if (!battleAbility || !battleAbilityProgress || battleAbilityProgress.length <= 0) return null
 
