@@ -247,7 +247,7 @@ export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
         case "fiend":
             image = MultiplierFiend
             break
-        case "juke-e":
+        case "junk-e":
             image = MultiplierJunkE
             break
         case "mech head":
