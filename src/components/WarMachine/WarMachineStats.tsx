@@ -1,13 +1,12 @@
 import { Box, Slide, Stack } from "@mui/material"
-import { colors } from "../../theme/theme"
-import { WarMachineItem } from "./WarMachineItem"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import { useGameServerAuth, useDimension, useGame, useOverlayToggles, useGameServerWebsocket } from "../../containers"
 import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
-import { GameServerKeys } from "../../keys"
 import { MINI_MAP_DEFAULT_WIDTH } from "../../constants"
+import { useDimension, useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
+import { GameServerKeys } from "../../keys"
+import { WarMachineItem } from "./WarMachineItem"
 
 const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
 const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245
@@ -69,7 +68,6 @@ export const WarMachineStats = () => {
                 shouldBeExpandedFaction,
                 shouldBeExpandedOthers,
             }
-
         const factionMechs = warMachines.filter((wm) => wm.factionID == faction_id)
         const otherMechs = warMachines.filter((wm) => wm.factionID != faction_id)
 

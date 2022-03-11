@@ -37,16 +37,18 @@ export enum GameServerKeys {
 
     // Queue
     JoinQueue = "BATTLE:QUEUE:JOIN",
-    LeaveQueue = "WAR:WARMACHINE:QUEUE:LEAVE",
+    LeaveQueue = "BATTLE:QUEUE:LEAVE",
+    SubQueueStatus = "BATTLE:QUEUE:STATUS",
+    SubAssetQueueStatus = "WAR:MACHINE:QUEUE:STATUS",
 
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubAISpawned = "AI:SPAWNED",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
-    SubFactionQueueLength = "FACTION:QUEUE:JOIN",
     SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
+    SubscribeUserStat = "USER:STAT:SUBSCRIBE",
 }
 
 export enum PassportServerKeys {
@@ -72,7 +74,6 @@ export enum PassportServerKeys {
     // Assets
     SubAssetList = "USER:ASSET:LIST",
     SubAssetData = "ASSET:SUBSCRIBE",
-    SubAssetQueuePosition = "WAR:MACHINE:QUEUE:POSITION:SUBSCRIBE",
 
     // Transactions
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",

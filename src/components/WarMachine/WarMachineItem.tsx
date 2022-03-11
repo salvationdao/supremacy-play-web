@@ -12,7 +12,7 @@ import {
 } from ".."
 import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useGameServerAuth, useDrawer, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"

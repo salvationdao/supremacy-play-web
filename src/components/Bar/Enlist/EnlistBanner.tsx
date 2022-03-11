@@ -1,11 +1,11 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
 import { BarExpandable, TooltipHelper } from "../.."
 import { SvgAbility, SvgDeath, SvgView, SvgWrapperProps } from "../../../assets"
-import { useEffect, useState } from "react"
 import { colors } from "../../../theme/theme"
-import { usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
+import { useGameServerWebsocket, usePassportServerAuth } from "../../../containers"
 import { UserStat } from "../../../types/passport"
-import { PassportServerKeys } from "../../../keys"
+import { GameServerKeys } from "../../../keys"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 
 const BannerInfo = ({
@@ -50,7 +50,8 @@ const BannerInfo = ({
 
 export const EnlistBanner = () => {
     const { user, userID } = usePassportServerAuth()
-    const { state, subscribe } = usePassportServerWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
+
     const [userStat, setUserStat] = useState<UserStat>({
         id: "",
         total_ability_triggered: 0,
@@ -61,7 +62,7 @@ export const EnlistBanner = () => {
     // start to subscribe user update
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !userID) return
-        return subscribe<UserStat>(PassportServerKeys.SubscribeUserStat, (us) => {
+        return subscribe<UserStat>(GameServerKeys.SubscribeUserStat, (us) => {
             if (!us) return
             setUserStat(us)
         })
