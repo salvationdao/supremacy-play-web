@@ -34,14 +34,14 @@ export const AssetItem = ({
 }) => {
     const { user } = usePassportServerAuth()
     const { state, subscribe } = usePassportServerWebsocket()
-    const { state: gsState, send: sendGS } = useGameServerWebsocket()
+    const { state: gsState, send: sendGS, subscribe: gsSubscribe } = useGameServerWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
 
     const [mouseOver, setMouseOver] = useState<boolean>(false)
     const [removing, setRemoving] = useState<boolean>(false)
 
     const [assetData, setAssetData] = useState<Asset>(asset)
-    const [queuePosition, setQueuePosition] = useState<AssetQueueStat>()
+    const [queueStatus, setQueueStatus] = useState<AssetQueueStat>()
     const [durability, setDurability] = useState<AssetDurability>()
 
     const rarityDeets = getRarityDeets(assetData.tier)
@@ -74,21 +74,23 @@ export const AssetItem = ({
 
     // Subscribe on asset queue position
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !asset) return
-        return subscribe<AssetQueueStat>(
-            PassportServerKeys.SubAssetQueuePosition,
+        if (state !== WebSocket.OPEN || !gsSubscribe || !asset) return
+        return gsSubscribe<AssetQueueStat>(
+            GameServerKeys.SubAssetQueueStatus,
             (payload) => {
                 if (!payload) return
-                setQueuePosition(payload)
+                console.log("-----------")
+                console.log(payload)
+                setQueueStatus(payload)
             },
             { asset_hash: asset.hash },
         )
-    }, [state, subscribe])
+    }, [state, gsSubscribe, asset])
 
     const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
     const isRepairing = !!durability?.repair_type
-    const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
-    const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
+    const isInBattle = queueStatus && queueStatus.queue_position && queueStatus.queue_position == -1
+    const isInQueue = queueStatus && queueStatus.queue_position && queueStatus.queue_position >= 1
 
     if (
         !assetData ||
@@ -289,9 +291,11 @@ export const AssetItem = ({
                     }}
                 />
 
-                {isGameServerUp && isInQueue && queuePosition && queuePosition.position && (
-                    <Box sx={{ position: "absolute" }}>
-                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{queuePosition.position}</Typography>
+                {isGameServerUp && isInQueue && queueStatus && queueStatus.queue_position && (
+                    <Box sx={{ position: "absolute", top: 0, left: 0 }}>
+                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>
+                            {queueStatus.queue_position}
+                        </Typography>
                     </Box>
                 )}
 

@@ -39,6 +39,7 @@ export enum GameServerKeys {
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
     SubQueueStatus = "BATTLE:QUEUE:STATUS",
+    SubAssetQueueStatus = "WAR:MACHINE:QUEUE:STATUS",
 
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
@@ -71,7 +72,6 @@ export enum PassportServerKeys {
     // Assets
     SubAssetList = "USER:ASSET:LIST",
     SubAssetData = "ASSET:SUBSCRIBE",
-    SubAssetQueuePosition = "WAR:MACHINE:QUEUE:POSITION:SUBSCRIBE",
     SubAssetDurability = "ASSET:DURABILITY:SUBSCRIBE",
 
     // Transactions
