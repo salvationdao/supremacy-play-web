@@ -1,46 +1,33 @@
 import { Slide, Stack } from "@mui/material"
 import { Box } from "@mui/system"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 import {
     SectionBottom,
     SectionMostFrequentAbilityExecutor,
+    SectionMultipliers,
     SectionTopSups,
     SectionTopSupsFaction,
     SectionWinner,
 } from ".."
-import { useGameServerWebsocket, useOverlayToggles } from "../../containers"
+import { useGame, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
-import { GameServerKeys } from "../../keys"
 import { sampleBattleEndDetail } from "../../samepleData"
 import { colors } from "../../theme/theme"
-import { BattleEndDetail } from "../../types"
 
 const SPAWN_TEST_DATA = false
 
 export const BOTTOM_BUTTONS_HEIGHT = 50
 
 export const BattleEndScreen = () => {
-    const { state, subscribe } = useGameServerWebsocket()
+    const { bribeStage, battleEndDetail, setBattleEndDetail } = useGame()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
-    const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
 
-    // Subscribe on battle end information
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<BattleEndDetail>(
-            GameServerKeys.SubBattleEndDetailUpdated,
-            (payload) => {
-                if (!payload) {
-                    toggleIsEndBattleDetailOpen(false)
-                    return
-                }
-                setBattleEndDetail(payload)
-                toggleIsEndBattleDetailEnabled(true)
-                toggleIsEndBattleDetailOpen(true)
-            },
-            null,
-        )
-    }, [state, subscribe])
+        if (battleEndDetail) {
+            toggleIsEndBattleDetailEnabled(true)
+            toggleIsEndBattleDetailOpen(true)
+        }
+    }, [battleEndDetail])
 
     useEffect(() => {
         if (SPAWN_TEST_DATA) {
@@ -50,13 +37,17 @@ export const BattleEndScreen = () => {
         }
     }, [])
 
+    useEffect(() => {
+        if (bribeStage?.phase !== "HOLD") toggleIsEndBattleDetailOpen(false)
+    }, [bribeStage])
+
     const primaryColor =
-        battleEndDetail && battleEndDetail.winningFaction
-            ? battleEndDetail.winningFaction.theme.primary
+        battleEndDetail && battleEndDetail.winning_faction
+            ? battleEndDetail.winning_faction.theme.primary
             : colors.neonBlue
     const backgroundColor =
-        battleEndDetail && battleEndDetail.winningFaction
-            ? shadeColor(battleEndDetail.winningFaction.theme.primary, -96)
+        battleEndDetail && battleEndDetail.winning_faction
+            ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96)
             : colors.darkNavyBlue
 
     const backgroundColorGradient = useMemo(
@@ -66,10 +57,10 @@ export const BattleEndScreen = () => {
         [backgroundColor],
     )
 
-    if (!battleEndDetail || !battleEndDetail.winningFaction) return null
+    if (!battleEndDetail || !battleEndDetail.winning_faction) return null
 
     return (
-        <Slide key={battleEndDetail.battleID} in={isEndBattleDetailOpen} direction="right">
+        <Slide key={battleEndDetail.battle_id} in={isEndBattleDetailOpen} direction="right">
             <Box
                 sx={{
                     position: "absolute",
@@ -95,10 +86,10 @@ export const BattleEndScreen = () => {
                     }}
                 >
                     <Stack
-                        spacing={5}
+                        spacing={4}
                         sx={{
                             height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}px)`,
-                            pr: 3.6,
+                            pr: 2.2,
                             pb: 4,
                             overflowY: "auto",
                             overflowX: "auto",
@@ -117,6 +108,7 @@ export const BattleEndScreen = () => {
                             },
                         }}
                     >
+                        <SectionMultipliers battleEndDetail={battleEndDetail} />
                         <SectionWinner battleEndDetail={battleEndDetail} />
                         <SectionTopSups battleEndDetail={battleEndDetail} />
                         <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />

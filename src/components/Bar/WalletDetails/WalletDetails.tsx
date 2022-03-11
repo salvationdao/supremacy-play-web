@@ -4,39 +4,52 @@ import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
 import { useEffect, useState } from "react"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgSupToken, SvgWallet } from "../../../assets"
-import { usePassportServerAuth, useWallet } from "../../../containers"
-import { PassportServerKeys } from "../../../keys"
+import {
+    useGame,
+    useGameServerAuth,
+    useGameServerWebsocket,
+    usePassportServerAuth,
+    useWallet,
+} from "../../../containers"
+import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { Transaction } from "../../../types/passport"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { TOKEN_SALE_PAGE } from "../../../constants"
-
-export interface SupsMultiplier {
-    key: string
-    value: number
-    expiredAt: Date
-}
+import { MultipliersAll } from "../../../types"
 
 export const WalletDetails = () => {
+    const { state, subscribe } = useGameServerWebsocket()
     const { setOnWorldSupsRaw } = useWallet()
+    const { battleEndDetail } = useGame()
     const { user, userID } = usePassportServerAuth()
+    const { userID: gameserverUserID } = useGameServerAuth()
     const [isTooltipOpen, toggleIsTooltipOpen] = useToggle()
     const { payload: sups } = usePassportServerSecureSubscription<string>(PassportServerKeys.SubscribeWallet)
-    const { payload: multipliers } = usePassportServerSecureSubscription<SupsMultiplier[]>(
-        PassportServerKeys.SubscribeSupsMultiplier,
-    )
-
-    const [supsMultipliers, setSupsMultipliers] = useState<{ [key: string]: SupsMultiplier }>({})
-    const [multipliersCleaned, setMultipliersCleaned] = useState<SupsMultiplier[]>([])
-    const [totalMultipliers, setTotalMultipliers] = useState(0)
-    const [reRender, toggleReRender] = useToggle()
-
+    const [multipliers, setMultipliers] = useState<MultipliersAll>()
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const { payload: transactionsPayload } = usePassportServerSecureSubscription<Transaction[]>(
         PassportServerKeys.SubscribeUserTransactions,
     )
     const { payload: latestTransactionPayload, setArguments: latestTransactionArguments } =
         usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions)
+
+    useEffect(() => {
+        if (battleEndDetail && battleEndDetail.multipliers.length > 0)
+            setMultipliers({
+                total_multipliers: battleEndDetail.total_multipliers,
+                multipliers: battleEndDetail.multipliers,
+            })
+    }, [battleEndDetail])
+
+    // Subscribe to multipliers
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !gameserverUserID || gameserverUserID === NullUUID) return
+        return subscribe<MultipliersAll>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
+            if (!payload || payload.multipliers.length <= 0) return
+            setMultipliers(payload)
+        })
+    }, [state, subscribe, gameserverUserID])
 
     // get initial 5 transactions
     useEffect(() => {
@@ -61,52 +74,6 @@ export const WalletDetails = () => {
         if (!sups) return
         setOnWorldSupsRaw(sups)
     }, [sups, setOnWorldSupsRaw])
-
-    // Subscription only sends back new multipliers, not including existing ones,
-    // so this useEffect adds new ones in.
-    useEffect(() => {
-        const mults: { [key: string]: SupsMultiplier } = {}
-
-        if (!multipliers || multipliers.length === 0) {
-            setSupsMultipliers({})
-            return
-        }
-
-        multipliers.forEach((m) => {
-            mults[m.key] = { ...m, value: m.value / 100 }
-        })
-
-        setSupsMultipliers(mults)
-        toggleReRender()
-    }, [multipliers])
-
-    useEffect(() => {
-        if (Object.keys(supsMultipliers).length <= 0) return
-        let sum = 0
-        const list: SupsMultiplier[] = []
-        Object.keys(supsMultipliers).forEach((sm) => {
-            sum += supsMultipliers[sm].value
-            list.push(supsMultipliers[sm])
-        })
-        setTotalMultipliers(sum)
-        // Sort longest expiring first before returning
-        setMultipliersCleaned(list.sort((a, b) => (b.expiredAt > a.expiredAt ? 1 : -1)))
-    }, [supsMultipliers, reRender])
-
-    const selfDestroyed = (key: string) => {
-        const mults: { [key: string]: SupsMultiplier } = {}
-        if (!multipliers || multipliers.length === 0) {
-            setSupsMultipliers(mults)
-            return
-        }
-
-        multipliers.forEach((m) => {
-            if (m.key === key) return
-            mults[m.key] = m
-        })
-
-        setSupsMultipliers(mults)
-    }
 
     if (!sups) {
         return (
@@ -167,10 +134,7 @@ export const WalletDetails = () => {
                             title={
                                 <SupsTooltipContent
                                     sups={sups}
-                                    supsMultipliers={supsMultipliers}
-                                    selfDestroyed={selfDestroyed}
-                                    multipliersCleaned={multipliersCleaned}
-                                    totalMultipliers={totalMultipliers}
+                                    multipliers={multipliers}
                                     userID={userID || ""}
                                     transactions={transactions}
                                     onClose={() => toggleIsTooltipOpen(false)}
@@ -205,23 +169,26 @@ export const WalletDetails = () => {
                                 <Typography sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1 }}>
                                     {sups ? supFormatterNoFixed(sups, 2) : "0.00"}
                                 </Typography>
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        ml: 1,
-                                        px: 1,
-                                        pt: 0.5,
-                                        pb: 0.3,
-                                        textAlign: "center",
-                                        lineHeight: 1,
-                                        fontFamily: "Nostromo Regular Bold",
-                                        border: `${colors.orange} 1px solid`,
-                                        color: colors.orange,
-                                        borderRadius: 0.6,
-                                    }}
-                                >
-                                    {totalMultipliers.toFixed(2)}x
-                                </Typography>
+
+                                {multipliers && (
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            ml: 1,
+                                            px: 1,
+                                            pt: 0.5,
+                                            pb: 0.3,
+                                            textAlign: "center",
+                                            lineHeight: 1,
+                                            fontFamily: "Nostromo Regular Bold",
+                                            border: `${colors.orange} 1px solid`,
+                                            color: colors.orange,
+                                            borderRadius: 0.6,
+                                        }}
+                                    >
+                                        {multipliers.total_multipliers}
+                                    </Typography>
+                                )}
                             </Stack>
                         </Tooltip>
 

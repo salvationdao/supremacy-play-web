@@ -15,31 +15,20 @@ import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
 
 const DrawerContent = () => {
-    const { state, send, subscribe } = usePassportServerWebsocket()
-    const { factionID } = usePassportServerAuth()
+    const { state, subscribe } = usePassportServerWebsocket()
+    const { faction_id } = usePassportServerAuth()
 
     const [assets, setAssets] = useState<Asset[]>([])
     const { queueLength, queueCost } = useQueue()
 
-    const [contractReward, setContractReward] = useState<string>()
-
     // Subscribe to the list of mechs that the user owns
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe<Asset[]>(PassportServerKeys.SubAssetList, (payload) => {
             if (!payload) return
             setAssets(payload)
         })
-    }, [state, subscribe, factionID])
-
-    // Subscribe to the contract reward
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
-        return subscribe<string>(PassportServerKeys.SubFactionContractReward, (payload) => {
-            if (!payload) return
-            setContractReward(payload)
-        })
-    }, [state, subscribe, factionID])
+    }, [state, subscribe, faction_id])
 
     return (
         <Stack sx={{ flex: 1 }}>
@@ -90,23 +79,14 @@ const DrawerContent = () => {
                                 {assets.map((a, index) => (
                                     <AssetItem
                                         key={a.hash}
-                                        passportWeb={PASSPORT_WEB}
                                         asset={a}
                                         queueCost={queueCost}
                                         queueLength={queueLength}
-                                        contractReward={contractReward}
                                         renderQueuedOnly
                                     />
                                 ))}
                                 {assets.map((a, index) => (
-                                    <AssetItem
-                                        key={a.hash}
-                                        passportWeb={PASSPORT_WEB}
-                                        asset={a}
-                                        queueCost={queueCost}
-                                        queueLength={queueLength}
-                                        contractReward={contractReward}
-                                    />
+                                    <AssetItem key={a.hash} asset={a} queueCost={queueCost} queueLength={queueLength} />
                                 ))}
                             </>
                         ) : (

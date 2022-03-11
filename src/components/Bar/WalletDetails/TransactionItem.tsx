@@ -47,7 +47,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                     color: "grey !important",
                 }}
             >
-                {moment(transaction.createdAt).format("h:mm:ss A")}
+                {moment(transaction.created_at).format("h:mm:ss A")}
             </Typography>
 
             <Tooltip
@@ -80,7 +80,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                         size="small"
                         sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
                         onClick={() => {
-                            navigator.clipboard.writeText(transaction.transactionReference).then(
+                            navigator.clipboard.writeText(transaction.transaction_reference).then(
                                 () => toggleCopySuccess(true),
                                 (err) => toggleCopySuccess(false),
                             )

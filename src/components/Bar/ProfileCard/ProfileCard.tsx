@@ -9,7 +9,7 @@ import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 
 export const ProfileCard = () => {
-    const { user } = usePassportServerAuth()
+    const { user, sessionID } = usePassportServerAuth()
     const [renderConnectButton, toggleRenderConnectButton] = useToggle()
     const [anchorEl, setAnchorEl] = useState<HTMLAnchorElement | null>(null)
 
@@ -24,7 +24,7 @@ export const ProfileCard = () => {
         return <ConnectButton renderButton={renderConnectButton} />
     }
 
-    const { username, avatarID, faction } = user
+    const { username, avatar_id, faction } = user
     const profileDropdownID = "profile_dropdown"
 
     return (
@@ -34,7 +34,7 @@ export const ProfileCard = () => {
                 barName={"profile"}
                 iconComponent={
                     <Avatar
-                        src={avatarID ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID}` : ""}
+                        src={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : ""}
                         alt={`${username}'s Avatar`}
                         sx={{
                             height: 29,
@@ -79,7 +79,7 @@ export const ProfileCard = () => {
                         }}
                     >
                         <Avatar
-                            src={avatarID ? `${PASSPORT_WEB}api/files/${avatarID}` : ""}
+                            src={avatar_id ? `${PASSPORT_WEB}api/files/${avatar_id}` : ""}
                             alt={`${username}'s Avatar`}
                             sx={{
                                 height: 26,

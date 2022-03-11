@@ -13,7 +13,7 @@ interface EnlistDetailsProps {
     popoverRef: React.MutableRefObject<null>
     popoverOpen: boolean
     togglePopoverOpen: (_state: boolean) => void
-    factionID: string
+    faction_id: string
     factionData: FactionGeneralData
 }
 
@@ -46,12 +46,12 @@ const Stat = ({
 }
 
 interface EnlistFactionRequest {
-    factionID: string
+    faction_id: string
 }
 
 const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) => {
     const factionStat = usePassportServerSubscription<FactionStat>(PassportServerKeys.SubscribeFactionStat, {
-        factionID: factionData.id,
+        faction_id: factionData.id,
     }).payload
 
     const [page, setPage] = useState(0)
@@ -62,7 +62,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
             return
         }
         try {
-            await send<any, EnlistFactionRequest>(PassportServerKeys.EnlistFaction, { factionID: factionData.id })
+            await send<any, EnlistFactionRequest>(PassportServerKeys.EnlistFaction, { faction_id: factionData.id })
         } catch (e) {
             throw typeof e === "string" ? e : "Something went wrong, please try again."
         }
@@ -71,7 +71,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
 
     const factionExtraInfo = () => {
         if (!factionStat) return null
-        const { velocity, recruitNumber, winCount, lossCount, killCount, deathCount, mvp } = factionStat
+        const { velocity, recruit_number, win_count, loss_count, kill_count, death_count, mvp } = factionStat
         return (
             <Fade in={true}>
                 <Stack direction="row" flexWrap="wrap" sx={{ pt: 1, px: 1, "& > *": { width: "50%", pb: 1.8 } }}>
@@ -84,24 +84,24 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                         PrefixSvg={<SvgSupToken size="14px" />}
                     />
 
-                    <Stat title="Recruits" content={recruitNumber} />
+                    <Stat title="Recruits" content={recruit_number} />
                     {factionStat && (
                         <>
-                            <Stat title="Wins" content={winCount} />
-                            <Stat title="Losses" content={lossCount} />
+                            <Stat title="Wins" content={win_count} />
+                            <Stat title="Losses" content={loss_count} />
                             <Stat
                                 title="Win Rate"
                                 content={
-                                    winCount + lossCount === 0
+                                    win_count + loss_count === 0
                                         ? "0%"
-                                        : `${((winCount / (winCount + lossCount)) * 100).toFixed(0)}%`
+                                        : `${((win_count / (win_count + loss_count)) * 100).toFixed(0)}%`
                                 }
                             />
-                            <Stat title="Kills" content={killCount} />
-                            <Stat title="Deaths" content={deathCount} />
+                            <Stat title="Kills" content={kill_count} />
+                            <Stat title="Deaths" content={death_count} />
                             <Stat
                                 title="K/D"
-                                content={deathCount === 0 ? "0%" : `${((killCount / deathCount) * 100).toFixed(0)}%`}
+                                content={death_count === 0 ? "0%" : `${((kill_count / death_count) * 100).toFixed(0)}%`}
                             />
                             <Stat title="MVP" content={mvp?.username || ""} />
                         </>
@@ -114,8 +114,8 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
     const {
         label,
         theme: { primary, secondary },
-        logoBlobID,
-        backgroundBlobID,
+        logo_blob_id,
+        background_blob_id,
         description,
     } = factionData
 
@@ -128,7 +128,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                 sx={{
                     px: 2.6,
                     py: 3,
-                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${backgroundBlobID})`,
+                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${background_blob_id})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
@@ -138,7 +138,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
             >
                 <Box
                     component="img"
-                    src={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logoBlobID}`}
+                    src={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id}`}
                     alt={`${label} Logo`}
                     sx={{
                         width: "100%",
@@ -204,7 +204,7 @@ export const EnlistDetailsPopover = ({
     popoverRef,
     popoverOpen,
     togglePopoverOpen,
-    factionID,
+    faction_id,
     factionData,
 }: EnlistDetailsProps) => {
     const {

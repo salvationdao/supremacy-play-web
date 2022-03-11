@@ -27,10 +27,10 @@ const MapGrid = styled("table", {
 }))
 
 const GridCell = styled("td", {
-    shouldForwardProp: (prop) => prop !== "disabled",
-})<{ disabled?: boolean }>(({ disabled }) => ({
-    height: "50px",
-    width: "50px",
+    shouldForwardProp: (prop) => prop !== "disabled" && prop !== "width" && prop !== "height",
+})<{ disabled?: boolean; width: number; height: number }>(({ disabled, width, height }) => ({
+    height: `${width}px`,
+    width: `${height}px`,
     cursor: disabled ? "auto" : "pointer",
     border: disabled ? "unset" : `1px solid #FFFFFF40`,
     backgroundColor: disabled ? "#00000090" : "unset",
@@ -40,19 +40,27 @@ const GridCell = styled("td", {
 }))
 
 interface MapWarMachineProps {
+    gridWidth: number
+    gridHeight: number
     warMachines: WarMachineState[]
     map: Map
     enlarged: boolean
 }
 
-const MapWarMachines = ({ warMachines, map, enlarged }: MapWarMachineProps) => {
+const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged }: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
         <>
             {warMachines.map((wm) => (
                 <div key={`${wm.participantID} - ${wm.hash}`}>
-                    <MapWarMachine warMachine={wm} map={map} enlarged={enlarged} />
+                    <MapWarMachine
+                        gridWidth={gridWidth}
+                        gridHeight={gridHeight}
+                        warMachine={wm}
+                        map={map}
+                        enlarged={enlarged}
+                    />
                 </div>
             ))}
         </>
@@ -82,10 +90,8 @@ export const InteractiveMap = ({
     const [timeRemain, setTimeRemain] = useState<number>(-2)
     const [delay, setDelay] = useState<number | null>(null)
 
-    useEffect(() => {
-        setSelection(undefined)
-        prevSelection.current = undefined
-    }, [targeting])
+    const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
+    const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
@@ -97,7 +103,11 @@ export const InteractiveMap = ({
             return
         }
 
+<<<<<<< HEAD
         if (!endMoment) setEndMoment(moment().add(3, "seconds"))
+=======
+        if (!endMoment) return setEndMoment(moment().add(3, "seconds"))
+>>>>>>> e06f732ed0262efd87824b14349a7f0a734d751b
     }, [selection])
 
     useEffect(() => {
@@ -146,19 +156,21 @@ export const InteractiveMap = ({
         return (
             <MapGrid map={map}>
                 <tbody>
-                    {Array(map.cellsY)
+                    {Array(map.cells_y)
                         .fill(1)
                         .map((_el, y) => (
                             <tr key={`column-${y}`}>
-                                {Array(map.cellsX)
+                                {Array(map.cells_x)
                                     .fill(1)
                                     .map((_el, x) => {
                                         const disabled =
-                                            map.disabledCells.indexOf(Math.max(y, 0) * map.cellsX + x) != -1
+                                            map.disabled_cells.indexOf(Math.max(y, 0) * map.cells_x + x) != -1
                                         return (
                                             <GridCell
                                                 key={`column-${y}-row-${x}`}
                                                 disabled={disabled}
+                                                width={gridWidth}
+                                                height={gridHeight}
                                                 onClick={
                                                     disabled
                                                         ? undefined
@@ -187,6 +199,8 @@ export const InteractiveMap = ({
                 <SelectionIcon
                     key={selection && `column-${selection.y}-row-${selection.x}`}
                     gameAbility={gameAbility}
+                    gridWidth={gridWidth}
+                    gridHeight={gridHeight}
                     selection={selection}
                     setSelection={setSelection}
                 />
@@ -363,7 +377,13 @@ export const InteractiveMap = ({
                 <animated.div ref={gestureRef} style={{ x, y, touchAction: "none", scale, transformOrigin: `0% 0%` }}>
                     <Box sx={{ cursor: enlarged ? "move" : "" }}>
                         <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1` }}>
-                            <MapWarMachines map={map} warMachines={warMachines || []} enlarged={enlarged} />
+                            <MapWarMachines
+                                map={map}
+                                gridWidth={gridWidth}
+                                gridHeight={gridHeight}
+                                warMachines={warMachines || []}
+                                enlarged={enlarged}
+                            />
                         </Box>
 
                         {selectionIcon}
@@ -376,7 +396,7 @@ export const InteractiveMap = ({
                                 position: "absolute",
                                 width: `${map.width}px`,
                                 height: `${map.height}px`,
-                                backgroundImage: `url(${map.imageUrl})`,
+                                backgroundImage: `url(${map.image_url})`,
                             }}
                         />
                     </Box>

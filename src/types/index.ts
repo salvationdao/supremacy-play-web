@@ -8,8 +8,8 @@ export const UpdateTheme = React.createContext({} as UpdateThemeContextProps)
 export interface User {
     id: string
     username: string
-    avatarID: string
-    factionID: string
+    avatar_id: string
+    faction_id: string
     faction: Faction
     sups: number
 }
@@ -23,45 +23,45 @@ export interface FactionThemeColor {
 export interface Faction {
     id: string
     label: string
-    logoBlobID: string
-    backgroundBlobID: string
+    logo_blob_id: string
+    background_blob_id: string
     theme: FactionThemeColor
 }
 
-export type VotingState =
-    | "HOLD"
-    | "VOTE_COOLDOWN"
-    | "VOTE_ABILITY_RIGHT"
-    | "NEXT_VOTE_WIN"
-    | "LOCATION_SELECT"
-    | "WAIT_MECH_INTRO"
+export type BribeStage = "BRIBE" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
 
 export interface BattleAbility {
     id: string
     label: string
     colour: string
-    textColour: string
+    text_colour: string
     description: string
-    imageUrl: string
-    cooldownDurationSecond: number
+    image_url: string
+    cooldown_duration_second: number
 }
 
 export interface GameAbility {
     identity: string
     label: string
     colour: string
-    textColour: string
+    text_colour: string
     description: string
-    imageUrl: string
-    supsCost: string
-    currentSups: string
+    image_url: string
+    sups_cost: string
+    current_sups: string
 }
 
-export interface GameAbilityTargetPrice {
+export interface GameAbilityProgress {
     id: string
-    supsCost: string
-    currentSups: string
-    shouldReset: boolean
+    sups_cost: string
+    current_sups: string
+    should_reset: boolean
+}
+
+export interface BattleAbilityProgress {
+    faction_id: string
+    sups_cost: string
+    current_sups: string
 }
 
 export interface Vector2i {
@@ -76,10 +76,11 @@ export interface WarMachineState {
     factionID: string
     faction: Faction
     name: string
-    imageUrl: string
+    image: string
     maxHealth: number
     maxShield: number
     imageAvatar: string
+    tier: string
 
     // Updated in subscription
     health: number
@@ -90,8 +91,8 @@ export interface WarMachineState {
 
 export interface WarMachineMetadata {
     hash: string
-    isInsured: boolean
-    contractReward: string
+    is_insured: boolean
+    contract_reward: string
     name: string
     model: string
     image: string
@@ -99,38 +100,36 @@ export interface WarMachineMetadata {
 
 export interface Map {
     name: string
-    imageUrl: string
+    image_url: string
     width: number
     height: number
-    cellsX: number
-    cellsY: number
+    cells_x: number
+    cells_y: number
     top: number
     left: number
     scale: number
-    disabledCells: number[]
+    disabled_cells: number[]
 }
 
 export interface ViewerLiveCount {
-    RedMountain: number
-    Boston: number
-    Zaibatsu: number
-    Other: number
+    red_mountain: number
+    boston: number
+    zaibatsu: number
+    other: number
 }
 
 export enum NetMessageType {
     Default,
     Tick,
     LiveVoting,
-    AbilityRightRatioTick,
-    VotePriceTick,
-    VotePriceForecastTick,
-    GameAbilityTargetPriceTick,
     ViewerLiveCountTick,
     SpoilOfWarTick,
+    GameAbilityProgressTick,
+    BattleAbilityProgressTick,
 }
 
 export interface NetMessageTickWarMachine {
-    participantID?: number
+    participant_id?: number
     position?: Vector2i
     rotation?: number
     health?: number
@@ -142,59 +141,67 @@ export interface NetMessageTick {
 }
 
 export interface BattleEndDetail {
-    battleID: string
-    battleIdentifier: number
-    startedAt: Date
-    endedAt: Date
-    winningCondition: string
-    winningFaction: Faction
-    winningWarMachines: WarMachineState[]
-    topSupsContributors: User[]
-    topSupsContributeFactions: Faction[]
-    mostFrequentAbilityExecutors: User[]
-    battleEvents: BattleEvent[]
-}
-
-export interface BattleEvent {
-    type: "GAME_ABILITY" | "WAR_MACHINE_DESTROYED"
-    createdAt: Date
-    event: GameAbility | WarMachineDestroyedRecord
-}
-
-export interface GameAbilityEvent {
-    ability: GameAbility
-    triggeredByUser?: User
-    x?: number
-    y?: number
-    triggeredOnWarMachine?: WarMachineState
+    battle_id: string
+    battle_identifier: number
+    started_at: Date
+    ended_at: Date
+    total_multipliers: string
+    multipliers: Multiplier[]
+    winning_condition: string
+    winning_faction: Faction
+    winning_war_machines: WarMachineState[]
+    top_sups_contributors: {
+        username: string
+        avatar_id: string
+        faction_id: string
+        faction_colour: string
+    }[]
+    top_sups_contribute_factions: Faction[]
+    most_frequent_ability_executors: {
+        username: string
+        avatar_id: string
+        faction_id: string
+        faction_colour: string
+    }[]
 }
 
 export interface WarMachineDestroyedRecord {
-    destroyedWarMachine: WarMachineState
-    killedByWarMachine?: WarMachineState
-    killedBy?: string
-    damageRecords: DamageRecord[]
+    destroyed_war_machine: WarMachineState
+    killed_by_war_machine?: WarMachineState
+    killed_by?: string
+    damage_records: DamageRecord[]
 }
 
 export interface DamageRecord {
     amount: number
-    causedByWarMachine?: WarMachineState
-    sourceName: string // weapon/ability name
+    caused_by_war_machine?: WarMachineState
+    source_name: string // weapon/ability name
 }
 
 export interface Stream {
     host: string
     name: string
     url: string
-    streamID: string
+    stream_id: string
     region: string
     resolution: string
-    bitRatesKBits: number
-    userMax: number
-    usersNow: number
+    bit_rates_kbits: number
+    user_max: number
+    users_now: number
     active: boolean
     status: string
     latitude: number
     longitude: number
     distance?: number
+}
+
+export interface Multiplier {
+    key: string
+    value: string
+    description: string
+}
+
+export interface MultipliersAll {
+    total_multipliers: string
+    multipliers: Multiplier[]
 }

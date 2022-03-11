@@ -9,8 +9,8 @@ import { ChatData } from "../../../types/passport"
 
 interface GlobalMessage {
     title: string
-    gamesUntil: number
-    showUntil: Date
+    games_until: number
+    show_until: Date
     message: string
     duration: number
 }
@@ -48,7 +48,7 @@ const ChatMessagesInner = ({
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<GlobalMessage>(
-            GameServerKeys.SubscribeGlobalAnnouncement,
+            GameServerKeys.SubGlobalAnnouncement,
             (payload: GlobalMessage) => {
                 if (!payload || !payload.message) {
                     setGlobalMessage(undefined)
@@ -147,10 +147,10 @@ const ChatMessagesInner = ({
                     {chatMessages && chatMessages.length > 0 ? (
                         chatMessages.map((c) => (
                             <ChatMessage
-                                key={`${c.fromUsername} - ${c.sentAt.toISOString()}`}
+                                key={`${c.from_username} - ${c.sent_at.toISOString()}`}
                                 chat={c}
-                                isSent={c.fromUserID != user?.id ? true : sentMessages.includes(c.sentAt)}
-                                isFailed={c.fromUserID != user?.id ? false : failedMessages.includes(c.sentAt)}
+                                isSent={c.from_user_id != user?.id ? true : sentMessages.includes(c.sent_at)}
+                                isFailed={c.from_user_id != user?.id ? false : failedMessages.includes(c.sent_at)}
                             />
                         ))
                     ) : (

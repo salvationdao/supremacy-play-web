@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { PassportServerKeys } from "../keys"
+import { sleep } from "../helpers"
 
-// makeid is used to generate a random transactionID for the websocket
+// makeid is used to generate a random transaction_id for the websocket
 function makeid(length = 12): string {
     let result = ""
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -45,14 +46,13 @@ interface WebSocketProperties {
     connect: () => Promise<undefined>
     state: SocketState
     subscribe: <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => () => void
-    onReconnect: () => void
     isServerUp: boolean
 }
 
 type SubscribeCallback = (payload: any) => void
 
 interface Message<T> {
-    transactionID?: string
+    transaction_id?: string
     key: string
     payload: T
 }
@@ -60,7 +60,7 @@ interface Message<T> {
 type WSCallback<T = any> = (data: T) => void
 
 interface HubError {
-    transactionID: string
+    transaction_id: string
     key: string
     message: string
 }
@@ -78,7 +78,6 @@ const backoffIntervalCalc = async (num: number) => {
 const PassportServerWebsocket = (initialState?: string): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
-    const [outgoing, setOutgoing] = useState<Message<any>[]>([])
 
     const webSocket = useRef<WebSocket | null>(null)
     const [reconnect, setIsReconnect] = useState<boolean>(false)
@@ -108,10 +107,9 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
     }
 
     const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
-        const transactionID = makeid()
-
-        return new Promise(function (resolve, reject) {
-            callbacks.current[transactionID] = (data: Message<Y> | HubError) => {
+        const transaction_id = makeid()
+        return new Promise((resolve, reject) => {
+            callbacks.current[transaction_id] = (data: Message<Y> | HubError) => {
                 if (data.key === "HUB:ERROR") {
                     reject((data as HubError).message)
                     return
@@ -120,14 +118,20 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                 resolve(result)
             }
 
-            setOutgoing((prev) => [
-                ...prev,
-                {
-                    key,
-                    payload,
-                    transactionID,
-                },
-            ])
+            const sendFn = () => {
+                if (!webSocket.current || webSocket.current.readyState !== WebSocket.OPEN) {
+                    setTimeout(sendFn, 500)
+                    return
+                }
+                webSocket.current.send(
+                    JSON.stringify({
+                        key,
+                        payload,
+                        transaction_id,
+                    }),
+                )
+            }
+            sendFn()
         })
     })
 
@@ -135,11 +139,11 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
 
     const subscribe = useMemo(() => {
         return <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => {
-            const transactionID = makeid()
+            const transaction_id = makeid()
 
             let subKey = key
             if (!listenOnly) {
-                subKey = transactionID
+                subKey = transaction_id
             }
 
             const callback2 = (payload: T) => {
@@ -152,15 +156,17 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                 subs.current[subKey] = [callback2]
             }
 
-            const setSubscribeState = (key: string, open: boolean, args?: any) => {
-                setOutgoing((prev) => [
-                    ...prev,
-                    {
+            const setSubscribeState = async (key: string, open: boolean, args?: any) => {
+                while (webSocket.current === null) {
+                    await sleep(1000)
+                }
+                webSocket.current.send(
+                    JSON.stringify({
                         key: key + (open ? "" : ":UNSUBSCRIBE"),
                         payload: open ? args : undefined,
-                        transactionID,
-                    },
-                ])
+                        transaction_id,
+                    }),
+                )
             }
 
             if (!listenOnly) setSubscribeState(key, true, args)
@@ -173,19 +179,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                 if (!listenOnly) setSubscribeState(key, false)
             }
         }
-    }, [setOutgoing])
-
-    const sendOutgoingMessages = useCallback(() => {
-        if (outgoing.length === 0) return
-        if (!webSocket.current) throw new Error("no websocket")
-
-        outgoing.forEach((og) => {
-            if (!webSocket.current) throw new Error("no websocket")
-            webSocket.current.send(JSON.stringify(og))
-        })
-
-        setOutgoing([])
-    }, [outgoing, setOutgoing])
+    }, [])
 
     const setupWS = useMemo(
         () => (ws: WebSocket, onopen?: () => void) => {
@@ -212,16 +206,16 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                         onopen()
                     }
                 }
-                if (subs.current[msgData.transactionID]) {
-                    for (const callback of subs.current[msgData.transactionID]) {
+                if (subs.current[msgData.transaction_id]) {
+                    for (const callback of subs.current[msgData.transaction_id]) {
                         callback(msgData.payload)
                     }
                 } else if (subs.current[msgData.key]) {
                     for (const callback of subs.current[msgData.key]) {
                         callback(msgData.payload)
                     }
-                } else if (msgData.transactionID) {
-                    const { [msgData.transactionID]: cb, ...withoutCb } = callbacks.current
+                } else if (msgData.transaction_id) {
+                    const { [msgData.transaction_id]: cb, ...withoutCb } = callbacks.current
                     if (cb) {
                         cb(msgData)
                         callbacks.current = withoutCb
@@ -276,11 +270,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
         })()
     }, [initialState, setupWS])
 
-    useEffect(() => {
-        if (webSocket.current) sendOutgoingMessages()
-    }, [webSocket, sendOutgoingMessages])
-
-    return { send: send.current, state, connect, subscribe, onReconnect: sendOutgoingMessages, isServerUp }
+    return { send: send.current, state, connect, subscribe, isServerUp }
 }
 
 const WebsocketContainer = createContainer(PassportServerWebsocket)

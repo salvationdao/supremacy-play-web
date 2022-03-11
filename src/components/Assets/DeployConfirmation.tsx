@@ -1,11 +1,12 @@
-import { Box, Button, IconButton, Modal, Stack, Switch, Typography } from "@mui/material"
+import { Box, Button, IconButton, Link, Modal, Stack, Switch, Typography } from "@mui/material"
+import { useEffect } from "react"
 import { ClipThing, TooltipHelper } from ".."
-import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
-import { acronym, supFormatter } from "../../helpers"
+import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
+import { PASSPORT_SERVER_HOST_IMAGES, PASSPORT_WEB } from "../../constants"
+import { usePassportServerAuth, useGameServerWebsocket } from "../../containers"
+import { acronym, getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { PassportServerKeys } from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
 
@@ -38,34 +39,39 @@ export const DeployConfirmation = ({
     open,
     asset,
     queueCost,
-    contractReward,
     queueLength,
     onClose,
 }: {
     open: boolean
     asset: Asset
     queueCost: string
-    contractReward?: string
     queueLength: number
     onClose: () => void
 }) => {
-    const { state, send } = usePassportServerWebsocket()
+    const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
-    const { hash, name, image } = asset
+    const { hash, name, label, image_url, tier } = asset.data.mech
     const [needInsured, toggleNeedInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, toggleDeployFailed] = useToggle()
+
+    const rarityDeets = getRarityDeets(tier)
+
+    useEffect(() => {
+        if (!open) toggleDeployFailed(false)
+    }, [open])
 
     const onDeploy = async () => {
         if (state !== WebSocket.OPEN) return
         try {
             toggleIsDeploying(true)
-            const resp = await send(PassportServerKeys.JoinQueue, { assetHash: hash, needInsured })
+            const resp = await send(GameServerKeys.JoinQueue, { asset_hash: hash, need_insured: needInsured })
             if (resp) {
                 onClose()
             }
         } catch (e) {
             toggleDeployFailed(true)
+            console.log(e)
             return
         } finally {
             toggleIsDeploying(false)
@@ -105,51 +111,43 @@ export const DeployConfirmation = ({
                         <Box
                             sx={{
                                 position: "relative",
-                                my: "auto",
-                                width: 110,
-                                height: 150,
                                 flexShrink: 0,
-                                backgroundImage: `url(${image})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "top center",
-                                backgroundSize: "contain",
+                                px: 0.8,
+                                py: 1.5,
+                                borderRadius: 0.6,
+                                boxShadow: "inset 0 0 12px 6px #00000055",
                             }}
                         >
-                            {user && (
-                                <Stack
-                                    spacing={0.6}
-                                    direction="row"
-                                    alignItems="center"
-                                    sx={{ position: "absolute", bottom: -5, left: 5 }}
+                            <Box
+                                sx={{
+                                    my: "auto",
+                                    width: 110,
+                                    height: 132,
+                                    backgroundImage: `url(${image_url})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "top center",
+                                    backgroundSize: "contain",
+                                }}
+                            />
+
+                            <Stack
+                                spacing={0.6}
+                                direction="row"
+                                alignItems="center"
+                                sx={{ position: "absolute", bottom: 8, left: "50%", transform: "translateX(-50%)" }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        lineHeight: 1,
+                                        color: rarityDeets.color,
+                                        fontFamily: "Nostromo Regular Heavy",
+                                        textAlign: "center",
+                                    }}
                                 >
-                                    <Box
-                                        sx={{
-                                            mb: 0.3,
-                                            width: 16,
-                                            height: 16,
-                                            flexShrink: 0,
-                                            overflow: "hidden",
-                                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logoBlobID})`,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            backgroundSize: "contain",
-                                            backgroundColor: user.faction.theme.primary,
-                                            borderRadius: 0.8,
-                                            border: `${user.faction.theme.primary} 1px solid`,
-                                        }}
-                                    />
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            lineHeight: 1,
-                                            color: user.faction.theme.primary,
-                                            fontFamily: "Nostromo Regular Heavy",
-                                        }}
-                                    >
-                                        {acronym(user.faction.label)}
-                                    </Typography>
-                                </Stack>
-                            )}
+                                    {rarityDeets.label}
+                                </Typography>
+                            </Stack>
                         </Box>
 
                         <Stack spacing={1}>
@@ -165,14 +163,29 @@ export const DeployConfirmation = ({
                                         WebkitBoxOrient: "vertical",
                                     }}
                                 >
-                                    {name}
+                                    {name || label}
+
+                                    {user && (
+                                        <span>
+                                            <Link
+                                                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
+                                                target="_blank"
+                                                sx={{ ml: 0.6 }}
+                                            >
+                                                <SvgExternalLink
+                                                    size="10px"
+                                                    sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}
+                                                />
+                                            </Link>
+                                        </span>
+                                    )}
                                 </Typography>
                             </Box>
 
                             <Stack spacing={0.1}>
                                 <AmountItem
                                     key={`${queueLength}-contract_reward`}
-                                    title={"CONTRACT REWARD: "}
+                                    title={"Contract reward: "}
                                     color={colors.yellow}
                                     value={
                                         queueLength > 0 ? supFormatter(`${queueLength * 2}000000000000000000`) : "---"
@@ -181,8 +194,8 @@ export const DeployConfirmation = ({
                                 />
 
                                 <AmountItem
-                                    title={"FEE: "}
-                                    color={"#FF2B2B"}
+                                    title={"Fee: "}
+                                    color={"#FF4136"}
                                     value={queueCost || "---"}
                                     tooltip="The cost to place your war machine into the battle queue."
                                 />
@@ -193,16 +206,20 @@ export const DeployConfirmation = ({
                                     sx={{
                                         pt: 0.1,
                                         lineHeight: 1,
-                                        color: colors.neonBlue,
+                                        color: colors.green,
                                     }}
                                 >
-                                    ADD INSURANCE:
+                                    Add insurance:
                                 </Typography>
                                 <Switch
                                     size="small"
                                     checked={needInsured}
                                     onChange={() => toggleNeedInsured()}
-                                    sx={{ transform: "scale(.7)" }}
+                                    sx={{
+                                        transform: "scale(.7)",
+                                        ".Mui-checked": { color: colors.green },
+                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
+                                    }}
                                 />
                                 <TooltipHelper
                                     placement="right-start"
@@ -262,7 +279,7 @@ export const DeployConfirmation = ({
                             )}
                         </Stack>
 
-                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 3, right: 2 }}>
+                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 2, right: 2 }}>
                             <SvgClose size="16px" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                         </IconButton>
                     </Stack>

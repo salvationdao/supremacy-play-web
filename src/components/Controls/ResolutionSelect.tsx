@@ -14,7 +14,7 @@ export const ResolutionSelect = () => {
 
     const changeStreamQuality = (quality: number) => {
         if (webRtc?.current && currentStream) {
-            webRtc.current.forceStreamQuality(currentStream.streamID, quality)
+            webRtc.current.forceStreamQuality(currentStream.stream_id, quality)
         }
     }
 

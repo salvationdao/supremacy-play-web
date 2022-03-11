@@ -11,13 +11,13 @@ import { ChatData } from "../../../types/passport"
 
 interface ChatSendProps {
     primaryColor: string
-    factionID: string | null
-    onNewMessage: (message: ChatData, factionID: string | null) => void
+    faction_id: string | null
+    onNewMessage: (message: ChatData, faction_id: string | null) => void
     onSentMessage: (date: Date) => void
     onFailedMessage: (date: Date) => void
 }
 
-export const ChatSend = ({ primaryColor, factionID, onNewMessage, onSentMessage, onFailedMessage }: ChatSendProps) => {
+export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage, onFailedMessage }: ChatSendProps) => {
     const { user } = usePassportServerAuth()
     const { state, send } = usePassportServerWebsocket()
     // Message field
@@ -44,21 +44,25 @@ export const ChatSend = ({ primaryColor, factionID, onNewMessage, onSentMessage,
 
         onNewMessage(
             {
-                fromUserID: user.id,
-                fromUsername: user.username,
-                messageColor,
-                factionColour: user && user.faction ? user.faction.theme.primary : messageColor,
-                factionLogoBlobID: user && user.faction ? user.faction.logoBlobID : "",
-                avatarID: user.avatarID,
+                from_user_id: user.id,
+                from_username: user.username,
+                message_color: messageColor,
+                faction_colour: user && user.faction ? user.faction.theme.primary : messageColor,
+                faction_logo_blob_id: user && user.faction ? user.faction.logo_blob_id : "",
+                avatar_id: user.avatar_id,
                 message,
-                sentAt,
+                sent_at: sentAt,
             },
-            factionID,
+            faction_id,
         )
 
         try {
             setMessage("")
-            const resp = await send<boolean>(PassportServerKeys.SendChatMessage, { factionID, message, messageColor })
+            const resp = await send<boolean>(PassportServerKeys.SendChatMessage, {
+                faction_id,
+                message,
+                message_color: messageColor,
+            })
             if (resp) onSentMessage(sentAt)
         } catch (err) {
             onFailedMessage(sentAt)

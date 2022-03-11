@@ -4,21 +4,16 @@ import { PassportServerKeys } from "../keys"
 import { UserData } from "../types/passport"
 import { usePassportServerWebsocket } from "./passportServerSocket"
 
-interface AuthInitialState {
-    gameserverSessionID?: string
-}
-
 /**
  * A Container that handles Authorisation
  */
-const AuthContainer = createContainer((initialState?: AuthInitialState) => {
-    const gameserverSessionID = initialState?.gameserverSessionID
-
+const AuthContainer = createContainer(() => {
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
     const userID = user?.id
-    const factionID = user?.factionID
+    const faction_id = user?.faction_id
 
+    const [gameserverSessionID, setGameserverSessionID] = useState("")
     const [sessionID, setSessionID] = useState("")
     const [sessionIDLoading, setSessionIDLoading] = useState(true)
     const [sessionIDError, setSessionIDError] = useState()
@@ -29,19 +24,20 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
 
     // get user by session id
     useEffect(() => {
-        if (state !== WebSocket.OPEN || user || sessionID) return
+        if (state !== WebSocket.OPEN || !!userID || sessionID) return
         ;(async () => {
             try {
                 setSessionIDLoading(true)
                 const resp = await send<string>(PassportServerKeys.GetSessionID)
                 setSessionID(resp)
             } catch (e: any) {
+                console.log(e)
                 setSessionIDError(e)
             } finally {
                 setSessionIDLoading(false)
             }
         })()
-    }, [send, state, user, sessionID])
+    }, [send, state, userID, sessionID])
 
     useEffect(() => {
         if (!subscribe || !sessionID || state !== WebSocket.OPEN) return
@@ -50,7 +46,7 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
             (u) => {
                 setUser(u)
             },
-            { sessionID: sessionID },
+            { session_id: sessionID },
         )
     }, [state, sessionID, subscribe])
 
@@ -60,7 +56,7 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
         ;(async () => {
             try {
                 setAuthRingCheckLoading(true)
-                await send(PassportServerKeys.AuthRingCheck, { gameserverSessionID })
+                await send(PassportServerKeys.AuthRingCheck, { gameserver_session_id: gameserverSessionID })
                 setAuthRingCheckSuccess(true)
             } catch (e: any) {
                 console.log(e)
@@ -88,7 +84,9 @@ const AuthContainer = createContainer((initialState?: AuthInitialState) => {
     return {
         user,
         userID,
-        factionID,
+        faction_id,
+        gameserverSessionID,
+        setGameserverSessionID,
         sessionID,
         sessionIDLoading,
         sessionIDError,
