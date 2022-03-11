@@ -3,6 +3,7 @@ import { StyledImageText, StyledNormalText } from "../.."
 import { SvgEmergency } from "../../../assets"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { FactionsAll, httpProtocol } from "../../../containers"
+import { acronym } from "../../../helpers"
 import { BattleAbility, User } from "../../../types"
 
 interface BattleFactionAbilityAlertProps {
@@ -30,7 +31,7 @@ export const FactionAbilityAlert = ({
             />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText
-                text={user ? user.faction.label : "GABS"}
+                text={user ? acronym(user.faction.label) : "GABS"}
                 color={user ? user.faction.theme.primary : "grey !important"}
                 imageUrl={
                     user && user.faction
