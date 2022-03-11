@@ -3,10 +3,11 @@ import { BarExpandable, TooltipHelper } from "../.."
 import { SvgAbility, SvgDeath, SvgView, SvgWrapperProps } from "../../../assets"
 import { useEffect, useState } from "react"
 import { colors } from "../../../theme/theme"
-import { usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
+import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
 import { UserStat } from "../../../types/passport"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { useGameServerSubscription } from "../../../hooks"
 
 const BannerInfo = ({
     title,
@@ -50,7 +51,7 @@ const BannerInfo = ({
 
 export const EnlistBanner = () => {
     const { user, userID } = usePassportServerAuth()
-    const { state: gameServerState, subscribe: gameServerSubscribe } = usePassportServerWebsocket()
+    const { state: gameServerState, subscribe: gameServerSubscribe } = useGameServerWebsocket()
 
     const [userStat, setUserStat] = useState<UserStat>({
         id: "",
@@ -61,13 +62,13 @@ export const EnlistBanner = () => {
 
     // start to subscribe user update
     useEffect(() => {
-        console.log("here")
-
         if (gameServerState !== WebSocket.OPEN || !gameServerSubscribe || !userID) return
         return gameServerSubscribe<UserStat>(GameServerKeys.SubscribeUserStat, (us) => {
             console.log("this is us", us)
 
             if (!us) return
+            console.log("after")
+
             setUserStat(us)
         })
     }, [userID, gameServerSubscribe, gameServerState])
