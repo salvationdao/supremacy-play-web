@@ -6,31 +6,31 @@ const playerArray = [
         username: "jayli3n",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
         faction_colour: "#C24242",
-        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_logo_id: "red_mountain_logo",
     },
     {
         username: "lolivise",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
         faction_colour: "#428EC1",
-        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_logo_id: "boston_cybernetics_logo",
     },
     {
         username: "Grumpy-oldi218",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
         faction_colour: "#FFFFFF",
-        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_logo_id: "zaibatsu_logo",
     },
     {
         username: "pewdiepie2",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
         faction_colour: "#428EC1",
-        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_logo_id: "boston_cybernetics_logo",
     },
     {
         username: "markiplier83",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
         faction_colour: "#C24242",
-        faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
+        faction_logo_id: "red_mountain_logo",
     },
 ]
 
