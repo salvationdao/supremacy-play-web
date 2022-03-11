@@ -36,7 +36,7 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
                                 {index + 1}.
                             </Typography>
                             <StyledImageText
-                                color={u.faction_color}
+                                color={u.faction_colour}
                                 text={u.username}
                                 imageUrl={
                                     u.faction_logo_id

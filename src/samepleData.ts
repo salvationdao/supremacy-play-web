@@ -5,31 +5,31 @@ const playerArray = [
     {
         username: "jayli3n",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_color: "#C24242",
+        faction_colour: "#C24242",
         faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
     {
         username: "lolivise",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_color: "#428EC1",
+        faction_colour: "#428EC1",
         faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
     {
         username: "Grumpy-oldi218",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_color: "#FFFFFF",
+        faction_colour: "#FFFFFF",
         faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
     {
         username: "pewdiepie2",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_color: "#428EC1",
+        faction_colour: "#428EC1",
         faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
     {
         username: "markiplier83",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
-        faction_color: "#C24242",
+        faction_colour: "#C24242",
         faction_logo_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
     },
 ]
