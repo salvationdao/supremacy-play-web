@@ -5,7 +5,7 @@ import { SvgUser } from "../../assets"
 import { FactionsAll, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { NetMessageType, ViewerLiveCount } from "../../types"
+import { ViewerLiveCount } from "../../types"
 
 const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; tooltip: string }) => {
     return (
@@ -35,7 +35,7 @@ interface LiveCountsProps extends Partial<WebSocketProperties> {
     factionsAll?: FactionsAll
 }
 
-export const LiveCountsInner = ({ factionsAll, subscribe, subscribeNetMessage, state }: LiveCountsProps) => {
+export const LiveCountsInner = ({ factionsAll, subscribe, state }: LiveCountsProps) => {
     const [viewers, setViewers] = useState<ViewerLiveCount>()
     const { userID } = useGameServerAuth()
 
@@ -43,7 +43,7 @@ export const LiveCountsInner = ({ factionsAll, subscribe, subscribeNetMessage, s
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<ViewerLiveCount>(
-            GameServerKeys.TriggerViewerLiveCountUpdated,
+            GameServerKeys.SubViewersLiveCount,
             (payload) => {
                 setViewers(payload)
             },

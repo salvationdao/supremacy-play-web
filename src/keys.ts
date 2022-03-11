@@ -23,7 +23,6 @@ export enum GameServerKeys {
 
     // Net message subscription
     TriggerWarMachineLocationUpdated = "WAR:MACHINE:LOCATION:UPDATED",
-    TriggerViewerLiveCountUpdated = "VIEWER:LIVE:COUNT:UPDATED",
     TriggerSpoilOfWarUpdated = "SPOIL:OF:WAR:UPDATED",
     TriggerFactionAbilityPriceUpdated = "ABILITY:PRICE:UPDATED",
     TriggerBattleAbilityProgressUpdated = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
@@ -46,6 +45,7 @@ export enum GameServerKeys {
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubFactionQueueLength = "FACTION:QUEUE:JOIN",
     SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
+    SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
 }
 
 export enum PassportServerKeys {

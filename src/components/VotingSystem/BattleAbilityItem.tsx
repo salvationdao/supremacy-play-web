@@ -94,7 +94,7 @@ const BattleAbilityItemInner = ({
                 // Put own faction progress first, then convert string to big number and set state
                 setBattleAbilityProgress(
                     payload
-                        .sort((a, b) => (b.faction_id == faction_id ? 1 : b.faction_id.localeCompare(a.faction_id)))
+                        .sort((a, b) => (b.faction_id == faction_id ? 1 : a.faction_id.localeCompare(b.faction_id)))
                         .map((a) => ({
                             faction_id: a.faction_id,
                             sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
