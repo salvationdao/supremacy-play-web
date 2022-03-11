@@ -19,6 +19,19 @@ import { colors } from "../../theme/theme"
 import { BattleAbility as BattleAbilityType, BattleAbilityProgress, NetMessageType, User } from "../../types"
 import { zoomEffect } from "../../theme/keyframes"
 
+interface BattleAbilityProgressBigNum {
+    faction_id: string
+    sups_cost: BigNumber
+    current_sups: BigNumber
+}
+
+interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
+    bribeStage?: BribeStageResponse
+    user?: User
+    faction_id?: string
+    factionsAll: FactionsAll
+}
+
 export const BattleAbilityItem = () => {
     const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
     const { user, faction_id } = useGameServerAuth()
@@ -36,19 +49,6 @@ export const BattleAbilityItem = () => {
             factionsAll={factionsAll}
         />
     )
-}
-
-interface BattleAbilityProgressBigNum {
-    faction_id: string
-    sups_cost: BigNumber
-    current_sups: BigNumber
-}
-
-interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
-    bribeStage?: BribeStageResponse
-    user?: User
-    faction_id?: string
-    factionsAll: FactionsAll
 }
 
 const BattleAbilityItemInner = ({
@@ -108,8 +108,6 @@ const BattleAbilityItemInner = ({
     const onBribe = (voteAmount: number) => {
         if (send) send<boolean, { amount: number }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount }, true)
     }
-
-    console.log(battleAbilityProgress)
 
     const isVoting = useMemo(
         () =>
