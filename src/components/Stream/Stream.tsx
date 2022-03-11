@@ -1,10 +1,11 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useGameServerAuth, useDimension, useStream, useWallet, usePassportServerAuth } from "../../containers"
-import { colors } from "../../theme/theme"
 import { Trailer } from ".."
+import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
+import { useDimension, useGameServerAuth, usePassportServerAuth, useStream, useWallet } from "../../containers"
 import { useToggle } from "../../hooks"
+import { colors } from "../../theme/theme"
+import { WaitingPage } from "../BattleHistory/WaitingPage"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
     const { user } = useGameServerAuth()
@@ -40,26 +41,7 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
                         flex: 1,
                     }}
                 >
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            boxShadow: "inset 0 0 1000px #000000",
-                            pointerEvents: "none",
-                        }}
-                    />
-
-                    <iframe
-                        src="https://stats.supremacy.game/#/"
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            border: 0,
-                        }}
-                    ></iframe>
+                    <WaitingPage />
                 </Box>
             </Stack>
         </Fade>
