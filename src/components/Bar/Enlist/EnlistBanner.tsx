@@ -51,7 +51,7 @@ const BannerInfo = ({
 
 export const EnlistBanner = () => {
     const { user, userID } = usePassportServerAuth()
-    const { state: gameServerState, subscribe: gameServerSubscribe } = useGameServerWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
 
     const [userStat, setUserStat] = useState<UserStat>({
         id: "",
@@ -62,16 +62,12 @@ export const EnlistBanner = () => {
 
     // start to subscribe user update
     useEffect(() => {
-        if (gameServerState !== WebSocket.OPEN || !gameServerSubscribe || !userID) return
-        return gameServerSubscribe<UserStat>(GameServerKeys.SubscribeUserStat, (us) => {
-            console.log("this is us", us)
-
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
+        return subscribe<UserStat>(GameServerKeys.SubscribeUserStat, (us) => {
             if (!us) return
-            console.log("after")
-
             setUserStat(us)
         })
-    }, [userID, gameServerSubscribe, gameServerState])
+    }, [userID, subscribe, state])
 
     if (!user || !user.faction || !userStat) {
         return (
