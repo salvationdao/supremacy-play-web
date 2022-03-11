@@ -7,6 +7,8 @@ import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
 
 interface MWMProps extends Partial<WebSocketProperties> {
+    gridWidth: number
+    gridHeight: number
     warMachine: WarMachineState
     map: Map
     enlarged: boolean
@@ -29,6 +31,8 @@ export const MapWarMachine = (props: MWMProps) => {
 }
 
 const MapWarMachineInner = ({
+    gridWidth,
+    gridHeight,
     warMachine,
     map,
     enlarged,
@@ -41,9 +45,10 @@ const MapWarMachineInner = ({
 
     const wmImageUrl = imageAvatar || GenericWarMachinePNG
 
-    const ICON_SIZE = isSpawnedAI ? 32 : 40
-    const ARROW_LENGTH = ICON_SIZE / 2 + 20
-    const DOT_SIZE = isSpawnedAI ? 45 : 70
+    const SIZE = Math.min(gridWidth, gridHeight)
+    const ICON_SIZE = isSpawnedAI ? 0.62 * SIZE : 0.8 * SIZE
+    const ARROW_LENGTH = ICON_SIZE / 2 + 0.4 * SIZE
+    const DOT_SIZE = isSpawnedAI ? 0.9 * SIZE : 1.4 * SIZE
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
