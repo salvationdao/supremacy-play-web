@@ -48,7 +48,7 @@ const blankOption: Stream = {
     region: "",
     resolution: "",
     bit_rates_kbits: 0,
-    user_max: 999999,
+    user_max: 1,
     users_now: 0,
     active: true,
     status: "online",
