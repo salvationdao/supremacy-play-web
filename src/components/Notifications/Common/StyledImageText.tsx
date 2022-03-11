@@ -18,6 +18,7 @@ export const StyledImageText = ({
     imageBorderThickness = "1px",
     imageBackgroundSize = "cover",
     noImageBackgroundColor,
+    imageMb,
 }: {
     imageUrl?: string
     text: string
@@ -33,6 +34,7 @@ export const StyledImageText = ({
     imageBorderThickness?: string
     imageBackgroundSize?: string
     noImageBackgroundColor?: boolean
+    imageMb?: number
 }) => {
     const truncateStyle: any = useMemo(
         () =>
@@ -54,7 +56,7 @@ export const StyledImageText = ({
                         display: "inline-block",
                         width: imageSize,
                         height: imageSize,
-                        mb: -0.2,
+                        mb: imageMb || -0.2,
                         mr: `${0.3 * imageSize}px`,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: "no-repeat",

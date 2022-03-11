@@ -68,13 +68,7 @@ const Content = () => {
     // Triggered spoil of war update
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerSpoilOfWarUpdated, () => console.log(), null)
-    }, [state, subscribe])
-
-    // Trigger live voting data coming through
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerLiveVoteUpdated, () => console.log(), null)
+        return subscribe(GameServerKeys.TriggerSpoilOfWarUpdated, () => null, null)
     }, [state, subscribe])
 
     const onResize = useCallback((width: number, height: number) => {

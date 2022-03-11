@@ -50,6 +50,20 @@ export const colors = {
 
     globalChat: "#1A6044",
     assetsBanner: "#4E1A61",
+
+    rarity: {
+        MEGA: "#e84234",
+        COLOSSAL: "#b43328",
+        RARE: "#4d90fa",
+        LEGENDARY: "#fabd4d",
+        ELITE_LEGENDARY: "#ffcc4e",
+        ULTRA_RARE: "#4e57ff",
+        EXOTIC: "#824dff",
+        GUARDIAN: "#4dcfff",
+        MYTHIC: "#a1e6ff",
+        DEUS_EX: "#fffa4e",
+        TITAN: "#5eff75",
+    },
 }
 
 const factionTheme: FactionTheme = {

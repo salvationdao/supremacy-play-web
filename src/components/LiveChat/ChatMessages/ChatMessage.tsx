@@ -5,43 +5,43 @@ import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
 
 export const ChatMessage = ({ chat, isSent, isFailed }: { chat: ChatData; isSent?: boolean; isFailed?: boolean }) => {
-    const { fromUsername, messageColor, factionColour, factionLogoBlobID, avatarID, message, sentAt } = chat
+    const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at } = chat
 
     return (
         <Stack direction="row" spacing={0.5} sx={{ opacity: isSent ? 1 : 0.45 }}>
             {isFailed && <SvgInfoCircular size="12px" fill={colors.red} sx={{ mt: 0.4 }} />}
 
-            {avatarID && (
+            {avatar_id && (
                 <Box
                     sx={{
                         mt: "-0.8px !important",
                         width: 18,
                         height: 18,
                         flexShrink: 0,
-                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatarID})`,
+                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "contain",
-                        backgroundColor: factionColour,
+                        backgroundColor: faction_colour,
                         borderRadius: 0.8,
-                        border: `${factionColour} 1px solid`,
+                        border: `${faction_colour} 1px solid`,
                     }}
                 />
             )}
-            {factionLogoBlobID && factionLogoBlobID != NullUUID && (
+            {faction_logo_blob_id && faction_logo_blob_id != NullUUID && (
                 <Box
                     sx={{
                         mt: "-0.8px !important",
                         width: 18,
                         height: 18,
                         flexShrink: 0,
-                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
+                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction_logo_blob_id})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "contain",
-                        backgroundColor: factionColour,
+                        backgroundColor: faction_colour,
                         borderRadius: 0.8,
-                        border: `${factionColour} 1px solid`,
+                        border: `${faction_colour} 1px solid`,
                     }}
                 />
             )}
@@ -53,7 +53,7 @@ export const ChatMessage = ({ chat, isSent, isFailed }: { chat: ChatData; isSent
                     userSelect: "text",
                 }}
             >
-                <span style={{ color: messageColor, fontWeight: 700 }}>{fromUsername}</span>: {message}{" "}
+                <span style={{ color: message_color, fontWeight: 700 }}>{from_username}</span>: {message}{" "}
                 <span
                     style={{
                         display: "inline-block",
@@ -63,7 +63,7 @@ export const ChatMessage = ({ chat, isSent, isFailed }: { chat: ChatData; isSent
                         fontSize: ".7rem",
                     }}
                 >
-                    {dateFormatter(sentAt)}
+                    {dateFormatter(sent_at)}
                 </span>
             </Typography>
         </Stack>

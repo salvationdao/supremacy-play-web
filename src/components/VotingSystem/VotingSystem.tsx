@@ -1,27 +1,23 @@
 import { Box, Slide, Stack } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import { ClipThing, BattleAbilityItem, Prices, FactionAbilities } from ".."
-import { useDimension, useGame, VotingStateResponse } from "../../containers"
+import { ClipThing, BattleAbilityItem, FactionAbilities } from ".."
+import { useDimension, useGame, BribeStageResponse } from "../../containers"
 import { useGameServerAuth } from "../../containers"
 
 export const VotingSystem = () => {
-    const { votingState } = useGame()
-    return <VotingSystemInner votingState={votingState} />
+    const { bribeStage } = useGame()
+    return <VotingSystemInner bribeStage={bribeStage} />
 }
 
-interface VotingSystemProps {
-    votingState?: VotingStateResponse
-}
-
-const VotingSystemInner = ({ votingState }: VotingSystemProps) => {
+const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const { user } = useGameServerAuth()
     const theme = useTheme<Theme>()
     const {
         streamDimensions: { height },
     } = useDimension()
 
-    const isBattleStarted = votingState && votingState.phase !== "HOLD" && votingState.phase !== "WAIT_MECH_INTRO"
+    const isBattleStarted = bribeStage && bribeStage.phase !== "HOLD"
 
     if (!user || !user.faction) return null
 
@@ -44,10 +40,6 @@ const VotingSystemInner = ({ votingState }: VotingSystemProps) => {
                         clipSize="10px"
                     >
                         <Box sx={{ backgroundColor: theme.factionTheme.background, pl: 0.9, pr: 2, pt: 1.8, pb: 2 }}>
-                            <Box sx={{ ml: 1, mb: 1 }}>
-                                <Prices />
-                            </Box>
-
                             <Box
                                 sx={{
                                     flex: 1,

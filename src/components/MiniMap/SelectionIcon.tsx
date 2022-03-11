@@ -16,7 +16,7 @@ export const SelectionIcon = ({
 }) => {
     if (!selection || !gameAbility) return null
 
-    const { colour, imageUrl } = gameAbility
+    const { colour, image_url } = gameAbility
 
     return (
         <Box
@@ -43,7 +43,7 @@ export const SelectionIcon = ({
                     sx={{
                         height: "100%",
                         width: "100%",
-                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
+                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",

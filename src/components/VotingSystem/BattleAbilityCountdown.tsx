@@ -2,60 +2,56 @@ import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import moment from "moment"
-import { useGame, VotingStateResponse } from "../../containers"
+import { useGame, BribeStageResponse } from "../../containers"
 import { useInterval, useTimer } from "../../hooks"
-import { BattleAbility } from "../../types"
 import { SvgBattleAbilityIcon } from "../../assets"
+import { colors } from "../../theme/theme"
 
-export const BattleAbilityCountdown = (props: { battleAbility: BattleAbility }) => {
-    const { votingState } = useGame()
-    return <BattleAbilityCountdownInner {...props} votingState={votingState} />
+export const BattleAbilityCountdown = () => {
+    const { bribeStage } = useGame()
+    return <BattleAbilityCountdownInner bribeStage={bribeStage} />
 }
 
 interface BattleAbilityCountdownInnerProps {
-    votingState?: VotingStateResponse
-    battleAbility: BattleAbility
+    bribeStage?: BribeStageResponse
 }
 
-const BattleAbilityCountdownInner = ({ battleAbility, votingState }: BattleAbilityCountdownInnerProps) => {
+const BattleAbilityCountdownInner = ({ bribeStage }: BattleAbilityCountdownInnerProps) => {
     const theme = useTheme<Theme>()
 
     const [sentence, setSentence] = useState<string>("Loading...")
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
 
     useEffect(() => {
-        const endTime = votingState?.endTime
+        const endTime = bribeStage?.end_time
         setEndTimeState(endTime)
         doSentence()
-    }, [votingState])
+    }, [bribeStage])
 
     useInterval(() => {
         doSentence()
     }, totalSecRemain)
 
     const doSentence = () => {
-        switch (votingState?.phase) {
-            case "VOTE_ABILITY_RIGHT":
-                setSentence(`FIGHT FOR YOUR SYNDICATE (${totalSecRemain}s)`)
+        switch (bribeStage?.phase) {
+            case "BRIBE":
+                setSentence(`BATTLE ABILITY (${totalSecRemain}s)`)
                 break
 
-            case "NEXT_VOTE_WIN":
-                setSentence(`FIGHT FOR YOUR SYNDICATE (NEXT VOTE WINS)`)
+            case "LOCATION_SELECT":
+                setSentence("BATTLE ABILITY INITIATED...")
                 break
 
-            case "VOTE_COOLDOWN":
-                setSentence(`UPCOMING ACTION (${totalSecRemain}s)`)
+            case "COOLDOWN":
+                setSentence(`PREPARING FOR NEXT BATTLE ABILITY (${totalSecRemain}s)`)
                 break
         }
     }
 
     return (
         <Stack direction="row" spacing={0.6} alignItems="center">
-            <SvgBattleAbilityIcon size="18px" fill={theme.factionTheme.primary} />
-            <Typography sx={{ lineHeight: 1, color: theme.factionTheme.primary, fontWeight: "fontWeightBold" }}>
-                {sentence}
-            </Typography>
+            <SvgBattleAbilityIcon size="18px" fill={colors.text} />
+            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>{sentence}</Typography>
         </Stack>
     )
 }

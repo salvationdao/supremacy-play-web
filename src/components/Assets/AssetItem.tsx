@@ -1,10 +1,10 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { DeployConfirmation } from ".."
+import { DeployConfirmation, TooltipHelper } from ".."
 import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
-import { UNDER_MAINTENANCE } from "../../constants"
+import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
-import { supFormatter } from "../../helpers"
+import { getRarityDeets, supFormatter } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
@@ -22,18 +22,14 @@ const RepairCountdown = ({ endTime }: { endTime: Date }) => {
 }
 
 export const AssetItem = ({
-    passportWeb,
     asset,
     queueCost,
     queueLength,
-    contractReward,
     renderQueuedOnly,
 }: {
-    passportWeb: string
     asset: Asset
     queueCost: string
     queueLength: number
-    contractReward?: string
     renderQueuedOnly?: boolean
 }) => {
     const { user } = usePassportServerAuth()
@@ -48,16 +44,18 @@ export const AssetItem = ({
     const [queuePosition, setQueuePosition] = useState<AssetQueueStat>()
     const [durability, setDurability] = useState<AssetDurability>()
 
+    const rarityDeets = getRarityDeets(assetData.tier)
+
     // Subscribe on asset data
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !asset) return
-        return subscribe<Asset>(
+        return subscribe<{ purchased_item: Asset }>(
             PassportServerKeys.SubAssetData,
             (payload) => {
-                if (!payload) return
-                setAssetData(payload)
+                if (!payload || !payload.purchased_item) return
+                setAssetData(payload.purchased_item)
             },
-            { assetHash: asset.hash },
+            { asset_hash: asset.hash },
         )
     }, [state, subscribe])
 
@@ -70,7 +68,7 @@ export const AssetItem = ({
                 if (!payload) return
                 setDurability(payload)
             },
-            { assetHash: asset.hash },
+            { asset_hash: asset.hash },
         )
     }, [state, subscribe])
 
@@ -83,17 +81,17 @@ export const AssetItem = ({
                 if (!payload) return
                 setQueuePosition(payload)
             },
-            { assetHash: asset.hash },
+            { asset_hash: asset.hash },
         )
     }, [state, subscribe])
 
     const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
-    const isRepairing = !!durability?.repairType
+    const isRepairing = !!durability?.repair_type
     const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
     const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
-    const contractReward2 = useMemo(
-        () => (queuePosition && queuePosition.contractReward ? queuePosition.contractReward : contractReward),
-        [queuePosition, contractReward],
+    const contractReward = useMemo(
+        () => (queuePosition && queuePosition.contract_reward ? queuePosition.contract_reward : undefined),
+        [queuePosition],
     )
 
     if (
@@ -104,7 +102,7 @@ export const AssetItem = ({
     )
         return null
 
-    const { hash, name, image } = assetData
+    const { hash, name, label, image_url } = assetData.data.mech
 
     const StatusArea = () => {
         // If game server is down, don't show deploy button
@@ -128,8 +126,8 @@ export const AssetItem = ({
         }
 
         if (isRepairing) {
-            const { startedAt, expectCompletedAt } = durability
-            const isFastMode = durability.repairType == "FAST"
+            const { started_at, expect_completed_at } = durability
+            const isFastMode = durability.repair_type == "FAST"
 
             return (
                 <>
@@ -154,7 +152,7 @@ export const AssetItem = ({
                             variant="caption"
                             sx={{ lineHeight: 1, color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}
                         >
-                            <RepairCountdown endTime={expectCompletedAt} />
+                            <RepairCountdown endTime={expect_completed_at} />
                         </Typography>
                     </Stack>
                 </>
@@ -177,12 +175,12 @@ export const AssetItem = ({
                     >
                         IN BATTLE
                     </Typography>
-                    {contractReward2 && (
+                    {contractReward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
-                                {supFormatter(contractReward2)}
+                                {supFormatter(contractReward)}
                             </Typography>
                         </Stack>
                     )}
@@ -220,12 +218,12 @@ export const AssetItem = ({
                     >
                         {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
                     </Typography>
-                    {contractReward2 && (
+                    {contractReward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
-                                {supFormatter(contractReward2)}
+                                {supFormatter(contractReward)}
                             </Typography>
                         </Stack>
                     )}
@@ -263,32 +261,75 @@ export const AssetItem = ({
     return (
         <Stack
             direction="row"
-            spacing={1.5}
+            spacing={1.8}
             sx={{
                 position: "relative",
-                px: 2,
-                py: 1.8,
+                px: 1.3,
+                py: 1,
                 backgroundColor: `${colors.navy}80`,
             }}
         >
             <Box
                 sx={{
                     position: "relative",
-                    width: 55,
-                    height: 55,
                     flexShrink: 0,
+                    px: 0.6,
+                    py: 1,
+                    boxShadow: "inset 0 0 8px 6px #00000055",
                     overflow: "hidden",
-                    backgroundImage: `url(${image})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "contain",
+                    borderRadius: 0.5,
                 }}
             >
+                <Box
+                    sx={{
+                        width: 55,
+                        height: 55,
+                        flexShrink: 0,
+                        overflow: "hidden",
+                        backgroundImage: `url(${image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                    }}
+                />
+
                 {isGameServerUp && isInQueue && queuePosition && queuePosition.position && (
                     <Box sx={{ position: "absolute" }}>
                         <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{queuePosition.position}</Typography>
                     </Box>
                 )}
+
+                <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
+                    <Stack
+                        direction="row"
+                        spacing={0.1}
+                        sx={{
+                            position: "absolute",
+                            bottom: -14,
+                            left: 1,
+                            height: 42,
+                            transform: "rotate(-40deg)",
+                            zIndex: 3,
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                width: 3,
+                                height: "100%",
+                                backgroundColor: rarityDeets.color,
+                                border: "#00000090 1.5px solid",
+                            }}
+                        />
+                        <Box
+                            sx={{
+                                width: 3,
+                                height: "100%",
+                                backgroundColor: rarityDeets.color,
+                                border: "#00000090 1.5px solid",
+                            }}
+                        />
+                    </Stack>
+                </TooltipHelper>
             </Box>
 
             <Stack spacing={0.5}>
@@ -300,7 +341,7 @@ export const AssetItem = ({
                         wordBreak: "break-word",
                     }}
                 >
-                    {name}
+                    {name || label}
                 </Typography>
 
                 <Stack alignItems="center" direction="row" spacing={1.2}>
@@ -309,7 +350,7 @@ export const AssetItem = ({
             </Stack>
 
             <Link
-                href={`${passportWeb}profile/${user.username}/asset/${hash}`}
+                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
                 target="_blank"
                 sx={{ position: "absolute", top: 6, right: 4 }}
             >
@@ -321,7 +362,6 @@ export const AssetItem = ({
                 asset={asset}
                 queueCost={queueCost}
                 queueLength={queueLength}
-                contractReward={contractReward2}
                 onClose={() => toggleIsDeployModal(false)}
             />
         </Stack>

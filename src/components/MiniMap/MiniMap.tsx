@@ -10,7 +10,7 @@ import {
     useDimension,
     useGame,
     useOverlayToggles,
-    VotingStateResponse,
+    BribeStageResponse,
     WinnerAnnouncementResponse,
 } from "../../containers"
 import { useToggle } from "../../hooks"
@@ -21,13 +21,13 @@ interface MiniMapProps {
     map?: Map
     winner?: WinnerAnnouncementResponse
     setWinner: (winner?: WinnerAnnouncementResponse) => void
-    votingState?: VotingStateResponse
+    bribeStage?: BribeStageResponse
     isMapOpen: boolean
     toggleIsMapOpen: (open?: boolean) => void
 }
 
 export const MiniMap = () => {
-    const { map, winner, setWinner, votingState } = useGame()
+    const { map, winner, setWinner, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const theme = useTheme<Theme>()
     return (
@@ -35,14 +35,14 @@ export const MiniMap = () => {
             map={map}
             winner={winner}
             setWinner={setWinner}
-            votingState={votingState}
+            bribeStage={bribeStage}
             isMapOpen={isMapOpen}
             toggleIsMapOpen={toggleIsMapOpen}
         />
     )
 }
 
-export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, toggleIsMapOpen }: MiniMapProps) => {
+export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen }: MiniMapProps) => {
     const {
         streamDimensions: { width, height },
     } = useDimension()
@@ -68,7 +68,7 @@ export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, t
     }, [width, height, enlarged])
 
     useEffect(() => {
-        const endTime = winner?.endTime
+        const endTime = winner?.end_time
 
         if (endTime) {
             setSubmitted(false)
@@ -77,11 +77,11 @@ export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, t
     }, [winner])
 
     useEffect(() => {
-        if (winner && votingState?.phase == "LOCATION_SELECT") {
+        if (winner && bribeStage?.phase == "LOCATION_SELECT") {
             toggleEnlarged(true)
             toggleIsMapOpen(true)
         }
-    }, [winner, votingState])
+    }, [winner, bribeStage])
 
     useEffect(() => {
         if (timeReachZero || submitted) {
@@ -102,7 +102,7 @@ export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, t
 
     if (!map) return null
 
-    const isTargeting = winner && !timeReachZero && !submitted && votingState?.phase == "LOCATION_SELECT"
+    const isTargeting = winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT"
     const onResize = (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
         const { size } = data || { size: { width: dimensions.width, height: dimensions.height } }
         setDimensions({ width: size.width, height: size.width / 1.0625 })
@@ -158,7 +158,7 @@ export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, t
                                         isFancy: true,
                                         borderThickness: "3px",
                                         borderColor: isTargeting
-                                            ? winner.gameAbility.colour
+                                            ? winner.game_ability.colour
                                             : theme.factionTheme.primary,
                                     }}
                                 >
@@ -205,15 +205,15 @@ export const MiniMapInner = ({ map, winner, setWinner, votingState, isMapOpen, t
 
                                         {isTargeting && (
                                             <TargetTimerCountdown
-                                                gameAbility={winner.gameAbility}
+                                                gameAbility={winner.game_ability}
                                                 setTimeReachZero={setTimeReachZero}
-                                                endTime={winner.endTime}
+                                                endTime={winner.end_time}
                                             />
                                         )}
 
                                         {isTargeting ? (
                                             <InteractiveMap
-                                                gameAbility={winner.gameAbility}
+                                                gameAbility={winner.game_ability}
                                                 windowDimension={dimensions}
                                                 targeting
                                                 setSubmitted={setSubmitted}

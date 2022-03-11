@@ -13,7 +13,7 @@ export const BattleCloseAlert = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<number>(
-            GameServerKeys.SubscribeStreamClose,
+            GameServerKeys.SubStreamClose,
             (payload) => {
                 if (!payload || payload === -1) return
                 setGamesToClose(payload)

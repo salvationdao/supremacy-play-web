@@ -80,7 +80,7 @@ export const StreamContainer = createContainer(() => {
     const changeStream = (s: Stream) => {
         if (!s) return
         setCurrentStream(s)
-        localStorage.setItem("streamStream", JSON.stringify(s))
+        localStorage.setItem("new_stream_props", JSON.stringify(s))
     }
 
     // Subscribe to list of streams
@@ -98,17 +98,17 @@ export const StreamContainer = createContainer(() => {
 
         // Filter for servers that have capacity and is onlnine
         const availStreams = streams.filter((x) => {
-            return x.usersNow < x.userMax && x.status === "online"
+            return x.users_now < x.user_max && x.status === "online"
         })
 
         if (availStreams.length <= 0) return
 
         // Reduce the list of options so it's not too many for the user
         // By default its sorted by quietest servers first
-        const quietestStreams = availStreams.sort((a, b) => (a.usersNow / a.userMax > b.usersNow / b.userMax ? 1 : -1))
+        const quietestStreams = availStreams.sort((a, b) => (a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1))
 
         // If the local storage stream is in the list, set as current stream
-        const localStream = localStorage.getItem("streamStream")
+        const localStream = localStorage.getItem("new_stream_props")
         if (localStream) {
             const savedStream = JSON.parse(localStream)
             if (getObjectFromArrayByKey(availStreams, savedStream.streamID, "streamID")) {
@@ -124,7 +124,7 @@ export const StreamContainer = createContainer(() => {
     const SetNewStreamOptions = (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
         // Limit to only a few for the dropdown and include our current selection if not already in the list
         const temp = newStreamOptions.slice(0, MAX_OPTIONS)
-        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.streamID, "streamID")) {
+        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.stream_id, "streamID")) {
             newStreamOptions[newStreamOptions.length - 1] = currentStream
         }
 
@@ -142,7 +142,7 @@ export const StreamContainer = createContainer(() => {
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
-            if (!currentStream || !currentStream.url || !currentStream.streamID) return
+            if (!currentStream || !currentStream.url || !currentStream.stream_id) return
             if (!vid || !vid.parentNode) {
                 vidRef.current = undefined
                 return
@@ -163,10 +163,10 @@ export const StreamContainer = createContainer(() => {
                     callback: (info: string, obj: any) => {
                         if (info == "initialized") {
                             if (!webRtc || !webRtc.current || !webRtc.current.play) return
-                            webRtc.current.play(currentStream.streamID, "")
+                            webRtc.current.play(currentStream.stream_id, "")
                         } else if (info == "play_started") {
                             if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
-                            webRtc.current.getStreamInfo(currentStream.streamID)
+                            webRtc.current.getStreamInfo(currentStream.stream_id)
                         } else if (info == "streamInformation") {
                             const resolutions: number[] = [0]
                             obj["streamInfo"].forEach((entry: StreamInfoEntry) => {

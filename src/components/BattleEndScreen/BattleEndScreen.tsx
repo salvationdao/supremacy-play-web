@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import {
     SectionBottom,
     SectionMostFrequentAbilityExecutor,
+    SectionMultipliers,
     SectionTopSups,
     SectionTopSupsFaction,
     SectionWinner,
@@ -39,6 +40,7 @@ export const BattleEndScreen = () => {
                 toggleIsEndBattleDetailOpen(true)
             },
             null,
+            true,
         )
     }, [state, subscribe])
 
@@ -51,12 +53,12 @@ export const BattleEndScreen = () => {
     }, [])
 
     const primaryColor =
-        battleEndDetail && battleEndDetail.winningFaction
-            ? battleEndDetail.winningFaction.theme.primary
+        battleEndDetail && battleEndDetail.winning_faction
+            ? battleEndDetail.winning_faction.theme.primary
             : colors.neonBlue
     const backgroundColor =
-        battleEndDetail && battleEndDetail.winningFaction
-            ? shadeColor(battleEndDetail.winningFaction.theme.primary, -96)
+        battleEndDetail && battleEndDetail.winning_faction
+            ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96)
             : colors.darkNavyBlue
 
     const backgroundColorGradient = useMemo(
@@ -66,10 +68,10 @@ export const BattleEndScreen = () => {
         [backgroundColor],
     )
 
-    if (!battleEndDetail || !battleEndDetail.winningFaction) return null
+    if (!battleEndDetail || !battleEndDetail.winning_faction) return null
 
     return (
-        <Slide key={battleEndDetail.battleID} in={isEndBattleDetailOpen} direction="right">
+        <Slide key={battleEndDetail.battle_id} in={isEndBattleDetailOpen} direction="right">
             <Box
                 sx={{
                     position: "absolute",
@@ -95,7 +97,7 @@ export const BattleEndScreen = () => {
                     }}
                 >
                     <Stack
-                        spacing={5}
+                        spacing={4}
                         sx={{
                             height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}px)`,
                             pr: 3.6,
@@ -117,6 +119,7 @@ export const BattleEndScreen = () => {
                             },
                         }}
                     >
+                        <SectionMultipliers battleEndDetail={battleEndDetail} />
                         <SectionWinner battleEndDetail={battleEndDetail} />
                         <SectionTopSups battleEndDetail={battleEndDetail} />
                         <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />

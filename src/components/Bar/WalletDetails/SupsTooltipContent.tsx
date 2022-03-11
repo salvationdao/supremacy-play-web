@@ -1,30 +1,24 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { SvgClose, SvgSupToken } from "../../../assets"
-import { MultiplierItem, SupsMultiplier, TransactionItem } from "../.."
+import { MultiplierItem, TransactionItem } from "../.."
 import { Transaction } from "../../../types/passport"
 import { colors } from "../../../theme/theme"
 import { supFormatterNoFixed } from "../../../helpers"
+import { MultipliersAll } from "../../../types"
 
 export const SupsTooltipContent = ({
     sups,
-    supsMultipliers,
-    selfDestroyed,
-    multipliersCleaned,
-    totalMultipliers,
+    multipliers,
     transactions,
     userID,
     onClose,
 }: {
     sups?: string
-    supsMultipliers: { [key: string]: SupsMultiplier }
-    selfDestroyed: (key: string) => void
-    multipliersCleaned: SupsMultiplier[]
-    totalMultipliers: number
+    multipliers?: MultipliersAll
     transactions: Transaction[]
     userID: string
     onClose: () => void
 }) => {
-    const size = Object.keys(supsMultipliers).length
     return (
         <Stack spacing={1.5} sx={{ position: "relative", px: 1.3, py: 1 }}>
             <Box>
@@ -40,15 +34,15 @@ export const SupsTooltipContent = ({
                 </Stack>
             </Box>
 
-            {size > 0 && (
+            {multipliers && (
                 <Box>
                     <Typography sx={{ mb: 0.3, fontWeight: "bold", color: colors.offWhite }} variant="h6">
-                        MULTIPLIERS: {`${totalMultipliers.toFixed(2)}x`}
+                        MULTIPLIERS: {multipliers.total_multipliers}
                     </Typography>
 
                     <Stack spacing={0.4}>
-                        {multipliersCleaned.map((sm, i) => (
-                            <MultiplierItem key={i} supsMultiplier={sm} selfDestroyed={selfDestroyed} />
+                        {multipliers.multipliers.map((m, i) => (
+                            <MultiplierItem key={i} multiplier={m} />
                         ))}
                     </Stack>
                 </Box>
