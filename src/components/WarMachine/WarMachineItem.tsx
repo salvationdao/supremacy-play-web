@@ -353,7 +353,7 @@ const WarMachineItemInner = ({
                                         WebkitLineClamp: 2,
                                     }}
                                 >
-                                    {name}
+                                    {name || hash}
                                 </Typography>
                             </Stack>
                         )}

@@ -1,10 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../.."
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { useGame } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
+    const { factionsAll } = useGame()
     const { top_sups_contributors } = battleEndDetail
 
     return (
@@ -36,13 +38,11 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
                                 {index + 1}.
                             </Typography>
                             <StyledImageText
-                                color={u.faction_color}
+                                color={u.faction_colour}
                                 text={u.username}
-                                imageUrl={
-                                    u.faction_logo_id
-                                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${u.faction_logo_id}`
-                                        : undefined
-                                }
+                                imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
+                                    factionsAll[u.faction_id]?.logo_blob_id
+                                }`}
                                 variant="h5"
                                 imageSize={29}
                                 imageBorderThickness="2px"

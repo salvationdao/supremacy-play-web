@@ -1,5 +1,4 @@
 import { Box, Fade, IconButton, useTheme } from "@mui/material"
-import { Theme } from "@mui/material/styles"
 import { SyntheticEvent, useEffect, useState } from "react"
 import { Resizable, ResizeCallbackData } from "react-resizable"
 import { animated, useSpring } from "react-spring"
@@ -29,7 +28,6 @@ interface MiniMapProps {
 export const MiniMap = () => {
     const { map, winner, setWinner, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
-    const theme = useTheme<Theme>()
     return (
         <MiniMapInner
             map={map}
@@ -168,7 +166,6 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                             boxShadow: 1,
                                             width: dimensions.width,
                                             height: dimensions.height,
-                                            // backgroundColor: colors.darkNavy,
                                             transition: "all .2s",
                                             background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
                                         }}

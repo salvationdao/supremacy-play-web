@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useGameServerAuth, useDimension, useStream, useWallet } from "../../containers"
+import { useGameServerAuth, useDimension, useStream, useWallet, usePassportServerAuth } from "../../containers"
 import { colors } from "../../theme/theme"
 import { Trailer } from ".."
 import { useToggle } from "../../hooks"
@@ -18,14 +18,19 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
         if (!supsAboveZero && haveSups) toggleHaveSups(false)
     }, [onWorldSups, supsAboveZero, haveSups])
 
+    let message = "You must connect your passport to view the battle stream."
+    if (user && !haveSups) {
+        message = "You must have SUPS in order to view the battle stream."
+    } else if (user && !user.faction_id) {
+        message = "You must enlist in a faction to view the battle stream."
+    }
+
     return (
         <Fade in={render}>
             <Stack sx={{ flex: 1, width: "100%" }}>
                 <Box sx={{ px: 2, py: 0.5, backgroundColor: colors.red, boxShadow: 6, zIndex: 99 }}>
                     <Typography variant="h6" sx={{ textAlign: "center" }}>
-                        {user && !haveSups
-                            ? "You must have SUPS in order to view the battle stream."
-                            : "You must connect your passport to view the battle stream."}
+                        {message}
                     </Typography>
                 </Box>
                 <Box
@@ -77,12 +82,11 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
     if (!watchedTrailer) {
         return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
     }
-
     return (
         <Stack sx={{ width: "100%", height: "100%" }}>
             {user && haveSups ? (
                 <video
-                    key={currentStream?.url}
+                    key={currentStream?.stream_id}
                     id={"remoteVideo"}
                     muted={isMute}
                     ref={vidRefCallback}

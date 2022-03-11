@@ -157,15 +157,15 @@ export interface BattleEndDetail {
     top_sups_contributors: {
         username: string
         avatar_id: string
-        faction_color: string
-        faction_logo_id: string
+        faction_id: string
+        faction_colour: string
     }[]
     top_sups_contribute_factions: Faction[]
     most_frequent_ability_executors: {
         username: string
         avatar_id: string
-        faction_color: string
-        faction_logo_id: string
+        faction_id: string
+        faction_colour: string
     }[]
 }
 

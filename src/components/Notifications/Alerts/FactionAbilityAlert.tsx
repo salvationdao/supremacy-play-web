@@ -2,7 +2,8 @@ import { Box } from "@mui/material"
 import { StyledImageText, StyledNormalText } from "../.."
 import { SvgEmergency } from "../../../assets"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { httpProtocol } from "../../../containers"
+import { FactionsAll, httpProtocol } from "../../../containers"
+import { acronym } from "../../../helpers"
 import { BattleAbility, User } from "../../../types"
 
 interface BattleFactionAbilityAlertProps {
@@ -10,7 +11,13 @@ interface BattleFactionAbilityAlertProps {
     ability: BattleAbility
 }
 
-export const FactionAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertProps }) => {
+export const FactionAbilityAlert = ({
+    data,
+    factionsAll,
+}: {
+    data: BattleFactionAbilityAlertProps
+    factionsAll: FactionsAll
+}) => {
     const { user, ability } = data
     const { label, colour, image_url } = ability
 
@@ -24,11 +31,11 @@ export const FactionAbilityAlert = ({ data }: { data: BattleFactionAbilityAlertP
             />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText
-                text={user ? user.faction.label : "GABS"}
+                text={user ? acronym(user.faction.label) : "GABS"}
                 color={user ? user.faction.theme.primary : "grey !important"}
                 imageUrl={
-                    user && user.faction.logo_blob_id
-                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id}`
+                    user && user.faction
+                        ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction.id]?.logo_blob_id}`
                         : undefined
                 }
             />

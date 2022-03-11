@@ -1,7 +1,7 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
-import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
+import { SvgExternalLink, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
@@ -59,19 +59,6 @@ export const AssetItem = ({
         )
     }, [state, subscribe])
 
-    // Subscribe on asset durability
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !asset) return
-        return subscribe<AssetDurability>(
-            PassportServerKeys.SubAssetDurability,
-            (payload) => {
-                if (!payload) return
-                setDurability(payload)
-            },
-            { asset_hash: asset.hash },
-        )
-    }, [state, subscribe])
-
     // Subscribe on asset queue position
     useEffect(() => {
         if (state !== WebSocket.OPEN || !gsSubscribe) return
@@ -86,7 +73,7 @@ export const AssetItem = ({
     }, [state, gsSubscribe])
 
     const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
-    const isRepairing = !!durability?.repair_type
+    const isRepairing = false // To be implemented on gameserver
     const isInBattle = queueStatus && queueStatus.queue_position && queueStatus.queue_position == -1
     const isInQueue = queueStatus && queueStatus.queue_position && queueStatus.queue_position >= 1
 
@@ -122,37 +109,35 @@ export const AssetItem = ({
         }
 
         if (isRepairing) {
-            const { started_at, expect_completed_at } = durability
-            const isFastMode = durability.repair_type == "FAST"
-
-            return (
-                <>
-                    <Typography
-                        sx={{
-                            px: 1,
-                            py: 0.34,
-                            color: colors.neonBlue,
-                            lineHeight: 1,
-                            border: `${colors.neonBlue} 1px solid`,
-                            borderRadius: 0.3,
-                            fontSize: ".75rem",
-                        }}
-                    >
-                        REPAIRING
-                    </Typography>
-
-                    <Stack direction="row" alignItems="center" spacing={0.4} sx={{ pt: 0.3 }}>
-                        {isFastMode && <SvgFastRepair size="10px" fill={colors.neonBlue} />}
-                        <SvgCooldown size="12px" fill={colors.neonBlue} />
-                        <Typography
-                            variant="caption"
-                            sx={{ lineHeight: 1, color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}
-                        >
-                            <RepairCountdown endTime={expect_completed_at} />
-                        </Typography>
-                    </Stack>
-                </>
-            )
+            // const { started_at, expect_completed_at } = durability
+            // const isFastMode = durability.repair_type == "FAST"
+            // return (
+            //     <>
+            //         <Typography
+            //             sx={{
+            //                 px: 1,
+            //                 py: 0.34,
+            //                 color: colors.neonBlue,
+            //                 lineHeight: 1,
+            //                 border: `${colors.neonBlue} 1px solid`,
+            //                 borderRadius: 0.3,
+            //                 fontSize: ".75rem",
+            //             }}
+            //         >
+            //             REPAIRING
+            //         </Typography>
+            //         <Stack direction="row" alignItems="center" spacing={0.4} sx={{ pt: 0.3 }}>
+            //             {isFastMode && <SvgFastRepair size="10px" fill={colors.neonBlue} />}
+            //             <SvgCooldown size="12px" fill={colors.neonBlue} />
+            //             <Typography
+            //                 variant="caption"
+            //                 sx={{ lineHeight: 1, color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}
+            //             >
+            //                 <RepairCountdown endTime={expect_completed_at} />
+            //             </Typography>
+            //         </Stack>
+            //     </>
+            // )
         }
 
         if (isInBattle) {

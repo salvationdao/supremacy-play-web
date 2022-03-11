@@ -2,10 +2,12 @@ import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../.."
 import { GenericWarMachinePNG } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { useGame } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
+    const { factionsAll } = useGame()
     const { battle_identifier, winning_faction, winning_war_machines } = battleEndDetail
 
     return (
@@ -33,7 +35,9 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 <StyledImageText
                     color={winning_faction.theme.primary}
                     text={winning_faction.label}
-                    imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${winning_faction.logo_blob_id}`}
+                    imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
+                        factionsAll[winning_faction.id]?.logo_blob_id
+                    }`}
                     variant="h5"
                     imageSize={40}
                     imageBorderThickness="0px"
@@ -50,7 +54,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                                 color={colors.text}
                                 imageBorderColor={wm.faction.theme.primary}
                                 imageBackgroundColor={`${wm.faction.theme.primary}60`}
-                                text={wm.name.toUpperCase()}
+                                text={(wm.name || wm.hash).toUpperCase()}
                                 imageUrl={wm.imageAvatar || GenericWarMachinePNG}
                                 variant="h5"
                                 imageSize={29}
