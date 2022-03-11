@@ -1,13 +1,13 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
+import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, NullUUID, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useGameServerAuth, useDimension, useStream, useWallet, usePassportServerAuth } from "../../containers"
 import { colors } from "../../theme/theme"
 import { Trailer } from ".."
 import { useToggle } from "../../hooks"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
-    const { user } = useGameServerAuth()
+    const { userID, faction_id } = useGameServerAuth()
     const { user: passportUser } = usePassportServerAuth()
     const { onWorldSups } = useWallet()
 
@@ -20,9 +20,9 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
     }, [onWorldSups, supsAboveZero, haveSups])
 
     let message = "You must connect your passport to view the battle stream."
-    if (user && !haveSups) {
+    if (userID && !haveSups) {
         message = "You must have SUPS in order to view the battle stream."
-    } else if (!user?.faction_id && passportUser) {
+    } else if ((!faction_id || faction_id === NullUUID) && passportUser) {
         message = "You must enlist in a faction to view the battle stream."
     }
 
@@ -68,7 +68,7 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
 
 export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
-    const { user } = useGameServerAuth()
+    const { userID } = useGameServerAuth()
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
     const [renderTopMessage, toggleRenderTopMessage] = useToggle()
@@ -85,7 +85,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
     }
     return (
         <Stack sx={{ width: "100%", height: "100%" }}>
-            {user && haveSups ? (
+            {userID && haveSups ? (
                 <video
                     key={currentStream?.stream_id}
                     id={"remoteVideo"}

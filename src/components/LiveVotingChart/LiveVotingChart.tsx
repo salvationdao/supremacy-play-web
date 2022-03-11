@@ -20,9 +20,9 @@ const SpoilOfWarAmount = () => {
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<string | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {
-            if (!payload) return
-            setSpoilOfWarAmount(new BigNumber(payload).dividedBy("1000000000000000000").toFixed(6))
+        return subscribeNetMessage<string[] | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {
+            if (!payload || payload.length === 0) return
+            setSpoilOfWarAmount(new BigNumber(payload[0]).dividedBy("1000000000000000000").toFixed(6))
         })
     }, [state, subscribeNetMessage])
 
