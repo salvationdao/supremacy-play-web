@@ -9,7 +9,7 @@ import {
     SectionTopSupsFaction,
     SectionWinner,
 } from ".."
-import { useGameServerWebsocket, useOverlayToggles } from "../../containers"
+import { useGame, useGameServerWebsocket, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { GameServerKeys } from "../../keys"
 import { sampleBattleEndDetail } from "../../samepleData"
@@ -21,6 +21,7 @@ const SPAWN_TEST_DATA = false
 export const BOTTOM_BUTTONS_HEIGHT = 50
 
 export const BattleEndScreen = () => {
+    const { bribeStage } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
@@ -31,10 +32,7 @@ export const BattleEndScreen = () => {
         return subscribe<BattleEndDetail>(
             GameServerKeys.SubBattleEndDetailUpdated,
             (payload) => {
-                if (!payload) {
-                    toggleIsEndBattleDetailOpen(false)
-                    return
-                }
+                if (!payload) return
                 setBattleEndDetail(payload)
                 toggleIsEndBattleDetailEnabled(true)
                 toggleIsEndBattleDetailOpen(true)
@@ -51,6 +49,10 @@ export const BattleEndScreen = () => {
             toggleIsEndBattleDetailOpen(true)
         }
     }, [])
+
+    useEffect(() => {
+        if (bribeStage?.phase !== "HOLD") toggleIsEndBattleDetailOpen(false)
+    }, [bribeStage])
 
     const primaryColor =
         battleEndDetail && battleEndDetail.winning_faction
