@@ -114,7 +114,9 @@ export const StreamContainer = createContainer(() => {
         if (localStream) {
             const savedStream = JSON.parse(localStream)
             if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
-                setCurrentStream(savedStream)
+                setTimeout(() => {
+                    setCurrentStream(savedStream)
+                }, 1800)
                 SetNewStreamOptions(quietestStreams, true)
             }
             return

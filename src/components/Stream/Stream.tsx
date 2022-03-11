@@ -88,7 +88,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
         <Stack sx={{ width: "100%", height: "100%" }}>
             {user && haveSups ? (
                 <video
-                    key={currentStream?.url}
+                    key={currentStream?.stream_id}
                     id={"remoteVideo"}
                     muted={isMute}
                     ref={vidRefCallback}
