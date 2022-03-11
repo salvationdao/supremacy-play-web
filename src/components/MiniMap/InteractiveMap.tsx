@@ -27,10 +27,10 @@ const MapGrid = styled("table", {
 }))
 
 const GridCell = styled("td", {
-    shouldForwardProp: (prop) => prop !== "disabled",
-})<{ disabled?: boolean }>(({ disabled }) => ({
-    height: "50px",
-    width: "50px",
+    shouldForwardProp: (prop) => prop !== "disabled" && prop !== "width" && prop !== "height",
+})<{ disabled?: boolean; width: number; height: number }>(({ disabled, width, height }) => ({
+    height: `${width}px`,
+    width: `${height}px`,
     cursor: disabled ? "auto" : "pointer",
     border: disabled ? "unset" : `1px solid #FFFFFF40`,
     backgroundColor: disabled ? "#00000090" : "unset",
@@ -138,6 +138,9 @@ export const InteractiveMap = ({
             return <div />
         }
 
+        const width = map.width / map.cells_x
+        const height = map.height / map.cells_y
+
         return (
             <MapGrid map={map}>
                 <tbody>
@@ -154,6 +157,8 @@ export const InteractiveMap = ({
                                             <GridCell
                                                 key={`column-${y}-row-${x}`}
                                                 disabled={disabled}
+                                                width={width}
+                                                height={height}
                                                 onClick={
                                                     disabled
                                                         ? undefined
