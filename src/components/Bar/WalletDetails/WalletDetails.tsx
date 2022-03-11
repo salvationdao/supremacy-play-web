@@ -4,18 +4,19 @@ import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
 import { useEffect, useState } from "react"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgSupToken, SvgWallet } from "../../../assets"
-import { useGameServerWebsocket, usePassportServerAuth, useWallet } from "../../../containers"
+import { useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, useWallet } from "../../../containers"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { Transaction } from "../../../types/passport"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { TOKEN_SALE_PAGE } from "../../../constants"
+import { NullUUID, TOKEN_SALE_PAGE } from "../../../constants"
 import { MultipliersAll } from "../../../types"
 
 export const WalletDetails = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { setOnWorldSupsRaw } = useWallet()
     const { user, userID } = usePassportServerAuth()
+    const { userID: gameserverUserID } = useGameServerAuth()
     const [isTooltipOpen, toggleIsTooltipOpen] = useToggle()
     const { payload: sups } = usePassportServerSecureSubscription<string>(PassportServerKeys.SubscribeWallet)
     const [multipliers, setMultipliers] = useState<MultipliersAll>()
@@ -28,12 +29,12 @@ export const WalletDetails = () => {
 
     // Subscribe to multipliers
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
+        if (state !== WebSocket.OPEN || !subscribe || !gameserverUserID || gameserverUserID === NullUUID) return
         return subscribe<MultipliersAll>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
             if (!payload) return
             setMultipliers(payload)
         })
-    }, [state, subscribe])
+    }, [state, subscribe, gameserverUserID])
 
     // get initial 5 transactions
     useEffect(() => {
