@@ -40,6 +40,23 @@ interface WebRTCAdaptorType {
     closeWebSocket: (stream_id: string) => void
 }
 
+const blankOption: Stream = {
+    host: "No Stream",
+    name: "No Stream",
+    url: "",
+    stream_id: "No Stream",
+    region: "",
+    resolution: "",
+    bit_rates_kbits: 0,
+    user_max: 999999,
+    users_now: 0,
+    active: true,
+    status: "online",
+    latitude: 0,
+    longitude: 0,
+    distance: 0,
+}
+
 export const StreamContainer = createContainer(() => {
     const { state, subscribe } = useGameServerWebsocket()
     const defaultResolution = 720
@@ -88,7 +105,7 @@ export const StreamContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<Stream[]>(GameServerKeys.GetStreamList, (payload) => {
             if (!payload) return
-            setStreams(payload)
+            setStreams([blankOption, ...payload])
         })
     }, [state, subscribe])
 
@@ -114,9 +131,7 @@ export const StreamContainer = createContainer(() => {
         if (localStream) {
             const savedStream = JSON.parse(localStream)
             if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
-                setTimeout(() => {
-                    setCurrentStream(savedStream)
-                }, 1800)
+                setCurrentStream(savedStream)
                 SetNewStreamOptions(quietestStreams, true)
             }
             return
