@@ -42,7 +42,6 @@ export const AssetItem = ({
 
     const [assetData, setAssetData] = useState<Asset>(asset)
     const [queuePosition, setQueuePosition] = useState<AssetQueueStat>()
-    const [durability, setDurability] = useState<AssetDurability>()
 
     const rarityDeets = getRarityDeets(assetData.tier)
 
@@ -54,19 +53,6 @@ export const AssetItem = ({
             (payload) => {
                 if (!payload || !payload.purchased_item) return
                 setAssetData(payload.purchased_item)
-            },
-            { asset_hash: asset.hash },
-        )
-    }, [state, subscribe])
-
-    // Subscribe on asset durability
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !asset) return
-        return subscribe<AssetDurability>(
-            PassportServerKeys.SubAssetDurability,
-            (payload) => {
-                if (!payload) return
-                setDurability(payload)
             },
             { asset_hash: asset.hash },
         )
@@ -86,7 +72,7 @@ export const AssetItem = ({
     }, [state, subscribe])
 
     const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
-    const isRepairing = !!durability?.repair_type
+    const isRepairing = false // To be implemented on gameserver
     const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
     const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
     const contractReward = useMemo(
@@ -126,37 +112,35 @@ export const AssetItem = ({
         }
 
         if (isRepairing) {
-            const { started_at, expect_completed_at } = durability
-            const isFastMode = durability.repair_type == "FAST"
-
-            return (
-                <>
-                    <Typography
-                        sx={{
-                            px: 1,
-                            py: 0.34,
-                            color: colors.neonBlue,
-                            lineHeight: 1,
-                            border: `${colors.neonBlue} 1px solid`,
-                            borderRadius: 0.3,
-                            fontSize: ".75rem",
-                        }}
-                    >
-                        REPAIRING
-                    </Typography>
-
-                    <Stack direction="row" alignItems="center" spacing={0.4} sx={{ pt: 0.3 }}>
-                        {isFastMode && <SvgFastRepair size="10px" fill={colors.neonBlue} />}
-                        <SvgCooldown size="12px" fill={colors.neonBlue} />
-                        <Typography
-                            variant="caption"
-                            sx={{ lineHeight: 1, color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}
-                        >
-                            <RepairCountdown endTime={expect_completed_at} />
-                        </Typography>
-                    </Stack>
-                </>
-            )
+            // const { started_at, expect_completed_at } = durability
+            // const isFastMode = durability.repair_type == "FAST"
+            // return (
+            //     <>
+            //         <Typography
+            //             sx={{
+            //                 px: 1,
+            //                 py: 0.34,
+            //                 color: colors.neonBlue,
+            //                 lineHeight: 1,
+            //                 border: `${colors.neonBlue} 1px solid`,
+            //                 borderRadius: 0.3,
+            //                 fontSize: ".75rem",
+            //             }}
+            //         >
+            //             REPAIRING
+            //         </Typography>
+            //         <Stack direction="row" alignItems="center" spacing={0.4} sx={{ pt: 0.3 }}>
+            //             {isFastMode && <SvgFastRepair size="10px" fill={colors.neonBlue} />}
+            //             <SvgCooldown size="12px" fill={colors.neonBlue} />
+            //             <Typography
+            //                 variant="caption"
+            //                 sx={{ lineHeight: 1, color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}
+            //             >
+            //                 <RepairCountdown endTime={expect_completed_at} />
+            //             </Typography>
+            //         </Stack>
+            //     </>
+            // )
         }
 
         if (isInBattle) {
