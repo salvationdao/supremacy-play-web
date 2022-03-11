@@ -233,9 +233,9 @@ export const LiveChat = () => {
         return subscribe<ChatData>(PassportServerKeys.SubscribeGlobalChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, null)
-            if (tabValue !== 0) setGlobalChatUnread((prev) => prev + 1)
+            if (tabValue !== 0) setGlobalChatUnread(globalChatUnread + 1)
         })
-    }, [state, user, subscribe])
+    }, [state, user, subscribe, globalChatUnread])
 
     // Subscribe to faction chat messages
     useEffect(() => {
@@ -246,9 +246,9 @@ export const LiveChat = () => {
         return subscribe<ChatData>(PassportServerKeys.SubscribeFactionChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, m.from_user_id)
-            if (tabValue !== 1) setFactionChatUnread((prev) => prev + 1)
+            if (tabValue !== 1) setFactionChatUnread(factionChatUnread + 1)
         })
-    }, [user, state, subscribe, tabValue])
+    }, [user, state, subscribe, tabValue, factionChatUnread])
 
     return (
         <Drawer
