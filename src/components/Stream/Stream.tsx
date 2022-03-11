@@ -8,7 +8,6 @@ import { useToggle } from "../../hooks"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
     const { user } = useGameServerAuth()
-    const { user: passportUser } = usePassportServerAuth()
     const { onWorldSups } = useWallet()
 
     const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
@@ -22,7 +21,7 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
     let message = "You must connect your passport to view the battle stream."
     if (user && !haveSups) {
         message = "You must have SUPS in order to view the battle stream."
-    } else if (passportUser && !user) {
+    } else if (user && !user.faction_id) {
         message = "You must enlist in a faction to view the battle stream."
     }
 
