@@ -80,7 +80,7 @@ export const StreamContainer = createContainer(() => {
     const changeStream = (s: Stream) => {
         if (!s) return
         setCurrentStream(s)
-        localStorage.setItem("streamStream", JSON.stringify(s))
+        localStorage.setItem("new_stream_props", JSON.stringify(s))
     }
 
     // Subscribe to list of streams
@@ -108,7 +108,7 @@ export const StreamContainer = createContainer(() => {
         const quietestStreams = availStreams.sort((a, b) => (a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1))
 
         // If the local storage stream is in the list, set as current stream
-        const localStream = localStorage.getItem("streamStream")
+        const localStream = localStorage.getItem("new_stream_props")
         if (localStream) {
             const savedStream = JSON.parse(localStream)
             if (getObjectFromArrayByKey(availStreams, savedStream.streamID, "streamID")) {
