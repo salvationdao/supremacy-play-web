@@ -235,7 +235,7 @@ export const LiveChat = () => {
             newMessageHandler(m, null)
             if (tabValue !== 0) setGlobalChatUnread(globalChatUnread + 1)
         })
-    }, [state, user, subscribe, globalChatUnread])
+    }, [state, user, subscribe, tabValue, globalChatUnread])
 
     // Subscribe to faction chat messages
     useEffect(() => {
