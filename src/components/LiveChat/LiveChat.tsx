@@ -103,7 +103,10 @@ const DrawerContent = ({
                 <Tab
                     label={
                         <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
-                            <Badge badgeContent={globalChatUnread} color="primary">
+                            <Badge
+                                badgeContent={globalChatUnread}
+                                sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
+                            >
                                 <SvgGlobal size="20px" />
                             </Badge>
                             <Typography
@@ -122,7 +125,10 @@ const DrawerContent = ({
                     <Tab
                         label={
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
-                                <Badge badgeContent={factionChatUnread} color="primary">
+                                <Badge
+                                    badgeContent={factionChatUnread}
+                                    sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
+                                >
                                     <Box
                                         sx={{
                                             width: 21,
