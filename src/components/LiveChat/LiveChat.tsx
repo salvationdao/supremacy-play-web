@@ -22,11 +22,11 @@ const DrawerContent = ({
     setTabValue,
     chatMessages,
     onNewMessage,
-    factionUnread,
-    globalUnread,
+    factionChatUnread,
+    globalChatUnread,
 }: {
-    globalUnread: number
-    factionUnread: number
+    globalChatUnread: number
+    factionChatUnread: number
     tabValue: number
     setTabValue: Dispatch<SetStateAction<number>>
     chatMessages: ChatData[]
@@ -103,7 +103,7 @@ const DrawerContent = ({
                 <Tab
                     label={
                         <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
-                            <Badge badgeContent={globalUnread} color="primary">
+                            <Badge badgeContent={globalChatUnread} color="primary">
                                 <SvgGlobal size="20px" />
                             </Badge>
                             <Typography
@@ -122,7 +122,7 @@ const DrawerContent = ({
                     <Tab
                         label={
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
-                                <Badge badgeContent={factionUnread} color="primary">
+                                <Badge badgeContent={factionChatUnread} color="primary">
                                     <Box
                                         sx={{
                                             width: 21,
@@ -226,7 +226,7 @@ export const LiveChat = () => {
         return subscribe<ChatData>(PassportServerKeys.SubscribeGlobalChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, null)
-            setGlobalChatUnread(globalChatUnread + 1)
+            if (tabValue !== 0) setGlobalChatUnread((prev) => prev + 1)
         })
     }, [state, user, subscribe, globalChatUnread])
 
@@ -239,7 +239,7 @@ export const LiveChat = () => {
         return subscribe<ChatData>(PassportServerKeys.SubscribeFactionChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, m.from_user_id)
-            setFactionChatUnread(factionChatUnread + 1)
+            if (tabValue !== 1) setFactionChatUnread((prev) => prev + 1)
         })
     }, [user, state, subscribe, factionChatUnread])
 
@@ -273,8 +273,8 @@ export const LiveChat = () => {
                 <DrawerButtons isFixed={false} />
 
                 <DrawerContent
-                    factionUnread={factionChatUnread}
-                    globalUnread={globalChatUnread}
+                    factionChatUnread={factionChatUnread}
+                    globalChatUnread={globalChatUnread}
                     tabValue={tabValue}
                     setTabValue={setTabValue}
                     chatMessages={tabValue == 0 ? globalChatMessages : factionChatMessages}
