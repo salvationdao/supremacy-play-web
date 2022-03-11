@@ -1,15 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { styled } from "@mui/system"
+import { useGesture } from "@use-gesture/react"
+import moment from "moment"
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
+import { animated, useSpring } from "react-spring"
 import { MapWarMachine, SelectionIcon } from ".."
 import { useGame, useGameServerWebsocket } from "../../containers"
-import { GameAbility, Map, WarMachineState } from "../../types"
-import { animated, useSpring } from "react-spring"
-import { useGesture } from "@use-gesture/react"
-import { opacityEffect } from "../../theme/keyframes"
-import { GameServerKeys } from "../../keys"
-import moment from "moment"
 import { useInterval } from "../../hooks"
+import { GameServerKeys } from "../../keys"
+import { opacityEffect } from "../../theme/keyframes"
+import { GameAbility, Map, WarMachineState } from "../../types"
 
 export interface MapSelection {
     x: number
@@ -103,11 +103,7 @@ export const InteractiveMap = ({
             return
         }
 
-<<<<<<< HEAD
-        if (!endMoment) setEndMoment(moment().add(3, "seconds"))
-=======
         if (!endMoment) return setEndMoment(moment().add(3, "seconds"))
->>>>>>> e06f732ed0262efd87824b14349a7f0a734d751b
     }, [selection])
 
     useEffect(() => {
