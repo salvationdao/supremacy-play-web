@@ -139,7 +139,7 @@ const MapWarMachineInner = ({
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size={enlarged ? "25px" : isSpawnedAI ? "65px" : "90px"}
+                            size={enlarged ? `${0.5 * SIZE}px` : isSpawnedAI ? `${1.3 * SIZE}px` : `${1.8 * SIZE}px`}
                             sx={{
                                 position: "absolute",
                                 top: "52%",
