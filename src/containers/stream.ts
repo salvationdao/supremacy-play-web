@@ -34,10 +34,10 @@ interface WebRTCAdaptorType {
     callback: (info: string, obj: any) => void
     callbackError: (error: string) => void
 
-    forceStreamQuality: (streamID: string, quality: number) => void
-    play: (streamID: string, tokenID: string) => void
-    getStreamInfo: (streamID: string) => void
-    closeWebSocket: (streamID: string) => void
+    forceStreamQuality: (stream_id: string, quality: number) => void
+    play: (stream_id: string, token_id: string) => void
+    getStreamInfo: (stream_id: string) => void
+    closeWebSocket: (stream_id: string) => void
 }
 
 export const StreamContainer = createContainer(() => {
@@ -105,13 +105,15 @@ export const StreamContainer = createContainer(() => {
 
         // Reduce the list of options so it's not too many for the user
         // By default its sorted by quietest servers first
-        const quietestStreams = availStreams.sort((a, b) => (a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1))
+        const quietestStreams = availStreams.sort((a, b) =>
+            a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1,
+        )
 
         // If the local storage stream is in the list, set as current stream
         const localStream = localStorage.getItem("new_stream_props")
         if (localStream) {
             const savedStream = JSON.parse(localStream)
-            if (getObjectFromArrayByKey(availStreams, savedStream.streamID, "streamID")) {
+            if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
                 setCurrentStream(savedStream)
                 SetNewStreamOptions(quietestStreams, true)
             }
@@ -124,7 +126,7 @@ export const StreamContainer = createContainer(() => {
     const SetNewStreamOptions = (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
         // Limit to only a few for the dropdown and include our current selection if not already in the list
         const temp = newStreamOptions.slice(0, MAX_OPTIONS)
-        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.stream_id, "streamID")) {
+        if (currentStream && !getObjectFromArrayByKey(temp, currentStream.stream_id, "stream_id")) {
             newStreamOptions[newStreamOptions.length - 1] = currentStream
         }
 
