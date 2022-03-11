@@ -38,13 +38,13 @@ export enum GameServerKeys {
     // Queue
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
+    SubQueueStatus = "BATTLE:QUEUE:STATUS",
 
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubAISpawned = "AI:SPAWNED",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
-    SubFactionQueueLength = "FACTION:QUEUE:JOIN",
     SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
 }
 

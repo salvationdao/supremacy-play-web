@@ -39,13 +39,13 @@ export const DeployConfirmation = ({
     open,
     asset,
     queueCost,
-    queueLength,
+    contractReward,
     onClose,
 }: {
     open: boolean
     asset: Asset
     queueCost: string
-    queueLength: number
+    contractReward: string
     onClose: () => void
 }) => {
     const { state, send } = useGameServerWebsocket()
@@ -184,19 +184,17 @@ export const DeployConfirmation = ({
 
                             <Stack spacing={0.1}>
                                 <AmountItem
-                                    key={`${queueLength}-contract_reward`}
+                                    key={`${contractReward}-contract_reward`}
                                     title={"Contract reward: "}
                                     color={colors.yellow}
-                                    value={
-                                        queueLength > 0 ? supFormatter(`${queueLength * 2}000000000000000000`) : "---"
-                                    }
+                                    value={supFormatter(contractReward)}
                                     tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
                                 />
 
                                 <AmountItem
                                     title={"Fee: "}
                                     color={"#FF4136"}
-                                    value={queueCost || "---"}
+                                    value={supFormatter(queueCost)}
                                     tooltip="The cost to place your war machine into the battle queue."
                                 />
                             </Stack>

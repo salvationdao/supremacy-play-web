@@ -7,7 +7,7 @@ import {
     GAME_BAR_HEIGHT,
     LIVE_CHAT_DRAWER_WIDTH,
     NullUUID,
-    PASSPORT_WEB,
+    PASSPORT_WEB
 } from "../../constants"
 import { useDrawer, usePassportServerAuth, usePassportServerWebsocket, useQueue } from "../../containers"
 import { PassportServerKeys } from "../../keys"
@@ -19,7 +19,7 @@ const DrawerContent = () => {
     const { faction_id } = usePassportServerAuth()
 
     const [assets, setAssets] = useState<Asset[]>([])
-    const { queueLength, queueCost } = useQueue()
+    const {  queueCost, contractReward } = useQueue()
 
     // Subscribe to the list of mechs that the user owns
     useEffect(() => {
@@ -76,17 +76,11 @@ const DrawerContent = () => {
                     <Stack spacing={0.6}>
                         {assets && assets.length > 0 ? (
                             <>
-                                {assets.map((a, index) => (
-                                    <AssetItem
-                                        key={a.hash}
-                                        asset={a}
-                                        queueCost={queueCost}
-                                        queueLength={queueLength}
-                                        renderQueuedOnly
-                                    />
+                                {assets.map((a) => (
+                                    <AssetItem key={a.hash} asset={a} queueCost={queueCost} contractReward={contractReward} renderQueuedOnly />
                                 ))}
-                                {assets.map((a, index) => (
-                                    <AssetItem key={a.hash} asset={a} queueCost={queueCost} queueLength={queueLength} />
+                                {assets.map((a) => (
+                                    <AssetItem key={a.hash} asset={a} queueCost={queueCost} contractReward={contractReward} />
                                 ))}
                             </>
                         ) : (

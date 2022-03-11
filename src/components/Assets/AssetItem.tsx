@@ -1,5 +1,5 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
 import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
@@ -24,12 +24,12 @@ const RepairCountdown = ({ endTime }: { endTime: Date }) => {
 export const AssetItem = ({
     asset,
     queueCost,
-    queueLength,
+    contractReward,
     renderQueuedOnly,
 }: {
     asset: Asset
     queueCost: string
-    queueLength: number
+    contractReward: string
     renderQueuedOnly?: boolean
 }) => {
     const { user } = usePassportServerAuth()
@@ -89,10 +89,6 @@ export const AssetItem = ({
     const isRepairing = !!durability?.repair_type
     const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
     const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
-    const contractReward = useMemo(
-        () => (queuePosition && queuePosition.contract_reward ? queuePosition.contract_reward : undefined),
-        [queuePosition],
-    )
 
     if (
         !assetData ||
@@ -361,7 +357,7 @@ export const AssetItem = ({
                 open={isDeployModal}
                 asset={asset}
                 queueCost={queueCost}
-                queueLength={queueLength}
+                contractReward={contractReward}
                 onClose={() => toggleIsDeployModal(false)}
             />
         </Stack>
