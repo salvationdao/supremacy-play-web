@@ -56,12 +56,13 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
     const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
     const [submitted, setSubmitted] = useState<boolean>(false)
 
+    const isTargeting = winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT"
+
     useEffect(() => {
         if (width <= 0 || height <= 0) return
-
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
-        const newWidth = enlarged ? width - 25 : MINI_MAP_DEFAULT_WIDTH
-        const newHeight = enlarged ? height - 120 : MINI_MAP_DEFAULT_HEIGHT
+        const newWidth = isTargeting ? Math.min(width - 25, 1000) : enlarged ? width - 25 : MINI_MAP_DEFAULT_WIDTH
+        const newHeight = isTargeting ? Math.min(height - 25, 700) : enlarged ? height - 120 : MINI_MAP_DEFAULT_HEIGHT
         setDimensions({ width: newWidth, height: newHeight })
     }, [width, height, enlarged])
 
@@ -100,7 +101,6 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
 
     if (!map) return null
 
-    const isTargeting = winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT"
     const onResize = (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
         const { size } = data || { size: { width: dimensions.width, height: dimensions.height } }
         setDimensions({ width: size.width, height: size.width / 1.0625 })
