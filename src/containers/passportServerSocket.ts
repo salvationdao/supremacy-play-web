@@ -108,9 +108,6 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
 
     const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
         const transaction_id = makeid()
-
-        console.log("send", transaction_id)
-
         return new Promise((resolve, reject) => {
             callbacks.current[transaction_id] = (data: Message<Y> | HubError) => {
                 if (data.key === "HUB:ERROR") {
@@ -122,7 +119,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
             }
 
             const sendFn = () => {
-                console.log(webSocket.current && webSocket.current.readyState )
+                console.log(webSocket.current && webSocket.current.readyState)
                 if (!webSocket.current || webSocket.current.readyState !== WebSocket.OPEN) {
                     setTimeout(sendFn, 500)
                     return
