@@ -1,10 +1,7 @@
 import {
-    NetMessageType,
-    NetMessageTick,
+    BattleAbilityProgress, GameAbilityProgress, NetMessageTick,
     NetMessageTickWarMachine,
-    GameAbilityProgress,
-    ViewerLiveCount,
-    BattleAbilityProgress,
+    NetMessageType, ViewerLiveCount
 } from "../types"
 
 export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; payload: unknown } | undefined => {

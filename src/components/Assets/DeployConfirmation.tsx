@@ -2,9 +2,9 @@ import { Box, Button, IconButton, Link, Modal, Stack, Switch, Typography } from 
 import { useEffect } from "react"
 import { ClipThing, TooltipHelper } from ".."
 import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES, PASSPORT_WEB } from "../../constants"
-import { usePassportServerAuth, useGameServerWebsocket } from "../../containers"
-import { acronym, getRarityDeets, supFormatter } from "../../helpers"
+import { PASSPORT_WEB } from "../../constants"
+import { useGameServerWebsocket, usePassportServerAuth } from "../../containers"
+import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
@@ -39,13 +39,13 @@ export const DeployConfirmation = ({
     open,
     asset,
     queueCost,
-    queueLength,
+    contractReward,
     onClose,
 }: {
     open: boolean
     asset: Asset
     queueCost: string
-    queueLength: number
+    contractReward: string
     onClose: () => void
 }) => {
     const { state, send } = useGameServerWebsocket()
@@ -184,19 +184,17 @@ export const DeployConfirmation = ({
 
                             <Stack spacing={0.1}>
                                 <AmountItem
-                                    key={`${queueLength}-contract_reward`}
+                                    key={`${contractReward}-contract_reward`}
                                     title={"Contract reward: "}
                                     color={colors.yellow}
-                                    value={
-                                        queueLength > 0 ? supFormatter(`${queueLength * 2}000000000000000000`) : "---"
-                                    }
+                                    value={supFormatter(contractReward, 2)}
                                     tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
                                 />
 
                                 <AmountItem
                                     title={"Fee: "}
                                     color={"#FF4136"}
-                                    value={queueCost || "---"}
+                                    value={supFormatter(queueCost, 2)}
                                     tooltip="The cost to place your war machine into the battle queue."
                                 />
                             </Stack>

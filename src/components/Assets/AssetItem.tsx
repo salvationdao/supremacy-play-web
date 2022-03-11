@@ -1,14 +1,14 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
-import { SvgCooldown, SvgExternalLink, SvgFastRepair, SvgSupToken } from "../../assets"
+import { SvgExternalLink, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { Asset, AssetDurability, AssetQueueStat } from "../../types/assets"
+import { Asset, AssetQueueStat } from "../../types/assets"
 
 const RepairCountdown = ({ endTime }: { endTime: Date }) => {
     const { hours, minutes, seconds } = useTimer(endTime)
@@ -24,24 +24,24 @@ const RepairCountdown = ({ endTime }: { endTime: Date }) => {
 export const AssetItem = ({
     asset,
     queueCost,
-    queueLength,
+    contractReward,
     renderQueuedOnly,
 }: {
     asset: Asset
     queueCost: string
-    queueLength: number
+    contractReward: string
     renderQueuedOnly?: boolean
 }) => {
     const { user } = usePassportServerAuth()
     const { state, subscribe } = usePassportServerWebsocket()
-    const { state: gsState, send: sendGS } = useGameServerWebsocket()
+    const { state: gsState, send: sendGS, subscribe: gsSubscribe } = useGameServerWebsocket()
     const [isDeployModal, toggleIsDeployModal] = useToggle()
 
     const [mouseOver, setMouseOver] = useState<boolean>(false)
     const [removing, setRemoving] = useState<boolean>(false)
 
     const [assetData, setAssetData] = useState<Asset>(asset)
-    const [queuePosition, setQueuePosition] = useState<AssetQueueStat>()
+    const [queueStatus, setQueueStatus] = useState<AssetQueueStat>()
 
     const rarityDeets = getRarityDeets(assetData.tier)
 
@@ -60,25 +60,21 @@ export const AssetItem = ({
 
     // Subscribe on asset queue position
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !asset) return
-        return subscribe<AssetQueueStat>(
-            PassportServerKeys.SubAssetQueuePosition,
+        if (state !== WebSocket.OPEN || !gsSubscribe) return
+        return gsSubscribe<AssetQueueStat>(
+            GameServerKeys.SubAssetQueueStatus,
             (payload) => {
                 if (!payload) return
-                setQueuePosition(payload)
+                setQueueStatus(payload)
             },
             { asset_hash: asset.hash },
         )
-    }, [state, subscribe])
+    }, [state, gsSubscribe])
 
     const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
     const isRepairing = false // To be implemented on gameserver
-    const isInBattle = queuePosition && queuePosition.position && queuePosition.position == -1
-    const isInQueue = queuePosition && queuePosition.position && queuePosition.position >= 1
-    const contractReward = useMemo(
-        () => (queuePosition && queuePosition.contract_reward ? queuePosition.contract_reward : undefined),
-        [queuePosition],
-    )
+    const isInBattle = queueStatus && queueStatus.queue_position && queueStatus.queue_position == -1
+    const isInQueue = queueStatus && queueStatus.queue_position && queueStatus.queue_position >= 1
 
     if (
         !assetData ||
@@ -159,12 +155,12 @@ export const AssetItem = ({
                     >
                         IN BATTLE
                     </Typography>
-                    {contractReward && (
+                    {queueStatus.contract_reward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
-                                {supFormatter(contractReward)}
+                                {supFormatter(queueStatus.contract_reward, 2)}
                             </Typography>
                         </Stack>
                     )}
@@ -182,7 +178,7 @@ export const AssetItem = ({
                             if (removing) return
                             setRemoving(true)
                             try {
-                                await sendGS(GameServerKeys.LeaveQueue, { hash: asset.hash })
+                                await sendGS(GameServerKeys.LeaveQueue, { asset_hash: asset.hash })
                             } finally {
                                 setRemoving(false)
                             }
@@ -202,12 +198,12 @@ export const AssetItem = ({
                     >
                         {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
                     </Typography>
-                    {contractReward && (
+                    {queueStatus.contract_reward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
-                                {supFormatter(contractReward)}
+                                {supFormatter(queueStatus.contract_reward, 2)}
                             </Typography>
                         </Stack>
                     )}
@@ -277,9 +273,11 @@ export const AssetItem = ({
                     }}
                 />
 
-                {isGameServerUp && isInQueue && queuePosition && queuePosition.position && (
-                    <Box sx={{ position: "absolute" }}>
-                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{queuePosition.position}</Typography>
+                {isGameServerUp && isInQueue && queueStatus && queueStatus.queue_position && (
+                    <Box sx={{ position: "absolute", top: 0, left: 0 }}>
+                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>
+                            {queueStatus.queue_position}
+                        </Typography>
                     </Box>
                 )}
 
@@ -345,7 +343,7 @@ export const AssetItem = ({
                 open={isDeployModal}
                 asset={asset}
                 queueCost={queueCost}
-                queueLength={queueLength}
+                contractReward={contractReward}
                 onClose={() => toggleIsDeployModal(false)}
             />
         </Stack>

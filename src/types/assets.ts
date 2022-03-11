@@ -9,7 +9,7 @@ export interface AssetDurability {
 // position = -1        	// currently in game
 // position >= 0         	// current queuing position
 export interface AssetQueueStat {
-    position?: number
+    queue_position?: number
     contract_reward?: string
 }
 

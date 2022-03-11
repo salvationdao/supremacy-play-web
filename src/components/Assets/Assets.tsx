@@ -19,7 +19,7 @@ const DrawerContent = () => {
     const { faction_id } = usePassportServerAuth()
 
     const [assets, setAssets] = useState<Asset[]>([])
-    const { queueLength, queueCost } = useQueue()
+    const { queueCost, contractReward } = useQueue()
 
     // Subscribe to the list of mechs that the user owns
     useEffect(() => {
@@ -78,15 +78,20 @@ const DrawerContent = () => {
                             <>
                                 {assets.map((a, index) => (
                                     <AssetItem
-                                        key={a.hash}
+                                        key={`${a.hash}-${index}-render_queued_only`}
                                         asset={a}
                                         queueCost={queueCost}
-                                        queueLength={queueLength}
+                                        contractReward={contractReward}
                                         renderQueuedOnly
                                     />
                                 ))}
                                 {assets.map((a, index) => (
-                                    <AssetItem key={a.hash} asset={a} queueCost={queueCost} queueLength={queueLength} />
+                                    <AssetItem
+                                        key={`${a.hash}-${index}-dont-render-queued`}
+                                        asset={a}
+                                        queueCost={queueCost}
+                                        contractReward={contractReward}
+                                    />
                                 ))}
                             </>
                         ) : (
