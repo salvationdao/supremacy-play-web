@@ -187,14 +187,14 @@ export const DeployConfirmation = ({
                                     key={`${contractReward}-contract_reward`}
                                     title={"Contract reward: "}
                                     color={colors.yellow}
-                                    value={supFormatter(contractReward)}
+                                    value={supFormatter(contractReward, 2)}
                                     tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
                                 />
 
                                 <AmountItem
                                     title={"Fee: "}
                                     color={"#FF4136"}
-                                    value={supFormatter(queueCost)}
+                                    value={supFormatter(queueCost, 2)}
                                     tooltip="The cost to place your war machine into the battle queue."
                                 />
                             </Stack>
