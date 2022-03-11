@@ -16,13 +16,17 @@ const DefaultMaxLiveVotingDataLength = 100
 
 const SpoilOfWarAmount = () => {
     const { state, subscribeNetMessage } = useGameServerWebsocket()
+    const [nextSpoilOfWarAmount, setNextSpoilOfWarAmount] = useState<string>("0")
     const [spoilOfWarAmount, setSpoilOfWarAmount] = useState<string>("0")
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
         return subscribeNetMessage<string[] | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {
             if (!payload || payload.length === 0) return
-            setSpoilOfWarAmount(new BigNumber(payload[0]).dividedBy("1000000000000000000").toFixed(6))
+            setNextSpoilOfWarAmount(new BigNumber(payload[0]).dividedBy("1000000000000000000").toFixed(0))
+            if (payload.length > 1) {
+                setSpoilOfWarAmount(new BigNumber(payload[1]).dividedBy("1000000000000000000").toFixed(0))
+            }
         })
     }, [state, subscribeNetMessage])
 
@@ -33,8 +37,23 @@ const SpoilOfWarAmount = () => {
             </Typography>
             <SvgSupToken size="14px" fill={colors.yellow} />
             <Typography variant="body1" sx={{ ml: 0.2 }}>
-                {spoilOfWarAmount}
+                {spoilOfWarAmount}&nbsp;
             </Typography>
+
+            <Box
+                display={"flex"}
+                alignItems="center"
+                justifyContent={"center"}
+                sx={{ ml: 1, opacity: 0.6, px: 1, backgroundColor: colors.darkNavyBlue }}
+            >
+                <Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
+                    NEXT:&nbsp;
+                </Typography>
+                <SvgSupToken size="14px" fill={colors.yellow} />
+                <Typography variant="body1" sx={{ ml: 0.2 }}>
+                    {nextSpoilOfWarAmount}
+                </Typography>
+            </Box>
         </>
     )
 }
@@ -88,10 +107,10 @@ const Content = () => {
             // Defaults
             defaultPositionX: 0,
             defaultPositionYBottom: 128,
-            defaultSizeX: 363,
+            defaultSizeX: 380,
             defaultSizeY: 115,
             // Limits
-            minSizeX: 363,
+            minSizeX: 380,
             minSizeY: 115,
             // Toggles
             allowResizeX: true,
