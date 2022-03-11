@@ -195,8 +195,6 @@ const GameServerWebsocket = (): WebSocketProperties => {
     const sendMessage = useCallback(
         (msg: Message<any>) => {
             const sendFn = () => {
-                console.log(webSocket.current && webSocket.current.readyState )
-
                 if (!webSocket.current || webSocket.current.readyState !== WebSocket.OPEN) {
                     setTimeout(sendFn, 500)
                     return

@@ -94,7 +94,7 @@ const BattleAbilityItemInner = ({
                 // Put own faction progress first, then convert string to big number and set state
                 setBattleAbilityProgress(
                     payload
-                        .sort((a, b) => (b.faction_id == faction_id ? 1 : a.faction_id.localeCompare(b.faction_id)))
+                        .sort((a, b) => a.faction_id.localeCompare(b.faction_id))
                         .map((a) => ({
                             faction_id: a.faction_id,
                             sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
@@ -109,6 +109,8 @@ const BattleAbilityItemInner = ({
         if (send) send<boolean, { amount: number }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount }, true)
     }
 
+    console.log(battleAbilityProgress)
+
     const isVoting = useMemo(
         () =>
             bribeStage?.phase == "BRIBE" &&
@@ -117,7 +119,6 @@ const BattleAbilityItemInner = ({
             battleAbilityProgress[0].sups_cost.isGreaterThanOrEqualTo(battleAbilityProgress[0].current_sups),
         [battleAbilityProgress, bribeStage],
     )
-    const isCooldown = useMemo(() => bribeStage?.phase == "COOLDOWN", [bribeStage])
 
     if (!battleAbility || !battleAbilityProgress || battleAbilityProgress.length <= 0) return null
 
