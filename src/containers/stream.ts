@@ -48,7 +48,7 @@ const blankOption: Stream = {
     region: "",
     resolution: "",
     bit_rates_kbits: 0,
-    user_max: 1,
+    user_max: 999999,
     users_now: 0,
     active: true,
     status: "online",
@@ -131,9 +131,7 @@ export const StreamContainer = createContainer(() => {
         if (localStream) {
             const savedStream = JSON.parse(localStream)
             if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
-                setTimeout(() => {
-                    setCurrentStream(savedStream)
-                }, 3200)
+                setCurrentStream(savedStream)
                 SetNewStreamOptions(quietestStreams, true)
             }
             return
