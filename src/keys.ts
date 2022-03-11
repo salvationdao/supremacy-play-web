@@ -24,6 +24,7 @@ export enum GameServerKeys {
     // Net message subscription
     TriggerWarMachineLocationUpdated = "WAR:MACHINE:LOCATION:UPDATED",
     TriggerSpoilOfWarUpdated = "SPOIL:OF:WAR:UPDATED",
+    TriggerLiveVoteCountUpdated = "LIVE:VOTE:COUNT:UPDATED",
     TriggerFactionAbilityPriceUpdated = "ABILITY:PRICE:UPDATED",
     TriggerBattleAbilityProgressUpdated = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
 
