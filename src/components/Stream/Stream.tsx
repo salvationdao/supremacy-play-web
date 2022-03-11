@@ -1,14 +1,13 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useGameServerAuth, useDimension, useStream, useWallet, usePassportServerAuth } from "../../containers"
+import { useGameServerAuth, useDimension, useStream, useWallet } from "../../containers"
 import { colors } from "../../theme/theme"
 import { Trailer } from ".."
 import { useToggle } from "../../hooks"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
     const { user } = useGameServerAuth()
-    const { user: passportUser } = usePassportServerAuth()
     const { onWorldSups } = useWallet()
 
     const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
@@ -20,9 +19,9 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
     }, [onWorldSups, supsAboveZero, haveSups])
 
     let message = "You must connect your passport to view the battle stream."
-    if (user && !haveSups) {
+    if (user && user.faction && !haveSups) {
         message = "You must have SUPS in order to view the battle stream."
-    } else if (!user?.faction_id && passportUser) {
+    } else if (user && !user.faction) {
         message = "You must enlist in a faction to view the battle stream."
     }
 
@@ -85,7 +84,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
     }
     return (
         <Stack sx={{ width: "100%", height: "100%" }}>
-            {user && haveSups ? (
+            {user && user.faction_id && haveSups ? (
                 <video
                     key={currentStream?.stream_id}
                     id={"remoteVideo"}
