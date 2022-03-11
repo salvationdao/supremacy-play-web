@@ -2,11 +2,11 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { BarExpandable, TooltipHelper } from "../.."
 import { SvgAbility, SvgDeath, SvgView, SvgWrapperProps } from "../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGameServerWebsocket, usePassportServerAuth } from "../../../containers"
-import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
+import { useGameServerWebsocket, usePassportServerAuth } from "../../../containers"
 import { UserStat } from "../../../types/passport"
+import { GameServerKeys } from "../../../keys"
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 
 const BannerInfo = ({
     title,
