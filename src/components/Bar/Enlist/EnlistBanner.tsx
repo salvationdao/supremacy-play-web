@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { colors } from "../../../theme/theme"
 import { usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
 import { UserStat } from "../../../types/passport"
-import { PassportServerKeys } from "../../../keys"
+import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 
 const BannerInfo = ({
@@ -50,7 +50,8 @@ const BannerInfo = ({
 
 export const EnlistBanner = () => {
     const { user, userID } = usePassportServerAuth()
-    const { state, subscribe } = usePassportServerWebsocket()
+    const { state: gameServerState, subscribe: gameServerSubscribe } = usePassportServerWebsocket()
+
     const [userStat, setUserStat] = useState<UserStat>({
         id: "",
         total_ability_triggered: 0,
@@ -62,14 +63,14 @@ export const EnlistBanner = () => {
     useEffect(() => {
         console.log("here")
 
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
-        return subscribe<UserStat>(PassportServerKeys.SubscribeUserStat, (us) => {
+        if (gameServerState !== WebSocket.OPEN || !gameServerSubscribe || !userID) return
+        return gameServerSubscribe<UserStat>(GameServerKeys.SubscribeUserStat, (us) => {
             console.log("this is us", us)
 
             if (!us) return
             setUserStat(us)
         })
-    }, [userID, subscribe, state])
+    }, [userID, gameServerSubscribe, gameServerState])
 
     if (!user || !user.faction || !userStat) {
         return (

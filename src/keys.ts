@@ -47,6 +47,7 @@ export enum GameServerKeys {
     SubFactionQueueLength = "FACTION:QUEUE:JOIN",
     SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
+    SubscribeUserStat = "USER:STAT:SUBSCRIBE",
 }
 
 export enum PassportServerKeys {
