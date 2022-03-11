@@ -74,18 +74,16 @@ export const AssetItem = ({
 
     // Subscribe on asset queue position
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !gsSubscribe || !asset) return
+        if (state !== WebSocket.OPEN || !gsSubscribe) return
         return gsSubscribe<AssetQueueStat>(
             GameServerKeys.SubAssetQueueStatus,
             (payload) => {
                 if (!payload) return
-                console.log("-----------")
-                console.log(payload)
                 setQueueStatus(payload)
             },
             { asset_hash: asset.hash },
         )
-    }, [state, gsSubscribe, asset])
+    }, [state, gsSubscribe])
 
     const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
     const isRepairing = !!durability?.repair_type
