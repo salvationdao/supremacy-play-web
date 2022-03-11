@@ -77,7 +77,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
     if (!watchedTrailer) {
         return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
     }
-    console.log(currentStream)
+
     return (
         <Stack sx={{ width: "100%", height: "100%" }}>
             {user && haveSups ? (

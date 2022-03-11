@@ -226,6 +226,7 @@ export const LiveChat = () => {
             setGlobalChatUnread(0)
         }
     }, [tabValue, factionChatUnread])
+
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
@@ -234,7 +235,7 @@ export const LiveChat = () => {
             newMessageHandler(m, null)
             if (tabValue !== 0) setGlobalChatUnread((prev) => prev + 1)
         })
-    }, [state, user, subscribe, globalChatUnread])
+    }, [state, user, subscribe])
 
     // Subscribe to faction chat messages
     useEffect(() => {
@@ -247,7 +248,7 @@ export const LiveChat = () => {
             newMessageHandler(m, m.from_user_id)
             if (tabValue !== 1) setFactionChatUnread((prev) => prev + 1)
         })
-    }, [user, state, subscribe, factionChatUnread])
+    }, [user, state, subscribe, tabValue])
 
     return (
         <Drawer
