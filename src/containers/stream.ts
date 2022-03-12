@@ -133,8 +133,8 @@ export const StreamContainer = createContainer(() => {
             if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
                 setCurrentStream(savedStream)
                 SetNewStreamOptions(quietestStreams, true)
+                return
             }
-            return
         }
 
         SetNewStreamOptions(quietestStreams)
