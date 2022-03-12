@@ -30,12 +30,13 @@ interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
     user?: User
     faction_id?: string
     factionsAll: FactionsAll
+    forceDisplay100Percentage: string
 }
 
 export const BattleAbilityItem = () => {
     const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
     const { user, faction_id } = useGameServerAuth()
-    const { bribeStage, factionsAll } = useGame()
+    const { bribeStage, factionsAll, forceDisplay100Percentage } = useGame()
 
     return (
         <BattleAbilityItemInner
@@ -47,6 +48,7 @@ export const BattleAbilityItem = () => {
             user={user}
             faction_id={faction_id}
             factionsAll={factionsAll}
+            forceDisplay100Percentage={forceDisplay100Percentage}
         />
     )
 }
@@ -60,6 +62,7 @@ const BattleAbilityItemInner = ({
     user,
     faction_id,
     factionsAll,
+    forceDisplay100Percentage,
 }: BattleAbilityItemProps) => {
     const [fadeEffect, toggleFadeEffect] = useToggle()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
@@ -251,6 +254,9 @@ const BattleAbilityItemInner = ({
                                                             currentSups={a.current_sups}
                                                             supsCost={a.sups_cost}
                                                             hideRedBar
+                                                            forceHundredPercent={
+                                                                forceDisplay100Percentage === a.faction_id
+                                                            }
                                                         />
 
                                                         <Stack

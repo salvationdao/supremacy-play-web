@@ -43,6 +43,8 @@ export const GameContainer = createContainer(() => {
     const [highlightedMechHash, setHighlightedMechHash] = useState<string | undefined>(undefined)
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
 
+    const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
+
     // Subscribe for game settings
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !userID) return
@@ -101,6 +103,9 @@ export const GameContainer = createContainer(() => {
             GameServerKeys.SubBribeStageUpdated,
             (payload) => {
                 setBribeStage(payload)
+
+                // reset force display, if
+                if (payload?.phase === "COOLDOWN" || payload?.phase === "HOLD") setForceDisplay100Percentage("")
             },
             null,
         )
@@ -142,6 +147,8 @@ export const GameContainer = createContainer(() => {
         setHighlightedMechHash,
         battleEndDetail,
         setBattleEndDetail,
+        forceDisplay100Percentage,
+        setForceDisplay100Percentage,
     }
 })
 
