@@ -162,13 +162,13 @@ const App = () => {
         return (u: User) => {
             if (!authLogin) setAuthLoginX(u)
         }
-    }, [])
+    }, [authLogin])
 
     const setPassLogin = useMemo(() => {
         return (u: UserData) => {
             if (!passLogin) setPassLoginX(u)
         }
-    }, [])
+    }, [passLogin])
 
     useEffect(() => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
