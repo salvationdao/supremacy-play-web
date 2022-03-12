@@ -4,6 +4,7 @@ import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { truncate } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
+import { TooltipHelper } from "../../Common/TooltipHelper"
 
 export const ChatMessage = ({
     chat,
@@ -68,10 +69,7 @@ export const ChatMessage = ({
                 }}
             >
                 <Stack direction="row" spacing={0.5}>
-                    <span style={{ color: message_color, fontWeight: 700 }}>
-                        {isCitizen ? "🦾" : ""}
-                        {truncate(from_username, 27)}
-                    </span>
+                    <span style={{ color: message_color, fontWeight: 700 }}>{truncate(from_username, 24)}</span>
                     <span
                         style={{
                             color:
@@ -90,6 +88,28 @@ export const ChatMessage = ({
                     >
                         {multiplierValue ? multiplierValue : "0"}x
                     </span>
+                    {isCitizen && (
+                        <TooltipHelper placement="top-end" text={"Citizen"}>
+                            <span
+                                style={{
+                                    color:
+                                        multiplierInt >= 50
+                                            ? colors.neonBlue
+                                            : multiplierInt >= 15
+                                            ? colors.yellow
+                                            : colors.orange,
+                                    textAlign: "center",
+                                    fontFamily: "Nostromo Regular Bold",
+                                    fontSize: "0.5rem",
+                                    verticalAlign: "top",
+                                    opacity: multiplierValue ? 1 : 0.7,
+                                    borderRadius: 0.6,
+                                }}
+                            >
+                                🦾
+                            </span>
+                        </TooltipHelper>
+                    )}
                     <span
                         style={{
                             display: "inline-block",
