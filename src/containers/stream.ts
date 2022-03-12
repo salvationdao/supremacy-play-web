@@ -168,6 +168,8 @@ export const StreamContainer = createContainer(() => {
             }
             try {
                 vidRef.current = vid
+                if (vidRef.current.volume) vidRef.current.volume = volume
+
                 webRtc.current = new WebRTCAdaptor({
                     websocket_url: currentStream.url,
                     mediaConstraints: { video: false, audio: false },
