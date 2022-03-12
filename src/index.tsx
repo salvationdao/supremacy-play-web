@@ -89,7 +89,7 @@ const AppInner = () => {
                         position: "relative",
                         width: "100%",
                         backgroundColor: colors.darkNavyBlue,
-                        overflow: "hidden",``
+                        overflow: "hidden",
                     }}
                 >
                     <LeftSideBar />
