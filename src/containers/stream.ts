@@ -104,6 +104,9 @@ export const StreamContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<Stream[]>(GameServerKeys.GetStreamList, (payload) => {
             if (!payload) return
+            if (payload.length > 0) {
+                setCurrentStream(payload[0])
+            }
             setStreams([blankOption, ...payload])
         })
     }, [state, subscribe])
