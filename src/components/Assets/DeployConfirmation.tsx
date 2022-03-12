@@ -25,7 +25,7 @@ const AmountItem = ({
         <Stack direction="row" alignItems="center">
             <Typography sx={{ mr: 0.5 }}>{title}</Typography>
             <SvgSupToken size="14px" fill={color} />
-            <Typography sx={{ ml: 0.2, mr: 4, color: color }}>{value}</Typography>
+            <Typography sx={{ mr: 4, color: color }}>{value}</Typography>
             <TooltipHelper placement="right-start" text={tooltip}>
                 <Box sx={{ ml: "auto" }}>
                     <SvgInfoCircular size="12px" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />

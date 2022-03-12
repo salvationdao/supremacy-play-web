@@ -31,21 +31,18 @@ const SpoilOfWarAmount = () => {
     }, [state, subscribeNetMessage])
 
     return (
-        <>
-            <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
-                SPOILS OF WAR:&nbsp;
-            </Typography>
-            <SvgSupToken size="14px" fill={colors.yellow} />
-            <Typography variant="body1" sx={{ ml: 0.2 }}>
-                {spoilOfWarAmount}&nbsp;
-            </Typography>
+        <Stack alignItems="center" justifyContent="center" spacing={2}>
+            <Stack alignItems="center" justifyContent="center">
+                <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
+                    SPOILS OF WAR:&nbsp;
+                </Typography>
+                <SvgSupToken size="14px" fill={colors.yellow} />
+                <Typography variant="body1" sx={{ ml: 0.2 }}>
+                    {spoilOfWarAmount}&nbsp;
+                </Typography>
+            </Stack>
 
-            <Box
-                display={"flex"}
-                alignItems="center"
-                justifyContent={"center"}
-                sx={{ ml: 1, opacity: 0.6, px: 1, backgroundColor: colors.darkNavyBlue }}
-            >
+            <Stack alignItems="center" justifyContent="center">
                 <Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
                     NEXT:&nbsp;
                 </Typography>
@@ -53,8 +50,8 @@ const SpoilOfWarAmount = () => {
                 <Typography variant="body1" sx={{ ml: 0.2 }}>
                     {nextSpoilOfWarAmount}
                 </Typography>
-            </Box>
-        </>
+            </Stack>
+        </Stack>
     )
 }
 

@@ -159,7 +159,7 @@ export const AssetItem = ({
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
-                            <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
+                            <Typography variant="caption" sx={{ color: colors.yellow }}>
                                 {supFormatter(queueStatus.contract_reward, 2)}
                             </Typography>
                         </Stack>
@@ -202,7 +202,7 @@ export const AssetItem = ({
                         <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
-                            <Typography variant="caption" sx={{ ml: 0.1, color: colors.yellow }}>
+                            <Typography variant="caption" sx={{ color: colors.yellow }}>
                                 {supFormatter(queueStatus.contract_reward, 2)}
                             </Typography>
                         </Stack>
