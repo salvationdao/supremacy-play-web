@@ -84,7 +84,6 @@ export const FactionAbilityItemInner = ({
 
         return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
             if (!payload) return
-            console.log(payload)
             setGameAbilityProgress(payload)
         })
     }, [identity, state, subscribeAbilityNetMessage, faction_id])
@@ -115,7 +114,7 @@ export const FactionAbilityItemInner = ({
     }
 
     const isVoting = useMemo(
-        () => bribeStage?.phase != "HOLD" && supsCost.isGreaterThanOrEqualTo(currentSups),
+        () => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThanOrEqualTo(currentSups),
         [supsCost, currentSups],
     )
 
@@ -226,7 +225,7 @@ export const FactionAbilityItemInner = ({
                                     textColor={text_colour || "#FFFFFF"}
                                     amount={1}
                                     cost={1}
-                                    isVoting={isVoting}
+                                    isVoting={!!isVoting}
                                     onClick={() => onContribute(1)}
                                     Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
@@ -235,7 +234,7 @@ export const FactionAbilityItemInner = ({
                                     textColor={text_colour || "#FFFFFF"}
                                     amount={25}
                                     cost={25}
-                                    isVoting={isVoting}
+                                    isVoting={!!isVoting}
                                     onClick={() => onContribute(25)}
                                     Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
@@ -244,7 +243,7 @@ export const FactionAbilityItemInner = ({
                                     textColor={text_colour || "#FFFFFF"}
                                     amount={100}
                                     cost={100}
-                                    isVoting={isVoting}
+                                    isVoting={!!isVoting}
                                     onClick={() => onContribute(100)}
                                     Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />

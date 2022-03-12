@@ -19,22 +19,23 @@ const AuthContainer = createContainer((): AuthContainerType => {
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useGameServerWebsocket()
     const [user, setUser] = useState<User>()
+    const userID = user?.id
 
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
     const [authSessionIDGetError, setAuthSessionIDGetError] = useState()
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
-        if (!subscribe || state !== WebSocket.OPEN || !user) return
+        if (!subscribe || state !== WebSocket.OPEN || !userID) return
         return subscribe<User>(
             GameServerKeys.UserSubscribe,
             (u) => {
                 if (u) setUser(u)
                 if (u?.faction?.theme) updateTheme(u.faction.theme)
             },
-            { id: user.id },
+            { id: userID },
         )
-    }, [state, subscribe, user])
+    }, [state, subscribe, userID])
 
     useEffect(() => {
         if (!subscribe || state !== WebSocket.OPEN) return
@@ -56,13 +57,16 @@ const AuthContainer = createContainer((): AuthContainerType => {
     const buildUserStruct = (u: any) => {
         return {
             ...u,
-            faction: {
-                theme: {
-                    primary: u.faction.primary_color,
-                    secondary: u.faction.secondary_color,
-                    background: u.faction.background_color,
-                },
-            },
+            faction_id: u.faction_id !== "00000000-0000-0000-0000-000000000000" ? u.faction_id : null,
+            faction: u.faction
+                ? {
+                      theme: {
+                          primary: u.faction.primary_color,
+                          secondary: u.faction.secondary_color,
+                          background: u.faction.background_color,
+                      },
+                  }
+                : null,
         }
     }
 

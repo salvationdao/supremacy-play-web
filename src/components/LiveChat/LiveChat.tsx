@@ -1,4 +1,4 @@
-import { Box, Drawer, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Badge, Box, Drawer, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { DrawerButtons } from ".."
 import { SvgGlobal } from "../../assets"
@@ -22,7 +22,11 @@ const DrawerContent = ({
     setTabValue,
     chatMessages,
     onNewMessage,
+    factionChatUnread,
+    globalChatUnread,
 }: {
+    globalChatUnread: number
+    factionChatUnread: number
     tabValue: number
     setTabValue: Dispatch<SetStateAction<number>>
     chatMessages: ChatData[]
@@ -99,7 +103,12 @@ const DrawerContent = ({
                 <Tab
                     label={
                         <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
-                            <SvgGlobal size="20px" />
+                            <Badge
+                                badgeContent={globalChatUnread}
+                                sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
+                            >
+                                <SvgGlobal size="20px" />
+                            </Badge>
                             <Typography
                                 variant="caption"
                                 sx={{
@@ -116,21 +125,26 @@ const DrawerContent = ({
                     <Tab
                         label={
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
-                                <Box
-                                    sx={{
-                                        width: 21,
-                                        height: 21,
-                                        flexShrink: 0,
-                                        mb: 0.2,
-                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "center",
-                                        backgroundSize: "contain",
-                                        backgroundColor: user.faction.theme.primary,
-                                        borderRadius: 0.5,
-                                        border: `${user.faction.theme.primary} solid 1px`,
-                                    }}
-                                />
+                                <Badge
+                                    badgeContent={factionChatUnread}
+                                    sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
+                                >
+                                    <Box
+                                        sx={{
+                                            width: 21,
+                                            height: 21,
+                                            flexShrink: 0,
+                                            mb: 0.2,
+                                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
+                                            backgroundSize: "contain",
+                                            backgroundColor: user.faction.theme.primary,
+                                            borderRadius: 0.5,
+                                            border: `${user.faction.theme.primary} solid 1px`,
+                                        }}
+                                    />
+                                </Badge>
                                 <Typography
                                     variant="caption"
                                     sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black" }}
@@ -185,6 +199,8 @@ export const LiveChat = () => {
     const [tabValue, setTabValue] = useState(0)
     const [globalChatMessages, setGlobalChatMessages] = useState<ChatData[]>([])
     const [factionChatMessages, setFactionChatMessages] = useState<ChatData[]>([])
+    const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
+    const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
 
     const newMessageHandler = (message: ChatData, faction_id: string | null) => {
         if (faction_id === null) {
@@ -202,14 +218,24 @@ export const LiveChat = () => {
         }
     }
 
+    useEffect(() => {
+        if (tabValue === 1 && factionChatUnread !== 0) {
+            setFactionChatUnread(0)
+        }
+        if (tabValue === 0 && globalChatUnread !== 0) {
+            setGlobalChatUnread(0)
+        }
+    }, [tabValue, factionChatUnread])
+
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
         return subscribe<ChatData>(PassportServerKeys.SubscribeGlobalChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, null)
+            if (tabValue !== 0) setGlobalChatUnread(globalChatUnread + 1)
         })
-    }, [state, user, subscribe])
+    }, [state, user, subscribe, tabValue, globalChatUnread])
 
     // Subscribe to faction chat messages
     useEffect(() => {
@@ -220,8 +246,9 @@ export const LiveChat = () => {
         return subscribe<ChatData>(PassportServerKeys.SubscribeFactionChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, m.from_user_id)
+            if (tabValue !== 1) setFactionChatUnread(factionChatUnread + 1)
         })
-    }, [user, state, subscribe])
+    }, [user, state, subscribe, tabValue, factionChatUnread])
 
     return (
         <Drawer
@@ -253,6 +280,8 @@ export const LiveChat = () => {
                 <DrawerButtons isFixed={false} />
 
                 <DrawerContent
+                    factionChatUnread={factionChatUnread}
+                    globalChatUnread={globalChatUnread}
                     tabValue={tabValue}
                     setTabValue={setTabValue}
                     chatMessages={tabValue == 0 ? globalChatMessages : factionChatMessages}

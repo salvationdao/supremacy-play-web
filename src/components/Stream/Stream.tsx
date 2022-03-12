@@ -1,10 +1,11 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useGameServerAuth, useDimension, useStream, useWallet } from "../../containers"
-import { colors } from "../../theme/theme"
 import { Trailer } from ".."
+import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
+import { useDimension, useGameServerAuth, useStream, useWallet } from "../../containers"
 import { useToggle } from "../../hooks"
+import { colors } from "../../theme/theme"
+import { WaitingPage } from "../BattleHistory/WaitingPage"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
     const { user } = useGameServerAuth()
@@ -18,14 +19,19 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
         if (!supsAboveZero && haveSups) toggleHaveSups(false)
     }, [onWorldSups, supsAboveZero, haveSups])
 
+    let message = "You must connect your passport to view the battle stream."
+    if (user && user.faction && !haveSups) {
+        message = "You must have SUPS in order to view the battle stream."
+    } else if (user && !user.faction) {
+        message = "You must enlist in a faction to view the battle stream."
+    }
+
     return (
         <Fade in={render}>
             <Stack sx={{ flex: 1, width: "100%" }}>
                 <Box sx={{ px: 2, py: 0.5, backgroundColor: colors.red, boxShadow: 6, zIndex: 99 }}>
                     <Typography variant="h6" sx={{ textAlign: "center" }}>
-                        {user && !haveSups
-                            ? "You must have SUPS in order to view the battle stream."
-                            : "You must connect your passport to view the battle stream."}
+                        {message}
                     </Typography>
                 </Box>
                 <Box
@@ -34,26 +40,7 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
                         flex: 1,
                     }}
                 >
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            boxShadow: "inset 0 0 1000px #000000",
-                            pointerEvents: "none",
-                        }}
-                    />
-
-                    <iframe
-                        src="https://stats.supremacy.game/#/"
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            border: 0,
-                        }}
-                    ></iframe>
+                    <WaitingPage />
                 </Box>
             </Stack>
         </Fade>
@@ -62,7 +49,7 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
 
 export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
-    const { user } = useGameServerAuth()
+    const { faction_id } = useGameServerAuth()
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
     const [renderTopMessage, toggleRenderTopMessage] = useToggle()
@@ -77,12 +64,11 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
     if (!watchedTrailer) {
         return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
     }
-    console.log(currentStream)
     return (
         <Stack sx={{ width: "100%", height: "100%" }}>
-            {user && haveSups ? (
+            {faction_id && haveSups ? (
                 <video
-                    key={currentStream?.url}
+                    key={currentStream?.stream_id}
                     id={"remoteVideo"}
                     muted={isMute}
                     ref={vidRefCallback}

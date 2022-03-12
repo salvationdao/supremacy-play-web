@@ -146,26 +146,22 @@ export interface BattleEndDetail {
     started_at: Date
     ended_at: Date
     total_multipliers: string
-    multipliers: {
-        key: string
-        value: string
-        description: string
-    }[]
+    multipliers: Multiplier[]
     winning_condition: string
     winning_faction: Faction
     winning_war_machines: WarMachineState[]
     top_sups_contributors: {
         username: string
         avatar_id: string
+        faction_id: string
         faction_colour: string
-        faction_logo_id: string
     }[]
     top_sups_contribute_factions: Faction[]
     most_frequent_ability_executors: {
         username: string
         avatar_id: string
+        faction_id: string
         faction_colour: string
-        faction_logo_id: string
     }[]
 }
 
@@ -199,7 +195,7 @@ export interface Stream {
     distance?: number
 }
 
-export interface Multipliers {
+export interface Multiplier {
     key: string
     value: string
     description: string
@@ -207,5 +203,5 @@ export interface Multipliers {
 
 export interface MultipliersAll {
     total_multipliers: string
-    multipliers: Multipliers[]
+    multipliers: Multiplier[]
 }

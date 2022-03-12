@@ -187,7 +187,11 @@ const DamageList = ({
                             <WarMachineSmall
                                 key={`${dr.source_name}-${index}`}
                                 warMachine={dr.caused_by_war_machine}
-                                name={dr.caused_by_war_machine ? dr.caused_by_war_machine.name : dr.source_name}
+                                name={
+                                    dr.caused_by_war_machine
+                                        ? dr.caused_by_war_machine.name || dr.caused_by_war_machine.hash
+                                        : dr.source_name
+                                }
                                 damagePercent={dr.amount / 100}
                             />
                         ))
@@ -287,7 +291,11 @@ export const WarMachineDestroyedInfo = ({
                             <Stack direction="row" alignItems="center">
                                 <WarMachineBig
                                     warMachine={killed_by_war_machine}
-                                    name={killed_by_war_machine ? killed_by_war_machine.name : killed_by}
+                                    name={
+                                        killed_by_war_machine
+                                            ? killed_by_war_machine.name || killed_by_war_machine.hash
+                                            : killed_by
+                                    }
                                 />
 
                                 <Stack alignItems="center" sx={{ flex: 1 }}>
@@ -307,7 +315,7 @@ export const WarMachineDestroyedInfo = ({
 
                                 <WarMachineBig
                                     warMachine={destroyed_war_machine}
-                                    name={destroyed_war_machine.name}
+                                    name={destroyed_war_machine.name || destroyed_war_machine.hash}
                                     isDead
                                 />
                             </Stack>

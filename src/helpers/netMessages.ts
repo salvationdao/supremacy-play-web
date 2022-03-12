@@ -1,10 +1,7 @@
 import {
-    NetMessageType,
-    NetMessageTick,
+    BattleAbilityProgress, GameAbilityProgress, NetMessageTick,
     NetMessageTickWarMachine,
-    GameAbilityProgress,
-    ViewerLiveCount,
-    BattleAbilityProgress,
+    NetMessageType, ViewerLiveCount
 } from "../types"
 
 export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; payload: unknown } | undefined => {
@@ -53,11 +50,16 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
 
             return { type, payload }
         }
-        case NetMessageType.LiveVoting:
-        case NetMessageType.SpoilOfWarTick: {
+        case NetMessageType.LiveVoting: {
             const enc = new TextDecoder("utf-8")
             const arr = new Uint8Array(buffer)
             const payload = enc.decode(arr).substring(1)
+            return { type, payload }
+        }
+        case NetMessageType.SpoilOfWarTick: {
+            const enc = new TextDecoder("utf-8")
+            const arr = new Uint8Array(buffer)
+            const payload = enc.decode(arr).substring(1).split("|")
             return { type, payload }
         }
         case NetMessageType.GameAbilityProgressTick: {

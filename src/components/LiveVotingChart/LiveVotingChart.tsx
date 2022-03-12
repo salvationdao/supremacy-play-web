@@ -16,26 +16,42 @@ const DefaultMaxLiveVotingDataLength = 100
 
 const SpoilOfWarAmount = () => {
     const { state, subscribeNetMessage } = useGameServerWebsocket()
+    const [nextSpoilOfWarAmount, setNextSpoilOfWarAmount] = useState<string>("0")
     const [spoilOfWarAmount, setSpoilOfWarAmount] = useState<string>("0")
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<string | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {
-            if (!payload) return
-            setSpoilOfWarAmount(new BigNumber(payload).dividedBy("1000000000000000000").toFixed(6))
+        return subscribeNetMessage<string[] | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {
+            if (!payload || payload.length === 0) return
+            setNextSpoilOfWarAmount(new BigNumber(payload[0]).dividedBy("1000000000000000000").toFixed(0))
+            if (payload.length > 1) {
+                setSpoilOfWarAmount(new BigNumber(payload[1]).dividedBy("1000000000000000000").toFixed(0))
+            }
         })
     }, [state, subscribeNetMessage])
 
     return (
-        <>
-            <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
-                SPOILS OF WAR:&nbsp;
-            </Typography>
-            <SvgSupToken size="14px" fill={colors.yellow} />
-            <Typography variant="body1" sx={{ ml: 0.2 }}>
-                {spoilOfWarAmount}
-            </Typography>
-        </>
+        <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+            <Stack direction="row" alignItems="center" justifyContent="center">
+                <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
+                    SPOILS OF WAR:&nbsp;
+                </Typography>
+                <SvgSupToken size="14px" fill={colors.yellow} />
+                <Typography variant="body1" sx={{ ml: 0.2 }}>
+                    {spoilOfWarAmount}&nbsp;
+                </Typography>
+            </Stack>
+
+            <Stack direction="row" alignItems="center" justifyContent="center">
+                <Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
+                    NEXT:&nbsp;
+                </Typography>
+                <SvgSupToken size="14px" fill={colors.yellow} />
+                <Typography variant="body1" sx={{ ml: 0.2 }}>
+                    {nextSpoilOfWarAmount}
+                </Typography>
+            </Stack>
+        </Stack>
     )
 }
 
@@ -71,6 +87,11 @@ const Content = () => {
         return subscribe(GameServerKeys.TriggerSpoilOfWarUpdated, () => null, null)
     }, [state, subscribe])
 
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe(GameServerKeys.TriggerLiveVoteCountUpdated, () => null, null)
+    }, [state, subscribe])
+
     const onResize = useCallback((width: number, height: number) => {
         setCurWidth(width)
         setCurHeight(height)
@@ -83,10 +104,10 @@ const Content = () => {
             // Defaults
             defaultPositionX: 0,
             defaultPositionYBottom: 128,
-            defaultSizeX: 363,
+            defaultSizeX: 380,
             defaultSizeY: 115,
             // Limits
-            minSizeX: 363,
+            minSizeX: 380,
             minSizeY: 115,
             // Toggles
             allowResizeX: true,
