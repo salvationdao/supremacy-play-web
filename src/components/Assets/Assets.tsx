@@ -26,7 +26,7 @@ const DrawerContent = () => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe<Asset[]>(PassportServerKeys.SubAssetList, (payload) => {
             if (!payload) return
-            payload.filter((asset) => {
+            payload = payload.filter((asset) => {
                 return asset.on_chain_status !== "UNSTAKABLE"
             })
             setAssets(payload)
