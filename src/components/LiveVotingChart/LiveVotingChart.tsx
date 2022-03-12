@@ -32,25 +32,29 @@ const SpoilOfWarAmount = () => {
 
 	return (
 		<Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-			<Stack direction="row" alignItems="center" justifyContent="center">
-				<Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
-					SPOILS OF WAR:&nbsp;
-				</Typography>
-				<SvgSupToken size="14px" fill={colors.yellow} />
-				<Typography variant="body1" sx={{ color: colors.yellow }}>
-					{nextSpoilOfWarAmount}
-				</Typography>
-			</Stack>
+			<TooltipHelper text="This is the spoils of war in the accumulated current battle.">
+				<Stack direction="row" alignItems="center" justifyContent="center">
+					<Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
+						SPOILS OF WAR:&nbsp;
+					</Typography>
+					<SvgSupToken size="14px" fill={colors.yellow} />
+					<Typography variant="body1" sx={{ color: colors.yellow }}>
+						{nextSpoilOfWarAmount}
+					</Typography>
+				</Stack>
+			</TooltipHelper>
 
-			<Stack direction="row" alignItems="center" justifyContent="center">
-				<Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
-					PREV:&nbsp;
-				</Typography>
-				<SvgSupToken size="14px" fill={colors.yellow} />
-				<Typography variant="body1" sx={{ color: colors.yellow }}>
-					{spoilOfWarAmount}
-				</Typography>
-			</Stack>
+			<TooltipHelper text="This is the spoils of war from the previous battle, it is distributed to the players over time.">
+				<Stack direction="row" alignItems="center" justifyContent="center">
+					<Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
+						PREV:&nbsp;
+					</Typography>
+					<SvgSupToken size="14px" fill={colors.yellow} />
+					<Typography variant="body1" sx={{ color: colors.yellow }}>
+						{spoilOfWarAmount}
+					</Typography>
+				</Stack>
+			</TooltipHelper>
 		</Stack>
 	)
 }
@@ -124,7 +128,7 @@ const Content = () => {
 			<Box>
 				<MoveableResizable config={config}>
 					<Box sx={{ flex: 1, position: "relative", px: 1, pt: 1, pb: 0.9, width: "100%" }}>
-						<TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players through watch-to-earn. Contribute to the battle or be part of the winning Syndicate to increase your earnings.">
+						<TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in the next battle based on the multipliers that have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.">
 							<Box
 								sx={{
 									position: "absolute",
