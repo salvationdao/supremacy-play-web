@@ -232,19 +232,19 @@ export const FactionAbilityItemInner = ({
                                 <VotingButton
                                     color={colour}
                                     textColor={text_colour || "#FFFFFF"}
-                                    amount={25}
-                                    cost={25}
+                                    amount={2}
+                                    cost={2}
                                     isVoting={!!isVoting}
-                                    onClick={() => onContribute(25)}
+                                    onClick={() => onContribute(2)}
                                     Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
                                 <VotingButton
                                     color={colour}
                                     textColor={text_colour || "#FFFFFF"}
-                                    amount={100}
-                                    cost={100}
+                                    amount={3}
+                                    cost={3}
                                     isVoting={!!isVoting}
-                                    onClick={() => onContribute(100)}
+                                    onClick={() => onContribute(3)}
                                     Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
                             </Stack>

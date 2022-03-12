@@ -318,19 +318,19 @@ const BattleAbilityItemInner = ({
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
-                                            amount={25}
-                                            cost={25}
+                                            amount={2}
+                                            cost={2}
                                             isVoting={isVoting}
-                                            onClick={() => onBribe(25)}
+                                            onClick={() => onBribe(2)}
                                             Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
-                                            amount={100}
-                                            cost={100}
+                                            amount={3}
+                                            cost={3}
                                             isVoting={isVoting}
-                                            onClick={() => onBribe(100)}
+                                            onClick={() => onBribe(3)}
                                             Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                     </Stack>
