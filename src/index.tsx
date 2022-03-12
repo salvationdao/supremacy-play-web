@@ -121,6 +121,7 @@ const AppInner = () => {
                                         <WarMachineStats />
                                         <BattleEndScreen />
                                         <BattleHistory />
+                                        <EarlyAccessWarning />
                                     </Box>
                                 )}
                             </>
@@ -205,7 +206,6 @@ const App = () => {
                         </GameServerSocketProvider>
                     </PassportServerAuthProvider>
                 </PassportServerSocketProvider>
-                <EarlyAccessWarning />
             </ThemeProvider>
         </UpdateTheme.Provider>
     )
