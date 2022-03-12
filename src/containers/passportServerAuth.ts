@@ -27,12 +27,8 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
     const [authRingCheckLoading, setAuthRingCheckLoading] = useState(true)
     const [authRingCheckSuccess, setAuthRingCheckSuccess] = useState(false)
 
-    const setLogin = useMemo(() => {
-        return initialState ? initialState.setLogin : emptyFn
-    }, [])
-
     useEffect(() => {
-        if (user) setLogin(user)
+        if (user && initialState && initialState.setLogin) initialState.setLogin(user)
     }, [user])
 
     // get user by session id

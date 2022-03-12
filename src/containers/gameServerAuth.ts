@@ -27,12 +27,8 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const [user, setUser] = useState<User>()
     const userID = user?.id
 
-    const setLogin = useMemo(() => {
-        return initialState ? initialState.setLogin : emptyFn
-    }, [])
-
     useEffect(() => {
-        if (user) setLogin(user)
+        if (user && initialState && initialState.setLogin) initialState.setLogin(user)
     }, [user])
 
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
