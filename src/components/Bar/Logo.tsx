@@ -17,7 +17,7 @@ export const Logo = () => {
             </Link>
             <Box
                 onMouseEnter={() => {
-                    setText(VERSION)
+                    setText(`${VERSION.substring(0, 9)}...`)
                 }}
                 onMouseLeave={() => {
                     setText("EARLY ACCESS")
