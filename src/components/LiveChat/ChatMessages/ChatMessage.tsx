@@ -4,8 +4,24 @@ import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
 
-export const ChatMessage = ({ chat, isSent, isFailed }: { chat: ChatData; isSent?: boolean; isFailed?: boolean }) => {
+function truncate(str: string, n: number): string {
+    return str.length > n ? str.substr(0, n - 1) + "&hellip;" : str
+}
+
+export const ChatMessage = ({
+    chat,
+    isSent,
+    isFailed,
+    multiplierValue,
+}: {
+    chat: ChatData
+    isSent?: boolean
+    isFailed?: boolean
+    multiplierValue?: string
+}) => {
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at } = chat
+
+    const username_trunc = truncate(from_username, 27)
 
     return (
         <Stack direction="row" spacing={0.5} sx={{ opacity: isSent ? 1 : 0.45 }}>
@@ -53,7 +69,22 @@ export const ChatMessage = ({ chat, isSent, isFailed }: { chat: ChatData; isSent
                     userSelect: "text",
                 }}
             >
-                <span style={{ color: message_color, fontWeight: 700 }}>{from_username}</span>: {message}{" "}
+                <span style={{ color: message_color, fontWeight: 700 }}>{username_trunc}</span>
+                {!!multiplierValue && (
+                    <span
+                        style={{
+                            textAlign: "center",
+                            fontFamily: "Nostromo Regular Bold",
+                            color: colors.orange,
+                            borderRadius: 0.6,
+                            fontSize: "0.5rem",
+                            marginLeft: "0.3rem",
+                            verticalAlign: "top",
+                        }}
+                    >
+                        {multiplierValue}x
+                    </span>
+                )}{" "}
                 <span
                     style={{
                         display: "inline-block",
@@ -65,6 +96,7 @@ export const ChatMessage = ({ chat, isSent, isFailed }: { chat: ChatData; isSent
                 >
                     {dateFormatter(sent_at)}
                 </span>
+                <p>{message} </p>
             </Typography>
         </Stack>
     )
