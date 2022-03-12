@@ -21,6 +21,8 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
         }
     }, [copySuccess])
 
+    const tooltipText = transaction.description || transaction.sub_group || transaction.group
+
     return (
         <Stack
             direction="row"
@@ -29,7 +31,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
         >
             <TooltipHelper
                 placement="left"
-                text={transaction.description ? `  ${transaction.description.toUpperCase()}` : ""}
+                text={tooltipText ? `  ${tooltipText.toUpperCase()}` : ""}
             >
                 <Stack direction="row" alignItems="center">
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>

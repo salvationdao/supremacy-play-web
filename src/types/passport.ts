@@ -68,4 +68,6 @@ export interface Transaction {
     description: string
     debit: string
     credit: string
+    group: string
+    sub_group: string
 }
