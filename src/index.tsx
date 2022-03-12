@@ -46,6 +46,7 @@ import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme, User } from "./types"
 import { UserData } from "./types/passport"
+import { EarlyAccessWarning } from "./components/EarlyAccessWarning/EarlyAccessWarning"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -204,6 +205,7 @@ const App = () => {
                         </GameServerSocketProvider>
                     </PassportServerAuthProvider>
                 </PassportServerSocketProvider>
+                <EarlyAccessWarning />
             </ThemeProvider>
         </UpdateTheme.Provider>
     )

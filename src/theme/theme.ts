@@ -84,6 +84,7 @@ export const theme = createTheme({
         },
     },
     palette: {
+        mode: "dark",
         secondary: {
             main: colors.darkerNeonBlue,
         },
