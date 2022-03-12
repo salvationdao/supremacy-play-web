@@ -76,7 +76,6 @@ export const StreamContainer = createContainer(() => {
 
     // resolution
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
-    const [currentResolution, setCurrentResolution] = useState<number>()
 
     // no stream error
     const [noStreamExist, setNoStreamExist] = useState(false)
@@ -197,6 +196,10 @@ export const StreamContainer = createContainer(() => {
                                 }
                             })
                             setStreamResolutions(resolutions)
+
+                            if (webRtc?.current && currentStream && resolutions && resolutions.length > 0) {
+                                webRtc.current.forceStreamQuality(currentStream.stream_id, resolutions[0])
+                            }
                         } else if (info == "closed") {
                             webRtc.current = undefined
                             if (typeof obj != "undefined") {
@@ -228,8 +231,6 @@ export const StreamContainer = createContainer(() => {
         currentStream,
         changeStream,
 
-        currentResolution,
-        setCurrentResolution,
         streamResolutions,
 
         volume,
