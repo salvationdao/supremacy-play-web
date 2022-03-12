@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { PassportServerKeys } from "../keys"
 import { sleep } from "../helpers"
+import { usePassportServerAuth } from "./passportServerAuth"
+import { PASSPORT_SERVER_HOST } from "../constants"
 
 // makeid is used to generate a random transaction_id for the websocket
 function makeid(length = 12): string {
@@ -75,13 +77,16 @@ const backoffIntervalCalc = async (num: number) => {
     return i
 }
 
-const PassportServerWebsocket = (initialState?: string): WebSocketProperties => {
+const PassportServerWebsocket = (initialState?: { host?: string; login: Date }): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
 
     const webSocket = useRef<WebSocket | null>(null)
     const [reconnect, setIsReconnect] = useState<boolean>(false)
     const [isServerUp, setIsServerUp] = useState<boolean>(true)
+
+    const host = initialState ? initialState.host : PASSPORT_SERVER_HOST
+    const login = initialState ? initialState.login : ""
 
     useEffect(() => {
         if (!reconnect) return
@@ -95,7 +100,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
         const i = await backoffIntervalCalc(num)
         setTimeout(async () => {
             try {
-                const resp = await fetch(`${window.location.protocol}//${initialState}/api/check`)
+                const resp = await fetch(`${window.location.protocol}//${host}/api/check`)
                 const body = resp.ok as boolean
                 if (body) {
                     window.location.reload()
@@ -179,7 +184,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                 if (!listenOnly) setSubscribeState(key, false)
             }
         }
-    }, [])
+    }, [login])
 
     const setupWS = useMemo(
         () => (ws: WebSocket, onopen?: () => void) => {
@@ -235,13 +240,13 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
             return new Promise(function (resolve, reject) {
                 setState(WebSocket.CONNECTING)
                 setTimeout(() => {
-                    webSocket.current = new WebSocket(`${protocol()}://${initialState}/api/ws`)
+                    webSocket.current = new WebSocket(`${protocol()}://${host}/api/ws`)
                     setupWS(webSocket.current)
                     resolve(undefined)
                 }, 2000)
             })
         }
-    }, [setupWS, initialState])
+    }, [setupWS, host])
 
     const setReadyState = () => {
         if (!webSocket.current) {
@@ -254,10 +259,10 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await fetch(`${window.location.protocol}//${initialState}/api/check`)
+                const resp = await fetch(`${window.location.protocol}//${host}/api/check`)
                 const body = resp.ok as boolean
                 if (body) {
-                    webSocket.current = new WebSocket(`${protocol()}://${initialState}/api/ws`)
+                    webSocket.current = new WebSocket(`${protocol()}://${host}/api/ws`)
                     setupWS(webSocket.current)
 
                     return () => {
@@ -268,7 +273,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                 setIsReconnect(true)
             }
         })()
-    }, [initialState, setupWS])
+    }, [host, setupWS])
 
     return { send: send.current, state, connect, subscribe, isServerUp }
 }

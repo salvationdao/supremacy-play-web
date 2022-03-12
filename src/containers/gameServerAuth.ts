@@ -3,6 +3,7 @@ import { createContainer } from "unstated-next"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User } from "../types"
 import { useGameServerWebsocket, usePassportServerAuth } from "."
+import { init } from "@sentry/react"
 
 export interface AuthContainerType {
     user: User | undefined
@@ -11,15 +12,24 @@ export interface AuthContainerType {
     authSessionIDGetLoading: boolean
     authSessionIDGetError: undefined
 }
+
+const emptyFn = (dt: Date) => {}
+
 /**
  * A Container that handles Authorisation
  */
-const AuthContainer = createContainer((): AuthContainerType => {
+const AuthContainer = createContainer((initialState?: { setLogin(dt: Date): void }): AuthContainerType => {
     const { gameserverSessionID, setGameserverSessionID } = usePassportServerAuth()
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useGameServerWebsocket()
     const [user, setUser] = useState<User>()
     const userID = user?.id
+
+    const setLogin = initialState ? initialState.setLogin : emptyFn
+
+    useEffect(() => {
+        setLogin(new Date())
+    }, [user, setLogin])
 
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
     const [authSessionIDGetError, setAuthSessionIDGetError] = useState()

@@ -5,6 +5,7 @@ import { parseNetMessage } from "../helpers/netMessages"
 import { useDebounce } from "../hooks"
 import { GameServerKeys } from "../keys"
 import { GameAbilityProgress, NetMessageTick, NetMessageType } from "../types"
+import { useGameServerAuth } from './gameServerAuth'
 
 // websocket message struct
 interface MessageData {
@@ -99,7 +100,9 @@ const backoffIntervalCalc = async (num: number) => {
     return i
 }
 
-const GameServerWebsocket = (): WebSocketProperties => {
+const GameServerWebsocket =  (initialState?: {
+    login: Date
+}): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
     const [outgoing, setOutgoing] = useDebounce<Message<any>[]>([], 100)
@@ -108,6 +111,7 @@ const GameServerWebsocket = (): WebSocketProperties => {
     const [reconnect, setIsReconnect] = useState<boolean>(false)
     const [isServerUp, setIsServerUp] = useState<boolean>(true)
 
+    const login = initialState ? initialState.login : ""
     // ******* Reconnect Logic Start ******* //
     // Check to see if server is up, if yes conenct WS, else don't
     useEffect(() => {
@@ -254,7 +258,7 @@ const GameServerWebsocket = (): WebSocketProperties => {
                 if (!listenOnly) setSubscribeState(key, false)
             }
         }
-    }, [setOutgoing])
+    }, [setOutgoing, login])
 
     // subscription function for Faction Ability only
     const abilitySubs = useRef<{ [abilityIdentity: string]: SubscribeCallback[] }>({})
