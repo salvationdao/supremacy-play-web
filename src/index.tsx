@@ -2,7 +2,7 @@ import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { GameBar } from "./components/GameBar/GameBar"
 import * as Sentry from "@sentry/react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
 import {
     MiniMap,
@@ -155,12 +155,11 @@ const App = () => {
     })
 
     const [login, xLogin] = useState<Date | null>(null)
-
-    const setLogin = (d: Date) => {
-        if (login !== null) {
+    const setLogin = useMemo(() => {
+        return (d: Date) => {
             xLogin(d)
         }
-    }
+    }, [])
 
     useEffect(() => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
