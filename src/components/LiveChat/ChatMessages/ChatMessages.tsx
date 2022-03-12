@@ -1,6 +1,6 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
-import { ChatMessage } from "../.."
+import { ChatMessage, UserMultiplierMap } from "../.."
 import { SvgScrolldown } from "../../../assets"
 import { useGameServerWebsocket, usePassportServerAuth, WebSocketProperties } from "../../../containers"
 import { GameServerKeys } from "../../../keys"
@@ -21,6 +21,7 @@ interface ChatMessagesProps {
     chatMessages: ChatData[]
     sentMessages: Date[]
     failedMessages: Date[]
+    userMultiplierMap: UserMultiplierMap
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
@@ -38,6 +39,7 @@ const ChatMessagesInner = ({
     failedMessages,
     state,
     subscribe,
+    userMultiplierMap,
 }: ChatMessagesPropsInner) => {
     const { user } = usePassportServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
@@ -151,6 +153,7 @@ const ChatMessagesInner = ({
                                 chat={c}
                                 isSent={c.from_user_id != user?.id ? true : sentMessages.includes(c.sent_at)}
                                 isFailed={c.from_user_id != user?.id ? false : failedMessages.includes(c.sent_at)}
+                                multiplierValue={userMultiplierMap[c.from_user_id]}
                             />
                         ))
                     ) : (

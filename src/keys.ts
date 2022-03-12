@@ -49,6 +49,8 @@ export enum GameServerKeys {
     SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
+
+    SubscribeMultiplierMap = "MULTIPLIER:MAP:SUBSCRIBE",
 }
 
 export enum PassportServerKeys {

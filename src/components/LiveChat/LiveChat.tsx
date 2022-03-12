@@ -9,13 +9,22 @@ import {
     MESSAGES_BUFFER_SIZE,
     PASSPORT_SERVER_HOST_IMAGES,
 } from "../../constants"
-import { useDrawer, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
+import { useDrawer, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { acronym, shadeColor } from "../../helpers"
-import { PassportServerKeys } from "../../keys"
+import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { ChatData } from "../../types/passport"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
+
+export interface UserMultiplier {
+    player_id: string
+    total_multiplier: string
+}
+
+export interface UserMultiplierMap {
+    [player_id: string]: string
+}
 
 const DrawerContent = ({
     tabValue,
@@ -24,6 +33,7 @@ const DrawerContent = ({
     onNewMessage,
     factionChatUnread,
     globalChatUnread,
+    userMultiplierMap,
 }: {
     globalChatUnread: number
     factionChatUnread: number
@@ -31,6 +41,7 @@ const DrawerContent = ({
     setTabValue: Dispatch<SetStateAction<number>>
     chatMessages: ChatData[]
     onNewMessage: (newMessage: ChatData, faction_id: string | null) => void
+    userMultiplierMap: UserMultiplierMap
 }) => {
     const { user } = usePassportServerAuth()
     // Store list of messages that were successfully sent or failed
@@ -163,6 +174,7 @@ const DrawerContent = ({
                 chatMessages={chatMessages}
                 sentMessages={sentMessages}
                 failedMessages={failedMessages}
+                userMultiplierMap={userMultiplierMap}
             />
 
             {user ? (
@@ -194,6 +206,7 @@ export const LiveChat = () => {
     const { isLiveChatOpen } = useDrawer()
     const { user } = usePassportServerAuth()
     const { state, subscribe } = usePassportServerWebsocket()
+    const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
 
     // Tabs: 0 is global chat, 1 is faction chat
     const [tabValue, setTabValue] = useState(0)
@@ -201,6 +214,7 @@ export const LiveChat = () => {
     const [factionChatMessages, setFactionChatMessages] = useState<ChatData[]>([])
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
+    const [userMultiplierMap, setUserMultiplierMap] = useState<UserMultiplierMap>({})
 
     const newMessageHandler = (message: ChatData, faction_id: string | null) => {
         if (faction_id === null) {
@@ -226,6 +240,24 @@ export const LiveChat = () => {
             setGlobalChatUnread(0)
         }
     }, [tabValue, factionChatUnread])
+
+    // subscribe to the chat
+    useEffect(() => {
+        if (gsState !== WebSocket.OPEN) return
+        return gsSubscribe<UserMultiplier[]>(GameServerKeys.SubscribeMultiplierMap, (payload) => {
+            if (!payload || payload.length === 0) {
+                setUserMultiplierMap({})
+                return
+            }
+
+            const um: UserMultiplierMap = {}
+            payload.forEach((m) => {
+                um[m.player_id] = m.total_multiplier
+            })
+
+            setUserMultiplierMap(um)
+        })
+    }, [gsState, gsSubscribe])
 
     // Subscribe to global chat messages
     useEffect(() => {
@@ -286,6 +318,7 @@ export const LiveChat = () => {
                     setTabValue={setTabValue}
                     chatMessages={tabValue == 0 ? globalChatMessages : factionChatMessages}
                     onNewMessage={newMessageHandler}
+                    userMultiplierMap={userMultiplierMap}
                 />
             </Stack>
         </Drawer>
