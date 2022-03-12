@@ -10,11 +10,13 @@ export const ChatMessage = ({
     isSent,
     isFailed,
     multiplierValue,
+    isCitizen,
 }: {
     chat: ChatData
     isSent?: boolean
     isFailed?: boolean
     multiplierValue?: string
+    isCitizen: boolean
 }) => {
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at } = chat
     const multiplierInt = multiplierValue ? parseInt(multiplierValue) : 0
@@ -66,7 +68,10 @@ export const ChatMessage = ({
                 }}
             >
                 <Stack direction="row" spacing={0.5}>
-                    <span style={{ color: message_color, fontWeight: 700 }}>{truncate(from_username, 27)}</span>
+                    <span style={{ color: message_color, fontWeight: 700 }}>
+                        {isCitizen ? "🦾" : ""}
+                        {truncate(from_username, 27)}
+                    </span>
                     <span
                         style={{
                             color:
