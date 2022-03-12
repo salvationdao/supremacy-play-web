@@ -44,7 +44,8 @@ import {
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
-import { FactionThemeColor, UpdateTheme } from "./types"
+import { FactionThemeColor, UpdateTheme, User } from "./types"
+import { UserData } from "./types/passport"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -154,12 +155,8 @@ const App = () => {
         background: "#050c12",
     })
 
-    const [login, xLogin] = useState<Date | null>(null)
-    const setLogin = useMemo(() => {
-        return (d: Date) => {
-            xLogin(d)
-        }
-    }, [])
+    const [authLogin, setAuthLogin] = useState<User | null>(null)
+    const [passLogin, setPassLogin] = useState<UserData | null>(null)
 
     useEffect(() => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
@@ -168,10 +165,10 @@ const App = () => {
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
-                <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login }}>
-                    <PassportServerAuthProvider initialState={{ setLogin }}>
-                        <GameServerSocketProvider initialState={{ login }}>
-                            <GameServerAuthProvider initialState={{ setLogin }}>
+                <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login: passLogin }}>
+                    <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
+                        <GameServerSocketProvider initialState={{ login: authLogin }}>
+                            <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
                                 <StreamProvider>
                                     <WalletProvider>
                                         <DrawerProvider>

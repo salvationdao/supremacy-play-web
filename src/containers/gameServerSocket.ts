@@ -4,8 +4,8 @@ import { GAME_SERVER_HOSTNAME } from "../constants"
 import { parseNetMessage } from "../helpers/netMessages"
 import { useDebounce } from "../hooks"
 import { GameServerKeys } from "../keys"
-import { GameAbilityProgress, NetMessageTick, NetMessageType } from "../types"
-import { useGameServerAuth } from './gameServerAuth'
+import { GameAbilityProgress, NetMessageTick, NetMessageType, User } from "../types"
+import { useGameServerAuth } from "./gameServerAuth"
 
 // websocket message struct
 interface MessageData {
@@ -100,9 +100,7 @@ const backoffIntervalCalc = async (num: number) => {
     return i
 }
 
-const GameServerWebsocket =  (initialState?: {
-    login: Date
-}): WebSocketProperties => {
+const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
     const [outgoing, setOutgoing] = useDebounce<Message<any>[]>([], 100)

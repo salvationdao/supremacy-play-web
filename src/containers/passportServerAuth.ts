@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 import { PassportServerKeys } from "../keys"
 import { UserData } from "../types/passport"
 import { usePassportServerWebsocket } from "./passportServerSocket"
+import { User } from "../types"
 
-const emptyFn = (dt: Date) => {
+const emptyFn = (user: UserData) => {
     console.log("empty function that should never run")
 }
 
 /**
  * A Container that handles Authorisation
  */
-const AuthContainer = createContainer((initialState?: { setLogin(dt: Date): void }) => {
+const AuthContainer = createContainer((initialState?: { setLogin(user: UserData): void }) => {
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
     const userID = user?.id
@@ -26,11 +27,13 @@ const AuthContainer = createContainer((initialState?: { setLogin(dt: Date): void
     const [authRingCheckLoading, setAuthRingCheckLoading] = useState(true)
     const [authRingCheckSuccess, setAuthRingCheckSuccess] = useState(false)
 
-    const setLogin = initialState ? initialState.setLogin : emptyFn
+    const setLogin = useMemo(() => {
+        return initialState ? initialState.setLogin : emptyFn
+    }, [])
 
     useEffect(() => {
-        setLogin(new Date())
-    }, [user, setLogin])
+        if (user) setLogin(user)
+    }, [user])
 
     // get user by session id
     useEffect(() => {

@@ -4,6 +4,8 @@ import { PassportServerKeys } from "../keys"
 import { sleep } from "../helpers"
 import { usePassportServerAuth } from "./passportServerAuth"
 import { PASSPORT_SERVER_HOST } from "../constants"
+import { User } from "../types"
+import { UserData } from "../types/passport"
 
 // makeid is used to generate a random transaction_id for the websocket
 function makeid(length = 12): string {
@@ -77,7 +79,7 @@ const backoffIntervalCalc = async (num: number) => {
     return i
 }
 
-const PassportServerWebsocket = (initialState?: { host?: string; login: Date }): WebSocketProperties => {
+const PassportServerWebsocket = (initialState?: { host?: string; login: UserData | null }): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
 

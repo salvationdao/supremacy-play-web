@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User } from "../types"
@@ -13,25 +13,27 @@ export interface AuthContainerType {
     authSessionIDGetError: undefined
 }
 
-const emptyFn = (dt: Date) => {
+const emptyFn = (user: User) => {
     console.log("empty function that should never run")
 }
 
 /**
  * A Container that handles Authorisation
  */
-const AuthContainer = createContainer((initialState?: { setLogin(dt: Date): void }): AuthContainerType => {
+const AuthContainer = createContainer((initialState?: { setLogin(user: User): void }): AuthContainerType => {
     const { gameserverSessionID, setGameserverSessionID } = usePassportServerAuth()
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useGameServerWebsocket()
     const [user, setUser] = useState<User>()
     const userID = user?.id
 
-    const setLogin = initialState ? initialState.setLogin : emptyFn
+    const setLogin = useMemo(() => {
+        return initialState ? initialState.setLogin : emptyFn
+    }, [])
 
     useEffect(() => {
-        setLogin(new Date())
-    }, [user, setLogin])
+        if (user) setLogin(user)
+    }, [user])
 
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
     const [authSessionIDGetError, setAuthSessionIDGetError] = useState()
