@@ -27,7 +27,7 @@ const DrawerContent = () => {
         return subscribe<Asset[]>(PassportServerKeys.SubAssetList, (payload) => {
             if (!payload) return
             payload = payload.filter((asset) => {
-                return asset.on_chain_status !== "UNSTAKABLE"
+                return asset.on_chain_status !== "STAKABLE"
             })
             setAssets(payload)
         })
