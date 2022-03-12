@@ -1,9 +1,11 @@
-import { Box, Divider, Link, Stack, Typography } from "@mui/material"
-import { SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
-import { PASSPORT_WEB, SUPREMACY_PAGE } from "../../constants"
+import { Box, Divider, Link, Stack, Tooltip, Typography } from "@mui/material"
+import { useState } from "react"
+import { SvgInfoIcon, SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
+import { PASSPORT_WEB, SUPREMACY_PAGE, VERSION } from "../../constants"
 import { colors } from "../../theme/theme"
 
 export const Logo = () => {
+    const [text, setText] = useState<string>("EARLY ACCESS")
     return (
         <Stack direction="row" alignItems="center" spacing={1.8} sx={{ px: 2, zIndex: 1 }}>
             <Link href={PASSPORT_WEB} target="_blank">
@@ -13,7 +15,15 @@ export const Logo = () => {
             <Link href={SUPREMACY_PAGE} target="_blank">
                 <SvgSupremacyLogo width="150px" />
             </Link>
-            <Box sx={{ pb: "2px" }}>
+            <Box
+                onMouseEnter={() => {
+                    setText(VERSION)
+                }}
+                onMouseLeave={() => {
+                    setText("EARLY ACCESS")
+                }}
+                sx={{ pb: "2px" }}
+            >
                 <Typography
                     variant="caption"
                     sx={{
@@ -29,7 +39,7 @@ export const Logo = () => {
                         fontFamily: "Nostromo Regular Bold",
                     }}
                 >
-                    EARLY ACCESS
+                    {text}
                 </Typography>
             </Box>
         </Stack>

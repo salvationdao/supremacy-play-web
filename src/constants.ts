@@ -1,4 +1,5 @@
 // Envar stuff
+export const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
 export const GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "localhost:8084"
 export const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://sale.supremacy.game/"
 export const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
