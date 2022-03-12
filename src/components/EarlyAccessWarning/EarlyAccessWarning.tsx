@@ -1,20 +1,14 @@
 import { Box, Button, Modal, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Alert } from "@mui/lab"
 import { colors } from "../../theme/theme"
 
 export const EarlyAccessWarning = () => {
-    const [clickedYes, setClickedYes] = useState<string | null>(localStorage.getItem("agreed_to_early_access"))
-
-    useEffect(() => {
-        if (clickedYes === "agreed") {
-            localStorage.setItem("agreed_to_early_access", "agreed")
-        }
-    }, [clickedYes])
+    const [closed, setClosed] = useState<boolean>(false)
 
     return (
         <Box>
-            <Modal open={clickedYes !== "agreed"}>
+            <Modal open={!closed} onClose={() => setClosed(true)}>
                 <Box
                     sx={{
                         position: "absolute",
@@ -35,14 +29,17 @@ export const EarlyAccessWarning = () => {
                     <Typography sx={{ mr: 2, fontFamily: "Nostromo Regular Bold", pt: 2, pb: 2 }} variant="caption">
                         <p>Thank you for participating in the Supremacy Battle Stream Early Access</p>
                     </Typography>
-                    <Alert severity="warning">The game is early access, but the $SUPS you use are real!</Alert>
                     <Typography sx={{ mr: 2, fontFamily: "Nostromo Regular Bold", pt: 2, pb: 2 }} variant="caption">
                         By choosing to try out this game and continue from here, you expressly acknowledge and accept
                         that you assume all risks associated with the gameplay and/or participating in the Battle
                         Events. This includes contributing to battle abilities, queueing your mech for battle, and other
                         $SUPS related tasks.
                     </Typography>
-                    <Button onClick={() => setClickedYes("agreed")}>I agree! Let me in!</Button>
+                    <Alert severity="warning">The game is early access, but the $SUPS you use are real!</Alert>
+
+                    <Box sx={{ padding: 2, display: "flex", alignItems: "right", flexDirection: "row-reverse" }}>
+                        <Button onClick={() => setClosed(true)}>I agree! Let me in!</Button>
+                    </Box>
                 </Box>
             </Modal>
         </Box>
