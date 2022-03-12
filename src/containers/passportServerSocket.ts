@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { PassportServerKeys } from "../keys"
 import { sleep } from "../helpers"
+import { usePassportServerAuth } from './passportServerAuth'
 
 // makeid is used to generate a random transaction_id for the websocket
 function makeid(length = 12): string {
@@ -82,6 +83,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
     const webSocket = useRef<WebSocket | null>(null)
     const [reconnect, setIsReconnect] = useState<boolean>(false)
     const [isServerUp, setIsServerUp] = useState<boolean>(true)
+    const {userID} = usePassportServerAuth()
 
     useEffect(() => {
         if (!reconnect) return
@@ -179,7 +181,7 @@ const PassportServerWebsocket = (initialState?: string): WebSocketProperties => 
                 if (!listenOnly) setSubscribeState(key, false)
             }
         }
-    }, [])
+    }, [userID])
 
     const setupWS = useMemo(
         () => (ws: WebSocket, onopen?: () => void) => {
