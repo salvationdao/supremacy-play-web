@@ -114,6 +114,7 @@ const AppInner = () => {
 
                                 {user && haveSups && state === WebSocket.OPEN && (
                                     <Box>
+                                        <EarlyAccessWarning />
                                         <VotingSystem />
                                         <MiniMap />
                                         <Notifications />
@@ -121,7 +122,6 @@ const AppInner = () => {
                                         <WarMachineStats />
                                         <BattleEndScreen />
                                         <BattleHistory />
-                                        <EarlyAccessWarning />
                                     </Box>
                                 )}
                             </>
