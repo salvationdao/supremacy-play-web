@@ -17,6 +17,7 @@ export const ChatMessage = ({
     multiplierValue?: string
 }) => {
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at } = chat
+    const multiplierInt = multiplierValue ? parseInt(multiplierValue) : 0
 
     return (
         <Stack direction="row" spacing={0.5} sx={{ opacity: isSent ? 1 : 0.45 }}>
@@ -64,16 +65,21 @@ export const ChatMessage = ({
                     userSelect: "text",
                 }}
             >
-                <Stack direction="row" spacing={0.35}>
+                <Stack direction="row" spacing={0.5}>
                     <span style={{ color: message_color, fontWeight: 700 }}>{truncate(from_username, 27)}</span>
                     <span
                         style={{
-                            color: colors.orange,
+                            color:
+                                multiplierInt >= 50
+                                    ? colors.neonBlue
+                                    : multiplierInt >= 15
+                                    ? colors.yellow
+                                    : colors.orange,
                             textAlign: "center",
                             fontFamily: "Nostromo Regular Bold",
                             fontSize: "0.5rem",
                             verticalAlign: "top",
-                            opacity: multiplierValue ? 1 : 0.8,
+                            opacity: multiplierValue ? 1 : 0.7,
                             borderRadius: 0.6,
                         }}
                     >

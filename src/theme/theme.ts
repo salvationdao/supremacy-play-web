@@ -32,7 +32,7 @@ export const colors = {
     green: "#2BA172",
     yellow: "#FFE200",
     orange: "#E04F00",
-    gold: "#ffc400",
+    gold: "#FFC400",
 
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
