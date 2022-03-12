@@ -143,7 +143,7 @@ const BattleAbilityItemInner = ({
                                         px: 2,
                                         pt: 1.4,
                                         pb: 1.6,
-                                        opacity: isVoting ? 1 : 0.45,
+                                        opacity: isVoting ? 1 : 0.7,
                                     }}
                                 >
                                     <Stack

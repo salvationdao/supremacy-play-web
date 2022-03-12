@@ -4,12 +4,13 @@ import { useStream } from "../../containers"
 import { colors } from "../../theme/theme"
 
 export const ResolutionSelect = () => {
-    const { webRtc, currentStream, streamResolutions, setCurrentResolution } = useStream()
+    const { webRtc, currentStream, streamResolutions } = useStream()
     const [options, setOptions] = useState<number[]>([])
 
     useMemo(() => {
         if (streamResolutions.length == 0) return
         setOptions(streamResolutions)
+        // changeStreamQuality(streamResolutions[0])
     }, [streamResolutions])
 
     const changeStreamQuality = (quality: number) => {
@@ -56,10 +57,7 @@ export const ResolutionSelect = () => {
                         <MenuItem
                             key={x}
                             value={x}
-                            onClick={() => {
-                                setCurrentResolution(x)
-                                changeStreamQuality(x)
-                            }}
+                            onClick={() => changeStreamQuality(x)}
                             sx={{
                                 "&:hover": {
                                     backgroundColor: colors.darkNavyBlue,
