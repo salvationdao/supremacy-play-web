@@ -76,7 +76,6 @@ export const StreamContainer = createContainer(() => {
 
     // resolution
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
-    const [currentResolution, setCurrentResolution] = useState<number>()
 
     // no stream error
     const [noStreamExist, setNoStreamExist] = useState(false)
@@ -228,8 +227,6 @@ export const StreamContainer = createContainer(() => {
         currentStream,
         changeStream,
 
-        currentResolution,
-        setCurrentResolution,
         streamResolutions,
 
         volume,
