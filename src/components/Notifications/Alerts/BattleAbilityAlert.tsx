@@ -29,6 +29,7 @@ export const BattleAbilityAlert = ({
                 text={label}
                 color={colour}
                 imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`}
+                imageMb={-0.3}
             />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText
@@ -39,6 +40,7 @@ export const BattleAbilityAlert = ({
                         ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction.id]?.logo_blob_id}`
                         : undefined
                 }
+                imageMb={-0.3}
             />
             <Divider sx={{ my: 1.2, borderColor: "#FFFFFF", opacity: 0.15 }} />
             <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
@@ -46,6 +48,7 @@ export const BattleAbilityAlert = ({
                 imageUrl={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : undefined}
                 text={username}
                 color={faction.theme.primary}
+                imageMb={-0.3}
             />
             <StyledNormalText text=" has been assigned to choose a target location" />
         </Box>
