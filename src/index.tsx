@@ -160,13 +160,13 @@ const App = () => {
 
     const setAuthLogin = useMemo(() => {
         return (u: User) => {
-            if (!authLogin) setAuthLoginX(u)
+            if (!authLogin && u) setAuthLoginX(u)
         }
     }, [authLogin])
 
     const setPassLogin = useMemo(() => {
         return (u: UserData) => {
-            if (!passLogin) setPassLoginX(u)
+            if (!passLogin && u) setPassLoginX(u)
         }
     }, [passLogin])
 
