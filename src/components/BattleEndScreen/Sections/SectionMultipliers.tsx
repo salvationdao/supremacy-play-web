@@ -70,7 +70,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                     <Typography variant="h6" sx={{ pl: 1, opacity: 0.8 }}>
                         {"Sorry you didn't get any multipliers."}
                         <br />
-                        You will receive multipliers when you participate in the battle...
+                        You will receive multipliers when you participate in the battle.
                     </Typography>
                 )}
             </Stack>
