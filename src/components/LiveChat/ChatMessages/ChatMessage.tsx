@@ -71,7 +71,9 @@ export const ChatMessage = ({
                     userSelect: "text",
                 }}
             >
-                <span style={{ color: message_color, fontWeight: 700 }}>{username_trunc}</span>
+                <span style={{ color: message_color, fontWeight: 700 }}>
+                    {isCitizen ? "🦾" : ""} {username_trunc}
+                </span>
                 <span
                     style={{
                         textAlign: "center",
