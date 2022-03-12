@@ -28,6 +28,7 @@ export const FactionAbilityAlert = ({
                 text={label}
                 color={colour}
                 imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`}
+                imageMb={-0.3}
             />
             <StyledNormalText text=" has been initiated by " />
             <StyledImageText
@@ -38,6 +39,7 @@ export const FactionAbilityAlert = ({
                         ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction.id]?.logo_blob_id}`
                         : undefined
                 }
+                imageMb={-0.3}
             />
         </Box>
     )

@@ -64,7 +64,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
         return (
             <Box>
                 <SvgCancelled size="12px" sx={{ display: "inline", mr: 0.5 }} />
-                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
+                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <StyledNormalText text=" has been cancelled as there were no players available to choose a target location" />
             </Box>
         )
@@ -78,6 +78,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     imageUrl={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : undefined}
                     text={username}
                     color={faction.theme.primary}
+                    imageMb={-0.3}
                 />
                 <StyledNormalText text=" failed to choose a target location in time. " />
                 <Divider sx={{ my: 1.2, borderColor: "#FFFFFF", opacity: 0.15 }} />
@@ -86,9 +87,10 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     imageUrl={nextavatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextavatar_id}` : undefined}
                     text={nextUsername}
                     color={nextFaction.theme.primary}
+                    imageMb={-0.3}
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
-                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
+                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
             </Box>
         )
     }
@@ -101,6 +103,7 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     imageUrl={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : undefined}
                     text={username}
                     color={faction.theme.primary}
+                    imageMb={-0.3}
                 />
                 <StyledNormalText text=" has disconnected" />
                 <Divider sx={{ my: 1.2, borderColor: "#FFFFFF", opacity: 0.15 }} />
@@ -109,9 +112,10 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     imageUrl={nextavatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${nextavatar_id}` : undefined}
                     text={nextUsername}
                     color={nextFaction.theme.primary}
+                    imageMb={-0.3}
                 />
                 <StyledNormalText text=" has been assigned to choose a target for " />
-                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
+                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
             </Box>
         )
     }
@@ -124,9 +128,10 @@ export const LocationSelectAlert = ({ data }: { data: LocationSelectAlertProps }
                     imageUrl={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : undefined}
                     text={username}
                     color={faction.theme.primary}
+                    imageMb={-0.3}
                 />
                 <StyledNormalText text=" has chosen a target location for " />
-                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
+                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
             </Box>
         )
     }

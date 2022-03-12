@@ -25,9 +25,10 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
                 text={label}
                 color={colour}
                 imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`}
+                imageMb={-0.3}
             />
             <StyledNormalText text=" has been initiated by " />
-            <StyledImageText text={name || hash} color={faction.theme.primary} imageUrl={wmImageUrl} />
+            <StyledImageText text={name || hash} color={faction.theme.primary} imageUrl={wmImageUrl} imageMb={-0.3} />
         </Box>
     )
 }
