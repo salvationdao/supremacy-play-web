@@ -133,8 +133,8 @@ export const StreamContainer = createContainer(() => {
             if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
                 setCurrentStream(savedStream)
                 SetNewStreamOptions(quietestStreams, true)
+                return
             }
-            return
         }
 
         SetNewStreamOptions(quietestStreams)
@@ -189,7 +189,7 @@ export const StreamContainer = createContainer(() => {
                             if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
                             webRtc.current.getStreamInfo(currentStream.stream_id)
                         } else if (info == "streamInformation") {
-                            const resolutions: number[] = [0]
+                            const resolutions: number[] = []
                             obj["streamInfo"].forEach((entry: StreamInfoEntry) => {
                                 // get resolutions from server response and added to an array.
                                 if (!resolutions.includes(entry["streamHeight"])) {
@@ -230,9 +230,7 @@ export const StreamContainer = createContainer(() => {
 
         currentResolution,
         setCurrentResolution,
-
         streamResolutions,
-        setStreamResolutions,
 
         volume,
         setVolume,
