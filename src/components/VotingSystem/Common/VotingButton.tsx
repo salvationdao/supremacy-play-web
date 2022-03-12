@@ -3,8 +3,8 @@ import { FancyButton } from "../.."
 import { useWallet } from "../../../containers"
 
 interface VotingButtonProps {
-    amount: number | string
-    cost: number
+    amount: string
+    cost: string
     color: string
     textColor?: string
     isVoting: boolean

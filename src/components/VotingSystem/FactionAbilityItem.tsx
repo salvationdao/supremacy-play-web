@@ -19,7 +19,7 @@ import { SvgSupToken } from "../../assets"
 
 interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
-    amount: number
+    amount: string
 }
 
 interface FactionAbilityItemProps extends Partial<WebSocketProperties> {
@@ -101,7 +101,7 @@ export const FactionAbilityItemInner = ({
         }
     }, [gameAbilityProgress])
 
-    const onContribute = async (amount: number) => {
+    const onContribute = async (amount: string) => {
         if (!send) return
         send<boolean, ContributeFactionUniqueAbilityRequest>(
             GameServerKeys.ContributeFactionUniqueAbility,
@@ -223,28 +223,28 @@ export const FactionAbilityItemInner = ({
                                 <VotingButton
                                     color={colour}
                                     textColor={text_colour || "#FFFFFF"}
-                                    amount={1}
-                                    cost={1}
+                                    amount={"0.1"}
+                                    cost={"0.1"}
                                     isVoting={!!isVoting}
-                                    onClick={() => onContribute(1)}
+                                    onClick={() => onContribute("0.1")}
                                     Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
                                 <VotingButton
                                     color={colour}
                                     textColor={text_colour || "#FFFFFF"}
-                                    amount={2}
-                                    cost={2}
+                                    amount={"1"}
+                                    cost={"1"}
                                     isVoting={!!isVoting}
-                                    onClick={() => onContribute(2)}
+                                    onClick={() => onContribute("1")}
                                     Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
                                 <VotingButton
                                     color={colour}
                                     textColor={text_colour || "#FFFFFF"}
-                                    amount={3}
-                                    cost={3}
+                                    amount={"10"}
+                                    cost={"10"}
                                     isVoting={!!isVoting}
-                                    onClick={() => onContribute(3)}
+                                    onClick={() => onContribute("10")}
                                     Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
                             </Stack>

@@ -105,8 +105,8 @@ const BattleAbilityItemInner = ({
         )
     }, [state, subscribeNetMessage])
 
-    const onBribe = (voteAmount: number) => {
-        if (send) send<boolean, { amount: number }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount }, true)
+    const onBribe = (voteAmount: string) => {
+        if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount }, true)
     }
 
     const isVoting = useMemo(
@@ -309,28 +309,28 @@ const BattleAbilityItemInner = ({
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
-                                            amount={1}
-                                            cost={1}
+                                            amount={"0.1"}
+                                            cost={"0.1"}
                                             isVoting={isVoting}
-                                            onClick={() => onBribe(1)}
+                                            onClick={() => onBribe("0.1")}
                                             Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
-                                            amount={2}
-                                            cost={2}
+                                            amount={"1"}
+                                            cost={"1"}
                                             isVoting={isVoting}
-                                            onClick={() => onBribe(2)}
+                                            onClick={() => onBribe("1")}
                                             Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
-                                            amount={3}
-                                            cost={3}
+                                            amount={"19"}
+                                            cost={"10"}
                                             isVoting={isVoting}
-                                            onClick={() => onBribe(3)}
+                                            onClick={() => onBribe("10")}
                                             Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
                                         />
                                     </Stack>

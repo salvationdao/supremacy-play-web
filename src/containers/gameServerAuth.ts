@@ -13,7 +13,9 @@ export interface AuthContainerType {
     authSessionIDGetError: undefined
 }
 
-const emptyFn = (dt: Date) => {}
+const emptyFn = (dt: Date) => {
+    console.log("empty function that should never run")
+}
 
 /**
  * A Container that handles Authorisation

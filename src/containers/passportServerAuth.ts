@@ -4,7 +4,9 @@ import { PassportServerKeys } from "../keys"
 import { UserData } from "../types/passport"
 import { usePassportServerWebsocket } from "./passportServerSocket"
 
-const emptyFn = (dt: Date) => {}
+const emptyFn = (dt: Date) => {
+    console.log("empty function that should never run")
+}
 
 /**
  * A Container that handles Authorisation
