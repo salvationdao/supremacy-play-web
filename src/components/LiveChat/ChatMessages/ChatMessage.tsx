@@ -1,12 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { SvgInfoCircular } from "../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { truncate } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
-
-function truncate(str: string, n: number): string {
-    return str.length > n ? str.substr(0, n - 1) + "&hellip;" : str
-}
 
 export const ChatMessage = ({
     chat,
@@ -20,8 +17,7 @@ export const ChatMessage = ({
     multiplierValue?: string
 }) => {
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at } = chat
-
-    const username_trunc = truncate(from_username, 27)
+    const multiplierInt = multiplierValue ? parseInt(multiplierValue) : 0
 
     return (
         <Stack direction="row" spacing={0.5} sx={{ opacity: isSent ? 1 : 0.45 }}>
@@ -69,31 +65,38 @@ export const ChatMessage = ({
                     userSelect: "text",
                 }}
             >
-                <span style={{ color: message_color, fontWeight: 700 }}>{username_trunc}</span>
-                <span
-                    style={{
-                        textAlign: "center",
-                        fontFamily: "Nostromo Regular Bold",
-                        color: colors.orange,
-                        borderRadius: 0.6,
-                        fontSize: "0.5rem",
-                        marginLeft: "0.3rem",
-                        verticalAlign: "top",
-                    }}
-                >
-                    {multiplierValue ? multiplierValue : "0"}x
-                </span>{" "}
-                <span
-                    style={{
-                        display: "inline-block",
-                        color: "grey",
-                        opacity: 0.5,
-                        marginLeft: "3px",
-                        fontSize: ".7rem",
-                    }}
-                >
-                    {dateFormatter(sent_at)}
-                </span>
+                <Stack direction="row" spacing={0.5}>
+                    <span style={{ color: message_color, fontWeight: 700 }}>{truncate(from_username, 27)}</span>
+                    <span
+                        style={{
+                            color:
+                                multiplierInt >= 50
+                                    ? colors.neonBlue
+                                    : multiplierInt >= 15
+                                    ? colors.yellow
+                                    : colors.orange,
+                            textAlign: "center",
+                            fontFamily: "Nostromo Regular Bold",
+                            fontSize: "0.5rem",
+                            verticalAlign: "top",
+                            opacity: multiplierValue ? 1 : 0.7,
+                            borderRadius: 0.6,
+                        }}
+                    >
+                        {multiplierValue ? multiplierValue : "0"}x
+                    </span>
+                    <span
+                        style={{
+                            display: "inline-block",
+                            color: "grey",
+                            fontSize: "0.7rem",
+                            opacity: 0.5,
+                        }}
+                    >
+                        {dateFormatter(sent_at)}
+                    </span>
+                </Stack>
+
                 <p>{message} </p>
             </Typography>
         </Stack>
