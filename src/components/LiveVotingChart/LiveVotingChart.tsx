@@ -31,7 +31,7 @@ const SpoilOfWarAmount = () => {
     }, [state, subscribeNetMessage])
 
     return (
-        <Stack alignItems="center" justifyContent="center" spacing={2}>
+        <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
             <Stack alignItems="center" justifyContent="center">
                 <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
                     SPOILS OF WAR:&nbsp;
