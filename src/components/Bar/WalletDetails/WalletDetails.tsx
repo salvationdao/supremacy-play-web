@@ -35,11 +35,14 @@ export const WalletDetails = () => {
         usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions)
 
     useEffect(() => {
-        if (battleEndDetail && battleEndDetail.multipliers.length > 0)
+        if (battleEndDetail && battleEndDetail.multipliers.length > 0) {
             setMultipliers({
                 total_multipliers: battleEndDetail.total_multipliers,
                 multipliers: battleEndDetail.multipliers,
             })
+        } else {
+            setMultipliers(undefined)
+        }
     }, [battleEndDetail])
 
     // Subscribe to multipliers
