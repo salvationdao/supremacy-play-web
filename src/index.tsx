@@ -154,7 +154,13 @@ const App = () => {
         background: "#050c12",
     })
 
-    const [login, setLogin] = useState<Date>(new Date())
+    const [login, xLogin] = useState<Date | null>(null)
+
+    const setLogin = (d: Date) => {
+        if (login !== null) {
+            xLogin(d)
+        }
+    }
 
     useEffect(() => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
