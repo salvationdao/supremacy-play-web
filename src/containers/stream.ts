@@ -196,6 +196,10 @@ export const StreamContainer = createContainer(() => {
                                 }
                             })
                             setStreamResolutions(resolutions)
+
+                            if (webRtc?.current && currentStream && resolutions && resolutions.length > 0) {
+                                webRtc.current.forceStreamQuality(currentStream.stream_id, resolutions[0])
+                            }
                         } else if (info == "closed") {
                             webRtc.current = undefined
                             if (typeof obj != "undefined") {
