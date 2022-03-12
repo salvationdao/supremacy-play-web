@@ -19,32 +19,7 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
         if (!supsAboveZero && haveSups) toggleHaveSups(false)
     }, [onWorldSups, supsAboveZero, haveSups])
 
-    let message = "You must connect your passport to view the battle stream."
-    if (user && user.faction && !haveSups) {
-        message = "You must have SUPS in order to view the battle stream."
-    } else if (user && !user.faction) {
-        message = "You must enlist in a faction to view the battle stream."
-    }
-
-    return (
-        <Fade in={render}>
-            <Stack sx={{ flex: 1, width: "100%" }}>
-                <Box sx={{ px: 2, py: 0.5, backgroundColor: colors.red, boxShadow: 6, zIndex: 99 }}>
-                    <Typography variant="h6" sx={{ textAlign: "center" }}>
-                        {message}
-                    </Typography>
-                </Box>
-                <Box
-                    sx={{
-                        position: "relative",
-                        flex: 1,
-                    }}
-                >
-                    <WaitingPage />
-                </Box>
-            </Stack>
-        </Fade>
-    )
+    return null
 }
 
 export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
@@ -84,6 +59,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
                     height: iframeDimensions.height,
                 }}
             />
+            <Message render={renderTopMessage} haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
         </Stack>
     )
 }
