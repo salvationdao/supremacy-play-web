@@ -26,6 +26,11 @@ export interface UserMultiplierMap {
     [player_id: string]: string
 }
 
+export interface UserMultiplierResponse {
+    multipliers: UserMultiplier[]
+    citizen_player_ids: string[]
+}
+
 const DrawerContent = ({
     tabValue,
     setTabValue,
@@ -34,6 +39,7 @@ const DrawerContent = ({
     factionChatUnread,
     globalChatUnread,
     userMultiplierMap,
+    citizenPlayerIDs,
 }: {
     globalChatUnread: number
     factionChatUnread: number
@@ -42,6 +48,7 @@ const DrawerContent = ({
     chatMessages: ChatData[]
     onNewMessage: (newMessage: ChatData, faction_id: string | null) => void
     userMultiplierMap: UserMultiplierMap
+    citizenPlayerIDs: string[]
 }) => {
     const { user } = usePassportServerAuth()
     // Store list of messages that were successfully sent or failed
@@ -175,6 +182,7 @@ const DrawerContent = ({
                 sentMessages={sentMessages}
                 failedMessages={failedMessages}
                 userMultiplierMap={userMultiplierMap}
+                citizenPlayerIDs={citizenPlayerIDs}
             />
 
             {user ? (
@@ -215,6 +223,7 @@ export const LiveChat = () => {
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const [userMultiplierMap, setUserMultiplierMap] = useState<UserMultiplierMap>({})
+    const [citizenPlayerIDs, setCitizenPlayerIDs] = useState<string[]>([])
 
     const newMessageHandler = (message: ChatData, faction_id: string | null) => {
         if (faction_id === null) {
@@ -244,18 +253,21 @@ export const LiveChat = () => {
     // subscribe to the chat
     useEffect(() => {
         if (gsState !== WebSocket.OPEN) return
-        return gsSubscribe<UserMultiplier[]>(GameServerKeys.SubscribeMultiplierMap, (payload) => {
-            if (!payload || payload.length === 0) {
+        return gsSubscribe<UserMultiplierResponse>(GameServerKeys.SubscribeMultiplierMap, (payload) => {
+            if (!payload) {
                 setUserMultiplierMap({})
+                setCitizenPlayerIDs([])
                 return
             }
 
             const um: UserMultiplierMap = {}
-            payload.forEach((m) => {
+            payload.multipliers.forEach((m) => {
                 um[m.player_id] = m.total_multiplier
             })
 
             setUserMultiplierMap(um)
+
+            setCitizenPlayerIDs(payload.citizen_player_ids)
         })
     }, [gsState, gsSubscribe])
 
@@ -319,6 +331,7 @@ export const LiveChat = () => {
                     chatMessages={tabValue == 0 ? globalChatMessages : factionChatMessages}
                     onNewMessage={newMessageHandler}
                     userMultiplierMap={userMultiplierMap}
+                    citizenPlayerIDs={citizenPlayerIDs}
                 />
             </Stack>
         </Drawer>

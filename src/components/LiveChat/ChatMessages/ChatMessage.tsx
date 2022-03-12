@@ -13,11 +13,13 @@ export const ChatMessage = ({
     isSent,
     isFailed,
     multiplierValue,
+    isCitizen,
 }: {
     chat: ChatData
     isSent?: boolean
     isFailed?: boolean
     multiplierValue?: string
+    isCitizen: boolean
 }) => {
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at } = chat
 

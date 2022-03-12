@@ -22,6 +22,7 @@ interface ChatMessagesProps {
     sentMessages: Date[]
     failedMessages: Date[]
     userMultiplierMap: UserMultiplierMap
+    citizenPlayerIDs: string[]
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
@@ -40,6 +41,7 @@ const ChatMessagesInner = ({
     state,
     subscribe,
     userMultiplierMap,
+    citizenPlayerIDs,
 }: ChatMessagesPropsInner) => {
     const { user } = usePassportServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
@@ -154,6 +156,7 @@ const ChatMessagesInner = ({
                                 isSent={c.from_user_id != user?.id ? true : sentMessages.includes(c.sent_at)}
                                 isFailed={c.from_user_id != user?.id ? false : failedMessages.includes(c.sent_at)}
                                 multiplierValue={userMultiplierMap[c.from_user_id]}
+                                isCitizen={citizenPlayerIDs.some((cp) => cp === c.from_user_id)}
                             />
                         ))
                     ) : (
