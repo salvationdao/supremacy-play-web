@@ -10,7 +10,7 @@ export const ResolutionSelect = () => {
     useMemo(() => {
         if (streamResolutions.length == 0) return
         setOptions(streamResolutions)
-        // changeStreamQuality(streamResolutions[0])
+        changeStreamQuality(streamResolutions[0])
     }, [streamResolutions])
 
     const changeStreamQuality = (quality: number) => {
