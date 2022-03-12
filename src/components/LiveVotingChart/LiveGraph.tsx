@@ -1,4 +1,4 @@
-import { useWebsocket } from "../../containers"
+import { useGameServerWebsocket } from "../../containers"
 import { NetMessageType } from "../../types"
 import BigNumber from "bignumber.js"
 import { useEffect, useRef, useState } from "react"
@@ -19,7 +19,7 @@ interface LiveVotingData {
 export const LiveGraph = (props: LiveGraphProps) => {
     const { maxWidthPx, maxHeightPx, maxLiveVotingDataLength } = props
 
-    const { state, subscribeNetMessage } = useWebsocket()
+    const { state, subscribeNetMessage } = useGameServerWebsocket()
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [liveVotingData, setLiveVotingData] = useState<LiveVotingData[]>([])
     const largest = useRef<number>(0.1)
@@ -28,7 +28,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
         const zeroArray: LiveVotingData[] = []
         for (let i = 0; i < maxLiveVotingDataLength; i++) zeroArray.push({ rawData: 0, smoothData: 0 })
         setLiveVotingData(zeroArray)
-    }, [])
+    }, [maxLiveVotingDataLength])
 
     // Live voting data
     useEffect(() => {

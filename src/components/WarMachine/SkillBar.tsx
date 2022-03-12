@@ -3,10 +3,10 @@ import BigNumber from "bignumber.js"
 import { useEffect, useState } from "react"
 import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
 import { NullUUID } from "../../constants"
-import { useAuth, useWebsocket } from "../../containers"
+import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
-import { GameAbility, GameAbilityTargetPrice } from "../../types"
+import { GameAbility, GameAbilityProgress } from "../../types"
 
 export const SkillBar = ({
     index,
@@ -17,43 +17,43 @@ export const SkillBar = ({
     gameAbility: GameAbility
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
 }) => {
-    const { factionID } = useAuth()
-    const { state, subscribeAbilityNetMessage } = useWebsocket()
+    const { faction_id } = useGameServerAuth()
+    const { state, subscribeAbilityNetMessage } = useGameServerWebsocket()
 
     const { identity } = gameAbility
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
     const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber("0"))
 
-    const [gameAbilityTargetPrice, setGameAbilityTargetPrice] = useState<GameAbilityTargetPrice>()
+    const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
 
     const progressPercent = initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100
     const costPercent = initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100
 
     // Listen on current faction ability price change
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !faction_id || faction_id === NullUUID) return
 
-        return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(identity, (payload) => {
+        return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
             if (!payload) return
-            setGameAbilityTargetPrice(payload)
+            setGameAbilityProgress(payload)
         })
-    }, [identity, state, subscribeAbilityNetMessage, factionID])
+    }, [identity, state, subscribeAbilityNetMessage, faction_id])
 
     useEffect(() => {
-        if (!gameAbilityTargetPrice) return
-        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy("1000000000000000000")
-        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy("1000000000000000000")
+        if (!gameAbilityProgress) return
+        const currentSups = new BigNumber(gameAbilityProgress.current_sups).dividedBy("1000000000000000000")
+        const supsCost = new BigNumber(gameAbilityProgress.sups_cost).dividedBy("1000000000000000000")
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
 
-        if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
+        if (gameAbilityProgress.should_reset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
 
             // Cache max price for the popover
             maxAbilityPriceMap.current.set(identity, supsCost)
         }
-    }, [gameAbilityTargetPrice])
+    }, [gameAbilityProgress])
 
     return (
         <Box

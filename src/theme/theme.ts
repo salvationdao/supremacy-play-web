@@ -26,11 +26,13 @@ declare module "@mui/material/styles" {
 }
 
 export const colors = {
-    text: "#D4FFFF",
-    offWhite: "#F8F8F8",
+    text: "#FFFFFF",
+    offWhite: "#D4FFFF",
     red: "#C24242",
     green: "#2BA172",
     yellow: "#FFE200",
+    orange: "#E04F00",
+    gold: "#ffc400",
 
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
@@ -46,6 +48,23 @@ export const colors = {
     grey: "#89898d",
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
+
+    globalChat: "#1A6044",
+    assetsBanner: "#4E1A61",
+
+    rarity: {
+        MEGA: "#e84234",
+        COLOSSAL: "#b43328",
+        RARE: "#4d90fa",
+        LEGENDARY: "#fabd4d",
+        ELITE_LEGENDARY: "#ffcc4e",
+        ULTRA_RARE: "#4e57ff",
+        EXOTIC: "#824dff",
+        GUARDIAN: "#4dcfff",
+        MYTHIC: "#a1e6ff",
+        DEUS_EX: "#fffa4e",
+        TITAN: "#5eff75",
+    },
 }
 
 const factionTheme: FactionTheme = {

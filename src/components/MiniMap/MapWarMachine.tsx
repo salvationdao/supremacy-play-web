@@ -1,12 +1,14 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../assets"
-import { useGame, useWebsocket, WebSocketProperties } from "../../containers"
+import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
 
 interface MWMProps extends Partial<WebSocketProperties> {
+    gridWidth: number
+    gridHeight: number
     warMachine: WarMachineState
     map: Map
     enlarged: boolean
@@ -15,7 +17,7 @@ interface MWMProps extends Partial<WebSocketProperties> {
 }
 
 export const MapWarMachine = (props: MWMProps) => {
-    const { state, subscribeWarMachineStatNetMessage } = useWebsocket()
+    const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
     const { highlightedMechHash } = useGame()
 
     return (
@@ -29,6 +31,8 @@ export const MapWarMachine = (props: MWMProps) => {
 }
 
 const MapWarMachineInner = ({
+    gridWidth,
+    gridHeight,
     warMachine,
     map,
     enlarged,
@@ -37,13 +41,15 @@ const MapWarMachineInner = ({
     state,
     highlightedMechHash,
 }: MWMProps) => {
-    const { participantID, faction, maxHealth, maxShield, imageUrl } = warMachine
+    const { participantID, faction, maxHealth, maxShield, imageAvatar } = warMachine
+    const mapScale = map.width / (map.cells_x * 2000)
 
-    const wmImageUrl = imageUrl || GenericWarMachinePNG
+    const wmImageUrl = imageAvatar || GenericWarMachinePNG
 
-    const ICON_SIZE = isSpawnedAI ? 32 : 40
-    const ARROW_LENGTH = ICON_SIZE / 2 + 20
-    const DOT_SIZE = isSpawnedAI ? 45 : 70
+    const SIZE = Math.min(gridWidth, gridHeight)
+    const ICON_SIZE = isSpawnedAI ? 0.62 * SIZE : 0.8 * SIZE
+    const ARROW_LENGTH = ICON_SIZE / 2 + 0.4 * SIZE
+    const DOT_SIZE = isSpawnedAI ? 0.9 * SIZE : 1.4 * SIZE
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
@@ -56,7 +62,6 @@ const MapWarMachineInner = ({
     // Listen on current war machine changes
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
-
         return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
@@ -75,8 +80,8 @@ const MapWarMachineInner = ({
             sx={{
                 position: "absolute",
                 pointerEvents: "none",
-                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * map.scale}px, ${
-                    (position.y - map.top) * map.scale
+                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * mapScale}px, ${
+                    (position.y - map.top) * mapScale
                 }px, 0)`,
                 transition: "transform 0.2s linear",
                 zIndex: isAlive ? 5 : 4,
@@ -135,7 +140,7 @@ const MapWarMachineInner = ({
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size={enlarged ? "25px" : isSpawnedAI ? "65px" : "90px"}
+                            size={enlarged ? `${0.5 * SIZE}px` : isSpawnedAI ? `${1.3 * SIZE}px` : `${1.8 * SIZE}px`}
                             sx={{
                                 position: "absolute",
                                 top: "52%",
@@ -160,7 +165,7 @@ const MapWarMachineInner = ({
                         <Box sx={{ position: "relative", height: ARROW_LENGTH }}>
                             <SvgMapWarMachine
                                 fill={primaryColor}
-                                size="15px"
+                                size={`${0.3 * SIZE}px`}
                                 sx={{
                                     position: "absolute",
                                     top: -6,
@@ -180,13 +185,20 @@ const MapWarMachineInner = ({
                             bottom: 0,
                             left: "50%",
                             transform: "translate(-50%, calc(100% + 10px))",
-                            width: 50,
+                            width: SIZE,
                             zIndex: 1,
                         }}
                         spacing={0.3}
                     >
                         {warMachine.maxShield > 0 && (
-                            <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
+                            <Box
+                                sx={{
+                                    width: "100%",
+                                    height: `${0.25 * SIZE}px`,
+                                    border: "1px solid #00000080",
+                                    overflow: "hidden",
+                                }}
+                            >
                                 <Box
                                     sx={{
                                         width: `${(shield / maxShield) * 100}%`,
@@ -196,7 +208,14 @@ const MapWarMachineInner = ({
                                 />
                             </Box>
                         )}
-                        <Box sx={{ width: "100%", height: 12, border: "1px solid #00000080", overflow: "hidden" }}>
+                        <Box
+                            sx={{
+                                width: "100%",
+                                height: `${0.25 * SIZE}px`,
+                                border: "1px solid #00000080",
+                                overflow: "hidden",
+                            }}
+                        >
                             <Box
                                 sx={{
                                     width: `${(health / maxHealth) * 100}%`,

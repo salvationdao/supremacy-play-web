@@ -55,7 +55,7 @@ export const OverlayToggles = () => {
             </TooltipHelper>
 
             {/* Battle history */}
-            <TooltipHelper text="Toggle the battle history page.">
+            {/* <TooltipHelper text="Toggle the battle history page.">
                 <IconButton
                     size="small"
                     onClick={toggleIsBattleHistoryOpen}
@@ -69,7 +69,7 @@ export const OverlayToggles = () => {
                 >
                     <SvgHistory size="17px" fill={colors.green} />
                 </IconButton>
-            </TooltipHelper>
+            </TooltipHelper> */}
         </Stack>
     )
 }

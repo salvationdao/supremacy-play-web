@@ -6,15 +6,16 @@ import {
     ClipThing,
     HealthShieldBars,
     SkillBar,
+    TooltipHelper,
     WarMachineAbilitiesPopover,
     WarMachineDestroyedInfo,
 } from ".."
 import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
-import { useDrawer } from "../../components/GameBar"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useAuth, useGame, useWebsocket, WebSocketProperties } from "../../containers"
+import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
-import HubKey from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 const WIDTH_WM_IMAGE = 92
@@ -34,15 +35,15 @@ interface Props {
 }
 
 export const WarMachineItem = (props: Props) => {
-    const { state, subscribe } = useWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
     const { highlightedMechHash, setHighlightedMechHash } = useGame()
     const { isAnyPanelOpen } = useDrawer()
-    const { factionID } = useAuth()
+    const { faction_id } = useGameServerAuth()
 
     return (
         <WarMachineItemInner
             {...props}
-            factionID={factionID}
+            faction_id={faction_id}
             isAnyPanelOpen={isAnyPanelOpen}
             highlightedMechHash={highlightedMechHash}
             setHighlightedMechHash={setHighlightedMechHash}
@@ -53,7 +54,7 @@ export const WarMachineItem = (props: Props) => {
 }
 
 interface PropsInner extends Props, Partial<WebSocketProperties> {
-    factionID?: string
+    faction_id?: string
     highlightedMechHash?: string
     setHighlightedMechHash: (s?: string) => void
     isAnyPanelOpen: boolean
@@ -63,14 +64,14 @@ const WarMachineItemInner = ({
     warMachine,
     scale,
     shouldBeExpanded,
-    factionID,
+    faction_id,
     highlightedMechHash,
     setHighlightedMechHash,
     isAnyPanelOpen,
     state,
     subscribe,
 }: PropsInner) => {
-    const { participantID, faction, name, imageUrl } = warMachine
+    const { hash, participantID, faction, name, imageAvatar, tier } = warMachine
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const popoverRef = useRef(null)
@@ -79,13 +80,15 @@ const WarMachineItemInner = ({
     const [isDestroyedInfoOpen, toggleIsDestroyedInfoOpen] = useToggle()
     const maxAbilityPriceMap = useRef<Map<string, BigNumber>>(new Map<string, BigNumber>())
     const {
-        id: warMachineFactionID,
-        logoBlobID,
+        id: warMachinefaction_id,
+        logo_blob_id,
         theme: { primary, secondary, background },
     } = faction
 
-    const wmImageUrl = imageUrl || GenericWarMachinePNG
-    const isOwnFaction = factionID == warMachine.factionID
+    const rarityDeets = getRarityDeets(tier)
+
+    const wmImageUrl = imageAvatar || GenericWarMachinePNG
+    const isOwnFaction = faction_id == warMachine.factionID
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord
 
@@ -119,28 +122,28 @@ const WarMachineItemInner = ({
     useEffect(() => {
         if (
             state !== WebSocket.OPEN ||
-            !factionID ||
-            factionID === NullUUID ||
-            factionID !== warMachineFactionID ||
+            !faction_id ||
+            faction_id === NullUUID ||
+            faction_id !== warMachinefaction_id ||
             !subscribe
         )
             return
         return subscribe<GameAbility[] | undefined>(
-            HubKey.SubWarMachineAbilitiesUpdated,
+            GameServerKeys.SubWarMachineAbilitiesUpdated,
             (payload) => {
                 if (payload) setGameAbilities(payload)
             },
             {
-                participantID,
+                hash,
             },
         )
-    }, [subscribe, state, factionID, participantID, warMachineFactionID])
+    }, [subscribe, state, faction_id, participantID, warMachinefaction_id])
 
     // Subscribe to whether the war machine has been destroyed
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<WarMachineDestroyedRecord>(
-            HubKey.SubWarMachineDestroyed,
+            GameServerKeys.SubWarMachineDestroyed,
             (payload) => {
                 if (!payload) return
                 setWarMachineDestroyedRecord(payload)
@@ -157,7 +160,7 @@ const WarMachineItemInner = ({
                 alignItems="flex-end"
                 sx={{
                     position: "relative",
-                    ml: isExpanded || isOwnFaction ? 2 : 3.2,
+                    ml: isOwnFaction ? 2 : 1,
                     opacity: isAlive ? 1 : 0.8,
                     width: isOwnFaction
                         ? isExpanded
@@ -233,22 +236,58 @@ const WarMachineItemInner = ({
                                 cursor: "pointer",
                             }}
                         >
+                            <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
+                                <Stack
+                                    direction="row"
+                                    spacing={0.1}
+                                    sx={{
+                                        position: "absolute",
+                                        bottom: -9,
+                                        left: 4,
+                                        height: 42,
+                                        transform: "rotate(-40deg)",
+                                        zIndex: 3,
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            width: 5,
+                                            height: "100%",
+                                            backgroundColor: rarityDeets.color,
+                                            border: "#00000090 1.5px solid",
+                                        }}
+                                    />
+                                    <Box
+                                        sx={{
+                                            width: 5,
+                                            height: "100%",
+                                            backgroundColor: rarityDeets.color,
+                                            border: "#00000090 1.5px solid",
+                                        }}
+                                    />
+                                </Stack>
+                            </TooltipHelper>
+
                             <Stack
                                 alignItems="center"
                                 justifyContent="center"
                                 sx={{
                                     px: 3.3,
-                                    width: "100%",
-                                    height: "100%",
+                                    position: "absolute",
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
                                     background: "linear-gradient(#00000090, #000000)",
                                     opacity: isAlive ? 0 : 1,
                                     transition: "all .2s",
+                                    zIndex: 2,
                                     ":hover": {
                                         opacity: isAlive ? 0.2 : 1,
                                     },
                                 }}
                             >
-                                {!isAlive && <SvgSkull fill="#FFFFFF" size="100%" />}
+                                {!isAlive && <SvgSkull size="100%" />}
                             </Stack>
                         </Box>
                     </Box>
@@ -285,7 +324,7 @@ const WarMachineItemInner = ({
                                     sx={{
                                         width: 26,
                                         height: 26,
-                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logoBlobID})`,
+                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
@@ -302,7 +341,6 @@ const WarMachineItemInner = ({
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        color: "#FFFFFF",
                                         lineHeight: 1,
                                         fontWeight: "fontWeightBold",
                                         fontFamily: "Nostromo Regular Black",
@@ -315,7 +353,7 @@ const WarMachineItemInner = ({
                                         WebkitLineClamp: 2,
                                     }}
                                 >
-                                    {name}
+                                    {name || hash}
                                 </Typography>
                             </Stack>
                         )}

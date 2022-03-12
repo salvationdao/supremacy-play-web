@@ -1,9 +1,8 @@
-import { Box, Stack, ThemeProvider, Typography } from "@mui/material"
+import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { DrawerProvider, GAMEBAR_CONSTANTS, WalletProvider } from "./components/GameBar"
-import GameBar from "./components/GameBar"
+import { GameBar } from "./components/GameBar/GameBar"
 import * as Sentry from "@sentry/react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
 import {
     MiniMap,
@@ -21,28 +20,32 @@ import {
     BattleCloseAlert,
 } from "./components"
 import {
+    DRAWER_TRANSITION_DURATION,
+    GAME_BAR_HEIGHT,
     PASSPORT_SERVER_HOST,
-    PASSPORT_WEB,
     SENTRY_CONFIG,
-    SUPREMACY_PAGE,
-    TOKEN_SALE_PAGE,
     UNDER_MAINTENANCE,
 } from "./constants"
 import {
-    AuthProvider,
+    GameServerAuthProvider,
     DimensionProvider,
+    DrawerProvider,
     GameProvider,
     OverlayTogglesProvider,
-    SocketProvider,
+    GameServerSocketProvider,
     StreamProvider,
-    useAuth,
+    useGameServerAuth,
     useDimension,
-    useWebsocket,
+    useGameServerWebsocket,
+    WalletProvider,
+    PassportServerSocketProvider,
+    PassportServerAuthProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
-import { FactionThemeColor, UpdateTheme } from "./types"
+import { FactionThemeColor, UpdateTheme, User } from "./types"
+import { UserData } from "./types/passport"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -62,27 +65,20 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
-    const { state } = useWebsocket()
-    const { user, gameserverSessionID } = useAuth()
+    const { state, isServerUp } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
     const [haveSups, toggleHaveSups] = useToggle()
 
     return (
         <>
-            <GameBar
-                barPosition="top"
-                gameserverSessionID={gameserverSessionID}
-                tokenSalePage={TOKEN_SALE_PAGE}
-                supremacyPage={SUPREMACY_PAGE}
-                passportWeb={PASSPORT_WEB}
-                passportServerHost={PASSPORT_SERVER_HOST}
-            />
+            <GameBar />
             <Stack
                 sx={{
-                    mt: `${GAMEBAR_CONSTANTS.gameBarHeight}px`,
+                    mt: `${GAME_BAR_HEIGHT}px`,
                     width: mainDivDimensions.width,
                     height: mainDivDimensions.height,
-                    transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
+                    transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
             >
                 <Stack
@@ -103,11 +99,11 @@ const AppInner = () => {
                             height: streamDimensions.height,
                             width: streamDimensions.width,
                             backgroundColor: colors.darkNavy,
-                            transition: `all ${GAMEBAR_CONSTANTS.drawerTransitionDuration / 1000}s`,
+                            transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                             clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
                         }}
                     >
-                        {UNDER_MAINTENANCE ? (
+                        {!isServerUp || UNDER_MAINTENANCE ? (
                             <Maintenance />
                         ) : (
                             <>
@@ -159,6 +155,27 @@ const App = () => {
         background: "#050c12",
     })
 
+    const [authLogin, setAuthLoginX] = useState<User | null>(null)
+    const [passLogin, setPassLoginX] = useState<UserData | null>(null)
+
+    const setAuthLogin = useMemo(() => {
+        return (u: User) => {
+            if (!authLogin && u) {
+                console.log(authLogin, u)
+                setAuthLoginX(u)
+            }
+        }
+    }, [authLogin])
+
+    const setPassLogin = useMemo(() => {
+        return (u: UserData) => {
+            if (!passLogin && u) {
+                console.log(passLogin, u)
+                setPassLoginX(u)
+            }
+        }
+    }, [passLogin])
+
     useEffect(() => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
@@ -166,23 +183,27 @@ const App = () => {
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
-                <SocketProvider>
-                    <AuthProvider>
-                        <StreamProvider>
-                            <WalletProvider>
-                                <DrawerProvider>
-                                    <GameProvider>
-                                        <DimensionProvider>
-                                            <OverlayTogglesProvider>
-                                                <AppInner />
-                                            </OverlayTogglesProvider>
-                                        </DimensionProvider>
-                                    </GameProvider>
-                                </DrawerProvider>
-                            </WalletProvider>
-                        </StreamProvider>
-                    </AuthProvider>
-                </SocketProvider>
+                <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login: passLogin }}>
+                    <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
+                        <GameServerSocketProvider initialState={{ login: authLogin }}>
+                            <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
+                                <StreamProvider>
+                                    <WalletProvider>
+                                        <DrawerProvider>
+                                            <GameProvider>
+                                                <DimensionProvider>
+                                                    <OverlayTogglesProvider>
+                                                        <AppInner />
+                                                    </OverlayTogglesProvider>
+                                                </DimensionProvider>
+                                            </GameProvider>
+                                        </DrawerProvider>
+                                    </WalletProvider>
+                                </StreamProvider>
+                            </GameServerAuthProvider>
+                        </GameServerSocketProvider>
+                    </PassportServerAuthProvider>
+                </PassportServerSocketProvider>
             </ThemeProvider>
         </UpdateTheme.Provider>
     )

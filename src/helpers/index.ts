@@ -1,4 +1,25 @@
 import BigNumber from "bignumber.js"
+import { colors } from "../theme/theme"
+import {
+    MultiplierAdmiral,
+    MultiplierAFoolAndHisMoney,
+    MultiplierAirSupport,
+    MultiplierCitizen,
+    MultiplierContributor,
+    MultiplierDestroyerOfWorlds,
+    MultiplierFieldMechanic,
+    MultiplierGreaseMonkey,
+    MultiplierMechCommander,
+    MultiplierNowIAmBecomeDeath,
+    MultiplierSuperContributor,
+    MultiplierSupporter,
+    MultiplierFiend,
+    MultiplierJunkE,
+    MultiplierMechHead,
+    MultiplierSniper,
+    MultiplierWonBattle,
+    MultiplierWonLastThreeBattles,
+} from "../assets"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -11,6 +32,8 @@ export const Capitalize = (str: string): string => str[0].toUpperCase() + str.su
 export const isObject = (item: any) => {
     return item && typeof item === "object" && !Array.isArray(item)
 }
+
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /**
  * Deep merge two objects.
@@ -59,9 +82,36 @@ export const getRandomArbitrary = (min: number, max: number): number => {
     return Math.random() * (max - min) + min
 }
 
-export const supFormatter = (num: BigNumber): string => {
-    // sups have 18 decimal places, divide by 1,000,000,000,000,000,000
-    return num.dividedBy(new BigNumber("1000000000000000000")).toFixed()
+export const numFormatter = (num: number) => {
+    if (num > 999 && num < 1000000) {
+        return (num / 1000).toFixed(1) + "K"
+    } else if (num > 1000000) {
+        return (num / 1000000).toFixed(1) + "M"
+    } else if (num < 900) {
+        return num + ""
+    }
+}
+
+export const supFormatter = (num: string, fixedAmount: number | undefined = 0): string => {
+    const supTokens = new BigNumber(num)
+    if (supTokens.isZero()) return supTokens.toFixed(fixedAmount)
+
+    const a = !fixedAmount || fixedAmount == 0 ? 1 : fixedAmount * 10
+    return (Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber() * a) / a).toFixed(
+        fixedAmount,
+    )
+}
+export const supFormatterNoFixed = (num: string, maxDecimals?: number): string => {
+    const supTokens = new BigNumber(num).shiftedBy(-18)
+    if (maxDecimals) {
+        const split = supTokens.toString().split(".")
+        if (split[1] ? split[1].length : 0 > maxDecimals) {
+            if (supTokens.isZero()) return supTokens.toFixed(maxDecimals)
+            return supTokens.toFormat(maxDecimals)
+        }
+    }
+    if (supTokens.isZero()) return supTokens.toFixed()
+    return supTokens.toFormat()
 }
 
 export const parseString = (val: string | null, defaultVal: number): number => {
@@ -111,4 +161,118 @@ export function acronym(s: string): string {
         return ""
     }
     return x.join("").toUpperCase()
+}
+
+export const hexToRGB = (hex: string, alpha?: number): string => {
+    const h = "0123456789ABCDEF"
+    const r = h.indexOf(hex[1]) * 16 + h.indexOf(hex[2])
+    const g = h.indexOf(hex[3]) * 16 + h.indexOf(hex[4])
+    const b = h.indexOf(hex[5]) * 16 + h.indexOf(hex[6])
+    if (alpha) return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")"
+    else return "rgb(" + r + ", " + g + ", " + b + ")"
+}
+
+export const getRarityDeets = (rarityKey: string): { label: string; color: string } => {
+    switch (rarityKey) {
+        case "COLOSSAL":
+            return { label: "Colossal", color: colors.rarity.COLOSSAL }
+        case "RARE":
+            return { label: "Rare", color: colors.rarity.RARE }
+        case "LEGENDARY":
+            return { label: "Legendary", color: colors.rarity.LEGENDARY }
+        case "ELITE_LEGENDARY":
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY }
+        case "ULTRA_RARE":
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE }
+        case "EXOTIC":
+            return { label: "Exotic", color: colors.rarity.EXOTIC }
+        case "GUARDIAN":
+            return { label: "Guardian", color: colors.rarity.GUARDIAN }
+        case "MYTHIC":
+            return { label: "Mythic", color: colors.rarity.MYTHIC }
+        case "DEUS_EX":
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX }
+        case "TITAN":
+            return { label: "Titan", color: colors.rarity.TITAN }
+        case "MEGA":
+            return { label: "Mega", color: colors.rarity.MEGA }
+        default:
+            return { label: "", color: colors.rarity.MEGA }
+    }
+}
+
+export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
+    let image
+
+    switch (multiplierKey.toLowerCase()) {
+        case "citizen":
+            image = MultiplierCitizen
+            break
+        case "supporter":
+            image = MultiplierSupporter
+            break
+        case "contributor":
+            image = MultiplierSuperContributor
+            break
+        case "super contributor":
+            image = MultiplierContributor
+            break
+        case "a fool and his money":
+            image = MultiplierAFoolAndHisMoney
+            break
+        case "air support":
+            image = MultiplierAirSupport
+            break
+        case "now i am become death":
+            image = MultiplierNowIAmBecomeDeath
+            break
+        case "destroyer of worlds":
+            image = MultiplierDestroyerOfWorlds
+            break
+        case "grease monkey":
+            image = MultiplierGreaseMonkey
+            break
+        case "field mechanic":
+            image = MultiplierFieldMechanic
+            break
+        case "combo breaker":
+            image = MultiplierFieldMechanic
+            break
+        case "mech commander":
+            image = MultiplierMechCommander
+            break
+        case "admiral":
+            image = MultiplierAdmiral
+            break
+        case "fiend":
+            image = MultiplierFiend
+            break
+        case "junk-e":
+            image = MultiplierJunkE
+            break
+        case "mech head":
+            image = MultiplierMechHead
+            break
+        case "sniper":
+            image = MultiplierSniper
+            break
+        case "won battle":
+            image = MultiplierWonBattle
+            break
+        case "won last three battles":
+            image = MultiplierWonLastThreeBattles
+            break
+        case "offline":
+        case "applause":
+        case "picked location":
+        case "battlerewardupdate":
+        case "supsmultiplierget":
+        case "checkmultiplierupdate":
+        case "supstick":
+        default:
+            image = MultiplierCitizen
+            break
+    }
+
+    return { image }
 }

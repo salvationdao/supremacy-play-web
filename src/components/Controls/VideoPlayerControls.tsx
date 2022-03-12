@@ -1,10 +1,10 @@
 import { Box, IconButton, Slider, Stack } from "@mui/material"
 import { SvgFullscreen, SvgVolume, SvgVolumeMute } from "../../assets"
-import { useAuth, useStream } from "../../containers"
+import { useGameServerAuth, useStream } from "../../containers"
 import { colors } from "../../theme/theme"
 
 export const VideoPlayerControls = () => {
-    const { user } = useAuth()
+    const { user } = useGameServerAuth()
     const { toggleIsMute, isMute, volume, setVolume } = useStream()
 
     const handleVolumeChange = (_: Event, newValue: number | number[]) => {

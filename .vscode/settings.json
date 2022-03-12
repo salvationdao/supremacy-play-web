@@ -1,0 +1,24 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Passport Server",
+            "database": "passport",
+            "username": "passport",
+            "password": "dev"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5437,
+            "driver": "PostgreSQL",
+            "name": "Game Server",
+            "database": "gameserver",
+            "username": "gameserver",
+            "password": "dev"
+        }
+    ]
+}

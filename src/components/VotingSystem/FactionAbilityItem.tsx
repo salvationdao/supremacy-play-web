@@ -1,143 +1,135 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useState } from "react"
-import { ClipThing, TooltipHelper, VotingButton } from ".."
-import { httpProtocol, useAuth, useWebsocket } from "../../containers"
-import HubKey from "../../keys"
+import { useEffect, useMemo, useState } from "react"
+import { ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
+import {
+    BribeStageResponse,
+    httpProtocol,
+    useGame,
+    useGameServerAuth,
+    useGameServerWebsocket,
+    WebSocketProperties,
+} from "../../containers"
+import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
-import { GameAbility, GameAbilityTargetPrice } from "../../types"
-import { useToggle } from "../../hooks"
+import { GameAbility, GameAbilityProgress } from "../../types"
 import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
 import { SvgSupToken } from "../../assets"
 
-const ContributionBar = ({
-    color,
-    initialTargetCost,
-    currentSups,
-    supsCost,
-}: {
-    color: string
-    initialTargetCost: BigNumber
-    currentSups: BigNumber
-    supsCost: BigNumber
-}) => {
-    const progressPercent = initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100
-    const costPercent = initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100
+interface ContributeFactionUniqueAbilityRequest {
+    ability_identity: string
+    amount: string
+}
+
+interface FactionAbilityItemProps extends Partial<WebSocketProperties> {
+    gameAbility: GameAbility
+    abilityMaxPrice?: BigNumber
+    clipSlantSize?: string
+    bribeStage?: BribeStageResponse
+    faction_id?: string
+}
+
+export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize }: FactionAbilityItemProps) => {
+    const { state, send, subscribe, subscribeAbilityNetMessage } = useGameServerWebsocket()
+    const { faction_id } = useGameServerAuth()
+    const { bribeStage } = useGame()
 
     return (
-        <Stack
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            sx={{ width: "100%", px: 1.5, py: 1.2, backgroundColor: "#00000050", borderRadius: 1 }}
-        >
-            <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="flex-start"
-                sx={{
-                    flex: 1,
-                    position: "relative",
-                    height: 7,
-                    backgroundColor: `${colors.text}20`,
-                    overflow: "visible",
-                }}
-            >
-                <Box
-                    sx={{
-                        width: `${progressPercent}%`,
-                        height: "100%",
-                        transition: "all .25s",
-                        backgroundColor: color || colors.neonBlue,
-                        zIndex: 5,
-                    }}
-                />
-
-                <Box
-                    sx={{
-                        position: "absolute",
-                        left: `${costPercent}%`,
-                        backgroundColor: colors.red,
-                        height: 10,
-                        width: 2,
-                        zIndex: 6,
-                    }}
-                />
-            </Stack>
-        </Stack>
+        <FactionAbilityItemInner
+            state={state}
+            send={send}
+            subscribe={subscribe}
+            subscribeAbilityNetMessage={subscribeAbilityNetMessage}
+            faction_id={faction_id}
+            bribeStage={bribeStage}
+            gameAbility={gameAbility}
+            abilityMaxPrice={abilityMaxPrice}
+            clipSlantSize={clipSlantSize}
+        />
     )
 }
 
-interface GameAbilityContributeRequest {
-    gameAbilityID: string
-    amount: BigNumber
-}
+export const FactionAbilityItemInner = ({
+    state,
+    send,
+    subscribe,
+    subscribeAbilityNetMessage,
+    faction_id,
+    bribeStage,
+    gameAbility,
+    abilityMaxPrice,
+    clipSlantSize,
+}: FactionAbilityItemProps) => {
+    const { label, colour, text_colour, image_url, identity, description } = gameAbility
 
-interface FactionAbilityItemProps {
-    gameAbility: GameAbility
-}
+    const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
+    const [currentSups, setCurrentSups] = useState(
+        new BigNumber(gameAbility.current_sups).dividedBy("1000000000000000000"),
+    )
+    const [supsCost, setSupsCost] = useState(new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"))
+    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
+        abilityMaxPrice || new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"),
+    )
 
-export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => {
-    const { factionID } = useAuth()
-    const { state, send, subscribeAbilityNetMessage } = useWebsocket()
-
-    const { label, colour, textColour, imageUrl, identity, description } = gameAbility
-    const [refresh, toggleRefresh] = useToggle()
-    const [supsCost, setSupsCost] = useState(new BigNumber("0"))
-    const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
-    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber("0"))
-    const [isVoting, setIsVoting] = useState(false)
-
-    const [gameAbilityTargetPrice, setGameAbilityTargetPrice] = useState<GameAbilityTargetPrice>()
-
-    // Listen on current faction ability price change
+    // Triggered faction ability or war machine ability price ticking
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
+        return subscribe(GameServerKeys.TriggerFactionAbilityPriceUpdated, () => null, { ability_identity: identity })
+    }, [state, subscribe, faction_id, identity])
 
-        return subscribeAbilityNetMessage<GameAbilityTargetPrice | undefined>(identity, (payload) => {
+    // Listen on the progress of the votes
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !faction_id || faction_id === NullUUID) return
+
+        return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
             if (!payload) return
-            setGameAbilityTargetPrice(payload)
+            setGameAbilityProgress(payload)
         })
-    }, [identity, state, subscribeAbilityNetMessage, factionID])
+    }, [identity, state, subscribeAbilityNetMessage, faction_id])
 
+    // Set states
     useEffect(() => {
-        if (!gameAbilityTargetPrice) return
-        const currentSups = new BigNumber(gameAbilityTargetPrice.currentSups).dividedBy("1000000000000000000")
-        const supsCost = new BigNumber(gameAbilityTargetPrice.supsCost).dividedBy("1000000000000000000")
+        if (!gameAbilityProgress) return
+        const currentSups = new BigNumber(gameAbilityProgress.current_sups).dividedBy("1000000000000000000")
+        const supsCost = new BigNumber(gameAbilityProgress.sups_cost).dividedBy("1000000000000000000")
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
-        setIsVoting(supsCost.isGreaterThanOrEqualTo(currentSups))
 
-        if (gameAbilityTargetPrice.shouldReset || initialTargetCost.isZero()) {
+        if (gameAbilityProgress.should_reset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
-            toggleRefresh()
         }
-    }, [gameAbilityTargetPrice])
+    }, [gameAbilityProgress])
 
-    const onContribute = async (amount: number) => {
-        send<boolean, GameAbilityContributeRequest>(
-            HubKey.GameAbilityContribute,
+    const onContribute = async (amount: string) => {
+        if (!send) return
+        send<boolean, ContributeFactionUniqueAbilityRequest>(
+            GameServerKeys.ContributeFactionUniqueAbility,
             {
-                gameAbilityID: identity,
-                amount: new BigNumber(amount),
+                ability_identity: identity,
+                amount,
             },
             true,
         )
     }
 
+    const isVoting = useMemo(
+        () => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThanOrEqualTo(currentSups),
+        [supsCost, currentSups],
+    )
+
     return (
-        <Box key={refresh}>
+        <Box key={`${initialTargetCost}`}>
             <Fade in={true}>
                 <Box>
-                    <ClipThing clipSize="6px">
+                    <ClipThing clipSize="6px" clipSlantSize={clipSlantSize}>
                         <Stack
                             spacing={1}
                             alignItems="flex-start"
                             sx={{
                                 flex: 1,
                                 minWidth: 325,
-                                backgroundColor: `${colour || colors.darkNavy}15`,
+                                backgroundColor: colour ? `${colour}15` : `${colors.darkNavyBlue}80`,
                                 px: 2,
                                 pt: 1.6,
                                 pb: 1.6,
@@ -154,9 +146,9 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                     <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
                                         <Box
                                             sx={{
-                                                height: 18,
-                                                width: 18,
-                                                backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
+                                                height: 19,
+                                                width: 19,
+                                                backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
                                                 backgroundRepeat: "no-repeat",
                                                 backgroundPosition: "center",
                                                 backgroundSize: "cover",
@@ -191,7 +183,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                         sx={{
                                             lineHeight: 1,
                                             color: `${colour} !important`,
-                                            animation: `${zoomEffect(1.5)} 300ms ease-out`,
+                                            animation: `${zoomEffect(1.2)} 300ms ease-out`,
                                         }}
                                     >
                                         {currentSups.toFixed(2)}
@@ -205,7 +197,7 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                         sx={{
                                             lineHeight: 1,
                                             color: `${colour} !important`,
-                                            animation: `${zoomEffect(1.5)} 300ms ease-out`,
+                                            animation: `${zoomEffect(1.2)} 300ms ease-out`,
                                         }}
                                     >
                                         {supsCost.toFixed(2)}
@@ -216,40 +208,44 @@ export const FactionAbilityItem = ({ gameAbility }: FactionAbilityItemProps) => 
                                 </Stack>
                             </Stack>
 
-                            <ContributionBar
-                                color={colour}
-                                initialTargetCost={initialTargetCost}
-                                currentSups={currentSups}
-                                supsCost={supsCost}
-                            />
+                            <Box
+                                sx={{ width: "100%", px: 1.5, py: 1.2, backgroundColor: "#00000030", borderRadius: 1 }}
+                            >
+                                <ContributionBar
+                                    color={colour}
+                                    initialTargetCost={initialTargetCost}
+                                    currentSups={currentSups}
+                                    supsCost={supsCost}
+                                />
+                            </Box>
 
                             <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
                                 <VotingButton
                                     color={colour}
-                                    textColor={textColour || "#FFFFFF"}
-                                    amount={1}
-                                    cost={1}
-                                    isVoting={isVoting}
-                                    onClick={() => onContribute(1)}
-                                    Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
+                                    textColor={text_colour || "#FFFFFF"}
+                                    amount={"0.1"}
+                                    cost={"0.1"}
+                                    isVoting={!!isVoting}
+                                    onClick={() => onContribute("0.1")}
+                                    Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
                                 <VotingButton
                                     color={colour}
-                                    textColor={textColour || "#FFFFFF"}
-                                    amount={25}
-                                    cost={25}
-                                    isVoting={isVoting}
-                                    onClick={() => onContribute(25)}
-                                    Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
+                                    textColor={text_colour || "#FFFFFF"}
+                                    amount={"1"}
+                                    cost={"1"}
+                                    isVoting={!!isVoting}
+                                    onClick={() => onContribute("1")}
+                                    Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
                                 <VotingButton
                                     color={colour}
-                                    textColor={textColour || "#FFFFFF"}
-                                    amount={100}
-                                    cost={100}
-                                    isVoting={isVoting}
-                                    onClick={() => onContribute(100)}
-                                    Prefix={<SvgSupToken size="14px" fill="#FFFFFF" />}
+                                    textColor={text_colour || "#FFFFFF"}
+                                    amount={"10"}
+                                    cost={"10"}
+                                    isVoting={!!isVoting}
+                                    onClick={() => onContribute("10")}
+                                    Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
                                 />
                             </Stack>
                         </Stack>

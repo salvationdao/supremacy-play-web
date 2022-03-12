@@ -88,7 +88,7 @@ const WarMachineBig = ({
                 <WarMachineIcon
                     color={color}
                     size={75}
-                    imageUrl={warMachine.imageUrl || GenericWarMachinePNG}
+                    imageUrl={warMachine.imageAvatar || GenericWarMachinePNG}
                     isDead={isDead}
                 />
             ) : (
@@ -127,7 +127,7 @@ const WarMachineSmall = ({
     return (
         <Stack direction="row" alignItems="center" spacing={1.2}>
             {warMachine ? (
-                <WarMachineIcon color={color} size={38} imageUrl={warMachine.imageUrl || GenericWarMachinePNG} />
+                <WarMachineIcon color={color} size={38} imageUrl={warMachine.imageAvatar || GenericWarMachinePNG} />
             ) : (
                 <WarMachineIcon color={"#444444"} size={38} />
             )}
@@ -148,13 +148,7 @@ const WarMachineSmall = ({
                 >
                     {name}
                 </Typography>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: "Nostromo Regular Bold",
-                        color: "#FFFFFF",
-                    }}
-                >
+                <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                     {damagePercent}%
                 </Typography>
             </Stack>
@@ -179,7 +173,6 @@ const DamageList = ({
                     sx={{
                         textAlign: "center",
                         fontFamily: "Nostromo Regular Heavy",
-                        color: "#FFFFFF",
                     }}
                 >
                     {title}
@@ -192,9 +185,13 @@ const DamageList = ({
                         .slice(0, top)
                         .map((dr, index) => (
                             <WarMachineSmall
-                                key={`${dr.sourceName}-${index}`}
-                                warMachine={dr.causedByWarMachine}
-                                name={dr.causedByWarMachine ? dr.causedByWarMachine.name : dr.sourceName}
+                                key={`${dr.source_name}-${index}`}
+                                warMachine={dr.caused_by_war_machine}
+                                name={
+                                    dr.caused_by_war_machine
+                                        ? dr.caused_by_war_machine.name || dr.caused_by_war_machine.hash
+                                        : dr.source_name
+                                }
                                 damagePercent={dr.amount / 100}
                             />
                         ))
@@ -217,24 +214,27 @@ export const WarMachineDestroyedInfo = ({
     toggleOpen: any
     warMachineDestroyedRecord: WarMachineDestroyedRecord
 }) => {
-    const { destroyedWarMachine, killedByWarMachine, killedBy, damageRecords } = warMachineDestroyedRecord
+    const { destroyed_war_machine, killed_by_war_machine, killed_by, damage_records } = warMachineDestroyedRecord
 
     const killDamagePercent =
-        damageRecords
+        damage_records
             .filter(
                 (dr) =>
-                    (dr.causedByWarMachine &&
-                        dr.causedByWarMachine.participantID == killedByWarMachine?.participantID) ||
-                    dr.sourceName == killedBy,
+                    (dr.caused_by_war_machine &&
+                        dr.caused_by_war_machine.participantID === killed_by_war_machine?.participantID) ||
+                    dr.source_name == killed_by,
             )
             .reduce((acc, dr) => acc + dr.amount, 0) / 100
-    const assistDamageMechs = damageRecords
+
+    const assistDamageMechs = damage_records
         .filter(
-            (dr) => dr.causedByWarMachine && dr.causedByWarMachine.participantID != killedByWarMachine?.participantID,
+            (dr) =>
+                dr.caused_by_war_machine &&
+                dr.caused_by_war_machine.participantID !== killed_by_war_machine?.participantID,
         )
         .sort((a, b) => (b.amount > a.amount ? 1 : -1))
-    const assistDamageOthers = damageRecords
-        .filter((dr) => !dr.causedByWarMachine)
+    const assistDamageOthers = damage_records
+        .filter((dr) => !dr.caused_by_war_machine)
         .sort((a, b) => (b.amount > a.amount ? 1 : -1))
 
     return (
@@ -290,17 +290,20 @@ export const WarMachineDestroyedInfo = ({
                         <Stack spacing={3.8}>
                             <Stack direction="row" alignItems="center">
                                 <WarMachineBig
-                                    warMachine={killedByWarMachine}
-                                    name={killedByWarMachine ? killedByWarMachine.name : killedBy}
+                                    warMachine={killed_by_war_machine}
+                                    name={
+                                        killed_by_war_machine
+                                            ? killed_by_war_machine.name || killed_by_war_machine.hash
+                                            : killed_by
+                                    }
                                 />
 
                                 <Stack alignItems="center" sx={{ flex: 1 }}>
-                                    <SvgSkull fill="#FFFFFF" size="120px" sx={{ mb: 1 }} />
+                                    <SvgSkull size="120px" sx={{ mb: 1 }} />
                                     <Typography
                                         sx={{
                                             fontFamily: "Nostromo Regular Heavy",
                                             fontSize: "1.5rem",
-                                            color: "#FFFFFF",
                                         }}
                                     >
                                         DESTROYED
@@ -311,8 +314,8 @@ export const WarMachineDestroyedInfo = ({
                                 </Stack>
 
                                 <WarMachineBig
-                                    warMachine={destroyedWarMachine}
-                                    name={destroyedWarMachine.name}
+                                    warMachine={destroyed_war_machine}
+                                    name={destroyed_war_machine.name || destroyed_war_machine.hash}
                                     isDead
                                 />
                             </Stack>

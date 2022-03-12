@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { GAMEBAR_CONSTANTS } from "../components/GameBar"
-import { useDrawer } from "../components/GameBar/containers"
-import { CONTROLS_HEIGHT, STREAM_ASPECT_RATIO_W_H } from "../constants"
+import { useDrawer } from "."
+import {
+    CONTROLS_HEIGHT,
+    GAME_BAR_HEIGHT,
+    LIVE_CHAT_DRAWER_BUTTON_WIDTH,
+    LIVE_CHAT_DRAWER_WIDTH,
+    STREAM_ASPECT_RATIO_W_H,
+} from "../constants"
 import { useWindowDimensions } from "../hooks"
 
 // Contains dimensions for the overall layout of the divs, iframe etc.
@@ -26,12 +31,12 @@ export const DimensionContainer = createContainer(() => {
     useEffect(() => {
         // Main div dimensions
         const mainDivWidth = isAnyPanelOpen
-            ? windowWidth - GAMEBAR_CONSTANTS.liveChatDrawerWidth
-            : windowWidth - GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth
-        const mainDivHeight = windowHeight - GAMEBAR_CONSTANTS.gameBarHeight
+            ? windowWidth - LIVE_CHAT_DRAWER_WIDTH
+            : windowWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH
+        const mainDivHeight = windowHeight - GAME_BAR_HEIGHT
 
         // Stream div dimensions
-        const streamWidth = mainDivWidth - GAMEBAR_CONSTANTS.liveChatDrawerButtonWidth
+        const streamWidth = mainDivWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH
         const streamHeight = mainDivHeight - CONTROLS_HEIGHT
 
         // Work out iframe width and height based on its aspect ratio and stream width and height

@@ -8,27 +8,31 @@ import { GameAbility } from "../../types"
 export const SelectionIcon = ({
     selection,
     gameAbility,
+    gridWidth,
+    gridHeight,
     setSelection,
 }: {
     selection: MapSelection | undefined
+    gridWidth: number
+    gridHeight: number
     gameAbility: GameAbility
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
 }) => {
     if (!selection || !gameAbility) return null
 
-    const { colour, imageUrl } = gameAbility
+    const { colour, image_url } = gameAbility
 
     return (
         <Box
             sx={{
                 position: "absolute",
-                height: "54px",
-                width: "54px",
+                height: `${gridWidth}px`,
+                width: `${gridHeight}px`,
                 mt: "1px",
                 zIndex: 6,
                 border: `2px solid ${colour}`,
                 borderRadius: 1,
-                transform: `translate3d(${selection.x * 50}px, ${selection.y * 50}px, 0)`,
+                transform: `translate3d(${selection.x * gridWidth}px, ${selection.y * gridHeight}px, 0)`,
             }}
         >
             <Box
@@ -43,7 +47,7 @@ export const SelectionIcon = ({
                     sx={{
                         height: "100%",
                         width: "100%",
-                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${imageUrl})`,
+                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",

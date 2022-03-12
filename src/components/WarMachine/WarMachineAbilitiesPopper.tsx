@@ -1,8 +1,7 @@
 import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ClipThing, WarMachineAbilityItem } from ".."
+import { ClipThing, FactionAbilityItem } from ".."
 import { GenericWarMachinePNG } from "../../assets"
-import { colors } from "../../theme/theme"
 import { GameAbility, WarMachineState } from "../../types"
 
 interface WarMachineAbilitiesPopoverProps {
@@ -62,12 +61,13 @@ export const WarMachineAbilitiesPopover = ({
                                     sx={{
                                         width: 17,
                                         height: 17,
-                                        backgroundImage: `url(${warMachine.imageUrl || GenericWarMachinePNG})`,
+                                        backgroundImage: `url(${warMachine.imageAvatar || GenericWarMachinePNG})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
-                                        backgroundSize: "contain",
+                                        backgroundSize: "cover",
                                         backgroundColor: factionTheme.primary,
                                         mb: 0.3,
+                                        borderRadius: 0.5,
                                     }}
                                 />
                                 <Typography
@@ -80,9 +80,10 @@ export const WarMachineAbilitiesPopover = ({
                             <Stack spacing={0.9}>
                                 {gameAbilities.map((ga, i) => (
                                     <Box key={ga.identity} sx={{ ml: (i + 1) * 0.2 }}>
-                                        <WarMachineAbilityItem
+                                        <FactionAbilityItem
                                             gameAbility={ga}
-                                            maxAbilityPriceMap={maxAbilityPriceMap}
+                                            abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
+                                            clipSlantSize="5px"
                                         />
                                     </Box>
                                 ))}
