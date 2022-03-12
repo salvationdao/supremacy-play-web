@@ -4,10 +4,12 @@ import { PassportServerKeys } from "../keys"
 import { UserData } from "../types/passport"
 import { usePassportServerWebsocket } from "./passportServerSocket"
 
+const emptyFn = (dt: Date) => {}
+
 /**
  * A Container that handles Authorisation
  */
-const AuthContainer = createContainer(() => {
+const AuthContainer = createContainer((initialState?: { setLogin(dt: Date): void }) => {
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
     const userID = user?.id
@@ -21,6 +23,12 @@ const AuthContainer = createContainer(() => {
     const [authRingCheckError, setAuthRingCheckError] = useState()
     const [authRingCheckLoading, setAuthRingCheckLoading] = useState(true)
     const [authRingCheckSuccess, setAuthRingCheckSuccess] = useState(false)
+
+    const setLogin = initialState ? initialState.setLogin : emptyFn
+
+    useEffect(() => {
+        setLogin(new Date())
+    }, [user, setLogin])
 
     // get user by session id
     useEffect(() => {

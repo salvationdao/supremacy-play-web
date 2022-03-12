@@ -154,6 +154,8 @@ const App = () => {
         background: "#050c12",
     })
 
+    const [login, setLogin] = useState<Date>(new Date())
+
     useEffect(() => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
@@ -161,10 +163,10 @@ const App = () => {
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
-                <PassportServerSocketProvider initialState={PASSPORT_SERVER_HOST}>
-                    <PassportServerAuthProvider>
-                        <GameServerSocketProvider>
-                            <GameServerAuthProvider>
+                <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login }}>
+                    <PassportServerAuthProvider initialState={{ setLogin }}>
+                        <GameServerSocketProvider initialState={{ login }}>
+                            <GameServerAuthProvider initialState={{ setLogin }}>
                                 <StreamProvider>
                                     <WalletProvider>
                                         <DrawerProvider>
