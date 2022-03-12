@@ -155,8 +155,20 @@ const App = () => {
         background: "#050c12",
     })
 
-    const [authLogin, setAuthLogin] = useState<User | null>(null)
-    const [passLogin, setPassLogin] = useState<UserData | null>(null)
+    const [authLogin, setAuthLoginX] = useState<User | null>(null)
+    const [passLogin, setPassLoginX] = useState<UserData | null>(null)
+
+    const setAuthLogin = useMemo(() => {
+        return (u: User) => {
+            setAuthLoginX(u)
+        }
+    }, [])
+
+    const setPassLogin = useMemo(() => {
+        return (u: UserData) => {
+            setPassLoginX(u)
+        }
+    }, [])
 
     useEffect(() => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
