@@ -32,7 +32,7 @@ const SpoilOfWarAmount = () => {
 
 	return (
 		<Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-			<TooltipHelper text="This is the spoils of war in the accumulated current battle.">
+			<TooltipHelper text="This is the spoils of war accumulated in the current battle.">
 				<Stack direction="row" alignItems="center" justifyContent="center">
 					<Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
 						SPOILS OF WAR:&nbsp;
@@ -44,7 +44,7 @@ const SpoilOfWarAmount = () => {
 				</Stack>
 			</TooltipHelper>
 
-			<TooltipHelper text="This is the spoils of war from the previous battle, it is distributed to the players over time.">
+			<TooltipHelper text="This is the spoils of war from the previous battle, it is distributed to players with multipliers.">
 				<Stack direction="row" alignItems="center" justifyContent="center">
 					<Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
 						PREV:&nbsp;
