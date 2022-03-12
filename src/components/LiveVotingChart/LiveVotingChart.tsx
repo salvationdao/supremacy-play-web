@@ -32,7 +32,7 @@ const SpoilOfWarAmount = () => {
 
     return (
         <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-            <Stack alignItems="center" justifyContent="center">
+            <Stack direction="row" alignItems="center" justifyContent="center">
                 <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
                     SPOILS OF WAR:&nbsp;
                 </Typography>
@@ -42,7 +42,7 @@ const SpoilOfWarAmount = () => {
                 </Typography>
             </Stack>
 
-            <Stack alignItems="center" justifyContent="center">
+            <Stack direction="row" alignItems="center" justifyContent="center">
                 <Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
                     NEXT:&nbsp;
                 </Typography>
