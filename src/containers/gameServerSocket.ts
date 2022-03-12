@@ -5,7 +5,6 @@ import { parseNetMessage } from "../helpers/netMessages"
 import { useDebounce } from "../hooks"
 import { GameServerKeys } from "../keys"
 import { GameAbilityProgress, NetMessageTick, NetMessageType } from "../types"
-import { useGameServerAuth } from './gameServerAuth'
 
 // websocket message struct
 interface MessageData {
@@ -108,7 +107,7 @@ const GameServerWebsocket = (): WebSocketProperties => {
     const webSocket = useRef<WebSocket | null>(null)
     const [reconnect, setIsReconnect] = useState<boolean>(false)
     const [isServerUp, setIsServerUp] = useState<boolean>(true)
-    const { faction_id, userID } = useGameServerAuth()
+
     // ******* Reconnect Logic Start ******* //
     // Check to see if server is up, if yes conenct WS, else don't
     useEffect(() => {
@@ -255,7 +254,7 @@ const GameServerWebsocket = (): WebSocketProperties => {
                 if (!listenOnly) setSubscribeState(key, false)
             }
         }
-    }, [setOutgoing, userID])
+    }, [setOutgoing])
 
     // subscription function for Faction Ability only
     const abilitySubs = useRef<{ [abilityIdentity: string]: SubscribeCallback[] }>({})
