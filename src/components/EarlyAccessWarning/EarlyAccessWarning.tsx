@@ -35,7 +35,7 @@ export const EarlyAccessWarning = () => {
                         Events. This includes contributing to battle abilities, queueing your mech for battle, and other
                         $SUPS related tasks.
                     </Typography>
-                    <Alert severity="warning">The game is early access, but the $SUPS you use are real!</Alert>
+                    <Alert severity="warning">The game is early access and the $SUPS you use are real!</Alert>
 
                     <Box sx={{ padding: 2, display: "flex", alignItems: "right", flexDirection: "row-reverse" }}>
                         <Button onClick={() => setClosed(true)}>I agree! Let me in!</Button>
