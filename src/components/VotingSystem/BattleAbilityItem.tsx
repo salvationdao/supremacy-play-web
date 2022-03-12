@@ -327,7 +327,7 @@ const BattleAbilityItemInner = ({
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
-                                            amount={"19"}
+                                            amount={"10"}
                                             cost={"10"}
                                             isVoting={isVoting}
                                             onClick={() => onBribe("10")}
