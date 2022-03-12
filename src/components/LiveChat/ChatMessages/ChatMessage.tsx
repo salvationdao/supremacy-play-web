@@ -70,21 +70,19 @@ export const ChatMessage = ({
                 }}
             >
                 <span style={{ color: message_color, fontWeight: 700 }}>{username_trunc}</span>
-                {!!multiplierValue && (
-                    <span
-                        style={{
-                            textAlign: "center",
-                            fontFamily: "Nostromo Regular Bold",
-                            color: colors.orange,
-                            borderRadius: 0.6,
-                            fontSize: "0.5rem",
-                            marginLeft: "0.3rem",
-                            verticalAlign: "top",
-                        }}
-                    >
-                        {multiplierValue}x
-                    </span>
-                )}{" "}
+                <span
+                    style={{
+                        textAlign: "center",
+                        fontFamily: "Nostromo Regular Bold",
+                        color: colors.orange,
+                        borderRadius: 0.6,
+                        fontSize: "0.5rem",
+                        marginLeft: "0.3rem",
+                        verticalAlign: "top",
+                    }}
+                >
+                    {multiplierValue ? multiplierValue : "0"}x
+                </span>{" "}
                 <span
                     style={{
                         display: "inline-block",
