@@ -274,7 +274,9 @@ const BattleAbilityItemInner = ({
                                                                     animation: `${zoomEffect(1.2)} 300ms ease-out`,
                                                                 }}
                                                             >
-                                                                {a.current_sups.toFixed(2)}
+                                                                {forceDisplay100Percentage === a.faction_id
+                                                                    ? a.sups_cost.toFixed(2)
+                                                                    : a.current_sups.toFixed(2)}
                                                             </Typography>
                                                             <Typography
                                                                 variant="body2"
