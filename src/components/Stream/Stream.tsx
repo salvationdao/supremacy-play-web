@@ -1,14 +1,11 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { Trailer } from ".."
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useDimension, useGameServerAuth, useStream, useWallet } from "../../containers"
+import { useDimension, useStream, useWallet } from "../../containers"
 import { useToggle } from "../../hooks"
-import { colors } from "../../theme/theme"
-import { WaitingPage } from "../BattleHistory/WaitingPage"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
-    const { user } = useGameServerAuth()
     const { onWorldSups } = useWallet()
 
     const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
@@ -19,12 +16,12 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
         if (!supsAboveZero && haveSups) toggleHaveSups(false)
     }, [onWorldSups, supsAboveZero, haveSups])
 
+    if (!render) return null
     return null
 }
 
 export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
-    const { faction_id } = useGameServerAuth()
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
     const [renderTopMessage, toggleRenderTopMessage] = useToggle()
