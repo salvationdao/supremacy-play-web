@@ -45,9 +45,10 @@ interface MapWarMachineProps {
     warMachines: WarMachineState[]
     map: Map
     enlarged: boolean
+    targeting?: boolean
 }
 
-const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged }: MapWarMachineProps) => {
+const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting }: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
@@ -60,6 +61,7 @@ const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged }: M
                         warMachine={wm}
                         map={map}
                         enlarged={enlarged}
+                        targeting={targeting}
                     />
                 </div>
             ))}
@@ -379,6 +381,7 @@ export const InteractiveMap = ({
                                 gridHeight={gridHeight}
                                 warMachines={warMachines || []}
                                 enlarged={enlarged}
+                                targeting={targeting}
                             />
                         </Box>
 
