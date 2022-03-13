@@ -91,7 +91,7 @@ export const ChatMessage = ({
                         <TooltipHelper placement="top-end" text={"Citizen"}>
                             <span
                                 style={{
-                                    cursor: "pointer",
+                                    cursor: "default",
                                     textAlign: "center",
                                     fontFamily: "Nostromo Regular Bold",
                                     fontSize: "0.5rem",
