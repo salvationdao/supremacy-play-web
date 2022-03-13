@@ -12,6 +12,7 @@ interface Props {
     warMachine: WarMachineState
     map: Map
     enlarged: boolean
+    targeting?: boolean
 }
 
 export const MapWarMachine = (props: Props) => {
@@ -41,6 +42,7 @@ const MapWarMachineInner = ({
     warMachine,
     map,
     enlarged,
+    targeting,
     isSpawnedAI,
     subscribeWarMachineStatNetMessage,
     state,
@@ -92,7 +94,7 @@ const MapWarMachineInner = ({
             onClick={() => handleClick(hash)}
             sx={{
                 position: "absolute",
-                // pointerEvents: "none",
+                pointerEvents: targeting ? "none" : "all",
                 cursor: "pointer",
                 transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * mapScale}px, ${
                     (position.y - map.top) * mapScale
