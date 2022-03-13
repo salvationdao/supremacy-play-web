@@ -160,7 +160,7 @@ const WarMachineItemInner = ({
                 alignItems="flex-end"
                 sx={{
                     position: "relative",
-                    ml: isOwnFaction ? 2 : 1,
+                    ml: 1,
                     opacity: isAlive ? 1 : 0.8,
                     width: isOwnFaction
                         ? isExpanded
