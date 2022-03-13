@@ -83,7 +83,6 @@ export const ChatMessage = ({
                             fontSize: "0.5rem",
                             verticalAlign: "top",
                             opacity: multiplierValue ? 1 : 0.7,
-                            borderRadius: 0.6,
                         }}
                     >
                         {multiplierValue ? multiplierValue : "0"}x
@@ -92,18 +91,11 @@ export const ChatMessage = ({
                         <TooltipHelper placement="top-end" text={"Citizen"}>
                             <span
                                 style={{
-                                    color:
-                                        multiplierInt >= 50
-                                            ? colors.neonBlue
-                                            : multiplierInt >= 15
-                                            ? colors.yellow
-                                            : colors.orange,
+                                    cursor: "pointer",
                                     textAlign: "center",
                                     fontFamily: "Nostromo Regular Bold",
                                     fontSize: "0.5rem",
                                     verticalAlign: "top",
-                                    opacity: multiplierValue ? 1 : 0.7,
-                                    borderRadius: 0.6,
                                 }}
                             >
                                 🦾
