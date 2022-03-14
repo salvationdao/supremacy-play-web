@@ -19,7 +19,7 @@ const SPAWN_TEST_DATA = false
 export const BOTTOM_BUTTONS_HEIGHT = 50
 
 export const BattleEndScreen = () => {
-    const { bribeStage, battleEndDetail, setBattleEndDetail } = useGame()
+    const { map, battleEndDetail, setBattleEndDetail } = useGame()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
 
     useEffect(() => {
@@ -37,9 +37,10 @@ export const BattleEndScreen = () => {
         }
     }, [])
 
+    // New game started, so close the panel
     useEffect(() => {
-        if (bribeStage?.phase !== "HOLD") toggleIsEndBattleDetailOpen(false)
-    }, [bribeStage])
+        if (map) toggleIsEndBattleDetailOpen(false)
+    }, [map])
 
     const primaryColor =
         battleEndDetail && battleEndDetail.winning_faction

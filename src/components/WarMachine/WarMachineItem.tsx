@@ -92,20 +92,18 @@ const WarMachineItemInner = ({
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord
 
-    const handleClick = useCallback(
-        (mechHash: string) => {
-            if (!isExpanded) toggleIsExpanded()
-            if (mechHash === highlightedMechHash) {
-                setHighlightedMechHash(undefined)
-            } else setHighlightedMechHash(mechHash)
-        },
-        [highlightedMechHash, isExpanded],
-    )
+    const handleClick = (mechHash: string) => {
+        if (mechHash === highlightedMechHash) {
+            setHighlightedMechHash(undefined)
+        } else setHighlightedMechHash(mechHash)
+    }
 
     /* Toggle out isExpanded if other mech is highlighted */
     useEffect(() => {
-        if (highlightedMechHash !== warMachine.hash && isExpanded && !shouldBeExpanded) {
-            toggleIsExpanded()
+        if (highlightedMechHash !== warMachine.hash) {
+            toggleIsExpanded(shouldBeExpanded)
+        } else {
+            toggleIsExpanded(true)
         }
     }, [highlightedMechHash])
 
@@ -160,7 +158,6 @@ const WarMachineItemInner = ({
                 alignItems="flex-end"
                 sx={{
                     position: "relative",
-                    ml: isOwnFaction ? 2 : 1,
                     opacity: isAlive ? 1 : 0.8,
                     width: isOwnFaction
                         ? isExpanded

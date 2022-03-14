@@ -117,15 +117,15 @@ export const WarMachineStats = () => {
                         clipSize="9px"
                         clipSlantSize="26px"
                         skipLeft
-                        sx={{ pl: 2, pr: 3.4, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
+                        sx={{ pl: 1.2, pr: 3, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
                     >
                         <ScrollContainer>
-                            <Stack spacing={-3} direction="row" alignItems="center" justifyContent="center">
+                            <Stack spacing={-4} direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
                                         key={`${wm.participantID} - ${wm.hash}`}
                                         warMachine={wm}
-                                        scale={0.8}
+                                        scale={0.75}
                                         shouldBeExpanded={shouldBeExpanded.shouldBeExpandedFaction}
                                     />
                                 ))}
@@ -138,10 +138,10 @@ export const WarMachineStats = () => {
                     <Box sx={{ mb: 0.6, pr: 2, pl: haveFactionMechs ? 0 : 1.6, overflow: "hidden" }}>
                         <ScrollContainer>
                             <Stack
-                                spacing={haveFactionMechs ? -5.2 : -4.5}
+                                spacing={haveFactionMechs ? -6.2 : -5.5}
                                 direction="row"
                                 alignItems="center"
-                                sx={{ flex: 1, ml: haveFactionMechs ? -1.4 : 0, pb: haveFactionMechs ? 0 : 0.6 }}
+                                sx={{ flex: 1, ml: haveFactionMechs ? -1.8 : 0, pb: haveFactionMechs ? 0 : 0.6 }}
                             >
                                 {otherMechs
                                     .sort((a, b) => a.factionID.localeCompare(b.factionID))
@@ -152,7 +152,7 @@ export const WarMachineStats = () => {
                                         >
                                             <WarMachineItem
                                                 warMachine={wm}
-                                                scale={haveFactionMechs ? 0.75 : 0.75}
+                                                scale={haveFactionMechs ? 0.7 : 0.7}
                                                 shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
                                             />
                                         </Box>

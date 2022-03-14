@@ -216,6 +216,7 @@ export const FactionAbilityItemInner = ({
                                     initialTargetCost={initialTargetCost}
                                     currentSups={currentSups}
                                     supsCost={supsCost}
+                                    forceHundredPercent={false}
                                 />
                             </Box>
 

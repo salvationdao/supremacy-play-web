@@ -8,12 +8,14 @@ export const ContributionBar = ({
     currentSups,
     supsCost,
     hideRedBar,
+    forceHundredPercent,
 }: {
     color: string
     initialTargetCost: BigNumber
     currentSups: BigNumber
     supsCost: BigNumber
     hideRedBar?: boolean
+    forceHundredPercent: boolean
 }) => {
     const progressPercent = initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100
     const costPercent = initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100
@@ -34,7 +36,7 @@ export const ContributionBar = ({
         >
             <Box
                 sx={{
-                    width: `${progressPercent}%`,
+                    width: `${forceHundredPercent ? "100" : `${progressPercent}`}%`,
                     height: "100%",
                     transition: "all .15s",
                     backgroundColor: color || colors.neonBlue,

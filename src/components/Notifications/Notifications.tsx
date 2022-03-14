@@ -54,6 +54,7 @@ export const Notifications = () => {
     const { factionsAll } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
+    const { setForceDisplay100Percentage } = useGame()
     const theme = useTheme<Theme>()
     const {
         streamDimensions: { height },
@@ -67,7 +68,13 @@ export const Notifications = () => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<NotificationResponse | undefined>(
             GameServerKeys.SubGameNotification,
-            (payload) => newNotification(payload),
+            (payload) => {
+                newNotification(payload)
+
+                if (payload?.type === "BATTLE_ABILITY") {
+                    setForceDisplay100Percentage(payload?.data?.user?.faction_id || "")
+                }
+            },
             null,
         )
     }, [state, subscribe, user])

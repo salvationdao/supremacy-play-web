@@ -33,6 +33,10 @@ export const isObject = (item: any) => {
     return item && typeof item === "object" && !Array.isArray(item)
 }
 
+export const truncate = (str: string, n: number): string => {
+    return str.length > n ? str.substring(0, n - 1) + "..." : str
+}
+
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /**

@@ -6,19 +6,18 @@ import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
 
-interface MWMProps extends Partial<WebSocketProperties> {
+interface Props {
     gridWidth: number
     gridHeight: number
     warMachine: WarMachineState
     map: Map
     enlarged: boolean
-    isSpawnedAI?: boolean
-    highlightedMechHash?: string
+    targeting?: boolean
 }
 
-export const MapWarMachine = (props: MWMProps) => {
+export const MapWarMachine = (props: Props) => {
     const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
-    const { highlightedMechHash } = useGame()
+    const { highlightedMechHash, setHighlightedMechHash } = useGame()
 
     return (
         <MapWarMachineInner
@@ -26,8 +25,15 @@ export const MapWarMachine = (props: MWMProps) => {
             state={state}
             subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
             highlightedMechHash={highlightedMechHash}
+            setHighlightedMechHash={setHighlightedMechHash}
         />
     )
+}
+
+interface PropsInner extends Props, Partial<WebSocketProperties> {
+    isSpawnedAI?: boolean
+    highlightedMechHash?: string
+    setHighlightedMechHash: (s?: string) => void
 }
 
 const MapWarMachineInner = ({
@@ -36,12 +42,14 @@ const MapWarMachineInner = ({
     warMachine,
     map,
     enlarged,
+    targeting,
     isSpawnedAI,
     subscribeWarMachineStatNetMessage,
     state,
     highlightedMechHash,
-}: MWMProps) => {
-    const { participantID, faction, maxHealth, maxShield, imageAvatar } = warMachine
+    setHighlightedMechHash,
+}: PropsInner) => {
+    const { hash, participantID, faction, maxHealth, maxShield, imageAvatar } = warMachine
     const mapScale = map.width / (map.cells_x * 2000)
 
     const wmImageUrl = imageAvatar || GenericWarMachinePNG
@@ -70,6 +78,12 @@ const MapWarMachineInner = ({
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage])
 
+    const handleClick = (mechHash: string) => {
+        if (mechHash === highlightedMechHash) {
+            setHighlightedMechHash(undefined)
+        } else setHighlightedMechHash(mechHash)
+    }
+
     if (!position) return null
 
     return (
@@ -77,9 +91,11 @@ const MapWarMachineInner = ({
             key={`warMachine-${participantID}`}
             alignItems="center"
             justifyContent="center"
+            onClick={() => handleClick(hash)}
             sx={{
                 position: "absolute",
-                pointerEvents: "none",
+                pointerEvents: targeting ? "none" : "all",
+                cursor: "pointer",
                 transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * mapScale}px, ${
                     (position.y - map.top) * mapScale
                 }px, 0)`,
