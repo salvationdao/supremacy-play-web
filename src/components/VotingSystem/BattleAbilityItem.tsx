@@ -263,7 +263,7 @@ const BattleAbilityItemInner = ({
                                                             direction="row"
                                                             alignItems="center"
                                                             justifyContent="center"
-                                                            sx={{ minWidth: 90 }}
+                                                            sx={{ minWidth: 110 }}
                                                         >
                                                             <Typography
                                                                 key={`currentSups-${a.current_sups.toFixed()}`}
