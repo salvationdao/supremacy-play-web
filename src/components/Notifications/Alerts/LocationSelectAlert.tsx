@@ -67,7 +67,7 @@ export const LocationSelectAlert = ({
 }) => {
     const { type, currentUser, ability } = data
     const { label, colour, image_url } = ability
-    const { username, avatar_id, faction } = currentUser || FallbackUser
+    const { username, faction } = currentUser || FallbackUser
 
     const abilityImageUrl = `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`
 
@@ -99,7 +99,7 @@ export const LocationSelectAlert = ({
                         }
                         imageMb={-0.3}
                     />
-                    <StyledNormalText text=" failed to choose a target location in time." />
+                    <StyledNormalText text=" failed to choose a target location." />
                 </Box>
             </Stack>
         )
@@ -165,7 +165,7 @@ export const LocationSelectAlert = ({
                         }
                         imageMb={-0.3}
                     />
-                    <StyledNormalText text=" has been assigned to choose a target location." />
+                    <StyledNormalText text=" is choosing a target location." />
                 </Box>
             </Stack>
         )
