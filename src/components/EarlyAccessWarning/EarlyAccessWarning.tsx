@@ -25,7 +25,7 @@ export const EarlyAccessWarning = () => {
                     }}
                 >
                     <Stack spacing={2}>
-                        <Alert severity="warning" sx={{ ".MuiAlert-message": { pt: 1.35 } }}>
+                        <Alert severity="warning" sx={{ ".MuiAlert-message": { pt: 1.4 } }}>
                             The game is in early access and the $SUPS you use are real!
                         </Alert>
 

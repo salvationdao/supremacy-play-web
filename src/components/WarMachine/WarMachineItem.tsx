@@ -163,13 +163,13 @@ const WarMachineItemInner = ({
                         ? isExpanded
                             ? WIDTH_WM_IMAGE + WIDTH_CENTER + WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR
                             : WIDTH_WM_IMAGE +
-                              (2 * WIDTH_PER_SLANTED_BAR + 6) +
+                              (2 * WIDTH_PER_SLANTED_BAR + 8) +
                               (numSkillBars > 0
                                   ? WIDTH_SKILL_BUTTON + (numSkillBars - 1) * WIDTH_PER_SLANTED_BAR - 7
                                   : 0)
                         : isExpanded
                         ? WIDTH_WM_IMAGE + WIDTH_CENTER
-                        : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 6,
+                        : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 8,
                     transition: "width .3s",
                 }}
             >
