@@ -4,7 +4,7 @@ import moment from "moment"
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
 import { animated, useSpring } from "react-spring"
 import { Grid, MapWarMachine, SelectionIcon } from ".."
-import { useGame, useGameServerWebsocket } from "../../containers"
+import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { useInterval } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { opacityEffect } from "../../theme/keyframes"
@@ -45,21 +45,37 @@ const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, tar
     )
 }
 
-export const InteractiveMap = ({
-    gameAbility,
-    windowDimension,
-    targeting,
-    setSubmitted,
-    enlarged,
-}: {
+interface Props {
     gameAbility?: GameAbility
     windowDimension: { width: number; height: number }
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     enlarged: boolean
-}) => {
+}
+
+export const InteractiveMap = (props: Props) => {
     const { state, send } = useGameServerWebsocket()
     const { map, warMachines } = useGame()
+
+    return <InteractiveMapInner {...props} state={state} send={send} map={map} warMachines={warMachines} />
+}
+
+interface PropsInner extends Props, Partial<WebSocketProperties> {
+    map?: Map
+    warMachines?: WarMachineState[]
+}
+
+const InteractiveMapInner = ({
+    state,
+    send,
+    gameAbility,
+    windowDimension,
+    targeting,
+    setSubmitted,
+    enlarged,
+    map,
+    warMachines,
+}: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
@@ -103,7 +119,7 @@ export const InteractiveMap = ({
 
     const onConfirm = () => {
         try {
-            if (state !== WebSocket.OPEN || !selection) return
+            if (state !== WebSocket.OPEN || !selection || !send) return
             send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
                 x: selection.x,
                 y: selection.y,
