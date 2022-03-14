@@ -52,7 +52,7 @@ export const Grid = ({
             setDisableClick(true)
             setTimeout(() => {
                 setDisableClick(false)
-            }, 1500)
+            }, 2000)
         }
     }, [targeting])
 
