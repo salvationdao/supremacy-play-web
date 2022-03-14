@@ -122,7 +122,7 @@ export const WarMachineStats = () => {
                         clipSize="9px"
                         clipSlantSize="26px"
                         skipLeft
-                        sx={{ pl: 1.2, pr: 3, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
+                        sx={{ pl: 1.2, pr: 2, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
                     >
                         <ScrollContainer>
                             <Stack spacing={-4} direction="row" alignItems="center" justifyContent="center">
