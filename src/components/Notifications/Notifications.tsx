@@ -97,17 +97,59 @@ export const Notifications = () => {
     }, [])
 
     // Function to add new notification to array, and will clear itself out after certain time
-    const newNotification = (notification: NotificationResponse | undefined) => {
+    const newNotification = (notification: NotificationResponse | undefined, justOne?: boolean) => {
         if (!notification) return
 
         const notiID = makeid()
-        const duration = NOTIFICATION_TIME
+        const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 100 : NOTIFICATION_TIME
         addNotification({ notiID, ...notification, duration })
 
         // Linger is for the slide animation to play before clearing off the component
         setTimeout(() => {
             removeByID(notiID)
         }, duration + NOTIFICATION_LINGER)
+
+        if (justOne) return
+
+        // These cases renders another notification (so two)
+        if (
+            notification.type == "LOCATION_SELECT" &&
+            (notification.data.type == "FAILED_TIMEOUT" || notification.data.type == "FAILED_DISCONNECTED")
+        ) {
+            const {
+                data: { ability, nextUser },
+            } = notification
+            newNotification(
+                {
+                    type: "LOCATION_SELECT",
+                    data: {
+                        type: "ASSIGNED",
+                        currentUser: nextUser,
+                        ability,
+                        reason: "",
+                    },
+                },
+                true,
+            )
+        }
+
+        if (notification.type == "BATTLE_ABILITY") {
+            const {
+                data: { ability, user },
+            } = notification
+            newNotification(
+                {
+                    type: "LOCATION_SELECT",
+                    data: {
+                        type: "ASSIGNED",
+                        currentUser: user,
+                        ability,
+                        reason: "",
+                    },
+                },
+                true,
+            )
+        }
     }
 
     const notificationsJsx = notifications
@@ -126,7 +168,7 @@ export const Notifications = () => {
                 case "LOCATION_SELECT":
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
-                            <LocationSelectAlert data={n.data} />
+                            <LocationSelectAlert data={n.data} factionsAll={factionsAll} />
                         </NotificationItem>
                     )
                 case "BATTLE_ABILITY":
