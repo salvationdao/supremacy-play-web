@@ -4,6 +4,7 @@ import { SvgEmergency } from "../../../assets"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { FactionsAll, httpProtocol } from "../../../containers"
 import { acronym } from "../../../helpers"
+import { colors } from "../../../theme/theme"
 import { BattleAbility, User } from "../../../types"
 
 interface BattleFactionAbilityAlertProps {
@@ -30,7 +31,8 @@ export const BattleAbilityAlert = ({
                 imageMb={-0.3}
             />
             <Box>
-                <SvgEmergency size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <SvgEmergency fill={colors.orange} size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
                 <StyledNormalText text="Initiated by " />
                 <StyledImageText
                     text={user ? acronym(user.faction.label) : "GABS"}

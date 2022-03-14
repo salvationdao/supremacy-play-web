@@ -3,6 +3,7 @@ import { StyledImageText, StyledNormalText } from "../.."
 import { GenericWarMachinePNG, SvgEmergency } from "../../../assets"
 import { GAME_SERVER_HOSTNAME } from "../../../constants"
 import { httpProtocol } from "../../../containers"
+import { colors } from "../../../theme/theme"
 import { BattleAbility, User, WarMachineState } from "../../../types"
 
 interface WarMachineAbilityAlertProps {
@@ -27,7 +28,8 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
                 imageMb={-0.3}
             />
             <Box>
-                <SvgEmergency size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <SvgEmergency fill={colors.orange} size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
                 <StyledNormalText text="Initiated by " />
                 <StyledImageText
                     text={name || hash}

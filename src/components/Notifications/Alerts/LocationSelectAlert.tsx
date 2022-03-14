@@ -1,8 +1,9 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { NotificationResponse, StyledImageText, StyledNormalText } from "../.."
 import { SvgCancelled, SvgDisconnected, SvgHourglass, SvgLocation, SvgDeath } from "../../../assets"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { FactionsAll, httpProtocol } from "../../../containers"
+import { colors } from "../../../theme/theme"
 import { BattleAbility, User } from "../../../types"
 
 /*
@@ -76,7 +77,8 @@ export const LocationSelectAlert = ({
             <Stack spacing={1}>
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgCancelled size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <SvgCancelled fill="grey" size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
                     <StyledNormalText text="It has been cancelled as there were no players available to choose a target location." />
                 </Box>
             </Stack>
@@ -88,7 +90,8 @@ export const LocationSelectAlert = ({
             <Stack spacing={1}>
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgHourglass size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <SvgHourglass fill="grey" size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}
@@ -110,7 +113,8 @@ export const LocationSelectAlert = ({
             <Stack spacing={1}>
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgDisconnected size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <SvgDisconnected fill="grey" size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}
@@ -132,7 +136,8 @@ export const LocationSelectAlert = ({
             <Stack spacing={1}>
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgDeath size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <SvgDeath fill={colors.red} size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}
@@ -154,7 +159,8 @@ export const LocationSelectAlert = ({
             <Stack spacing={1}>
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgLocation size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <SvgLocation fill={colors.yellow} size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}

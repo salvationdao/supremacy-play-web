@@ -3,7 +3,7 @@ import { BattleEndDetail } from "./types"
 
 const playerArray = [
     {
-        username: "jayli3n",
+        username: "johnsmith",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
         faction_colour: "#C24242",
         faction_id: "red_mountain_logo",
@@ -21,13 +21,13 @@ const playerArray = [
         faction_id: "zaibatsu_logo",
     },
     {
-        username: "pewdiepie2",
+        username: "beefPie86",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
         faction_colour: "#428EC1",
         faction_id: "boston_cybernetics_logo",
     },
     {
-        username: "markiplier83",
+        username: "multi_housez2",
         avatar_id: "66a9e8c6-9924-4d9e-9b78-2d5a39ddcab9",
         faction_colour: "#C24242",
         faction_id: "red_mountain_logo",
@@ -215,7 +215,7 @@ export const locationSelectNoti: NotificationResponse = {
         x: 7,
         y: 5,
         currentUser: {
-            username: "Jayli3n",
+            username: "johnsmith",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
@@ -244,7 +244,7 @@ export const locationSelectNoti2: NotificationResponse = {
         x: 7,
         y: 5,
         currentUser: {
-            username: "Jayli3n",
+            username: "johnsmith",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
@@ -258,7 +258,7 @@ export const locationSelectNoti2: NotificationResponse = {
             },
         },
         nextUser: {
-            username: "Darren-Hung",
+            username: "didNot_write65",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
@@ -287,7 +287,7 @@ export const locationSelectNoti3: NotificationResponse = {
         x: 7,
         y: 5,
         currentUser: {
-            username: "Jayli3n",
+            username: "johnsmith",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
@@ -301,7 +301,7 @@ export const locationSelectNoti3: NotificationResponse = {
             },
         },
         nextUser: {
-            username: "Darren-Hung",
+            username: "didNot_write65",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
@@ -330,7 +330,7 @@ export const locationSelectNoti4: NotificationResponse = {
         x: 7,
         y: 5,
         currentUser: {
-            username: "Jayli3n",
+            username: "johnsmith",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
@@ -359,7 +359,7 @@ export const locationSelectNoti5: NotificationResponse = {
         x: 7,
         y: 5,
         currentUser: {
-            username: "Jayli3n",
+            username: "johnsmith",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
@@ -385,7 +385,7 @@ export const battleAbilityNoti: NotificationResponse = {
     type: "BATTLE_ABILITY",
     data: {
         user: {
-            username: "Jayli3n",
+            username: "johnsmith",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
@@ -410,7 +410,7 @@ export const factionAbilityNoti: NotificationResponse = {
     type: "FACTION_ABILITY",
     data: {
         user: {
-            username: "Jayli3n",
+            username: "johnsmith",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
@@ -435,7 +435,7 @@ export const warMachineAbilityNoti: NotificationResponse = {
     type: "WAR_MACHINE_ABILITY",
     data: {
         user: {
-            username: "Jayli3n",
+            username: "johnsmith",
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
