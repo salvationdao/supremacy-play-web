@@ -87,7 +87,8 @@ export const StreamContainer = createContainer(() => {
             toggleIsMute(true)
             return
         }
-        if (vidRef && vidRef.current && vidRef.current.volume) {
+
+        if (vidRef && vidRef.current) {
             vidRef.current.volume = volume
         }
         toggleIsMute(false)
@@ -167,7 +168,7 @@ export const StreamContainer = createContainer(() => {
             }
             try {
                 vidRef.current = vid
-                if (vidRef.current.volume) vidRef.current.volume = volume
+                vidRef.current.volume = volume
 
                 webRtc.current = new WebRTCAdaptor({
                     websocket_url: currentStream.url,
