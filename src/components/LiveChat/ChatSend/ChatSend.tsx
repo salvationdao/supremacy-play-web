@@ -11,13 +11,21 @@ import { ChatData } from "../../../types/passport"
 
 interface ChatSendProps {
     primaryColor: string
+    initialMessageColor?: string
     faction_id: string | null
     onNewMessage: (message: ChatData, faction_id: string | null) => void
     onSentMessage: (date: Date) => void
     onFailedMessage: (date: Date) => void
 }
 
-export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage, onFailedMessage }: ChatSendProps) => {
+export const ChatSend = ({
+    primaryColor,
+    initialMessageColor,
+    faction_id,
+    onNewMessage,
+    onSentMessage,
+    onFailedMessage,
+}: ChatSendProps) => {
     const { user } = usePassportServerAuth()
     const { state, send } = usePassportServerWebsocket()
     // Message field
@@ -27,7 +35,7 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
     const popoverRef = useRef(null)
     const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
 
-    const messageColor = useMemo(() => getRandomChatColor(), [])
+    const messageColor = useMemo(() => initialMessageColor || getRandomChatColor(), [initialMessageColor])
 
     const setMessageWithCheck = (newMessage: string, append?: boolean) => {
         setMessage((prev) => {

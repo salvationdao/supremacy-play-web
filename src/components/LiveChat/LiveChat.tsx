@@ -31,11 +31,18 @@ export interface UserMultiplierResponse {
     citizen_player_ids: string[]
 }
 
+export interface SentChatMessageData {
+    global: Date[]
+    faction: Date[]
+}
+
 const DrawerContent = ({
     tabValue,
     setTabValue,
     chatMessages,
     onNewMessage,
+    initialSentDate,
+    initialMessageColor,
     factionChatUnread,
     globalChatUnread,
     userMultiplierMap,
@@ -44,6 +51,8 @@ const DrawerContent = ({
     globalChatUnread: number
     factionChatUnread: number
     tabValue: number
+    initialSentDate: SentChatMessageData
+    initialMessageColor?: string
     setTabValue: Dispatch<SetStateAction<number>>
     chatMessages: ChatData[]
     onNewMessage: (newMessage: ChatData, faction_id: string | null) => void
@@ -179,7 +188,7 @@ const DrawerContent = ({
                 primaryColor={primaryColor}
                 secondaryColor={secondaryColor}
                 chatMessages={chatMessages}
-                sentMessages={sentMessages}
+                sentMessages={sentMessages.concat(initialSentDate.global, initialSentDate.faction)}
                 failedMessages={failedMessages}
                 userMultiplierMap={userMultiplierMap}
                 citizenPlayerIDs={citizenPlayerIDs}
@@ -188,6 +197,7 @@ const DrawerContent = ({
             {user ? (
                 <ChatSend
                     primaryColor={primaryColor}
+                    initialMessageColor={initialMessageColor}
                     faction_id={faction_id}
                     onNewMessage={onNewMessage}
                     onSentMessage={onSentMessage}
@@ -213,11 +223,14 @@ const DrawerContent = ({
 export const LiveChat = () => {
     const { isLiveChatOpen } = useDrawer()
     const { user } = usePassportServerAuth()
-    const { state, subscribe } = usePassportServerWebsocket()
+    const { state, subscribe, send } = usePassportServerWebsocket()
     const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
 
     // Tabs: 0 is global chat, 1 is faction chat
     const [tabValue, setTabValue] = useState(0)
+
+    const [initialSentDate, setInitialSentDate] = useState<SentChatMessageData>({ global: [], faction: [] })
+    const [initialMessageColor, setInitialMessageColor] = useState<string>()
     const [globalChatMessages, setGlobalChatMessages] = useState<ChatData[]>([])
     const [factionChatMessages, setFactionChatMessages] = useState<ChatData[]>([])
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
@@ -240,6 +253,33 @@ export const LiveChat = () => {
             })
         }
     }
+
+    // Collect Past Messages
+    useEffect(() => {
+        if (state !== WebSocket.OPEN) return
+        send<ChatData[]>(PassportServerKeys.ChatPastMessages).then((resp) => {
+            setGlobalChatMessages(resp)
+            setInitialSentDate((prev) => ({
+                ...prev,
+                global: resp.map((m) => m.sent_at),
+            }))
+        })
+    }, [state, send])
+
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
+        send<ChatData[]>(PassportServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
+            setFactionChatMessages(resp)
+            setInitialSentDate((prev) => ({
+                ...prev,
+                faction: resp.map((m) => m.sent_at),
+            }))
+            const selfMessage = resp.find((m) => m.from_user_id === user.id)
+            if (selfMessage) {
+                setInitialMessageColor(selfMessage.message_color)
+            }
+        })
+    }, [state, user, send])
 
     useEffect(() => {
         if (tabValue === 1 && factionChatUnread !== 0) {
@@ -328,6 +368,8 @@ export const LiveChat = () => {
                     globalChatUnread={globalChatUnread}
                     tabValue={tabValue}
                     setTabValue={setTabValue}
+                    initialSentDate={initialSentDate}
+                    initialMessageColor={initialMessageColor}
                     chatMessages={tabValue == 0 ? globalChatMessages : factionChatMessages}
                     onNewMessage={newMessageHandler}
                     userMultiplierMap={userMultiplierMap}
