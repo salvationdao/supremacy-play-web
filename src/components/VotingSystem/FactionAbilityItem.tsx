@@ -103,14 +103,10 @@ export const FactionAbilityItemInner = ({
 
     const onContribute = async (amount: string) => {
         if (!send) return
-        send<boolean, ContributeFactionUniqueAbilityRequest>(
-            GameServerKeys.ContributeFactionUniqueAbility,
-            {
-                ability_identity: identity,
-                amount,
-            },
-            true,
-        )
+        send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
+            ability_identity: identity,
+            amount,
+        })
     }
 
     const isVoting = useMemo(

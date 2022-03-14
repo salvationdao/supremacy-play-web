@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { PassportServerKeys } from "../keys"
 import { sleep } from "../helpers"
-import { usePassportServerAuth } from "./passportServerAuth"
 import { PASSPORT_SERVER_HOST } from "../constants"
-import { User } from "../types"
 import { UserData } from "../types/passport"
 
 // makeid is used to generate a random transaction_id for the websocket

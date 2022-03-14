@@ -109,7 +109,7 @@ const BattleAbilityItemInner = ({
     }, [state, subscribeNetMessage])
 
     const onBribe = (voteAmount: string) => {
-        if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount }, true)
+        if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount })
     }
 
     const isVoting = useMemo(

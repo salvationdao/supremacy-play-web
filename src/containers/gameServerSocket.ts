@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { GAME_SERVER_HOSTNAME } from "../constants"
+import { sleep } from "../helpers"
 import { parseNetMessage } from "../helpers/netMessages"
-import { useDebounce } from "../hooks"
 import { GameServerKeys } from "../keys"
 import { GameAbilityProgress, NetMessageTick, NetMessageType, User } from "../types"
-import { useGameServerAuth } from "./gameServerAuth"
 
 // websocket message struct
 interface MessageData {
@@ -54,23 +53,16 @@ export enum SocketState {
     CLOSED = WebSocket.CLOSED,
 }
 
-export type WSSendFn = <Y = any, X = any>(key: string, payload?: X, instant?: boolean) => Promise<Y>
+export type WSSendFn = <Y = any, X = any>(key: string, payload?: X) => Promise<Y>
 
 export interface WebSocketProperties {
     send: WSSendFn
     connect: () => Promise<undefined>
     state: SocketState
-    subscribe: <T>(
-        key: string,
-        callback: (payload: T) => void,
-        args?: any,
-        listenOnly?: boolean,
-        disableLog?: boolean,
-    ) => () => void
+    subscribe: <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => () => void
     subscribeNetMessage: <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => () => void
     subscribeAbilityNetMessage: <T>(abilityID: string, callback: (payload: T) => void) => () => void
     subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
-    onReconnect: () => void
     isServerUp: boolean
 }
 
@@ -103,13 +95,13 @@ const backoffIntervalCalc = async (num: number) => {
 const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketProperties => {
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
-    const [outgoing, setOutgoing] = useDebounce<Message<any>[]>([], 100)
 
     const webSocket = useRef<WebSocket | null>(null)
     const [reconnect, setIsReconnect] = useState<boolean>(false)
     const [isServerUp, setIsServerUp] = useState<boolean>(true)
 
     const login = initialState ? initialState.login : ""
+
     // ******* Reconnect Logic Start ******* //
     // Check to see if server is up, if yes conenct WS, else don't
     useEffect(() => {
@@ -157,11 +149,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
 
     // ******* Reconnect Logic End ******* //
 
-    const send = useRef<WSSendFn>(function send<Y = any, X = any>(
-        key: string,
-        payload?: X,
-        instant?: boolean,
-    ): Promise<Y> {
+    const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
         const transaction_id = makeid()
 
         return new Promise(function (resolve, reject) {
@@ -174,50 +162,27 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                 resolve(result)
             }
 
-            if (instant) {
-                sendMessage({
-                    key,
-                    payload,
-                    transaction_id,
-                })
-                return
-            }
-
-            setOutgoing((prev) => [
-                ...prev,
-                {
-                    key,
-                    payload,
-                    transaction_id,
-                },
-            ])
-        })
-    })
-
-    const sendMessage = useCallback(
-        (msg: Message<any>) => {
             const sendFn = () => {
                 if (!webSocket.current || webSocket.current.readyState !== WebSocket.OPEN) {
                     setTimeout(sendFn, 500)
                     return
                 }
-                webSocket.current.send(JSON.stringify(msg))
+                webSocket.current.send(
+                    JSON.stringify({
+                        key,
+                        payload,
+                        transaction_id,
+                    }),
+                )
             }
             sendFn()
-        },
-        [webSocket.current],
-    )
+        })
+    })
 
     const subs = useRef<{ [key: string]: SubscribeCallback[] }>({})
 
     const subscribe = useMemo(() => {
-        return <T>(
-            key: string,
-            callback: (payload: T) => void,
-            args?: any,
-            listenOnly?: boolean,
-            disableLog?: boolean,
-        ) => {
+        return <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => {
             const transaction_id = makeid()
 
             let subKey = key
@@ -235,15 +200,17 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                 subs.current[subKey] = [callback2]
             }
 
-            const setSubscribeState = (key: string, open: boolean, args?: any) => {
-                setOutgoing((prev) => [
-                    ...prev,
-                    {
+            const setSubscribeState = async (key: string, open: boolean, args?: any) => {
+                while (webSocket.current === null) {
+                    await sleep(1000)
+                }
+                webSocket.current.send(
+                    JSON.stringify({
                         key: key + (open ? "" : ":UNSUBSCRIBE"),
                         payload: open ? args : undefined,
                         transaction_id,
-                    },
-                ])
+                    }),
+                )
             }
 
             if (!listenOnly) setSubscribeState(key, true, args)
@@ -256,7 +223,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                 if (!listenOnly) setSubscribeState(key, false)
             }
         }
-    }, [setOutgoing, login])
+    }, [login])
 
     // subscription function for Faction Ability only
     const abilitySubs = useRef<{ [abilityIdentity: string]: SubscribeCallback[] }>({})
@@ -308,18 +275,6 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
             }
         }
     }, [])
-
-    const sendOutgoingMessages = useCallback(() => {
-        if (outgoing.length === 0) return
-        if (!webSocket.current) throw new Error("no websocket")
-
-        outgoing.forEach((og) => {
-            if (!webSocket.current) throw new Error("no websocket")
-            webSocket.current.send(JSON.stringify(og))
-        })
-
-        setOutgoing([])
-    }, [outgoing, setOutgoing])
 
     const setupWS = useMemo(
         () => (ws: WebSocket, onopen?: () => void) => {
@@ -425,10 +380,6 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
         setState(webSocket.current.readyState)
     }
 
-    useEffect(() => {
-        if (webSocket.current) sendOutgoingMessages()
-    }, [webSocket, sendOutgoingMessages])
-
     return {
         send: send.current,
         state,
@@ -437,7 +388,6 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
         subscribeNetMessage,
         subscribeAbilityNetMessage,
         subscribeWarMachineStatNetMessage,
-        onReconnect: sendOutgoingMessages,
         isServerUp,
     }
 }
