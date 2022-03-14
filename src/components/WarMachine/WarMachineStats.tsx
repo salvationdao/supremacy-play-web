@@ -47,9 +47,9 @@ export const WarMachineStats = () => {
     const { warMachines } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
-    const {
-        streamDimensions: { width },
-    } = useDimension()
+    // const {
+    //     streamDimensions: { width },
+    // } = useDimension()
     const { isMapOpen } = useOverlayToggles()
 
     // Subscribe to the result of the vote
@@ -59,37 +59,42 @@ export const WarMachineStats = () => {
     }, [state, subscribe])
 
     // Determine whether the mech items should be expanded out or collapsed
-    const shouldBeExpanded = useMemo(() => {
-        let shouldBeExpandedFaction = true
-        let shouldBeExpandedOthers = true
+    // const shouldBeExpanded = useMemo(() => {
+    //     let shouldBeExpandedFaction = true
+    //     let shouldBeExpandedOthers = true
 
-        if (!warMachines || warMachines.length <= 0)
-            return {
-                shouldBeExpandedFaction,
-                shouldBeExpandedOthers,
-            }
-        const factionMechs = warMachines.filter((wm) => wm.factionID == faction_id)
-        const otherMechs = warMachines.filter((wm) => wm.factionID != faction_id)
+    //     if (!warMachines || warMachines.length <= 0)
+    //         return {
+    //             shouldBeExpandedFaction,
+    //             shouldBeExpandedOthers,
+    //         }
+    //     const factionMechs = warMachines.filter((wm) => wm.factionID == faction_id)
+    //     const otherMechs = warMachines.filter((wm) => wm.factionID != faction_id)
 
-        if (
-            factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
-                otherMechs.length * WIDTH_MECH_ITEM_OTHER_EXPANDED >
-            width
-        ) {
-            if (
-                factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
-                    otherMechs.length * WIDTH_MECH_ITEM_OTHER_COLLAPSED >
-                width
-            ) {
-                shouldBeExpandedFaction = false
-                shouldBeExpandedOthers = false
-            } else {
-                shouldBeExpandedOthers = false
-            }
-        }
+    //     if (
+    //         factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
+    //             otherMechs.length * WIDTH_MECH_ITEM_OTHER_EXPANDED >
+    //         width
+    //     ) {
+    //         if (
+    //             factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
+    //                 otherMechs.length * WIDTH_MECH_ITEM_OTHER_COLLAPSED >
+    //             width
+    //         ) {
+    //             shouldBeExpandedFaction = false
+    //             shouldBeExpandedOthers = false
+    //         } else {
+    //             shouldBeExpandedOthers = false
+    //         }
+    //     }
 
-        return { shouldBeExpandedFaction, shouldBeExpandedOthers }
-    }, [width, faction_id, warMachines])
+    //     return { shouldBeExpandedFaction, shouldBeExpandedOthers }
+    // }, [width, faction_id, warMachines])
+
+    const shouldBeExpanded = {
+        shouldBeExpandedFaction: false,
+        shouldBeExpandedOthers: false,
+    }
 
     if (!warMachines || warMachines.length <= 0) return null
 
