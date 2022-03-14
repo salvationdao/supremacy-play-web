@@ -389,7 +389,7 @@ export const battleAbilityNoti: NotificationResponse = {
             avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
             faction: {
                 sups: 0,
-                label: "Zaibatsu Industries",
+                label: "Zaibatsu Heavy Industries",
                 logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
                 theme: {
                     primary: "#FFFFFF",
@@ -477,7 +477,7 @@ export const textNoti: NotificationResponse = {
 export const killNoti: NotificationResponse = {
     type: "WAR_MACHINE_DESTROYED",
     data: {
-        destroyedWarMachine: {
+        destroyed_war_machine: {
             imageUrl: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
             name: "Olympus Mons LY07",
             faction: {
@@ -501,7 +501,7 @@ export const killNoti: NotificationResponse = {
             position: { x: 0, y: 0 },
             rotation: 10,
         },
-        killedByWarMachine: {
+        killed_by_war_machine_id: {
             imageUrl: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
             name: "MR Olympics",
             faction: {
@@ -531,7 +531,7 @@ export const killNoti: NotificationResponse = {
 export const killNoti2: NotificationResponse = {
     type: "WAR_MACHINE_DESTROYED",
     data: {
-        destroyedWarMachine: {
+        destroyed_war_machine: {
             imageUrl: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
             name: "Olympus Mons LY07",
             faction: {
@@ -555,6 +555,6 @@ export const killNoti2: NotificationResponse = {
             position: { x: 0, y: 0 },
             rotation: 10,
         },
-        killedBy: "HEAVY DUTY MACHINE GUN",
+        killed_by: "HEAVY DUTY MACHINE GUN",
     },
 }

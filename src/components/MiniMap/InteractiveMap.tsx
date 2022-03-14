@@ -1,11 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { styled } from "@mui/system"
 import { useGesture } from "@use-gesture/react"
 import moment from "moment"
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
 import { animated, useSpring } from "react-spring"
-import { MapWarMachine, SelectionIcon } from ".."
-import { useGame, useGameServerWebsocket } from "../../containers"
+import { Grid, MapWarMachine, SelectionIcon } from ".."
+import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { useInterval } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { opacityEffect } from "../../theme/keyframes"
@@ -15,29 +14,6 @@ export interface MapSelection {
     x: number
     y: number
 }
-
-const MapGrid = styled("table", {
-    shouldForwardProp: (prop) => prop !== "map",
-})<{ map: Map }>(({ map }) => ({
-    position: "absolute",
-    zIndex: 4,
-    width: `${map.width}px`,
-    height: `${map.height}px`,
-    borderSpacing: 0,
-}))
-
-const GridCell = styled("td", {
-    shouldForwardProp: (prop) => prop !== "disabled" && prop !== "width" && prop !== "height",
-})<{ disabled?: boolean; width: number; height: number }>(({ disabled, width, height }) => ({
-    height: `${width}px`,
-    width: `${height}px`,
-    cursor: disabled ? "auto" : "pointer",
-    border: disabled ? "unset" : `1px solid #FFFFFF40`,
-    backgroundColor: disabled ? "#00000090" : "unset",
-    "&:hover": {
-        backgroundColor: disabled ? "#00000090" : "#FFFFFF45",
-    },
-}))
 
 interface MapWarMachineProps {
     gridWidth: number
@@ -69,21 +45,37 @@ const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, tar
     )
 }
 
-export const InteractiveMap = ({
-    gameAbility,
-    windowDimension,
-    targeting,
-    setSubmitted,
-    enlarged,
-}: {
+interface Props {
     gameAbility?: GameAbility
     windowDimension: { width: number; height: number }
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     enlarged: boolean
-}) => {
+}
+
+export const InteractiveMap = (props: Props) => {
     const { state, send } = useGameServerWebsocket()
     const { map, warMachines } = useGame()
+
+    return <InteractiveMapInner {...props} state={state} send={send} map={map} warMachines={warMachines} />
+}
+
+interface PropsInner extends Props, Partial<WebSocketProperties> {
+    map?: Map
+    warMachines?: WarMachineState[]
+}
+
+const InteractiveMapInner = ({
+    state,
+    send,
+    gameAbility,
+    windowDimension,
+    targeting,
+    setSubmitted,
+    enlarged,
+    map,
+    warMachines,
+}: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
@@ -95,7 +87,6 @@ export const InteractiveMap = ({
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
-    // --------------------------------------------------------------
     // --------------------------------------------------------------
     // Count down starts when user has selected a location, then fires if they don't change their mind
     useEffect(() => {
@@ -128,7 +119,7 @@ export const InteractiveMap = ({
 
     const onConfirm = () => {
         try {
-            if (state !== WebSocket.OPEN || !selection) return
+            if (state !== WebSocket.OPEN || !selection || !send) return
             send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
                 x: selection.x,
                 y: selection.y,
@@ -143,69 +134,6 @@ export const InteractiveMap = ({
         }
     }
     // --------------------------------------------------------------
-    // --------------------------------------------------------------
-
-    // Generate grid ----------------------------------------
-    const grid = useMemo(() => {
-        if (!map || !targeting) {
-            return <div />
-        }
-
-        return (
-            <MapGrid map={map}>
-                <tbody>
-                    {Array(map.cells_y)
-                        .fill(1)
-                        .map((_el, y) => (
-                            <tr key={`column-${y}`}>
-                                {Array(map.cells_x)
-                                    .fill(1)
-                                    .map((_el, x) => {
-                                        const disabled =
-                                            map.disabled_cells.indexOf(Math.max(y, 0) * map.cells_x + x) != -1
-                                        return (
-                                            <GridCell
-                                                key={`column-${y}-row-${x}`}
-                                                disabled={disabled}
-                                                width={gridWidth}
-                                                height={gridHeight}
-                                                onClick={
-                                                    disabled
-                                                        ? undefined
-                                                        : () => {
-                                                              if (!isDragging.current) {
-                                                                  setSelection((prev) => {
-                                                                      prevSelection.current = prev
-                                                                      return { x, y }
-                                                                  })
-                                                              }
-                                                          }
-                                                }
-                                            />
-                                        )
-                                    })}
-                            </tr>
-                        ))}
-                </tbody>
-            </MapGrid>
-        )
-    }, [targeting, map])
-
-    const selectionIcon = useMemo(() => {
-        if (targeting && gameAbility && setSubmitted) {
-            return (
-                <SelectionIcon
-                    key={selection && `column-${selection.y}-row-${selection.x}`}
-                    gameAbility={gameAbility}
-                    gridWidth={gridWidth}
-                    gridHeight={gridHeight}
-                    selection={selection}
-                    setSelection={setSelection}
-                />
-            )
-        }
-        return <div />
-    }, [targeting, setSubmitted, selection])
 
     // Set map scale to minimum scale while staying in-bounds
     useEffect(() => {
@@ -385,9 +313,25 @@ export const InteractiveMap = ({
                             />
                         </Box>
 
-                        {selectionIcon}
+                        <SelectionIcon
+                            key={selection && `column-${selection.y}-row-${selection.x}`}
+                            gameAbility={gameAbility}
+                            gridWidth={gridWidth}
+                            gridHeight={gridHeight}
+                            selection={selection}
+                            setSelection={setSelection}
+                            targeting={targeting}
+                        />
 
-                        {grid}
+                        <Grid
+                            map={map}
+                            targeting={targeting}
+                            gridWidth={gridWidth}
+                            gridHeight={gridHeight}
+                            isDragging={isDragging}
+                            setSelection={setSelection}
+                            prevSelection={prevSelection}
+                        />
 
                         {/* Map Image */}
                         <Box

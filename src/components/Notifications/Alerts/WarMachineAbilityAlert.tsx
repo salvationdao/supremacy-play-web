@@ -1,4 +1,4 @@
-import { Box } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { StyledImageText, StyledNormalText } from "../.."
 import { GenericWarMachinePNG, SvgEmergency } from "../../../assets"
 import { GAME_SERVER_HOSTNAME } from "../../../constants"
@@ -19,16 +19,23 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
     const wmImageUrl = warMachineImageUrl || GenericWarMachinePNG
 
     return (
-        <Box>
-            <SvgEmergency size="12px" sx={{ display: "inline", mr: 0.5 }} />
+        <Stack spacing={1}>
             <StyledImageText
                 text={label}
                 color={colour}
                 imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`}
                 imageMb={-0.3}
             />
-            <StyledNormalText text=" has been initiated by " />
-            <StyledImageText text={name || hash} color={faction.theme.primary} imageUrl={wmImageUrl} imageMb={-0.3} />
-        </Box>
+            <Box>
+                <SvgEmergency size="12px" sx={{ display: "inline", mr: 0.5 }} />
+                <StyledNormalText text="Initiated by " />
+                <StyledImageText
+                    text={name || hash}
+                    color={faction.theme.primary}
+                    imageUrl={wmImageUrl}
+                    imageMb={-0.3}
+                />
+            </Box>
+        </Stack>
     )
 }

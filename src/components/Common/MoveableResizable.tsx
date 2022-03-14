@@ -29,7 +29,6 @@ export interface MoveableResizableConfig {
 }
 
 const PADDING = 10
-// const DefaultMaxLiveVotingDataLength = 100
 
 export const MoveableResizable = ({
     config,
