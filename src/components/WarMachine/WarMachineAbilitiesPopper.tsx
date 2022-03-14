@@ -36,7 +36,7 @@ export const WarMachineAbilitiesPopover = ({
                 vertical: "bottom",
                 horizontal: "left",
             }}
-            PaperProps={{ sx: { backgroundColor: "transparent", boxShadow: 0 } }}
+            PaperProps={{ sx: { background: "none", boxShadow: 0 } }}
         >
             <Box
                 sx={{

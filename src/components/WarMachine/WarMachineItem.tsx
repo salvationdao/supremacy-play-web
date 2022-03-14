@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
     BoxSlanted,
     ClipThing,
@@ -214,7 +214,7 @@ const WarMachineItemInner = ({
                 <ClipThing
                     clipSize="8px"
                     clipSlantSize="18px"
-                    border={{ isFancy: false, borderColor: primary, borderThickness: "3px" }}
+                    border={{ isFancy: false, borderColor: primary, borderThickness: "4px" }}
                     sx={{ zIndex: 2 }}
                     skipRightCorner={!isExpanded}
                 >
