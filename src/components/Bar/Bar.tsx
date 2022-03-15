@@ -4,6 +4,7 @@ import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_WIDTH } f
 import { useBar, useDrawer, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
+import GameGuide from "../GameGuide/GameGuide"
 
 export const Bar = () => {
     const { state, isServerUp } = usePassportServerWebsocket()
@@ -28,6 +29,7 @@ export const Bar = () => {
             <>
                 {<Logo />}
                 <Box sx={{ flexGrow: 1 }} />
+                <GameGuide />
                 {user && (
                     <>
                         <Enlist />

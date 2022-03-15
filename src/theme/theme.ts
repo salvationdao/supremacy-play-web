@@ -229,6 +229,14 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiTab: {
+            styleOverrides: {
+                root: {
+                    fontFamily: "Nostromo Regular Black",
+                    color: "white",
+                },
+            },
+        },
     },
     factionTheme,
 })
