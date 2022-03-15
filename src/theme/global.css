@@ -50,12 +50,18 @@ html {
 
 @media only screen and (max-width: 1920px) {
     html {
-        font-size: 56.25%;
+        font-size: 52%;
     }
 }
 
 @media only screen and (max-width: 1500px) {
     html {
-        font-size: 50%;
+        font-size: 45%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    html {
+        font-size: 40%;
     }
 }

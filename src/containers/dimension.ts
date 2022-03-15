@@ -29,17 +29,20 @@ export const DimensionContainer = createContainer(() => {
         height: 0,
     })
 
-    const below1920 = useMediaQuery("(max-width:1920px)")
+    const below900 = useMediaQuery("(max-width:900px)")
     const below1500 = useMediaQuery("(max-width:1500px)")
+    const below1920 = useMediaQuery("(max-width:1920px)")
     const [pxToRemRatio, setPxToRemRatio] = useState(10)
 
     // Refer to `src/theme/global.css`
     useEffect(() => {
-        if (below1500) {
-            setPxToRemRatio(8)
+        if (below900) {
+            setPxToRemRatio(6.4)
+        } else if (below1500) {
+            setPxToRemRatio(7.2)
             return
         } else if (below1920) {
-            setPxToRemRatio(9)
+            setPxToRemRatio(8.32)
             return
         }
 
