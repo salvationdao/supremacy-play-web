@@ -79,11 +79,24 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                     }}
                 >
                     <Box sx={{ borderBottom: 1, borderColor: "divider", mx: -3 }}>
-                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                            <Tab label="Intro" />
-                            <Tab label="Gameplay" />
-                            <Tab label="Multipliers" />
-                            <Tab label="Mech NFTs" />
+                        <Tabs
+                            value={value}
+                            onChange={handleChange}
+                            sx={{
+                                ".MuiTab-root.Mui-selected": { color: colors.neonBlue, opacity: 1 },
+                                ".MuiTabs-indicator": { backgroundColor: colors.neonBlue },
+                            }}
+                        >
+                            <Tab
+                                sx={{
+                                    fontSize: "1.3rem",
+                                    opacity: 0.7,
+                                }}
+                                label="Intro"
+                            />
+                            <Tab sx={{ fontSize: "1.3rem", opacity: 0.7 }} label="Gameplay" />
+                            <Tab sx={{ fontSize: "1.3rem", opacity: 0.7 }} label="Multipliers" />
+                            <Tab sx={{ fontSize: "1.3rem", opacity: 0.7 }} label="Mech NFTs" />
                         </Tabs>
                     </Box>
 
