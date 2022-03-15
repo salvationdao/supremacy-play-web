@@ -280,3 +280,24 @@ export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
 
     return { image }
 }
+
+export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
+    let hours = date.getHours()
+    const minutes = date.getMinutes()
+    const seconds = date.getSeconds()
+
+    // Check whether AM or PM
+    const suffix = hours >= 12 ? "PM" : "AM"
+
+    // Find current hour in AM-PM Format
+    hours = hours % 12
+
+    // To display "0" as "12"
+    hours = hours ? hours : 12
+    const minutes2 = minutes < 10 ? "0" + minutes : minutes
+    const seconds2 = seconds < 10 ? "0" + seconds : seconds
+
+    if (showSeconds) return `${hours}:${minutes2}:${seconds2} ${suffix}`
+
+    return `${hours}:${minutes2} ${suffix}`
+}

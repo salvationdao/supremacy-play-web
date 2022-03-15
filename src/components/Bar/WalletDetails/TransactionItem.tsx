@@ -2,11 +2,10 @@ import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgContentCopyIcon, SvgSupToken } from "../../../assets"
-import moment from "moment"
 import { useToggle } from "../../../hooks"
 import { Transaction } from "../../../types/passport"
 import { TooltipHelper } from "../.."
-import { supFormatterNoFixed } from "../../../helpers"
+import { dateFormatter, supFormatterNoFixed } from "../../../helpers"
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const isCredit = userID === transaction.credit
@@ -45,7 +44,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                         color: "grey !important",
                     }}
                 >
-                    {moment(transaction.created_at).format("h:mm:ss A")}
+                    {dateFormatter(transaction.created_at, true)}
                 </Typography>
 
                 <Tooltip
