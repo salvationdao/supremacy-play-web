@@ -181,7 +181,7 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
 
                     <BannerInfo
                         title={`KILLS`}
-                        tooltip="The number of times you have killed a War Machine with an ability."
+                        tooltip="The number of times your deployed war machine has destroyed another war machine."
                         content={`${kill_count}`}
                         PrefixSvg={<SvgDeath size="11px" />}
                     />
