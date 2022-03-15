@@ -175,10 +175,8 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                             </Typography>
                             <br />
                             <Typography>
-                                At the start of the Battle, a random number of SUPS between 1000-5000 SUPS from the game
-                                treasury is added to the Spoils of War. This is the initial game incentive while the
-                                game economy grows and lasts until the Spoils of War is self-sustainable from player
-                                participation, as the game moves to a self-sustaining Play to Earn model by design.
+                                The Spoils of War is a self-sustainable play-to-ean economic flow fuelled by player
+                                participation, as players participate in-game voting they build the Spoils of War.
                             </Typography>
                             <br />
                         </TabPanel>
