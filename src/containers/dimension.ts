@@ -30,13 +30,13 @@ export const DimensionContainer = createContainer(() => {
     })
 
     const below1920 = useMediaQuery("(max-width:1920px)")
-    const below1200 = useMediaQuery("(max-width:1200px)")
+    const below1500 = useMediaQuery("(max-width:1500px)")
     const [pxToRemRatio, setPxToRemRatio] = useState(10)
 
     // Refer to `src/theme/global.css`
     useEffect(() => {
-        if (below1200) {
-            setPxToRemRatio(8.56)
+        if (below1500) {
+            setPxToRemRatio(8)
             return
         } else if (below1920) {
             setPxToRemRatio(9)
@@ -44,7 +44,7 @@ export const DimensionContainer = createContainer(() => {
         }
 
         setPxToRemRatio(10)
-    }, [below1920, below1200])
+    }, [below1920, below1500])
 
     useEffect(() => {
         // Main div dimensions
