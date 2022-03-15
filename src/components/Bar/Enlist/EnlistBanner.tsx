@@ -3,8 +3,8 @@ import { useEffect, useState } from "react"
 import { BarExpandable, TooltipHelper } from "../.."
 import { SvgAbility, SvgDeath, SvgView, SvgWrapperProps } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { useGameServerWebsocket, usePassportServerAuth } from "../../../containers"
-import { UserStat } from "../../../types/passport"
+import { useGame, useGameServerWebsocket, usePassportServerAuth, WebSocketProperties } from "../../../containers"
+import { UserData, UserStat } from "../../../types/passport"
 import { GameServerKeys } from "../../../keys"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 
@@ -51,7 +51,26 @@ const BannerInfo = ({
 export const EnlistBanner = () => {
     const { user, userID } = usePassportServerAuth()
     const { state, subscribe } = useGameServerWebsocket()
+    const { battleIdentifier } = useGame()
 
+    return (
+        <EnlistBannerInner
+            state={state}
+            subscribe={subscribe}
+            user={user}
+            userID={userID}
+            battleIdentifier={battleIdentifier}
+        />
+    )
+}
+
+interface PropsInner extends Partial<WebSocketProperties> {
+    user?: UserData
+    userID?: string
+    battleIdentifier?: number
+}
+
+const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }: PropsInner) => {
     const [userStat, setUserStat] = useState<UserStat>({
         id: "",
         total_ability_triggered: 0,
@@ -144,6 +163,14 @@ export const EnlistBanner = () => {
                             backgroundSize: "contain",
                         }}
                     />
+
+                    {battleIdentifier && (
+                        <BannerInfo
+                            title={`BATTLE ID`}
+                            tooltip="The current battle."
+                            content={`#${battleIdentifier}`}
+                        />
+                    )}
 
                     <BannerInfo
                         title={`ABILITIES`}
