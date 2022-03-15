@@ -205,3 +205,9 @@ export interface MultipliersAll {
     total_multipliers: string
     multipliers: Multiplier[]
 }
+
+export interface MultiplierGuide {
+    multiplierType: string
+    description: string
+    title: string
+}
