@@ -39,7 +39,7 @@ const SpoilOfWarAmount = () => {
                     </Typography>
                     <SvgSupToken size="14px" fill={colors.yellow} />
                     <Typography variant="body1" sx={{ color: colors.yellow }}>
-                        {nextSpoilOfWarAmount}
+                        {nextSpoilOfWarAmount == "0" ? "---" : nextSpoilOfWarAmount}
                     </Typography>
                 </Stack>
             </TooltipHelper>
@@ -51,7 +51,7 @@ const SpoilOfWarAmount = () => {
                     </Typography>
                     <SvgSupToken size="14px" fill={colors.yellow} />
                     <Typography variant="body1" sx={{ color: colors.yellow }}>
-                        {spoilOfWarAmount}
+                        {spoilOfWarAmount == "0" ? "---" : spoilOfWarAmount}
                     </Typography>
                 </Stack>
             </TooltipHelper>
@@ -129,7 +129,7 @@ const Content = () => {
         <Fade in={isLiveChartOpen}>
             <Box>
                 <MoveableResizable config={config}>
-                    <Box sx={{ flex: 1, position: "relative", px: 1, pt: 1, pb: 0.9, width: "100%" }}>
+                    <Box sx={{ flex: 1, position: "relative", px: ".8rem", pt: ".8rem", pb: ".72rem", width: "100%" }}>
                         <TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in the next battle based on the multipliers that have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.">
                             <Box
                                 sx={{
@@ -150,8 +150,8 @@ const Content = () => {
                             sx={{
                                 position: "relative",
                                 height: "100%",
-                                px: 0.7,
-                                pt: 2,
+                                px: ".56rem",
+                                pt: "1.6rem",
                                 background: "#00000099",
                             }}
                         >
@@ -170,7 +170,7 @@ const Content = () => {
                                     sx={{
                                         width: 7,
                                         height: 7,
-                                        mb: 0.4,
+                                        mb: ".32rem",
                                         backgroundColor: colors.red,
                                         borderRadius: "50%",
                                         animation: `${pulseEffect} 3s infinite`,
