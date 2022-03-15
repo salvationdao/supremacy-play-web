@@ -1,32 +1,31 @@
 import { Button, Typography, useMediaQuery } from "@mui/material"
+import { SvgQuestionMark } from "../../assets"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
 import { GameGuideModal } from "./GameGuideModal"
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 
 const GameGuide = () => {
     const [closed, toggleClosed] = useToggle()
-    const matches = useMediaQuery("(min-width:1440px)")
+    const below1440 = useMediaQuery("(max-width:1440px)")
 
     return (
         <>
-            <GameGuideModal closed={closed} toggleClosed={toggleClosed} />
             <Button
                 sx={{
-                    color: colors.neonBlue,
-                    overflow: "hidden",
                     display: "flex",
-                    gap: "1em",
                     alignItems: "center",
                     justifyContent: "center",
+                    mx: ".5rem",
+                    overflow: "hidden",
+                    color: colors.neonBlue,
+                    minWidth: 0,
                 }}
-                onClick={() => {
-                    toggleClosed()
-                }}
+                onClick={toggleClosed}
             >
-                <HelpOutlineIcon />
-                {matches ? <Typography sx={{ color: colors.neonBlue }}>How To Play</Typography> : ""}
+                <SvgQuestionMark size="1.5rem" fill={colors.neonBlue} />
+                {below1440 ? null : <Typography sx={{ ml: ".6rem", color: colors.neonBlue }}>How To Play</Typography>}
             </Button>
+            <GameGuideModal closed={closed} toggleClosed={toggleClosed} />
         </>
     )
 }

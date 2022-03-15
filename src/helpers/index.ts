@@ -291,91 +291,91 @@ export const getMultiplierGuide = (multiplierKey: string): MultiplierGuide => {
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "When a player is within the top 50% of ability $SUPS average. 5x Multiplier that lasts for 1 Battle"
+                "When a player is within the top 50% of ability $SUPS average. 5x Multiplier that lasts for 1 Battle."
             break
         case "contributor":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "When a player is within the top 25% of ability $SUPS average. 10x Multiplier that lasts for 1 Battle"
+                "When a player is within the top 25% of ability $SUPS average. 10x Multiplier that lasts for 1 Battle."
             break
         case "super contributor":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "When a player is within the top 10% of ability $SUPS average. 20x Multiplier that lasts for 1 Battle"
+                "When a player is within the top 10% of ability $SUPS average. 20x Multiplier that lasts for 1 Battle."
             break
         case "a fool and his money":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "A player who has put the most individual SUPS in but your Syndicate didn’t win the ability. 5x Multiplier that lasts for 1 Battle"
+                "A player who has put the most individual SUPS in but your Syndicate didn’t win the ability. 5x Multiplier that lasts for 1 Battle."
             break
         case "air support":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "For a player who triggered the last airstrike of the battle. 5x Multiplier that lasts for 1 Battle"
+                "For a player who triggered the last airstrike of the battle. 5x Multiplier that lasts for 1 Battle."
             break
         case "air marshal":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "For a player who triggered the last three airstrikes 5x Multiplier that lasts for 1 Battle"
+            description = "For a player who triggered the last three airstrikes 5x Multiplier that lasts for 1 Battle."
             break
         case "now i am become death":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "For a player who triggered a nuke. 5x Multiplier that lasts for 1 Battle"
+            description = "For a player who triggered a nuke. 5x Multiplier that lasts for 1 Battle."
             break
         case "destroyer of worlds":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "For a player who has triggered the previous three nukes. 10x Multiplier that lasts for 1 Battle"
+                "For a player who has triggered the previous three nukes. 10x Multiplier that lasts for 1 Battle."
             break
         case "grease monkey":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "For a player who triggered a repair drop. 3x Multiplier that lasts for 1 Battle"
+            description = "For a player who triggered a repair drop. 3x Multiplier that lasts for 1 Battle."
             break
         case "field mechanic":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "For a player who has triggered the previous three repair drops. 5x Multiplier that lasts for 1 Battle"
+                "For a player who has triggered the previous three repair drops. 5x Multiplier that lasts for 1 Battle."
             break
         case "combo breaker":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "For a player who triggers an ability for their syndicate after it has lost the last three rounds. 5x Multiplier that lasts for 1 Battle"
+                "For a player who triggers an ability for their syndicate after it has lost the last three rounds. 5x Multiplier that lasts for 1 Battle."
             break
         case "c-c-c-c-combo breaker":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "For a player who triggers an ability for their syndicate after it has lost the last ten rounds. 5x Multiplier that lasts for 3 Battle"
+                "For a player who triggers an ability for their syndicate after it has lost the last ten rounds. 5x Multiplier that lasts for 3 Battle."
             break
         case "mech commander":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "When a player’s mech wins the battles. 5x Multiplier that lasts for 1 Battle"
+            description = "When a player’s mech wins the battles. 5x Multiplier that lasts for 1 Battle."
             break
         case "admiral":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "When a player’s mech wins the last 3 battles. 10x Multiplier that lasts for 1 Battle"
+            description = "When a player’s mech wins the last 3 battles. 10x Multiplier that lasts for 1 Battle."
             break
         case "won battle":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "When a player’s syndicate has won the last battle. 5x Multiplier that lasts for 1 Battle"
+            description = "When a player’s syndicate has won the last battle. 5x Multiplier that lasts for 1 Battle."
             break
         case "won last three battles":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
             description =
-                "When a player’s syndicate has won the last 3 battles. 10x Multiplier that lasts for 3 Battles"
+                "When a player’s syndicate has won the last 3 battles. 10x Multiplier that lasts for 3 Battles."
             break
         default:
             multiplierType = getMutiplierDeets("citizen").image

@@ -25,6 +25,7 @@ import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import History from "!react-svg-loader!./svg/History.svg"
+import QuestionMark from "!react-svg-loader!./svg/QuestionMark.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import Discord from "!react-svg-loader!./svg/Discord.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
@@ -584,5 +585,11 @@ export const SvgClose: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgContentCopyIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Copy />
+    </SvgWrapper>
+)
+
+export const SvgQuestionMark: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <QuestionMark />
     </SvgWrapper>
 )
