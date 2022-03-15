@@ -88,9 +88,9 @@ export const ChatSend = ({
                 justifyContent="flex-end"
                 sx={{
                     position: "relative",
-                    px: 1.6,
-                    pt: 0.4,
-                    pb: 3,
+                    px: "1.28rem",
+                    pt: ".32rem",
+                    pb: "2.4rem",
                 }}
             >
                 <TextField
@@ -143,7 +143,7 @@ export const ChatSend = ({
                                         transition: "all .1s",
                                     }}
                                 >
-                                    <SvgEmoji size="14px" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                    <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                 </IconButton>
                                 <IconButton
                                     onClick={sendMessage}
@@ -151,7 +151,7 @@ export const ChatSend = ({
                                     size="small"
                                     sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
                                 >
-                                    <SvgSend size="14px" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                    <SvgSend size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                 </IconButton>
                             </InputAdornment>
                         ),
@@ -162,8 +162,8 @@ export const ChatSend = ({
                     variant="caption"
                     sx={{
                         position: "absolute",
-                        bottom: 5,
-                        right: 15,
+                        bottom: ".5rem",
+                        right: "1.5rem",
                         opacity: message.length >= MAX_CHAT_MESSAGE_LENGTH ? 1 : 0.4,
                         color: message.length >= MAX_CHAT_MESSAGE_LENGTH ? colors.red : "#FFFFFF",
                     }}

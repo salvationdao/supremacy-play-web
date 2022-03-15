@@ -74,11 +74,11 @@ export const LocationSelectAlert = ({
 
     if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
         return (
-            <Stack spacing={1}>
+            <Stack spacing=".8rem">
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgCancelled fill="grey" size="12px" sx={{ display: "inline", mr: 0.5 }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
+                    <SvgCancelled fill="grey" size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
                     <StyledNormalText text="It has been cancelled as there were no players available to choose a target location." />
                 </Box>
             </Stack>
@@ -87,11 +87,11 @@ export const LocationSelectAlert = ({
 
     if (type == "FAILED_TIMEOUT") {
         return (
-            <Stack spacing={1}>
+            <Stack spacing=".8rem">
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgHourglass fill="grey" size="12px" sx={{ display: "inline", mr: 0.5 }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
+                    <SvgHourglass fill="grey" size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}
@@ -110,11 +110,11 @@ export const LocationSelectAlert = ({
 
     if (type == "FAILED_DISCONNECTED") {
         return (
-            <Stack spacing={1}>
+            <Stack spacing=".8rem">
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgDisconnected fill="grey" size="12px" sx={{ display: "inline", mr: 0.5 }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
+                    <SvgDisconnected fill="grey" size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}
@@ -133,11 +133,11 @@ export const LocationSelectAlert = ({
 
     if (type == "TRIGGER") {
         return (
-            <Stack spacing={1}>
+            <Stack spacing=".8rem">
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgDeath fill={colors.red} size="12px" sx={{ display: "inline", mr: 0.5 }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
+                    <SvgDeath fill={colors.red} size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}
@@ -156,11 +156,11 @@ export const LocationSelectAlert = ({
 
     if (type == "ASSIGNED") {
         return (
-            <Stack spacing={1}>
+            <Stack spacing=".8rem">
                 <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
                 <Box>
-                    <SvgLocation fill={colors.yellow} size="12px" sx={{ display: "inline", mr: 0.5 }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
+                    <SvgLocation fill={colors.yellow} size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
+                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}

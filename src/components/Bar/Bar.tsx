@@ -17,7 +17,7 @@ export const Bar = () => {
                 <>
                     <Logo />
                     <Box sx={{ flexGrow: 1 }} />
-                    <Typography sx={{ mr: 2, fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                    <Typography sx={{ mr: "1.6rem", fontFamily: "Nostromo Regular Bold" }} variant="caption">
                         {isServerUp ? "Connecting to passport..." : "Passport offline."}
                     </Typography>
                 </>
@@ -54,9 +54,9 @@ export const Bar = () => {
                 alignItems="center"
                 sx={{
                     position: "relative",
-                    pl: 1,
-                    pr: 2,
-                    height: GAME_BAR_HEIGHT,
+                    pl: ".8rem",
+                    pr: "1.6rem",
+                    height: `${GAME_BAR_HEIGHT}rem`,
                     color: "#FFFFFF",
                     backgroundColor:
                         user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
@@ -65,7 +65,7 @@ export const Bar = () => {
                     scrollbarWidth: "none",
                     zIndex: (theme) => theme.zIndex.drawer + 1,
                     "::-webkit-scrollbar": {
-                        height: 4,
+                        height: ".4rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
@@ -75,7 +75,7 @@ export const Bar = () => {
                         background: colors.darkNeonBlue,
                         borderRadius: 3,
                     },
-                    width: isAnyPanelOpen ? `calc(100vw - ${LIVE_CHAT_DRAWER_WIDTH - 1}px)` : "100vw",
+                    width: isAnyPanelOpen ? `calc(100vw - ${LIVE_CHAT_DRAWER_WIDTH - 0.1}rem)` : "100vw",
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
             >

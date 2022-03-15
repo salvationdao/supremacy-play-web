@@ -23,7 +23,7 @@ export const BattleAbilityAlert = ({
     const { label, colour, image_url } = ability
 
     return (
-        <Stack spacing={1}>
+        <Stack spacing=".8rem">
             <StyledImageText
                 text={label}
                 color={colour}
@@ -31,8 +31,8 @@ export const BattleAbilityAlert = ({
                 imageMb={-0.3}
             />
             <Box>
-                <SvgEmergency fill={colors.orange} size="12px" sx={{ display: "inline", mr: 0.5 }} />
-                <StyledNormalText text="|" sx={{ opacity: 0.2, ml: 0.3, mr: 1 }} />
+                <SvgEmergency fill={colors.orange} size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
+                <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
                 <StyledNormalText text="Initiated by " />
                 <StyledImageText
                     text={user ? acronym(user.faction.label) : "GABS"}

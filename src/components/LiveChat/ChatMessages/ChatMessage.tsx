@@ -23,15 +23,15 @@ export const ChatMessage = ({
     const multiplierInt = multiplierValue ? parseInt(multiplierValue) : 0
 
     return (
-        <Stack direction="row" spacing={0.5} sx={{ opacity: isSent ? 1 : 0.45 }}>
-            {isFailed && <SvgInfoCircular size="12px" fill={colors.red} sx={{ mt: 0.4 }} />}
+        <Stack direction="row" spacing=".4rem" sx={{ opacity: isSent ? 1 : 0.45 }}>
+            {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".32rem" }} />}
 
             {avatar_id && (
                 <Box
                     sx={{
-                        mt: "-0.8px !important",
-                        width: 18,
-                        height: 18,
+                        mt: "-0.1rem !important",
+                        width: "1.8rem",
+                        height: "1.8rem",
                         flexShrink: 0,
                         backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
                         backgroundRepeat: "no-repeat",
@@ -46,9 +46,9 @@ export const ChatMessage = ({
             {faction_logo_blob_id && faction_logo_blob_id != NullUUID && (
                 <Box
                     sx={{
-                        mt: "-0.8px !important",
-                        width: 18,
-                        height: 18,
+                        mt: "-0.1rem !important",
+                        width: "1.8rem",
+                        height: "1.8rem",
                         flexShrink: 0,
                         backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction_logo_blob_id})`,
                         backgroundRepeat: "no-repeat",
@@ -75,7 +75,7 @@ export const ChatMessage = ({
                     <Typography
                         sx={{
                             display: "inline",
-                            ml: 0.5,
+                            ml: ".4rem",
                             color:
                                 multiplierInt >= 50
                                     ? colors.neonBlue
@@ -97,7 +97,7 @@ export const ChatMessage = ({
                                 sx={{
                                     display: "inline",
                                     cursor: "default",
-                                    ml: 0.5,
+                                    ml: ".4rem",
                                     textAlign: "center",
                                     fontFamily: "Nostromo Regular Bold",
                                     fontSize: ".8rem",
@@ -108,7 +108,7 @@ export const ChatMessage = ({
                             </Typography>
                         </TooltipHelper>
                     )}
-                    <Typography variant="caption" sx={{ display: "inline", ml: 0.5, color: "grey", opacity: 0.5 }}>
+                    <Typography variant="caption" sx={{ display: "inline", ml: ".4rem", color: "grey", opacity: 0.5 }}>
                         {dateFormatter(sent_at)}
                     </Typography>
                 </Box>

@@ -39,8 +39,8 @@ export const HealthShieldBars = ({
                     sx={{
                         position: "absolute",
                         bottom: 0,
-                        right: WIDTH_PER_SLANTED_BAR - 1,
-                        width: WIDTH_PER_SLANTED_BAR_ACTUAL,
+                        right: `${WIDTH_PER_SLANTED_BAR - 0.1}rem`,
+                        width: `${WIDTH_PER_SLANTED_BAR_ACTUAL}rem`,
                         height: "100%",
                         pointerEvents: "none",
                     }}
@@ -53,7 +53,7 @@ export const HealthShieldBars = ({
                         position: "absolute",
                         bottom: 0,
                         right: 0,
-                        width: WIDTH_PER_SLANTED_BAR_ACTUAL,
+                        width: `${WIDTH_PER_SLANTED_BAR_ACTUAL}rem`,
                         height: "100%",
                         pointerEvents: "none",
                     }}
@@ -68,9 +68,9 @@ export const HealthShieldBars = ({
     }
 
     return (
-        <Stack justifyContent="center" spacing={0.5} sx={{ flex: 1, height: "100%" }}>
+        <Stack justifyContent="center" spacing=".4rem" sx={{ flex: 1, height: "100%" }}>
             <Box>
-                <BoxSlanted clipSlantSize="3px" sx={{ width: "100%", height: 12, backgroundColor: "#FFFFFF30" }}>
+                <BoxSlanted clipSlantSize="3px" sx={{ width: "100%", height: "1.2rem", backgroundColor: "#FFFFFF30" }}>
                     <BoxSlanted
                         clipSlantSize="3px"
                         sx={{
@@ -85,7 +85,7 @@ export const HealthShieldBars = ({
             <Box>
                 <BoxSlanted
                     clipSlantSize="3px"
-                    sx={{ ml: -0.5, width: "100%", height: 12, backgroundColor: "#FFFFFF30" }}
+                    sx={{ ml: "-0.4rem", width: "100%", height: "1.2rem", backgroundColor: "#FFFFFF30" }}
                 >
                     <BoxSlanted
                         clipSlantSize="3px"

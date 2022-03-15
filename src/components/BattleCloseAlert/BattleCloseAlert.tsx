@@ -48,8 +48,8 @@ export const BattleCloseAlert = () => {
                     sx={{
                         height: "100%",
                         width: "100%",
-                        px: 3,
-                        py: 1.2,
+                        px: "2.4rem",
+                        py: ".96rem",
                         backgroundColor: theme.factionTheme.background,
                     }}
                 >

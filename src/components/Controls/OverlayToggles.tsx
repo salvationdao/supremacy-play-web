@@ -1,22 +1,14 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
-import { SvgGoldBars, SvgHistory, SvgRadar } from "../../assets"
+import { SvgGoldBars, SvgRadar } from "../../assets"
 import { useOverlayToggles } from "../../containers"
-import { colors } from "../../theme/theme"
 
 export const OverlayToggles = () => {
-    const {
-        isMapOpen,
-        toggleIsMapOpen,
-        isBattleHistoryOpen,
-        isLiveChartOpen,
-        toggleIsLiveChartOpen,
-        toggleIsBattleHistoryOpen,
-    } = useOverlayToggles()
+    const { isMapOpen, toggleIsMapOpen, isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
 
     return (
         <Stack direction="row" alignItems="center">
-            <Typography variant="body2" sx={{ lineHeight: 1, mr: 0.5 }}>
+            <Typography variant="body2" sx={{ lineHeight: 1, mr: ".4rem" }}>
                 OVERLAYS:{" "}
             </Typography>
 
@@ -33,7 +25,7 @@ export const OverlayToggles = () => {
                         ":active": { filter: "grayscale(.6)" },
                     }}
                 >
-                    <SvgGoldBars size="18px" />
+                    <SvgGoldBars size="1.8rem" />
                 </IconButton>
             </TooltipHelper>
 
@@ -50,7 +42,7 @@ export const OverlayToggles = () => {
                         ":active": { filter: "grayscale(.6)" },
                     }}
                 >
-                    <SvgRadar size="17px" />
+                    <SvgRadar size="1.7rem" />
                 </IconButton>
             </TooltipHelper>
 
@@ -67,7 +59,7 @@ export const OverlayToggles = () => {
                         ":active": { filter: "grayscale(.6)" },
                     }}
                 >
-                    <SvgHistory size="17px" fill={colors.green} />
+                    <SvgHistory size="1.7rem" fill={colors.green} />
                 </IconButton>
             </TooltipHelper> */}
         </Stack>

@@ -150,8 +150,8 @@ export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, width, h
                 alignItems: "center",
                 pb: 0.3,
                 "& > svg": {
-                    width: width || size || "20px",
-                    height: height || size || "20px",
+                    width: width || size || "2rem",
+                    height: height || size || "2rem",
                     fill: fill || colors.text,
                 },
                 ...sx,

@@ -113,10 +113,10 @@ const DrawerContent = ({
                 value={tabValue}
                 variant="fullWidth"
                 sx={{
-                    height: GAME_BAR_HEIGHT,
+                    height: `${GAME_BAR_HEIGHT}rem`,
                     background: bannerBackgroundColor,
                     ".MuiButtonBase-root": {
-                        height: GAME_BAR_HEIGHT,
+                        height: `${GAME_BAR_HEIGHT}rem`,
                     },
                     ".MuiTabs-indicator": {
                         height: "3px",
@@ -129,12 +129,12 @@ const DrawerContent = ({
             >
                 <Tab
                     label={
-                        <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
+                        <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                             <Badge
                                 badgeContent={globalChatUnread}
                                 sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
                             >
-                                <SvgGlobal size="20px" />
+                                <SvgGlobal size="2rem" />
                             </Badge>
                             <Typography
                                 variant="caption"
@@ -151,17 +151,17 @@ const DrawerContent = ({
                 {isEnlisted && (
                     <Tab
                         label={
-                            <Stack direction="row" alignItems="center" justifyContent="center" spacing={1.2}>
+                            <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                                 <Badge
                                     badgeContent={factionChatUnread}
                                     sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
                                 >
                                     <Box
                                         sx={{
-                                            width: 21,
-                                            height: 21,
+                                            width: "2.1rem",
+                                            height: "2.1rem",
                                             flexShrink: 0,
-                                            mb: 0.2,
+                                            mb: ".16rem",
                                             backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
@@ -204,7 +204,7 @@ const DrawerContent = ({
                     onFailedMessage={onFailedMessage}
                 />
             ) : (
-                <Box sx={{ px: 2, py: 0.5, backgroundColor: colors.red }}>
+                <Box sx={{ px: "1.6rem", py: ".4rem", backgroundColor: colors.red }}>
                     <Typography
                         variant="body2"
                         sx={{
@@ -341,11 +341,11 @@ export const LiveChat = () => {
             variant="persistent"
             anchor="right"
             sx={{
-                width: LIVE_CHAT_DRAWER_WIDTH,
+                width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
                 flexShrink: 0,
                 zIndex: 9999,
                 "& .MuiDrawer-paper": {
-                    width: LIVE_CHAT_DRAWER_WIDTH,
+                    width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
                 },
             }}

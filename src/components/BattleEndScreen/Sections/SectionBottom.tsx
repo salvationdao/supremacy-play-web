@@ -27,16 +27,16 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 bottom: 0,
                 left: 0,
                 right: 0,
-                pl: 1.5,
-                pr: 4.2,
-                height: BOTTOM_BUTTONS_HEIGHT,
+                pl: "1.2rem",
+                pr: "3.36rem",
+                height: `${BOTTOM_BUTTONS_HEIGHT}rem`,
             }}
         >
             <Stack
                 direction="row"
-                spacing={0.8}
+                spacing=".64rem"
                 alignItems="flex-end"
-                sx={{ mr: "auto", pb: 0.6, height: "100%", opacity: 0.5 }}
+                sx={{ mr: "auto", pb: ".48rem", height: "100%", opacity: 0.5 }}
             >
                 <Typography variant="body2" sx={{ color: "grey !important" }}>
                     BATTLE #{battle_identifier.toString().padStart(4, "0")} ({moment(started_at).format("h:mm A")} to{" "}
@@ -47,7 +47,7 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
             <FancyButton
                 excludeCaret
                 clipSize="8px"
-                sx={{ pt: 0.9, pb: 0.7, width: 100 }}
+                sx={{ pt: ".72rem", pb: ".56rem", width: "10rem" }}
                 backgroundColor={primaryColor}
                 borderColor={primaryColor}
                 onClick={() => toggleIsEndBattleDetailOpen(false)}

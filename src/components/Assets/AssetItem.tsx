@@ -93,9 +93,9 @@ export const AssetItem = ({
                 <Typography
                     variant="body2"
                     sx={{
-                        px: 1,
-                        pt: 0.6,
-                        pb: 0.3,
+                        px: ".8rem",
+                        pt: ".48rem",
+                        pb: ".24rem",
                         color: "grey",
                         lineHeight: 1,
                         border: `${"grey"} 1px solid`,
@@ -116,9 +116,9 @@ export const AssetItem = ({
             //         <Typography
             //             variant="body2"
             //             sx={{
-            //                 px: 1,
-            //                 pt: 0.6,
-            //                 pb: 0.3,
+            //                 px: '.8rem',
+            //                 pt: '.48rem',
+            //                 pb: '.24rem',
             //                 color: colors.neonBlue,
             //                 lineHeight: 1,
             //                 border: `${colors.neonBlue} 1px solid`,
@@ -127,9 +127,9 @@ export const AssetItem = ({
             //         >
             //             REPAIRING
             //         </Typography>
-            //         <Stack direction="row" alignItems="center" spacing={0.4} sx={{ pt: 0.3 }}>
-            //             {isFastMode && <SvgFastRepair size="10px" fill={colors.neonBlue} />}
-            //             <SvgCooldown size="12px" fill={colors.neonBlue} />
+            //         <Stack direction="row" alignItems="center" spacing={".32rem"} sx={{ pt: '.24rem' }}>
+            //             {isFastMode && <SvgFastRepair size="1rem" fill={colors.neonBlue} />}
+            //             <SvgCooldown size="1.2rem" fill={colors.neonBlue} />
             //             <Typography
             //                 variant="caption"
             //                 sx={{ lineHeight: 1, color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}
@@ -147,9 +147,9 @@ export const AssetItem = ({
                     <Typography
                         variant="body2"
                         sx={{
-                            px: 1,
-                            pt: 0.6,
-                            pb: 0.3,
+                            px: ".8rem",
+                            pt: ".48rem",
+                            pb: ".24rem",
                             color: colors.orange,
                             lineHeight: 1,
                             border: `${colors.orange} 1px solid`,
@@ -159,9 +159,9 @@ export const AssetItem = ({
                         IN BATTLE
                     </Typography>
                     {queueStatus.contract_reward && (
-                        <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
+                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
-                            <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
+                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ color: colors.yellow }}>
                                 {supFormatter(queueStatus.contract_reward, 2)}
                             </Typography>
@@ -188,11 +188,11 @@ export const AssetItem = ({
                         }}
                         variant="body2"
                         sx={{
-                            px: 1,
-                            pt: 0.6,
-                            pb: 0.3,
+                            px: ".8rem",
+                            pt: ".48rem",
+                            pb: ".24rem",
                             cursor: "pointer",
-                            width: 82,
+                            width: "8.2rem",
                             textAlign: "center",
                             color: mouseOver ? colors.red : colors.yellow,
                             lineHeight: 1,
@@ -203,9 +203,9 @@ export const AssetItem = ({
                         {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
                     </Typography>
                     {queueStatus.contract_reward && (
-                        <Stack direction="row" alignItems="center" sx={{ pt: 0.3 }}>
+                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
-                            <SvgSupToken size="12px" fill={colors.yellow} sx={{ pb: 0.4 }} />
+                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ color: colors.yellow }}>
                                 {supFormatter(queueStatus.contract_reward, 2)}
                             </Typography>
@@ -222,8 +222,8 @@ export const AssetItem = ({
                 onClick={() => toggleIsDeployModal(true)}
                 sx={{
                     minWidth: 0,
-                    px: 1,
-                    pt: 0.6,
+                    px: ".8rem",
+                    pt: ".48rem",
                     pb: 0.4,
                     boxShadow: 0,
                     backgroundColor: colors.green,
@@ -241,11 +241,11 @@ export const AssetItem = ({
     return (
         <Stack
             direction="row"
-            spacing={1.8}
+            spacing="1.44rem"
             sx={{
                 position: "relative",
-                px: 1.3,
-                py: 1,
+                px: "1.04rem",
+                py: ".8rem",
                 backgroundColor: `${colors.navy}80`,
             }}
         >
@@ -253,8 +253,8 @@ export const AssetItem = ({
                 sx={{
                     position: "relative",
                     flexShrink: 0,
-                    px: 0.6,
-                    py: 1,
+                    px: ".48rem",
+                    py: ".8rem",
                     boxShadow: "inset 0 0 8px 6px #00000055",
                     overflow: "hidden",
                     borderRadius: 0.5,
@@ -262,8 +262,8 @@ export const AssetItem = ({
             >
                 <Box
                     sx={{
-                        width: 55,
-                        height: 55,
+                        width: "5.5rem",
+                        height: "5.5rem",
                         flexShrink: 0,
                         overflow: "hidden",
                         backgroundImage: `url(${image_url})`,
@@ -284,12 +284,12 @@ export const AssetItem = ({
                 <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
                     <Stack
                         direction="row"
-                        spacing={0.1}
+                        spacing=".08rem"
                         sx={{
                             position: "absolute",
-                            bottom: -14,
-                            left: 1,
-                            height: 42,
+                            bottom: "-1.4rem",
+                            left: ".1rem",
+                            height: "4.2rem",
                             transform: "rotate(-40deg)",
                             zIndex: 3,
                         }}
@@ -314,7 +314,7 @@ export const AssetItem = ({
                 </TooltipHelper>
             </Box>
 
-            <Stack spacing={0.5}>
+            <Stack spacing=".4rem">
                 <Typography
                     variant="caption"
                     sx={{
@@ -326,7 +326,7 @@ export const AssetItem = ({
                     {name || label}
                 </Typography>
 
-                <Stack alignItems="center" direction="row" spacing={1.2}>
+                <Stack alignItems="center" direction="row" spacing=".96rem">
                     <StatusArea />
                 </Stack>
             </Stack>
@@ -334,9 +334,9 @@ export const AssetItem = ({
             <Link
                 href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
                 target="_blank"
-                sx={{ position: "absolute", top: 6, right: 4 }}
+                sx={{ position: "absolute", top: ".6rem", right: ".4rem" }}
             >
-                <SvgExternalLink size="10px" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
             </Link>
 
             <DeployConfirmation

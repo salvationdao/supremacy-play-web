@@ -37,8 +37,8 @@ export const ProfileCard = () => {
                         src={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : ""}
                         alt={`${username}'s Avatar`}
                         sx={{
-                            height: 29,
-                            width: 29,
+                            height: "2.9rem",
+                            width: "2.9rem",
                             borderRadius: 1,
                             border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
                         }}
@@ -58,15 +58,15 @@ export const ProfileCard = () => {
                     <Stack
                         direction="row"
                         alignItems="center"
-                        spacing={1.2}
+                        spacing=".96rem"
                         sx={{
-                            mx: 1.5,
+                            mx: "1.2rem",
                             height: "100%",
                             overflowX: "auto",
                             overflowY: "hidden",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                height: 4,
+                                height: ".4rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
@@ -82,8 +82,8 @@ export const ProfileCard = () => {
                             src={avatar_id ? `${PASSPORT_WEB}api/files/${avatar_id}` : ""}
                             alt={`${username}'s Avatar`}
                             sx={{
-                                height: 26,
-                                width: 26,
+                                height: "2.6rem",
+                                width: "2.6rem",
                                 borderRadius: 0.8,
                                 border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
                             }}
@@ -93,7 +93,7 @@ export const ProfileCard = () => {
                         <Typography
                             variant="body2"
                             sx={{
-                                mt: "2.8px !important",
+                                mt: ".29rem !important",
                                 lineHeight: 1,
                                 fontFamily: "Nostromo Regular Black",
                                 color: faction ? faction.theme.primary : "#FFFFFF",
@@ -118,26 +118,26 @@ export const ProfileCard = () => {
                     horizontal: "left",
                 }}
                 sx={{
-                    mt: 1,
+                    mt: ".8rem",
                     zIndex: 10000,
                     ".MuiPaper-root": {
                         backgroundColor: colors.darkNavy,
                     },
                 }}
             >
-                <Stack spacing={0.4} sx={{ p: 1, backgroundColor: colors.darkNavy }}>
+                <Stack spacing=".32rem" sx={{ p: ".8rem", backgroundColor: colors.darkNavy }}>
                     <NavButton
                         href={`${PASSPORT_WEB}collections/${user.username}`}
-                        startIcon={<SvgAssets size="16px" />}
+                        startIcon={<SvgAssets size="1.6rem" />}
                     >
                         My Inventory
                     </NavButton>
-                    <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop size="16px" />}>
+                    <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop size="1.6rem" />}>
                         Purchase Assets
                     </NavButton>
                     <NavButton
                         href={`${PASSPORT_WEB}profile/${user.username}/edit`}
-                        startIcon={<SvgProfile size="16px" />}
+                        startIcon={<SvgProfile size="1.6rem" />}
                     >
                         Edit Profile
                     </NavButton>

@@ -23,10 +23,10 @@ export const LoadMessage = () => {
         <Box
             sx={{
                 position: "absolute",
-                top: 15,
-                left: 20,
-                px: 1.6,
-                py: 0.5,
+                top: "1.5rem",
+                left: "2rem",
+                px: "1.28rem",
+                py: ".4rem",
                 backgroundColor: "#000000",
                 animation: `${pulseEffect} 5s infinite`,
                 filter: "drop-shadow(0 3px 3px #00000060)",

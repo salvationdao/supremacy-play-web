@@ -37,7 +37,7 @@ export const EmojiPopover = ({
         >
             <Box
                 sx={{
-                    mb: 2,
+                    mb: "1.6rem",
                     backgroundColor: colors.darkNavy,
                 }}
             >
@@ -55,14 +55,14 @@ export const EmojiPopover = ({
                             borderRadius: 1,
                         },
                         ".emoji-mart-scroll": {
-                            mr: 0.4,
-                            my: 0.4,
+                            mr: ".32rem",
+                            my: ".32rem",
                             overflowY: "auto",
                             overflowX: "hidden",
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: 5,
+                                width: ".4rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
@@ -74,7 +74,7 @@ export const EmojiPopover = ({
                             },
                         },
                         ".emoji-mart-search": {
-                            mb: 1,
+                            mb: ".8rem",
                         },
                         ".emoji-mart, #emoji-mart-search-2": {
                             border: "none",

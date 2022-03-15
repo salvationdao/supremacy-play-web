@@ -96,10 +96,10 @@ const ChatMessagesInner = ({
                     <Stack
                         alignItems="center"
                         justifyContent="center"
-                        spacing={0.3}
+                        spacing=".24rem"
                         sx={{
-                            px: 1.6,
-                            py: 1.6,
+                            px: "1.28rem",
+                            py: "1.28rem",
                             backgroundColor: colors.red,
                             boxShadow: 2,
                         }}
@@ -125,17 +125,17 @@ const ChatMessagesInner = ({
                 sx={{
                     flex: 1,
                     position: "relative",
-                    my: 1,
-                    mr: 0.8,
-                    pl: 1.9,
-                    pr: 2,
+                    my: ".8rem",
+                    mr: ".64rem",
+                    pl: "1.52rem",
+                    pr: "1.6rem",
                     overflowY: "auto",
                     overflowX: "hidden",
                     direction: "ltr",
                     scrollbarWidth: "none",
                     scrollBehavior: "smooth",
                     "::-webkit-scrollbar": {
-                        width: 4,
+                        width: ".4rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
@@ -147,7 +147,7 @@ const ChatMessagesInner = ({
                     },
                 }}
             >
-                <Stack spacing={1.3} sx={{ mt: 1.1 }}>
+                <Stack spacing="1.04rem" sx={{ mt: ".88rem" }}>
                     {chatMessages && chatMessages.length > 0 ? (
                         chatMessages.map((c) => (
                             <ChatMessage
@@ -180,8 +180,8 @@ const ChatMessagesInner = ({
                     onClick={onClickScrollToBottom}
                     sx={{
                         position: "absolute",
-                        bottom: 78,
-                        right: 25,
+                        bottom: "7.8rem",
+                        right: "2.5rem",
                         backgroundColor: primaryColor,
                         boxShadow: 3,
                         ":hover": {
@@ -190,7 +190,7 @@ const ChatMessagesInner = ({
                         },
                     }}
                 >
-                    <SvgScrolldown size="18px" fill={secondaryColor} sx={{ p: 0 }} />
+                    <SvgScrolldown size="1.8rem" fill={secondaryColor} sx={{ p: 0 }} />
                 </IconButton>
             </Fade>
         </>

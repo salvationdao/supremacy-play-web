@@ -25,7 +25,7 @@ const BannerInfo = ({
                 <Typography
                     variant="subtitle2"
                     sx={{
-                        mb: 0.7,
+                        mb: ".56rem",
                         fontFamily: "Nostromo Regular Bold",
                         lineHeight: 1,
                         whiteSpace: "nowrap",
@@ -35,7 +35,7 @@ const BannerInfo = ({
                     {title}
                 </Typography>
             </TooltipHelper>
-            <Stack direction="row" alignItems="center" spacing={0.8}>
+            <Stack direction="row" alignItems="center" spacing=".64rem">
                 {PrefixSvg}
                 <Typography
                     variant="subtitle2"
@@ -89,7 +89,7 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
 
     if (!user || !user.faction || !userStat) {
         return (
-            <Stack alignItems="center" sx={{ width: 130 }}>
+            <Stack alignItems="center" sx={{ width: "13rem" }}>
                 <CircularProgress size={20} />
             </Stack>
         )
@@ -109,8 +109,8 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
             iconComponent={
                 <Box
                     sx={{
-                        width: 28,
-                        height: 28,
+                        width: "2.8rem",
+                        height: "2.8rem",
                         backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
@@ -124,8 +124,8 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
         >
             <Box
                 sx={{
-                    mx: 1.5,
-                    px: 2.8,
+                    mx: "1.2rem",
+                    px: "2.24rem",
                     height: "100%",
                     background: `${primary}10`,
                 }}
@@ -133,14 +133,14 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
                 <Stack
                     direction="row"
                     alignItems="center"
-                    spacing={3}
+                    spacing="2.4rem"
                     sx={{
                         height: "100%",
                         overflowX: "auto",
                         overflowY: "hidden",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            height: 4,
+                            height: ".4rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
@@ -154,8 +154,8 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
                 >
                     <Box
                         sx={{
-                            width: 38,
-                            height: 38,
+                            width: "3.8rem",
+                            height: "3.8rem",
                             flexShrink: 0,
                             backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
                             backgroundRepeat: "no-repeat",
@@ -176,21 +176,21 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
                         title={`ABILITIES`}
                         tooltip="The number of abilities you have triggered."
                         content={`${total_ability_triggered}`}
-                        PrefixSvg={<SvgAbility size="11px" />}
+                        PrefixSvg={<SvgAbility size="1.1rem" />}
                     />
 
                     <BannerInfo
                         title={`KILLS`}
                         tooltip="The number of times your deployed war machine has destroyed another war machine."
                         content={`${kill_count}`}
-                        PrefixSvg={<SvgDeath size="11px" />}
+                        PrefixSvg={<SvgDeath size="1.1rem" />}
                     />
 
                     <BannerInfo
                         title={`SPECTATED`}
                         tooltip="The number of battles you have watched."
                         content={`${view_battle_count}`}
-                        PrefixSvg={<SvgView size="11px" />}
+                        PrefixSvg={<SvgView size="1.1rem" />}
                     />
                 </Stack>
             </Box>

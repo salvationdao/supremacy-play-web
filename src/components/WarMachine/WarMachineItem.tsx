@@ -18,12 +18,13 @@ import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
-const WIDTH_WM_IMAGE = 92
-const WIDTH_CENTER = 142
-export const WIDTH_PER_SLANTED_BAR = 12
-export const WIDTH_PER_SLANTED_BAR_ACTUAL = 32
-const WIDTH_SKILL_BUTTON = 43
-const HEIGHT = 76
+// in rems
+const WIDTH_WM_IMAGE = 9.2
+const WIDTH_CENTER = 14.2
+export const WIDTH_PER_SLANTED_BAR = 1.2
+export const WIDTH_PER_SLANTED_BAR_ACTUAL = 3.2
+const WIDTH_SKILL_BUTTON = 4.3
+const HEIGHT = 7.6
 
 const SKILL_BUTTON_TEXT_ROTATION = 76.5
 const DEAD_OPACITY = 0.6
@@ -159,17 +160,22 @@ const WarMachineItemInner = ({
                 sx={{
                     position: "relative",
                     opacity: isAlive ? 1 : 0.8,
-                    width: isOwnFaction
-                        ? isExpanded
-                            ? WIDTH_WM_IMAGE + WIDTH_CENTER + WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR
-                            : WIDTH_WM_IMAGE +
-                              (2 * WIDTH_PER_SLANTED_BAR + 8) +
-                              (numSkillBars > 0
-                                  ? WIDTH_SKILL_BUTTON + (numSkillBars - 1) * WIDTH_PER_SLANTED_BAR - 7
-                                  : 0)
-                        : isExpanded
-                        ? WIDTH_WM_IMAGE + WIDTH_CENTER
-                        : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 8,
+                    width: `${
+                        isOwnFaction
+                            ? isExpanded
+                                ? WIDTH_WM_IMAGE +
+                                  WIDTH_CENTER +
+                                  WIDTH_SKILL_BUTTON +
+                                  numSkillBars * WIDTH_PER_SLANTED_BAR
+                                : WIDTH_WM_IMAGE +
+                                  (2 * WIDTH_PER_SLANTED_BAR + 0.8) +
+                                  (numSkillBars > 0
+                                      ? WIDTH_SKILL_BUTTON + (numSkillBars - 1) * WIDTH_PER_SLANTED_BAR - 0.7
+                                      : 0)
+                            : isExpanded
+                            ? WIDTH_WM_IMAGE + WIDTH_CENTER
+                            : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 0.8
+                    }rem`,
                     transition: "width .3s",
                 }}
             >
@@ -178,10 +184,10 @@ const WarMachineItemInner = ({
                         onClick={toggleIsDestroyedInfoOpen}
                         sx={{
                             position: "absolute",
-                            top: 1.5,
-                            left: WIDTH_WM_IMAGE - 20,
-                            px: 0.7,
-                            py: 0.5,
+                            top: ".15rem",
+                            left: `${WIDTH_WM_IMAGE - 2}rem`,
+                            px: ".56rem",
+                            py: ".4rem",
                             opacity: 0.83,
                             cursor: "pointer",
                             ":hover": {
@@ -194,7 +200,7 @@ const WarMachineItemInner = ({
                             zIndex: 99,
                         }}
                     >
-                        <SvgInfoCircularIcon fill={"white"} size="15px" />
+                        <SvgInfoCircularIcon fill={"white"} size="1.5rem" />
                     </Box>
                 )}
 
@@ -203,8 +209,8 @@ const WarMachineItemInner = ({
                         position: "absolute",
                         bottom: 0,
                         right: 0,
-                        left: 10,
-                        height: 3,
+                        left: "1rem",
+                        height: ".3rem",
                         backgroundColor: primary,
                         zIndex: 9,
                         opacity: isAlive ? 1 : DEAD_OPACITY,
@@ -223,8 +229,8 @@ const WarMachineItemInner = ({
                             onClick={() => handleClick(warMachine.hash)}
                             sx={{
                                 position: "relative",
-                                width: WIDTH_WM_IMAGE,
-                                height: HEIGHT,
+                                width: `${WIDTH_WM_IMAGE}rem`,
+                                height: `${HEIGHT}rem`,
                                 overflow: "hidden",
                                 backgroundImage: `url(${wmImageUrl})`,
                                 backgroundRepeat: "no-repeat",
@@ -236,12 +242,12 @@ const WarMachineItemInner = ({
                             <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
                                 <Stack
                                     direction="row"
-                                    spacing={0.1}
+                                    spacing=".08rem"
                                     sx={{
                                         position: "absolute",
                                         bottom: -9,
-                                        left: 4,
-                                        height: 42,
+                                        left: ".4rem",
+                                        height: "4.2rem",
                                         transform: "rotate(-40deg)",
                                         zIndex: 3,
                                     }}
@@ -269,7 +275,7 @@ const WarMachineItemInner = ({
                                 alignItems="center"
                                 justifyContent="center"
                                 sx={{
-                                    px: 3.3,
+                                    px: "2.64rem",
                                     position: "absolute",
                                     top: 0,
                                     bottom: 0,
@@ -297,7 +303,7 @@ const WarMachineItemInner = ({
                             flex: 1,
                             position: "relative",
                             alignSelf: "stretch",
-                            ml: -2.5,
+                            ml: "-2rem",
 
                             backgroundColor: !isExpanded
                                 ? "transparent"
@@ -311,16 +317,16 @@ const WarMachineItemInner = ({
                         <Stack
                             alignItems="center"
                             direction="row"
-                            spacing={1}
-                            sx={{ flex: 1, pl: isExpanded ? 3.5 : 0, pr: isExpanded ? 2.1 : 0 }}
+                            spacing=".8rem"
+                            sx={{ flex: 1, pl: isExpanded ? "2.8rem" : 0, pr: isExpanded ? "1.68rem" : 0 }}
                         >
                             <HealthShieldBars warMachine={warMachine} type={isExpanded ? "horizontal" : "vertical"} />
 
                             {isExpanded && (
                                 <Box
                                     sx={{
-                                        width: 26,
-                                        height: 26,
+                                        width: "2.6rem",
+                                        height: "2.6rem",
                                         backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
@@ -333,7 +339,13 @@ const WarMachineItemInner = ({
                         {isExpanded && (
                             <Stack
                                 justifyContent="center"
-                                sx={{ pl: 2.2, pr: 2.3, py: 0.7, height: 33, backgroundColor: `${background}95` }}
+                                sx={{
+                                    pl: "1.76rem",
+                                    pr: "1.84rem",
+                                    py: ".56rem",
+                                    height: "3.3rem",
+                                    backgroundColor: `${background}95`,
+                                }}
                             >
                                 <Typography
                                     variant="caption"
@@ -363,9 +375,9 @@ const WarMachineItemInner = ({
                                 onClick={isAlive ? togglePopoverOpen : null}
                                 sx={{
                                     position: "relative",
-                                    width: WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR,
+                                    width: `${WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR}rem`,
                                     alignSelf: "stretch",
-                                    ml: -2.5,
+                                    ml: "-2rem",
                                     backgroundColor: primary,
                                     boxShadow: 3,
                                     cursor: isAlive ? "pointer" : "auto",
@@ -379,7 +391,7 @@ const WarMachineItemInner = ({
                                 <Box
                                     sx={{
                                         position: "absolute",
-                                        left: 22,
+                                        left: "2.2rem",
                                         top: "50%",
                                         transform: `translate(-50%, -50%) rotate(-${SKILL_BUTTON_TEXT_ROTATION}deg)`,
                                     }}

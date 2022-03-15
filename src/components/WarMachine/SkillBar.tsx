@@ -69,7 +69,7 @@ export const SkillBar = ({
                 position: "absolute",
                 bottom: 0,
                 right: index * WIDTH_PER_SLANTED_BAR - index * 1,
-                width: WIDTH_PER_SLANTED_BAR_ACTUAL,
+                width: `${WIDTH_PER_SLANTED_BAR_ACTUAL}rem`,
                 height: "100%",
                 zIndex: 4,
                 pointerEvents: "none",

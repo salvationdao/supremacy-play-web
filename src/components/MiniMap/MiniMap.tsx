@@ -110,8 +110,8 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
         <Box
             sx={{
                 position: "absolute",
-                bottom: 10,
-                right: 10,
+                bottom: "1rem",
+                right: "1rem",
                 pointerEvents: "none",
                 zIndex: 32,
                 filter: "drop-shadow(0 3px 3px #00000050)",
@@ -130,15 +130,15 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                             display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                             pointerEvents: "all",
                             position: "absolute",
-                            top: 9.5,
-                            left: 10,
+                            top: ".95rem",
+                            left: "1rem",
                             cursor: "nwse-resize",
                             color: colors.text,
                             opacity: 0.8,
                             zIndex: 50,
                         }}
                     >
-                        <SvgResizeXY size="11px" sx={{ transform: "rotate(90deg)" }} />
+                        <SvgResizeXY size="1.1rem" sx={{ transform: "rotate(90deg)" }} />
                     </Box>
                 )}
             >
@@ -174,30 +174,30 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                             size="small"
                                             sx={{
                                                 position: "absolute",
-                                                left: enlarged ? 5 : 25,
-                                                top: 2,
+                                                left: enlarged ? ".5rem" : "2.5rem",
+                                                top: ".2rem",
                                                 color: colors.text,
                                                 opacity: 0.8,
                                                 zIndex: 50,
                                             }}
                                             onClick={() => toggleEnlarged()}
                                         >
-                                            <SvgMapEnlarge size="13px" />
+                                            <SvgMapEnlarge size="1.3rem" />
                                         </IconButton>
 
                                         <IconButton
                                             size="small"
                                             sx={{
                                                 position: "absolute",
-                                                left: enlarged ? 25 : 48,
-                                                top: 2,
+                                                left: enlarged ? "2.5rem" : "4.8rem",
+                                                top: ".2rem",
                                                 color: colors.text,
                                                 opacity: 0.8,
                                                 zIndex: 50,
                                             }}
                                             onClick={() => toggleIsMapOpen()}
                                         >
-                                            <SvgHide size="13px" />
+                                            <SvgHide size="1.3rem" />
                                         </IconButton>
 
                                         {isTargeting && (

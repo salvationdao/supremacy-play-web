@@ -12,7 +12,7 @@ export const StyledImageText = ({
 
     fontFamily,
     fontWeight = "fontWeightBold",
-    imageSize = 16,
+    imageSize = 1.6,
     imageBorderColor,
     imageBackgroundColor,
     imageBorderThickness = "1px",
@@ -54,10 +54,10 @@ export const StyledImageText = ({
                 <Box
                     sx={{
                         display: "inline-block",
-                        width: imageSize,
-                        height: imageSize,
-                        mb: imageMb || -0.2,
-                        mr: `${0.3 * imageSize}px`,
+                        width: `${imageSize}rem`,
+                        height: `${imageSize}rem`,
+                        mb: imageMb || "-0.16rem",
+                        mr: `${0.3 * imageSize}rem`,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",

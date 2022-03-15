@@ -202,8 +202,8 @@ export const Notifications = () => {
         <Stack
             sx={{
                 position: "absolute",
-                top: 10,
-                right: 10,
+                top: "1rem",
+                right: "1rem",
                 zIndex: 15,
                 overflow: "hidden",
                 opacity: UI_OPACITY,
@@ -216,12 +216,12 @@ export const Notifications = () => {
                         maxHeight: `calc(${height}px - ${MINI_MAP_DEFAULT_HEIGHT + 40}px)`,
                         overflowY: "auto",
                         overflowX: "hidden",
-                        pr: 1,
-                        py: 0.2,
+                        pr: ".8rem",
+                        py: ".16rem",
                         direction: "ltr",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            width: 4,
+                            width: ".4rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
@@ -234,7 +234,7 @@ export const Notifications = () => {
                     }}
                 >
                     <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing={0.6}>{notificationsJsx}</Stack>
+                        <Stack spacing=".48rem">{notificationsJsx}</Stack>
                     </Box>
                 </Box>
             </Box>

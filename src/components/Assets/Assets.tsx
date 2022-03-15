@@ -37,18 +37,18 @@ const DrawerContent = () => {
         <Stack sx={{ flex: 1 }}>
             <Stack
                 direction="row"
-                spacing={1.2}
+                spacing=".96rem"
                 alignItems="center"
                 sx={{
                     position: "relative",
-                    pl: 2.5,
-                    pr: 6,
-                    height: GAME_BAR_HEIGHT,
+                    pl: "2rem",
+                    pr: "4.8rem",
+                    height: `${GAME_BAR_HEIGHT}rem`,
                     background: `${colors.assetsBanner}65`,
                     boxShadow: 1.5,
                 }}
             >
-                <SvgRobot size="23px" fill={colors.text} sx={{ pb: 0.7 }} />
+                <SvgRobot size="2.3rem" fill={colors.text} sx={{ pb: ".56rem" }} />
                 <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
                     WAR MACHINES
                 </Typography>
@@ -57,14 +57,14 @@ const DrawerContent = () => {
             <Fade in={true}>
                 <Box
                     sx={{
-                        m: 0.5,
+                        m: ".4rem",
                         flex: 1,
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            width: 4,
+                            width: ".4rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
@@ -76,7 +76,7 @@ const DrawerContent = () => {
                         },
                     }}
                 >
-                    <Stack spacing={0.6}>
+                    <Stack spacing=".48rem">
                         {assets && assets.length > 0 ? (
                             <>
                                 {assets.map((a, index) => (
@@ -102,9 +102,9 @@ const DrawerContent = () => {
                                 <Typography
                                     variant="body2"
                                     sx={{
-                                        px: 1.6,
-                                        pt: 1.6,
-                                        mb: 0.7,
+                                        px: "1.28rem",
+                                        pt: "1.28rem",
+                                        mb: ".56rem",
                                         color: colors.grey,
                                         userSelect: "text",
                                     }}
@@ -141,11 +141,11 @@ export const Assets = () => {
             variant="persistent"
             anchor="right"
             sx={{
-                width: LIVE_CHAT_DRAWER_WIDTH,
+                width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
                 flexShrink: 0,
                 zIndex: 9999,
                 "& .MuiDrawer-paper": {
-                    width: LIVE_CHAT_DRAWER_WIDTH,
+                    width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
                 },
             }}

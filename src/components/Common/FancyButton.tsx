@@ -33,8 +33,8 @@ const Triangle = styled("div")({
     bottom: "3px",
     right: "3px",
     clipPath: "polygon(100% 0, 0% 100%, 100% 100%)",
-    height: "10px",
-    width: "10px",
+    height: "1rem",
+    width: "1rem",
 })
 
 interface FancyButtonProps extends LoadingButtonProps, ClipThingProps {

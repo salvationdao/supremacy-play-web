@@ -39,8 +39,8 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
         <Stack
             sx={{
                 position: "absolute",
-                top: 10,
-                left: 10,
+                top: "1rem",
+                left: "1rem",
                 zIndex: 14,
                 overflow: "hidden",
                 filter: "drop-shadow(0 3px 3px #00000050)",
@@ -76,7 +76,13 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                             innerSx={{ width: containerWidth, height: containerHeight }}
                         >
                             <Box
-                                sx={{ backgroundColor: theme.factionTheme.background, pl: 0.9, pr: 2, pt: 1.8, pb: 2 }}
+                                sx={{
+                                    backgroundColor: theme.factionTheme.background,
+                                    pl: ".72rem",
+                                    pr: "1.6rem",
+                                    pt: "1.44rem",
+                                    pb: "1.6rem",
+                                }}
                             >
                                 <Box
                                     sx={{
@@ -85,12 +91,12 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                                         maxHeight: `calc(${height}px - 160px - 10px - 56px)`,
                                         overflowY: "auto",
                                         overflowX: "hidden",
-                                        pl: 1.1,
-                                        py: 0.2,
+                                        pl: ".88rem",
+                                        py: ".16rem",
                                         direction: "rtl",
                                         scrollbarWidth: "none",
                                         "::-webkit-scrollbar": {
-                                            width: 4,
+                                            width: ".4rem",
                                         },
                                         "::-webkit-scrollbar-track": {
                                             background: "#FFFFFF15",
@@ -102,7 +108,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                                         },
                                     }}
                                 >
-                                    <Stack spacing={2.5} sx={{ direction: "ltr" }}>
+                                    <Stack spacing="2rem" sx={{ direction: "ltr" }}>
                                         <BattleAbilityItem />
                                         <FactionAbilities />
                                     </Stack>

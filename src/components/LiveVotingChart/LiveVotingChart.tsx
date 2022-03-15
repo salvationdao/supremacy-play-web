@@ -31,13 +31,13 @@ const SpoilOfWarAmount = () => {
     }, [state, subscribeNetMessage])
 
     return (
-        <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+        <Stack direction="row" alignItems="center" justifyContent="center" spacing="1.6rem">
             <TooltipHelper text="This is the spoils of war accumulated in the current battle.">
                 <Stack direction="row" alignItems="center" justifyContent="center">
                     <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
                         SPOILS OF WAR:&nbsp;
                     </Typography>
-                    <SvgSupToken size="14px" fill={colors.yellow} />
+                    <SvgSupToken size="1.4rem" fill={colors.yellow} />
                     <Typography variant="body1" sx={{ color: colors.yellow }}>
                         {nextSpoilOfWarAmount == "0" ? "---" : nextSpoilOfWarAmount}
                     </Typography>
@@ -49,7 +49,7 @@ const SpoilOfWarAmount = () => {
                     <Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
                         PREV:&nbsp;
                     </Typography>
-                    <SvgSupToken size="14px" fill={colors.yellow} />
+                    <SvgSupToken size="1.4rem" fill={colors.yellow} />
                     <Typography variant="body1" sx={{ color: colors.yellow }}>
                         {spoilOfWarAmount == "0" ? "---" : spoilOfWarAmount}
                     </Typography>
@@ -134,14 +134,14 @@ const Content = () => {
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    bottom: -18,
-                                    right: 75,
+                                    bottom: "-1.8rem",
+                                    right: "7.5rem",
                                     opacity: 0.4,
                                     zIndex: 99,
                                     ":hover": { opacity: 1 },
                                 }}
                             >
-                                <SvgInfoCircularIcon fill={colors.text} size="12px" />
+                                <SvgInfoCircularIcon fill={colors.text} size="1.2rem" />
                             </Box>
                         </TooltipHelper>
 
@@ -159,11 +159,11 @@ const Content = () => {
                                 direction="row"
                                 alignItems="center"
                                 justifyContent="center"
-                                spacing={0.5}
+                                spacing=".4rem"
                                 sx={{
                                     position: "absolute",
-                                    top: 5,
-                                    right: 7,
+                                    top: ".5rem",
+                                    right: ".7rem",
                                 }}
                             >
                                 <Box

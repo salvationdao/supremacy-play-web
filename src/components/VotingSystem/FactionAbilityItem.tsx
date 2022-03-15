@@ -120,30 +120,30 @@ export const FactionAbilityItemInner = ({
                 <Box>
                     <ClipThing clipSize="6px" clipSlantSize={clipSlantSize}>
                         <Stack
-                            spacing={1}
+                            spacing=".8rem"
                             alignItems="flex-start"
                             sx={{
                                 flex: 1,
-                                minWidth: 325,
+                                minWidth: "32.5rem",
                                 backgroundColor: colour ? `${colour}15` : `${colors.darkNavyBlue}80`,
-                                px: 2,
-                                pt: 1.6,
-                                pb: 1.6,
+                                px: "1.6rem",
+                                pt: "1.28rem",
+                                pb: "1.28rem",
                             }}
                         >
                             <Stack
-                                spacing={3}
+                                spacing="2.4rem"
                                 direction="row"
                                 alignItems="center"
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
                                 <TooltipHelper placement="right" text={description}>
-                                    <Stack spacing={1} direction="row" alignItems="center" justifyContent="center">
+                                    <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">
                                         <Box
                                             sx={{
-                                                height: 19,
-                                                width: 19,
+                                                height: "1.9rem",
+                                                width: "1.9rem",
                                                 backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
                                                 backgroundRepeat: "no-repeat",
                                                 backgroundPosition: "center",
@@ -151,7 +151,7 @@ export const FactionAbilityItemInner = ({
                                                 backgroundColor: colour || "#030409",
                                                 border: `${colour} 1px solid`,
                                                 borderRadius: 0.6,
-                                                mb: 0.3,
+                                                mb: ".24rem",
                                             }}
                                         />
                                         <Typography
@@ -164,7 +164,7 @@ export const FactionAbilityItemInner = ({
                                                 overflow: "hidden",
                                                 textOverflow: "ellipsis",
                                                 whiteSpace: "nowrap",
-                                                maxWidth: 200,
+                                                maxWidth: "20rem",
                                             }}
                                         >
                                             {label}
@@ -205,7 +205,13 @@ export const FactionAbilityItemInner = ({
                             </Stack>
 
                             <Box
-                                sx={{ width: "100%", px: 1.5, py: 1.2, backgroundColor: "#00000030", borderRadius: 1 }}
+                                sx={{
+                                    width: "100%",
+                                    px: "1.2rem",
+                                    py: ".96rem",
+                                    backgroundColor: "#00000030",
+                                    borderRadius: 1,
+                                }}
                             >
                                 <ContributionBar
                                     color={colour}
@@ -216,7 +222,7 @@ export const FactionAbilityItemInner = ({
                                 />
                             </Box>
 
-                            <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
+                            <Stack direction="row" spacing=".32rem" sx={{ mt: ".48rem", width: "100%" }}>
                                 <VotingButton
                                     color={colour}
                                     textColor={text_colour || "#FFFFFF"}
@@ -224,7 +230,7 @@ export const FactionAbilityItemInner = ({
                                     cost={"0.1"}
                                     isVoting={!!isVoting}
                                     onClick={() => onContribute("0.1")}
-                                    Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
+                                    Prefix={<SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />}
                                 />
                                 <VotingButton
                                     color={colour}
@@ -233,7 +239,7 @@ export const FactionAbilityItemInner = ({
                                     cost={"1"}
                                     isVoting={!!isVoting}
                                     onClick={() => onContribute("1")}
-                                    Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
+                                    Prefix={<SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />}
                                 />
                                 <VotingButton
                                     color={colour}
@@ -242,7 +248,7 @@ export const FactionAbilityItemInner = ({
                                     cost={"10"}
                                     isVoting={!!isVoting}
                                     onClick={() => onContribute("10")}
-                                    Prefix={<SvgSupToken size="14px" fill={text_colour || "#FFFFFF"} />}
+                                    Prefix={<SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />}
                                 />
                             </Stack>
                         </Stack>
