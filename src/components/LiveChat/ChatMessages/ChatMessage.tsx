@@ -60,20 +60,22 @@ export const ChatMessage = ({
                     }}
                 />
             )}
-            <Typography
-                variant="body2"
+            <Box
                 sx={{
-                    fontSize: "0.8rem",
                     wordBreak: "break-word",
-                    userSelect: "text",
+                    "*": {
+                        userSelect: "text",
+                    },
                 }}
             >
-                <Stack direction="row" spacing={0.5}>
-                    <Typography variant="body2" style={{ color: message_color, fontWeight: 700 }}>
+                <Box>
+                    <Typography sx={{ display: "inline", color: message_color, fontWeight: 700, fontSize: "1.23rem" }}>
                         {truncate(from_username, 24)}
                     </Typography>
                     <Typography
-                        style={{
+                        sx={{
+                            display: "inline",
+                            ml: 0.5,
                             color:
                                 multiplierInt >= 50
                                     ? colors.neonBlue
@@ -92,8 +94,10 @@ export const ChatMessage = ({
                     {isCitizen && (
                         <TooltipHelper placement="top-end" text={"Citizen"}>
                             <Typography
-                                style={{
+                                sx={{
+                                    display: "inline",
                                     cursor: "default",
+                                    ml: 0.5,
                                     textAlign: "center",
                                     fontFamily: "Nostromo Regular Bold",
                                     fontSize: ".8rem",
@@ -104,20 +108,13 @@ export const ChatMessage = ({
                             </Typography>
                         </TooltipHelper>
                     )}
-                    <Typography
-                        variant="caption"
-                        style={{
-                            display: "inline-block",
-                            color: "grey",
-                            opacity: 0.5,
-                        }}
-                    >
+                    <Typography variant="caption" sx={{ display: "inline", ml: 0.5, color: "grey", opacity: 0.5 }}>
                         {dateFormatter(sent_at)}
                     </Typography>
-                </Stack>
+                </Box>
 
-                <Typography variant="body2">{message} </Typography>
-            </Typography>
+                <Typography sx={{ fontSize: "1.23rem" }}>{message} </Typography>
+            </Box>
         </Stack>
     )
 }
