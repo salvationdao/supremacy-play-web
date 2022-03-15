@@ -115,7 +115,6 @@ export const ChatSend = ({
                         "& .MuiInputBase-root": {
                             backgroundColor: "#49494970",
                             fontFamily: "Share Tech",
-                            fontSize: (theme) => theme.typography.pxToRem(17),
                         },
                         ".Mui-disabled": {
                             WebkitTextFillColor: "unset",

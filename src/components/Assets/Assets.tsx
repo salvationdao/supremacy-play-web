@@ -106,7 +106,6 @@ const DrawerContent = () => {
                                         pt: 1.6,
                                         mb: 0.7,
                                         color: colors.grey,
-                                        fontSize: "0.8rem",
                                         userSelect: "text",
                                     }}
                                 >
@@ -117,7 +116,6 @@ const DrawerContent = () => {
                                         variant="body2"
                                         sx={{
                                             color: colors.neonBlue,
-                                            fontSize: "0.8rem",
                                             userSelect: "text",
                                         }}
                                     >

@@ -300,12 +300,7 @@ export const WarMachineDestroyedInfo = ({
 
                                 <Stack alignItems="center" sx={{ flex: 1 }}>
                                     <SvgSkull size="120px" sx={{ mb: 1 }} />
-                                    <Typography
-                                        sx={{
-                                            fontFamily: "Nostromo Regular Heavy",
-                                            fontSize: "1.5rem",
-                                        }}
-                                    >
+                                    <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Heavy" }}>
                                         DESTROYED
                                     </Typography>
                                     <Typography sx={{ fontFamily: "Nostromo Regular Bold", color: colors.neonBlue }}>

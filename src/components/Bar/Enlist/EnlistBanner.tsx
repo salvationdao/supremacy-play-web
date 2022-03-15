@@ -164,7 +164,7 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
                         }}
                     />
 
-                    {battleIdentifier && (
+                    {battleIdentifier != undefined && (
                         <BannerInfo
                             title={`BATTLE ID`}
                             tooltip="The current battle."

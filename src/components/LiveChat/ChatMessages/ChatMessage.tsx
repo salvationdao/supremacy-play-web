@@ -69,8 +69,10 @@ export const ChatMessage = ({
                 }}
             >
                 <Stack direction="row" spacing={0.5}>
-                    <span style={{ color: message_color, fontWeight: 700 }}>{truncate(from_username, 24)}</span>
-                    <span
+                    <Typography variant="body2" style={{ color: message_color, fontWeight: 700 }}>
+                        {truncate(from_username, 24)}
+                    </Typography>
+                    <Typography
                         style={{
                             color:
                                 multiplierInt >= 50
@@ -80,41 +82,41 @@ export const ChatMessage = ({
                                     : colors.orange,
                             textAlign: "center",
                             fontFamily: "Nostromo Regular Bold",
-                            fontSize: "0.5rem",
+                            fontSize: ".8rem",
                             verticalAlign: "top",
                             opacity: multiplierValue ? 1 : 0.7,
                         }}
                     >
                         {multiplierValue ? multiplierValue : "0"}x
-                    </span>
+                    </Typography>
                     {isCitizen && (
                         <TooltipHelper placement="top-end" text={"Citizen"}>
-                            <span
+                            <Typography
                                 style={{
                                     cursor: "default",
                                     textAlign: "center",
                                     fontFamily: "Nostromo Regular Bold",
-                                    fontSize: "0.5rem",
+                                    fontSize: ".8rem",
                                     verticalAlign: "top",
                                 }}
                             >
                                 🦾
-                            </span>
+                            </Typography>
                         </TooltipHelper>
                     )}
-                    <span
+                    <Typography
+                        variant="caption"
                         style={{
                             display: "inline-block",
                             color: "grey",
-                            fontSize: "0.7rem",
                             opacity: 0.5,
                         }}
                     >
                         {dateFormatter(sent_at)}
-                    </span>
+                    </Typography>
                 </Stack>
 
-                <p>{message} </p>
+                <Typography variant="body2">{message} </Typography>
             </Typography>
         </Stack>
     )

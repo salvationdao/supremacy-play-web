@@ -1,6 +1,6 @@
-import { Box, Divider, Link, Stack, Tooltip, Typography } from "@mui/material"
+import { Box, Divider, Link, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { SvgInfoIcon, SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
+import { SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
 import { PASSPORT_WEB, SUPREMACY_PAGE, VERSION } from "../../constants"
 import { colors } from "../../theme/theme"
 
@@ -28,11 +28,11 @@ export const Logo = () => {
                     variant="caption"
                     sx={{
                         px: 0.7,
-                        py: 0.4,
-                        pb: 0.6,
+                        pt: 0.6,
+                        pb: 0.4,
                         border: `${colors.neonBlue} 1px solid`,
                         borderRadius: 1,
-                        fontSize: ".6rem",
+                        fontSize: ".8rem",
                         color: colors.neonBlue,
                         textAlign: "center",
                         lineHeight: 1,

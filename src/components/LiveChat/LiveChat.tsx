@@ -206,10 +206,10 @@ const DrawerContent = ({
             ) : (
                 <Box sx={{ px: 2, py: 0.5, backgroundColor: colors.red }}>
                     <Typography
+                        variant="body2"
                         sx={{
                             textAlign: "center",
                             lineHeight: 1,
-                            fontSize: (theme) => theme.typography.pxToRem(15),
                         }}
                     >
                         You must be signed in to send messages.

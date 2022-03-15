@@ -170,13 +170,13 @@ const Content = () => {
                                     sx={{
                                         width: 7,
                                         height: 7,
-                                        mb: 0.2,
+                                        mb: 0.4,
                                         backgroundColor: colors.red,
                                         borderRadius: "50%",
                                         animation: `${pulseEffect} 3s infinite`,
                                     }}
                                 />
-                                <Typography variant="caption" sx={{ lineHeight: 1 }}>
+                                <Typography variant="body2" sx={{ lineHeight: 1 }}>
                                     Live
                                 </Typography>
                             </Stack>

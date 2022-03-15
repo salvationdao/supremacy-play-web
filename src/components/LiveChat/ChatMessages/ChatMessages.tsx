@@ -165,7 +165,6 @@ const ChatMessagesInner = ({
                             sx={{
                                 color: colors.grey,
                                 textAlign: "center",
-                                fontSize: "0.8rem",
                                 userSelect: "text",
                             }}
                         >

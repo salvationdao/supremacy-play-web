@@ -42,3 +42,7 @@ span {
 body {
     overflow: hidden; /* Hide scrollbars */
 }
+
+html {
+    font-size: 62.5%;
+}

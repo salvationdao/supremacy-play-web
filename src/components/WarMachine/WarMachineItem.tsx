@@ -179,7 +179,7 @@ const WarMachineItemInner = ({
                         sx={{
                             position: "absolute",
                             top: 1.5,
-                            left: WIDTH_WM_IMAGE - 23,
+                            left: WIDTH_WM_IMAGE - 20,
                             px: 0.7,
                             py: 0.5,
                             opacity: 0.83,

@@ -91,14 +91,15 @@ export const AssetItem = ({
         if (!isGameServerUp) {
             return (
                 <Typography
+                    variant="body2"
                     sx={{
                         px: 1,
-                        py: 0.34,
+                        pt: 0.6,
+                        pb: 0.3,
                         color: "grey",
                         lineHeight: 1,
                         border: `${"grey"} 1px solid`,
                         borderRadius: 0.3,
-                        fontSize: ".75rem",
                         opacity: 0.6,
                     }}
                 >
@@ -113,14 +114,15 @@ export const AssetItem = ({
             // return (
             //     <>
             //         <Typography
+            //             variant="body2"
             //             sx={{
             //                 px: 1,
-            //                 py: 0.34,
+            //                 pt: 0.6,
+            //                 pb: 0.3,
             //                 color: colors.neonBlue,
             //                 lineHeight: 1,
             //                 border: `${colors.neonBlue} 1px solid`,
             //                 borderRadius: 0.3,
-            //                 fontSize: ".75rem",
             //             }}
             //         >
             //             REPAIRING
@@ -143,14 +145,15 @@ export const AssetItem = ({
             return (
                 <>
                     <Typography
+                        variant="body2"
                         sx={{
                             px: 1,
-                            py: 0.34,
+                            pt: 0.6,
+                            pb: 0.3,
                             color: colors.orange,
                             lineHeight: 1,
                             border: `${colors.orange} 1px solid`,
                             borderRadius: 0.3,
-                            fontSize: ".75rem",
                         }}
                     >
                         IN BATTLE
@@ -183,9 +186,11 @@ export const AssetItem = ({
                                 setRemoving(false)
                             }
                         }}
+                        variant="body2"
                         sx={{
                             px: 1,
-                            py: 0.34,
+                            pt: 0.6,
+                            pb: 0.3,
                             cursor: "pointer",
                             width: 82,
                             textAlign: "center",
@@ -193,7 +198,6 @@ export const AssetItem = ({
                             lineHeight: 1,
                             border: `${mouseOver ? colors.red : colors.yellow} 1px solid`,
                             borderRadius: 0.3,
-                            fontSize: ".75rem",
                         }}
                     >
                         {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
@@ -219,19 +223,15 @@ export const AssetItem = ({
                 sx={{
                     minWidth: 0,
                     px: 1,
-                    py: 0.4,
+                    pt: 0.6,
+                    pb: 0.4,
                     boxShadow: 0,
                     backgroundColor: colors.green,
                     borderRadius: 0.3,
                     ":hover": { backgroundColor: `${colors.green}90` },
                 }}
             >
-                <Typography
-                    sx={{
-                        fontSize: ".75rem",
-                        lineHeight: 1,
-                    }}
-                >
+                <Typography variant="body2" sx={{ lineHeight: 1 }}>
                     DEPLOY
                 </Typography>
             </Button>

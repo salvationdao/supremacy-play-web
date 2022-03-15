@@ -254,8 +254,8 @@ export const DeployConfirmation = ({
                                 }}
                             >
                                 <Typography
+                                    variant="body2"
                                     sx={{
-                                        fontSize: ".75rem",
                                         lineHeight: 1,
                                         color: isDeploying ? colors.green : "#FFFFFF",
                                     }}

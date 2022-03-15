@@ -59,7 +59,7 @@ export const Maintenance = () => {
                             sx={{
                                 textAlign: "center",
                                 fontFamily: "Nostromo Regular Heavy",
-                                fontSize: "1.9rem",
+                                fontSize: "3.26rem",
                             }}
                         >
                             {"WE'LL BE BACK SOON"}
