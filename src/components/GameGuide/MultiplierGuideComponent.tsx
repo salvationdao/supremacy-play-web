@@ -10,10 +10,11 @@ const MultiplierGuideComponent = ({ multiplierType, description, title }: Multip
                     height: "3rem",
                     width: "3rem",
                     mt: ".7rem",
+                    flexShrink: 0,
                     backgroundImage: `url(${getMutiplierDeets(multiplierType).image})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "top center",
-                    backgroundSize: "cover",
+                    backgroundSize: "contain",
                     border: `${"#FFFFFF"} 1px solid`,
                     borderRadius: 0.6,
                 }}
