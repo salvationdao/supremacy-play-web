@@ -12,7 +12,6 @@ export const MultiplierItem = ({ multiplier }: { multiplier: Multiplier }) => {
                 <Stack direction="row" spacing=".4rem" sx={{ flex: 1 }}>
                     <Box
                         sx={{
-                            mt: "-0.64rem !important",
                             width: "2rem",
                             height: "2rem",
                             flexShrink: 0,
