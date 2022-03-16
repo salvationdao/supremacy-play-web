@@ -39,14 +39,8 @@ const TabPanel = (props: TabPanelProps) => {
     const { children, value, index, ...other } = props
 
     return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && <Typography>{children}</Typography>}
+        <div role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} {...other}>
+            {value === index && <Box>{children}</Box>}
         </div>
     )
 }
@@ -59,44 +53,36 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
 
     return (
         <Box>
-            <Modal open={closed} onClose={() => toggleClosed(true)}>
-                <Box
+            <Modal open={!closed} onClose={() => toggleClosed(true)}>
+                <Stack
                     sx={{
                         position: "absolute",
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        maxWidth: "90rem",
-                        height: "60%",
-                        px: 3,
+                        maxWidth: "86.6rem",
+                        height: "70vh",
                         pb: 3,
                         backgroundColor: `${colors.darkNavyBlue}`,
                         outline: "1px solid #FFFFFF",
                         borderRadius: 1,
                         boxShadow: 24,
-                        display: "flex",
-                        flexDirection: "column",
                     }}
                 >
-                    <Box sx={{ borderBottom: 1, borderColor: "divider", mx: -3 }}>
+                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                         <Tabs
                             value={value}
                             onChange={handleChange}
                             sx={{
                                 ".MuiTab-root.Mui-selected": { color: colors.neonBlue, opacity: 1 },
                                 ".MuiTabs-indicator": { backgroundColor: colors.neonBlue },
+                                ".MuiTab-root": { fontSize: "1.8rem", opacity: 0.7, fontFamily: "Share Tech" },
                             }}
                         >
-                            <Tab
-                                sx={{
-                                    fontSize: "1.3rem",
-                                    opacity: 0.7,
-                                }}
-                                label="Intro"
-                            />
-                            <Tab sx={{ fontSize: "1.3rem", opacity: 0.7 }} label="Gameplay" />
-                            <Tab sx={{ fontSize: "1.3rem", opacity: 0.7 }} label="Multipliers" />
-                            <Tab sx={{ fontSize: "1.3rem", opacity: 0.7 }} label="Mech NFTs" />
+                            <Tab label="Intro" />
+                            <Tab label="Gameplay" />
+                            <Tab label="Multipliers" />
+                            <Tab label="Mech NFTs" />
                         </Tabs>
                     </Box>
 
@@ -108,19 +94,20 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                             scrollBehavior: "smooth",
                             display: "flex",
                             flexDirection: "column",
-                            mr: -3,
-                            pr: 3,
-                            py: 2,
-                            mb: 3,
+                            mr: 1,
+                            mt: 1,
+                            mb: 2,
+                            px: 3,
+                            py: 1,
                             "::-webkit-scrollbar": {
-                                width: 4,
+                                width: ".4rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
                                 borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
-                                background: `${colors.darkNeonBlue}`,
+                                background: `${colors.neonBlue}`,
                                 borderRadius: 3,
                             },
                             "& p": { fontSize: "1.8rem" },
@@ -128,7 +115,9 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                     >
                         <TabPanel value={value} index={0}>
                             <Stack spacing={2}>
-                                <Typography variant="h4">Welcome to the Battle Arena.</Typography>
+                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                    Welcome to the Battle Arena
+                                </Typography>
 
                                 <Typography>
                                     Where Syndicates fight for Supremacy.
@@ -149,15 +138,19 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                     >
                                         here
                                     </Link>
+                                    .
                                 </Typography>
                             </Stack>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             <Stack spacing={2}>
-                                <Typography variant="h4">
-                                    Now your mission is to support your Syndicate in the Battle.
+                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                    Gameplay
                                 </Typography>
                                 <Typography>
+                                    Now your mission is to support your Syndicate in the Battle
+                                    <br />
+                                    <br />
                                     You can influence the Battle by spending your game tokens ($SUPS) on in-game actions
                                     such as the Battle Abilities (Nukes, Airstrikes, Repairs) which are deployed by the
                                     Citizen whose vote secures the Ability for their Syndicate. Or by working with your
@@ -195,7 +188,9 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
 
                         <TabPanel value={value} index={2}>
                             <Stack spacing={2}>
-                                <Typography variant="h4">Multipliers</Typography>
+                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                    Multipliers
+                                </Typography>
                                 <Typography>
                                     To achieve Multipliers to earn rewards from the Spoils of War, you must first unlock
                                     the “CITIZEN” multiplier. This is achieved by being in the top 80% of contributors
@@ -231,7 +226,9 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
 
                         <TabPanel value={value} index={3}>
                             <Stack spacing={2}>
-                                <Typography variant="h4">Mech NFTs</Typography>
+                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                    Mech NFTs
+                                </Typography>
 
                                 <Typography>
                                     Players can purchase Mech NFTs in-game from the shop{" "}
@@ -302,8 +299,10 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
 
                     <Button
                         variant="outlined"
+                        onClick={() => toggleClosed(true)}
                         sx={{
                             justifySelf: "flex-end",
+                            ml: 3,
                             py: 0.8,
                             width: "100%",
                             maxWidth: "5em",
@@ -317,11 +316,10 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                 border: `${colors.neonBlue} 1px solid`,
                             },
                         }}
-                        onClick={() => toggleClosed(false)}
                     >
                         Close
                     </Button>
-                </Box>
+                </Stack>
             </Modal>
         </Box>
     )

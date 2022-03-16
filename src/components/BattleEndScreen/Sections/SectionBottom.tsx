@@ -47,14 +47,18 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
             <FancyButton
                 excludeCaret
                 clipSize="8px"
-                sx={{ pt: ".72rem", pb: ".56rem", width: "10rem" }}
+                sx={{
+                    py: ".16rem",
+                    pt: ".5rem",
+                    width: "10rem",
+                    color: secondaryColor,
+                    fontFamily: "Nostromo Regular Black",
+                }}
                 backgroundColor={primaryColor}
                 borderColor={primaryColor}
                 onClick={() => toggleIsEndBattleDetailOpen(false)}
             >
-                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: secondaryColor }}>
-                    CLOSE
-                </Typography>
+                CLOSE
             </FancyButton>
         </Stack>
     )

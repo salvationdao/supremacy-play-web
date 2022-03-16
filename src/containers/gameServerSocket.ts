@@ -129,7 +129,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
         serverCheckInterval(1)
         setTimeout(() => {
             setIsServerUp(false)
-        }, 120000)
+        }, 90000)
     }, [reconnect])
 
     const serverCheckInterval = async (num: number) => {

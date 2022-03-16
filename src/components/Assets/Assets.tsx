@@ -9,17 +9,81 @@ import {
     NullUUID,
     PASSPORT_WEB,
 } from "../../constants"
-import { useDrawer, usePassportServerAuth, usePassportServerWebsocket, useQueue } from "../../containers"
-import { PassportServerKeys } from "../../keys"
+import {
+    useDrawer,
+    useGame,
+    useGameServerAuth,
+    useGameServerWebsocket,
+    usePassportServerAuth,
+    usePassportServerWebsocket,
+} from "../../containers"
+import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { Asset } from "../../types/assets"
+import { Asset, AssetQueueStat } from "../../types/assets"
+
+interface QueueFeed {
+    queue_length: number
+    queue_cost: string
+    contract_reward: string
+}
 
 const DrawerContent = () => {
     const { state, subscribe } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
+    const { battleEndDetail } = useGame()
+    const { user } = useGameServerAuth()
+    const [queueCost, setQueueCost] = useState<string>("")
+    const [contractReward, setContractReward] = useState<string>("")
+
+    const { state: gsState, subscribe: gsSubscribe, send: gsSend } = useGameServerWebsocket()
 
     const [assets, setAssets] = useState<Asset[]>([])
-    const { queueCost, contractReward } = useQueue()
+    const [assetsNotInQueue, setAssetsNotInQueue] = useState<Map<string, Asset>>(new Map())
+    const [assetsInQueue, setAssetsInQueue] = useState<
+        Map<string, Asset & { queue_position: number; contract_reward?: string }>
+    >(new Map())
+
+    const updateAssetQueueStatus = (a: Asset, status: AssetQueueStat) => {
+        if (status.queue_position) {
+            // If asset is in queue/battle
+            setAssetsInQueue((prev) => {
+                const tempAss = {
+                    ...a,
+                    queue_position: status.queue_position!,
+                    contract_reward: status.contract_reward,
+                }
+                prev.set(a.hash, tempAss)
+                const tempMap = new Map(
+                    Array.from(prev.entries()).sort(([_, a], [__, b]) => a.queue_position - b.queue_position),
+                )
+
+                return tempMap
+            })
+            setAssetsNotInQueue((prev) => {
+                prev.delete(a.hash)
+                const tempMap = new Map(prev)
+
+                return tempMap
+            })
+        } else {
+            // If asset is not in queue/battle
+            setAssetsInQueue((prev) => {
+                prev.delete(a.hash)
+                const tempMap = new Map(prev)
+
+                return tempMap
+            })
+            setAssetsNotInQueue((prev) => {
+                const tempAss = {
+                    ...a,
+                }
+                prev.set(a.hash, tempAss)
+                const tempMap = new Map(prev)
+
+                return tempMap
+            })
+        }
+    }
 
     // Subscribe to the list of mechs that the user owns
     useEffect(() => {
@@ -32,6 +96,73 @@ const DrawerContent = () => {
             setAssets(payload)
         })
     }, [state, subscribe, faction_id])
+
+    // Subscribe to queue status
+    useEffect(() => {
+        if (gsState !== WebSocket.OPEN || !gsSubscribe || !user) return
+        return gsSubscribe<QueueFeed>(GameServerKeys.SubQueueStatus, (payload) => {
+            if (!payload) return
+            setQueueCost(payload.queue_cost)
+            setContractReward(payload.contract_reward)
+        })
+    }, [gsState, gsSubscribe, user])
+
+    // For each mech, subscribe to its queue position
+    // Mechs that are in queue and out of the queue are separated into two javascript maps
+    // The map that stores queued mechs is sorted by queue position
+    useEffect(() => {
+        if (gsState !== WebSocket.OPEN || !gsSubscribe || assets.length === 0) return
+
+        const callbacks = assets.map((a) =>
+            gsSubscribe<AssetQueueStat>(
+                GameServerKeys.SubAssetQueueStatus,
+                (payload) => {
+                    if (!payload) return
+                    updateAssetQueueStatus(a, payload)
+                },
+                { asset_hash: a.hash },
+            ),
+        )
+        return () => callbacks.forEach((c) => c())
+    }, [gsState, gsSubscribe, assets])
+
+    // Every time the battle queue has been updated (i.e. a mech leaves the queue), refetch all mech's queue positions once
+    useEffect(() => {
+        if (gsState !== WebSocket.OPEN || !gsSubscribe || !gsSend || assets.length === 0) return
+
+        return gsSubscribe(GameServerKeys.TriggerBattleQueueUpdated, async () => {
+            console.info("Battle queue updated, refetching queue positions")
+            assets.forEach(async (a) => {
+                try {
+                    const resp = await gsSend<AssetQueueStat>(GameServerKeys.AssetQueueStatus, {
+                        asset_hash: a.hash,
+                    })
+                    if (!resp) return
+                    updateAssetQueueStatus(a, resp)
+                } catch (e) {
+                    console.warn("Failed to refetch queue position: ", e)
+                }
+            })
+        })
+    }, [gsState, gsSubscribe, gsSend, assets])
+
+    // Every time the game ends, refetch all mech's queue positions once
+    useEffect(() => {
+        if (gsState !== WebSocket.OPEN || !gsSend || assets.length === 0) return
+
+        console.info("Game end, refetching queue positions")
+        assets.forEach(async (a) => {
+            try {
+                const resp = await gsSend<AssetQueueStat>(GameServerKeys.AssetQueueStatus, {
+                    asset_hash: a.hash,
+                })
+                if (!resp) return
+                updateAssetQueueStatus(a, resp)
+            } catch (e) {
+                console.warn("Failed to refetch queue position: ", e)
+            }
+        })
+    }, [gsSend, gsSubscribe, assets, battleEndDetail?.battle_id])
 
     return (
         <Stack sx={{ flex: 1 }}>
@@ -76,21 +207,26 @@ const DrawerContent = () => {
                         },
                     }}
                 >
-                    <Stack spacing=".48rem">
-                        {assets && assets.length > 0 ? (
+                    <Stack spacing={0.6}>
+                        {assetsNotInQueue.size > 0 || assetsInQueue.size > 0 ? (
                             <>
-                                {assets.map((a, index) => (
+                                {/* Assets in the queue/battle */}
+                                {Array.from(assetsInQueue).map(([hash, a], index) => (
                                     <AssetItem
-                                        key={`${a.hash}-${index}-render_queued_only`}
+                                        key={`${hash}-${index}`}
                                         asset={a}
+                                        assetQueueStatus={{
+                                            queue_position: a.queue_position,
+                                            contract_reward: a.contract_reward,
+                                        }}
                                         queueCost={queueCost}
                                         contractReward={contractReward}
-                                        renderQueuedOnly
                                     />
                                 ))}
-                                {assets.map((a, index) => (
+                                {/* Assets outside of the queue and not battling */}
+                                {Array.from(assetsNotInQueue).map(([hash, a], index) => (
                                     <AssetItem
-                                        key={`${a.hash}-${index}-dont-render-queued`}
+                                        key={`${hash}-${index}`}
                                         asset={a}
                                         queueCost={queueCost}
                                         contractReward={contractReward}

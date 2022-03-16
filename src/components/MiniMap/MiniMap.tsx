@@ -154,7 +154,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     clipSize="10px"
                                     border={{
                                         isFancy: true,
-                                        borderThickness: "3px",
+                                        borderThickness: ".3rem",
                                         borderColor: isTargeting
                                             ? winner.game_ability.colour
                                             : theme.factionTheme.primary,

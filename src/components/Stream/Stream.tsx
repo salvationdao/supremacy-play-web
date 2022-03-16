@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { Trailer } from ".."
+import { NoSupsModal, Trailer } from ".."
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream, useWallet } from "../../containers"
 import { useToggle } from "../../hooks"
@@ -57,6 +57,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
                 }}
             />
             <Message render={renderTopMessage} haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
+            <NoSupsModal haveSups={haveSups} />
         </Stack>
     )
 }

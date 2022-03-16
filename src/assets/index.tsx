@@ -28,6 +28,8 @@ import History from "!react-svg-loader!./svg/History.svg"
 import QuestionMark from "!react-svg-loader!./svg/QuestionMark.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import Discord from "!react-svg-loader!./svg/Discord.svg"
+import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
+import ChatTabbed from "!react-svg-loader!./svg/ChatTabbed.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
 import Skull2 from "!react-svg-loader!./svg/Skull2.svg"
@@ -591,5 +593,17 @@ export const SvgContentCopyIcon: React.VoidFunctionComponent<SvgWrapperProps> = 
 export const SvgQuestionMark: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <QuestionMark />
+    </SvgWrapper>
+)
+
+export const SvgChatSplit: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ChatSplit />
+    </SvgWrapper>
+)
+
+export const SvgChatTabbed: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ChatTabbed />
     </SvgWrapper>
 )

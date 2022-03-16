@@ -147,7 +147,12 @@ export const WalletDetails = () => {
                                 popper: { style: { zIndex: 99999, filter: "drop-shadow(0 3px 3px #00000050)" } },
                                 arrow: { sx: { color: tooltipBackgroundColor } },
                                 tooltip: {
-                                    sx: { width: "32rem", maxWidth: "32rem", background: tooltipBackgroundColor },
+                                    sx: {
+                                        width: "32rem",
+                                        maxWidth: "32rem",
+                                        background: tooltipBackgroundColor,
+                                        border: "#FFFFFF60 1px solid",
+                                    },
                                 },
                             }}
                         >

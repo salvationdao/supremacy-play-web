@@ -121,7 +121,20 @@ const BattleAbilityItemInner = ({
         [battleAbilityProgress, bribeStage],
     )
 
-    if (!battleAbility || !battleAbilityProgress || battleAbilityProgress.length <= 0) return null
+    if (!battleAbility || !battleAbilityProgress || battleAbilityProgress.length <= 0) {
+        return (
+            <Typography
+                sx={{
+                    mt: ".5rem",
+                    lineHeight: 1,
+                    color: colors.text,
+                    fontWeight: "fontWeightBold",
+                }}
+            >
+                LOADING BATTLE ABILITY...
+            </Typography>
+        )
+    }
 
     const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
     const buttonColor = user && user.faction ? user.faction.theme.primary : colour
