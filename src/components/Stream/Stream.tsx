@@ -2,8 +2,9 @@ import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { Trailer } from ".."
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useDimension, useStream, useWallet } from "../../containers"
+import { useDimension, useGameServerAuth, useStream, useWallet } from "../../containers"
 import { useToggle } from "../../hooks"
+import { NoSupsModal } from "../NoSupsModal/noSupsModal"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
     const { onWorldSups } = useWallet()
@@ -25,6 +26,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
     const [renderTopMessage, toggleRenderTopMessage] = useToggle()
+    const { user } = useGameServerAuth()
 
     // Don't show for couple seconds as it tries to do the auto login
     useEffect(() => {
@@ -57,6 +59,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
                 }}
             />
             <Message render={renderTopMessage} haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
+            {user && <NoSupsModal />}
         </Stack>
     )
 }
