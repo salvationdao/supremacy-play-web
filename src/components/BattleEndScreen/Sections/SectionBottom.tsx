@@ -39,7 +39,7 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 sx={{ mr: "auto", pb: ".48rem", height: "100%", opacity: 0.5 }}
             >
                 <Typography variant="body2" sx={{ color: "grey !important" }}>
-                    BATTLE #{battle_identifier.toString().padStart(4, "0")} ({moment(started_at).format("h:mm A")} to{" "}
+                    BATTLE ID #{battle_identifier.toString().padStart(4, "0")} ({moment(started_at).format("h:mm A")} to{" "}
                     {moment(ended_at).format("h:mm A")})
                 </Typography>
             </Stack>

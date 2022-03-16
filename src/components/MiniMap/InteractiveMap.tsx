@@ -19,18 +19,28 @@ interface MapWarMachineProps {
     gridWidth: number
     gridHeight: number
     warMachines: WarMachineState[]
+    battleIdentifier?: number
+
     map: Map
     enlarged: boolean
     targeting?: boolean
 }
 
-const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting }: MapWarMachineProps) => {
+const MapWarMachines = ({
+    gridWidth,
+    gridHeight,
+    warMachines,
+    map,
+    enlarged,
+    targeting,
+    battleIdentifier,
+}: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
         <>
             {warMachines.map((wm) => (
-                <div key={`${wm.participantID} - ${wm.hash}`}>
+                <div key={`${battleIdentifier} - ${wm.participantID} - ${wm.hash}`}>
                     <MapWarMachine
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
@@ -118,14 +128,24 @@ interface Props {
 
 export const InteractiveMap = (props: Props) => {
     const { state, send } = useGameServerWebsocket()
-    const { map, warMachines } = useGame()
+    const { map, warMachines, battleEndDetail } = useGame()
 
-    return <InteractiveMapInner {...props} state={state} send={send} map={map} warMachines={warMachines} />
+    return (
+        <InteractiveMapInner
+            {...props}
+            state={state}
+            send={send}
+            map={map}
+            warMachines={warMachines}
+            battleIdentifier={battleEndDetail?.battle_identifier}
+        />
+    )
 }
 
 interface PropsInner extends Props, Partial<WebSocketProperties> {
     map?: Map
     warMachines?: WarMachineState[]
+    battleIdentifier?: number
 }
 
 const InteractiveMapInner = ({
@@ -138,6 +158,7 @@ const InteractiveMapInner = ({
     enlarged,
     map,
     warMachines,
+    battleIdentifier,
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
     const prevSelection = useRef<MapSelection>()
@@ -337,6 +358,7 @@ const InteractiveMapInner = ({
                                 warMachines={warMachines || []}
                                 enlarged={enlarged}
                                 targeting={targeting}
+                                battleIdentifier={battleIdentifier}
                             />
                         </Box>
 
