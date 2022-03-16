@@ -201,7 +201,13 @@ const SplitLayout = () => {
 
     return (
         <Stack sx={{ flex: 1 }}>
-            <Stack sx={{ position: "relative", height: "50%", backgroundColor: `${colors.globalChat}13` }}>
+            <Stack
+                sx={{
+                    position: "relative",
+                    height: isEnlisted ? "50%" : "100%",
+                    backgroundColor: `${colors.globalChat}13`,
+                }}
+            >
                 <Stack
                     direction="row"
                     alignItems="center"

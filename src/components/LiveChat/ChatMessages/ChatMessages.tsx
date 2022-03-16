@@ -170,7 +170,7 @@ const ChatMessagesInner = ({
                     },
                 }}
             >
-                <Stack spacing="1.04rem" sx={{ mt: ".88rem" }}>
+                <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
                     {chatMessages && chatMessages.length > 0 ? (
                         chatMessages.map((c) => (
                             <ChatMessage

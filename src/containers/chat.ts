@@ -127,13 +127,19 @@ export const ChatContainer = createContainer(() => {
     }, [state, user, send])
 
     useEffect(() => {
+        if (splitOption == "split") {
+            setGlobalChatUnread(0)
+            setFactionChatUnread(0)
+            return
+        }
+
         if (tabValue === 1 && factionChatUnread !== 0) {
             setFactionChatUnread(0)
         }
         if (tabValue === 0 && globalChatUnread !== 0) {
             setGlobalChatUnread(0)
         }
-    }, [tabValue, factionChatUnread])
+    }, [tabValue, factionChatUnread, splitOption])
 
     // Subscribe to multiplier map
     useEffect(() => {
@@ -162,7 +168,7 @@ export const ChatContainer = createContainer(() => {
         return subscribe<ChatData>(PassportServerKeys.SubscribeGlobalChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, null)
-            if (tabValue !== 0) setGlobalChatUnread(globalChatUnread + 1)
+            if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
         })
     }, [state, user, subscribe, tabValue, globalChatUnread])
 
@@ -175,7 +181,7 @@ export const ChatContainer = createContainer(() => {
         return subscribe<ChatData>(PassportServerKeys.SubscribeFactionChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, m.from_user_id)
-            if (tabValue !== 1) setFactionChatUnread(factionChatUnread + 1)
+            if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
         })
     }, [user, state, subscribe, tabValue, factionChatUnread])
 
