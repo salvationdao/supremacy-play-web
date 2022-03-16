@@ -6,7 +6,7 @@ export const SplitView = () => {
     const { splitOption, setSplitOption } = useChat()
 
     const onChange = (event: React.MouseEvent<HTMLElement>, newValue: SplitOptionType) => {
-        setSplitOption(newValue)
+        if (newValue) setSplitOption(newValue)
     }
 
     return (
