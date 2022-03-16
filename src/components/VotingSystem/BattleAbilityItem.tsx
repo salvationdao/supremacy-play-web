@@ -38,32 +38,6 @@ export const BattleAbilityItem = () => {
     const { user, faction_id } = useGameServerAuth()
     const { bribeStage, factionsAll, forceDisplay100Percentage } = useGame()
 
-    return (
-        <BattleAbilityItemInner
-            state={state}
-            send={send}
-            subscribe={subscribe}
-            subscribeNetMessage={subscribeNetMessage}
-            bribeStage={bribeStage}
-            user={user}
-            faction_id={faction_id}
-            factionsAll={factionsAll}
-            forceDisplay100Percentage={forceDisplay100Percentage}
-        />
-    )
-}
-
-const BattleAbilityItemInner = ({
-    state,
-    send,
-    subscribe,
-    subscribeNetMessage,
-    bribeStage,
-    user,
-    faction_id,
-    factionsAll,
-    forceDisplay100Percentage,
-}: BattleAbilityItemProps) => {
     const [fadeEffect, toggleFadeEffect] = useToggle()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [battleAbilityProgress, setBattleAbilityProgress] = useState<BattleAbilityProgressBigNum[]>([])
@@ -140,6 +114,56 @@ const BattleAbilityItemInner = ({
     const buttonColor = user && user.faction ? user.faction.theme.primary : colour
     const buttonTextColor = user && user.faction ? user.faction.theme.secondary : "#FFFFFF"
 
+    return (
+        <BattleAbilityItemInner
+            isVoting={isVoting}
+            fadeEffect={fadeEffect}
+            factionsAll={factionsAll}
+            colour={colour}
+            description={description}
+            forceDisplay100Percentage={forceDisplay100Percentage}
+            image_url={image_url}
+            label={label}
+            cooldown_duration_second={cooldown_duration_second}
+            battleAbilityProgress={battleAbilityProgress}
+            buttonColor={buttonColor}
+            buttonTextColor={buttonTextColor}
+            onBribe={onBribe}
+        />
+    )
+}
+
+interface InnerProps {
+    isVoting: boolean
+    fadeEffect: string
+    factionsAll: FactionsAll
+    colour: string
+    description: string
+    forceDisplay100Percentage: string
+    image_url: string
+    label: string
+    cooldown_duration_second: number
+    battleAbilityProgress: BattleAbilityProgressBigNum[]
+    buttonColor: string
+    buttonTextColor: string
+    onBribe: (ob: string) => void
+}
+
+const BattleAbilityItemInner = ({
+    factionsAll,
+    forceDisplay100Percentage,
+    fadeEffect,
+    isVoting,
+    description,
+    colour,
+    image_url,
+    label,
+    buttonColor,
+    buttonTextColor,
+    cooldown_duration_second,
+    battleAbilityProgress,
+    onBribe,
+}: InnerProps) => {
     return (
         <Fade in={true}>
             <Stack spacing=".56rem">
@@ -242,91 +266,15 @@ const BattleAbilityItemInner = ({
                                         {battleAbilityProgress &&
                                             battleAbilityProgress.length > 0 &&
                                             battleAbilityProgress.map((a) => {
-                                                const primaryColor = factionsAll[a.faction_id].theme.primary
                                                 return (
-                                                    <Stack
+                                                    <SupsBar
                                                         key={a.faction_id}
-                                                        spacing=".96rem"
-                                                        direction="row"
-                                                        alignItems="center"
-                                                    >
-                                                        <Box
-                                                            sx={{
-                                                                height: "1.6rem",
-                                                                width: "1.6rem",
-                                                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
-                                                                    factionsAll[a.faction_id].logo_blob_id
-                                                                })`,
-                                                                backgroundRepeat: "no-repeat",
-                                                                backgroundPosition: "center",
-                                                                backgroundSize: "cover",
-                                                                backgroundColor: primaryColor,
-                                                                border: `${primaryColor} 1px solid`,
-                                                                borderRadius: 0.6,
-                                                                mb: ".24rem",
-                                                            }}
-                                                        />
-                                                        <ContributionBar
-                                                            color={primaryColor}
-                                                            initialTargetCost={a.sups_cost}
-                                                            currentSups={a.current_sups}
-                                                            supsCost={a.sups_cost}
-                                                            hideRedBar
-                                                            forceHundredPercent={
-                                                                forceDisplay100Percentage === a.faction_id
-                                                            }
-                                                        />
-
-                                                        <Stack
-                                                            direction="row"
-                                                            alignItems="center"
-                                                            justifyContent="center"
-                                                            sx={{ minWidth: "11rem" }}
-                                                        >
-                                                            <Typography
-                                                                key={`currentSups-${a.current_sups.toFixed()}`}
-                                                                variant="body2"
-                                                                sx={{
-                                                                    lineHeight: 1,
-                                                                    color: `${primaryColor} !important`,
-                                                                    animation: `${zoomEffect(1.2)} 300ms ease-out`,
-                                                                }}
-                                                            >
-                                                                {forceDisplay100Percentage === a.faction_id
-                                                                    ? a.sups_cost.toFixed(2)
-                                                                    : a.current_sups.toFixed(2)}
-                                                            </Typography>
-                                                            <Typography
-                                                                variant="body2"
-                                                                sx={{
-                                                                    lineHeight: 1,
-                                                                    color: `${primaryColor} !important`,
-                                                                }}
-                                                            >
-                                                                &nbsp;/&nbsp;
-                                                            </Typography>
-                                                            <Typography
-                                                                key={`supsCost-${a.sups_cost.toFixed()}`}
-                                                                variant="body2"
-                                                                sx={{
-                                                                    lineHeight: 1,
-                                                                    color: `${primaryColor} !important`,
-                                                                    animation: `${zoomEffect(1.2)} 300ms ease-out`,
-                                                                }}
-                                                            >
-                                                                {a.sups_cost.toFixed(2)}
-                                                            </Typography>
-                                                            <Typography
-                                                                variant="body2"
-                                                                sx={{
-                                                                    lineHeight: 1,
-                                                                    color: `${primaryColor} !important`,
-                                                                }}
-                                                            >
-                                                                &nbsp;SUP{a.sups_cost.eq(1) ? "" : "S"}
-                                                            </Typography>
-                                                        </Stack>
-                                                    </Stack>
+                                                        forceDisplay100Percentage={forceDisplay100Percentage}
+                                                        factionsAll={factionsAll}
+                                                        faction_id={a.faction_id}
+                                                        sups_cost={a.sups_cost}
+                                                        current_sups={a.current_sups}
+                                                    />
                                                 )
                                             })}
                                     </Stack>
@@ -347,7 +295,7 @@ const BattleAbilityItemInner = ({
                                             amount={"1"}
                                             cost={"1"}
                                             isVoting={isVoting}
-                                            onClick={() => onBribe("1")}
+                                            onClick={() => "1"}
                                             Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
@@ -367,5 +315,87 @@ const BattleAbilityItemInner = ({
                 </Stack>
             </Stack>
         </Fade>
+    )
+}
+
+interface SupsBarProps {
+    forceDisplay100Percentage: string
+    faction_id: string
+    factionsAll: FactionsAll
+    sups_cost: BigNumber
+    current_sups: BigNumber
+}
+
+const SupsBar = ({ forceDisplay100Percentage, factionsAll, faction_id, sups_cost, current_sups }: SupsBarProps) => {
+    const primaryColor = factionsAll[faction_id].theme.primary
+
+    return (
+        <Stack key={faction_id} spacing=".96rem" direction="row" alignItems="center">
+            <Box
+                sx={{
+                    height: "1.6rem",
+                    width: "1.6rem",
+                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction_id].logo_blob_id})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    backgroundColor: primaryColor,
+                    border: `${primaryColor} 1px solid`,
+                    borderRadius: 0.6,
+                    mb: ".24rem",
+                }}
+            />
+            <ContributionBar
+                color={primaryColor}
+                initialTargetCost={sups_cost}
+                currentSups={current_sups}
+                supsCost={sups_cost}
+                hideRedBar
+                forceHundredPercent={forceDisplay100Percentage === faction_id}
+            />
+
+            <Stack direction="row" alignItems="center" justifyContent="center" sx={{ minWidth: "11rem" }}>
+                <Typography
+                    key={`currentSups-${current_sups.toFixed()}`}
+                    variant="body2"
+                    sx={{
+                        lineHeight: 1,
+                        color: `${primaryColor} !important`,
+                        animation: `${zoomEffect(1.2)} 300ms ease-out`,
+                    }}
+                >
+                    {forceDisplay100Percentage === faction_id ? sups_cost.toFixed(2) : current_sups.toFixed(2)}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        lineHeight: 1,
+                        color: `${primaryColor} !important`,
+                    }}
+                >
+                    &nbsp;/&nbsp;
+                </Typography>
+                <Typography
+                    key={`supsCost-${sups_cost.toFixed()}`}
+                    variant="body2"
+                    sx={{
+                        lineHeight: 1,
+                        color: `${primaryColor} !important`,
+                        animation: `${zoomEffect(1.2)} 300ms ease-out`,
+                    }}
+                >
+                    {sups_cost.toFixed(2)}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        lineHeight: 1,
+                        color: `${primaryColor} !important`,
+                    }}
+                >
+                    &nbsp;SUP{sups_cost.eq(1) ? "" : "S"}
+                </Typography>
+            </Stack>
+        </Stack>
     )
 }
