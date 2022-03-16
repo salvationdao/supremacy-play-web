@@ -204,7 +204,7 @@ const MapWarMachineInner = ({
                             width: SIZE,
                             zIndex: 1,
                         }}
-                        spacing={0.3}
+                        spacing=".24rem"
                     >
                         {warMachine.maxShield > 0 && (
                             <Box

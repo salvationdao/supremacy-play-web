@@ -28,7 +28,7 @@ export const ContributionBar = ({
             sx={{
                 flex: 1,
                 position: "relative",
-                height: 7,
+                height: ".7rem",
                 backgroundColor: `${colors.text}20`,
                 overflow: "visible",
                 borderRadius: 0.4,
@@ -51,7 +51,7 @@ export const ContributionBar = ({
                         position: "absolute",
                         left: `${costPercent}%`,
                         backgroundColor: colors.red,
-                        height: 10,
+                        height: "1rem",
                         width: 2,
                         zIndex: 6,
                     }}

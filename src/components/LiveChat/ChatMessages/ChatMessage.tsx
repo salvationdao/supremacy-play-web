@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { SvgInfoCircular } from "../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { truncate } from "../../../helpers"
+import { dateFormatter, truncate } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
 import { TooltipHelper } from "../../Common/TooltipHelper"
@@ -12,26 +12,31 @@ export const ChatMessage = ({
     isFailed,
     multiplierValue,
     isCitizen,
+    filterZeros,
 }: {
     chat: ChatData
     isSent?: boolean
     isFailed?: boolean
     multiplierValue?: string
     isCitizen: boolean
+    filterZeros?: boolean
 }) => {
-    const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at } = chat
+    const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at, self } =
+        chat
     const multiplierInt = multiplierValue ? parseInt(multiplierValue) : 0
 
+    if (!self && filterZeros && multiplierInt <= 0) return null
+
     return (
-        <Stack direction="row" spacing={0.5} sx={{ opacity: isSent ? 1 : 0.45 }}>
-            {isFailed && <SvgInfoCircular size="12px" fill={colors.red} sx={{ mt: 0.4 }} />}
+        <Stack direction="row" spacing=".4rem" sx={{ opacity: isSent ? 1 : 0.45 }}>
+            {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".32rem" }} />}
 
             {avatar_id && (
                 <Box
                     sx={{
-                        mt: "-0.8px !important",
-                        width: 18,
-                        height: 18,
+                        mt: "-0.1rem !important",
+                        width: "1.8rem",
+                        height: "1.8rem",
                         flexShrink: 0,
                         backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
                         backgroundRepeat: "no-repeat",
@@ -46,9 +51,9 @@ export const ChatMessage = ({
             {faction_logo_blob_id && faction_logo_blob_id != NullUUID && (
                 <Box
                     sx={{
-                        mt: "-0.8px !important",
-                        width: 18,
-                        height: 18,
+                        mt: "-0.1rem !important",
+                        width: "1.8rem",
+                        height: "1.8rem",
                         flexShrink: 0,
                         backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction_logo_blob_id})`,
                         backgroundRepeat: "no-repeat",
@@ -60,18 +65,22 @@ export const ChatMessage = ({
                     }}
                 />
             )}
-            <Typography
-                variant="body2"
+            <Box
                 sx={{
-                    fontSize: "0.8rem",
                     wordBreak: "break-word",
-                    userSelect: "text",
+                    "*": {
+                        userSelect: "text",
+                    },
                 }}
             >
-                <Stack direction="row" spacing={0.5}>
-                    <span style={{ color: message_color, fontWeight: 700 }}>{truncate(from_username, 24)}</span>
-                    <span
-                        style={{
+                <Box>
+                    <Typography sx={{ display: "inline", color: message_color, fontWeight: 700, fontSize: "1.3rem" }}>
+                        {truncate(from_username, 24)}
+                    </Typography>
+                    <Typography
+                        sx={{
+                            display: "inline",
+                            ml: ".4rem",
                             color:
                                 multiplierInt >= 50
                                     ? colors.neonBlue
@@ -80,59 +89,37 @@ export const ChatMessage = ({
                                     : colors.orange,
                             textAlign: "center",
                             fontFamily: "Nostromo Regular Bold",
-                            fontSize: "0.5rem",
+                            fontSize: ".86rem",
                             verticalAlign: "top",
                             opacity: multiplierValue ? 1 : 0.7,
                         }}
                     >
                         {multiplierValue ? multiplierValue : "0"}x
-                    </span>
+                    </Typography>
                     {isCitizen && (
                         <TooltipHelper placement="top-end" text={"Citizen"}>
-                            <span
-                                style={{
+                            <Typography
+                                sx={{
+                                    display: "inline",
                                     cursor: "default",
+                                    ml: ".4rem",
                                     textAlign: "center",
                                     fontFamily: "Nostromo Regular Bold",
-                                    fontSize: "0.5rem",
+                                    fontSize: ".86rem",
                                     verticalAlign: "top",
                                 }}
                             >
                                 🦾
-                            </span>
+                            </Typography>
                         </TooltipHelper>
                     )}
-                    <span
-                        style={{
-                            display: "inline-block",
-                            color: "grey",
-                            fontSize: "0.7rem",
-                            opacity: 0.5,
-                        }}
-                    >
+                    <Typography variant="caption" sx={{ display: "inline", ml: ".4rem", color: "grey", opacity: 0.5 }}>
                         {dateFormatter(sent_at)}
-                    </span>
-                </Stack>
+                    </Typography>
+                </Box>
 
-                <p>{message} </p>
-            </Typography>
+                <Typography sx={{ fontSize: "1.33rem" }}>{message} </Typography>
+            </Box>
         </Stack>
     )
-}
-
-const dateFormatter = (date: Date): string => {
-    let hours = date.getHours()
-    const minutes = date.getMinutes()
-
-    // Check whether AM or PM
-    const newformat = hours >= 12 ? "PM" : "AM"
-
-    // Find current hour in AM-PM Format
-    hours = hours % 12
-
-    // To display "0" as "12"
-    hours = hours ? hours : 12
-    const minutes2 = minutes < 10 ? "0" + minutes : minutes
-
-    return `${hours}:${minutes2} ${newformat}`
 }

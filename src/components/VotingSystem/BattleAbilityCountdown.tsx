@@ -49,8 +49,8 @@ const BattleAbilityCountdownInner = ({ bribeStage }: BattleAbilityCountdownInner
     }
 
     return (
-        <Stack direction="row" spacing={0.6} alignItems="center">
-            <SvgBattleAbilityIcon size="18px" fill={colors.text} />
+        <Stack direction="row" spacing=".48rem" alignItems="center">
+            <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
             <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>{sentence}</Typography>
         </Stack>
     )

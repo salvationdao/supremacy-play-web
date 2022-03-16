@@ -5,6 +5,7 @@ import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from 
 import { NullUUID } from "../../constants"
 import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
+import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityProgress } from "../../types"
 
@@ -18,7 +19,7 @@ export const SkillBar = ({
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
 }) => {
     const { faction_id } = useGameServerAuth()
-    const { state, subscribeAbilityNetMessage } = useGameServerWebsocket()
+    const { state, subscribe, subscribeAbilityNetMessage } = useGameServerWebsocket()
 
     const { identity } = gameAbility
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
@@ -29,6 +30,12 @@ export const SkillBar = ({
 
     const progressPercent = initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100
     const costPercent = initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100
+
+    // Triggered faction ability or war machine ability price ticking
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
+        return subscribe(GameServerKeys.TriggerFactionAbilityPriceUpdated, () => null, { ability_identity: identity })
+    }, [state, subscribe, faction_id, identity])
 
     // Listen on current faction ability price change
     useEffect(() => {
@@ -62,7 +69,7 @@ export const SkillBar = ({
                 position: "absolute",
                 bottom: 0,
                 right: index * WIDTH_PER_SLANTED_BAR - index * 1,
-                width: WIDTH_PER_SLANTED_BAR_ACTUAL,
+                width: `${WIDTH_PER_SLANTED_BAR_ACTUAL}rem`,
                 height: "100%",
                 zIndex: 4,
                 pointerEvents: "none",

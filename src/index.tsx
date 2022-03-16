@@ -76,7 +76,7 @@ const AppInner = () => {
             <GameBar />
             <Stack
                 sx={{
-                    mt: `${GAME_BAR_HEIGHT}px`,
+                    mt: `${GAME_BAR_HEIGHT}rem`,
                     width: mainDivDimensions.width,
                     height: mainDivDimensions.height,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
@@ -163,7 +163,6 @@ const App = () => {
     const setAuthLogin = useMemo(() => {
         return (u: User) => {
             if (!authLogin && u) {
-                console.log(authLogin, u)
                 setAuthLoginX(u)
             }
         }

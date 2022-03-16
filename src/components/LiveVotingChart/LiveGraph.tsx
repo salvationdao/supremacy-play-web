@@ -125,7 +125,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
         <>
             <Box
                 sx={{
-                    ml: 1,
+                    ml: ".8rem",
                     width: `${maxWidthPx - (30 + 1 * 8)}px`,
                     height: `${maxHeightPx - 60}px`,
                 }}
@@ -150,9 +150,9 @@ export const LiveGraph = (props: LiveGraphProps) => {
                     left: 0,
                     top: 0,
                     bottom: 0,
-                    my: 0.9,
-                    ml: 0.6,
-                    pl: 0.6,
+                    my: ".72rem",
+                    ml: ".48rem",
+                    pl: ".48rem",
                     zIndex: 999,
                     borderLeft: `${colors.text}80 1px dashed`,
                 }}
@@ -160,9 +160,9 @@ export const LiveGraph = (props: LiveGraphProps) => {
                 <Typography
                     variant="caption"
                     sx={{
-                        px: 0.5,
-                        pt: 0.3,
-                        pb: 0.1,
+                        px: ".4rem",
+                        pt: ".24rem",
+                        pb: ".08rem",
                         lineHeight: 1,
                         color: `${colors.text}80`,
                         backgroundColor: "#111111",
@@ -174,9 +174,9 @@ export const LiveGraph = (props: LiveGraphProps) => {
                 <Typography
                     variant="caption"
                     sx={{
-                        px: 0.5,
-                        pt: 0.3,
-                        pb: 0.1,
+                        px: ".4rem",
+                        pt: ".24rem",
+                        pb: ".08rem",
                         lineHeight: 1,
                         color: `${colors.text}80`,
                         backgroundColor: "#111111",

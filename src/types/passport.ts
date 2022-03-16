@@ -59,6 +59,7 @@ export interface ChatData {
     avatar_id?: string
     message: string
     sent_at: Date
+    self?: boolean
 }
 
 export interface Transaction {

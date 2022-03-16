@@ -25,8 +25,11 @@ import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import History from "!react-svg-loader!./svg/History.svg"
+import QuestionMark from "!react-svg-loader!./svg/QuestionMark.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import Discord from "!react-svg-loader!./svg/Discord.svg"
+import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
+import ChatTabbed from "!react-svg-loader!./svg/ChatTabbed.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
 import Skull2 from "!react-svg-loader!./svg/Skull2.svg"
@@ -150,8 +153,8 @@ export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, width, h
                 alignItems: "center",
                 pb: 0.3,
                 "& > svg": {
-                    width: width || size || "20px",
-                    height: height || size || "20px",
+                    width: width || size || "2rem",
+                    height: height || size || "2rem",
                     fill: fill || colors.text,
                 },
                 ...sx,
@@ -584,5 +587,23 @@ export const SvgClose: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgContentCopyIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Copy />
+    </SvgWrapper>
+)
+
+export const SvgQuestionMark: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <QuestionMark />
+    </SvgWrapper>
+)
+
+export const SvgChatSplit: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ChatSplit />
+    </SvgWrapper>
+)
+
+export const SvgChatTabbed: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ChatTabbed />
     </SvgWrapper>
 )

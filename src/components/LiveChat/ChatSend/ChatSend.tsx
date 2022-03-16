@@ -1,25 +1,57 @@
 import { IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
 import { useState, useRef, useMemo } from "react"
-import { EmojiPopover } from "../.."
+import { ChatSettings, EmojiPopover } from "../.."
 import { SvgEmoji, SvgSend } from "../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../constants"
-import { usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
+import { useChat, usePassportServerAuth, usePassportServerWebsocket, WebSocketProperties } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { ChatData } from "../../../types/passport"
+import { ChatData, UserData } from "../../../types/passport"
 
 interface ChatSendProps {
     primaryColor: string
     faction_id: string | null
-    onNewMessage: (message: ChatData, faction_id: string | null) => void
-    onSentMessage: (date: Date) => void
-    onFailedMessage: (date: Date) => void
 }
 
-export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage, onFailedMessage }: ChatSendProps) => {
-    const { user } = usePassportServerAuth()
+export const ChatSend = (props: ChatSendProps) => {
     const { state, send } = usePassportServerWebsocket()
+    const { user } = usePassportServerAuth()
+    const { onSentMessage, onFailedMessage, newMessageHandler, initialMessageColor } = useChat()
+
+    return (
+        <ChatSendInner
+            {...props}
+            state={state}
+            send={send}
+            user={user}
+            onSentMessage={onSentMessage}
+            onFailedMessage={onFailedMessage}
+            newMessageHandler={newMessageHandler}
+            initialMessageColor={initialMessageColor}
+        />
+    )
+}
+
+interface ChatSendInnerProps extends ChatSendProps, Partial<WebSocketProperties> {
+    user?: UserData
+    onSentMessage: (sentAt: Date) => void
+    onFailedMessage: (sentAt: Date) => void
+    newMessageHandler: (message: ChatData, faction_id: string | null) => void
+    initialMessageColor?: string
+}
+
+const ChatSendInner = ({
+    primaryColor,
+    faction_id,
+    state,
+    send,
+    user,
+    onSentMessage,
+    onFailedMessage,
+    newMessageHandler,
+    initialMessageColor,
+}: ChatSendInnerProps) => {
     // Message field
     const [message, setMessage] = useState("")
     const inputRef = useRef<HTMLInputElement>(null)
@@ -27,7 +59,7 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
     const popoverRef = useRef(null)
     const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
 
-    const messageColor = useMemo(() => getRandomChatColor(), [])
+    const messageColor = useMemo(() => initialMessageColor || getRandomChatColor(), [initialMessageColor])
 
     const setMessageWithCheck = (newMessage: string, append?: boolean) => {
         setMessage((prev) => {
@@ -38,11 +70,11 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
     }
 
     const sendMessage = async () => {
-        if (!message.trim() || !user || state !== WebSocket.OPEN) return
+        if (!message.trim() || !user || state !== WebSocket.OPEN || !send) return
 
         const sentAt = new Date()
 
-        onNewMessage(
+        newMessageHandler(
             {
                 from_user_id: user.id,
                 from_username: user.username,
@@ -52,6 +84,7 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
                 avatar_id: user.avatar_id,
                 message,
                 sent_at: sentAt,
+                self: true,
             },
             faction_id,
         )
@@ -80,9 +113,9 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
                 justifyContent="flex-end"
                 sx={{
                     position: "relative",
-                    px: 1.6,
-                    pt: 0.4,
-                    pb: 3,
+                    px: "1.28rem",
+                    pt: ".32rem",
+                    pb: "2.4rem",
                 }}
             >
                 <TextField
@@ -107,7 +140,6 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
                         "& .MuiInputBase-root": {
                             backgroundColor: "#49494970",
                             fontFamily: "Share Tech",
-                            fontSize: (theme) => theme.typography.pxToRem(17),
                         },
                         ".Mui-disabled": {
                             WebkitTextFillColor: "unset",
@@ -124,6 +156,7 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
+                                <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
                                 <IconButton
                                     ref={popoverRef}
                                     onClick={toggleIsEmojiOpen}
@@ -136,7 +169,7 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
                                         transition: "all .1s",
                                     }}
                                 >
-                                    <SvgEmoji size="14px" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                    <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                 </IconButton>
                                 <IconButton
                                     onClick={sendMessage}
@@ -144,7 +177,7 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
                                     size="small"
                                     sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
                                 >
-                                    <SvgSend size="14px" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                    <SvgSend size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                 </IconButton>
                             </InputAdornment>
                         ),
@@ -155,8 +188,8 @@ export const ChatSend = ({ primaryColor, faction_id, onNewMessage, onSentMessage
                     variant="caption"
                     sx={{
                         position: "absolute",
-                        bottom: 5,
-                        right: 15,
+                        bottom: ".5rem",
+                        right: "1.5rem",
                         opacity: message.length >= MAX_CHAT_MESSAGE_LENGTH ? 1 : 0.4,
                         color: message.length >= MAX_CHAT_MESSAGE_LENGTH ? colors.red : "#FFFFFF",
                     }}

@@ -42,3 +42,26 @@ span {
 body {
     overflow: hidden; /* Hide scrollbars */
 }
+
+/* Update `src/containers/dimensions.ts` */
+html {
+    font-size: 62.5%; /* 62.5% of 16px is 10px */
+}
+
+@media only screen and (max-width: 1920px) {
+    html {
+        font-size: 53.75%;
+    }
+}
+
+@media only screen and (max-width: 1500px) {
+    html {
+        font-size: 49.375%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    html {
+        font-size: 43.125%;
+    }
+}

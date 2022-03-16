@@ -19,19 +19,19 @@ export const Maintenance = () => {
             }}
         >
             <Stack
-                spacing={1}
+                spacing=".8rem"
                 alignItems="center"
                 justifyContent="center"
                 sx={{
                     position: "absolute",
                     top: "50%",
-                    left: 50,
-                    right: 50,
+                    left: "5rem",
+                    right: "5rem",
                     transform: "translateY(-60%)",
                     zIndex: 3,
                 }}
             >
-                <Link target="_blank" href={SUPREMACY_PAGE} sx={{ width: "100%", height: 120 }}>
+                <Link target="_blank" href={SUPREMACY_PAGE} sx={{ width: "100%", height: "12rem" }}>
                     <Box
                         sx={{
                             width: "100%",
@@ -49,8 +49,8 @@ export const Maintenance = () => {
                         alignItems="center"
                         justifyContent="center"
                         sx={{
-                            px: 5,
-                            py: 3,
+                            px: "4rem",
+                            py: "2.4rem",
                             borderRadius: 1,
                             backgroundColor: "#00000099",
                         }}
@@ -59,7 +59,7 @@ export const Maintenance = () => {
                             sx={{
                                 textAlign: "center",
                                 fontFamily: "Nostromo Regular Heavy",
-                                fontSize: "1.9rem",
+                                fontSize: "3.26rem",
                             }}
                         >
                             {"WE'LL BE BACK SOON"}
@@ -68,7 +68,7 @@ export const Maintenance = () => {
                         <Typography
                             variant="h5"
                             sx={{
-                                mb: 0.5,
+                                mb: ".4rem",
                                 color: colors.neonBlue,
                                 textAlign: "center",
                             }}
@@ -76,15 +76,15 @@ export const Maintenance = () => {
                             FOLLOW OUR SOCIALS FOR MORE UPDATES
                         </Typography>
 
-                        <Stack direction="row" spacing={1.6} alignItems="center">
+                        <Stack direction="row" spacing="1.28rem" alignItems="center">
                             <IconButton size="small" target="_blank" href="https://discord.com/invite/supremacygame">
-                                <SvgDiscord size="32px" />
+                                <SvgDiscord size="3.2rem" />
                             </IconButton>
                             <IconButton size="small" target="_blank" href="https://twitter.com/SupremacyMeta">
-                                <SvgTwitter size="32px" />
+                                <SvgTwitter size="3.2rem" />
                             </IconButton>
                             <IconButton size="small" target="_blank" href="https://youtube.com/supremacygame">
-                                <SvgYouTube size="32px" />
+                                <SvgYouTube size="3.2rem" />
                             </IconButton>
                         </Stack>
                     </Stack>
@@ -104,21 +104,30 @@ const CountdownTimer = ({ endTime }: { endTime: Date }) => {
         <Stack
             direction="row"
             justifyContent="space-around"
-            sx={{ mt: 2, backgroundColor: "#00000099", borderRadius: 1 }}
+            sx={{ mt: "1.6rem", backgroundColor: "#00000099", borderRadius: 1 }}
         >
-            <Stack alignItems="center" sx={{ px: 2, py: 1.5, width: 110, backgroundColor: "#00000099" }}>
+            <Stack
+                alignItems="center"
+                sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
+            >
                 <Typography variant="h5" sx={{ color: colors.neonBlue }}>
                     {hours}
                 </Typography>
                 <Typography variant="h6">HOURS</Typography>
             </Stack>
-            <Stack alignItems="center" sx={{ px: 2, py: 1.5, width: 110, backgroundColor: "#00000099" }}>
+            <Stack
+                alignItems="center"
+                sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
+            >
                 <Typography variant="h5" sx={{ color: colors.neonBlue }}>
                     {minutes}
                 </Typography>
                 <Typography variant="h6">MINUTES</Typography>
             </Stack>
-            <Stack alignItems="center" sx={{ px: 2, py: 1.5, width: 110, backgroundColor: "#00000099" }}>
+            <Stack
+                alignItems="center"
+                sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
+            >
                 <Typography variant="h5" sx={{ color: colors.neonBlue }}>
                     {seconds}
                 </Typography>

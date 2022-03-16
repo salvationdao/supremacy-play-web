@@ -8,13 +8,13 @@ export const MultiplierItem = ({ multiplier }: { multiplier: Multiplier }) => {
 
     return (
         <TooltipHelper text={multiplier.description} placement="left">
-            <Stack direction="row" alignItems="center" spacing={2}>
-                <Stack direction="row" spacing={0.5} sx={{ flex: 1 }}>
+            <Stack direction="row" alignItems="center" spacing="1.6rem">
+                <Stack direction="row" spacing=".4rem" sx={{ flex: 1 }}>
                     <Box
                         sx={{
-                            mt: "-0.8px !important",
-                            width: 20,
-                            height: 20,
+                            mt: "-0.64rem !important",
+                            width: "2rem",
+                            height: "2rem",
                             flexShrink: 0,
                             backgroundImage: `url(${multiplierDeets.image})`,
                             backgroundRepeat: "no-repeat",
@@ -27,7 +27,7 @@ export const MultiplierItem = ({ multiplier }: { multiplier: Multiplier }) => {
                     <Typography variant="body1">{multiplier.key.toUpperCase()}</Typography>
                 </Stack>
 
-                <Typography sx={{ minWidth: 25, textAlign: "end" }} variant="body1">
+                <Typography sx={{ minWidth: "2.5rem", textAlign: "end" }} variant="body1">
                     {multiplier.value}
                 </Typography>
             </Stack>

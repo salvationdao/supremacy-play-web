@@ -63,7 +63,7 @@ export const LogoutButton = () => {
     }
     return (
         <Button
-            startIcon={<SvgLogout size="16px" sx={{ ml: 0.1 }} />}
+            startIcon={<SvgLogout size="1.6rem" sx={{ ml: ".08rem" }} />}
             onClick={onClick}
             sx={{
                 justifyContent: "flex-start",

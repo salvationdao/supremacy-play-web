@@ -13,6 +13,7 @@ export interface BribeStageResponse {
 }
 
 export interface GameSettingsResponse {
+    battle_identifier: number
     game_map: Map
     war_machines: WarMachineState[]
     spawned_ai: WarMachineState[]
@@ -34,6 +35,7 @@ export const GameContainer = createContainer(() => {
     const { faction_id, userID } = useGameServerAuth()
 
     // States
+    const [battleIdentifier, setBattleIdentifier] = useState<number>()
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
@@ -52,6 +54,7 @@ export const GameContainer = createContainer(() => {
             GameServerKeys.SubGameSettings,
             (payload) => {
                 if (!payload) return
+                setBattleIdentifier(payload.battle_identifier)
                 setMap(payload.game_map)
                 setWarMachines(payload.war_machines)
                 setSpawnedAI(payload.spawned_ai)
@@ -139,6 +142,7 @@ export const GameContainer = createContainer(() => {
         factionsAll,
         winner,
         setWinner,
+        battleIdentifier,
         map,
         setMap,
         warMachines,

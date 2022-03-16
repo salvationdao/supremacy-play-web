@@ -13,7 +13,6 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
 
     const {
         id,
-        label,
         theme: { primary },
         logo_blob_id,
     } = faction
@@ -25,8 +24,8 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                     position: "relative",
                     display: "flex",
                     alignItems: "center",
-                    px: 1.2,
-                    py: 0.5,
+                    px: ".96rem",
+                    py: ".4rem",
                     fontFamily: "Nostromo Regular Bold",
                     backgroundColor: "transparent",
                     borderRadius: 0.2,
@@ -37,20 +36,20 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                 }}
                 onClick={() => togglePopoverOpen()}
             >
-                <Box sx={{ position: "absolute", left: "50%", bottom: -21 }} ref={popoverRef} />
+                <Box sx={{ position: "absolute", left: "50%", bottom: "-2.1rem" }} ref={popoverRef} />
 
-                <Stack direction="row" spacing={1.2} alignItems="center">
+                <Stack direction="row" spacing=".96rem" alignItems="center">
                     <Box
                         sx={{
-                            width: 24,
-                            height: 24,
+                            width: "2.4rem",
+                            height: "2.4rem",
                             backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
                         }}
                     />
-                    <SvgPlus size="10px" fill={primary || colors.text} sx={{ pb: 0 }} />
+                    <SvgPlus size="1rem" fill={primary || colors.text} sx={{ pb: 0 }} />
                 </Stack>
             </Button>
 

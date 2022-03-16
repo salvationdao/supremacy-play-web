@@ -20,7 +20,7 @@ const WarMachineIcon = ({
             <ClipThing
                 border={{
                     isFancy: false,
-                    borderThickness: "3px",
+                    borderThickness: ".3rem",
                     borderColor: color,
                 }}
                 clipSize="6px"
@@ -29,8 +29,8 @@ const WarMachineIcon = ({
                     <Box
                         sx={{
                             position: "relative",
-                            width: size,
-                            height: size,
+                            width: `${size}rem`,
+                            height: `${size}rem`,
                             overflow: "hidden",
                             backgroundImage: `url(${imageUrl})`,
                             backgroundRepeat: "no-repeat",
@@ -42,7 +42,7 @@ const WarMachineIcon = ({
                             alignItems="center"
                             justifyContent="center"
                             sx={{
-                                px: 3.3,
+                                px: "2.64rem",
                                 width: "100%",
                                 height: "100%",
                                 background: "linear-gradient(#00000010, #00000080)",
@@ -50,12 +50,14 @@ const WarMachineIcon = ({
                                 transition: "all .2s",
                             }}
                         >
-                            {isDead && <SvgDamageCross fill="#FF1919" size={`${size * 1.3}px`} sx={{ opacity: 0.6 }} />}
+                            {isDead && (
+                                <SvgDamageCross fill="#FF1919" size={`${size * 1.3}rem`} sx={{ opacity: 0.6 }} />
+                            )}
                         </Stack>
 
                         {!imageUrl && (
                             <SvgDamageIcon
-                                size={`${size * 0.5}px`}
+                                size={`${size * 0.5}rem`}
                                 fill="#8C8C8C"
                                 sx={{
                                     position: "absolute",
@@ -83,16 +85,16 @@ const WarMachineBig = ({
 }) => {
     const color = warMachine ? warMachine.faction.theme.primary : colors.text
     return (
-        <Stack alignItems="center" spacing={1} sx={{ width: 150 }}>
+        <Stack alignItems="center" spacing=".8rem" sx={{ width: "15rem" }}>
             {warMachine ? (
                 <WarMachineIcon
                     color={color}
-                    size={75}
+                    size={7.5}
                     imageUrl={warMachine.imageAvatar || GenericWarMachinePNG}
                     isDead={isDead}
                 />
             ) : (
-                <WarMachineIcon color={"#444444"} size={75} />
+                <WarMachineIcon color={"#444444"} size={7.5} />
             )}
             <Typography
                 variant="h6"
@@ -125,14 +127,14 @@ const WarMachineSmall = ({
 }) => {
     const color = warMachine ? warMachine.faction.theme.primary : colors.text
     return (
-        <Stack direction="row" alignItems="center" spacing={1.2}>
+        <Stack direction="row" alignItems="center" spacing=".96rem">
             {warMachine ? (
-                <WarMachineIcon color={color} size={38} imageUrl={warMachine.imageAvatar || GenericWarMachinePNG} />
+                <WarMachineIcon color={color} size={3.8} imageUrl={warMachine.imageAvatar || GenericWarMachinePNG} />
             ) : (
-                <WarMachineIcon color={"#444444"} size={38} />
+                <WarMachineIcon color={"#444444"} size={3.8} />
             )}
 
-            <Stack spacing={0}>
+            <Stack>
                 <Typography
                     variant="body2"
                     sx={{
@@ -167,7 +169,16 @@ const DamageList = ({
 }) => {
     return (
         <Box sx={{ flex: 1 }}>
-            <Box sx={{ mx: 0.8, mb: 1.3, px: 2, pt: 1.5, pb: 1.2, backgroundColor: "#00000090" }}>
+            <Box
+                sx={{
+                    mx: ".64rem",
+                    mb: "1.04rem",
+                    px: "1.6rem",
+                    pt: "1.2rem",
+                    pb: ".96rem",
+                    backgroundColor: "#00000090",
+                }}
+            >
                 <Typography
                     variant="body2"
                     sx={{
@@ -179,7 +190,7 @@ const DamageList = ({
                 </Typography>
             </Box>
 
-            <Stack spacing={1.3} sx={{ mx: 2 }}>
+            <Stack spacing="1.04rem" sx={{ mx: "1.6rem" }}>
                 {damageRecords && damageRecords.length > 0 ? (
                     damageRecords
                         .slice(0, top)
@@ -245,7 +256,7 @@ export const WarMachineDestroyedInfo = ({
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: 630,
+                    width: "63rem",
                     border: "none",
                     outline: "none",
                     borderRadius: 1,
@@ -283,11 +294,11 @@ export const WarMachineDestroyedInfo = ({
 
                     <Box
                         sx={{
-                            px: 5,
-                            py: 4.5,
+                            px: "4rem",
+                            py: "3.6rem",
                         }}
                     >
-                        <Stack spacing={3.8}>
+                        <Stack spacing="3.04rem">
                             <Stack direction="row" alignItems="center">
                                 <WarMachineBig
                                     warMachine={killed_by_war_machine}
@@ -299,13 +310,8 @@ export const WarMachineDestroyedInfo = ({
                                 />
 
                                 <Stack alignItems="center" sx={{ flex: 1 }}>
-                                    <SvgSkull size="120px" sx={{ mb: 1 }} />
-                                    <Typography
-                                        sx={{
-                                            fontFamily: "Nostromo Regular Heavy",
-                                            fontSize: "1.5rem",
-                                        }}
-                                    >
+                                    <SvgSkull size="12rem" sx={{ mb: ".8rem" }} />
+                                    <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Heavy" }}>
                                         DESTROYED
                                     </Typography>
                                     <Typography sx={{ fontFamily: "Nostromo Regular Bold", color: colors.neonBlue }}>

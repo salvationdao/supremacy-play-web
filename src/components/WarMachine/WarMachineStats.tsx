@@ -24,7 +24,7 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
                 direction: "ltr",
                 scrollbarWidth: "none",
                 "::-webkit-scrollbar": {
-                    height: 4,
+                    height: ".4rem",
                 },
                 "::-webkit-scrollbar-track": {
                     background: "#FFFFFF15",
@@ -47,9 +47,9 @@ export const WarMachineStats = () => {
     const { warMachines } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
-    const {
-        streamDimensions: { width },
-    } = useDimension()
+    // const {
+    //     streamDimensions: { width },
+    // } = useDimension()
     const { isMapOpen } = useOverlayToggles()
 
     // Subscribe to the result of the vote
@@ -59,37 +59,42 @@ export const WarMachineStats = () => {
     }, [state, subscribe])
 
     // Determine whether the mech items should be expanded out or collapsed
-    const shouldBeExpanded = useMemo(() => {
-        let shouldBeExpandedFaction = true
-        let shouldBeExpandedOthers = true
+    // const shouldBeExpanded = useMemo(() => {
+    //     let shouldBeExpandedFaction = true
+    //     let shouldBeExpandedOthers = true
 
-        if (!warMachines || warMachines.length <= 0)
-            return {
-                shouldBeExpandedFaction,
-                shouldBeExpandedOthers,
-            }
-        const factionMechs = warMachines.filter((wm) => wm.factionID == faction_id)
-        const otherMechs = warMachines.filter((wm) => wm.factionID != faction_id)
+    //     if (!warMachines || warMachines.length <= 0)
+    //         return {
+    //             shouldBeExpandedFaction,
+    //             shouldBeExpandedOthers,
+    //         }
+    //     const factionMechs = warMachines.filter((wm) => wm.factionID == faction_id)
+    //     const otherMechs = warMachines.filter((wm) => wm.factionID != faction_id)
 
-        if (
-            factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
-                otherMechs.length * WIDTH_MECH_ITEM_OTHER_EXPANDED >
-            width
-        ) {
-            if (
-                factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
-                    otherMechs.length * WIDTH_MECH_ITEM_OTHER_COLLAPSED >
-                width
-            ) {
-                shouldBeExpandedFaction = false
-                shouldBeExpandedOthers = false
-            } else {
-                shouldBeExpandedOthers = false
-            }
-        }
+    //     if (
+    //         factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
+    //             otherMechs.length * WIDTH_MECH_ITEM_OTHER_EXPANDED >
+    //         width
+    //     ) {
+    //         if (
+    //             factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
+    //                 otherMechs.length * WIDTH_MECH_ITEM_OTHER_COLLAPSED >
+    //             width
+    //         ) {
+    //             shouldBeExpandedFaction = false
+    //             shouldBeExpandedOthers = false
+    //         } else {
+    //             shouldBeExpandedOthers = false
+    //         }
+    //     }
 
-        return { shouldBeExpandedFaction, shouldBeExpandedOthers }
-    }, [width, faction_id, warMachines])
+    //     return { shouldBeExpandedFaction, shouldBeExpandedOthers }
+    // }, [width, faction_id, warMachines])
+
+    const shouldBeExpanded = {
+        shouldBeExpandedFaction: false,
+        shouldBeExpandedOthers: false,
+    }
 
     if (!warMachines || warMachines.length <= 0) return null
 
@@ -106,7 +111,7 @@ export const WarMachineStats = () => {
                     position: "absolute",
                     bottom: 0,
                     left: 0,
-                    right: isMapOpen ? MINI_MAP_DEFAULT_WIDTH + 20 : 0,
+                    right: isMapOpen ? `calc(${MINI_MAP_DEFAULT_WIDTH}px + 1.5rem)` : 0,
                     zIndex: 13,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",
@@ -117,10 +122,16 @@ export const WarMachineStats = () => {
                         clipSize="9px"
                         clipSlantSize="26px"
                         skipLeft
-                        sx={{ pl: 1.2, pr: 3, pt: 2.5, pb: 2, backgroundColor: `${theme.factionTheme.background}95` }}
+                        sx={{
+                            pl: ".96rem",
+                            pr: "1.6rem",
+                            pt: "2rem",
+                            pb: "1.6rem",
+                            backgroundColor: `${theme.factionTheme.background}95`,
+                        }}
                     >
                         <ScrollContainer>
-                            <Stack spacing={-4} direction="row" alignItems="center" justifyContent="center">
+                            <Stack spacing="-3.2rem" direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
                                         key={`${wm.participantID} - ${wm.hash}`}
@@ -135,20 +146,24 @@ export const WarMachineStats = () => {
                 )}
 
                 {otherMechs.length > 0 && (
-                    <Box sx={{ mb: 0.6, pr: 2, pl: haveFactionMechs ? 0 : 1.6, overflow: "hidden" }}>
+                    <Box sx={{ mb: ".48rem", pr: "1.6rem", pl: haveFactionMechs ? 0 : "1.28rem", overflow: "hidden" }}>
                         <ScrollContainer>
                             <Stack
-                                spacing={haveFactionMechs ? -6.2 : -5.5}
+                                spacing={haveFactionMechs ? "-4.96rem" : "-4.4rem"}
                                 direction="row"
                                 alignItems="center"
-                                sx={{ flex: 1, ml: haveFactionMechs ? -1.8 : 0, pb: haveFactionMechs ? 0 : 0.6 }}
+                                sx={{
+                                    flex: 1,
+                                    ml: haveFactionMechs ? "-1.44rem" : 0,
+                                    pb: haveFactionMechs ? 0 : ".48rem",
+                                }}
                             >
                                 {otherMechs
                                     .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                     .map((wm) => (
                                         <Box
                                             key={`${wm.participantID} - ${wm.hash}`}
-                                            sx={{ ":not(:last-child)": { pr: 2 } }}
+                                            sx={{ ":not(:last-child)": { pr: "1.6rem" } }}
                                         >
                                             <WarMachineItem
                                                 warMachine={wm}

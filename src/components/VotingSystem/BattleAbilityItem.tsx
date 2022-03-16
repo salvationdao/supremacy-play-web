@@ -109,7 +109,7 @@ const BattleAbilityItemInner = ({
     }, [state, subscribeNetMessage])
 
     const onBribe = (voteAmount: string) => {
-        if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount }, true)
+        if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount })
     }
 
     const isVoting = useMemo(
@@ -121,7 +121,20 @@ const BattleAbilityItemInner = ({
         [battleAbilityProgress, bribeStage],
     )
 
-    if (!battleAbility || !battleAbilityProgress || battleAbilityProgress.length <= 0) return null
+    if (!battleAbility || !battleAbilityProgress || battleAbilityProgress.length <= 0) {
+        return (
+            <Typography
+                sx={{
+                    mt: ".5rem",
+                    lineHeight: 1,
+                    color: colors.text,
+                    fontWeight: "fontWeightBold",
+                }}
+            >
+                LOADING BATTLE ABILITY...
+            </Typography>
+        )
+    }
 
     const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
     const buttonColor = user && user.faction ? user.faction.theme.primary : colour
@@ -129,28 +142,28 @@ const BattleAbilityItemInner = ({
 
     return (
         <Fade in={true}>
-            <Stack spacing={0.7}>
+            <Stack spacing=".56rem">
                 <BattleAbilityCountdown />
 
-                <Stack key={fadeEffect} spacing={1.3}>
+                <Stack key={fadeEffect} spacing="1.04rem">
                     <Fade in={true}>
                         <Box>
                             <ClipThing clipSize="6px">
                                 <Stack
-                                    spacing={1}
+                                    spacing=".8rem"
                                     alignItems="flex-start"
                                     sx={{
                                         flex: 1,
-                                        minWidth: 325,
+                                        minWidth: "32.5rem",
                                         backgroundColor: `${colour || colors.darkNavy}15`,
-                                        px: 2,
-                                        pt: 1.4,
-                                        pb: 1.6,
+                                        px: "1.6rem",
+                                        pt: "1.12rem",
+                                        pb: "1.28rem",
                                         opacity: isVoting ? 1 : 0.7,
                                     }}
                                 >
                                     <Stack
-                                        spacing={3}
+                                        spacing="2.4rem"
                                         direction="row"
                                         alignItems="center"
                                         justifyContent="space-between"
@@ -158,15 +171,15 @@ const BattleAbilityItemInner = ({
                                     >
                                         <TooltipHelper placement="right" text={description}>
                                             <Stack
-                                                spacing={1}
+                                                spacing=".8rem"
                                                 direction="row"
                                                 alignItems="center"
                                                 justifyContent="center"
                                             >
                                                 <Box
                                                     sx={{
-                                                        height: 19,
-                                                        width: 19,
+                                                        height: "1.9rem",
+                                                        width: "1.9rem",
                                                         backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
                                                         backgroundRepeat: "no-repeat",
                                                         backgroundPosition: "center",
@@ -174,7 +187,7 @@ const BattleAbilityItemInner = ({
                                                         backgroundColor: colour || "#030409",
                                                         border: `${colour} 1px solid`,
                                                         borderRadius: 0.6,
-                                                        mb: 0.3,
+                                                        mb: ".24rem",
                                                     }}
                                                 />
                                                 <Typography
@@ -187,7 +200,7 @@ const BattleAbilityItemInner = ({
                                                         overflow: "hidden",
                                                         textOverflow: "ellipsis",
                                                         whiteSpace: "nowrap",
-                                                        maxWidth: 200,
+                                                        maxWidth: "20rem",
                                                     }}
                                                 >
                                                     {label}
@@ -196,12 +209,17 @@ const BattleAbilityItemInner = ({
                                         </TooltipHelper>
 
                                         <Stack
-                                            spacing={0.3}
+                                            spacing=".24rem"
                                             direction="row"
                                             alignItems="center"
                                             justifyContent="center"
                                         >
-                                            <SvgCooldown component="span" size="13px" fill={"grey"} sx={{ pb: 0.4 }} />
+                                            <SvgCooldown
+                                                component="span"
+                                                size="1.3rem"
+                                                fill={"grey"}
+                                                sx={{ pb: ".32rem" }}
+                                            />
                                             <Typography
                                                 variant="body2"
                                                 sx={{ lineHeight: 1, color: "grey !important" }}
@@ -212,11 +230,11 @@ const BattleAbilityItemInner = ({
                                     </Stack>
 
                                     <Stack
-                                        spacing={0.5}
+                                        spacing=".4rem"
                                         sx={{
                                             width: "100%",
-                                            px: 1.5,
-                                            py: 1.2,
+                                            px: "1.2rem",
+                                            py: ".96rem",
                                             backgroundColor: "#00000030",
                                             borderRadius: 1,
                                         }}
@@ -228,14 +246,14 @@ const BattleAbilityItemInner = ({
                                                 return (
                                                     <Stack
                                                         key={a.faction_id}
-                                                        spacing={1.2}
+                                                        spacing=".96rem"
                                                         direction="row"
                                                         alignItems="center"
                                                     >
                                                         <Box
                                                             sx={{
-                                                                height: 16,
-                                                                width: 16,
+                                                                height: "1.6rem",
+                                                                width: "1.6rem",
                                                                 backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
                                                                     factionsAll[a.faction_id].logo_blob_id
                                                                 })`,
@@ -245,7 +263,7 @@ const BattleAbilityItemInner = ({
                                                                 backgroundColor: primaryColor,
                                                                 border: `${primaryColor} 1px solid`,
                                                                 borderRadius: 0.6,
-                                                                mb: 0.3,
+                                                                mb: ".24rem",
                                                             }}
                                                         />
                                                         <ContributionBar
@@ -263,7 +281,7 @@ const BattleAbilityItemInner = ({
                                                             direction="row"
                                                             alignItems="center"
                                                             justifyContent="center"
-                                                            sx={{ minWidth: 90 }}
+                                                            sx={{ minWidth: "11rem" }}
                                                         >
                                                             <Typography
                                                                 key={`currentSups-${a.current_sups.toFixed()}`}
@@ -313,7 +331,7 @@ const BattleAbilityItemInner = ({
                                             })}
                                     </Stack>
 
-                                    <Stack direction="row" spacing={0.4} sx={{ mt: 0.6, width: "100%" }}>
+                                    <Stack direction="row" spacing={0.4} sx={{ mt: ".48rem", width: "100%" }}>
                                         <VotingButton
                                             color={buttonColor}
                                             textColor={buttonTextColor}
@@ -321,7 +339,7 @@ const BattleAbilityItemInner = ({
                                             cost={"0.1"}
                                             isVoting={isVoting}
                                             onClick={() => onBribe("0.1")}
-                                            Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
+                                            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
                                             color={buttonColor}
@@ -330,7 +348,7 @@ const BattleAbilityItemInner = ({
                                             cost={"1"}
                                             isVoting={isVoting}
                                             onClick={() => onBribe("1")}
-                                            Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
+                                            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
                                         />
                                         <VotingButton
                                             color={buttonColor}
@@ -339,7 +357,7 @@ const BattleAbilityItemInner = ({
                                             cost={"10"}
                                             isVoting={isVoting}
                                             onClick={() => onBribe("10")}
-                                            Prefix={<SvgSupToken size="14px" fill={buttonTextColor} />}
+                                            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
                                         />
                                     </Stack>
                                 </Stack>

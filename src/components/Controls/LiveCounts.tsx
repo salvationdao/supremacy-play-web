@@ -55,13 +55,13 @@ export const LiveCountsInner = ({ factionsAll, subscribe, state }: LiveCountsPro
     if (!viewers || !factionsAll) return null
 
     return (
-        <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center">
-            <SvgUser size="9px" fill={colors.text} />
+        <Stack direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
+            <SvgUser size=".9rem" fill={colors.text} />
             <Typography variant="body2" sx={{ lineHeight: 1, whiteSpace: "nowrap" }}>
                 LIVE VIEWERS:{" "}
             </Typography>
 
-            <Stack direction="row" spacing={0.8} alignItems="center" justifyContent="center">
+            <Stack direction="row" spacing=".64rem" alignItems="center" justifyContent="center">
                 <ReUsedText
                     text={Math.abs(viewers.red_mountain).toFixed()}
                     color={factionsAll["98bf7bb3-1a7c-4f21-8843-458d62884060"]?.theme.primary}

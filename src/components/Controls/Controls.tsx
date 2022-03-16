@@ -15,24 +15,24 @@ export const Controls = () => {
             direction="row"
             alignItems="center"
             justifyContent="space-between"
-            spacing={2}
+            spacing="1.6rem"
             sx={{
                 position: "relative",
                 width: "100%",
-                height: CONTROLS_HEIGHT,
-                pl: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}px`,
-                pt: 0.3,
-                pb: 0.2,
+                height: `${CONTROLS_HEIGHT}rem`,
+                pl: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
+                pt: ".24rem",
+                pb: ".16rem",
                 backgroundColor:
                     user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
             }}
         >
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing="1.6rem">
                 <LiveCounts />
                 <OverlayToggles />
             </Stack>
 
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing="1.6rem">
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />

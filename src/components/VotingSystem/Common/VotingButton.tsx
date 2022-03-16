@@ -32,13 +32,13 @@ export const VotingButton = ({
             disabled={!isVotable}
             excludeCaret
             clipSize="4px"
-            sx={{ pt: 0.4, pb: 0.3, minWidth: 20 }}
+            sx={{ pt: ".32rem", pb: ".24rem", minWidth: "2rem" }}
             clipSx={{ flex: 1, position: "relative" }}
             backgroundColor={color || "#14182B"}
             borderColor={color || "#14182B"}
             onClick={onClick}
         >
-            <Stack alignItems="center" justifyContent="center" direction="row" spacing={0.2}>
+            <Stack alignItems="center" justifyContent="center" direction="row" spacing=".16rem">
                 {Prefix}
                 <Typography
                     variant="caption"

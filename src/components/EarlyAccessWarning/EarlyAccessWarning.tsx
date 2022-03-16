@@ -1,4 +1,4 @@
-import { AlertTitle, Box, Button, Modal, Stack, Typography } from "@mui/material"
+import { Box, Button, Modal, Stack, Typography } from "@mui/material"
 import { Alert } from "@mui/lab"
 import { colors } from "../../theme/theme"
 import { useToggle } from "../../hooks"
@@ -15,17 +15,28 @@ export const EarlyAccessWarning = () => {
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        maxWidth: 420,
-                        px: 4,
-                        py: 3,
+                        maxWidth: "42rem",
+                        px: "3.2rem",
+                        py: "2.4rem",
                         backgroundColor: `${colors.darkNavyBlue}`,
                         outline: "1px solid #FFFFFF",
                         borderRadius: 1,
                         boxShadow: 24,
                     }}
                 >
-                    <Stack spacing={2}>
-                        <Alert severity="warning" sx={{ ".MuiAlert-message": { pt: 1.35 } }}>
+                    <Stack spacing="1.6rem">
+                        <Alert
+                            severity="warning"
+                            sx={{
+                                alignItems: "center",
+                                ".MuiAlert-message": {
+                                    pt: "1.12rem",
+                                    fontSize: "1.3rem",
+                                    fontWeight: "fontWeightBold",
+                                    fontFamily: "Nostromo Regular Bold",
+                                },
+                            }}
+                        >
                             The game is in early access and the $SUPS you use are real!
                         </Alert>
 
@@ -47,8 +58,8 @@ export const EarlyAccessWarning = () => {
                     <Button
                         variant="outlined"
                         sx={{
-                            mt: 3,
-                            py: 0.8,
+                            mt: "2.4rem",
+                            py: ".64rem",
                             width: "100%",
                             color: colors.neonBlue,
                             backgroundColor: colors.darkNavy,

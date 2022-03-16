@@ -2,11 +2,10 @@ import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgContentCopyIcon, SvgSupToken } from "../../../assets"
-import moment from "moment"
 import { useToggle } from "../../../hooks"
 import { Transaction } from "../../../types/passport"
 import { TooltipHelper } from "../.."
-import { supFormatterNoFixed } from "../../../helpers"
+import { dateFormatter, supFormatterNoFixed } from "../../../helpers"
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const isCredit = userID === transaction.credit
@@ -28,11 +27,11 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
             <Stack
                 direction="row"
                 alignItems="center"
-                sx={{ px: 0.8, py: 0.15, backgroundColor: "#00000030", borderRadius: 1 }}
+                sx={{ px: ".64rem", py: ".12rem", backgroundColor: "#00000030", borderRadius: 1 }}
             >
                 <Stack direction="row" alignItems="center">
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>
-                    <SvgSupToken size="13px" fill={color} />
+                    <SvgSupToken size="1.3rem" fill={color} />
                     <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount)}</Typography>
                 </Stack>
 
@@ -40,12 +39,12 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                     variant="caption"
                     sx={{
                         ml: "auto",
-                        mr: 0.3,
+                        mr: ".24rem",
                         lineHeight: 1,
                         color: "grey !important",
                     }}
                 >
-                    {moment(transaction.created_at).format("h:mm:ss A")}
+                    {dateFormatter(transaction.created_at, true)}
                 </Typography>
 
                 <Tooltip
@@ -59,7 +58,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                         },
                     }}
                     title={
-                        <Box sx={{ px: 0.5, py: 0.2 }}>
+                        <Box sx={{ px: ".4rem", py: ".16rem" }}>
                             <Typography variant="body1" sx={{ textAlign: "center" }}>
                                 Copied!
                             </Typography>
@@ -70,7 +69,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                             style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999, opacity: 0.92 },
                         },
                         arrow: { sx: { color: "#333333" } },
-                        tooltip: { sx: { maxWidth: 250, background: "#333333" } },
+                        tooltip: { sx: { maxWidth: "25rem", background: "#333333" } },
                     }}
                 >
                     <Box>
@@ -84,7 +83,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                                 )
                             }}
                         >
-                            <SvgContentCopyIcon size="13px" />
+                            <SvgContentCopyIcon size="1.3rem" />
                         </IconButton>
                     </Box>
                 </Tooltip>

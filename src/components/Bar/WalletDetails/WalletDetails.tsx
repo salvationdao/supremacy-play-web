@@ -80,7 +80,7 @@ export const WalletDetails = () => {
 
     if (!sups) {
         return (
-            <Stack alignItems="center" sx={{ width: 260 }}>
+            <Stack alignItems="center" sx={{ width: "26rem" }}>
                 <CircularProgress size={20} />
             </Stack>
         )
@@ -94,8 +94,8 @@ export const WalletDetails = () => {
                 noDivider
                 barName={"wallet"}
                 iconComponent={
-                    <Box sx={{ p: 0.4, backgroundColor: colors.grey, borderRadius: 1 }}>
-                        <SvgSupToken size="20px" />
+                    <Box sx={{ p: ".32rem", backgroundColor: colors.grey, borderRadius: 1 }}>
+                        <SvgSupToken size="2rem" />
                     </Box>
                 }
             >
@@ -103,14 +103,14 @@ export const WalletDetails = () => {
                     direction="row"
                     alignItems="center"
                     sx={{
-                        mx: 1.5,
+                        mx: "1.2rem",
                         height: "100%",
                     }}
                 >
                     <Stack
                         direction="row"
                         alignItems="center"
-                        spacing={2}
+                        spacing="1.6rem"
                         sx={{
                             position: "relative",
                             height: "100%",
@@ -118,7 +118,7 @@ export const WalletDetails = () => {
                             overflowY: "hidden",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                height: 4,
+                                height: ".4rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
@@ -146,7 +146,14 @@ export const WalletDetails = () => {
                             componentsProps={{
                                 popper: { style: { zIndex: 99999, filter: "drop-shadow(0 3px 3px #00000050)" } },
                                 arrow: { sx: { color: tooltipBackgroundColor } },
-                                tooltip: { sx: { width: 320, maxWidth: 320, background: tooltipBackgroundColor } },
+                                tooltip: {
+                                    sx: {
+                                        width: "32rem",
+                                        maxWidth: "32rem",
+                                        background: tooltipBackgroundColor,
+                                        border: "#FFFFFF60 1px solid",
+                                    },
+                                },
                             }}
                         >
                             <Stack
@@ -154,8 +161,8 @@ export const WalletDetails = () => {
                                 alignItems="center"
                                 onClick={toggleIsTooltipOpen}
                                 sx={{
-                                    px: 1.2,
-                                    py: 1,
+                                    px: ".96rem",
+                                    py: ".8rem",
                                     cursor: "pointer",
                                     borderRadius: 1,
                                     backgroundColor: isTooltipOpen ? "#FFFFFF12" : "unset",
@@ -167,8 +174,8 @@ export const WalletDetails = () => {
                                     },
                                 }}
                             >
-                                <SvgWallet size="23px" sx={{ mr: 1.3 }} />
-                                <SvgSupToken size="19px" fill={colors.yellow} sx={{ mr: 0.6 }} />
+                                <SvgWallet size="2.3rem" sx={{ mr: "1.04rem" }} />
+                                <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".48rem" }} />
                                 <Typography sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1 }}>
                                     {sups ? supFormatterNoFixed(sups, 2) : "0.00"}
                                 </Typography>
@@ -177,10 +184,10 @@ export const WalletDetails = () => {
                                     <Typography
                                         variant="caption"
                                         sx={{
-                                            ml: 1,
-                                            px: 1,
-                                            pt: 0.5,
-                                            pb: 0.3,
+                                            ml: ".8rem",
+                                            px: ".8rem",
+                                            pt: ".4rem",
+                                            pb: ".24rem",
                                             textAlign: "center",
                                             lineHeight: 1,
                                             fontFamily: "Nostromo Regular Bold",
@@ -199,9 +206,9 @@ export const WalletDetails = () => {
                             href={TOKEN_SALE_PAGE}
                             target="_blank"
                             sx={{
-                                px: 1.5,
-                                pt: 0.4,
-                                pb: 0.2,
+                                px: "1.2rem",
+                                pt: ".32rem",
+                                pb: ".16rem",
                                 flexShrink: 0,
                                 justifyContent: "flex-start",
                                 color: colors.neonBlue,
@@ -220,9 +227,9 @@ export const WalletDetails = () => {
                         orientation="vertical"
                         flexItem
                         sx={{
-                            height: 23,
+                            height: "2.3rem",
                             my: "auto !important",
-                            ml: 3,
+                            ml: "2.4rem",
                             borderColor: "#494949",
                             borderRightWidth: 1.6,
                         }}

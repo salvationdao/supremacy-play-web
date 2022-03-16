@@ -32,12 +32,12 @@ export const EmojiPopover = ({
                 vertical: "bottom",
                 horizontal: "center",
             }}
-            PaperProps={{ sx: { backgroundColor: "transparent", boxShadow: 0, overflow: "visible" } }}
+            PaperProps={{ sx: { background: "none", boxShadow: 0, overflow: "visible" } }}
             sx={{ zIndex: 999999, overflow: "visible" }}
         >
             <Box
                 sx={{
-                    mb: 2,
+                    mb: "1.6rem",
                     backgroundColor: colors.darkNavy,
                 }}
             >
@@ -45,7 +45,7 @@ export const EmojiPopover = ({
                     sx={{
                         boxShadow: 20,
                         borderRadius: 0.9,
-                        border: `${primaryColor}50 2px solid`,
+                        border: "#FFFFFF60 1px solid",
                         backgroundColor: `${primaryColor}10`,
                         ".emoji-mart": {
                             backgroundColor: "transparent",
@@ -55,14 +55,14 @@ export const EmojiPopover = ({
                             borderRadius: 1,
                         },
                         ".emoji-mart-scroll": {
-                            mr: 0.4,
-                            my: 0.4,
+                            mr: ".32rem",
+                            my: ".32rem",
                             overflowY: "auto",
                             overflowX: "hidden",
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: 5,
+                                width: ".4rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
@@ -74,7 +74,7 @@ export const EmojiPopover = ({
                             },
                         },
                         ".emoji-mart-search": {
-                            mb: 1,
+                            mb: ".8rem",
                         },
                         ".emoji-mart, #emoji-mart-search-2": {
                             border: "none",
@@ -84,9 +84,6 @@ export const EmojiPopover = ({
                         },
                         "#emoji-mart-search-30": {
                             pb: "3.6px",
-                        },
-                        ".emoji-mart-bar": {
-                            borderBottom: `${primaryColor}50 2px solid`,
                         },
                     }}
                 >
