@@ -35,32 +35,6 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const { faction_id } = useGameServerAuth()
     const { bribeStage } = useGame()
 
-    return (
-        <FactionAbilityItemInner
-            state={state}
-            send={send}
-            subscribe={subscribe}
-            subscribeAbilityNetMessage={subscribeAbilityNetMessage}
-            faction_id={faction_id}
-            bribeStage={bribeStage}
-            gameAbility={gameAbility}
-            abilityMaxPrice={abilityMaxPrice}
-            clipSlantSize={clipSlantSize}
-        />
-    )
-}
-
-export const FactionAbilityItemInner = ({
-    state,
-    send,
-    subscribe,
-    subscribeAbilityNetMessage,
-    faction_id,
-    bribeStage,
-    gameAbility,
-    abilityMaxPrice,
-    clipSlantSize,
-}: FactionAbilityItemProps) => {
     const { label, colour, text_colour, image_url, identity, description } = gameAbility
 
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
@@ -114,6 +88,50 @@ export const FactionAbilityItemInner = ({
         [supsCost, currentSups],
     )
 
+    return (
+        <FactionAbilityItemInner
+            currentSups={currentSups}
+            label={label}
+            colour={colour}
+            description={description}
+            text_colour={text_colour}
+            image_url={image_url}
+            clipSlantSize={clipSlantSize}
+            supsCost={supsCost}
+            isVoting={!!isVoting}
+            onContribute={onContribute}
+            initialTargetCost={initialTargetCost}
+        />
+    )
+}
+
+interface InnerProps {
+    initialTargetCost: BigNumber
+    clipSlantSize?: string
+    colour: string
+    label: string
+    description: string
+    text_colour: string
+    image_url: string
+    currentSups: BigNumber
+    supsCost: BigNumber
+    isVoting: boolean
+    onContribute: (c: string) => void
+}
+
+export const FactionAbilityItemInner = ({
+    initialTargetCost,
+    clipSlantSize,
+    colour,
+    description,
+    text_colour,
+    image_url,
+    label,
+    currentSups,
+    supsCost,
+    isVoting,
+    onContribute,
+}: InnerProps) => {
     return (
         <Box key={`${initialTargetCost}`}>
             <Fade in={true}>
@@ -228,7 +246,7 @@ export const FactionAbilityItemInner = ({
                                     textColor={text_colour || "#FFFFFF"}
                                     amount={"0.1"}
                                     cost={"0.1"}
-                                    isVoting={!!isVoting}
+                                    isVoting={isVoting}
                                     onClick={() => onContribute("0.1")}
                                     Prefix={<SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />}
                                 />
@@ -237,7 +255,7 @@ export const FactionAbilityItemInner = ({
                                     textColor={text_colour || "#FFFFFF"}
                                     amount={"1"}
                                     cost={"1"}
-                                    isVoting={!!isVoting}
+                                    isVoting={isVoting}
                                     onClick={() => onContribute("1")}
                                     Prefix={<SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />}
                                 />
@@ -246,7 +264,7 @@ export const FactionAbilityItemInner = ({
                                     textColor={text_colour || "#FFFFFF"}
                                     amount={"10"}
                                     cost={"10"}
-                                    isVoting={!!isVoting}
+                                    isVoting={isVoting}
                                     onClick={() => onContribute("10")}
                                     Prefix={<SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />}
                                 />
