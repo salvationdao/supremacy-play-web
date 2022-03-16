@@ -92,6 +92,7 @@ const TabbedLayout = () => {
         <Stack
             sx={{
                 flex: 1,
+                position: "relative",
                 backgroundColor:
                     tabValue == 1 && user && user.faction
                         ? `${user?.faction.theme.primary}06`
@@ -200,7 +201,7 @@ const SplitLayout = () => {
 
     return (
         <Stack sx={{ flex: 1 }}>
-            <Stack sx={{ height: "50%", backgroundColor: `${colors.globalChat}13` }}>
+            <Stack sx={{ position: "relative", height: "50%", backgroundColor: `${colors.globalChat}13` }}>
                 <Stack
                     direction="row"
                     alignItems="center"
@@ -234,7 +235,9 @@ const SplitLayout = () => {
             </Stack>
 
             {isEnlisted && (
-                <Stack sx={{ height: "50%", backgroundColor: `${user?.faction.theme.primary}06` }}>
+                <Stack
+                    sx={{ position: "relative", height: "50%", backgroundColor: `${user?.faction.theme.primary}06` }}
+                >
                     <Stack
                         direction="row"
                         alignItems="center"
