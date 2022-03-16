@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import BigNumber from "bignumber.js"
 import { BattleAbilityCountdown, ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgSupToken } from "../../assets"
@@ -18,6 +18,7 @@ import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { BattleAbility as BattleAbilityType, BattleAbilityProgress, NetMessageType, User } from "../../types"
 import { zoomEffect } from "../../theme/keyframes"
+import { Simulate } from "react-dom/test-utils"
 
 interface BattleAbilityProgressBigNum {
     faction_id: string
@@ -41,6 +42,8 @@ export const BattleAbilityItem = () => {
     const [fadeEffect, toggleFadeEffect] = useToggle()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [battleAbilityProgress, setBattleAbilityProgress] = useState<BattleAbilityProgressBigNum[]>([])
+
+    const progressPayload = useRef<{ [key: string]: BattleAbilityProgress }>()
 
     // Subscribe to battle ability updates
     useEffect(() => {
@@ -69,15 +72,41 @@ export const BattleAbilityItem = () => {
             (payload) => {
                 if (!payload) return
                 // Put own faction progress first, then convert string to big number and set state
-                setBattleAbilityProgress(
-                    payload
-                        .sort((a, b) => a.faction_id.localeCompare(b.faction_id))
-                        .map((a) => ({
-                            faction_id: a.faction_id,
-                            sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
-                            current_sups: new BigNumber(a.current_sups).dividedBy("1000000000000000000"),
-                        })),
-                )
+                let unchanged = true
+                const pp: { [key: string]: BattleAbilityProgress } = {}
+                for (let i = 0; i < payload.length; i++) {
+                    const fid = payload[i].faction_id
+                    pp[fid] = payload[i]
+                    if (!progressPayload.current) {
+                        unchanged = false
+                    } else if (
+                        progressPayload.current &&
+                        progressPayload.current[fid] &&
+                        payload[i].current_sups !== progressPayload.current[fid].current_sups
+                    ) {
+                        unchanged = false
+                    } else if (
+                        progressPayload.current &&
+                        progressPayload.current[fid] &&
+                        payload[i].sups_cost !== progressPayload.current[fid].sups_cost
+                    ) {
+                        unchanged = false
+                    }
+                }
+
+                if (!unchanged) {
+                    progressPayload.current = pp
+
+                    setBattleAbilityProgress(
+                        payload
+                            .sort((a, b) => a.faction_id.localeCompare(b.faction_id))
+                            .map((a) => ({
+                                faction_id: a.faction_id,
+                                sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
+                                current_sups: new BigNumber(a.current_sups).dividedBy("1000000000000000000"),
+                            })),
+                    )
+                }
             },
         )
     }, [state, subscribeNetMessage])

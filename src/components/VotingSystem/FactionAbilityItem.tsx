@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import {
     BribeStageResponse,
@@ -46,6 +46,8 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         abilityMaxPrice || new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"),
     )
 
+    const progressPayload = useRef<GameAbilityProgress>()
+
     // Triggered faction ability or war machine ability price ticking
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
@@ -53,11 +55,27 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     }, [state, subscribe, faction_id, identity])
 
     // Listen on the progress of the votes
+    // Listen on the progress of the votes
+
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !faction_id || faction_id === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
             if (!payload) return
+
+            let unchanged = true
+            if (!progressPayload.current) {
+                unchanged = false
+            } else if (payload.sups_cost !== progressPayload.current.sups_cost) {
+                unchanged = false
+            } else if (payload.current_sups !== progressPayload.current.current_sups) {
+                unchanged = false
+            } else if (payload.should_reset !== progressPayload.current.should_reset) {
+                unchanged = false
+            }
+
+            if (unchanged) return
+            progressPayload.current = payload
             setGameAbilityProgress(payload)
         })
     }, [identity, state, subscribeAbilityNetMessage, faction_id])
