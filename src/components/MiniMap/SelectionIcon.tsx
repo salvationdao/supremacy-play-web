@@ -39,7 +39,9 @@ export const SelectionIcon = ({
                 zIndex: 6,
                 border: `2px solid ${colour}`,
                 borderRadius: 1,
-                transform: `translate3d(${selection.x * gridWidth}px, ${selection.y * gridHeight}px, 0)`,
+                transform: `translate3d(${selection.x * gridWidth - gridWidth / 2}px, ${
+                    selection.y * gridHeight - gridHeight / 2
+                }px, 0)`,
                 cursor: `url(${Crosshair}) 10 10, auto`,
             }}
         >

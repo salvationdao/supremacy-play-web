@@ -173,8 +173,8 @@ const InteractiveMapInner = ({
         try {
             if (state !== WebSocket.OPEN || !selection || !send) return
             send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
-                x: selection.x,
-                y: selection.y,
+                x: Math.floor(selection.x),
+                y: Math.floor(selection.y),
             })
             setSubmitted && setSubmitted(true)
             setSelection(undefined)
@@ -383,7 +383,6 @@ const InteractiveMapInner = ({
                             gridHeight={gridHeight}
                             isDragging={isDragging}
                             setSelection={setSelection}
-                            prevSelection={prevSelection}
                             mapElement={mapElement}
                             scale={scale}
                             offset={20}

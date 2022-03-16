@@ -29,12 +29,9 @@ export const Grid = ({
     targeting,
     gridWidth,
     gridHeight,
-    isDragging,
     setSelection,
-    prevSelection,
     mapElement,
     scale,
-    offset,
 }: {
     map?: Map
     targeting?: boolean
@@ -42,7 +39,6 @@ export const Grid = ({
     gridHeight: number
     isDragging: React.MutableRefObject<boolean>
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
-    prevSelection: React.MutableRefObject<MapSelection | undefined>
     mapElement: React.MutableRefObject<any>
     scale: SpringValue<number>
     offset: number
@@ -72,8 +68,8 @@ export const Grid = ({
             const x = e.clientX - rect.left
             const y = e.clientY - rect.top
             setSelection({
-                x: Math.floor(x / (gridWidth * scale.get())),
-                y: Math.floor(y / (gridHeight * scale.get())),
+                x: x / (gridWidth * scale.get()),
+                y: y / (gridHeight * scale.get()),
             })
         }
     }
@@ -88,32 +84,6 @@ export const Grid = ({
             sx={{
                 cursor: `url(${Crosshair}) 10 10, auto`,
             }}
-        >
-            <tbody>
-                {Array(map.cells_y)
-                    .fill(1)
-                    .map((_el, y) => (
-                        <tr key={`column-${y}`}>
-                            {Array(map.cells_x)
-                                .fill(1)
-                                .map((_el, x) => {
-                                    const disabled =
-                                        disableClick ||
-                                        map.disabled_cells.indexOf(Math.max(y, 0) * map.cells_x + x) != -1
-                                    if (disabled) {
-                                        return (
-                                            <GridCell
-                                                key={`column-${y}-row-${x}`}
-                                                disabled={disabled}
-                                                width={gridWidth}
-                                                height={gridHeight}
-                                            />
-                                        )
-                                    }
-                                })}
-                        </tr>
-                    ))}
-            </tbody>
-        </MapGrid>
+        ></MapGrid>
     )
 }
