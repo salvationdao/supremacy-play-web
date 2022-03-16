@@ -32,7 +32,7 @@ export const EmojiPopover = ({
                 vertical: "bottom",
                 horizontal: "center",
             }}
-            PaperProps={{ sx: { backgroundColor: "transparent", boxShadow: 0, overflow: "visible" } }}
+            PaperProps={{ sx: { background: "none", boxShadow: 0, overflow: "visible" } }}
             sx={{ zIndex: 999999, overflow: "visible" }}
         >
             <Box
@@ -45,7 +45,7 @@ export const EmojiPopover = ({
                     sx={{
                         boxShadow: 20,
                         borderRadius: 0.9,
-                        border: `${primaryColor}50 2px solid`,
+                        border: "#FFFFFF60 1px solid",
                         backgroundColor: `${primaryColor}10`,
                         ".emoji-mart": {
                             backgroundColor: "transparent",
@@ -84,9 +84,6 @@ export const EmojiPopover = ({
                         },
                         "#emoji-mart-search-30": {
                             pb: "3.6px",
-                        },
-                        ".emoji-mart-bar": {
-                            borderBottom: `${primaryColor}50 2px solid`,
                         },
                     }}
                 >

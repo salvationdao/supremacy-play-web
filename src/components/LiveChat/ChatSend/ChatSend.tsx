@@ -1,33 +1,57 @@
 import { IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
 import { useState, useRef, useMemo } from "react"
-import { EmojiPopover } from "../.."
+import { ChatSettings, EmojiPopover } from "../.."
 import { SvgEmoji, SvgSend } from "../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../constants"
-import { usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
+import { useChat, usePassportServerAuth, usePassportServerWebsocket, WebSocketProperties } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { ChatData } from "../../../types/passport"
+import { ChatData, UserData } from "../../../types/passport"
 
 interface ChatSendProps {
     primaryColor: string
-    initialMessageColor?: string
     faction_id: string | null
-    onNewMessage: (message: ChatData, faction_id: string | null) => void
-    onSentMessage: (date: Date) => void
-    onFailedMessage: (date: Date) => void
 }
 
-export const ChatSend = ({
+export const ChatSend = (props: ChatSendProps) => {
+    const { state, send } = usePassportServerWebsocket()
+    const { user } = usePassportServerAuth()
+    const { onSentMessage, onFailedMessage, newMessageHandler, initialMessageColor } = useChat()
+
+    return (
+        <ChatSendInner
+            {...props}
+            state={state}
+            send={send}
+            user={user}
+            onSentMessage={onSentMessage}
+            onFailedMessage={onFailedMessage}
+            newMessageHandler={newMessageHandler}
+            initialMessageColor={initialMessageColor}
+        />
+    )
+}
+
+interface ChatSendInnerProps extends ChatSendProps, Partial<WebSocketProperties> {
+    user?: UserData
+    onSentMessage: (sentAt: Date) => void
+    onFailedMessage: (sentAt: Date) => void
+    newMessageHandler: (message: ChatData, faction_id: string | null) => void
+    initialMessageColor?: string
+}
+
+const ChatSendInner = ({
     primaryColor,
-    initialMessageColor,
     faction_id,
-    onNewMessage,
+    state,
+    send,
+    user,
     onSentMessage,
     onFailedMessage,
-}: ChatSendProps) => {
-    const { user } = usePassportServerAuth()
-    const { state, send } = usePassportServerWebsocket()
+    newMessageHandler,
+    initialMessageColor,
+}: ChatSendInnerProps) => {
     // Message field
     const [message, setMessage] = useState("")
     const inputRef = useRef<HTMLInputElement>(null)
@@ -46,11 +70,11 @@ export const ChatSend = ({
     }
 
     const sendMessage = async () => {
-        if (!message.trim() || !user || state !== WebSocket.OPEN) return
+        if (!message.trim() || !user || state !== WebSocket.OPEN || !send) return
 
         const sentAt = new Date()
 
-        onNewMessage(
+        newMessageHandler(
             {
                 from_user_id: user.id,
                 from_username: user.username,
@@ -60,6 +84,7 @@ export const ChatSend = ({
                 avatar_id: user.avatar_id,
                 message,
                 sent_at: sentAt,
+                self: true,
             },
             faction_id,
         )
@@ -131,6 +156,7 @@ export const ChatSend = ({
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
+                                <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
                                 <IconButton
                                     ref={popoverRef}
                                     onClick={toggleIsEmojiOpen}

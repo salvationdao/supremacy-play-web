@@ -9,17 +9,43 @@ import {
     NullUUID,
     PASSPORT_WEB,
 } from "../../constants"
-import { useDrawer, usePassportServerAuth, usePassportServerWebsocket, useQueue } from "../../containers"
-import { PassportServerKeys } from "../../keys"
+import {
+    useDrawer,
+    useGameServerAuth,
+    useGameServerWebsocket,
+    usePassportServerAuth,
+    usePassportServerWebsocket,
+} from "../../containers"
+import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
+
+interface QueueFeed {
+    queue_length: number
+    queue_cost: string
+    contract_reward: string
+}
 
 const DrawerContent = () => {
     const { state, subscribe } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
+    const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
+    const [queueLength, setQueueLength] = useState<number>(-1)
+    const [queueCost, setQueueCost] = useState<string>("")
+    const [contractReward, setContractReward] = useState<string>("")
 
     const [assets, setAssets] = useState<Asset[]>([])
-    const { queueCost, contractReward } = useQueue()
+
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        return subscribe<QueueFeed>(GameServerKeys.SubQueueStatus, (payload) => {
+            if (!payload) return
+            setQueueLength(payload.queue_length)
+            setQueueCost(payload.queue_cost)
+            setContractReward(payload.contract_reward)
+        })
+    }, [gsState, gsSubscribe, user])
 
     // Subscribe to the list of mechs that the user owns
     useEffect(() => {

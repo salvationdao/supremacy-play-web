@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 388.6062 517.22241"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="ChatTabbed.svg"
+   inkscape:version="1.1 (1:1.1+202106031931+af4d65493e)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.30141808"
+     inkscape:cx="-101.18836"
+     inkscape:cy="374.89457"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="2560"
+     inkscape:window-y="145"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <path
+     id="rect847"
+     style="fill:#000000;stroke-width:7.10852"
+     d="m 388.60621,50 c 0,-27.7 -16.82951,-50 -37.73434,-50 H 37.734336 C 16.82951,0 0,22.3 0,50 v 148.11328 c 0,27.7 16.82952,50 37.734336,50 H 350.87187 c 20.90482,0 37.73434,-22.3 37.73434,-50 z M 330.08556,60.59961 V 187.51172 H 58.522123 V 60.59961 Z" />
+  <path
+     id="path1895"
+     style="fill:#000000;stroke-width:7.10852"
+     d="m 388.60621,319.10911 c 0,-27.7 -16.82951,-50 -37.73434,-50 H 37.734336 c -20.904826,0 -37.734336,22.3 -37.734336,50 v 148.11328 c 0,27.7 16.82952,50 37.734336,50 H 350.87187 c 20.90482,0 37.73434,-22.3 37.73434,-50 z m -58.52065,10.59961 V 456.62083 H 58.522123 V 329.70872 Z" />
+</svg>

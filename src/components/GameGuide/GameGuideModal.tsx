@@ -60,7 +60,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        maxWidth: "86rem",
+                        maxWidth: "86.6rem",
                         height: "70vh",
                         pb: 3,
                         backgroundColor: `${colors.darkNavyBlue}`,
@@ -100,7 +100,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                             px: 3,
                             py: 1,
                             "::-webkit-scrollbar": {
-                                width: 4,
+                                width: ".4rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
@@ -138,6 +138,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                     >
                                         here
                                     </Link>
+                                    .
                                 </Typography>
                             </Stack>
                         </TabPanel>
