@@ -128,7 +128,7 @@ interface Props {
 
 export const InteractiveMap = (props: Props) => {
     const { state, send } = useGameServerWebsocket()
-    const { map, warMachines, battleEndDetail } = useGame()
+    const { map, warMachines, battleIdentifier } = useGame()
 
     return (
         <InteractiveMapInner
@@ -137,7 +137,7 @@ export const InteractiveMap = (props: Props) => {
             send={send}
             map={map}
             warMachines={warMachines}
-            battleIdentifier={battleEndDetail?.battle_identifier}
+            battleIdentifier={battleIdentifier}
         />
     )
 }
