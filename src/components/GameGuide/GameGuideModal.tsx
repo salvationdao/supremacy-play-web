@@ -298,7 +298,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
 
                     <Button
                         variant="outlined"
-                        onClick={() => toggleClosed(false)}
+                        onClick={() => toggleClosed(true)}
                         sx={{
                             justifySelf: "flex-end",
                             ml: 3,
