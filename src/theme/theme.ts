@@ -32,7 +32,7 @@ export const colors = {
     green: "#2BA172",
     yellow: "#FFE200",
     orange: "#E04F00",
-    gold: "#ffc400",
+    gold: "#FFC400",
 
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
@@ -84,6 +84,7 @@ export const theme = createTheme({
         },
     },
     palette: {
+        mode: "dark",
         secondary: {
             main: colors.darkerNeonBlue,
         },
@@ -102,40 +103,51 @@ export const theme = createTheme({
         },
     },
     typography: {
-        htmlFontSize: 19,
+        htmlFontSize: 16,
         h1: {
             fontFamily: ["Nostromo Regular Black", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "8.084780622rem",
         },
         h2: {
             fontFamily: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "5.052083333rem",
         },
         h3: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "4.043314286rem",
         },
         h4: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "2.862925974rem",
         },
         h5: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "2.02035rem",
         },
         h6: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "1.683625rem",
         },
         body1: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "1.346866667rem",
         },
         body2: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "1.18013rem",
         },
         subtitle1: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "1.011878919rem",
             textAlign: "center",
         },
         subtitle2: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "1.011878919rem",
         },
         caption: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontSize: "1.011878919rem",
         },
     },
     components: {
@@ -145,10 +157,18 @@ export const theme = createTheme({
             },
             styleOverrides: {
                 root: {
+                    fontSize: "1.18013rem",
                     transition: "all .1s",
                     ":hover": {
                         opacity: 0.76,
                     },
+                },
+            },
+        },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    fontSize: "1.18013rem",
                 },
             },
         },
@@ -206,6 +226,14 @@ export const theme = createTheme({
                     ".MuiPagination-ul": {
                         justifyContent: "center",
                     },
+                },
+            },
+        },
+        MuiTab: {
+            styleOverrides: {
+                root: {
+                    fontFamily: "Nostromo Regular Black",
+                    color: "white",
                 },
             },
         },

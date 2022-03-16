@@ -21,19 +21,19 @@ export const ResolutionSelect = () => {
     if (options.length <= 0) return null
 
     return (
-        <Stack direction="row" spacing={0.3} alignItems="center">
+        <Stack direction="row" spacing=".24rem" alignItems="center">
             <Typography variant="body2" sx={{ lineHeight: 1 }}>
                 RESOLUTION:{" "}
             </Typography>
 
             <Select
                 sx={{
-                    width: 150,
+                    width: "15rem",
                     borderRadius: 0.5,
                     "&:hover": {
                         backgroundColor: colors.darkNavy,
                     },
-                    "& .MuiSelect-outlined": { px: 1, pt: 0.6, pb: 0 },
+                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
                 }}
                 defaultValue={options[0]}
                 MenuProps={{

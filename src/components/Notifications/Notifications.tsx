@@ -54,6 +54,7 @@ export const Notifications = () => {
     const { factionsAll } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
+    const { setForceDisplay100Percentage } = useGame()
     const theme = useTheme<Theme>()
     const {
         streamDimensions: { height },
@@ -67,7 +68,13 @@ export const Notifications = () => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<NotificationResponse | undefined>(
             GameServerKeys.SubGameNotification,
-            (payload) => newNotification(payload),
+            (payload) => {
+                newNotification(payload)
+
+                if (payload?.type === "BATTLE_ABILITY") {
+                    setForceDisplay100Percentage(payload?.data?.user?.faction_id || "")
+                }
+            },
             null,
         )
     }, [state, subscribe, user])
@@ -90,17 +97,59 @@ export const Notifications = () => {
     }, [])
 
     // Function to add new notification to array, and will clear itself out after certain time
-    const newNotification = (notification: NotificationResponse | undefined) => {
+    const newNotification = (notification: NotificationResponse | undefined, justOne?: boolean) => {
         if (!notification) return
 
         const notiID = makeid()
-        const duration = NOTIFICATION_TIME
+        const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 100 : NOTIFICATION_TIME
         addNotification({ notiID, ...notification, duration })
 
         // Linger is for the slide animation to play before clearing off the component
         setTimeout(() => {
             removeByID(notiID)
         }, duration + NOTIFICATION_LINGER)
+
+        if (justOne) return
+
+        // These cases renders another notification (so two)
+        if (
+            notification.type == "LOCATION_SELECT" &&
+            (notification.data.type == "FAILED_TIMEOUT" || notification.data.type == "FAILED_DISCONNECTED")
+        ) {
+            const {
+                data: { ability, nextUser },
+            } = notification
+            newNotification(
+                {
+                    type: "LOCATION_SELECT",
+                    data: {
+                        type: "ASSIGNED",
+                        currentUser: nextUser,
+                        ability,
+                        reason: "",
+                    },
+                },
+                true,
+            )
+        }
+
+        if (notification.type == "BATTLE_ABILITY") {
+            const {
+                data: { ability, user },
+            } = notification
+            newNotification(
+                {
+                    type: "LOCATION_SELECT",
+                    data: {
+                        type: "ASSIGNED",
+                        currentUser: user,
+                        ability,
+                        reason: "",
+                    },
+                },
+                true,
+            )
+        }
     }
 
     const notificationsJsx = notifications
@@ -119,7 +168,7 @@ export const Notifications = () => {
                 case "LOCATION_SELECT":
                     return (
                         <NotificationItem key={n.notiID} duration={n.duration}>
-                            <LocationSelectAlert data={n.data} />
+                            <LocationSelectAlert data={n.data} factionsAll={factionsAll} />
                         </NotificationItem>
                     )
                 case "BATTLE_ABILITY":
@@ -153,8 +202,8 @@ export const Notifications = () => {
         <Stack
             sx={{
                 position: "absolute",
-                top: 10,
-                right: 10,
+                top: "1rem",
+                right: "1rem",
                 zIndex: 15,
                 overflow: "hidden",
                 opacity: UI_OPACITY,
@@ -167,12 +216,12 @@ export const Notifications = () => {
                         maxHeight: `calc(${height}px - ${MINI_MAP_DEFAULT_HEIGHT + 40}px)`,
                         overflowY: "auto",
                         overflowX: "hidden",
-                        pr: 1,
-                        py: 0.2,
+                        pr: ".8rem",
+                        py: ".16rem",
                         direction: "ltr",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            width: 4,
+                            width: ".4rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
@@ -185,7 +234,7 @@ export const Notifications = () => {
                     }}
                 >
                     <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing={0.6}>{notificationsJsx}</Stack>
+                        <Stack spacing=".48rem">{notificationsJsx}</Stack>
                     </Box>
                 </Box>
             </Box>

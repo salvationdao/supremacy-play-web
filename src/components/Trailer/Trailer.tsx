@@ -56,20 +56,20 @@ export const Trailer = ({
                     <Stack
                         direction="row"
                         justifyContent="center"
-                        spacing={1.2}
+                        spacing=".96rem"
                         sx={{
                             position: "absolute",
                             top: "50%",
                             left: "50%",
                             transform: "translate(-50%, -50%)",
-                            px: 2.6,
-                            py: 1,
+                            px: "2.08rem",
+                            py: ".8rem",
                             borderRadius: 1,
                             backgroundColor: colors.darkerNeonBlue,
                             boxShadow: 10,
                         }}
                     >
-                        <SvgPlay size="19px" />
+                        <SvgPlay size="1.9rem" />
                         <Typography variant="h6" sx={{ lineHeight: 2, fontWeight: "fontWeightBold" }}>
                             WATCH TRAILER TO ENTER
                         </Typography>
@@ -80,8 +80,8 @@ export const Trailer = ({
                     variant="contained"
                     sx={{
                         position: "absolute",
-                        top: 30,
-                        right: 30,
+                        top: "3rem",
+                        right: "3rem",
                         zIndex: 99,
                         backgroundColor: colors.darkNavy,
                         borderRadius: 0.7,

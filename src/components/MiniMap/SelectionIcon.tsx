@@ -11,14 +11,16 @@ export const SelectionIcon = ({
     gridWidth,
     gridHeight,
     setSelection,
+    targeting,
 }: {
     selection: MapSelection | undefined
     gridWidth: number
     gridHeight: number
-    gameAbility: GameAbility
+    gameAbility?: GameAbility
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
+    targeting?: boolean
 }) => {
-    if (!selection || !gameAbility) return null
+    if (!selection || !gameAbility || !targeting) return null
 
     const { colour, image_url } = gameAbility
 

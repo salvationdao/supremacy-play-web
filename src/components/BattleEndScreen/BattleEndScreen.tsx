@@ -16,10 +16,10 @@ import { colors } from "../../theme/theme"
 
 const SPAWN_TEST_DATA = false
 
-export const BOTTOM_BUTTONS_HEIGHT = 50
+export const BOTTOM_BUTTONS_HEIGHT = 5 //rems
 
 export const BattleEndScreen = () => {
-    const { bribeStage, battleEndDetail, setBattleEndDetail } = useGame()
+    const { map, battleEndDetail, setBattleEndDetail } = useGame()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
 
     useEffect(() => {
@@ -37,9 +37,10 @@ export const BattleEndScreen = () => {
         }
     }, [])
 
+    // New game started, so close the panel
     useEffect(() => {
-        if (bribeStage?.phase !== "HOLD") toggleIsEndBattleDetailOpen(false)
-    }, [bribeStage])
+        if (map) toggleIsEndBattleDetailOpen(false)
+    }, [map])
 
     const primaryColor =
         battleEndDetail && battleEndDetail.winning_faction
@@ -69,7 +70,7 @@ export const BattleEndScreen = () => {
                     left: 0,
                     boxShadow: 20,
                     zIndex: 999,
-                    maxWidth: 616,
+                    maxWidth: "61.6rem",
                     ...backgroundColorGradient,
                 }}
             >
@@ -78,25 +79,25 @@ export const BattleEndScreen = () => {
                         position: "relative",
                         height: "100%",
                         width: "100%",
-                        pl: 4.3,
-                        pr: 1,
-                        pt: 3,
-                        pb: 1.5,
+                        pl: "3.44rem",
+                        pr: ".8rem",
+                        pt: "2.4rem",
+                        pb: "1.2rem",
                         ...backgroundColorGradient,
                     }}
                 >
                     <Stack
-                        spacing={4}
+                        spacing="3.2rem"
                         sx={{
-                            height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}px)`,
-                            pr: 2.2,
-                            pb: 4,
+                            height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}rem)`,
+                            pr: "1.76rem",
+                            pb: "3.2rem",
                             overflowY: "auto",
                             overflowX: "auto",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: 4,
-                                height: 4,
+                                width: ".4rem",
+                                height: ".4rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",

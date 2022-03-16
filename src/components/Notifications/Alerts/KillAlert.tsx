@@ -26,8 +26,8 @@ export const KillAlert = ({ data }: { data: KillAlertProps }) => {
                 imageUrl={killed_by_war_machine_id ? killed_by_war_machine_id.imageAvatar : ""}
                 imageMb={-0.3}
             />
-            <SvgDeath size="11px" sx={{ display: "inline", mx: 0.6 }} />
-            <SvgSkull2 size="11px" sx={{ display: "inline", mr: 0.8 }} />
+            <SvgDeath size="1.1rem" sx={{ display: "inline", mx: ".48rem" }} />
+            <SvgSkull2 size="1.1rem" sx={{ display: "inline", mr: ".64rem" }} />
             <StyledImageText
                 text={destroyed_war_machine.name || destroyed_war_machine.hash}
                 color={destroyed_war_machine.faction.theme.primary}

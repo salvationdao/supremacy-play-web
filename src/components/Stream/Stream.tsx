@@ -1,14 +1,11 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { Trailer } from ".."
+import { NoSupsModal, Trailer } from ".."
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useDimension, useGameServerAuth, useStream, useWallet } from "../../containers"
+import { useDimension, useStream, useWallet } from "../../containers"
 import { useToggle } from "../../hooks"
-import { colors } from "../../theme/theme"
-import { WaitingPage } from "../BattleHistory/WaitingPage"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
-    const { user } = useGameServerAuth()
     const { onWorldSups } = useWallet()
 
     const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
@@ -19,37 +16,12 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
         if (!supsAboveZero && haveSups) toggleHaveSups(false)
     }, [onWorldSups, supsAboveZero, haveSups])
 
-    let message = "You must connect your passport to view the battle stream."
-    if (user && user.faction && !haveSups) {
-        message = "You must have SUPS in order to view the battle stream."
-    } else if (user && !user.faction) {
-        message = "You must enlist in a faction to view the battle stream."
-    }
-
-    return (
-        <Fade in={render}>
-            <Stack sx={{ flex: 1, width: "100%" }}>
-                <Box sx={{ px: 2, py: 0.5, backgroundColor: colors.red, boxShadow: 6, zIndex: 99 }}>
-                    <Typography variant="h6" sx={{ textAlign: "center" }}>
-                        {message}
-                    </Typography>
-                </Box>
-                <Box
-                    sx={{
-                        position: "relative",
-                        flex: 1,
-                    }}
-                >
-                    <WaitingPage />
-                </Box>
-            </Stack>
-        </Fade>
-    )
+    if (!render) return null
+    return null
 }
 
 export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: any }) => {
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
-    const { faction_id } = useGameServerAuth()
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
     const [renderTopMessage, toggleRenderTopMessage] = useToggle()
@@ -66,28 +38,26 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
     }
     return (
         <Stack sx={{ width: "100%", height: "100%" }}>
-            {faction_id && haveSups ? (
-                <video
-                    key={currentStream?.stream_id}
-                    id={"remoteVideo"}
-                    muted={isMute}
-                    ref={vidRefCallback}
-                    autoPlay
-                    controls={false}
-                    playsInline
-                    style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                        width: iframeDimensions.width,
-                        height: iframeDimensions.height,
-                    }}
-                />
-            ) : (
-                <Message render={renderTopMessage} haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
-            )}
+            <video
+                key={currentStream?.stream_id}
+                id={"remoteVideo"}
+                muted={isMute}
+                ref={vidRefCallback}
+                autoPlay
+                controls={false}
+                playsInline
+                style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                    width: iframeDimensions.width,
+                    height: iframeDimensions.height,
+                }}
+            />
+            <Message render={renderTopMessage} haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
+            <NoSupsModal haveSups={haveSups} />
         </Stack>
     )
 }

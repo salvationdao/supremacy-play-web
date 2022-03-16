@@ -9,23 +9,52 @@ import {
     NullUUID,
     PASSPORT_WEB,
 } from "../../constants"
-import { useDrawer, usePassportServerAuth, usePassportServerWebsocket, useQueue } from "../../containers"
-import { PassportServerKeys } from "../../keys"
+import {
+    useDrawer,
+    useGameServerAuth,
+    useGameServerWebsocket,
+    usePassportServerAuth,
+    usePassportServerWebsocket,
+} from "../../containers"
+import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
+
+interface QueueFeed {
+    queue_length: number
+    queue_cost: string
+    contract_reward: string
+}
 
 const DrawerContent = () => {
     const { state, subscribe } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
+    const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
+    const [queueLength, setQueueLength] = useState<number>(-1)
+    const [queueCost, setQueueCost] = useState<string>("")
+    const [contractReward, setContractReward] = useState<string>("")
 
     const [assets, setAssets] = useState<Asset[]>([])
-    const { queueCost, contractReward } = useQueue()
+
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        return subscribe<QueueFeed>(GameServerKeys.SubQueueStatus, (payload) => {
+            if (!payload) return
+            setQueueLength(payload.queue_length)
+            setQueueCost(payload.queue_cost)
+            setContractReward(payload.contract_reward)
+        })
+    }, [gsState, gsSubscribe, user])
 
     // Subscribe to the list of mechs that the user owns
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe<Asset[]>(PassportServerKeys.SubAssetList, (payload) => {
             if (!payload) return
+            payload = payload.filter((asset) => {
+                return asset.on_chain_status !== "STAKABLE" && asset.unlocked_at <= new Date(Date.now())
+            })
             setAssets(payload)
         })
     }, [state, subscribe, faction_id])
@@ -34,18 +63,18 @@ const DrawerContent = () => {
         <Stack sx={{ flex: 1 }}>
             <Stack
                 direction="row"
-                spacing={1.2}
+                spacing=".96rem"
                 alignItems="center"
                 sx={{
                     position: "relative",
-                    pl: 2.5,
-                    pr: 6,
-                    height: GAME_BAR_HEIGHT,
+                    pl: "2rem",
+                    pr: "4.8rem",
+                    height: `${GAME_BAR_HEIGHT}rem`,
                     background: `${colors.assetsBanner}65`,
                     boxShadow: 1.5,
                 }}
             >
-                <SvgRobot size="23px" fill={colors.text} sx={{ pb: 0.7 }} />
+                <SvgRobot size="2.3rem" fill={colors.text} sx={{ pb: ".56rem" }} />
                 <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
                     WAR MACHINES
                 </Typography>
@@ -54,14 +83,14 @@ const DrawerContent = () => {
             <Fade in={true}>
                 <Box
                     sx={{
-                        m: 0.5,
+                        m: ".4rem",
                         flex: 1,
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            width: 4,
+                            width: ".4rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
@@ -73,7 +102,7 @@ const DrawerContent = () => {
                         },
                     }}
                 >
-                    <Stack spacing={0.6}>
+                    <Stack spacing=".48rem">
                         {assets && assets.length > 0 ? (
                             <>
                                 {assets.map((a, index) => (
@@ -99,11 +128,10 @@ const DrawerContent = () => {
                                 <Typography
                                     variant="body2"
                                     sx={{
-                                        px: 1.6,
-                                        pt: 1.6,
-                                        mb: 0.7,
+                                        px: "1.28rem",
+                                        pt: "1.28rem",
+                                        mb: ".56rem",
                                         color: colors.grey,
-                                        fontSize: "0.8rem",
                                         userSelect: "text",
                                     }}
                                 >
@@ -114,7 +142,6 @@ const DrawerContent = () => {
                                         variant="body2"
                                         sx={{
                                             color: colors.neonBlue,
-                                            fontSize: "0.8rem",
                                             userSelect: "text",
                                         }}
                                     >
@@ -140,11 +167,11 @@ export const Assets = () => {
             variant="persistent"
             anchor="right"
             sx={{
-                width: LIVE_CHAT_DRAWER_WIDTH,
+                width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
                 flexShrink: 0,
                 zIndex: 9999,
                 "& .MuiDrawer-paper": {
-                    width: LIVE_CHAT_DRAWER_WIDTH,
+                    width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
                 },
             }}

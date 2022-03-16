@@ -2,7 +2,13 @@ import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { ChatMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
-import { useGameServerWebsocket, usePassportServerAuth, WebSocketProperties } from "../../../containers"
+import {
+    useChat,
+    useGameServerWebsocket,
+    usePassportServerAuth,
+    UserMultiplierMap,
+    WebSocketProperties,
+} from "../../../containers"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
@@ -19,31 +25,52 @@ interface ChatMessagesProps {
     primaryColor: string
     secondaryColor: string
     chatMessages: ChatData[]
-    sentMessages: Date[]
-    failedMessages: Date[]
+    faction_id: string | null
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
     const { state, subscribe } = useGameServerWebsocket()
-    return <ChatMessagesInner {...props} state={state} subscribe={subscribe} />
+    const { filterZerosGlobal, filterZerosFaction, sentMessages, failedMessages, userMultiplierMap, citizenPlayerIDs } =
+        useChat()
+    return (
+        <ChatMessagesInner
+            {...props}
+            state={state}
+            subscribe={subscribe}
+            filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
+            sentMessages={sentMessages}
+            failedMessages={failedMessages}
+            userMultiplierMap={userMultiplierMap}
+            citizenPlayerIDs={citizenPlayerIDs}
+        />
+    )
 }
 
-interface ChatMessagesPropsInner extends ChatMessagesProps, Partial<WebSocketProperties> {}
+interface ChatMessagesInnerProps extends ChatMessagesProps, Partial<WebSocketProperties> {
+    filterZeros?: boolean
+    sentMessages: Date[]
+    failedMessages: Date[]
+    userMultiplierMap: UserMultiplierMap
+    citizenPlayerIDs: string[]
+}
 
 const ChatMessagesInner = ({
     primaryColor,
     secondaryColor,
     chatMessages,
-    sentMessages,
-    failedMessages,
     state,
     subscribe,
-}: ChatMessagesPropsInner) => {
+    filterZeros,
+    sentMessages,
+    failedMessages,
+    userMultiplierMap,
+    citizenPlayerIDs,
+}: ChatMessagesInnerProps) => {
     const { user } = usePassportServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
 
-    // Subscribe to global messages
+    // Subscribe to global annoucement message
     const [globalMessage, setGlobalMessage] = useState<GlobalMessage>()
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -92,10 +119,10 @@ const ChatMessagesInner = ({
                     <Stack
                         alignItems="center"
                         justifyContent="center"
-                        spacing={0.3}
+                        spacing=".24rem"
                         sx={{
-                            px: 1.6,
-                            py: 1.6,
+                            px: "1.28rem",
+                            py: "1.28rem",
                             backgroundColor: colors.red,
                             boxShadow: 2,
                         }}
@@ -121,17 +148,17 @@ const ChatMessagesInner = ({
                 sx={{
                     flex: 1,
                     position: "relative",
-                    my: 1,
-                    mr: 0.8,
-                    pl: 1.9,
-                    pr: 2,
+                    my: ".8rem",
+                    mr: ".64rem",
+                    pl: "1.52rem",
+                    pr: "1.6rem",
                     overflowY: "auto",
                     overflowX: "hidden",
                     direction: "ltr",
                     scrollbarWidth: "none",
                     scrollBehavior: "smooth",
                     "::-webkit-scrollbar": {
-                        width: 4,
+                        width: ".4rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
@@ -143,14 +170,17 @@ const ChatMessagesInner = ({
                     },
                 }}
             >
-                <Stack spacing={1.3} sx={{ mt: 1.1 }}>
+                <Stack spacing="1.04rem" sx={{ mt: ".88rem" }}>
                     {chatMessages && chatMessages.length > 0 ? (
                         chatMessages.map((c) => (
                             <ChatMessage
                                 key={`${c.from_username} - ${c.sent_at.toISOString()}`}
                                 chat={c}
+                                filterZeros={filterZeros}
                                 isSent={c.from_user_id != user?.id ? true : sentMessages.includes(c.sent_at)}
                                 isFailed={c.from_user_id != user?.id ? false : failedMessages.includes(c.sent_at)}
+                                multiplierValue={userMultiplierMap[c.from_user_id]}
+                                isCitizen={citizenPlayerIDs.some((cp) => cp === c.from_user_id)}
                             />
                         ))
                     ) : (
@@ -159,7 +189,6 @@ const ChatMessagesInner = ({
                             sx={{
                                 color: colors.grey,
                                 textAlign: "center",
-                                fontSize: "0.8rem",
                                 userSelect: "text",
                             }}
                         >
@@ -175,8 +204,8 @@ const ChatMessagesInner = ({
                     onClick={onClickScrollToBottom}
                     sx={{
                         position: "absolute",
-                        bottom: 78,
-                        right: 25,
+                        bottom: "7.8rem",
+                        right: "2.5rem",
                         backgroundColor: primaryColor,
                         boxShadow: 3,
                         ":hover": {
@@ -185,7 +214,7 @@ const ChatMessagesInner = ({
                         },
                     }}
                 >
-                    <SvgScrolldown size="18px" fill={secondaryColor} sx={{ p: 0 }} />
+                    <SvgScrolldown size="1.8rem" fill={secondaryColor} sx={{ p: 0 }} />
                 </IconButton>
             </Fade>
         </>

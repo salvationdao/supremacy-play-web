@@ -1,3 +1,4 @@
+import { useMediaQuery } from "@mui/material"
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDrawer } from "."
@@ -28,16 +29,29 @@ export const DimensionContainer = createContainer(() => {
         height: 0,
     })
 
+    const below900 = useMediaQuery("(max-width:900px)")
+    const below1500 = useMediaQuery("(max-width:1500px)")
+    const below1920 = useMediaQuery("(max-width:1920px)")
+    const [pxToRemRatio, setPxToRemRatio] = useState(10)
+
+    // Refer to `src/theme/global.css`
+    useEffect(() => {
+        if (below900) return setPxToRemRatio(6.9)
+        if (below1500) return setPxToRemRatio(7.9)
+        if (below1920) return setPxToRemRatio(8.6)
+        setPxToRemRatio(10)
+    }, [below1920, below1500, below900])
+
     useEffect(() => {
         // Main div dimensions
         const mainDivWidth = isAnyPanelOpen
-            ? windowWidth - LIVE_CHAT_DRAWER_WIDTH
-            : windowWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH
-        const mainDivHeight = windowHeight - GAME_BAR_HEIGHT
+            ? windowWidth - LIVE_CHAT_DRAWER_WIDTH * pxToRemRatio
+            : windowWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH * pxToRemRatio
+        const mainDivHeight = windowHeight - GAME_BAR_HEIGHT * pxToRemRatio
 
         // Stream div dimensions
-        const streamWidth = mainDivWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH
-        const streamHeight = mainDivHeight - CONTROLS_HEIGHT
+        const streamWidth = mainDivWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH * pxToRemRatio
+        const streamHeight = mainDivHeight - CONTROLS_HEIGHT * pxToRemRatio
 
         // Work out iframe width and height based on its aspect ratio and stream width and height
         let iframeWidth: number | string = streamWidth
@@ -52,9 +66,10 @@ export const DimensionContainer = createContainer(() => {
         setStreamDimensions({ width: streamWidth, height: streamHeight })
         setMainDivDimensions({ width: mainDivWidth, height: mainDivHeight })
         setIframeDimensions({ width: iframeWidth, height: iframeHeight })
-    }, [windowWidth, windowHeight, isAnyPanelOpen])
+    }, [windowWidth, windowHeight, isAnyPanelOpen, pxToRemRatio])
 
     return {
+        pxToRemRatio,
         mainDivDimensions,
         streamDimensions,
         iframeDimensions,

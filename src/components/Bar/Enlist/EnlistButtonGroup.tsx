@@ -32,7 +32,7 @@ export const EnlistButtonGroup = () => {
 
     if (!factionsData) {
         return (
-            <Stack alignItems="center" sx={{ position: "relative", width: 130 }}>
+            <Stack alignItems="center" sx={{ position: "relative", width: "13rem" }}>
                 <CircularProgress size={20} />
             </Stack>
         )
@@ -45,8 +45,8 @@ export const EnlistButtonGroup = () => {
             iconComponent={
                 <Box
                     sx={{
-                        width: 28,
-                        height: 28,
+                        width: "2.8rem",
+                        height: "2.8rem",
                         backgroundImage: `url(${RedMountainLogo})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
@@ -58,11 +58,11 @@ export const EnlistButtonGroup = () => {
                 />
             }
         >
-            <Stack direction="row" alignItems="center" sx={{ mx: 1.5, height: "100%" }}>
+            <Stack direction="row" alignItems="center" sx={{ mx: "1.2rem", height: "100%" }}>
                 <Stack
                     direction="row"
                     alignItems="center"
-                    spacing={2}
+                    spacing="1.6rem"
                     sx={{
                         position: "relative",
                         height: "100%",
@@ -70,7 +70,7 @@ export const EnlistButtonGroup = () => {
                         overflowY: "hidden",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            height: 4,
+                            height: ".4rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
@@ -93,9 +93,9 @@ export const EnlistButtonGroup = () => {
                     orientation="vertical"
                     flexItem
                     sx={{
-                        height: 23,
+                        height: "2.3rem",
                         my: "auto !important",
-                        ml: 3,
+                        ml: "2.4rem",
                         borderColor: "#494949",
                         borderRightWidth: 1.6,
                     }}

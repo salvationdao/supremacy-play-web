@@ -39,7 +39,7 @@ export const BattleCloseAlert = () => {
                 clipSize="10px"
                 border={{
                     isFancy: true,
-                    borderThickness: "3px",
+                    borderThickness: ".3rem",
                     borderColor: theme.factionTheme.primary,
                 }}
             >
@@ -48,8 +48,8 @@ export const BattleCloseAlert = () => {
                     sx={{
                         height: "100%",
                         width: "100%",
-                        px: 3,
-                        py: 1.2,
+                        px: "2.4rem",
+                        py: ".96rem",
                         backgroundColor: theme.factionTheme.background,
                     }}
                 >

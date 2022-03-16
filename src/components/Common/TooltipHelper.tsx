@@ -37,7 +37,7 @@ export const TooltipHelper = ({
                 },
             }}
             title={
-                <Box sx={{ px: 0.5, py: 0.2 }}>
+                <Box sx={{ px: ".4rem", py: ".16rem" }}>
                     <Typography
                         variant="body1"
                         sx={{ fontFamily: "Share Tech", textAlign: isCentered ? "center" : "start" }}
@@ -51,7 +51,7 @@ export const TooltipHelper = ({
                     style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999, opacity: 0.92 },
                 },
                 arrow: { sx: { color: "#333333" } },
-                tooltip: { sx: { maxWidth: 250, background: "#333333" } },
+                tooltip: { sx: { maxWidth: "25rem", background: "#333333" } },
             }}
         >
             {children}

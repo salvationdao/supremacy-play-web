@@ -23,7 +23,7 @@ export const BarExpandable = ({ barName, iconComponent, children, noDivider }: B
                     width: "auto",
                     height: "100%",
                     overflow: "hidden",
-                    maxWidth: isActive ? 1200 : 50,
+                    maxWidth: isActive ? "120rem" : "5rem",
                     transition: "all .3s",
                 }}
                 onClick={() => !isActive && toggleActiveBar(barName, true)}
@@ -42,10 +42,10 @@ export const BarExpandable = ({ barName, iconComponent, children, noDivider }: B
                     <IconButton
                         size="small"
                         disabled={!isActive}
-                        sx={{ position: "absolute", top: -6, right: 0, color: "#FFFFFF", opacity: 0.07 }}
+                        sx={{ position: "absolute", top: "-.6rem", right: 0, color: "#FFFFFF", opacity: 0.07 }}
                         onClick={() => toggleActiveBar(barName, false)}
                     >
-                        <SvgHorizontalRuleSharpIcon size="15px" />
+                        <SvgHorizontalRuleSharpIcon size="1.5rem" />
                     </IconButton>
                 </Stack>
 
@@ -64,7 +64,7 @@ export const BarExpandable = ({ barName, iconComponent, children, noDivider }: B
                 >
                     <IconButton
                         disabled={isActive}
-                        sx={{ mr: 0.5, color: "#FFFFFF", flexShrink: 0 }}
+                        sx={{ mr: ".4rem", color: "#FFFFFF", flexShrink: 0 }}
                         onClick={() => toggleActiveBar(barName, true)}
                     >
                         {iconComponent}
@@ -75,9 +75,9 @@ export const BarExpandable = ({ barName, iconComponent, children, noDivider }: B
                             orientation="vertical"
                             flexItem
                             sx={{
-                                height: 23,
+                                height: "2.3rem",
                                 my: "auto !important",
-                                pl: 1,
+                                pl: ".8rem",
                                 borderColor: "#494949",
                                 borderRightWidth: 1.6,
                             }}

@@ -20,6 +20,8 @@ export interface Asset {
     tier: string
     owner_id: string
     created_at: Date
+    on_chain_status: string
+    unlocked_at: Date
     data: {
         mech: {
             id: string

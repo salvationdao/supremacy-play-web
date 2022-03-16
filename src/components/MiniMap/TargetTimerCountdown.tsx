@@ -27,14 +27,14 @@ export const TargetTimerCountdown = ({
             alignItems="center"
             justifyContent="center"
             direction="row"
-            spacing={1}
+            spacing=".8rem"
             sx={{
                 position: "absolute",
                 bottom: 0,
                 left: 0,
                 right: 0,
-                px: 1.4,
-                py: 0.6,
+                px: "1.12rem",
+                py: ".48rem",
                 backgroundColor: `${theme.factionTheme.background}`,
                 borderRadius: 0.5,
                 zIndex: 9,

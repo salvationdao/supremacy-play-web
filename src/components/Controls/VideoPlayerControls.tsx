@@ -26,17 +26,17 @@ export const VideoPlayerControls = () => {
 
     return (
         <Stack direction="row" alignItems="center">
-            <Box sx={{ width: 200, mr: 2 }}>
-                <Stack spacing={1.5} direction="row" alignItems="center">
+            <Box sx={{ width: "20rem", mr: "1.6rem" }}>
+                <Stack spacing="1.2rem" direction="row" alignItems="center">
                     <IconButton
                         size="small"
                         onClick={toggleIsMute}
                         sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
                     >
                         {isMute || volume <= 0 ? (
-                            <SvgVolumeMute size="14px" sx={{ pb: 0 }} />
+                            <SvgVolumeMute size="1.4rem" sx={{ pb: 0 }} />
                         ) : (
-                            <SvgVolume size="14px" sx={{ pb: 0 }} />
+                            <SvgVolume size="1.4rem" sx={{ pb: 0 }} />
                         )}
                     </IconButton>
                     <Slider
@@ -59,7 +59,7 @@ export const VideoPlayerControls = () => {
                 onClick={toggleFullscreen}
                 sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
             >
-                <SvgFullscreen size="14px" />
+                <SvgFullscreen size="1.4rem" />
             </IconButton>
         </Stack>
     )

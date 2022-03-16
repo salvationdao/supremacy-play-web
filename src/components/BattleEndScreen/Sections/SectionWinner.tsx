@@ -11,8 +11,8 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
     const { battle_identifier, winning_faction, winning_war_machines } = battleEndDetail
 
     return (
-        <Stack spacing={3}>
-            <Box sx={{ px: 2.5, py: 1.5, pr: 4, backgroundColor: "#FFFFFF15" }}>
+        <Stack spacing="2.4rem">
+            <Box sx={{ px: "2rem", py: ".88rem", pr: "3.2rem", backgroundColor: "#FFFFFF15" }}>
                 <Typography
                     component="span"
                     variant="h5"
@@ -31,7 +31,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 </Typography>
             </Box>
 
-            <Stack spacing={3.2} sx={{ px: 1.2 }}>
+            <Stack spacing="2.56rem" sx={{ px: ".96rem" }}>
                 <StyledImageText
                     color={winning_faction.theme.primary}
                     text={winning_faction.label}
@@ -39,7 +39,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                         factionsAll[winning_faction.id]?.logo_blob_id
                     }`}
                     variant="h5"
-                    imageSize={40}
+                    imageSize={4.0}
                     imageBorderThickness="0px"
                     imageBackgroundSize="contain"
                     truncateLine
@@ -47,7 +47,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 />
 
                 {winning_war_machines && winning_war_machines.length > 0 ? (
-                    <Stack spacing={1.5} sx={{ pl: 1 }}>
+                    <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
                         {winning_war_machines.map((wm) => (
                             <StyledImageText
                                 key={`${wm.hash}-${wm.participantID}`}
@@ -57,8 +57,8 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                                 text={(wm.name || wm.hash).toUpperCase()}
                                 imageUrl={wm.imageAvatar || GenericWarMachinePNG}
                                 variant="h5"
-                                imageSize={29}
-                                imageBorderThickness="2px"
+                                imageSize={2.9}
+                                imageBorderThickness=".2rem"
                                 fontWeight="normal"
                                 truncateLine
                                 imageMb={-0.8}
@@ -66,7 +66,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                         ))}
                     </Stack>
                 ) : (
-                    <Typography variant="h6" sx={{ pl: 1, opacity: 0.8 }}>
+                    <Typography variant="h6" sx={{ pl: ".8rem", opacity: 0.8 }}>
                         Nothing to show...
                     </Typography>
                 )}

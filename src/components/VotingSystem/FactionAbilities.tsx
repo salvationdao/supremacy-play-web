@@ -32,20 +32,20 @@ export const FactionAbilities = () => {
         <Fade in={true}>
             <Box>
                 <Divider sx={{ mb: 2.3, borderColor: theme.factionTheme.primary, opacity: 0.28 }} />
-                <Stack spacing={0.7}>
-                    <Stack direction="row" spacing={0.6} alignItems="center">
+                <Stack spacing=".56rem">
+                    <Stack direction="row" spacing=".48rem" alignItems="center">
                         {user && (
                             <Box
                                 sx={{
-                                    width: 19,
-                                    height: 19,
+                                    width: "1.9rem",
+                                    height: "1.9rem",
                                     backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
                                         factionsAll[user.faction_id].logo_blob_id
                                     })`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
-                                    mb: 0.3,
+                                    mb: ".24rem",
                                 }}
                             />
                         )}
@@ -54,7 +54,7 @@ export const FactionAbilities = () => {
                         </Typography>
                     </Stack>
 
-                    <Stack spacing={1.3}>
+                    <Stack spacing="1.04rem">
                         {gameAbilities.map((ga) => (
                             <FactionAbilityItem key={ga.identity} gameAbility={ga} />
                         ))}

@@ -36,12 +36,12 @@ export const WarMachineAbilitiesPopover = ({
                 vertical: "bottom",
                 horizontal: "left",
             }}
-            PaperProps={{ sx: { backgroundColor: "transparent", boxShadow: 0 } }}
+            PaperProps={{ sx: { background: "none", boxShadow: 0 } }}
         >
             <Box
                 sx={{
-                    ml: 2.5,
-                    mb: 1.75,
+                    ml: ".2rem",
+                    mb: "1.4rem",
                     filter: "drop-shadow(0 3px 3px #00000050)",
                 }}
             >
@@ -50,23 +50,23 @@ export const WarMachineAbilitiesPopover = ({
                     clipSlantSize="8px"
                     border={{
                         isFancy: true,
-                        borderThickness: "1.4px",
+                        borderThickness: ".14rem",
                         borderColor: factionTheme.primary,
                     }}
                 >
-                    <Box sx={{ backgroundColor: factionTheme.background, px: 1.6, pt: 1.6, pb: 1.6 }}>
-                        <Stack spacing={0.9}>
-                            <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: 1.1 }}>
+                    <Box sx={{ backgroundColor: factionTheme.background, px: "1.28rem", pt: "1.28rem", pb: "1.28rem" }}>
+                        <Stack spacing=".72rem">
+                            <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ ml: ".88rem" }}>
                                 <Box
                                     sx={{
-                                        width: 17,
-                                        height: 17,
+                                        width: "1.7rem",
+                                        height: "1.7rem",
                                         backgroundImage: `url(${warMachine.imageAvatar || GenericWarMachinePNG})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "cover",
                                         backgroundColor: factionTheme.primary,
-                                        mb: 0.3,
+                                        mb: ".24rem",
                                         borderRadius: 0.5,
                                     }}
                                 />
@@ -77,9 +77,9 @@ export const WarMachineAbilitiesPopover = ({
                                 </Typography>
                             </Stack>
 
-                            <Stack spacing={0.9}>
+                            <Stack spacing=".72rem">
                                 {gameAbilities.map((ga, i) => (
-                                    <Box key={ga.identity} sx={{ ml: (i + 1) * 0.2 }}>
+                                    <Box key={ga.identity} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
                                         <FactionAbilityItem
                                             gameAbility={ga}
                                             abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}

@@ -23,12 +23,12 @@ const AmountItem = ({
 }) => {
     return (
         <Stack direction="row" alignItems="center">
-            <Typography sx={{ mr: 0.5 }}>{title}</Typography>
-            <SvgSupToken size="14px" fill={color} />
-            <Typography sx={{ mr: 4, color: color }}>{value}</Typography>
+            <Typography sx={{ mr: ".4rem" }}>{title}</Typography>
+            <SvgSupToken size="1.4rem" fill={color} />
+            <Typography sx={{ mr: "3.2rem", color: color }}>{value}</Typography>
             <TooltipHelper placement="right-start" text={tooltip}>
                 <Box sx={{ ml: "auto" }}>
-                    <SvgInfoCircular size="12px" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
+                    <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
                 </Box>
             </TooltipHelper>
         </Stack>
@@ -86,7 +86,7 @@ export const DeployConfirmation = ({
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    maxWidth: 420,
+                    maxWidth: "42rem",
                 }}
             >
                 <ClipThing
@@ -94,17 +94,17 @@ export const DeployConfirmation = ({
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
-                        borderThickness: "3px",
+                        borderThickness: ".3rem",
                     }}
                 >
                     <Stack
                         direction="row"
-                        spacing={2}
+                        spacing="1.6rem"
                         sx={{
                             position: "relative",
-                            pl: 2.2,
-                            pr: 3.2,
-                            py: 3,
+                            pl: "1.76rem",
+                            pr: "2.56rem",
+                            py: "2.4rem",
                             backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
                         }}
                     >
@@ -112,8 +112,8 @@ export const DeployConfirmation = ({
                             sx={{
                                 position: "relative",
                                 flexShrink: 0,
-                                px: 0.8,
-                                py: 1.5,
+                                px: ".64rem",
+                                py: "1.2rem",
                                 borderRadius: 0.6,
                                 boxShadow: "inset 0 0 12px 6px #00000055",
                             }}
@@ -121,8 +121,8 @@ export const DeployConfirmation = ({
                             <Box
                                 sx={{
                                     my: "auto",
-                                    width: 110,
-                                    height: 132,
+                                    width: "11rem",
+                                    height: "13.2rem",
                                     backgroundImage: `url(${image_url})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "top center",
@@ -131,10 +131,15 @@ export const DeployConfirmation = ({
                             />
 
                             <Stack
-                                spacing={0.6}
+                                spacing=".48rem"
                                 direction="row"
                                 alignItems="center"
-                                sx={{ position: "absolute", bottom: 8, left: "50%", transform: "translateX(-50%)" }}
+                                sx={{
+                                    position: "absolute",
+                                    bottom: ".8rem",
+                                    left: "50%",
+                                    transform: "translateX(-50%)",
+                                }}
                             >
                                 <Typography
                                     variant="caption"
@@ -150,7 +155,7 @@ export const DeployConfirmation = ({
                             </Stack>
                         </Box>
 
-                        <Stack spacing={1}>
+                        <Stack spacing=".8rem">
                             <Box>
                                 <Typography
                                     sx={{
@@ -170,10 +175,10 @@ export const DeployConfirmation = ({
                                             <Link
                                                 href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
                                                 target="_blank"
-                                                sx={{ ml: 0.6 }}
+                                                sx={{ ml: ".48rem" }}
                                             >
                                                 <SvgExternalLink
-                                                    size="10px"
+                                                    size="1rem"
                                                     sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}
                                                 />
                                             </Link>
@@ -182,7 +187,7 @@ export const DeployConfirmation = ({
                                 </Typography>
                             </Box>
 
-                            <Stack spacing={0.1}>
+                            <Stack spacing=".08rem">
                                 <AmountItem
                                     key={`${contractReward}-contract_reward`}
                                     title={"Contract reward: "}
@@ -202,7 +207,7 @@ export const DeployConfirmation = ({
                             <Stack direction="row" alignItems="center">
                                 <Typography
                                     sx={{
-                                        pt: 0.1,
+                                        pt: ".08rem",
                                         lineHeight: 1,
                                         color: colors.green,
                                     }}
@@ -212,7 +217,7 @@ export const DeployConfirmation = ({
                                 <Switch
                                     size="small"
                                     checked={needInsured}
-                                    onChange={() => toggleNeedInsured()}
+                                    onChange={toggleNeedInsured}
                                     sx={{
                                         transform: "scale(.7)",
                                         ".Mui-checked": { color: colors.green },
@@ -231,7 +236,10 @@ export const DeployConfirmation = ({
                                     }
                                 >
                                     <Box sx={{ ml: "auto" }}>
-                                        <SvgInfoCircular size="12px" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
+                                        <SvgInfoCircular
+                                            size="1.2rem"
+                                            sx={{ opacity: 0.4, ":hover": { opacity: 1 } }}
+                                        />
                                     </Box>
                                 </TooltipHelper>
                             </Stack>
@@ -244,8 +252,8 @@ export const DeployConfirmation = ({
                                 sx={{
                                     mt: "auto",
                                     minWidth: 0,
-                                    px: 1,
-                                    py: 0.6,
+                                    px: ".8rem",
+                                    py: ".48rem",
                                     boxShadow: 0,
                                     backgroundColor: colors.green,
                                     border: `${colors.green} 1px solid`,
@@ -254,8 +262,8 @@ export const DeployConfirmation = ({
                                 }}
                             >
                                 <Typography
+                                    variant="body2"
                                     sx={{
-                                        fontSize: ".75rem",
                                         lineHeight: 1,
                                         color: isDeploying ? colors.green : "#FFFFFF",
                                     }}
@@ -277,8 +285,12 @@ export const DeployConfirmation = ({
                             )}
                         </Stack>
 
-                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: 2, right: 2 }}>
-                            <SvgClose size="16px" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        <IconButton
+                            size="small"
+                            onClick={onClose}
+                            sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}
+                        >
+                            <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                         </IconButton>
                     </Stack>
                 </ClipThing>

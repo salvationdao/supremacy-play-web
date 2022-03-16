@@ -5,7 +5,7 @@ import { useGameServerAuth, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 
-const BUTTON_WIDTH = 150
+const BUTTON_WIDTH = 15.2 //rem
 const NUM_BUTTONS = 1
 
 const SideButton = ({
@@ -27,14 +27,14 @@ const SideButton = ({
         <Stack
             onClick={toggleIsOpen}
             direction="row"
-            spacing={0.5}
+            spacing=".4rem"
             alignItems="center"
             justifyContent="center"
             sx={{
-                px: 2,
-                pt: 0.2,
-                height: LIVE_CHAT_DRAWER_BUTTON_WIDTH,
-                width: BUTTON_WIDTH,
+                px: "1.8rem",
+                pt: ".16rem",
+                height: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
+                width: `${BUTTON_WIDTH}rem`,
                 backgroundColor: user && user.faction ? `${user.faction.theme.primary}40` : colors.darkerNeonBlue,
                 cursor: "pointer",
                 pointerEvents: isEnabled ? "auto" : "none",
@@ -73,7 +73,7 @@ export const LeftSideBar = () => {
             sx={{
                 position: "relative",
                 overflow: "hidden",
-                width: LIVE_CHAT_DRAWER_BUTTON_WIDTH,
+                width: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
                 backgroundColor:
                     user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                 zIndex: 1002,
@@ -83,14 +83,14 @@ export const LeftSideBar = () => {
                 direction="row"
                 alignItems="center"
                 justifyContent="flex-end"
-                spacing={0.2}
+                spacing=".16rem"
                 sx={{
                     position: "absolute",
                     top: 0,
                     left: "50%",
-                    transform: `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}px - ${
+                    transform: `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}rem - ${
                         LIVE_CHAT_DRAWER_BUTTON_WIDTH / 2
-                    }px)) rotate(-90deg)`,
+                    }rem)) rotate(-90deg)`,
                 }}
             >
                 <SideButton

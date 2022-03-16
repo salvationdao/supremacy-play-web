@@ -49,6 +49,8 @@ export enum GameServerKeys {
     SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
+
+    SubscribeMultiplierMap = "MULTIPLIER:MAP:SUBSCRIBE",
 }
 
 export enum PassportServerKeys {
@@ -70,6 +72,7 @@ export enum PassportServerKeys {
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SendChatMessage = "CHAT:MESSAGE",
+    ChatPastMessages = "CHAT:PAST_MESSAGES",
 
     // Assets
     SubAssetList = "USER:ASSET:LIST",

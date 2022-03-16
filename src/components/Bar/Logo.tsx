@@ -1,19 +1,19 @@
-import { Box, Divider, Link, Stack, Tooltip, Typography } from "@mui/material"
+import { Box, Divider, Link, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { SvgInfoIcon, SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
+import { SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
 import { PASSPORT_WEB, SUPREMACY_PAGE, VERSION } from "../../constants"
 import { colors } from "../../theme/theme"
 
 export const Logo = () => {
     const [text, setText] = useState<string>("EARLY ACCESS")
     return (
-        <Stack direction="row" alignItems="center" spacing={1.8} sx={{ px: 2, zIndex: 1 }}>
+        <Stack direction="row" alignItems="center" spacing="1.44rem" sx={{ px: "1.6rem", zIndex: 1 }}>
             <Link href={PASSPORT_WEB} target="_blank">
-                <SvgNinjaSyndicateLogo size="26px" />
+                <SvgNinjaSyndicateLogo size="2.6rem" />
             </Link>
             <Divider orientation="vertical" flexItem sx={{ borderColor: "#FFFFFF", borderRightWidth: 2 }} />
             <Link href={SUPREMACY_PAGE} target="_blank">
-                <SvgSupremacyLogo width="150px" />
+                <SvgSupremacyLogo width="15rem" />
             </Link>
             <Box
                 onMouseEnter={() => {
@@ -27,12 +27,12 @@ export const Logo = () => {
                 <Typography
                     variant="caption"
                     sx={{
-                        px: 0.7,
-                        py: 0.4,
-                        pb: 0.6,
+                        px: ".56rem",
+                        pt: ".48rem",
+                        pb: ".32rem",
                         border: `${colors.neonBlue} 1px solid`,
                         borderRadius: 1,
-                        fontSize: ".6rem",
+                        fontSize: ".8rem",
                         color: colors.neonBlue,
                         textAlign: "center",
                         lineHeight: 1,

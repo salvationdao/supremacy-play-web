@@ -29,7 +29,6 @@ export interface MoveableResizableConfig {
 }
 
 const PADDING = 10
-// const DefaultMaxLiveVotingDataLength = 100
 
 export const MoveableResizable = ({
     config,
@@ -154,8 +153,8 @@ export const MoveableResizable = ({
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    bottom: 8.8,
-                                    right: 10,
+                                    bottom: ".88rem",
+                                    right: "1rem",
                                     cursor:
                                         allowResizeX && allowResizeY
                                             ? "nesw-resize"
@@ -167,11 +166,11 @@ export const MoveableResizable = ({
                                 }}
                             >
                                 {allowResizeX && allowResizeY ? (
-                                    <SvgResizeXY size="12px" />
+                                    <SvgResizeXY size="1.2rem" />
                                 ) : allowResizeX ? (
-                                    <SvgResizeX size="12px" />
+                                    <SvgResizeX size="1.2rem" />
                                 ) : (
-                                    <SvgResizeY size="12px" />
+                                    <SvgResizeY size="1.2rem" />
                                 )}
                             </Box>
                         )}
@@ -194,7 +193,7 @@ export const MoveableResizable = ({
                                     direction="row"
                                     alignItems="center"
                                     justifyContent="flex-end"
-                                    sx={{ px: 1.3, pb: 0.7 }}
+                                    sx={{ px: "1.04rem", pb: ".56rem" }}
                                 >
                                     <Stack
                                         direction="row"
@@ -209,24 +208,24 @@ export const MoveableResizable = ({
                                         onClick={() => onHideCallback && onHideCallback()}
                                         sx={{
                                             cursor: "pointer",
-                                            mr: 1.1,
+                                            mr: ".88rem",
                                             opacity: 0.4,
                                             ":hover": { opacity: 1 },
                                         }}
                                     >
-                                        <SvgHide size="13px" />
+                                        <SvgHide size="1.3rem" />
                                     </Box>
 
                                     <Box
                                         className="handle"
                                         sx={{
                                             cursor: "move",
-                                            mr: allowResizeX || allowResizeY ? "20px" : "3px",
+                                            mr: allowResizeX || allowResizeY ? "2rem" : ".3rem",
                                             opacity: 0.4,
                                             ":hover": { opacity: 1 },
                                         }}
                                     >
-                                        <SvgDrag size="13px" />
+                                        <SvgDrag size="1.3rem" />
                                     </Box>
                                 </Stack>
                             </Stack>

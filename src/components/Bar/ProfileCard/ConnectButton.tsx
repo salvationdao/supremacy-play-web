@@ -56,10 +56,10 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
             {renderButton ? (
                 <Button
                     sx={{
-                        ml: 3,
-                        px: 2.2,
-                        pt: 0.4,
-                        pb: 0.2,
+                        ml: "2.4rem",
+                        px: "1.76rem",
+                        pt: ".32rem",
+                        pb: ".16rem",
                         flexShrink: 0,
                         justifyContent: "flex-start",
                         whiteSpace: "nowrap",
@@ -81,7 +81,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
                     Connect
                 </Button>
             ) : (
-                <Typography sx={{ mr: 2, fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                <Typography sx={{ mr: "1.6rem", fontFamily: "Nostromo Regular Bold" }} variant="caption">
                     Signing in...
                 </Typography>
             )}
@@ -101,7 +101,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
                     onClose={() => setAuthRingCheckError(undefined)}
                     open={!!authRingCheckError}
                 >
-                    <Box sx={{ px: 3, py: 2.5, pb: 3, backgroundColor: colors.darkNavy }}>
+                    <Box sx={{ px: "2.4rem", py: "2rem", pb: "2.4rem", backgroundColor: colors.darkNavy }}>
                         <Typography variant="h6" gutterBottom sx={{ fontFamily: "Nostromo Regular Bold" }}>
                             Login Failed...
                         </Typography>

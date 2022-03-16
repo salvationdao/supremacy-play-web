@@ -27,12 +27,12 @@ const Stat = ({
     PrefixSvg?: SvgWrapperProps
 }) => {
     return (
-        <Stack spacing={0.3} sx={{ width: 180 }}>
+        <Stack spacing=".24rem" sx={{ width: "18rem" }}>
             <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold", color: colors.grey }}>
                 {title}
             </Typography>
 
-            <Stack direction="row" alignItems="center" spacing={0.4}>
+            <Stack direction="row" alignItems="center" spacing=".32rem">
                 {PrefixSvg}
                 <Typography
                     variant="body2"
@@ -74,14 +74,18 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
         const { velocity, recruit_number, win_count, loss_count, kill_count, death_count, mvp } = factionStat
         return (
             <Fade in={true}>
-                <Stack direction="row" flexWrap="wrap" sx={{ pt: 1, px: 1, "& > *": { width: "50%", pb: 1.8 } }}>
+                <Stack
+                    direction="row"
+                    flexWrap="wrap"
+                    sx={{ pt: ".8rem", px: ".8rem", "& > *": { width: "50%", pb: "1.44rem" } }}
+                >
                     <Stat
                         title="SUPS Velocity"
                         content={velocity.toLocaleString("en-US", {
                             minimumFractionDigits: 1,
                             maximumFractionDigits: 4,
                         })}
-                        PrefixSvg={<SvgSupToken size="14px" />}
+                        PrefixSvg={<SvgSupToken size="1.4rem" />}
                     />
 
                     <Stat title="Recruits" content={recruit_number} />
@@ -124,16 +128,16 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
             <Stack
                 alignItems="center"
                 justifyContent="center"
-                spacing={1.8}
+                spacing="1.44rem"
                 sx={{
-                    px: 2.6,
-                    py: 3,
+                    px: "2.08rem",
+                    py: "2.4rem",
                     backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${background_blob_id})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
-                    width: 190,
-                    minHeight: 360,
+                    width: "19rem",
+                    minHeight: "36rem",
                 }}
             >
                 <Box
@@ -142,7 +146,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                     alt={`${label} Logo`}
                     sx={{
                         width: "100%",
-                        maxHeight: 250,
+                        maxHeight: "25rem",
                         borderRadius: 0.5,
                     }}
                 />
@@ -151,7 +155,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                 </Typography>
             </Stack>
 
-            <Stack sx={{ px: 3, py: 2.8, width: 460 }}>
+            <Stack sx={{ px: "2.4rem", py: "2.24rem", width: 460 }}>
                 {page === 0 && (
                     <Fade in={true}>
                         <Typography>{description}</Typography>
@@ -162,10 +166,10 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
 
                 <Stack
                     direction="row"
-                    spacing={0.6}
+                    spacing=".48rem"
                     alignItems="center"
                     justifyContent="flex-start"
-                    sx={{ mt: "auto", pt: 1.6, "& > .Mui-disabled": { color: "#494949 !important" } }}
+                    sx={{ mt: "auto", pt: "1.28rem", "& > .Mui-disabled": { color: "#494949 !important" } }}
                 >
                     {factionStat && (
                         <>
@@ -187,12 +191,16 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                         borderColor={primary}
                         backgroundColor={primary}
                         clipSx={{ ml: "auto !important" }}
-                        sx={{ px: 3.2, py: 0.2, pt: 0.5 }}
+                        sx={{
+                            px: "2.56rem",
+                            py: ".16rem",
+                            pt: ".5rem",
+                            color: secondary,
+                            fontFamily: "Nostromo Regular Black",
+                        }}
                         onClick={enlistFaction}
                     >
-                        <Typography variant="caption" sx={{ color: secondary, fontFamily: "Nostromo Regular Black" }}>
-                            Enlist
-                        </Typography>
+                        Enlist
                     </FancyButton>
                 </Stack>
             </Stack>
@@ -233,14 +241,14 @@ export const EnlistDetailsPopover = ({
                     border={{
                         isFancy: true,
                         borderColor: primary,
-                        borderThickness: "2px",
+                        borderThickness: ".2rem",
                     }}
                 >
                     <Stack direction="row" sx={{ backgroundColor: "#101019" }}>
                         {factionData ? (
                             <PopoverContent factionData={factionData} />
                         ) : (
-                            <Box sx={{ px: 3, py: 1.5 }}>
+                            <Box sx={{ px: "2.4rem", py: "1.2rem" }}>
                                 <Typography
                                     variant="caption"
                                     sx={{ fontFamily: "Nostromo Regular Bold", color: colors.grey }}

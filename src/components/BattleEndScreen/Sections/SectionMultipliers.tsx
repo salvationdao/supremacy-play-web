@@ -9,7 +9,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
 
     return (
         <Stack>
-            <Box sx={{ px: 2.5, py: 1.5, pr: 4, backgroundColor: "#FFFFFF15" }}>
+            <Box sx={{ px: "2rem", py: ".88rem", pr: "3.2rem", backgroundColor: "#FFFFFF15" }}>
                 <Typography
                     component="span"
                     variant="h4"
@@ -28,9 +28,12 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                 </Typography>
             </Box>
 
-            <Stack spacing={3.2} sx={{ pl: 1.8, pr: 2.3, pt: 2.5, pb: 2, backgroundColor: "#FFFFFF05" }}>
+            <Stack
+                spacing="2.56rem"
+                sx={{ pl: "1.44rem", pr: "1.84rem", pt: "2rem", pb: "1.6rem", backgroundColor: "#FFFFFF05" }}
+            >
                 {multipliers && multipliers.length > 0 ? (
-                    <Stack spacing={1.5} sx={{ pl: 1 }}>
+                    <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
                         {multipliers.map((m) => {
                             const deets = getMutiplierDeets(m.key)
                             return (
@@ -43,8 +46,8 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                             text={m.key.toUpperCase()}
                                             imageUrl={deets.image}
                                             variant="h5"
-                                            imageSize={29}
-                                            imageBorderThickness="2px"
+                                            imageSize={2.9}
+                                            imageBorderThickness=".2rem"
                                             fontWeight="normal"
                                             truncateLine
                                             imageMb={-0.8}
@@ -55,7 +58,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             )
                         })}
 
-                        <Divider sx={{ py: 0.3, borderColor: "#FFFFFF", opacity: 0.15 }} />
+                        <Divider sx={{ py: ".24rem", borderColor: "#FFFFFF", opacity: 0.15 }} />
 
                         <Stack direction="row" alignItems="center" justifyContent="space-between">
                             <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
@@ -67,10 +70,10 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                         </Stack>
                     </Stack>
                 ) : (
-                    <Typography variant="h6" sx={{ pl: 1, opacity: 0.8 }}>
+                    <Typography variant="h6" sx={{ pl: ".8rem", opacity: 0.8 }}>
                         {"Sorry you didn't get any multipliers."}
                         <br />
-                        You will receive multipliers when you participate in the battle...
+                        You will receive multipliers when you participate in the battle.
                     </Typography>
                 )}
             </Stack>

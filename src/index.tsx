@@ -46,6 +46,7 @@ import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme, User } from "./types"
 import { UserData } from "./types/passport"
+import { EarlyAccessWarning } from "./components/EarlyAccessWarning/EarlyAccessWarning"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -75,7 +76,7 @@ const AppInner = () => {
             <GameBar />
             <Stack
                 sx={{
-                    mt: `${GAME_BAR_HEIGHT}px`,
+                    mt: `${GAME_BAR_HEIGHT}rem`,
                     width: mainDivDimensions.width,
                     height: mainDivDimensions.height,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
@@ -113,6 +114,7 @@ const AppInner = () => {
 
                                 {user && haveSups && state === WebSocket.OPEN && (
                                     <Box>
+                                        <EarlyAccessWarning />
                                         <VotingSystem />
                                         <MiniMap />
                                         <Notifications />
@@ -161,7 +163,6 @@ const App = () => {
     const setAuthLogin = useMemo(() => {
         return (u: User) => {
             if (!authLogin && u) {
-                console.log(authLogin, u)
                 setAuthLoginX(u)
             }
         }
