@@ -36,9 +36,9 @@ export const DimensionContainer = createContainer(() => {
 
     // Refer to `src/theme/global.css`
     useEffect(() => {
-        if (below900) return setPxToRemRatio(6.6)
-        if (below1500) return setPxToRemRatio(7.5)
-        if (below1920) return setPxToRemRatio(8.32)
+        if (below900) return setPxToRemRatio(6.9)
+        if (below1500) return setPxToRemRatio(7.9)
+        if (below1920) return setPxToRemRatio(8.6)
         setPxToRemRatio(10)
     }, [below1920, below1500, below900])
 

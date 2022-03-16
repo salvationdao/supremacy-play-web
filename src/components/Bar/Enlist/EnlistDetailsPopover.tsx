@@ -191,12 +191,16 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                         borderColor={primary}
                         backgroundColor={primary}
                         clipSx={{ ml: "auto !important" }}
-                        sx={{ px: "2.56rem", py: ".16rem", pt: ".4rem" }}
+                        sx={{
+                            px: "2.56rem",
+                            py: ".16rem",
+                            pt: ".5rem",
+                            color: secondary,
+                            fontFamily: "Nostromo Regular Black",
+                        }}
                         onClick={enlistFaction}
                     >
-                        <Typography variant="caption" sx={{ color: secondary, fontFamily: "Nostromo Regular Black" }}>
-                            Enlist
-                        </Typography>
+                        Enlist
                     </FancyButton>
                 </Stack>
             </Stack>

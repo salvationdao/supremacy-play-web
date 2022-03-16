@@ -69,7 +69,7 @@ export const ChatMessage = ({
                 }}
             >
                 <Box>
-                    <Typography sx={{ display: "inline", color: message_color, fontWeight: 700, fontSize: "1.23rem" }}>
+                    <Typography sx={{ display: "inline", color: message_color, fontWeight: 700, fontSize: "1.3rem" }}>
                         {truncate(from_username, 24)}
                     </Typography>
                     <Typography
@@ -84,7 +84,7 @@ export const ChatMessage = ({
                                     : colors.orange,
                             textAlign: "center",
                             fontFamily: "Nostromo Regular Bold",
-                            fontSize: ".8rem",
+                            fontSize: ".86rem",
                             verticalAlign: "top",
                             opacity: multiplierValue ? 1 : 0.7,
                         }}
@@ -100,7 +100,7 @@ export const ChatMessage = ({
                                     ml: ".4rem",
                                     textAlign: "center",
                                     fontFamily: "Nostromo Regular Bold",
-                                    fontSize: ".8rem",
+                                    fontSize: ".86rem",
                                     verticalAlign: "top",
                                 }}
                             >
@@ -113,7 +113,7 @@ export const ChatMessage = ({
                     </Typography>
                 </Box>
 
-                <Typography sx={{ fontSize: "1.23rem" }}>{message} </Typography>
+                <Typography sx={{ fontSize: "1.33rem" }}>{message} </Typography>
             </Box>
         </Stack>
     )

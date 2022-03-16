@@ -5,7 +5,7 @@ import { colors } from "../../theme/theme"
 import { GameGuideModal } from "./GameGuideModal"
 
 const GameGuide = () => {
-    const [closed, toggleClosed] = useToggle()
+    const [closed, toggleClosed] = useToggle(true)
     const below1440 = useMediaQuery("(max-width:1440px)")
 
     return (

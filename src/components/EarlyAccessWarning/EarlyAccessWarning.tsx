@@ -1,4 +1,4 @@
-import { AlertTitle, Box, Button, Modal, Stack, Typography } from "@mui/material"
+import { Box, Button, Modal, Stack, Typography } from "@mui/material"
 import { Alert } from "@mui/lab"
 import { colors } from "../../theme/theme"
 import { useToggle } from "../../hooks"
@@ -25,7 +25,18 @@ export const EarlyAccessWarning = () => {
                     }}
                 >
                     <Stack spacing="1.6rem">
-                        <Alert severity="warning" sx={{ ".MuiAlert-message": { pt: "1.12rem" } }}>
+                        <Alert
+                            severity="warning"
+                            sx={{
+                                alignItems: "center",
+                                ".MuiAlert-message": {
+                                    pt: "1.12rem",
+                                    fontSize: "1.3rem",
+                                    fontWeight: "fontWeightBold",
+                                    fontFamily: "Nostromo Regular Bold",
+                                },
+                            }}
+                        >
                             The game is in early access and the $SUPS you use are real!
                         </Alert>
 
