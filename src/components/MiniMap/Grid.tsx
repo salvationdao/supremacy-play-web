@@ -61,7 +61,7 @@ export const Grid = ({
     }
 
     const handleSelection = (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
-        console.log(scale)
+        console.debug(scale)
         if (mapElement) {
             const rect = mapElement.current.getBoundingClientRect()
             // Mouse position

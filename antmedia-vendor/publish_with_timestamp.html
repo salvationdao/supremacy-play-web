@@ -224,18 +224,18 @@
 			debug:true,
 			callback : function(info, obj) {
 				if (info == "initialized") {
-					console.log("initialized");
+					console.debug("initialized");
 					start_publish_button.disabled = false;
 					stop_publish_button.disabled = true;
 				} else if (info == "publish_started") {
 					//stream is being published
-					console.log("publish started");
+					console.debug("publish started");
 					start_publish_button.disabled = true;
 					stop_publish_button.disabled = false;
 					startAnimation();
 				} else if (info == "publish_finished") {
 					//stream is being finished
-					console.log("publish finished");
+					console.debug("publish finished");
 					start_publish_button.disabled = false;
 					stop_publish_button.disabled = true;
 				}
@@ -244,9 +244,9 @@
 				else if (info == "screen_share_stopped") {
 				}
 				else if (info == "closed") {
-					//console.log("Connection closed");
+					//console.debug("Connection closed");
 					if (typeof obj != "undefined") {
-						console.log("Connecton closed: " + JSON.stringify(obj));
+						console.debug("Connecton closed: " + JSON.stringify(obj));
 					}
 				}
 				else if (info == "pong") {
@@ -257,13 +257,13 @@
 					startPublishing();
 				}
 				else if (info == "ice_connection_state_changed") {
-					console.log("iceConnectionState Changed: ",JSON.stringify(obj));
+					console.debug("iceConnectionState Changed: ",JSON.stringify(obj));
 				}
 				else if (info == "updated_stats") {
 					//obj is the PeerStats which has fields
 					 //averageOutgoingBitrate - kbits/sec
 					//currentOutgoingBitrate - kbits/sec
-					console.log("Average outgoing bitrate " + obj.averageOutgoingBitrate + " kbits/sec"
+					console.debug("Average outgoing bitrate " + obj.averageOutgoingBitrate + " kbits/sec"
 							+ " Current outgoing bitrate: " + obj.currentOutgoingBitrate + " kbits/sec");
 
 				}
@@ -271,7 +271,7 @@
 			callbackError : function(error, message) {
 				//some of the possible errors, NotFoundError, SecurityError,PermissionDeniedError
 
-				console.log("error callback: " +  JSON.stringify(error));
+				console.debug("error callback: " +  JSON.stringify(error));
 				var errorMessage = JSON.stringify(error);
 				if (typeof message != "undefined") {
 					errorMessage = message;

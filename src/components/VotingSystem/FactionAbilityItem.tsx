@@ -75,13 +75,16 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         }
     }, [gameAbilityProgress])
 
-    const onContribute = async (amount: string) => {
-        if (!send) return
-        send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
-            ability_identity: identity,
-            amount,
-        })
-    }
+    const onContribute = useMemo(
+        () => (amount: string) => {
+            if (!send) return
+            send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
+                ability_identity: identity,
+                amount,
+            })
+        },
+        [],
+    )
 
     const isVoting = useMemo(
         () => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThanOrEqualTo(currentSups),
@@ -133,7 +136,7 @@ export const FactionAbilityItemInner = ({
     onContribute,
 }: InnerProps) => {
     return (
-        <Box key={`${initialTargetCost}`}>
+        <Box>
             <Fade in={true}>
                 <Box>
                     <ClipThing clipSize="6px" clipSlantSize={clipSlantSize}>
@@ -156,70 +159,14 @@ export const FactionAbilityItemInner = ({
                                 justifyContent="space-between"
                                 alignSelf="stretch"
                             >
-                                <TooltipHelper placement="right" text={description}>
-                                    <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">
-                                        <Box
-                                            sx={{
-                                                height: "1.9rem",
-                                                width: "1.9rem",
-                                                backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundPosition: "center",
-                                                backgroundSize: "cover",
-                                                backgroundColor: colour || "#030409",
-                                                border: `${colour} 1px solid`,
-                                                borderRadius: 0.6,
-                                                mb: ".24rem",
-                                            }}
-                                        />
-                                        <Typography
-                                            variant="body1"
-                                            sx={{
-                                                lineHeight: 1,
-                                                fontWeight: "fontWeightBold",
-                                                fontFamily: "Nostromo Regular Bold",
-                                                color: colour,
-                                                overflow: "hidden",
-                                                textOverflow: "ellipsis",
-                                                whiteSpace: "nowrap",
-                                                maxWidth: "20rem",
-                                            }}
-                                        >
-                                            {label}
-                                        </Typography>
-                                    </Stack>
-                                </TooltipHelper>
+                                <TopText
+                                    description={description}
+                                    image_url={image_url}
+                                    colour={colour}
+                                    label={label}
+                                />
 
-                                <Stack direction="row" alignItems="center" justifyContent="center">
-                                    <Typography
-                                        key={`currentSups-${currentSups.toFixed()}`}
-                                        variant="body2"
-                                        sx={{
-                                            lineHeight: 1,
-                                            color: `${colour} !important`,
-                                            animation: `${zoomEffect(1.2)} 300ms ease-out`,
-                                        }}
-                                    >
-                                        {currentSups.toFixed(2)}
-                                    </Typography>
-                                    <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
-                                        &nbsp;/&nbsp;
-                                    </Typography>
-                                    <Typography
-                                        key={`supsCost-${supsCost.toFixed()}`}
-                                        variant="body2"
-                                        sx={{
-                                            lineHeight: 1,
-                                            color: `${colour} !important`,
-                                            animation: `${zoomEffect(1.2)} 300ms ease-out`,
-                                        }}
-                                    >
-                                        {supsCost.toFixed(2)}
-                                    </Typography>
-                                    <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
-                                        &nbsp;SUP{supsCost.eq(1) ? "" : "S"}
-                                    </Typography>
-                                </Stack>
+                                <SupsStackBar currentSups={currentSups} colour={colour} supsCost={supsCost} />
                             </Stack>
 
                             <Box
@@ -240,35 +187,12 @@ export const FactionAbilityItemInner = ({
                                 />
                             </Box>
 
-                            <Stack direction="row" spacing=".32rem" sx={{ mt: ".48rem", width: "100%" }}>
-                                <VotingButton
-                                    color={colour}
-                                    textColor={text_colour || "#FFFFFF"}
-                                    amount={"0.1"}
-                                    cost={"0.1"}
-                                    isVoting={isVoting}
-                                    onClick={() => onContribute("0.1")}
-                                    Prefix={<SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />}
-                                />
-                                <VotingButton
-                                    color={colour}
-                                    textColor={text_colour || "#FFFFFF"}
-                                    amount={"1"}
-                                    cost={"1"}
-                                    isVoting={isVoting}
-                                    onClick={() => onContribute("1")}
-                                    Prefix={<SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />}
-                                />
-                                <VotingButton
-                                    color={colour}
-                                    textColor={text_colour || "#FFFFFF"}
-                                    amount={"10"}
-                                    cost={"10"}
-                                    isVoting={isVoting}
-                                    onClick={() => onContribute("10")}
-                                    Prefix={<SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />}
-                                />
-                            </Stack>
+                            <VotingButtons
+                                colour={colour}
+                                isVoting={isVoting}
+                                text_colour={text_colour}
+                                onContribute={onContribute}
+                            />
                         </Stack>
                     </ClipThing>
                 </Box>
@@ -276,3 +200,128 @@ export const FactionAbilityItemInner = ({
         </Box>
     )
 }
+
+interface TopTextProps {
+    description: string
+    image_url: string
+    colour: string
+    label: string
+}
+
+const TopText = ({ description, image_url, colour, label }: TopTextProps) => (
+    <TooltipHelper placement="right" text={description}>
+        <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">
+            <Box
+                sx={{
+                    height: "1.9rem",
+                    width: "1.9rem",
+                    backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    backgroundColor: colour || "#030409",
+                    border: `${colour} 1px solid`,
+                    borderRadius: 0.6,
+                    mb: ".24rem",
+                }}
+            />
+            <Typography
+                variant="body1"
+                sx={{
+                    lineHeight: 1,
+                    fontWeight: "fontWeightBold",
+                    fontFamily: "Nostromo Regular Bold",
+                    color: colour,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: "20rem",
+                }}
+            >
+                {label}
+            </Typography>
+        </Stack>
+    </TooltipHelper>
+)
+
+interface SupsStackBarProps {
+    currentSups: BigNumber
+    colour: string
+    supsCost: BigNumber
+}
+
+const SupsStackBar = ({ currentSups, colour, supsCost }: SupsStackBarProps) => (
+    <Stack direction="row" alignItems="center" justifyContent="center">
+        <Typography
+            key={`currentSups-${currentSups.toFixed()}`}
+            variant="body2"
+            sx={{
+                lineHeight: 1,
+                color: `${colour} !important`,
+                animation: `${zoomEffect(1.2)} 300ms ease-out`,
+            }}
+        >
+            {currentSups.toFixed(2)}
+        </Typography>
+        <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
+            &nbsp;/&nbsp;
+        </Typography>
+        <Typography
+            key={`supsCost-${supsCost.toFixed()}`}
+            variant="body2"
+            sx={{
+                lineHeight: 1,
+                color: `${colour} !important`,
+                animation: `${zoomEffect(1.2)} 300ms ease-out`,
+            }}
+        >
+            {supsCost.toFixed(2)}
+        </Typography>
+        <Typography variant="body2" sx={{ lineHeight: 1, color: `${colour} !important` }}>
+            &nbsp;SUP{supsCost.eq(1) ? "" : "S"}
+        </Typography>
+    </Stack>
+)
+
+interface VotingButtonsProps {
+    colour: string
+    text_colour: string
+    isVoting: boolean
+    onContribute: (c: string) => void
+}
+
+const VotingButtons = ({ colour, text_colour, isVoting, onContribute }: VotingButtonsProps) => (
+    <Stack direction="row" spacing=".32rem" sx={{ mt: ".48rem", width: "100%" }}>
+        <VotingButton
+            color={colour}
+            textColor={text_colour || "#FFFFFF"}
+            amount={"0.1"}
+            cost={"0.1"}
+            isVoting={isVoting}
+            onClick={() => onContribute("0.1")}
+            Prefix={<SupsToken text_colour={text_colour} />}
+        />
+        <VotingButton
+            color={colour}
+            textColor={text_colour || "#FFFFFF"}
+            amount={"1"}
+            cost={"1"}
+            isVoting={isVoting}
+            onClick={() => onContribute("1")}
+            Prefix={<SupsToken text_colour={text_colour} />}
+        />
+        <VotingButton
+            color={colour}
+            textColor={text_colour || "#FFFFFF"}
+            amount={"10"}
+            cost={"10"}
+            isVoting={isVoting}
+            onClick={() => onContribute("10")}
+            Prefix={<SupsToken text_colour={text_colour} />}
+        />
+    </Stack>
+)
+
+const SupsToken = ({ text_colour }: { text_colour: string }) => (
+    <SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />
+)

@@ -232,25 +232,25 @@ video {
 
 			webRTCAdaptor.sendData(publishStreamId, JSON.stringify(notEvent));
 		}	else {
-			console.log("Could not send the notification because data channel is not open.");
+			console.debug("Could not send the notification because data channel is not open.");
 		}
 	}
 
 	function handleNotificationEvent(obj) {
-		console.log("Received data : ", obj.data);
+		console.debug("Received data : ", obj.data);
 		var notificationEvent = JSON.parse(obj.data);
 		if(notificationEvent != null && typeof(notificationEvent) == "object") {
 		  var eventStreamId = notificationEvent.streamId;
 		  var eventTyp = notificationEvent.eventType;
 
 			if(eventTyp == "CAM_TURNED_OFF") {
-					console.log("Camera turned off for : ", eventStreamId);
+					console.debug("Camera turned off for : ", eventStreamId);
 			} else if (eventTyp == "CAM_TURNED_ON"){
-					console.log("Camera turned on for : ", eventStreamId);
+					console.debug("Camera turned on for : ", eventStreamId);
 			} else if (eventTyp == "MIC_MUTED"){
-					console.log("Microphone muted for : ", eventStreamId);
+					console.debug("Microphone muted for : ", eventStreamId);
 			} else if (eventTyp == "MIC_UNMUTED"){
-					console.log("Microphone unmuted for : ", eventStreamId);
+					console.debug("Microphone unmuted for : ", eventStreamId);
 			}
 	  }
 	}
@@ -262,7 +262,7 @@ video {
 			merger.start();
 			var result = merger.getResult();
 			webRTCAdaptor.gotStream(result);
-			console.log("streamslist = " + streamsList);
+			console.debug("streamslist = " + streamsList);
 			if(streamsList.length > 0){
 				publish(publishStreamId);
 				noStream = false;
@@ -395,7 +395,7 @@ video {
 				debug : false,
 				callback : (info, obj) => {
 					if (info == "initialized") {
-						console.log("initialized");
+						console.debug("initialized");
 						join_publish_button.disabled = false;
 						stop_publish_button.disabled = true;
 					} 
@@ -403,16 +403,16 @@ video {
 						mergeStreams();
 						var room = obj.ATTR_ROOM_NAME;
 						roomOfStream[obj.streamId] = room;
-						console.log("joined the room: "
+						console.debug("joined the room: "
 								+ roomOfStream[obj.streamId]);
-						console.log(obj)
+						console.debug(obj)
 						publishStreamId = obj.streamId
 						join_publish_button.disabled = true;
 						stop_publish_button.disabled = false;
 												
 						if (obj.streams != null) {
 							obj.streams.forEach(function(item) {
-								console.log("Stream joined with ID: "+item);
+								console.debug("Stream joined with ID: "+item);
 								webRTCAdaptor.play(item, token,
 										roomNameBox.value);
 							});
@@ -460,7 +460,7 @@ video {
 						streamsList = new Array();
 					} 
 					else if (info == "screen_share_stopped") {
-						console.log("screen share stopped");
+						console.debug("screen share stopped");
 					}
 					else if (info == "leavedFromRoom") {
 						var room = obj.ATTR_ROOM_NAME;
@@ -471,14 +471,14 @@ video {
 						}
 					} 
 					else if (info == "closed") {
-						//console.log("Connection closed");
+						//console.debug("Connection closed");
 						if (typeof obj != "undefined") {
-							console.log("Connecton closed: "
+							console.debug("Connecton closed: "
 									+ JSON.stringify(obj));
 						}
 					} 
 					else if (info == "play_finished") {
-						console.log("play_finished");
+						console.debug("play_finished");
 						var video = document.getElementById("remoteVideo"
 								+ obj.streamId);
 						if (video != null) {
@@ -517,7 +517,7 @@ video {
 						if (obj.streams != null) {
 							obj.streams.forEach(function(item) {
 								tempRoomStreamList.push(item);
-								console.log("Stream joined with ID: "+item);
+								console.debug("Stream joined with ID: "+item);
 								webRTCAdaptor.play(item, token,
 										roomNameBox.value);
 							});
@@ -535,7 +535,7 @@ video {
 						clearInterval(roomTimerId);
 					}
 
-					console.log("error callback: " + JSON.stringify(error));
+					console.debug("error callback: " + JSON.stringify(error));
 					var errorMessage = JSON.stringify(error);
 					if (typeof message != "undefined") {
 						errorMessage = message;

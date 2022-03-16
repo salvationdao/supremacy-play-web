@@ -14,7 +14,7 @@ export interface AuthContainerType {
 }
 
 const emptyFn = (user: User) => {
-    console.log("empty function that should never run")
+    console.debug("empty function that should never run")
 }
 
 /**

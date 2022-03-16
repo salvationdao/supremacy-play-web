@@ -82,9 +82,12 @@ export const BattleAbilityItem = () => {
         )
     }, [state, subscribeNetMessage])
 
-    const onBribe = (voteAmount: string) => {
-        if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount })
-    }
+    const onBribe = useMemo(
+        () => (voteAmount: string) => {
+            if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount })
+        },
+        [],
+    )
 
     const isVoting = useMemo(
         () =>
@@ -186,128 +189,26 @@ const BattleAbilityItemInner = ({
                                         opacity: isVoting ? 1 : 0.7,
                                     }}
                                 >
-                                    <Stack
-                                        spacing="2.4rem"
-                                        direction="row"
-                                        alignItems="center"
-                                        justifyContent="space-between"
-                                        alignSelf="stretch"
-                                    >
-                                        <TooltipHelper placement="right" text={description}>
-                                            <Stack
-                                                spacing=".8rem"
-                                                direction="row"
-                                                alignItems="center"
-                                                justifyContent="center"
-                                            >
-                                                <Box
-                                                    sx={{
-                                                        height: "1.9rem",
-                                                        width: "1.9rem",
-                                                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
-                                                        backgroundRepeat: "no-repeat",
-                                                        backgroundPosition: "center",
-                                                        backgroundSize: "cover",
-                                                        backgroundColor: colour || "#030409",
-                                                        border: `${colour} 1px solid`,
-                                                        borderRadius: 0.6,
-                                                        mb: ".24rem",
-                                                    }}
-                                                />
-                                                <Typography
-                                                    variant="body1"
-                                                    sx={{
-                                                        lineHeight: 1,
-                                                        fontWeight: "fontWeightBold",
-                                                        fontFamily: "Nostromo Regular Bold",
-                                                        color: colour,
-                                                        overflow: "hidden",
-                                                        textOverflow: "ellipsis",
-                                                        whiteSpace: "nowrap",
-                                                        maxWidth: "20rem",
-                                                    }}
-                                                >
-                                                    {label}
-                                                </Typography>
-                                            </Stack>
-                                        </TooltipHelper>
+                                    <BattleAbilityTextTop
+                                        label={label}
+                                        description={description}
+                                        image_url={image_url}
+                                        colour={colour}
+                                        cooldown_duration_second={cooldown_duration_second}
+                                    />
 
-                                        <Stack
-                                            spacing=".24rem"
-                                            direction="row"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                        >
-                                            <SvgCooldown
-                                                component="span"
-                                                size="1.3rem"
-                                                fill={"grey"}
-                                                sx={{ pb: ".32rem" }}
-                                            />
-                                            <Typography
-                                                variant="body2"
-                                                sx={{ lineHeight: 1, color: "grey !important" }}
-                                            >
-                                                {cooldown_duration_second}s
-                                            </Typography>
-                                        </Stack>
-                                    </Stack>
+                                    <SupsBarStack
+                                        battleAbilityProgress={battleAbilityProgress}
+                                        factionsAll={factionsAll}
+                                        forceDisplay100Percentage={forceDisplay100Percentage}
+                                    />
 
-                                    <Stack
-                                        spacing=".4rem"
-                                        sx={{
-                                            width: "100%",
-                                            px: "1.2rem",
-                                            py: ".96rem",
-                                            backgroundColor: "#00000030",
-                                            borderRadius: 1,
-                                        }}
-                                    >
-                                        {battleAbilityProgress &&
-                                            battleAbilityProgress.length > 0 &&
-                                            battleAbilityProgress.map((a) => {
-                                                return (
-                                                    <SupsBar
-                                                        key={a.faction_id}
-                                                        forceDisplay100Percentage={forceDisplay100Percentage}
-                                                        factionsAll={factionsAll}
-                                                        faction_id={a.faction_id}
-                                                        sups_cost={a.sups_cost}
-                                                        current_sups={a.current_sups}
-                                                    />
-                                                )
-                                            })}
-                                    </Stack>
-
-                                    <Stack direction="row" spacing={0.4} sx={{ mt: ".48rem", width: "100%" }}>
-                                        <VotingButton
-                                            color={buttonColor}
-                                            textColor={buttonTextColor}
-                                            amount={"0.1"}
-                                            cost={"0.1"}
-                                            isVoting={isVoting}
-                                            onClick={() => onBribe("0.1")}
-                                            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
-                                        />
-                                        <VotingButton
-                                            color={buttonColor}
-                                            textColor={buttonTextColor}
-                                            amount={"1"}
-                                            cost={"1"}
-                                            isVoting={isVoting}
-                                            onClick={() => "1"}
-                                            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
-                                        />
-                                        <VotingButton
-                                            color={buttonColor}
-                                            textColor={buttonTextColor}
-                                            amount={"10"}
-                                            cost={"10"}
-                                            isVoting={isVoting}
-                                            onClick={() => onBribe("10")}
-                                            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
-                                        />
-                                    </Stack>
+                                    <VotingButtons
+                                        buttonColor={buttonColor}
+                                        buttonTextColor={buttonTextColor}
+                                        isVoting={isVoting}
+                                        onBribe={onBribe}
+                                    />
                                 </Stack>
                             </ClipThing>
                         </Box>
@@ -317,6 +218,64 @@ const BattleAbilityItemInner = ({
         </Fade>
     )
 }
+
+interface BattleAbilityTextTopProps {
+    label: string
+    description: string
+    image_url: string
+    colour: string
+    cooldown_duration_second: number
+}
+const BattleAbilityTextTop = ({
+    label,
+    description,
+    image_url,
+    colour,
+    cooldown_duration_second,
+}: BattleAbilityTextTopProps) => (
+    <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
+        <TooltipHelper placement="right" text={description}>
+            <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">
+                <Box
+                    sx={{
+                        height: "1.9rem",
+                        width: "1.9rem",
+                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        backgroundColor: colour || "#030409",
+                        border: `${colour} 1px solid`,
+                        borderRadius: 0.6,
+                        mb: ".24rem",
+                    }}
+                />
+                <Typography
+                    variant="body1"
+                    sx={{
+                        lineHeight: 1,
+                        fontWeight: "fontWeightBold",
+                        fontFamily: "Nostromo Regular Bold",
+                        color: colour,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: "20rem",
+                    }}
+                >
+                    {label}
+                </Typography>
+            </Stack>
+        </TooltipHelper>
+
+        <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
+            <SvgCooldown component="span" size="1.3rem" fill={"grey"} sx={{ pb: ".32rem" }} />
+            <Typography variant="body2" sx={{ lineHeight: 1, color: "grey !important" }}>
+                {cooldown_duration_second}s
+            </Typography>
+        </Stack>
+    </Stack>
+)
 
 interface SupsBarProps {
     forceDisplay100Percentage: string
@@ -399,3 +358,83 @@ const SupsBar = ({ forceDisplay100Percentage, factionsAll, faction_id, sups_cost
         </Stack>
     )
 }
+
+interface SubsBarStackProps {
+    battleAbilityProgress: BattleAbilityProgressBigNum[]
+    factionsAll: FactionsAll
+    forceDisplay100Percentage: string
+}
+
+const SupsBarStack = ({ battleAbilityProgress, factionsAll, forceDisplay100Percentage }: SubsBarStackProps) => {
+    const progressBar = useMemo(() => {
+        if (!battleAbilityProgress || !Array.isArray(battleAbilityProgress) || battleAbilityProgress.length === 0) {
+            return null
+        }
+        return battleAbilityProgress.map((a) => {
+            return (
+                <SupsBar
+                    key={a.faction_id}
+                    forceDisplay100Percentage={forceDisplay100Percentage}
+                    factionsAll={factionsAll}
+                    faction_id={a.faction_id}
+                    sups_cost={a.sups_cost}
+                    current_sups={a.current_sups}
+                />
+            )
+        })
+    }, [factionsAll, battleAbilityProgress, forceDisplay100Percentage])
+
+    return (
+        <Stack
+            spacing=".4rem"
+            sx={{
+                width: "100%",
+                px: "1.2rem",
+                py: ".96rem",
+                backgroundColor: "#00000030",
+                borderRadius: 1,
+            }}
+        >
+            {progressBar}
+        </Stack>
+    )
+}
+
+interface VotingButtonsProps {
+    buttonColor: string
+    buttonTextColor: string
+    isVoting: boolean
+    onBribe: (b: string) => void
+}
+
+const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, onBribe }: VotingButtonsProps) => (
+    <Stack direction="row" spacing={0.4} sx={{ mt: ".48rem", width: "100%" }}>
+        <VotingButton
+            color={buttonColor}
+            textColor={buttonTextColor}
+            amount={"0.1"}
+            cost={"0.1"}
+            isVoting={isVoting}
+            onClick={() => onBribe("0.1")}
+            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
+        />
+        <VotingButton
+            color={buttonColor}
+            textColor={buttonTextColor}
+            amount={"1"}
+            cost={"1"}
+            isVoting={isVoting}
+            onClick={() => "1"}
+            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
+        />
+        <VotingButton
+            color={buttonColor}
+            textColor={buttonTextColor}
+            amount={"10"}
+            cost={"10"}
+            isVoting={isVoting}
+            onClick={() => onBribe("10")}
+            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
+        />
+    </Stack>
+)

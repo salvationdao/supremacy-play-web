@@ -180,7 +180,7 @@ const InteractiveMapInner = ({
             setSelection(undefined)
             prevSelection.current = undefined
         } catch (e) {
-            console.log(e)
+            console.debug(e)
         }
     }
 
