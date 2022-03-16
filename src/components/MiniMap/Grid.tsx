@@ -2,6 +2,8 @@ import { Map } from "../../types"
 import { styled } from "@mui/system"
 import { MapSelection } from ".."
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { Crosshair } from "../../assets"
+import { SpringValue } from "react-spring"
 
 const MapGrid = styled("table", {
     shouldForwardProp: (prop) => prop !== "map",
@@ -18,12 +20,8 @@ const GridCell = styled("td", {
 })<{ disabled?: boolean; width: number; height: number }>(({ disabled, width, height }) => ({
     height: `${width}px`,
     width: `${height}px`,
-    cursor: disabled ? "auto" : "pointer",
-    border: disabled ? "unset" : `1px solid #FFFFFF40`,
+    cursor: disabled ? "auto" : `url(${Crosshair}) 10 10, auto`,
     backgroundColor: disabled ? "#00000090" : "unset",
-    "&:hover": {
-        backgroundColor: disabled ? "#00000090" : "#FFFFFF45",
-    },
 }))
 
 export const Grid = ({
@@ -34,6 +32,9 @@ export const Grid = ({
     isDragging,
     setSelection,
     prevSelection,
+    mapElement,
+    scale,
+    offset,
 }: {
     map?: Map
     targeting?: boolean
@@ -42,6 +43,9 @@ export const Grid = ({
     isDragging: React.MutableRefObject<boolean>
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
     prevSelection: React.MutableRefObject<MapSelection | undefined>
+    mapElement: React.MutableRefObject<any>
+    scale: SpringValue<number>
+    offset: number
 }) => {
     const [disableClick, setDisableClick] = useState(true)
 
@@ -60,8 +64,31 @@ export const Grid = ({
         return null
     }
 
+    const handleSelection = (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
+        console.log(scale)
+        if (mapElement) {
+            const rect = mapElement.current.getBoundingClientRect()
+            // Mouse position
+            const x = e.clientX - rect.left
+            const y = e.clientY - rect.top
+            setSelection({
+                x: Math.floor(x / (gridWidth * scale.get())),
+                y: Math.floor(y / (gridHeight * scale.get())),
+            })
+        }
+    }
+
     return (
-        <MapGrid map={map}>
+        <MapGrid
+            map={map}
+            ref={mapElement}
+            onClick={(e) => {
+                handleSelection(e)
+            }}
+            sx={{
+                cursor: `url(${Crosshair}) 10 10, auto`,
+            }}
+        >
             <tbody>
                 {Array(map.cells_y)
                     .fill(1)
@@ -73,26 +100,16 @@ export const Grid = ({
                                     const disabled =
                                         disableClick ||
                                         map.disabled_cells.indexOf(Math.max(y, 0) * map.cells_x + x) != -1
-                                    return (
-                                        <GridCell
-                                            key={`column-${y}-row-${x}`}
-                                            disabled={disabled}
-                                            width={gridWidth}
-                                            height={gridHeight}
-                                            onClick={
-                                                disabled
-                                                    ? undefined
-                                                    : () => {
-                                                          if (!isDragging.current) {
-                                                              setSelection((prev) => {
-                                                                  prevSelection.current = prev
-                                                                  return { x, y }
-                                                              })
-                                                          }
-                                                      }
-                                            }
-                                        />
-                                    )
+                                    if (disabled) {
+                                        return (
+                                            <GridCell
+                                                key={`column-${y}-row-${x}`}
+                                                disabled={disabled}
+                                                width={gridWidth}
+                                                height={gridHeight}
+                                            />
+                                        )
+                                    }
                                 })}
                         </tr>
                     ))}

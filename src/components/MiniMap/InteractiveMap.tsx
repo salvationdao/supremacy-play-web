@@ -161,8 +161,10 @@ const InteractiveMapInner = ({
     battleIdentifier,
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
+    const [iconLocation, setIconLocation] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
+    const mapElement = useRef<any>()
 
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
@@ -370,6 +372,8 @@ const InteractiveMapInner = ({
                             selection={selection}
                             setSelection={setSelection}
                             targeting={targeting}
+                            location={iconLocation}
+                            mapElement={mapElement}
                         />
 
                         <Grid
@@ -380,6 +384,9 @@ const InteractiveMapInner = ({
                             isDragging={isDragging}
                             setSelection={setSelection}
                             prevSelection={prevSelection}
+                            mapElement={mapElement}
+                            scale={scale}
+                            offset={20}
                         />
 
                         {/* Map Image */}
