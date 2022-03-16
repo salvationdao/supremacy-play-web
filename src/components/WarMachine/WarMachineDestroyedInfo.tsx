@@ -20,7 +20,7 @@ const WarMachineIcon = ({
             <ClipThing
                 border={{
                     isFancy: false,
-                    borderThickness: "3px",
+                    borderThickness: ".3rem",
                     borderColor: color,
                 }}
                 clipSize="6px"

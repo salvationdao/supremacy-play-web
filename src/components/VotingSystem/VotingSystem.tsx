@@ -71,7 +71,11 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                         )}
                     >
                         <ClipThing
-                            border={{ isFancy: true, borderThickness: "3px", borderColor: user.faction.theme.primary }}
+                            border={{
+                                isFancy: true,
+                                borderThickness: ".3rem",
+                                borderColor: user.faction.theme.primary,
+                            }}
                             clipSize="10px"
                             innerSx={{ width: containerWidth, height: containerHeight }}
                         >

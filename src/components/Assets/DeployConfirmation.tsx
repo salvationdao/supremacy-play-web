@@ -94,7 +94,7 @@ export const DeployConfirmation = ({
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
-                        borderThickness: "3px",
+                        borderThickness: ".3rem",
                     }}
                 >
                     <Stack
