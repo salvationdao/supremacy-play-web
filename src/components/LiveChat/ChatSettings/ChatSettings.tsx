@@ -12,7 +12,6 @@ export const ChatSettings = ({ primaryColor, faction_id }: { primaryColor: strin
         <ClickAwayListener onClickAway={() => toggleIsOpen(false)}>
             <div>
                 <Tooltip
-                    arrow
                     open={isOpen}
                     placement="top"
                     title={<SettingsContent faction_id={faction_id} />}
