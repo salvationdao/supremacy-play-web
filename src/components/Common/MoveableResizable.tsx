@@ -144,6 +144,7 @@ export const MoveableResizable = ({
                     <ResizeBox
                         color={colors.darkNeonBlue}
                         onResizeStop={onResizeStop}
+                        initialDimensions={[curWidth, curHeight]}
                         minConstraints={[
                             allowResizeX ? minSizeX : defaultSizeX,
                             allowResizeY ? minSizeY : defaultSizeY,
