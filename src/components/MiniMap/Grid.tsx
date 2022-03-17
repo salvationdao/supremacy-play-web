@@ -1,7 +1,7 @@
 import { Map } from "../../types"
 import { styled } from "@mui/system"
 import { MapSelection } from ".."
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 import { Crosshair } from "../../assets"
 import { SpringValue } from "react-spring"
 
@@ -13,15 +13,6 @@ const MapGrid = styled("table", {
     width: `${map.width}px`,
     height: `${map.height}px`,
     borderSpacing: 0,
-}))
-
-const GridCell = styled("td", {
-    shouldForwardProp: (prop) => prop !== "disabled" && prop !== "width" && prop !== "height",
-})<{ disabled?: boolean; width: number; height: number }>(({ disabled, width, height }) => ({
-    height: `${width}px`,
-    width: `${height}px`,
-    cursor: disabled ? "auto" : `url(${Crosshair}) 10 10, auto`,
-    backgroundColor: disabled ? "#00000090" : "unset",
 }))
 
 export const Grid = ({
@@ -43,25 +34,11 @@ export const Grid = ({
     scale: SpringValue<number>
     offset: number
 }) => {
-    const [disableClick, setDisableClick] = useState(true)
-
-    // Wait a bit before allow user to select a cell because user
-    // could be spamming in the vote panel and accidentally choose a cell
-    useEffect(() => {
-        if (targeting) {
-            setDisableClick(true)
-            setTimeout(() => {
-                setDisableClick(false)
-            }, 2000)
-        }
-    }, [targeting])
-
     if (!map || !targeting) {
         return null
     }
 
     const handleSelection = (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
-        console.debug(scale)
         if (mapElement) {
             const rect = mapElement.current.getBoundingClientRect()
             // Mouse position
@@ -78,12 +55,8 @@ export const Grid = ({
         <MapGrid
             map={map}
             ref={mapElement}
-            onClick={(e) => {
-                handleSelection(e)
-            }}
-            sx={{
-                cursor: `url(${Crosshair}) 10 10, auto`,
-            }}
+            onClick={handleSelection}
+            sx={{ cursor: `url(${Crosshair}) 10 10, auto` }}
         ></MapGrid>
     )
 }

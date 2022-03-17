@@ -149,8 +149,8 @@ export const MoveableResizable = ({
                             allowResizeY ? minSizeY : defaultSizeY,
                         ]}
                         maxConstraints={[
-                            allowResizeX ? width - 2 * PADDING : defaultSizeX,
-                            allowResizeY ? height - 2 * PADDING : defaultSizeY,
+                            allowResizeX ? width - curPosX - PADDING : defaultSizeX,
+                            allowResizeY ? height - curPosY - 2 * PADDING : defaultSizeY,
                         ]}
                         resizeHandles={["se"]}
                         handle={() => (
