@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Divider, Stack, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, ClickAwayListener, Divider, Stack, Typography } from "@mui/material"
 import { BarExpandable, SupsTooltipContent } from "../.."
 import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
 import { useEffect, useState } from "react"
@@ -130,77 +130,83 @@ export const WalletDetails = () => {
                             },
                         }}
                     >
-                        <Tooltip
-                            arrow
-                            open={isTooltipOpen}
-                            placement="bottom-end"
-                            title={
-                                <SupsTooltipContent
-                                    sups={sups}
-                                    multipliers={multipliers}
-                                    userID={userID || ""}
-                                    transactions={transactions}
-                                    onClose={() => toggleIsTooltipOpen(false)}
-                                />
-                            }
-                            componentsProps={{
-                                popper: { style: { zIndex: 99999, filter: "drop-shadow(0 3px 3px #00000050)" } },
-                                arrow: { sx: { color: tooltipBackgroundColor } },
-                                tooltip: {
-                                    sx: {
-                                        width: "32rem",
-                                        maxWidth: "32rem",
-                                        background: tooltipBackgroundColor,
-                                        border: "#FFFFFF60 1px solid",
-                                    },
-                                },
-                            }}
-                        >
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-                                onClick={toggleIsTooltipOpen}
-                                sx={{
-                                    px: ".96rem",
-                                    py: ".8rem",
-                                    cursor: "pointer",
-                                    borderRadius: 1,
-                                    backgroundColor: isTooltipOpen ? "#FFFFFF12" : "unset",
-                                    ":hover": {
-                                        backgroundColor: "#FFFFFF12",
-                                    },
-                                    ":active": {
-                                        opacity: 0.8,
-                                    },
-                                }}
-                            >
-                                <SvgWallet size="2.3rem" sx={{ mr: "1.04rem" }} />
-                                <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".48rem" }} />
-                                <Typography sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1 }}>
-                                    {sups ? supFormatterNoFixed(sups, 2) : "0.00"}
-                                </Typography>
-
-                                {multipliers && (
-                                    <Typography
-                                        variant="caption"
+                        <ClickAwayListener onClickAway={() => toggleIsTooltipOpen(false)}>
+                            <div>
+                                <Tooltip
+                                    arrow
+                                    open={isTooltipOpen}
+                                    placement="bottom-end"
+                                    title={
+                                        <SupsTooltipContent
+                                            sups={sups}
+                                            multipliers={multipliers}
+                                            userID={userID || ""}
+                                            transactions={transactions}
+                                            onClose={() => toggleIsTooltipOpen(false)}
+                                        />
+                                    }
+                                    componentsProps={{
+                                        popper: {
+                                            style: { zIndex: 99999, filter: "drop-shadow(0 3px 3px #00000050)" },
+                                        },
+                                        arrow: { sx: { color: tooltipBackgroundColor } },
+                                        tooltip: {
+                                            sx: {
+                                                width: "32rem",
+                                                maxWidth: "32rem",
+                                                background: tooltipBackgroundColor,
+                                                border: "#FFFFFF60 1px solid",
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        onClick={toggleIsTooltipOpen}
                                         sx={{
-                                            ml: ".8rem",
-                                            px: ".8rem",
-                                            pt: ".4rem",
-                                            pb: ".24rem",
-                                            textAlign: "center",
-                                            lineHeight: 1,
-                                            fontFamily: "Nostromo Regular Bold",
-                                            border: `${colors.orange} 1px solid`,
-                                            color: colors.orange,
-                                            borderRadius: 0.6,
+                                            px: ".96rem",
+                                            py: ".8rem",
+                                            cursor: "pointer",
+                                            borderRadius: 1,
+                                            backgroundColor: isTooltipOpen ? "#FFFFFF12" : "unset",
+                                            ":hover": {
+                                                backgroundColor: "#FFFFFF12",
+                                            },
+                                            ":active": {
+                                                opacity: 0.8,
+                                            },
                                         }}
                                     >
-                                        {multipliers.total_multipliers}
-                                    </Typography>
-                                )}
-                            </Stack>
-                        </Tooltip>
+                                        <SvgWallet size="2.3rem" sx={{ mr: "1.04rem" }} />
+                                        <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".48rem" }} />
+                                        <Typography sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1 }}>
+                                            {sups ? supFormatterNoFixed(sups, 2) : "0.00"}
+                                        </Typography>
+
+                                        {multipliers && (
+                                            <Typography
+                                                variant="caption"
+                                                sx={{
+                                                    ml: ".8rem",
+                                                    px: ".8rem",
+                                                    pt: ".4rem",
+                                                    pb: ".24rem",
+                                                    textAlign: "center",
+                                                    lineHeight: 1,
+                                                    fontFamily: "Nostromo Regular Bold",
+                                                    border: `${colors.orange} 1px solid`,
+                                                    color: colors.orange,
+                                                    borderRadius: 0.6,
+                                                }}
+                                            >
+                                                {multipliers.total_multipliers}
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                </Tooltip>
+                            </div>
+                        </ClickAwayListener>
 
                         <Button
                             href={TOKEN_SALE_PAGE}
