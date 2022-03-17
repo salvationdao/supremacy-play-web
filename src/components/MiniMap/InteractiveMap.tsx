@@ -141,7 +141,7 @@ const InteractiveMapInner = ({
     warMachines,
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
-    const [iconLocation, setIconLocation] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
+    const [iconLocation] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
     const mapElement = useRef<any>()

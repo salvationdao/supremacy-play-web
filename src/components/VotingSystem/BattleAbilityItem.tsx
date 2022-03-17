@@ -1,24 +1,15 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
 import BigNumber from "bignumber.js"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgSupToken } from "../../assets"
 import { GAME_SERVER_HOSTNAME, NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import {
-    httpProtocol,
-    useGameServerAuth,
-    useGame,
-    useGameServerWebsocket,
-    BribeStageResponse,
-    WebSocketProperties,
-    FactionsAll,
-} from "../../containers"
+import { FactionsAll, httpProtocol, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { colors } from "../../theme/theme"
-import { BattleAbility as BattleAbilityType, BattleAbilityProgress, NetMessageType, User } from "../../types"
 import { zoomEffect } from "../../theme/keyframes"
-import { Simulate } from "react-dom/test-utils"
+import { colors } from "../../theme/theme"
+import { BattleAbility as BattleAbilityType, BattleAbilityProgress, NetMessageType } from "../../types"
 
 interface BattleAbilityProgressBigNum {
     faction_id: string
@@ -26,13 +17,13 @@ interface BattleAbilityProgressBigNum {
     current_sups: BigNumber
 }
 
-interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
-    bribeStage?: BribeStageResponse
-    user?: User
-    faction_id?: string
-    factionsAll: FactionsAll
-    forceDisplay100Percentage: string
-}
+// interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
+//     bribeStage?: BribeStageResponse
+//     user?: User
+//     faction_id?: string
+//     factionsAll: FactionsAll
+//     forceDisplay100Percentage: string
+// }
 
 export const BattleAbilityItem = () => {
     const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
