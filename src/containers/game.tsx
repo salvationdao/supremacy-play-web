@@ -93,7 +93,6 @@ export const GameContainer = createContainer(() => {
             (payload) => {
                 if (!payload) return
                 setBattleEndDetail(payload)
-                setBattleIdentifier(payload.battle_identifier + 1)
             },
             null,
             true,
