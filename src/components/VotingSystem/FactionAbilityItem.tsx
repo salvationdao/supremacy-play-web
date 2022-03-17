@@ -101,7 +101,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
                 amount,
             })
         },
-        [],
+        [identity],
     )
 
     const isVoting = useMemo(

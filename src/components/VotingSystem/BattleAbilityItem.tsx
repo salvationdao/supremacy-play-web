@@ -453,7 +453,7 @@ const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, onBribe }: Voti
             amount={"1"}
             cost={"1"}
             isVoting={isVoting}
-            onClick={() => "1"}
+            onClick={() => onBribe("1")}
             Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
         />
         <VotingButton
