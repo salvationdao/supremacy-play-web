@@ -1,12 +1,13 @@
 import { Box, Stack, Theme } from "@mui/material"
 import { useTheme } from "@mui/styles"
-import { ReactElement, SyntheticEvent, useEffect, useState } from "react"
+import { ReactElement, useEffect, useState } from "react"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
-import { Resizable, ResizeCallbackData } from "react-resizable"
+import { ResizeBox } from ".."
 import { SvgDrag, SvgResizeX, SvgResizeY, SvgResizeXY, SvgHide } from "../../assets"
 import { UI_OPACITY } from "../../constants"
 import { useDimension } from "../../containers"
 import { clamp, parseString } from "../../helpers"
+import { colors } from "../../theme/theme"
 
 export interface MoveableResizableConfig {
     localStoragePrefix: string
@@ -93,11 +94,10 @@ export const MoveableResizable = ({
         localStorage.setItem(`${localStoragePrefix}PosY`, data.y.toString())
     }
 
-    // When resizing, make sure it stays within the bounds
-    const onResize = (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
-        if (width <= 0 || height <= 0) return
+    // When user resize is done, save into local storage
+    const onResizeStop = (data: { width: number; height: number }) => {
+        const size = data || { width: curWidth, height: curHeight }
 
-        const { size } = data || { size: { width: curWidth, height: curHeight } }
         if (allowResizeX && size.width >= minSizeX && size.width <= width - 2 * PADDING) {
             setCurWidth(size.width)
         }
@@ -105,12 +105,9 @@ export const MoveableResizable = ({
         if (allowResizeY && size.height >= minSizeY && size.height <= height - 2 * PADDING) {
             setCurHeight(size.height)
         }
-    }
 
-    // When user resize is done, save into local storage
-    const onResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
-        localStorage.setItem(`${localStoragePrefix}SizeX`, data.size.width.toString())
-        localStorage.setItem(`${localStoragePrefix}SizeY`, data.size.height.toString())
+        localStorage.setItem(`${localStoragePrefix}SizeX`, size.width.toString())
+        localStorage.setItem(`${localStoragePrefix}SizeY`, size.height.toString())
     }
 
     return (
@@ -143,16 +140,24 @@ export const MoveableResizable = ({
                     right: width - curWidth - PADDING,
                 }}
             >
-                <Box sx={{ pointerEvents: "all" }}>
-                    <Resizable
-                        height={curHeight}
-                        width={curWidth}
-                        onResize={onResize}
+                <Box sx={{ position: "relative", pointerEvents: "all" }}>
+                    <ResizeBox
+                        color={colors.darkNeonBlue}
                         onResizeStop={onResizeStop}
+                        minConstraints={[
+                            allowResizeX ? minSizeX : defaultSizeX,
+                            allowResizeY ? minSizeY : defaultSizeY,
+                        ]}
+                        maxConstraints={[
+                            allowResizeX ? width - 2 * PADDING : defaultSizeX,
+                            allowResizeY ? height - 2 * PADDING : defaultSizeY,
+                        ]}
+                        resizeHandles={["se"]}
                         handle={() => (
                             <Box
                                 sx={{
                                     position: "absolute",
+                                    pointerEvents: "all",
                                     bottom: ".88rem",
                                     right: "1rem",
                                     cursor:
@@ -174,63 +179,58 @@ export const MoveableResizable = ({
                                 )}
                             </Box>
                         )}
-                    >
-                        <Box sx={{ position: "relative" }}>
+                    />
+
+                    <Box sx={{ position: "relative" }}>
+                        <Stack
+                            sx={{
+                                position: "relative",
+                                width: curWidth,
+                                height: curHeight,
+                                resize: "all",
+                                overflow: "auto",
+                                backgroundColor: theme.factionTheme.background,
+                                borderRadius: 0.5,
+                            }}
+                        >
+                            {children}
+
                             <Stack
-                                sx={{
-                                    position: "relative",
-                                    width: curWidth,
-                                    height: curHeight,
-                                    resize: "all",
-                                    overflow: "auto",
-                                    backgroundColor: theme.factionTheme.background,
-                                    borderRadius: 0.5,
-                                }}
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="flex-end"
+                                sx={{ px: "1.04rem", pb: ".56rem" }}
                             >
-                                {children}
-
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    justifyContent="flex-end"
-                                    sx={{ px: "1.04rem", pb: ".56rem" }}
-                                >
-                                    <Stack
-                                        direction="row"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        sx={{ mr: "auto" }}
-                                    >
-                                        {CaptionArea}
-                                    </Stack>
-
-                                    <Box
-                                        onClick={() => onHideCallback && onHideCallback()}
-                                        sx={{
-                                            cursor: "pointer",
-                                            mr: ".88rem",
-                                            opacity: 0.4,
-                                            ":hover": { opacity: 1 },
-                                        }}
-                                    >
-                                        <SvgHide size="1.3rem" />
-                                    </Box>
-
-                                    <Box
-                                        className="handle"
-                                        sx={{
-                                            cursor: "move",
-                                            mr: allowResizeX || allowResizeY ? "2rem" : ".3rem",
-                                            opacity: 0.4,
-                                            ":hover": { opacity: 1 },
-                                        }}
-                                    >
-                                        <SvgDrag size="1.3rem" />
-                                    </Box>
+                                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mr: "auto" }}>
+                                    {CaptionArea}
                                 </Stack>
+
+                                <Box
+                                    onClick={() => onHideCallback && onHideCallback()}
+                                    sx={{
+                                        cursor: "pointer",
+                                        mr: ".88rem",
+                                        opacity: 0.4,
+                                        ":hover": { opacity: 1 },
+                                    }}
+                                >
+                                    <SvgHide size="1.3rem" />
+                                </Box>
+
+                                <Box
+                                    className="handle"
+                                    sx={{
+                                        cursor: "move",
+                                        mr: allowResizeX || allowResizeY ? "2rem" : ".3rem",
+                                        opacity: 0.4,
+                                        ":hover": { opacity: 1 },
+                                    }}
+                                >
+                                    <SvgDrag size="1.3rem" />
+                                </Box>
                             </Stack>
-                        </Box>
-                    </Resizable>
+                        </Stack>
+                    </Box>
                 </Box>
             </Draggable>
         </Stack>

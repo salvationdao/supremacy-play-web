@@ -82,6 +82,7 @@ import TrailerThumbPNG from "./images/TrailerThumb.png"
 import LogoWEBP from "./images/Logo.webp"
 import BottomMechWEBP from "./images/BottomMech.webp"
 import SupBackground from "./images/SupBackground.webp"
+import Crosshair from "./images/Crosshair.png"
 
 // Multiplier images (no spaces in file names, won't work!)
 import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
@@ -135,6 +136,7 @@ export {
     RedMountainLogo,
     ZaibatsuLogo,
     SupBackground,
+    Crosshair,
 }
 
 export interface SvgWrapperProps extends BoxProps {

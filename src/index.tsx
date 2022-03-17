@@ -171,7 +171,6 @@ const App = () => {
     const setPassLogin = useMemo(() => {
         return (u: UserData) => {
             if (!passLogin && u) {
-                console.log(passLogin, u)
                 setPassLoginX(u)
             }
         }

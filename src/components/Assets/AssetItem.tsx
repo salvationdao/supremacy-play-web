@@ -59,7 +59,7 @@ export const AssetItem = ({
 
     const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
     const isRepairing = false // To be implemented on gameserver
-    const isInBattle = assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position == -1
+    const isInBattle = assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1
     const isInQueue = assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1
 
     if (!assetData || !user) return null

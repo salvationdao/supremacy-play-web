@@ -95,19 +95,19 @@
 		  debug : true,
 		  callback: function(info) {
 			  if (info == "initialized") {
-				  console.log("initialized");
+				  console.debug("initialized");
 				  join_button.disabled = false;
 				  leave_button.disabled = true;
 			  }
 			  else if (info == "joined") {
 				  //joined the stream
-				  console.log("joined");
+				  console.debug("joined");
 				  join_button.disabled = true;
 				  leave_button.disabled = false;
 			  }
 			  else if (info == "leaved") {
 				  //leaved the stream
-				  console.log("leaved");
+				  console.debug("leaved");
 				  join_button.disabled = false;
 				  leave_button.disabled = true;
 			  }
@@ -115,7 +115,7 @@
 		  callbackError: function(error) {
 			  //some of the possible errors, NotFoundError, SecurityError,PermissionDeniedError
 			  
-			  console.log("error callback: " + error);
+			  console.debug("error callback: " + error);
 			  alert(error);
 		  }
 	  });
