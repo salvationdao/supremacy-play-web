@@ -33,6 +33,7 @@ export const colors = {
     yellow: "#FFE200",
     orange: "#E04F00",
     gold: "#FFC400",
+    blue: "#0074D9",
 
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",

@@ -102,8 +102,9 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
         <Box
             sx={{
                 position: "absolute",
-                bottom: enlarged ? 110 : "1rem",
+                bottom: enlarged ? "calc(50% + 50px)" : "1rem",
                 right: enlarged ? (width - dimensions.width) / 2 - 3 : "1rem",
+                transform: enlarged ? "translateY(50%)" : "none",
                 pointerEvents: "none",
                 filter: "drop-shadow(0 3px 3px #00000050)",
                 transition: "all .2s",
@@ -124,7 +125,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                 display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                                 pointerEvents: "all",
                                 position: "absolute",
-                                top: ".95rem",
+                                top: ".85rem",
                                 left: "1rem",
                                 cursor: "nwse-resize",
                                 color: colors.text,
@@ -185,8 +186,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                         left: 0,
                                         right: 0,
                                         px: "1rem",
-                                        pt: ".8rem",
-                                        pb: ".6rem",
+                                        py: ".6rem",
                                         backgroundColor: shadeColor(mainColor, -86),
                                         boxShadow: 2,
                                     }}
@@ -223,6 +223,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     <Typography
                                         variant="caption"
                                         sx={{
+                                            fontSize: "1.1rem",
                                             fontWeight: "fontWeightBold",
                                             lineHeight: 1,
                                             textAlign: "center",

@@ -31,16 +31,15 @@ const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, tar
     return (
         <>
             {warMachines.map((wm) => (
-                <div key={`${wm.participantID} - ${wm.hash}`}>
-                    <MapWarMachine
-                        gridWidth={gridWidth}
-                        gridHeight={gridHeight}
-                        warMachine={wm}
-                        map={map}
-                        enlarged={enlarged}
-                        targeting={targeting}
-                    />
-                </div>
+                <MapWarMachine
+                    key={`${wm.participantID} - ${wm.hash}`}
+                    gridWidth={gridWidth}
+                    gridHeight={gridHeight}
+                    warMachine={wm}
+                    map={map}
+                    enlarged={enlarged}
+                    targeting={targeting}
+                />
             ))}
         </>
     )
