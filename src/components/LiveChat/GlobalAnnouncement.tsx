@@ -25,14 +25,13 @@ const bgColourFromSeverity = (severity: Severity): string => {
         case Severity.WARNING:
             colour = colors.gold
             break
-        case Severity.INFO:
-            colour = colors.blue
-            break
         case Severity.DANGER:
             colour = colors.red
             break
+        case Severity.INFO:
         default:
             colour = colors.blue
+            break
     }
 
     return colour

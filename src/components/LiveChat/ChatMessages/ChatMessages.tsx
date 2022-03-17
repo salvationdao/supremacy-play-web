@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { ChatMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
 import {
+    SplitOptionType,
     useChat,
     useGameServerWebsocket,
     usePassportServerAuth,
@@ -23,8 +24,15 @@ interface ChatMessagesProps {
 
 export const ChatMessages = (props: ChatMessagesProps) => {
     const { state, subscribe } = useGameServerWebsocket()
-    const { filterZerosGlobal, filterZerosFaction, sentMessages, failedMessages, userMultiplierMap, citizenPlayerIDs } =
-        useChat()
+    const {
+        filterZerosGlobal,
+        filterZerosFaction,
+        sentMessages,
+        failedMessages,
+        userMultiplierMap,
+        citizenPlayerIDs,
+        splitOption,
+    } = useChat()
 
     return (
         <ChatMessagesInner
@@ -36,6 +44,8 @@ export const ChatMessages = (props: ChatMessagesProps) => {
             failedMessages={failedMessages}
             userMultiplierMap={userMultiplierMap}
             citizenPlayerIDs={citizenPlayerIDs}
+            faction_id={props.faction_id}
+            splitOption={splitOption}
         />
     )
 }
@@ -46,6 +56,7 @@ interface ChatMessagesInnerProps extends ChatMessagesProps, Partial<WebSocketPro
     failedMessages: Date[]
     userMultiplierMap: UserMultiplierMap
     citizenPlayerIDs: string[]
+    splitOption: SplitOptionType
 }
 
 const ChatMessagesInner = ({
@@ -59,6 +70,8 @@ const ChatMessagesInner = ({
     failedMessages,
     userMultiplierMap,
     citizenPlayerIDs,
+    faction_id,
+    splitOption,
 }: ChatMessagesInnerProps) => {
     const { user } = usePassportServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
@@ -107,7 +120,9 @@ const ChatMessagesInner = ({
 
     return (
         <>
-            {globalAnnouncement && <GlobalAnnouncement globalAnnouncement={globalAnnouncement} />}
+            {globalAnnouncement && (splitOption == "tabbed" || (splitOption == "split" && faction_id == null)) && (
+                <GlobalAnnouncement globalAnnouncement={globalAnnouncement} />
+            )}
 
             <Box
                 id="chat-container"

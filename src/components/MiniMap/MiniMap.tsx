@@ -125,7 +125,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                 display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                                 pointerEvents: "all",
                                 position: "absolute",
-                                top: ".95rem",
+                                top: ".85rem",
                                 left: "1rem",
                                 cursor: "nwse-resize",
                                 color: colors.text,
@@ -186,8 +186,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                         left: 0,
                                         right: 0,
                                         px: "1rem",
-                                        pt: ".8rem",
-                                        pb: ".6rem",
+                                        py: ".6rem",
                                         backgroundColor: shadeColor(mainColor, -86),
                                         boxShadow: 2,
                                     }}
@@ -224,6 +223,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     <Typography
                                         variant="caption"
                                         sx={{
+                                            fontSize: "1.1rem",
                                             fontWeight: "fontWeightBold",
                                             lineHeight: 1,
                                             textAlign: "center",
