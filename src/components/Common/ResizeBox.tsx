@@ -39,7 +39,7 @@ export const ResizeBox = ({
     const onResizeStart = useMemo(() => () => toggleResizing(true), [])
 
     const onResizeStop2 = useMemo(
-        () => (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
+        () => () => {
             if (!resizingDimensions || resizingDimensions.width <= 0 || resizingDimensions.height <= 0) return
             onResizeStop && onResizeStop(resizingDimensions)
             toggleResizing(false)
