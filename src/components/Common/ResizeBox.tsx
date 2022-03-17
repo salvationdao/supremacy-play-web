@@ -24,8 +24,8 @@ export const ResizeBox = ({
 }: ResizeBoxProps) => {
     const [resizing, toggleResizing] = useToggle()
     const [resizingDimensions, setResizingDimensions] = useState<{ width: number; height: number }>({
-        width: 0,
-        height: 0,
+        width: minConstraints ? minConstraints[0] : 0,
+        height: minConstraints ? minConstraints[1] : 0,
     })
 
     const onResize = useMemo(
