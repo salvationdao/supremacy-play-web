@@ -12,6 +12,7 @@ import {
     BribeStageResponse,
     WinnerAnnouncementResponse,
 } from "../../containers"
+import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
 import { Map } from "../../types"
@@ -228,12 +229,18 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                                 right: 0,
                                                 px: "1rem",
                                                 pt: ".8rem",
-                                                pb: ".5rem",
-                                                backgroundColor: "#00000099",
+                                                pb: ".6rem",
+                                                backgroundColor: shadeColor(
+                                                    isTargeting
+                                                        ? winner.game_ability.colour
+                                                        : theme.factionTheme.primary,
+                                                    -86,
+                                                ),
                                                 boxShadow: 2,
                                             }}
                                         >
                                             <Typography
+                                                variant="caption"
                                                 sx={{
                                                     fontWeight: "fontWeightBold",
                                                     lineHeight: 1,

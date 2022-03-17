@@ -1,7 +1,5 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { Theme } from "@mui/material/styles"
-import { useTheme } from "@mui/styles"
 import { useGame, BribeStageResponse } from "../../containers"
 import { useInterval, useTimer } from "../../hooks"
 import { SvgBattleAbilityIcon } from "../../assets"
@@ -17,8 +15,6 @@ interface BattleAbilityCountdownInnerProps {
 }
 
 const BattleAbilityCountdownInner = ({ bribeStage }: BattleAbilityCountdownInnerProps) => {
-    const theme = useTheme<Theme>()
-
     const [sentence, setSentence] = useState<string>("Loading...")
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
 
