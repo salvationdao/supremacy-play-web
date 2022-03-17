@@ -4,7 +4,7 @@ import { colors } from "../../theme/theme"
 import MultiplierGuideComponent from "./MultiplierGuideComponent"
 
 interface GameGuideModalProps {
-    toggleClosed: any
+    toggleClosed: (value: boolean) => void
     closed: boolean
 }
 

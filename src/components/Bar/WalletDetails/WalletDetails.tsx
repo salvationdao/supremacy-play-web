@@ -1,9 +1,9 @@
 import { Box, Button, CircularProgress, ClickAwayListener, Divider, Stack, Typography } from "@mui/material"
-import { BarExpandable, SupsTooltipContent } from "../.."
-import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
-import { useEffect, useState } from "react"
 import Tooltip from "@mui/material/Tooltip"
+import { useEffect, useState } from "react"
+import { BarExpandable, SupsTooltipContent } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
+import { NullUUID, TOKEN_SALE_PAGE } from "../../../constants"
 import {
     useGame,
     useGameServerAuth,
@@ -11,12 +11,12 @@ import {
     usePassportServerAuth,
     useWallet,
 } from "../../../containers"
-import { GameServerKeys, PassportServerKeys } from "../../../keys"
-import { Transaction } from "../../../types/passport"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
+import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
+import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { NullUUID, TOKEN_SALE_PAGE } from "../../../constants"
 import { MultipliersAll } from "../../../types"
+import { Transaction } from "../../../types/passport"
 
 export const WalletDetails = () => {
     const { state, subscribe } = useGameServerWebsocket()
@@ -31,8 +31,9 @@ export const WalletDetails = () => {
     const { payload: transactionsPayload } = usePassportServerSecureSubscription<Transaction[]>(
         PassportServerKeys.SubscribeUserTransactions,
     )
-    const { payload: latestTransactionPayload, setArguments: latestTransactionArguments } =
-        usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions)
+    const { payload: latestTransactionPayload } = usePassportServerSecureSubscription<Transaction[]>(
+        PassportServerKeys.SubscribeUserLatestTransactions,
+    )
 
     useEffect(() => {
         if (battleEndDetail && battleEndDetail.multipliers.length > 0) {
