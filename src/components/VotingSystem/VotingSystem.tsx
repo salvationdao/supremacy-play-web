@@ -49,6 +49,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                     <ResizeBox
                         color={user.faction.theme.primary}
                         onResizeStop={onResizeStop}
+                        initialDimensions={[containerWidth, containerHeight]}
                         minConstraints={[initialSize.minWidth, initialSize.height]}
                         maxConstraints={[500, initialSize.height]}
                         resizeHandles={["e"]}

@@ -7,6 +7,7 @@ interface ResizeBoxProps {
     sx?: SxProps<Theme>
     color: string
     onResizeStop?: (data: { width: number; height: number }) => void
+    initialDimensions?: [number, number]
     minConstraints?: [number, number]
     maxConstraints?: [number, number]
     resizeHandles?: ResizeHandle[]
@@ -17,6 +18,7 @@ export const ResizeBox = ({
     sx,
     color,
     onResizeStop,
+    initialDimensions,
     minConstraints,
     maxConstraints,
     resizeHandles,
@@ -24,8 +26,8 @@ export const ResizeBox = ({
 }: ResizeBoxProps) => {
     const [resizing, toggleResizing] = useToggle()
     const [resizingDimensions, setResizingDimensions] = useState<{ width: number; height: number }>({
-        width: minConstraints ? minConstraints[0] : 0,
-        height: minConstraints ? minConstraints[1] : 0,
+        width: initialDimensions ? initialDimensions[0] : minConstraints ? minConstraints[0] : 0,
+        height: initialDimensions ? initialDimensions[1] : minConstraints ? minConstraints[1] : 0,
     })
 
     const onResize = useMemo(
