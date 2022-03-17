@@ -54,7 +54,7 @@ export const GameContainer = createContainer(() => {
             GameServerKeys.SubGameSettings,
             (payload) => {
                 if (!payload) return
-                setBattleIdentifier(payload.battle_identifier)
+                if (payload.battle_identifier > 0) setBattleIdentifier(payload.battle_identifier)
                 setMap(payload.game_map)
                 setWarMachines(payload.war_machines)
                 setSpawnedAI(payload.spawned_ai)
