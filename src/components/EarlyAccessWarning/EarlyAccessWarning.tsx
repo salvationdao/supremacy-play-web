@@ -8,7 +8,7 @@ export const EarlyAccessWarning = () => {
 
     return (
         <Box>
-            <Modal open={!closed} onClose={() => toggleClosed(true)}>
+            <Modal open={!closed}>
                 <Box
                     sx={{
                         position: "absolute",
