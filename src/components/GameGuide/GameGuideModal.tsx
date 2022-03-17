@@ -17,6 +17,7 @@ interface TabPanelProps {
 }
 
 const multiplierKeys: string[] = [
+    "Citizen",
     "Supporter",
     "Contributor",
     "Super contributor",
@@ -180,7 +181,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                     for those that stay to the end, so it is worth sticking around.
                                     <br />
                                     <br />
-                                    The Spoils of War is a self-sustainable play-to-ean economic flow fuelled by player
+                                    The Spoils of War is a self-sustainable Play-To-Earn economic flow fuelled by player
                                     participation, as players participate in-game voting they build the Spoils of War.
                                 </Typography>
                             </Stack>
@@ -237,7 +238,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                         sx={{ color: colors.neonBlue }}
                                         target="_blank"
                                     >
-                                        Passport SYN
+                                        Passport XSYN
                                     </Link>{" "}
                                     or through the Black Market (
                                     <Link

@@ -287,6 +287,12 @@ export const getMultiplierGuide = (multiplierKey: string): MultiplierGuide => {
     let description: string
     let title: string
     switch (multiplierKey.toLowerCase()) {
+        case "citizen":
+            multiplierType = getMutiplierDeets(multiplierKey).image
+            title = multiplierKey
+            description =
+                "When a player is within the top 80% of ability $SUPS average. 2x Multiplier that lasts for 2 Battle."
+            break
         case "supporter":
             multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
