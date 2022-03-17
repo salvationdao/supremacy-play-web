@@ -19,28 +19,19 @@ interface MapWarMachineProps {
     gridWidth: number
     gridHeight: number
     warMachines: WarMachineState[]
-    battleIdentifier?: number
 
     map: Map
     enlarged: boolean
     targeting?: boolean
 }
 
-const MapWarMachines = ({
-    gridWidth,
-    gridHeight,
-    warMachines,
-    map,
-    enlarged,
-    targeting,
-    battleIdentifier,
-}: MapWarMachineProps) => {
+const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting }: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
         <>
             {warMachines.map((wm) => (
-                <div key={`${battleIdentifier} - ${wm.participantID} - ${wm.hash}`}>
+                <div key={`${wm.participantID} - ${wm.hash}`}>
                     <MapWarMachine
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
@@ -128,24 +119,14 @@ interface Props {
 
 export const InteractiveMap = (props: Props) => {
     const { state, send } = useGameServerWebsocket()
-    const { map, warMachines, battleIdentifier } = useGame()
+    const { map, warMachines } = useGame()
 
-    return (
-        <InteractiveMapInner
-            {...props}
-            state={state}
-            send={send}
-            map={map}
-            warMachines={warMachines}
-            battleIdentifier={battleIdentifier}
-        />
-    )
+    return <InteractiveMapInner {...props} state={state} send={send} map={map} warMachines={warMachines} />
 }
 
 interface PropsInner extends Props, Partial<WebSocketProperties> {
     map?: Map
     warMachines?: WarMachineState[]
-    battleIdentifier?: number
 }
 
 const InteractiveMapInner = ({
@@ -158,7 +139,6 @@ const InteractiveMapInner = ({
     enlarged,
     map,
     warMachines,
-    battleIdentifier,
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
     const [iconLocation, setIconLocation] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
@@ -360,7 +340,6 @@ const InteractiveMapInner = ({
                                 warMachines={warMachines || []}
                                 enlarged={enlarged}
                                 targeting={targeting}
-                                battleIdentifier={battleIdentifier}
                             />
                         </Box>
 
