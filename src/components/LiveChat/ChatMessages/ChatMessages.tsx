@@ -12,14 +12,7 @@ import {
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
-
-interface GlobalMessage {
-    title: string
-    games_until: number
-    show_until: Date
-    message: string
-    duration: number
-}
+import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 
 interface ChatMessagesProps {
     primaryColor: string
@@ -32,6 +25,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
     const { state, subscribe } = useGameServerWebsocket()
     const { filterZerosGlobal, filterZerosFaction, sentMessages, failedMessages, userMultiplierMap, citizenPlayerIDs } =
         useChat()
+
     return (
         <ChatMessagesInner
             {...props}
@@ -70,23 +64,22 @@ const ChatMessagesInner = ({
     const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
 
-    // Subscribe to global annoucement message
-    const [globalMessage, setGlobalMessage] = useState<GlobalMessage>()
+    // Subscribe to global announcement message
+    const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<GlobalMessage>(
+        return subscribe<GlobalAnnouncementType>(
             GameServerKeys.SubGlobalAnnouncement,
-            (payload: GlobalMessage) => {
+            (payload: GlobalAnnouncementType) => {
                 if (!payload || !payload.message) {
-                    setGlobalMessage(undefined)
+                    setGlobalAnnouncement(undefined)
                     return
                 }
-                setGlobalMessage(payload)
+                setGlobalAnnouncement(payload)
             },
             null,
         )
     }, [state, subscribe])
-
     useLayoutEffect(() => {
         if (!autoScroll || !scrollableRef.current || chatMessages.length === 0) {
             return
@@ -114,32 +107,7 @@ const ChatMessagesInner = ({
 
     return (
         <>
-            {globalMessage && (
-                <Box>
-                    <Stack
-                        alignItems="center"
-                        justifyContent="center"
-                        spacing=".24rem"
-                        sx={{
-                            px: "1.28rem",
-                            py: "1.28rem",
-                            backgroundColor: colors.red,
-                            boxShadow: 2,
-                        }}
-                    >
-                        <Typography
-                            sx={{
-                                textAlign: "center",
-                                fontFamily: "Nostromo Regular Heavy",
-                            }}
-                        >
-                            {globalMessage.title}
-                        </Typography>
-
-                        <Typography sx={{ textAlign: "center" }}>{globalMessage.message}</Typography>
-                    </Stack>
-                </Box>
-            )}
+            {globalAnnouncement && <GlobalAnnouncement globalAnnouncement={globalAnnouncement} />}
 
             <Box
                 id="chat-container"
