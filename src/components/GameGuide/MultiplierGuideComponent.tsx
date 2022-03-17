@@ -23,7 +23,7 @@ const MultiplierGuideComponent = ({ multiplierKey }: { multiplierKey: string }) 
             />
             <Stack>
                 <Typography variant="h6" sx={{ color: colors.offWhite, fontWeight: "fontWeightBold" }}>
-                    {title}
+                    {title.toUpperCase()}
                 </Typography>
                 <Typography>
                     <strong>Multiplier:</strong> {amount}x
