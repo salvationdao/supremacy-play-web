@@ -15,7 +15,7 @@ const GameGuide = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    mx: ".5rem",
+                    mx: "1.2rem",
                     overflow: "hidden",
                     color: colors.neonBlue,
                     minWidth: 0,

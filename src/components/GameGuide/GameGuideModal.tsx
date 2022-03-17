@@ -1,12 +1,10 @@
 import { Box, Button, Link, Modal, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useState } from "react"
-import { getMultiplierGuide } from "../../helpers"
 import { colors } from "../../theme/theme"
-import { MultiplierGuide } from "../../types"
 import MultiplierGuideComponent from "./MultiplierGuideComponent"
 
 interface GameGuideModalProps {
-    toggleClosed: any
+    toggleClosed: (value: boolean) => void
     closed: boolean
 }
 
@@ -17,6 +15,7 @@ interface TabPanelProps {
 }
 
 const multiplierKeys: string[] = [
+    "Citizen",
     "Supporter",
     "Contributor",
     "Super contributor",
@@ -60,9 +59,9 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        maxWidth: "86.6rem",
-                        height: "70vh",
-                        pb: 3,
+                        maxWidth: "82rem",
+                        height: "65vh",
+                        pb: "2rem",
                         backgroundColor: `${colors.darkNavyBlue}`,
                         outline: "1px solid #FFFFFF",
                         borderRadius: 1,
@@ -74,9 +73,16 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                             value={value}
                             onChange={handleChange}
                             sx={{
+                                minHeight: "5rem",
                                 ".MuiTab-root.Mui-selected": { color: colors.neonBlue, opacity: 1 },
                                 ".MuiTabs-indicator": { backgroundColor: colors.neonBlue },
-                                ".MuiTab-root": { fontSize: "1.8rem", opacity: 0.7, fontFamily: "Share Tech" },
+                                ".MuiTab-root": {
+                                    minHeight: "5rem",
+                                    p: 0,
+                                    fontSize: "1.6rem",
+                                    opacity: 0.7,
+                                    fontFamily: "Share Tech",
+                                },
                             }}
                         >
                             <Tab label="Intro" />
@@ -94,11 +100,11 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                             scrollBehavior: "smooth",
                             display: "flex",
                             flexDirection: "column",
-                            mr: 1,
-                            mt: 1,
-                            mb: 2,
-                            px: 3,
-                            py: 1,
+                            mr: ".8rem",
+                            mt: "1rem",
+                            mb: "1.6rem",
+                            px: "3rem",
+                            py: "1rem",
                             "::-webkit-scrollbar": {
                                 width: ".4rem",
                             },
@@ -110,16 +116,15 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                 background: `${colors.neonBlue}`,
                                 borderRadius: 3,
                             },
-                            "& p": { fontSize: "1.8rem" },
                         }}
                     >
                         <TabPanel value={value} index={0}>
                             <Stack spacing={2}>
-                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Welcome to the Battle Arena
                                 </Typography>
 
-                                <Typography>
+                                <Typography sx={{ fontSize: "1.5rem" }}>
                                     Where Syndicates fight for Supremacy.
                                     <br />
                                     <br />
@@ -144,10 +149,10 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             <Stack spacing={2}>
-                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Gameplay
                                 </Typography>
-                                <Typography>
+                                <Typography sx={{ fontSize: "1.5rem" }}>
                                     Now your mission is to support your Syndicate in the Battle
                                     <br />
                                     <br />
@@ -180,7 +185,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                     for those that stay to the end, so it is worth sticking around.
                                     <br />
                                     <br />
-                                    The Spoils of War is a self-sustainable play-to-ean economic flow fuelled by player
+                                    The Spoils of War is a self-sustainable Play-To-Earn economic flow fuelled by player
                                     participation, as players participate in-game voting they build the Spoils of War.
                                 </Typography>
                             </Stack>
@@ -188,10 +193,10 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
 
                         <TabPanel value={value} index={2}>
                             <Stack spacing={2}>
-                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Multipliers
                                 </Typography>
-                                <Typography>
+                                <Typography sx={{ fontSize: "1.5rem" }}>
                                     To achieve Multipliers to earn rewards from the Spoils of War, you must first unlock
                                     the “CITIZEN” multiplier. This is achieved by being in the top 80% of contributors
                                     to the Spoils of War in that round with the Multiplier of “Citizen” being allocated
@@ -209,35 +214,27 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                 </Typography>
 
                                 <Stack spacing="1.5rem">
-                                    {multiplierKeys.map((key, i) => {
-                                        const mul: MultiplierGuide = getMultiplierGuide(key)
-                                        return (
-                                            <MultiplierGuideComponent
-                                                key={i}
-                                                multiplierType={key}
-                                                title={mul.title}
-                                                description={mul.description}
-                                            />
-                                        )
-                                    })}
+                                    {multiplierKeys.map((key, i) => (
+                                        <MultiplierGuideComponent key={i} multiplierKey={key} />
+                                    ))}
                                 </Stack>
                             </Stack>
                         </TabPanel>
 
                         <TabPanel value={value} index={3}>
                             <Stack spacing={2}>
-                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Mech NFTs
                                 </Typography>
 
-                                <Typography>
+                                <Typography sx={{ fontSize: "1.5rem" }}>
                                     Players can purchase Mech NFTs in-game from the shop{" "}
                                     <Link
                                         href="https://passport.xsyn.io"
                                         sx={{ color: colors.neonBlue }}
                                         target="_blank"
                                     >
-                                        Passport SYN
+                                        Passport XSYN
                                     </Link>{" "}
                                     or through the Black Market (
                                     <Link
@@ -303,9 +300,9 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                         sx={{
                             justifySelf: "flex-end",
                             ml: 3,
-                            py: 0.8,
-                            width: "100%",
-                            maxWidth: "5em",
+                            pt: ".7rem",
+                            pb: ".4rem",
+                            width: "9rem",
                             color: colors.neonBlue,
                             backgroundColor: colors.darkNavy,
                             borderRadius: 0.7,

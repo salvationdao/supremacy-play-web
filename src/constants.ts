@@ -1,14 +1,41 @@
+const USE_PROD = false
+
 // Envar stuff
-export const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
-export const GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "localhost:8084"
-export const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://sale.supremacy.game/"
-export const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
-export const PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003/"
-export const PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
-export const PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "http://localhost:8086"
-export const VIDEO_SERVER_WEBSOCKET =
+let VERSION = process.env.REACT_APP_COMMIT_REF || "development"
+let GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "localhost:8084"
+let TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://sale.supremacy.game/"
+let SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
+let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003/"
+let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
+let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "http://localhost:8086"
+let VIDEO_SERVER_WEBSOCKET =
     process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
-export const VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
+let VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
+
+if (USE_PROD) {
+    VERSION = "development"
+    GAME_SERVER_HOSTNAME = "api.supremacy.game"
+    TOKEN_SALE_PAGE = "https://sale.supremacy.game/"
+    SUPREMACY_PAGE = "https://supremacy.game/"
+    PASSPORT_WEB = "https://passport.xsyn.io/"
+    PASSPORT_SERVER_HOST = "api.xsyn.io"
+    PASSPORT_SERVER_HOST_IMAGES = "https://api.xsyn.io"
+    VIDEO_SERVER_WEBSOCKET = "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
+    VIDEO_SERVER_STREAM_ID = "524280586954581049507513"
+}
+
+export {
+    VERSION,
+    GAME_SERVER_HOSTNAME,
+    TOKEN_SALE_PAGE,
+    SUPREMACY_PAGE,
+    PASSPORT_WEB,
+    PASSPORT_SERVER_HOST,
+    PASSPORT_SERVER_HOST_IMAGES,
+    VIDEO_SERVER_WEBSOCKET,
+    VIDEO_SERVER_STREAM_ID,
+}
+
 export const SENTRY_CONFIG = {
     DSN: process.env.REACT_APP_SENTRY_DSN_FRONTEND,
     RELEASE: process.env.REACT_APP_SENTRY_CURRENT_RELEASE_NAME,

@@ -204,18 +204,18 @@ export const StreamContainer = createContainer(() => {
                         } else if (info == "closed") {
                             webRtc.current = undefined
                             if (typeof obj != "undefined") {
-                                console.log("connection closed: " + JSON.stringify(obj))
+                                console.debug("connection closed: " + JSON.stringify(obj))
                             }
                         }
                     },
                     callbackError: (error: string) => {
                         if (error === "no_stream_exist" || error === "WebSocketNotConnected") {
-                            console.log(`--- ERROR ---`, error)
+                            console.debug(`--- ERROR ---`, error)
                         }
                     },
                 })
             } catch (e) {
-                console.log(e)
+                console.debug(e)
                 webRtc.current = undefined
             }
         },
