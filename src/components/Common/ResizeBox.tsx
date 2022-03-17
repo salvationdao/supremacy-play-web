@@ -1,18 +1,27 @@
 import { Box, SxProps, Theme } from "@mui/system"
 import { SyntheticEvent, useMemo, useState } from "react"
-import { Resizable, ResizeCallbackData } from "react-resizable"
+import { Resizable, ResizeCallbackData, ResizeHandle } from "react-resizable"
 import { useToggle } from "../../hooks"
 
 interface ResizeBoxProps {
     sx?: SxProps<Theme>
     color: string
-    onResizeStop: React.Dispatch<React.SetStateAction<{ width: number; height: number }>>
+    onResizeStop?: (data: { width: number; height: number }) => void
     minConstraints?: [number, number]
     maxConstraints?: [number, number]
+    resizeHandles?: ResizeHandle[]
     handle?: React.ReactNode
 }
 
-export const ResizeBox = ({ sx, color, onResizeStop, minConstraints, maxConstraints, handle }: ResizeBoxProps) => {
+export const ResizeBox = ({
+    sx,
+    color,
+    onResizeStop,
+    minConstraints,
+    maxConstraints,
+    resizeHandles,
+    handle,
+}: ResizeBoxProps) => {
     const [resizing, toggleResizing] = useToggle()
     const [resizingDimensions, setResizingDimensions] = useState<{ width: number; height: number }>({
         width: 0,
@@ -32,14 +41,14 @@ export const ResizeBox = ({ sx, color, onResizeStop, minConstraints, maxConstrai
     const onResizeStop2 = useMemo(
         () => (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
             if (!resizingDimensions || resizingDimensions.width <= 0 || resizingDimensions.height <= 0) return
-            onResizeStop(resizingDimensions)
+            onResizeStop && onResizeStop(resizingDimensions)
             toggleResizing(false)
         },
         [resizingDimensions],
     )
 
     return (
-        <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}>
+        <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, zIndex: 99, pointerEvents: "none" }}>
             {resizing && (
                 <Box
                     sx={{
@@ -62,7 +71,7 @@ export const ResizeBox = ({ sx, color, onResizeStop, minConstraints, maxConstrai
                 onResizeStop={onResizeStop2}
                 minConstraints={minConstraints}
                 maxConstraints={maxConstraints}
-                resizeHandles={["nw"]}
+                resizeHandles={resizeHandles}
                 handle={handle}
             >
                 <></>
