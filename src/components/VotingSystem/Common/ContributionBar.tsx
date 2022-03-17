@@ -34,16 +34,7 @@ export const ContributionBar = ({
                 borderRadius: 0.4,
             }}
         >
-            <Box
-                sx={{
-                    width: `${forceHundredPercent ? "100" : `${progressPercent}`}%`,
-                    height: "100%",
-                    transition: "all .15s",
-                    backgroundColor: color || colors.neonBlue,
-                    zIndex: 5,
-                    borderRadius: 0.4,
-                }}
-            />
+            <SupsProgress forceHundredPercent={forceHundredPercent} color={color} progressPercent={progressPercent} />
 
             {!hideRedBar && (
                 <Box
@@ -60,3 +51,24 @@ export const ContributionBar = ({
         </Stack>
     )
 }
+
+const SupsProgress = ({
+    forceHundredPercent,
+    color,
+    progressPercent,
+}: {
+    progressPercent: number
+    color: string
+    forceHundredPercent: boolean
+}) => (
+    <Box
+        sx={{
+            width: `${forceHundredPercent ? "100" : `${progressPercent}`}%`,
+            height: "100%",
+            transition: "all .15s",
+            backgroundColor: color || colors.neonBlue,
+            zIndex: 5,
+            borderRadius: 0.4,
+        }}
+    />
+)

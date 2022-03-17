@@ -214,7 +214,7 @@ video {
 	
 	function checkAndRepublishIfRequired() {
 	 	var iceState = webRTCAdaptor.iceConnectionState(streamId);
-		console.log("Ice state checked = " + iceState);
+		console.debug("Ice state checked = " + iceState);
 
 	  	if (iceState == null || iceState == "failed" || iceState == "disconnected"){
 	  		webRTCAdaptor.stop(streamId);
@@ -286,7 +286,7 @@ video {
 				onlyDataChannel:true,
 				callback : (info, obj) => {
 					if (info == "initialized") {
-						console.log("initialized");
+						console.debug("initialized");
 						connect_channel_button.disabled = false;
 						disconnect_channel_button.disabled = true;
 						if (publishImmediately) {
@@ -295,33 +295,33 @@ video {
 						
 					} else if (info == "publish_started") {
 						//stream is being published
-						console.log("publish started");
+						console.debug("publish started");
 						connect_channel_button.disabled = true;
 						disconnect_channel_button.disabled = false;
 						startAnimation();
 					} else if (info == "publish_finished") {
 						//stream is being finished
-						console.log("publish finished");
+						console.debug("publish finished");
 						connect_channel_button.disabled = false;
 						disconnect_channel_button.disabled = true;
 					}
 					else if (info == "play_started") {
 						//joined the stream
-						console.log("play started");
+						console.debug("play started");
 						connect_channel_button.disabled = true;
 						disconnect_channel_button.disabled = false;
 						webRTCAdaptor.getStreamInfo(streamId); 
 
 					} else if (info == "play_finished") {
 						//leaved the stream
-						console.log("play finished");
+						console.debug("play finished");
 						connect_channel_button.disabled = false;
 						disconnect_channel_button.disabled = true;
 					}
 					else if (info == "closed") {
-						//console.log("Connection closed");
+						//console.debug("Connection closed");
 						if (typeof obj != "undefined") {
-							console.log("Connecton closed: " + JSON.stringify(obj));
+							console.debug("Connecton closed: " + JSON.stringify(obj));
 						}
 					}
 					else if (info == "pong") {
@@ -332,20 +332,20 @@ video {
 						checkAndRepublishIfRequired();
 					}
 					else if (info == "ice_connection_state_changed") {
-						console.log("iceConnectionState Changed: ",JSON.stringify(obj));
+						console.debug("iceConnectionState Changed: ",JSON.stringify(obj));
 					}
 					else if (info == "data_received") {
-						console.log("Data received: " + obj.data + " type: " + obj.type + " for stream: " + obj.streamId);
+						console.debug("Data received: " + obj.data + " type: " + obj.type + " for stream: " + obj.streamId);
 						$("#dataMessagesTextarea").append("Received: " + obj.data + "\r\n");
 					}
 					else {
-						console.log( info + " notification received");
+						console.debug( info + " notification received");
 					}
 				},
 				callbackError : function(error, message) {
 					//some of the possible errors, NotFoundError, SecurityError,PermissionDeniedError
 	
-					console.log("error callback: " +  JSON.stringify(error));
+					console.debug("error callback: " +  JSON.stringify(error));
 					var errorMessage = JSON.stringify(error);
 					if (typeof message != "undefined") {
 						errorMessage = message;

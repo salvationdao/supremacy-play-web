@@ -6,7 +6,7 @@ import { usePassportServerWebsocket } from "./passportServerSocket"
 import { User } from "../types"
 
 const emptyFn = (user: UserData) => {
-    console.log("empty function that should never run")
+    console.debug("empty function that should never run")
 }
 
 /**
@@ -40,7 +40,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
                 const resp = await send<string>(PassportServerKeys.GetSessionID)
                 setSessionID(resp)
             } catch (e: any) {
-                console.log(e)
+                console.debug(e)
                 setSessionIDError(e)
             } finally {
                 setSessionIDLoading(false)
@@ -68,7 +68,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
                 await send(PassportServerKeys.AuthRingCheck, { gameserver_session_id: gameserverSessionID })
                 setAuthRingCheckSuccess(true)
             } catch (e: any) {
-                console.log(e)
+                console.debug(e)
                 setAuthRingCheckError(e)
                 setAuthRingCheckSuccess(false)
                 setUser(undefined)

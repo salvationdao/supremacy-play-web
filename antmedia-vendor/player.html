@@ -353,12 +353,12 @@ video {
 		candidateTypes: ["tcp", "udp"],
 		callback : function(info, obj) {
 			if (info == "initialized") {
-				console.log("initialized");
+				console.debug("initialized");
 				start_play_button.disabled = false;
 				stop_play_button.disabled = true;
 			} else if (info == "play_started") {
 				//joined the stream
-				console.log("play started");
+				console.debug("play started");
 				start_play_button.disabled = true;
 				stop_play_button.disabled = false;
 				webRTCAdaptor.getStreamInfo(streamId); 
@@ -366,16 +366,16 @@ video {
 
 			} else if (info == "play_finished") {
 				//leaved the stream
-				console.log("play finished");
+				console.debug("play finished");
 				start_play_button.disabled = false;
 				stop_play_button.disabled = true;
 				$("#stats_panel").hide();
 				// Reset stream resolutions in dropdown
 				document.getElementById("dropdownMenu").innerHTML = '<a class="dropdown-item active" href="#">Automatic</a>'; 
 			} else if (info == "closed") {
-				//console.log("Connection closed");
+				//console.debug("Connection closed");
 				if (typeof obj != "undefined") {
-					console.log("Connecton closed: "
+					console.debug("Connecton closed: "
 							+ JSON.stringify(obj));
 				}
 			} else if (info == "streamInformation") {
@@ -419,7 +419,7 @@ video {
 				});
 			}		
 			else if (info == "ice_connection_state_changed") {
-				console.log("iceConnectionState Changed: ",JSON.stringify(obj));
+				console.debug("iceConnectionState Changed: ",JSON.stringify(obj));
 			}
 			else if (info == "updated_stats") {
 				//obj is the PeerStats which has fields
@@ -537,7 +537,7 @@ video {
 				$("#video_bit_rate").text(parseInt(obj.audioBitrate) + parseInt(obj.videoBitrate));
 			}
 			else if(info == "resolutionChangeInfo"){
-				console.log("Resolution is changed to "+obj["streamHeight"]);
+				console.debug("Resolution is changed to "+obj["streamHeight"]);
 				let getVideo = document.getElementById("remoteVideo");
 				let overlay = document.getElementById('video-overlay');
 				getVideo.pause();
@@ -545,13 +545,13 @@ video {
 				setTimeout(function(){ getVideo.play();overlay.style.display = "none";}, 2000);
 			}
 			else {
-				console.log( info + " notification received");
+				console.debug( info + " notification received");
 			}
 		},
 		callbackError : function(error) {
 			//some of the possible errors, NotFoundError, SecurityError,PermissionDeniedError
 
-			console.log("error callback: " + JSON.stringify(error));
+			console.debug("error callback: " + JSON.stringify(error));
 			alert(JSON.stringify(error));
 		}
 	});
