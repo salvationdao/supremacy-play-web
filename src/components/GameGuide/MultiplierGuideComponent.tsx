@@ -25,7 +25,7 @@ const MultiplierGuideComponent = ({ multiplierKey }: { multiplierKey: string }) 
                 <Typography variant="h6" sx={{ color: colors.offWhite, fontWeight: "fontWeightBold" }}>
                     {title.toUpperCase()}
                 </Typography>
-                <Typography>
+                <Typography sx={{ fontSize: "1.5rem" }}>
                     <strong>Multiplier:</strong> {amount}x
                     <br />
                     <strong>Duration:</strong> {duration} battle{duration == 1 ? "" : "s"}

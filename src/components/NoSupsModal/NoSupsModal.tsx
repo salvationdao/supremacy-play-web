@@ -12,7 +12,7 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
 
     useEffect(() => {
         if (!haveSups) return toggleOpen(true)
-        toggleOpen(false)
+        toggleOpen(true)
     }, [haveSups])
 
     if (!user) return null
@@ -43,7 +43,7 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
                             </Typography>
                         </Box>
 
-                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                        <Typography sx={{ fontSize: "1.2rem", fontFamily: "Nostromo Regular Bold" }}>
                             In order to experience the Battle Arena to its&apos; maximum potential, including voting on
                             in game abilities, viewing the minimap and individual mech health bars, your wallet must
                             contain $SUPS.
@@ -55,24 +55,22 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
                             To Obtain $SUPS:
                         </Typography>
 
-                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                        <Typography sx={{ fontSize: "1.2rem", fontFamily: "Nostromo Regular Bold" }}>
                             1. Navigate to the{" "}
                             <Link target="_blank" href={TOKEN_SALE_PAGE} color={colors.neonBlue}>
                                 token sale here
                             </Link>{" "}
                             or click the &quot;Get SUPS&quot; button in the top right-hand corner of the stream.
-                        </Typography>
-
-                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                            <br />
+                            <br />
                             2. From PancakeSwap, the tokens will reside in your off-world wallet. To use them on-world,
                             and in game, you will have to deposit your $SUPS into your connected account. You can{" "}
                             <Link target="_blank" href={PASSPORT_WEB + "deposit"} color={colors.neonBlue}>
                                 deposit your tokens here
                             </Link>
                             .
-                        </Typography>
-
-                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                            <br />
+                            <br />
                             3. Come back and enjoy the Battle Arena to its&apos; fullest.
                         </Typography>
                     </Stack>

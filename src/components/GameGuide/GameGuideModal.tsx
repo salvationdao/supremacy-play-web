@@ -59,7 +59,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        maxWidth: "88rem",
+                        maxWidth: "82rem",
                         height: "65vh",
                         pb: "2rem",
                         backgroundColor: `${colors.darkNavyBlue}`,
@@ -124,7 +124,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                     Welcome to the Battle Arena
                                 </Typography>
 
-                                <Typography>
+                                <Typography sx={{ fontSize: "1.5rem" }}>
                                     Where Syndicates fight for Supremacy.
                                     <br />
                                     <br />
@@ -152,7 +152,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                 <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Gameplay
                                 </Typography>
-                                <Typography>
+                                <Typography sx={{ fontSize: "1.5rem" }}>
                                     Now your mission is to support your Syndicate in the Battle
                                     <br />
                                     <br />
@@ -196,7 +196,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                 <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Multipliers
                                 </Typography>
-                                <Typography>
+                                <Typography sx={{ fontSize: "1.5rem" }}>
                                     To achieve Multipliers to earn rewards from the Spoils of War, you must first unlock
                                     the “CITIZEN” multiplier. This is achieved by being in the top 80% of contributors
                                     to the Spoils of War in that round with the Multiplier of “Citizen” being allocated
@@ -227,7 +227,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                     Mech NFTs
                                 </Typography>
 
-                                <Typography>
+                                <Typography sx={{ fontSize: "1.5rem" }}>
                                     Players can purchase Mech NFTs in-game from the shop{" "}
                                     <Link
                                         href="https://passport.xsyn.io"
