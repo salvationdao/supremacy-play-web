@@ -1,4 +1,4 @@
-import { Box, Fade, IconButton, useTheme } from "@mui/material"
+import { Box, Fade, IconButton, Typography, useTheme } from "@mui/material"
 import { SyntheticEvent, useEffect, useState } from "react"
 import { Resizable, ResizeCallbackData } from "react-resizable"
 import { animated, useSpring } from "react-spring"
@@ -175,7 +175,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                             sx={{
                                                 position: "absolute",
                                                 left: enlarged ? ".5rem" : "2.5rem",
-                                                top: ".2rem",
+                                                top: 0,
                                                 color: colors.text,
                                                 opacity: 0.8,
                                                 zIndex: 50,
@@ -190,7 +190,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                             sx={{
                                                 position: "absolute",
                                                 left: enlarged ? "2.5rem" : "4.8rem",
-                                                top: ".2rem",
+                                                top: 0,
                                                 color: colors.text,
                                                 opacity: 0.8,
                                                 zIndex: 50,
@@ -219,6 +219,30 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                         ) : (
                                             <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
                                         )}
+
+                                        <Box
+                                            sx={{
+                                                position: "absolute",
+                                                top: 0,
+                                                left: 0,
+                                                right: 0,
+                                                px: "1rem",
+                                                pt: ".8rem",
+                                                pb: ".5rem",
+                                                backgroundColor: "#00000099",
+                                                boxShadow: 2,
+                                            }}
+                                        >
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: "fontWeightBold",
+                                                    lineHeight: 1,
+                                                    textAlign: "center",
+                                                }}
+                                            >
+                                                {map.name.replace(/([A-Z])/g, " $1").trim()}
+                                            </Typography>
+                                        </Box>
                                     </Box>
                                 </ClipThing>
                             </Box>
