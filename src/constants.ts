@@ -25,7 +25,7 @@ export const SENTRY_CONFIG = {
 }
 
 // UI related stuff
-export const GAME_BAR_HEIGHT = 6.1 // rem
+export const GAME_BAR_HEIGHT = 5.9 // rem
 export const LIVE_CHAT_DRAWER_WIDTH = 34.0 // rem
 export const LIVE_CHAT_DRAWER_BUTTON_WIDTH = 2.0 // rem
 export const CONTROLS_HEIGHT = 3.0 // rem

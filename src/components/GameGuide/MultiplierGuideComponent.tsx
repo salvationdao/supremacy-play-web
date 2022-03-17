@@ -1,28 +1,37 @@
 import { Stack, Box, Typography } from "@mui/material"
-import { getMutiplierDeets } from "../../helpers"
-import { MultiplierGuide } from "../../types"
+import { getMultiplierGuide, getMutiplierDeets } from "../../helpers"
+import { colors } from "../../theme/theme"
 
-const MultiplierGuideComponent = ({ multiplierType, description, title }: MultiplierGuide) => {
+const MultiplierGuideComponent = ({ multiplierKey }: { multiplierKey: string }) => {
+    const { title, description, amount, duration } = getMultiplierGuide(multiplierKey)
+
     return (
         <Stack direction="row" spacing="1.3rem">
             <Box
                 sx={{
-                    height: "3rem",
-                    width: "3rem",
+                    height: "3.2rem",
+                    width: "3.2rem",
                     mt: ".7rem",
-                    backgroundImage: `url(${getMutiplierDeets(multiplierType).image})`,
+                    flexShrink: 0,
+                    backgroundImage: `url(${getMutiplierDeets(multiplierKey).image})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "top center",
-                    backgroundSize: "cover",
+                    backgroundSize: "contain",
                     border: `${"#FFFFFF"} 1px solid`,
                     borderRadius: 0.6,
                 }}
             />
             <Stack>
-                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                    {title}
+                <Typography variant="h6" sx={{ color: colors.offWhite, fontWeight: "fontWeightBold" }}>
+                    {title.toUpperCase()}
                 </Typography>
-                <Typography>{description}</Typography>
+                <Typography>
+                    <strong>Multiplier:</strong> {amount}x
+                    <br />
+                    <strong>Duration:</strong> {duration} battle{duration == 1 ? "" : "s"}
+                    <br />
+                    {description}
+                </Typography>
             </Stack>
         </Stack>
     )

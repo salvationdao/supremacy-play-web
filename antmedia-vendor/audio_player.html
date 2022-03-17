@@ -193,32 +193,32 @@ body {
 		debug: true,
 		callback : function(info, description) {
 			if (info == "initialized") {
-				console.log("initialized");
+				console.debug("initialized");
 				start_play_button.disabled = false;
 				stop_play_button.disabled = true;
 			} else if (info == "play_started") {
 				//joined the stream
-				console.log("play started");
+				console.debug("play started");
 				start_play_button.disabled = true;
 				stop_play_button.disabled = false;
 			
 			} else if (info == "play_finished") {
 				//leaved the stream
-				console.log("play finished");
+				console.debug("play finished");
 				start_play_button.disabled = false;
 				stop_play_button.disabled = true;
 			}
 			else if (info == "closed") {
-				//console.log("Connection closed");
+				//console.debug("Connection closed");
 				if (typeof description != "undefined") {
-					console.log("Connecton closed: " + JSON.stringify(description));
+					console.debug("Connecton closed: " + JSON.stringify(description));
 				}
 			}
 		},
 		callbackError : function(error) {
 			//some of the possible errors, NotFoundError, SecurityError,PermissionDeniedError
 
-			console.log("error callback: " + JSON.stringify(error));
+			console.debug("error callback: " + JSON.stringify(error));
 			alert(JSON.stringify(error));
 		}
 	});

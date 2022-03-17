@@ -79,7 +79,7 @@ export const GameContainer = createContainer(() => {
                     setFactionsAll(currentData)
                 }
             } catch (e) {
-                console.log(e)
+                console.debug(e)
                 return false
             }
         })()

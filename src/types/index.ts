@@ -207,7 +207,9 @@ export interface MultipliersAll {
 }
 
 export interface MultiplierGuide {
-    multiplierType: string
+    key: string
     description: string
     title: string
+    amount: number
+    duration: number
 }

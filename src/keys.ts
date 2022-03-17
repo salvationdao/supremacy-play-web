@@ -27,6 +27,7 @@ export enum GameServerKeys {
     TriggerLiveVoteCountUpdated = "LIVE:VOTE:COUNT:UPDATED",
     TriggerFactionAbilityPriceUpdated = "ABILITY:PRICE:UPDATED",
     TriggerBattleAbilityProgressUpdated = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
+    TriggerBattleQueueUpdated = "BATTLE:QUEUE:UPDATED",
 
     // Global messages
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
@@ -38,8 +39,9 @@ export enum GameServerKeys {
     // Queue
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
-    SubQueueStatus = "BATTLE:QUEUE:STATUS",
-    SubAssetQueueStatus = "WAR:MACHINE:QUEUE:STATUS",
+    SubQueueStatus = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
+    AssetQueueStatus = "ASSET:QUEUE:STATUS",
+    SubAssetQueueStatus = "ASSET:QUEUE:STATUS:SUBSCRIBE",
 
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",

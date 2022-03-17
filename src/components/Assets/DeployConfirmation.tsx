@@ -71,7 +71,7 @@ export const DeployConfirmation = ({
             }
         } catch (e) {
             toggleDeployFailed(true)
-            console.log(e)
+            console.debug(e)
             return
         } finally {
             toggleIsDeploying(false)
@@ -94,7 +94,7 @@ export const DeployConfirmation = ({
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
-                        borderThickness: "3px",
+                        borderThickness: ".3rem",
                     }}
                 >
                     <Stack
@@ -217,7 +217,7 @@ export const DeployConfirmation = ({
                                 <Switch
                                     size="small"
                                     checked={needInsured}
-                                    onChange={() => toggleNeedInsured()}
+                                    onChange={toggleNeedInsured}
                                     sx={{
                                         transform: "scale(.7)",
                                         ".Mui-checked": { color: colors.green },

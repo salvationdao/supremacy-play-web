@@ -289,8 +289,8 @@ body {
 
 			webRTCAdaptor.sendData(publishStreamId, JSON.stringify(notEvent));
 		}	else {
-			console.log("Could not send the notification because data channel is not open.");
 		}
+			console.debug("Could not send the notification because data channel is not open.");
 	}
 
 	function handleCameraButtons() {
@@ -314,21 +314,21 @@ body {
 	}
 
 	function handleNotificationEvent(obj) {
-		console.log("Received data : ", obj.data);
 		var notificationEvent = JSON.parse(obj.data);
+		console.debug("Received data : ", obj.data);
 		if(notificationEvent != null && typeof(notificationEvent) == "object") {
 		  var eventStreamId = notificationEvent.streamId;
 		  var eventTyp = notificationEvent.eventType;
 
 			if(eventTyp == "CAM_TURNED_OFF") {
-					console.log("Camera turned off for : ", eventStreamId);
 			} else if (eventTyp == "CAM_TURNED_ON"){
-					console.log("Camera turned on for : ", eventStreamId);
+					console.debug("Camera turned off for : ", eventStreamId);
 			} else if (eventTyp == "MIC_MUTED"){
-					console.log("Microphone muted for : ", eventStreamId);
+					console.debug("Camera turned on for : ", eventStreamId);
 			} else if (eventTyp == "MIC_UNMUTED"){
-					console.log("Microphone unmuted for : ", eventStreamId);
+					console.debug("Microphone muted for : ", eventStreamId);
 			}
+					console.debug("Microphone unmuted for : ", eventStreamId);
 	  }
 	}
 
@@ -422,8 +422,8 @@ body {
 				debug : true,
 				callback : (info, obj) => {
 					if (info == "initialized") {
-						console.log("initialized");
 						join_publish_button.disabled = false;
+						console.debug("initialized");
 						stop_publish_button.disabled = true;
 						if(playOnly){
 							isCameraOff = true;
@@ -433,10 +433,10 @@ body {
 					else if (info == "joinedTheRoom") {
 						var room = obj.ATTR_ROOM_NAME;
 						roomOfStream[obj.streamId] = room;
-						console.log("joined the room: "
 								+ roomOfStream[obj.streamId]);
-						console.log(obj)
+						console.debug("joined the room: "
 
+						console.debug(obj)
 						publishStreamId = obj.streamId
 
 						if(playOnly) {
@@ -455,8 +455,8 @@ body {
 					}
 					else if (info == "play_started") {
 						//joined the stream
-						console.log("play started");
 						if (playTimerId != null)
+						console.debug("play started");
 						{
 							clearInterval(playTimerId);
 						}
@@ -465,8 +465,8 @@ body {
 						playVideo(obj);
 					} 
 					else if (info == "streamInformation") {
-						console.log("stream information");
 						webRTCAdaptor.play(roomNameBox.value, token);
+						console.debug("stream information");
 					}
 					else if (info == "publish_started") {
 						//stream is being published
@@ -481,15 +481,15 @@ body {
 						console.debug("publish finished");
 					} 
 					else if (info == "screen_share_stopped") {
-						console.log("screen share stopped");
 					}
+						console.debug("screen share stopped");
 					else if (info == "browser_screen_share_supported") {
 						screen_share_checkbox.disabled = false;
 						camera_checkbox.disabled = false;
 						screen_share_with_camera_checkbox.disabled = false;
-						console.log("browser screen share supported");
 						browser_screen_share_doesnt_support.style.display = "none";
-					} 
+						console.debug("browser screen share supported");
+					}
 					else if (info == "leavedFromRoom") {
 						var room = obj.ATTR_ROOM_NAME;
 						console.debug("leaved from the room:" + room);
@@ -500,24 +500,24 @@ body {
 						
 					} 
 					else if (info == "closed") {
-						//console.log("Connection closed");
 						if (typeof obj != "undefined") {
-							console.log("Connecton closed: "
+						//console.debug("Connection closed");
 									+ JSON.stringify(obj));
+							console.debug("Connecton closed: "
 						}
 					} 
 					else if (info == "play_finished") {
-						console.log("play_finished");
 						removeRemoteVideo(obj.streamId);
-					} 
+						console.debug("play_finished");
+					}
 					else if (info == "data_channel_opened") {
-						console.log("Data Channel open for stream id", obj );
 						isDataChannelOpen = true;
-					} 
+						console.debug("Data Channel open for stream id", obj );
+					}
 					else if (info == "data_channel_closed") {
-						console.log("Data Channel closed for stream id", obj );
 						isDataChannelOpen = false;
-					} 
+						console.debug("Data Channel closed for stream id", obj );
+					}
 					else if(info == "data_received") {
 						handleNotificationEvent(obj);
 					}
@@ -525,8 +525,8 @@ body {
 				callbackError : function(error, message) {
 					//some of the possible errors, NotFoundError, SecurityError,PermissionDeniedError
 
-					console.log("error callback: " + JSON.stringify(error));
 					var errorMessage = JSON.stringify(error);
+					console.debug("error callback: " + JSON.stringify(error));
 					if (typeof message != "undefined") {
 						errorMessage = message;
 					}

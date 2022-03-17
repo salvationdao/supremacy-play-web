@@ -6,40 +6,42 @@ import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import GameGuide from "../GameGuide/GameGuide"
 
-export const Bar = () => {
+const BarContent = () => {
     const { state, isServerUp } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
-    const { gameBarRef } = useBar()
-    const { isAnyPanelOpen } = useDrawer()
 
-    const renderBarContent = () => {
-        if (state !== WebSocket.OPEN) {
-            return (
-                <>
-                    <Logo />
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Typography sx={{ mr: "1.6rem", fontFamily: "Nostromo Regular Bold" }} variant="caption">
-                        {isServerUp ? "Connecting to passport..." : "Passport offline."}
-                    </Typography>
-                </>
-            )
-        }
-
+    if (state !== WebSocket.OPEN) {
         return (
             <>
-                {<Logo />}
+                <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-                <GameGuide />
-                {user && (
-                    <>
-                        <Enlist />
-                        <WalletDetails />
-                    </>
-                )}
-                <ProfileCard />
+                <Typography sx={{ mr: "1.6rem", fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                    {isServerUp ? "Connecting to passport..." : "Passport offline."}
+                </Typography>
             </>
         )
     }
+
+    return (
+        <>
+            {<Logo />}
+            <Box sx={{ flexGrow: 1 }} />
+            <GameGuide />
+            {user && (
+                <>
+                    <Enlist />
+                    <WalletDetails />
+                </>
+            )}
+            <ProfileCard />
+        </>
+    )
+}
+
+export const Bar = () => {
+    const { user } = usePassportServerAuth()
+    const { gameBarRef } = useBar()
+    const { isAnyPanelOpen } = useDrawer()
 
     return (
         <Stack
@@ -81,7 +83,7 @@ export const Bar = () => {
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
             >
-                {renderBarContent()}
+                <BarContent />
             </Stack>
         </Stack>
     )

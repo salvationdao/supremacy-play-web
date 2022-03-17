@@ -58,7 +58,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                                 imageUrl={wm.imageAvatar || GenericWarMachinePNG}
                                 variant="h5"
                                 imageSize={2.9}
-                                imageBorderThickness="2px"
+                                imageBorderThickness=".2rem"
                                 fontWeight="normal"
                                 truncateLine
                                 imageMb={-0.8}

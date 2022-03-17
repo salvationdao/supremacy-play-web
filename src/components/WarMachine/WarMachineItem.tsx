@@ -220,7 +220,7 @@ const WarMachineItemInner = ({
                 <ClipThing
                     clipSize="8px"
                     clipSlantSize="18px"
-                    border={{ isFancy: false, borderColor: primary, borderThickness: "4px" }}
+                    border={{ isFancy: false, borderColor: primary, borderThickness: ".4rem" }}
                     sx={{ zIndex: 2 }}
                     skipRightCorner={!isExpanded}
                 >

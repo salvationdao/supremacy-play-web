@@ -12,15 +12,20 @@ export const ChatMessage = ({
     isFailed,
     multiplierValue,
     isCitizen,
+    filterZeros,
 }: {
     chat: ChatData
     isSent?: boolean
     isFailed?: boolean
     multiplierValue?: string
     isCitizen: boolean
+    filterZeros?: boolean
 }) => {
-    const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at } = chat
+    const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at, self } =
+        chat
     const multiplierInt = multiplierValue ? parseInt(multiplierValue) : 0
+
+    if (!self && filterZeros && multiplierInt <= 0) return null
 
     return (
         <Stack direction="row" spacing=".4rem" sx={{ opacity: isSent ? 1 : 0.45 }}>

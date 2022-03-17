@@ -43,7 +43,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                                 imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[f.id]?.logo_blob_id}`}
                                 variant="h5"
                                 imageSize={2.9}
-                                imageBorderThickness="2px"
+                                imageBorderThickness=".2rem"
                                 fontWeight="normal"
                                 truncateLine
                                 imageMb={-0.8}

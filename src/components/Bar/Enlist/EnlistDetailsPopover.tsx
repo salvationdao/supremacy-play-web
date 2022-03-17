@@ -241,7 +241,7 @@ export const EnlistDetailsPopover = ({
                     border={{
                         isFancy: true,
                         borderColor: primary,
-                        borderThickness: "2px",
+                        borderThickness: ".2rem",
                     }}
                 >
                     <Stack direction="row" sx={{ backgroundColor: "#101019" }}>

@@ -331,7 +331,7 @@
 
 				}).catch(function (error) {
 					document.getElementById("play_button").style.display = "block";
-					console.log("User interaction needed to start playing");
+					console.debug("User interaction needed to start playing");
 				});
 			}
 		}
@@ -377,7 +377,7 @@
 				liveStream = true;
 			}
 			else {
-				console.log("Unknown extension: " + extension);
+				console.debug("Unknown extension: " + extension);
 				return;
 			}
 
@@ -465,7 +465,7 @@
 					}
 
 					setInterval(function () {
-						console.log("live latency: " + player.getCurrentLiveLatency());
+						console.debug("live latency: " + player.getCurrentLiveLatency());
 					}, 2000);
 				}
 			}
@@ -495,7 +495,7 @@
 
 					hls.on(Hls.Events.ERROR, function (event, data) {
 						if (data.fatal) {
-							console.log("There is an error with chunks");
+							console.debug("There is an error with chunks");
 							tryToPlay(streamId, token, extension, subscriberId, subscriberCode, hlsNoStreamCallback);
 						}
 					});
@@ -526,7 +526,7 @@
 					}).catch(function (error) {
 						unMuteButton.innerText = "Mute";
 						document.getElementById("play_button").style.display = "block";
-						console.log("User interaction needed to start playing");
+						console.debug("User interaction needed to start playing");
 					});
 				}
 			}
@@ -539,7 +539,7 @@
 					player.ready(function () {
 						var player = this;
 						player.on('ended', function () {
-							console.log("is360: " + is360 + " Playing has been finished");
+							console.debug("is360: " + is360 + " Playing has been finished");
 							hideWebRTCElements();
 							setHLSElementsVisibility(false);
 							setPlaceHolderVisibility(true);
@@ -552,7 +552,7 @@
 			else if (is360) {
 				setHLSElementsVisibility(false);
 				player.addEventListener("ended", (e) => {
-					console.log("is360: " + is360 + " Playing has been finished");
+					console.debug("is360: " + is360 + " Playing has been finished");
 					hideWebRTCElements();
 					setHLSElementsVisibility(false);
 					setPlaceHolderVisibility(true);
@@ -561,7 +561,7 @@
 				setWebRTCElementsVisibility(true);
 			}
 			else {
-				console.log("player ready is not available. List playing may not be continous");
+				console.debug("player ready is not available. List playing may not be continous");
 			}
 			setPlaceHolderVisibility(false);
 		}
@@ -612,23 +612,23 @@
 				debug: true,
 				callback: function (info, description) {
 					if (info == "initialized") {
-						console.log("initialized");
+						console.debug("initialized");
 						iceConnected = false;
 						webRTCAdaptor.getStreamInfo(streamId);
 					}
 					else if (info == "streamInformation") {
-						console.log("stream information");
+						console.debug("stream information");
 						webRTCAdaptor.play(streamId, token, subscriberId, subscriberCode);
 					}
 					else if (info == "play_started") {
 						//joined the stream
-						console.log("play started");
+						console.debug("play started");
 						setPlaceHolderVisibility(false);
 						setHLSElementsVisibility(false);
 						playWebRTCVideo();
 					} else if (info == "play_finished") {
 						//leaved the stream
-						console.log("play finished");
+						console.debug("play finished");
 						setHLSElementsVisibility(false);
 						hideWebRTCElements();
 						setPlaceHolderVisibility(true);
@@ -650,9 +650,9 @@
 						}
 					}
 					else if (info == "closed") {
-						//console.log("Connection closed");
+						//console.debug("Connection closed");
 						if (typeof description != "undefined") {
-							console.log("Connecton closed: " + JSON.stringify(description));
+							console.debug("Connecton closed: " + JSON.stringify(description));
 						}
 					}
 					else if (info == "bitrateMeasurement") {
@@ -677,7 +677,7 @@
 						}
 					}
 					else if (info == "resolutionChangeInfo") {
-						console.log("Resolution is changed to " + description["streamHeight"]);
+						console.debug("Resolution is changed to " + description["streamHeight"]);
 						let getVideo = document.getElementById("remoteVideo");
 						let overlay = document.getElementById('video-overlay');
 						getVideo.pause();
@@ -689,7 +689,7 @@
 				callbackError: function (error) {
 					//some of the possible errors, NotFoundError, SecurityError,PermissionDeniedError
 
-					console.log("error callback: " + JSON.stringify(error));
+					console.debug("error callback: " + JSON.stringify(error));
 
 					if (error == "no_stream_exist") {
 

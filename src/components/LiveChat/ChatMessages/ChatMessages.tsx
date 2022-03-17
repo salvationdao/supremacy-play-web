@@ -1,8 +1,14 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
-import { ChatMessage, UserMultiplierMap } from "../.."
+import { ChatMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
-import { useGameServerWebsocket, usePassportServerAuth, WebSocketProperties } from "../../../containers"
+import {
+    useChat,
+    useGameServerWebsocket,
+    usePassportServerAuth,
+    UserMultiplierMap,
+    WebSocketProperties,
+} from "../../../containers"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
@@ -19,35 +25,52 @@ interface ChatMessagesProps {
     primaryColor: string
     secondaryColor: string
     chatMessages: ChatData[]
+    faction_id: string | null
+}
+
+export const ChatMessages = (props: ChatMessagesProps) => {
+    const { state, subscribe } = useGameServerWebsocket()
+    const { filterZerosGlobal, filterZerosFaction, sentMessages, failedMessages, userMultiplierMap, citizenPlayerIDs } =
+        useChat()
+    return (
+        <ChatMessagesInner
+            {...props}
+            state={state}
+            subscribe={subscribe}
+            filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
+            sentMessages={sentMessages}
+            failedMessages={failedMessages}
+            userMultiplierMap={userMultiplierMap}
+            citizenPlayerIDs={citizenPlayerIDs}
+        />
+    )
+}
+
+interface ChatMessagesInnerProps extends ChatMessagesProps, Partial<WebSocketProperties> {
+    filterZeros?: boolean
     sentMessages: Date[]
     failedMessages: Date[]
     userMultiplierMap: UserMultiplierMap
     citizenPlayerIDs: string[]
 }
 
-export const ChatMessages = (props: ChatMessagesProps) => {
-    const { state, subscribe } = useGameServerWebsocket()
-    return <ChatMessagesInner {...props} state={state} subscribe={subscribe} />
-}
-
-interface ChatMessagesPropsInner extends ChatMessagesProps, Partial<WebSocketProperties> {}
-
 const ChatMessagesInner = ({
     primaryColor,
     secondaryColor,
     chatMessages,
-    sentMessages,
-    failedMessages,
     state,
     subscribe,
+    filterZeros,
+    sentMessages,
+    failedMessages,
     userMultiplierMap,
     citizenPlayerIDs,
-}: ChatMessagesPropsInner) => {
+}: ChatMessagesInnerProps) => {
     const { user } = usePassportServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
 
-    // Subscribe to global messages
+    // Subscribe to global annoucement message
     const [globalMessage, setGlobalMessage] = useState<GlobalMessage>()
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -147,12 +170,13 @@ const ChatMessagesInner = ({
                     },
                 }}
             >
-                <Stack spacing="1.04rem" sx={{ mt: ".88rem" }}>
+                <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
                     {chatMessages && chatMessages.length > 0 ? (
                         chatMessages.map((c) => (
                             <ChatMessage
                                 key={`${c.from_username} - ${c.sent_at.toISOString()}`}
                                 chat={c}
+                                filterZeros={filterZeros}
                                 isSent={c.from_user_id != user?.id ? true : sentMessages.includes(c.sent_at)}
                                 isFailed={c.from_user_id != user?.id ? false : failedMessages.includes(c.sent_at)}
                                 multiplierValue={userMultiplierMap[c.from_user_id]}

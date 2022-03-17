@@ -93,7 +93,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
         serverCheckInterval(1)
         setTimeout(() => {
             setIsServerUp(false)
-        }, 120000)
+        }, 90000)
     }, [reconnect])
 
     const serverCheckInterval = async (num: number) => {

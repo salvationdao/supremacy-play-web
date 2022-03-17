@@ -19,18 +19,28 @@ interface MapWarMachineProps {
     gridWidth: number
     gridHeight: number
     warMachines: WarMachineState[]
+    battleIdentifier?: number
+
     map: Map
     enlarged: boolean
     targeting?: boolean
 }
 
-const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting }: MapWarMachineProps) => {
+const MapWarMachines = ({
+    gridWidth,
+    gridHeight,
+    warMachines,
+    map,
+    enlarged,
+    targeting,
+    battleIdentifier,
+}: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
         <>
             {warMachines.map((wm) => (
-                <div key={`${wm.participantID} - ${wm.hash}`}>
+                <div key={`${battleIdentifier} - ${wm.participantID} - ${wm.hash}`}>
                     <MapWarMachine
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
@@ -118,14 +128,24 @@ interface Props {
 
 export const InteractiveMap = (props: Props) => {
     const { state, send } = useGameServerWebsocket()
-    const { map, warMachines } = useGame()
+    const { map, warMachines, battleIdentifier } = useGame()
 
-    return <InteractiveMapInner {...props} state={state} send={send} map={map} warMachines={warMachines} />
+    return (
+        <InteractiveMapInner
+            {...props}
+            state={state}
+            send={send}
+            map={map}
+            warMachines={warMachines}
+            battleIdentifier={battleIdentifier}
+        />
+    )
 }
 
 interface PropsInner extends Props, Partial<WebSocketProperties> {
     map?: Map
     warMachines?: WarMachineState[]
+    battleIdentifier?: number
 }
 
 const InteractiveMapInner = ({
@@ -138,10 +158,13 @@ const InteractiveMapInner = ({
     enlarged,
     map,
     warMachines,
+    battleIdentifier,
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
+    const [iconLocation, setIconLocation] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
     const prevSelection = useRef<MapSelection>()
     const isDragging = useRef<boolean>(false)
+    const mapElement = useRef<any>()
 
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
@@ -150,14 +173,14 @@ const InteractiveMapInner = ({
         try {
             if (state !== WebSocket.OPEN || !selection || !send) return
             send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
-                x: selection.x,
-                y: selection.y,
+                x: Math.floor(selection.x),
+                y: Math.floor(selection.y),
             })
             setSubmitted && setSubmitted(true)
             setSelection(undefined)
             prevSelection.current = undefined
         } catch (e) {
-            console.log(e)
+            console.debug(e)
         }
     }
 
@@ -337,6 +360,7 @@ const InteractiveMapInner = ({
                                 warMachines={warMachines || []}
                                 enlarged={enlarged}
                                 targeting={targeting}
+                                battleIdentifier={battleIdentifier}
                             />
                         </Box>
 
@@ -348,6 +372,8 @@ const InteractiveMapInner = ({
                             selection={selection}
                             setSelection={setSelection}
                             targeting={targeting}
+                            location={iconLocation}
+                            mapElement={mapElement}
                         />
 
                         <Grid
@@ -357,7 +383,9 @@ const InteractiveMapInner = ({
                             gridHeight={gridHeight}
                             isDragging={isDragging}
                             setSelection={setSelection}
-                            prevSelection={prevSelection}
+                            mapElement={mapElement}
+                            scale={scale}
+                            offset={20}
                         />
 
                         {/* Map Image */}

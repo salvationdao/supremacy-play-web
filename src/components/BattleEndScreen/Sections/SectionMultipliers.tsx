@@ -47,7 +47,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                             imageUrl={deets.image}
                                             variant="h5"
                                             imageSize={2.9}
-                                            imageBorderThickness="2px"
+                                            imageBorderThickness=".2rem"
                                             fontWeight="normal"
                                             truncateLine
                                             imageMb={-0.8}
