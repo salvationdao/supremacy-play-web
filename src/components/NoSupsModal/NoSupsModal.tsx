@@ -12,7 +12,7 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
 
     useEffect(() => {
         if (!haveSups) return toggleOpen(true)
-        toggleOpen(true)
+        toggleOpen(false)
     }, [haveSups])
 
     if (!user) return null
