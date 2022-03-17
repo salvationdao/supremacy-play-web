@@ -186,8 +186,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                         top: 0,
                                         left: 0,
                                         right: 0,
-                                        px: "1rem",
-                                        py: ".6rem",
+                                        height: "2.4rem",
                                         backgroundColor: shadeColor(mainColor, -86),
                                         boxShadow: 2,
                                     }}
@@ -211,7 +210,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                         size="small"
                                         sx={{
                                             position: "absolute",
-                                            left: enlarged ? "2.5rem" : "4.8rem",
+                                            left: enlarged ? "2.5rem" : "4.5rem",
                                             top: 0,
                                             color: colors.text,
                                             opacity: 0.8,
@@ -224,10 +223,12 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     <Typography
                                         variant="caption"
                                         sx={{
+                                            position: "absolute",
+                                            left: enlarged ? "5.6rem" : "7.6rem",
+                                            top: ".6rem",
                                             fontSize: "1.1rem",
                                             fontWeight: "fontWeightBold",
                                             lineHeight: 1,
-                                            textAlign: "center",
                                         }}
                                     >
                                         {map.name
