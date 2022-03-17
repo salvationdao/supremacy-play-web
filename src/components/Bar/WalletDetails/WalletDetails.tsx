@@ -134,7 +134,6 @@ export const WalletDetails = () => {
                         <ClickAwayListener onClickAway={() => toggleIsTooltipOpen(false)}>
                             <div>
                                 <Tooltip
-                                    arrow
                                     open={isTooltipOpen}
                                     placement="bottom-end"
                                     title={
