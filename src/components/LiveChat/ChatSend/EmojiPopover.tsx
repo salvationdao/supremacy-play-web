@@ -45,7 +45,7 @@ export const EmojiPopover = ({
                     sx={{
                         boxShadow: 20,
                         borderRadius: 0.9,
-                        border: "#FFFFFF60 1px solid",
+                        border: "#FFFFFF80 1px solid",
                         backgroundColor: `${primaryColor}10`,
                         ".emoji-mart": {
                             backgroundColor: "transparent",

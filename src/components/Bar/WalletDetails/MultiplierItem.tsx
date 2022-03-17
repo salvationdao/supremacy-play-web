@@ -20,7 +20,7 @@ export const MultiplierItem = ({ multiplier }: { multiplier: Multiplier }) => {
                             backgroundPosition: "center",
                             backgroundSize: "contain",
                             borderRadius: 0.8,
-                            border: "#FFFFFF60 1px solid",
+                            border: "#FFFFFF80 1px solid",
                         }}
                     />
                     <Typography variant="body1">{multiplier.key.toUpperCase()}</Typography>

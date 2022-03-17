@@ -156,7 +156,7 @@ export const WalletDetails = () => {
                                                 width: "32rem",
                                                 maxWidth: "32rem",
                                                 background: tooltipBackgroundColor,
-                                                border: "#FFFFFF60 1px solid",
+                                                border: "#FFFFFF80 1px solid",
                                             },
                                         },
                                     }}
