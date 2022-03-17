@@ -102,8 +102,9 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
         <Box
             sx={{
                 position: "absolute",
-                bottom: enlarged ? 110 : "1rem",
+                bottom: enlarged ? "calc(50% + 30px)" : "1rem",
                 right: enlarged ? (width - dimensions.width) / 2 - 3 : "1rem",
+                transform: enlarged ? "translateY(50%)" : "none",
                 pointerEvents: "none",
                 filter: "drop-shadow(0 3px 3px #00000050)",
                 transition: "all .2s",
