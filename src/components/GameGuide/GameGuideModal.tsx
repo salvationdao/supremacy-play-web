@@ -1,8 +1,6 @@
 import { Box, Button, Link, Modal, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useState } from "react"
-import { getMultiplierGuide } from "../../helpers"
 import { colors } from "../../theme/theme"
-import { MultiplierGuide } from "../../types"
 import MultiplierGuideComponent from "./MultiplierGuideComponent"
 
 interface GameGuideModalProps {
@@ -61,9 +59,9 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        maxWidth: "86.6rem",
-                        height: "70vh",
-                        pb: 3,
+                        maxWidth: "88rem",
+                        height: "65vh",
+                        pb: "2rem",
                         backgroundColor: `${colors.darkNavyBlue}`,
                         outline: "1px solid #FFFFFF",
                         borderRadius: 1,
@@ -75,9 +73,16 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                             value={value}
                             onChange={handleChange}
                             sx={{
+                                minHeight: "5rem",
                                 ".MuiTab-root.Mui-selected": { color: colors.neonBlue, opacity: 1 },
                                 ".MuiTabs-indicator": { backgroundColor: colors.neonBlue },
-                                ".MuiTab-root": { fontSize: "1.8rem", opacity: 0.7, fontFamily: "Share Tech" },
+                                ".MuiTab-root": {
+                                    minHeight: "5rem",
+                                    p: 0,
+                                    fontSize: "1.6rem",
+                                    opacity: 0.7,
+                                    fontFamily: "Share Tech",
+                                },
                             }}
                         >
                             <Tab label="Intro" />
@@ -95,11 +100,11 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                             scrollBehavior: "smooth",
                             display: "flex",
                             flexDirection: "column",
-                            mr: 1,
-                            mt: 1,
-                            mb: 2,
-                            px: 3,
-                            py: 1,
+                            mr: ".8rem",
+                            mt: "1rem",
+                            mb: "1.6rem",
+                            px: "3rem",
+                            py: "1rem",
                             "::-webkit-scrollbar": {
                                 width: ".4rem",
                             },
@@ -111,12 +116,11 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                 background: `${colors.neonBlue}`,
                                 borderRadius: 3,
                             },
-                            "& p": { fontSize: "1.8rem" },
                         }}
                     >
                         <TabPanel value={value} index={0}>
                             <Stack spacing={2}>
-                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Welcome to the Battle Arena
                                 </Typography>
 
@@ -145,7 +149,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             <Stack spacing={2}>
-                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Gameplay
                                 </Typography>
                                 <Typography>
@@ -189,7 +193,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
 
                         <TabPanel value={value} index={2}>
                             <Stack spacing={2}>
-                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Multipliers
                                 </Typography>
                                 <Typography>
@@ -210,24 +214,16 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                 </Typography>
 
                                 <Stack spacing="1.5rem">
-                                    {multiplierKeys.map((key, i) => {
-                                        const mul: MultiplierGuide = getMultiplierGuide(key)
-                                        return (
-                                            <MultiplierGuideComponent
-                                                key={i}
-                                                multiplierType={key}
-                                                title={mul.title}
-                                                description={mul.description}
-                                            />
-                                        )
-                                    })}
+                                    {multiplierKeys.map((key, i) => (
+                                        <MultiplierGuideComponent key={i} multiplierKey={key} />
+                                    ))}
                                 </Stack>
                             </Stack>
                         </TabPanel>
 
                         <TabPanel value={value} index={3}>
                             <Stack spacing={2}>
-                                <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                                     Mech NFTs
                                 </Typography>
 
@@ -304,9 +300,9 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                         sx={{
                             justifySelf: "flex-end",
                             ml: 3,
-                            py: 0.8,
-                            width: "100%",
-                            maxWidth: "5em",
+                            pt: ".7rem",
+                            pb: ".4rem",
+                            width: "9rem",
                             color: colors.neonBlue,
                             backgroundColor: colors.darkNavy,
                             borderRadius: 0.7,

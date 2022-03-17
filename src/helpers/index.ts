@@ -283,114 +283,118 @@ export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
 }
 
 export const getMultiplierGuide = (multiplierKey: string): MultiplierGuide => {
-    let multiplierType: string
     let description: string
     let title: string
+    let amount: number
+    let duration: number
+
     switch (multiplierKey.toLowerCase()) {
-        case "citizen":
-            multiplierType = getMutiplierDeets(multiplierKey).image
-            title = multiplierKey
-            description =
-                "When a player is within the top 80% of ability $SUPS average. 2x Multiplier that lasts for 2 Battle."
-            break
         case "supporter":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "When a player is within the top 50% of ability $SUPS average. 5x Multiplier that lasts for 1 Battle."
+            amount = 5
+            duration = 1
+            description = `When a player is within the top 50% of ability $SUPS average.`
             break
         case "contributor":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "When a player is within the top 25% of ability $SUPS average. 10x Multiplier that lasts for 1 Battle."
+            amount = 10
+            duration = 1
+            description = `When a player is within the top 25% of ability $SUPS average.`
             break
         case "super contributor":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "When a player is within the top 10% of ability $SUPS average. 20x Multiplier that lasts for 1 Battle."
+            amount = 20
+            duration = 1
+            description = `When a player is within the top 10% of ability $SUPS average.`
             break
         case "a fool and his money":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "A player who has put the most individual SUPS in but your Syndicate didn’t win the ability. 5x Multiplier that lasts for 1 Battle."
+            amount = 5
+            duration = 1
+            description = `A player who has put the most individual SUPS in but your Syndicate didn’t win the ability.`
             break
         case "air support":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "For a player who triggered the last airstrike of the battle. 5x Multiplier that lasts for 1 Battle."
+            amount = 5
+            duration = 1
+            description = `For a player who triggered the last airstrike of the battle.`
             break
         case "air marshal":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "For a player who triggered the last three airstrikes 5x Multiplier that lasts for 1 Battle."
+            amount = 5
+            duration = 1
+            description = `For a player who triggered the last three airstrikes`
             break
         case "now i am become death":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "For a player who triggered a nuke. 5x Multiplier that lasts for 1 Battle."
+            amount = 5
+            duration = 1
+            description = `For a player who triggered a nuke.`
             break
         case "destroyer of worlds":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "For a player who has triggered the previous three nukes. 10x Multiplier that lasts for 1 Battle."
+            amount = 10
+            duration = 1
+            description = `For a player who has triggered the previous three nukes.`
             break
         case "grease monkey":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "For a player who triggered a repair drop. 3x Multiplier that lasts for 1 Battle."
+            amount = 3
+            duration = 1
+            description = `For a player who triggered a repair drop.`
             break
         case "field mechanic":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "For a player who has triggered the previous three repair drops. 5x Multiplier that lasts for 1 Battle."
+            amount = 5
+            duration = 1
+            description = `For a player who has triggered the previous three repair drops.`
             break
         case "combo breaker":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "For a player who triggers an ability for their syndicate after it has lost the last three rounds. 5x Multiplier that lasts for 1 Battle."
+            amount = 5
+            duration = 1
+            description = `For a player who triggers an ability for their syndicate after it has lost the last 3 rounds.`
             break
         case "c-c-c-c-combo breaker":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "For a player who triggers an ability for their syndicate after it has lost the last ten rounds. 5x Multiplier that lasts for 3 Battle."
+            amount = 5
+            duration = 3
+            description = `For a player who triggers an ability for their syndicate after it has lost the last ten rounds.`
             break
         case "mech commander":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "When a player’s mech wins the battles. 5x Multiplier that lasts for 1 Battle."
+            amount = 5
+            duration = 1
+            description = `When a player’s mech wins the battles.`
             break
         case "admiral":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "When a player’s mech wins the last 3 battles. 10x Multiplier that lasts for 1 Battle."
+            amount = 10
+            duration = 1
+            description = `When a player’s mech wins the last 3 battles.`
             break
         case "won battle":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description = "When a player’s syndicate has won the last battle. 5x Multiplier that lasts for 1 Battle."
+            amount = 5
+            duration = 1
+            description = `When a player’s syndicate has won the last battle.`
             break
         case "won last three battles":
-            multiplierType = getMutiplierDeets(multiplierKey).image
             title = multiplierKey
-            description =
-                "When a player’s syndicate has won the last 3 battles. 10x Multiplier that lasts for 3 Battles."
+            amount = 10
+            duration = 3
+            description = `When a player’s syndicate has won the last 3 battles.`
             break
+        case "citizen":
         default:
-            multiplierType = getMutiplierDeets("citizen").image
-            title = "Citizen"
-            description =
-                "The Citizen Multiplier will be assigned after the conclusion of that Battle and will last for the next 2 Battles."
+            title = multiplierKey
+            amount = 2
+            duration = 2
+            description = `When a player is within the top 80% of ability $SUPS average.`
+            break
     }
 
-    return { multiplierType, description, title }
+    return { key: multiplierKey, title, description, amount, duration }
 }
 
 export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
