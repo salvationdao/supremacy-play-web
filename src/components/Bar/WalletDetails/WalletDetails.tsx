@@ -179,7 +179,11 @@ export const WalletDetails = () => {
                                         }}
                                     >
                                         <SvgWallet size="2.3rem" sx={{ mr: "1.04rem" }} />
-                                        <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".48rem" }} />
+                                        <SvgSupToken
+                                            size="1.9rem"
+                                            fill={colors.yellow}
+                                            sx={{ mr: ".2rem", pb: ".4rem" }}
+                                        />
                                         <Typography sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1 }}>
                                             {sups ? supFormatterNoFixed(sups, 2) : "0.00"}
                                         </Typography>
