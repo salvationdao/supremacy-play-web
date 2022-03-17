@@ -122,6 +122,7 @@ export const ProfileCard = () => {
                     zIndex: 10000,
                     ".MuiPaper-root": {
                         backgroundColor: colors.darkNavy,
+                        border: "#FFFFFF80 1px solid",
                     },
                 }}
             >

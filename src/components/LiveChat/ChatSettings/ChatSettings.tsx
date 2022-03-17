@@ -25,7 +25,7 @@ export const ChatSettings = ({ primaryColor, faction_id }: { primaryColor: strin
                                 width: "30rem",
                                 maxWidth: "30rem",
                                 background: backgroundColor,
-                                border: "#FFFFFF60 1px solid",
+                                border: "#FFFFFF80 1px solid",
                             },
                         },
                     }}
