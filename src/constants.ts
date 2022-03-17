@@ -1,4 +1,4 @@
-const USE_PROD = false
+const USE_PROD = true
 
 // Envar stuff
 let VERSION = process.env.REACT_APP_COMMIT_REF || "development"

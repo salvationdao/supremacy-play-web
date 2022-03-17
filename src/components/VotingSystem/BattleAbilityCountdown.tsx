@@ -15,6 +15,17 @@ interface BattleAbilityCountdownInnerProps {
 }
 
 const BattleAbilityCountdownInner = ({ bribeStage }: BattleAbilityCountdownInnerProps) => {
+    return (
+        <Stack direction="row" spacing=".48rem" alignItems="center">
+            <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
+            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>
+                <CountdownText bribeStage={bribeStage} />
+            </Typography>
+        </Stack>
+    )
+}
+
+const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const [sentence, setSentence] = useState<string>("Loading...")
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
 
@@ -44,10 +55,5 @@ const BattleAbilityCountdownInner = ({ bribeStage }: BattleAbilityCountdownInner
         }
     }
 
-    return (
-        <Stack direction="row" spacing=".48rem" alignItems="center">
-            <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
-            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>{sentence}</Typography>
-        </Stack>
-    )
+    return <>{sentence}</>
 }
