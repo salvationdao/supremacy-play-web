@@ -247,7 +247,10 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                                     textAlign: "center",
                                                 }}
                                             >
-                                                {map.name.replace(/([A-Z])/g, " $1").trim()}
+                                                {map.name
+                                                    .replace(/([A-Z])/g, " $1")
+                                                    .trim()
+                                                    .toUpperCase()}
                                             </Typography>
                                         </Box>
                                     </Box>
