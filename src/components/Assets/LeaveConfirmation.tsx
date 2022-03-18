@@ -47,7 +47,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    maxWidth: "42rem",
+                    width: "42rem",
                 }}
             >
                 <ClipThing

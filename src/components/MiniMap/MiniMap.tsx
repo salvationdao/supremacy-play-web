@@ -145,15 +145,15 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                 display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                                 pointerEvents: "all",
                                 position: "absolute",
-                                top: ".85rem",
-                                left: "1rem",
+                                top: ".89rem",
+                                left: "1.15rem",
                                 cursor: "nwse-resize",
                                 color: colors.text,
                                 opacity: 0.8,
                                 zIndex: 50,
                             }}
                         >
-                            <SvgResizeXY size="1.1rem" sx={{ transform: "rotate(90deg)" }} />
+                            <SvgResizeXY size="1.05rem" sx={{ transform: "rotate(90deg)" }} />
                         </Box>
                     )}
                 />

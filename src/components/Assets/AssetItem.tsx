@@ -185,7 +185,13 @@ export const AssetItem = ({
                             },
                         }}
                     >
-                        <Typography variant="body2" lineHeight={1}>{mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}</Typography>
+                        <Typography
+                            variant="body2"
+                            lineHeight={1}
+                            sx={{ color: mouseOver ? colors.red : colors.yellow }}
+                        >
+                            {mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
+                        </Typography>
                     </Button>
                     {assetQueueStatus.contract_reward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>

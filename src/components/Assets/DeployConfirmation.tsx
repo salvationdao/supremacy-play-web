@@ -86,7 +86,7 @@ export const DeployConfirmation = ({
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    maxWidth: "42rem",
+                    width: "42rem",
                 }}
             >
                 <ClipThing
@@ -155,7 +155,7 @@ export const DeployConfirmation = ({
                             </Stack>
                         </Box>
 
-                        <Stack spacing=".8rem">
+                        <Stack spacing=".8rem" sx={{ flex: 1 }}>
                             <Box>
                                 <Typography
                                     sx={{
