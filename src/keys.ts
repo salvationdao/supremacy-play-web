@@ -83,4 +83,7 @@ export enum PassportServerKeys {
     // Transactions
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
     SubscribeUserLatestTransactions = "USER:SUPS:LATEST_TRANSACTION:SUBSCRIBE",
+
+    // Misc
+    GetFreeSups = "GAMEBAR:GET:SUPS",
 }

@@ -427,7 +427,7 @@ const WarMachineItemInner = ({
                 </Stack>
             </Stack>
 
-            {gameAbilities && gameAbilities.length > 0 && (
+            {gameAbilities && gameAbilities.length > 0 && isAlive && (
                 <WarMachineAbilitiesPopover
                     popoverRef={popoverRef}
                     open={popoverOpen}

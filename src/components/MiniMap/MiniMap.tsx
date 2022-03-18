@@ -225,7 +225,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                         sx={{
                                             position: "absolute",
                                             left: enlarged ? "5.6rem" : "7.6rem",
-                                            top: ".6rem",
+                                            top: 6.5,
                                             fontSize: "1.1rem",
                                             fontWeight: "fontWeightBold",
                                             lineHeight: 1,

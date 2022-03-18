@@ -20,7 +20,7 @@ export const SupsTooltipContent = ({
     onClose: () => void
 }) => {
     return (
-        <Stack spacing="1.2rem" sx={{ position: "relative", px: "1.04rem", py: ".8rem" }}>
+        <Stack spacing="1.2rem" sx={{ position: "relative", minWidth: "35rem", px: "2rem", py: "1.4rem" }}>
             <Box>
                 <Typography sx={{ mb: ".24rem", fontWeight: "bold", color: colors.offWhite }} variant="h6">
                     TOTAL SUPS:
@@ -62,7 +62,7 @@ export const SupsTooltipContent = ({
                 </Box>
             )}
 
-            <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: "-1.2rem", right: "-.4rem" }}>
+            <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: "-1rem", right: ".2rem" }}>
                 <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
             </IconButton>
         </Stack>
