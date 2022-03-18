@@ -1,13 +1,15 @@
 import { Box, Button, CircularProgress, Divider, Popover, Stack, Typography } from "@mui/material"
 import { useEffect, useRef, useState } from "react"
-import { BarExpandable, SupsTooltipContent } from "../.."
+import { BarExpandable, SupsTooltipContent, TooltipHelper } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
 import { NullUUID, TOKEN_SALE_PAGE } from "../../../constants"
 import {
+    SocketState,
     useGame,
     useGameServerAuth,
     useGameServerWebsocket,
     usePassportServerAuth,
+    usePassportServerWebsocket,
     useWallet,
 } from "../../../containers"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
@@ -35,6 +37,22 @@ export const WalletDetails = () => {
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
+
+    // Free sups button
+    const isFreeSupsEnabled =
+        process.env.REACT_APP_SENTRY_ENVIRONMENT === "staging" ||
+        process.env.REACT_APP_SENTRY_ENVIRONMENT === "development"
+    const { send: psSend, state: psState } = usePassportServerWebsocket()
+    const [timeTilNextClaim, setTimeTilNextClaim] = useState<Date>()
+
+    const getFreeSups = async () => {
+        if (psState !== SocketState.OPEN || !psSend || !user) return
+
+        const resp = await psSend<Date | boolean>(PassportServerKeys.GetFreeSups)
+        if (resp instanceof Date) {
+            setTimeTilNextClaim(resp)
+        }
+    }
 
     useEffect(() => {
         if (battleEndDetail && battleEndDetail.multipliers.length > 0) {
@@ -176,25 +194,37 @@ export const WalletDetails = () => {
                             )}
                         </Stack>
 
-                        <Button
-                            href={TOKEN_SALE_PAGE}
-                            target="_blank"
-                            sx={{
-                                px: "1.2rem",
-                                pt: ".32rem",
-                                pb: ".16rem",
-                                flexShrink: 0,
-                                justifyContent: "flex-start",
-                                color: colors.neonBlue,
-                                whiteSpace: "nowrap",
-                                borderRadius: 0.2,
-                                border: `1px solid ${colors.neonBlue}`,
-                                overflow: "hidden",
-                                fontFamily: "Nostromo Regular Bold",
-                            }}
+                        <TooltipHelper
+                            placement="bottom"
+                            text={
+                                timeTilNextClaim
+                                    ? timeTilNextClaim < new Date()
+                                        ? "Claim free SUPs!"
+                                        : `Time until next claim: ${timeTilNextClaim.toLocaleTimeString()}`
+                                    : ""
+                            }
                         >
-                            Get SUPS
-                        </Button>
+                            <Button
+                                sx={{
+                                    px: "1.2rem",
+                                    pt: ".32rem",
+                                    pb: ".16rem",
+                                    flexShrink: 0,
+                                    justifyContent: "flex-start",
+                                    color: isFreeSupsEnabled ? colors.gold : colors.neonBlue,
+                                    whiteSpace: "nowrap",
+                                    borderRadius: 0.2,
+                                    border: `1px solid ${isFreeSupsEnabled ? colors.gold : colors.neonBlue}`,
+                                    overflow: "hidden",
+                                    fontFamily: "Nostromo Regular Bold",
+                                }}
+                                href={isFreeSupsEnabled ? undefined : TOKEN_SALE_PAGE}
+                                onClick={isFreeSupsEnabled ? () => getFreeSups() : undefined}
+                                disabled={timeTilNextClaim && timeTilNextClaim < new Date()}
+                            >
+                                {isFreeSupsEnabled ? "GET FREE SUPS" : "GET SUPS"}
+                            </Button>
+                        </TooltipHelper>
                     </Stack>
 
                     <Divider
