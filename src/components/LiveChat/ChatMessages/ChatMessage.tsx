@@ -120,9 +120,7 @@ export const ChatMessage = ({
                     </Typography>
                 </Box>
 
-                <Typography sx={{ fontSize: fontSize ? `${fontSize.toString()}rem` : "1.33rem" }}>
-                    {message}{" "}
-                </Typography>
+                <Typography sx={{ fontSize: fontSize ? `${fontSize}rem` : "1.33rem" }}>{message} </Typography>
             </Box>
         </Stack>
     )

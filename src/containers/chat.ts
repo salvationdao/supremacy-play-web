@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "."
 import { MESSAGES_BUFFER_SIZE } from "../constants"
+import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys, PassportServerKeys } from "../keys"
 import { ChatData } from "../types/passport"
@@ -46,9 +47,7 @@ export const ChatContainer = createContainer(() => {
         localStorage.getItem("chatFilterZerosFaction") == "true",
     )
 
-    const localFontSize = localStorage.getItem("chatFontSize")
-
-    const [fontSize, setFontSize] = useState<number>(localFontSize ? parseInt(localFontSize) : 1.33)
+    const [fontSize, setFontSize] = useState<number>(parseString(localStorage.getItem("chatFontSize"), 1.33))
 
     // Chat states
     const [initialSentDate, setInitialSentDate] = useState<SentChatMessageData>({ global: [], faction: [] })

@@ -1,5 +1,5 @@
-import { Stack, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from "@mui/material"
-import { SvgChatSplit, SvgFontCase } from "../../../assets"
+import { Stack, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material"
+import { SvgFontCase } from "../../../assets"
 import { useChat } from "../../../containers"
 
 export const ChatFontSize = () => {
@@ -27,6 +27,7 @@ export const ChatFontSize = () => {
                 <ToggleButton value={0.9}>
                     <SvgFontCase size="1rem" sx={{ minWidth: "2rem" }} />
                 </ToggleButton>
+
                 <ToggleButton value={1.33}>
                     <SvgFontCase size="1.5rem" sx={{ minWidth: "2rem" }} />
                 </ToggleButton>
