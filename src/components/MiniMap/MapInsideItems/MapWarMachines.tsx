@@ -91,7 +91,7 @@ const MapWarMachineInner = ({
 
     const wmImageUrl = imageAvatar || GenericWarMachinePNG
 
-    const SIZE = Math.min(gridWidth, gridHeight) * 1.8
+    const SIZE = Math.min(gridWidth, gridHeight) * 1.1
     const ICON_SIZE = isSpawnedAI ? 0.8 * SIZE : 1 * SIZE
     const ARROW_LENGTH = ICON_SIZE / 2 + 0.5 * SIZE
     const DOT_SIZE = isSpawnedAI ? 0.7 * SIZE : 1.2 * SIZE

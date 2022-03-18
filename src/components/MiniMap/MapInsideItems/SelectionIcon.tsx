@@ -23,8 +23,8 @@ export const SelectionIcon = ({
     if (!selection || !gameAbility || !targeting) return null
 
     const { colour, image_url } = gameAbility
-    const sizeX = gridWidth * 2.5
-    const sizeY = gridHeight * 2.5
+    const sizeX = gridWidth * 1.3
+    const sizeY = gridHeight * 1.3
 
     return (
         <Box
