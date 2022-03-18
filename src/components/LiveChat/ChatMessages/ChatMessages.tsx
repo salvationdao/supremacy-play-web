@@ -32,6 +32,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
         userMultiplierMap,
         citizenPlayerIDs,
         splitOption,
+        fontSize,
     } = useChat()
 
     return (
@@ -46,6 +47,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
             citizenPlayerIDs={citizenPlayerIDs}
             faction_id={props.faction_id}
             splitOption={splitOption}
+            fontSize={fontSize}
         />
     )
 }
@@ -57,6 +59,7 @@ interface ChatMessagesInnerProps extends ChatMessagesProps, Partial<WebSocketPro
     userMultiplierMap: UserMultiplierMap
     citizenPlayerIDs: string[]
     splitOption: SplitOptionType
+    fontSize: number
 }
 
 const ChatMessagesInner = ({
@@ -72,6 +75,7 @@ const ChatMessagesInner = ({
     citizenPlayerIDs,
     faction_id,
     splitOption,
+    fontSize,
 }: ChatMessagesInnerProps) => {
     const { user } = usePassportServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
@@ -164,6 +168,7 @@ const ChatMessagesInner = ({
                                 isFailed={c.from_user_id != user?.id ? false : failedMessages.includes(c.sent_at)}
                                 multiplierValue={userMultiplierMap[c.from_user_id]}
                                 isCitizen={citizenPlayerIDs.some((cp) => cp === c.from_user_id)}
+                                fontSize={fontSize}
                             />
                         ))
                     ) : (
