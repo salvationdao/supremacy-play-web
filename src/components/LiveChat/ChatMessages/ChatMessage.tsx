@@ -13,6 +13,7 @@ export const ChatMessage = ({
     multiplierValue,
     isCitizen,
     filterZeros,
+    fontSize,
 }: {
     chat: ChatData
     isSent?: boolean
@@ -20,6 +21,7 @@ export const ChatMessage = ({
     multiplierValue?: string
     isCitizen: boolean
     filterZeros?: boolean
+    fontSize: number
 }) => {
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at, self } =
         chat
@@ -118,7 +120,9 @@ export const ChatMessage = ({
                     </Typography>
                 </Box>
 
-                <Typography sx={{ fontSize: "1.33rem" }}>{message} </Typography>
+                <Typography sx={{ fontSize: fontSize ? `${fontSize.toString()}rem` : "1.33rem" }}>
+                    {message}{" "}
+                </Typography>
             </Box>
         </Stack>
     )

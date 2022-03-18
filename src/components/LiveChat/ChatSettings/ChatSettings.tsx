@@ -4,6 +4,7 @@ import { ChatFilter, SplitView } from "../.."
 import { SvgSettings } from "../../../assets"
 import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
+import { ChatFontSize } from "./ChatFontSize"
 
 export const ChatSettings = ({ primaryColor, faction_id }: { primaryColor: string; faction_id: string | null }) => {
     const backgroundColor = shadeColor(primaryColor, -95)
@@ -61,6 +62,7 @@ const SettingsContent = ({ faction_id }: { faction_id: string | null }) => {
             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                 CHAT SETTINGS
             </Typography>
+            <ChatFontSize />
             <SplitView />
             <ChatFilter faction_id={faction_id} />
         </Stack>
