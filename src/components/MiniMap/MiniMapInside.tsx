@@ -330,28 +330,24 @@ const MiniMapInsideInner = ({
                         transition: "all .2",
                     }}
                 >
-                    {!gesturing && (
-                        <>
-                            <SelectionIcon
-                                key={selection && `column-${selection.y}-row-${selection.x}`}
-                                gameAbility={gameAbility}
-                                gridWidth={gridWidth}
-                                gridHeight={gridHeight}
-                                selection={selection}
-                                setSelection={setSelection}
-                                targeting={targeting}
-                            />
+                    <SelectionIcon
+                        key={selection && `column-${selection.y}-row-${selection.x}`}
+                        gameAbility={gameAbility}
+                        gridWidth={gridWidth}
+                        gridHeight={gridHeight}
+                        selection={selection}
+                        setSelection={setSelection}
+                        targeting={targeting}
+                    />
 
-                            <MapWarMachines
-                                map={map}
-                                gridWidth={gridWidth}
-                                gridHeight={gridHeight}
-                                warMachines={warMachines || []}
-                                enlarged={enlarged}
-                                targeting={targeting}
-                            />
-                        </>
-                    )}
+                    <MapWarMachines
+                        map={map}
+                        gridWidth={gridWidth}
+                        gridHeight={gridHeight}
+                        warMachines={warMachines || []}
+                        enlarged={enlarged}
+                        targeting={targeting}
+                    />
 
                     {/* Map Image */}
                     <Box
