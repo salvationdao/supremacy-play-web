@@ -47,7 +47,7 @@ export const ChatContainer = createContainer(() => {
         localStorage.getItem("chatFilterZerosFaction") == "true",
     )
 
-    const [fontSize, setFontSize] = useState<number>(parseString(localStorage.getItem("chatFontSize"), 1.33))
+    const [fontSize, setFontSize] = useState<number>(parseString(localStorage.getItem("chatFontSize"), 1))
 
     // Chat states
     const [initialSentDate, setInitialSentDate] = useState<SentChatMessageData>({ global: [], faction: [] })
@@ -68,7 +68,7 @@ export const ChatContainer = createContainer(() => {
         localStorage.setItem("chatSplitOption", splitOption || "tabbed")
         localStorage.setItem("chatFilterZerosGlobal", filterZerosGlobal ? "true" : "false")
         localStorage.setItem("chatFilterZerosFaction", filterZerosFaction ? "true" : "false")
-        localStorage.setItem("chatFontSize", fontSize ? fontSize.toString() : "1.33")
+        localStorage.setItem("chatFontSize", fontSize ? fontSize.toString() : "1")
     }, [splitOption, filterZerosGlobal, filterZerosFaction, fontSize])
 
     const onSentMessage = (sentAt: Date) => {
