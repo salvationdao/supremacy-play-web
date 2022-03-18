@@ -6,9 +6,10 @@ import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
-import { GameServerKeys, PassportServerKeys } from "../../keys"
+import { PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset, AssetQueueStat } from "../../types/assets"
+import { LeaveConfirmation } from "./LeaveConfirmation"
 
 const RepairCountdown = ({ endTime }: { endTime: Date }) => {
     const { hours, minutes, seconds } = useTimer(endTime)
@@ -34,11 +35,11 @@ export const AssetItem = ({
 }) => {
     const { user } = usePassportServerAuth()
     const { state, subscribe } = usePassportServerWebsocket()
-    const { state: gsState, send: sendGS } = useGameServerWebsocket()
-    const [isDeployModal, toggleIsDeployModal] = useToggle()
+    const { state: gsState } = useGameServerWebsocket()
+    const [deployModalOpen, toggleDeployModalOpen] = useToggle()
+    const [leaveModalOpen, toggleLeaveModalOpen] = useToggle()
 
     const [mouseOver, setMouseOver] = useState<boolean>(false)
-    const [removing, setRemoving] = useState<boolean>(false)
 
     const [assetData, setAssetData] = useState<Asset>(asset)
 
@@ -154,34 +155,38 @@ export const AssetItem = ({
         if (isInQueue) {
             return (
                 <>
-                    <Typography
-                        onMouseOver={() => setMouseOver(true)}
+                    <Button
+                        onMouseEnter={() => setMouseOver(true)}
                         onMouseLeave={() => setMouseOver(false)}
-                        onClick={async () => {
-                            if (removing) return
-                            setRemoving(true)
-                            try {
-                                await sendGS(GameServerKeys.LeaveQueue, { asset_hash: asset.hash })
-                            } finally {
-                                setRemoving(false)
-                            }
-                        }}
-                        variant="body2"
+                        onFocus={() => setMouseOver(true)}
+                        onBlur={() => setMouseOver(false)}
+                        onClick={() => toggleLeaveModalOpen(true)}
+                        variant="contained"
+                        size="small"
                         sx={{
+                            display: "inline",
+                            padding: 0,
                             px: ".8rem",
                             pt: ".48rem",
                             pb: ".24rem",
                             cursor: "pointer",
                             width: "8.2rem",
                             textAlign: "center",
+                            backgroundColor: "transparent",
                             color: mouseOver ? colors.red : colors.yellow,
                             lineHeight: 1,
                             border: `${mouseOver ? colors.red : colors.yellow} 1px solid`,
                             borderRadius: 0.3,
+                            whiteSpace: "nowrap",
+                            ":hover": {
+                                backgroundColor: "transparent",
+                                boxShadow: "none",
+                                opacity: 1,
+                            },
                         }}
                     >
-                        {removing ? "LOADING" : mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
-                    </Typography>
+                        <Typography variant="body2" lineHeight={1}>{mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}</Typography>
+                    </Button>
                     {assetQueueStatus.contract_reward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
@@ -199,7 +204,7 @@ export const AssetItem = ({
             <Button
                 variant="contained"
                 size="small"
-                onClick={() => toggleIsDeployModal(true)}
+                onClick={() => toggleDeployModalOpen(true)}
                 sx={{
                     minWidth: 0,
                     px: ".8rem",
@@ -320,12 +325,13 @@ export const AssetItem = ({
             </Link>
 
             <DeployConfirmation
-                open={isDeployModal}
+                open={deployModalOpen}
                 asset={asset}
                 queueCost={queueCost}
                 contractReward={contractReward}
-                onClose={() => toggleIsDeployModal(false)}
+                onClose={() => toggleDeployModalOpen(false)}
             />
+            <LeaveConfirmation open={leaveModalOpen} asset={asset} onClose={() => toggleLeaveModalOpen(false)} />
         </Stack>
     )
 }
