@@ -7,7 +7,7 @@ import { Crosshair } from "../../assets"
 import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { GameAbility, Map, WarMachineState } from "../../types"
+import { Dimension, GameAbility, Map, WarMachineState } from "../../types"
 
 export interface MapSelection {
     x: number
@@ -79,7 +79,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
 
 interface Props {
     gameAbility?: GameAbility
-    containerDimensions: { width: number; height: number }
+    containerDimensions: Dimension
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     enlarged: boolean
@@ -145,9 +145,9 @@ const MiniMapInsideInner = ({
     useEffect(() => {
         if (!map) return
         const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
-
-        // the ternary stops the map showing out of bounds
-        setScale(minScale, 0, 0)
+        setDragX(0)
+        setDragY(0)
+        setMapScale(minScale)
     }, [containerDimensions, map, enlarged])
 
     // --------------- Minimap - useGesture setup -------------------
@@ -161,7 +161,7 @@ const MiniMapInsideInner = ({
     const [dragX, setDragX] = useState(0)
     const [dragY, setDragY] = useState(0)
     const [mapScale, setMapScale] = useState(0)
-    const [gesturing, toggleGesturing] = useToggle()
+    const [isGesturing, toggleIsGesturing] = useToggle()
 
     // Setup map drag
     useGesture(
@@ -218,22 +218,22 @@ const MiniMapInsideInner = ({
                 setScale(newScale, 0, 0)
             },
             onDragStart: () => {
-                toggleGesturing(true)
+                toggleIsGesturing(true)
             },
             onDragEnd: () => {
-                toggleGesturing(false)
+                toggleIsGesturing(false)
             },
             onWheelStart: () => {
-                toggleGesturing(true)
+                toggleIsGesturing(true)
             },
             onWheelEnd: () => {
-                toggleGesturing(false)
+                toggleIsGesturing(false)
             },
             onPinchStart: () => {
-                toggleGesturing(true)
+                toggleIsGesturing(true)
             },
             onPinchEnd: () => {
-                toggleGesturing(false)
+                toggleIsGesturing(false)
             },
         },
         {

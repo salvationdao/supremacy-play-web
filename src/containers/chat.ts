@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "."
 import { MESSAGES_BUFFER_SIZE } from "../constants"
+import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys, PassportServerKeys } from "../keys"
 import { ChatData } from "../types/passport"
@@ -27,6 +28,8 @@ export interface SentChatMessageData {
 
 export type SplitOptionType = "tabbed" | "split" | null
 
+export type FontSizeType = 0.75 | 1 | 1.5
+
 export const ChatContainer = createContainer(() => {
     const { user } = usePassportServerAuth()
     const { state, subscribe, send } = usePassportServerWebsocket()
@@ -46,9 +49,9 @@ export const ChatContainer = createContainer(() => {
         localStorage.getItem("chatFilterZerosFaction") == "true",
     )
 
-    const localFontSize = localStorage.getItem("chatFontSize")
-
-    const [fontSize, setFontSize] = useState<number>(localFontSize ? parseInt(localFontSize) : 1.33)
+    const [fontSize, setFontSize] = useState<FontSizeType>(
+        parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType,
+    )
 
     // Chat states
     const [initialSentDate, setInitialSentDate] = useState<SentChatMessageData>({ global: [], faction: [] })
@@ -69,7 +72,7 @@ export const ChatContainer = createContainer(() => {
         localStorage.setItem("chatSplitOption", splitOption || "tabbed")
         localStorage.setItem("chatFilterZerosGlobal", filterZerosGlobal ? "true" : "false")
         localStorage.setItem("chatFilterZerosFaction", filterZerosFaction ? "true" : "false")
-        localStorage.setItem("chatFontSize", fontSize ? fontSize.toString() : "1.33")
+        localStorage.setItem("chatFontSize", fontSize ? fontSize.toString() : "1")
     }, [splitOption, filterZerosGlobal, filterZerosFaction, fontSize])
 
     const onSentMessage = (sentAt: Date) => {

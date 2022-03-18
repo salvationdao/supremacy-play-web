@@ -5,6 +5,7 @@ import { useState } from "react"
 import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
 import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "../../containers"
 import { parseString } from "../../helpers"
+import { Dimension } from "../../types"
 
 export const VotingSystem = () => {
     const { bribeStage } = useGame()
@@ -27,7 +28,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
 
     if (!user || !user.faction) return null
 
-    const onResizeStop = (data: { width: number; height: number }) => {
+    const onResizeStop = (data: Dimension) => {
         const size = data || { width: containerWidth, height: containerHeight }
         setContainerWidth(size.width)
         setContainerHeight(size.height)
