@@ -56,8 +56,7 @@ export const GAME_BAR_HEIGHT = 5.9 // rem
 export const LIVE_CHAT_DRAWER_WIDTH = 34.0 // rem
 export const LIVE_CHAT_DRAWER_BUTTON_WIDTH = 2.0 // rem
 export const CONTROLS_HEIGHT = 3.0 // rem
-export const MINI_MAP_DEFAULT_WIDTH = 230 //px
-export const MINI_MAP_DEFAULT_HEIGHT = 200 //px
+export const MINI_MAP_DEFAULT_SIZE = 230 //px
 
 export const DRAWER_TRANSITION_DURATION = 250
 export const MESSAGES_BUFFER_SIZE = 300

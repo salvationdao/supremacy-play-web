@@ -1,9 +1,9 @@
 import { Box, Slide, Stack } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import { ReactElement, useEffect, useMemo } from "react"
+import { ReactElement, useEffect } from "react"
 import { BoxSlanted } from ".."
-import { MINI_MAP_DEFAULT_WIDTH } from "../../constants"
+import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { useDimension, useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { WarMachineItem } from "./WarMachineItem"
@@ -111,7 +111,7 @@ export const WarMachineStats = () => {
                     position: "absolute",
                     bottom: 0,
                     left: 0,
-                    right: isMapOpen ? `calc(${MINI_MAP_DEFAULT_WIDTH}px + 1.5rem)` : 0,
+                    right: isMapOpen ? `calc(${MINI_MAP_DEFAULT_SIZE}px + 1.5rem)` : 0,
                     zIndex: 13,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",

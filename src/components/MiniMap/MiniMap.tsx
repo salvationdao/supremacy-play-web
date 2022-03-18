@@ -2,7 +2,7 @@ import { Box, Fade, useTheme } from "@mui/material"
 import { useEffect, useState } from "react"
 import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
-import { MINI_MAP_DEFAULT_HEIGHT, MINI_MAP_DEFAULT_WIDTH } from "../../constants"
+import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import {
     useDimension,
     useGame,
@@ -12,7 +12,7 @@ import {
 } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
-import { Map } from "../../types"
+import { Dimension, Map } from "../../types"
 
 interface MiniMapProps {
     map?: Map
@@ -45,9 +45,13 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
     const theme = useTheme()
 
     const [enlarged, toggleEnlarged] = useToggle()
-    const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
-        width: MINI_MAP_DEFAULT_WIDTH,
-        height: MINI_MAP_DEFAULT_HEIGHT,
+    const [defaultDimensions, setDefaultDimensions] = useState<Dimension>({
+        width: MINI_MAP_DEFAULT_SIZE,
+        height: MINI_MAP_DEFAULT_SIZE,
+    })
+    const [dimensions, setDimensions] = useState<Dimension>({
+        width: MINI_MAP_DEFAULT_SIZE,
+        height: MINI_MAP_DEFAULT_SIZE,
     })
 
     // For targeting map
@@ -56,18 +60,27 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
 
     const isTargeting = winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT"
 
+    // Set initial size
+    useEffect(() => {
+        if (!map) return
+        const mapHeightWidthRatio = map ? map.height / map.width : 1
+        const res = { width: MINI_MAP_DEFAULT_SIZE, height: MINI_MAP_DEFAULT_SIZE * mapHeightWidthRatio }
+        setDefaultDimensions(res)
+        setDimensions(res)
+    }, [map])
+
     useEffect(() => {
         if (width <= 0 || height <= 0) return
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
         // 110px is approx the height of the mech stats
-        const newWidth = isTargeting ? Math.min(width - 25, 1000) : enlarged ? width - 25 : MINI_MAP_DEFAULT_WIDTH
+        const newWidth = isTargeting ? Math.min(width - 25, 1000) : enlarged ? width - 25 : defaultDimensions.width
         const newHeight = isTargeting
             ? Math.min(height - 25, 700)
             : enlarged
             ? height - 110 - 12.5
-            : MINI_MAP_DEFAULT_HEIGHT
+            : defaultDimensions.height
         setDimensions({ width: newWidth, height: newHeight })
-    }, [width, height, enlarged])
+    }, [width, height, enlarged, defaultDimensions])
 
     useEffect(() => {
         const endTime = winner?.end_time
@@ -115,7 +128,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                     color={mainColor}
                     onResizeStop={setDimensions}
                     initialDimensions={[dimensions.width, dimensions.height]}
-                    minConstraints={[MINI_MAP_DEFAULT_WIDTH, MINI_MAP_DEFAULT_HEIGHT]}
+                    minConstraints={[defaultDimensions.width, defaultDimensions.height]}
                     maxConstraints={[Math.min(width - 25, 638), Math.min(height - 25, 638)]}
                     resizeHandles={["nw"]}
                     handle={() => (

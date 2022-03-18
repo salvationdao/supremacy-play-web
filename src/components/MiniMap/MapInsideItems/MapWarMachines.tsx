@@ -236,7 +236,7 @@ const MapWarMachineInner = ({
                         spacing=".24rem"
                         sx={{
                             position: "absolute",
-                            bottom: enlarged ? "-.3rem" : "-1.2rem",
+                            bottom: enlarged ? "-.1rem" : "-.5rem",
                             left: "50%",
                             transform: "translate(-50%, calc(100% + 10px))",
                             width: SIZE * 1.2,

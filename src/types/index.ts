@@ -213,3 +213,8 @@ export interface MultiplierGuide {
     amount: number
     duration: number
 }
+
+export interface Dimension {
+    width: number
+    height: number
+}
