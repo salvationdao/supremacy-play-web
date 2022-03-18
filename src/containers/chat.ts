@@ -28,6 +28,8 @@ export interface SentChatMessageData {
 
 export type SplitOptionType = "tabbed" | "split" | null
 
+export type FontSizeType = 0.75 | 1 | 1.5
+
 export const ChatContainer = createContainer(() => {
     const { user } = usePassportServerAuth()
     const { state, subscribe, send } = usePassportServerWebsocket()
@@ -47,7 +49,9 @@ export const ChatContainer = createContainer(() => {
         localStorage.getItem("chatFilterZerosFaction") == "true",
     )
 
-    const [fontSize, setFontSize] = useState<number>(parseString(localStorage.getItem("chatFontSize"), 1))
+    const [fontSize, setFontSize] = useState<FontSizeType>(
+        parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType,
+    )
 
     // Chat states
     const [initialSentDate, setInitialSentDate] = useState<SentChatMessageData>({ global: [], faction: [] })

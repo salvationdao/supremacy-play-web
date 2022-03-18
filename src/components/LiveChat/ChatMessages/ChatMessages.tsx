@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { ChatMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
 import {
+    FontSizeType,
     SplitOptionType,
     useChat,
     useGameServerWebsocket,
@@ -59,7 +60,7 @@ interface ChatMessagesInnerProps extends ChatMessagesProps, Partial<WebSocketPro
     userMultiplierMap: UserMultiplierMap
     citizenPlayerIDs: string[]
     splitOption: SplitOptionType
-    fontSize: number
+    fontSize: FontSizeType
 }
 
 const ChatMessagesInner = ({

@@ -1,11 +1,11 @@
 import { Stack, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material"
 import { SvgFontCase } from "../../../assets"
-import { useChat } from "../../../containers"
+import { FontSizeType, useChat } from "../../../containers"
 
 export const ChatFontSize = () => {
     const { setFontSize, fontSize } = useChat()
 
-    const onChange = (event: React.MouseEvent<HTMLElement>, newValue: number) => {
+    const onChange = (event: React.MouseEvent<HTMLElement>, newValue: FontSizeType) => {
         if (newValue) setFontSize(newValue)
     }
 
