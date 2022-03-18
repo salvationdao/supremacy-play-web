@@ -45,6 +45,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
     const theme = useTheme()
 
     const [enlarged, toggleEnlarged] = useToggle()
+    const [mapHeightWidthRatio, setMapHeightWidthRatio] = useState(1)
     const [defaultDimensions, setDefaultDimensions] = useState<Dimension>({
         width: MINI_MAP_DEFAULT_SIZE,
         height: MINI_MAP_DEFAULT_SIZE,
@@ -63,22 +64,29 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
     // Set initial size
     useEffect(() => {
         if (!map) return
-        const mapHeightWidthRatio = map ? map.height / map.width : 1
-        const res = { width: MINI_MAP_DEFAULT_SIZE, height: MINI_MAP_DEFAULT_SIZE * mapHeightWidthRatio }
+        const ratio = map ? map.height / map.width : 1
+        const res = { width: MINI_MAP_DEFAULT_SIZE, height: MINI_MAP_DEFAULT_SIZE * ratio }
         setDefaultDimensions(res)
         setDimensions(res)
+        setMapHeightWidthRatio(ratio)
     }, [map])
 
     useEffect(() => {
         if (width <= 0 || height <= 0) return
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
         // 110px is approx the height of the mech stats
-        const newWidth = isTargeting ? Math.min(width - 25, 1000) : enlarged ? width - 25 : defaultDimensions.width
-        const newHeight = isTargeting
-            ? Math.min(height - 25, 700)
-            : enlarged
-            ? height - 110 - 12.5
-            : defaultDimensions.height
+        const maxWidth = width - 25
+        const maxHeight = height - 110 - 12.5
+        let targetingWidth = Math.min(maxWidth, 900)
+        let targetingHeight = targetingWidth * mapHeightWidthRatio
+
+        if (targetingHeight > maxHeight) {
+            targetingHeight = Math.min(maxHeight, 700)
+            targetingWidth = targetingHeight / mapHeightWidthRatio
+        }
+
+        const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width
+        const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height
         setDimensions({ width: newWidth, height: newHeight })
     }, [width, height, enlarged, defaultDimensions])
 
