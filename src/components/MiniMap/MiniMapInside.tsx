@@ -145,9 +145,9 @@ const MiniMapInsideInner = ({
     useEffect(() => {
         if (!map) return
         const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
-
-        // the ternary stops the map showing out of bounds
-        setScale(minScale, 0, 0)
+        setDragX(0)
+        setDragY(0)
+        setMapScale(minScale)
     }, [containerDimensions, map, enlarged])
 
     // --------------- Minimap - useGesture setup -------------------
