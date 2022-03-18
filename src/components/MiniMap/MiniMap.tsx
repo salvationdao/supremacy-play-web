@@ -1,8 +1,7 @@
-import { Box, Fade, IconButton, Typography, useTheme } from "@mui/material"
-import { SyntheticEvent, useEffect, useMemo, useRef, useState } from "react"
-import { Resizable, ResizeCallbackData } from "react-resizable"
-import { ClipThing, InteractiveMap, ResizeBox, TargetTimerCountdown } from ".."
-import { SvgHide, SvgMapEnlarge, SvgResizeXY } from "../../assets"
+import { Box, Fade, useTheme } from "@mui/material"
+import { useEffect, useState } from "react"
+import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
+import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_HEIGHT, MINI_MAP_DEFAULT_WIDTH } from "../../constants"
 import {
     useDimension,
@@ -11,7 +10,6 @@ import {
     BribeStageResponse,
     WinnerAnnouncementResponse,
 } from "../../containers"
-import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
 import { Map } from "../../types"
@@ -160,6 +158,26 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
                                 }}
                             >
+                                {isTargeting ? (
+                                    <MiniMapInside
+                                        gameAbility={winner.game_ability}
+                                        containerDimensions={dimensions}
+                                        targeting
+                                        setSubmitted={setSubmitted}
+                                        enlarged={enlarged}
+                                    />
+                                ) : (
+                                    <MiniMapInside containerDimensions={dimensions} enlarged={enlarged} />
+                                )}
+
+                                <TopIconSettings
+                                    map={map}
+                                    enlarged={enlarged}
+                                    mainColor={mainColor}
+                                    toggleEnlarged={toggleEnlarged}
+                                    toggleIsMapOpen={toggleIsMapOpen}
+                                />
+
                                 {isTargeting && (
                                     <TargetTimerCountdown
                                         gameAbility={winner.game_ability}
@@ -167,76 +185,6 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                         endTime={winner.end_time}
                                     />
                                 )}
-
-                                {isTargeting ? (
-                                    <InteractiveMap
-                                        gameAbility={winner.game_ability}
-                                        windowDimension={dimensions}
-                                        targeting
-                                        setSubmitted={setSubmitted}
-                                        enlarged={enlarged}
-                                    />
-                                ) : (
-                                    <InteractiveMap windowDimension={dimensions} enlarged={enlarged} />
-                                )}
-
-                                <Box
-                                    sx={{
-                                        position: "absolute",
-                                        top: 0,
-                                        left: 0,
-                                        right: 0,
-                                        height: "2.4rem",
-                                        backgroundColor: shadeColor(mainColor, -86),
-                                        boxShadow: 2,
-                                    }}
-                                >
-                                    <IconButton
-                                        size="small"
-                                        sx={{
-                                            position: "absolute",
-                                            left: enlarged ? ".5rem" : "2.5rem",
-                                            top: 0,
-                                            color: colors.text,
-                                            opacity: 0.8,
-                                            zIndex: 50,
-                                        }}
-                                        onClick={() => toggleEnlarged()}
-                                    >
-                                        <SvgMapEnlarge size="1.3rem" />
-                                    </IconButton>
-
-                                    <IconButton
-                                        size="small"
-                                        sx={{
-                                            position: "absolute",
-                                            left: enlarged ? "2.5rem" : "4.5rem",
-                                            top: 0,
-                                            color: colors.text,
-                                            opacity: 0.8,
-                                            zIndex: 50,
-                                        }}
-                                        onClick={() => toggleIsMapOpen()}
-                                    >
-                                        <SvgHide size="1.3rem" />
-                                    </IconButton>
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            position: "absolute",
-                                            left: enlarged ? "5.6rem" : "7.6rem",
-                                            top: 6.5,
-                                            fontSize: "1.1rem",
-                                            fontWeight: "fontWeightBold",
-                                            lineHeight: 1,
-                                        }}
-                                    >
-                                        {map.name
-                                            .replace(/([A-Z])/g, " $1")
-                                            .trim()
-                                            .toUpperCase()}
-                                    </Typography>
-                                </Box>
                             </Box>
                         </ClipThing>
                     </Box>

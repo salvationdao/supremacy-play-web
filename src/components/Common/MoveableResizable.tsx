@@ -142,7 +142,7 @@ export const MoveableResizable = ({
             >
                 <Box sx={{ position: "relative", pointerEvents: "all" }}>
                     <ResizeBox
-                        color={colors.darkNeonBlue}
+                        color={theme.factionTheme.primary || colors.darkNeonBlue}
                         onResizeStop={onResizeStop}
                         initialDimensions={[curWidth, curHeight]}
                         minConstraints={[
@@ -188,8 +188,9 @@ export const MoveableResizable = ({
                                 position: "relative",
                                 width: curWidth,
                                 height: curHeight,
+                                transition: "all .2s",
                                 resize: "all",
-                                overflow: "auto",
+                                overflow: "hidden",
                                 backgroundColor: theme.factionTheme.background,
                                 borderRadius: 0.5,
                             }}
