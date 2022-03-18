@@ -188,8 +188,9 @@ export const MoveableResizable = ({
                                 position: "relative",
                                 width: curWidth,
                                 height: curHeight,
+                                transition: "all .2s",
                                 resize: "all",
-                                overflow: "auto",
+                                overflow: "hidden",
                                 backgroundColor: theme.factionTheme.background,
                                 borderRadius: 0.5,
                             }}

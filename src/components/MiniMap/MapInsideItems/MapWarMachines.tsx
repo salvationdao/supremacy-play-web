@@ -1,10 +1,47 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../assets"
-import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
-import { shadeColor } from "../../helpers"
-import { colors } from "../../theme/theme"
-import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../types"
+import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
+import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
+import { shadeColor } from "../../../helpers"
+import { colors } from "../../../theme/theme"
+import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../../types"
+
+interface MapWarMachineProps {
+    gridWidth: number
+    gridHeight: number
+    warMachines: WarMachineState[]
+
+    map: Map
+    enlarged: boolean
+    targeting?: boolean
+}
+
+export const MapWarMachines = ({
+    gridWidth,
+    gridHeight,
+    warMachines,
+    map,
+    enlarged,
+    targeting,
+}: MapWarMachineProps) => {
+    if (!map || !warMachines || warMachines.length <= 0) return null
+
+    return (
+        <>
+            {warMachines.map((wm) => (
+                <MapWarMachine
+                    key={`${wm.participantID} - ${wm.hash}`}
+                    gridWidth={gridWidth}
+                    gridHeight={gridHeight}
+                    warMachine={wm}
+                    map={map}
+                    enlarged={enlarged}
+                    targeting={targeting}
+                />
+            ))}
+        </>
+    )
+}
 
 interface Props {
     gridWidth: number
@@ -15,7 +52,7 @@ interface Props {
     targeting?: boolean
 }
 
-export const MapWarMachine = (props: Props) => {
+const MapWarMachine = (props: Props) => {
     const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
     const { highlightedMechHash, setHighlightedMechHash } = useGame()
 
@@ -54,10 +91,10 @@ const MapWarMachineInner = ({
 
     const wmImageUrl = imageAvatar || GenericWarMachinePNG
 
-    const SIZE = Math.min(gridWidth, gridHeight)
-    const ICON_SIZE = isSpawnedAI ? 0.62 * SIZE : 0.8 * SIZE
-    const ARROW_LENGTH = ICON_SIZE / 2 + 0.4 * SIZE
-    const DOT_SIZE = isSpawnedAI ? 0.9 * SIZE : 1.4 * SIZE
+    const SIZE = Math.min(gridWidth, gridHeight) * 1.8
+    const ICON_SIZE = isSpawnedAI ? 0.8 * SIZE : 1 * SIZE
+    const ARROW_LENGTH = ICON_SIZE / 2 + 0.5 * SIZE
+    const DOT_SIZE = isSpawnedAI ? 0.7 * SIZE : 1.2 * SIZE
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
@@ -133,7 +170,7 @@ const MapWarMachineInner = ({
                               height: DOT_SIZE,
                               overflow: "visible",
                               backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
-                              border: `6px solid #000000${isAlive ? "" : "00"}`,
+                              border: `9px solid #000000${isAlive ? "" : "00"}`,
                               borderRadius: "50%",
                               boxShadow:
                                   highlightedMechHash === warMachine.hash
@@ -181,7 +218,7 @@ const MapWarMachineInner = ({
                         <Box sx={{ position: "relative", height: ARROW_LENGTH }}>
                             <SvgMapWarMachine
                                 fill={primaryColor}
-                                size={`${0.3 * SIZE}px`}
+                                size={`${0.45 * SIZE}px`}
                                 sx={{
                                     position: "absolute",
                                     top: -6,
@@ -194,23 +231,23 @@ const MapWarMachineInner = ({
                     </Box>
                 )}
 
-                {isAlive && enlarged && (
+                {isAlive && (
                     <Stack
+                        spacing=".24rem"
                         sx={{
                             position: "absolute",
-                            bottom: 0,
+                            bottom: enlarged ? "-.3rem" : "-1.2rem",
                             left: "50%",
                             transform: "translate(-50%, calc(100% + 10px))",
-                            width: SIZE,
+                            width: SIZE * 1.2,
                             zIndex: 1,
                         }}
-                        spacing=".24rem"
                     >
                         {warMachine.maxShield > 0 && (
                             <Box
                                 sx={{
                                     width: "100%",
-                                    height: `${0.25 * SIZE}px`,
+                                    height: `${0.3 * SIZE}px`,
                                     border: "1px solid #00000080",
                                     overflow: "hidden",
                                 }}
@@ -227,7 +264,7 @@ const MapWarMachineInner = ({
                         <Box
                             sx={{
                                 width: "100%",
-                                height: `${0.25 * SIZE}px`,
+                                height: `${0.3 * SIZE}px`,
                                 border: "1px solid #00000080",
                                 overflow: "hidden",
                             }}
