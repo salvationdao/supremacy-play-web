@@ -12,7 +12,7 @@ import {
     usePassportServerWebsocket,
     useWallet,
 } from "../../../containers"
-import { shadeColor, supFormatterNoFixed } from "../../../helpers"
+import { dateFormatter, shadeColor, supFormatterNoFixed } from "../../../helpers"
 import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -200,7 +200,7 @@ export const WalletDetails = () => {
                                 timeTilNextClaim
                                     ? timeTilNextClaim < new Date()
                                         ? "Claim free SUPs!"
-                                        : `Time until next claim: ${timeTilNextClaim.toLocaleTimeString()}`
+                                        : `Time until next claim: ${dateFormatter(timeTilNextClaim)}`
                                     : ""
                             }
                         >
