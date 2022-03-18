@@ -5,10 +5,12 @@ import { BarExpandable, SupsTooltipContent } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
 import { NullUUID, TOKEN_SALE_PAGE } from "../../../constants"
 import {
+    SocketState,
     useGame,
     useGameServerAuth,
     useGameServerWebsocket,
     usePassportServerAuth,
+    usePassportServerWebsocket,
     useWallet,
 } from "../../../containers"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
@@ -34,6 +36,22 @@ export const WalletDetails = () => {
     const { payload: latestTransactionPayload } = usePassportServerSecureSubscription<Transaction[]>(
         PassportServerKeys.SubscribeUserLatestTransactions,
     )
+
+    // Free sups button
+    const isFreeSupsEnabled =
+        process.env.REACT_APP_SENTRY_ENVIRONMENT === "staging" ||
+        process.env.REACT_APP_SENTRY_ENVIRONMENT === "development"
+    const { send: psSend, state: psState } = usePassportServerWebsocket()
+    const [timeTilNextClaim, setTimeTilNextClaim] = useState<Date>()
+
+    const getFreeSups = async () => {
+        if (psState !== SocketState.OPEN || !psSend || !user) return
+
+        const resp = await psSend<Date | boolean>(PassportServerKeys.GetFreeSups)
+        if (resp instanceof Date) {
+            setTimeTilNextClaim(resp)
+        }
+    }
 
     useEffect(() => {
         if (battleEndDetail && battleEndDetail.multipliers.length > 0) {
@@ -211,26 +229,61 @@ export const WalletDetails = () => {
                                 </Tooltip>
                             </div>
                         </ClickAwayListener>
-
-                        <Button
-                            href={TOKEN_SALE_PAGE}
-                            target="_blank"
-                            sx={{
-                                px: "1.2rem",
-                                pt: ".32rem",
-                                pb: ".16rem",
-                                flexShrink: 0,
-                                justifyContent: "flex-start",
-                                color: colors.neonBlue,
-                                whiteSpace: "nowrap",
-                                borderRadius: 0.2,
-                                border: `1px solid ${colors.neonBlue}`,
-                                overflow: "hidden",
-                                fontFamily: "Nostromo Regular Bold",
-                            }}
-                        >
-                            Get SUPS
-                        </Button>
+                        {isFreeSupsEnabled ? (
+                            <Tooltip
+                                title={
+                                    timeTilNextClaim ? (
+                                        <Typography>
+                                            {timeTilNextClaim < new Date()
+                                                ? "Claim free SUPs!"
+                                                : `Time until next claim: ${timeTilNextClaim.toLocaleTimeString()}`}
+                                        </Typography>
+                                    ) : (
+                                        ""
+                                    )
+                                }
+                            >
+                                <Button
+                                    sx={{
+                                        px: "1.2rem",
+                                        pt: ".32rem",
+                                        pb: ".16rem",
+                                        flexShrink: 0,
+                                        justifyContent: "flex-start",
+                                        color: colors.gold,
+                                        whiteSpace: "nowrap",
+                                        borderRadius: 0.2,
+                                        border: `1px solid ${colors.gold}`,
+                                        overflow: "hidden",
+                                        fontFamily: "Nostromo Regular Bold",
+                                    }}
+                                    onClick={() => getFreeSups()}
+                                    disabled={timeTilNextClaim && timeTilNextClaim < new Date()}
+                                >
+                                    Get Free SUPS
+                                </Button>
+                            </Tooltip>
+                        ) : (
+                            <Button
+                                href={TOKEN_SALE_PAGE}
+                                target="_blank"
+                                sx={{
+                                    px: "1.2rem",
+                                    pt: ".32rem",
+                                    pb: ".16rem",
+                                    flexShrink: 0,
+                                    justifyContent: "flex-start",
+                                    color: colors.neonBlue,
+                                    whiteSpace: "nowrap",
+                                    borderRadius: 0.2,
+                                    border: `1px solid ${colors.neonBlue}`,
+                                    overflow: "hidden",
+                                    fontFamily: "Nostromo Regular Bold",
+                                }}
+                            >
+                                Get SUPS
+                            </Button>
+                        )}
                     </Stack>
 
                     <Divider
