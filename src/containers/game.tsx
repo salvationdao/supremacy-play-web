@@ -126,7 +126,7 @@ export const GameContainer = createContainer(() => {
                 const dateNow = new Date()
 
                 // Just a temp fix, if user's pc time is not correct then at least set the 15s for them here
-                if (endTime > dateNow) {
+                if (endTime < dateNow) {
                     endTime = new Date(dateNow.getTime() + 15000)
                 }
                 setWinner({ ...payload, end_time: endTime })
