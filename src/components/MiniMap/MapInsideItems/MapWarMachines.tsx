@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
 import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
 import { shadeColor } from "../../../helpers"
@@ -87,22 +87,21 @@ const MapWarMachineInner = ({
     setHighlightedMechHash,
 }: PropsInner) => {
     const { hash, participantID, faction, maxHealth, maxShield, imageAvatar } = warMachine
-    const mapScale = map.width / (map.cells_x * 2000)
-
-    const wmImageUrl = imageAvatar || GenericWarMachinePNG
-
-    const SIZE = Math.min(gridWidth, gridHeight) * 1.1
-    const ICON_SIZE = isSpawnedAI ? 0.8 * SIZE : 1 * SIZE
-    const ARROW_LENGTH = ICON_SIZE / 2 + 0.5 * SIZE
-    const DOT_SIZE = isSpawnedAI ? 0.7 * SIZE : 1.2 * SIZE
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
     const [position, sePosition] = useState<Vector2i>(warMachine.position)
     // 0 is east, and goes CW, can be negative and above 360
     const [rotation, setRotation] = useState<number>(warMachine.rotation)
-    const isAlive = health > 0
-    const primaryColor = faction && faction.theme ? faction.theme.primary : "#FFFFFF"
+
+    const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
+    const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
+    const SIZE = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
+    const ICON_SIZE = useMemo(() => (isSpawnedAI ? 0.8 * SIZE : 1 * SIZE), [isSpawnedAI])
+    const ARROW_LENGTH = useMemo(() => ICON_SIZE / 2 + 0.5 * SIZE, [SIZE])
+    const DOT_SIZE = useMemo(() => (isSpawnedAI ? 0.7 * SIZE : 1.2 * SIZE), [isSpawnedAI, SIZE])
+    const primaryColor = useMemo(() => (faction && faction.theme ? faction.theme.primary : "#FFFFFF"), [faction])
+    const isAlive = useMemo(() => health > 0, [health])
 
     // Listen on current war machine changes
     useEffect(() => {
@@ -115,11 +114,14 @@ const MapWarMachineInner = ({
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage])
 
-    const handleClick = (mechHash: string) => {
-        if (mechHash === highlightedMechHash) {
-            setHighlightedMechHash(undefined)
-        } else setHighlightedMechHash(mechHash)
-    }
+    const handleClick = useMemo(
+        () => () => {
+            if (hash === highlightedMechHash) {
+                setHighlightedMechHash(undefined)
+            } else setHighlightedMechHash(hash)
+        },
+        [hash, highlightedMechHash],
+    )
 
     if (!position) return null
 
@@ -128,7 +130,7 @@ const MapWarMachineInner = ({
             key={`warMachine-${participantID}`}
             alignItems="center"
             justifyContent="center"
-            onClick={() => handleClick(hash)}
+            onClick={handleClick}
             sx={{
                 position: "absolute",
                 pointerEvents: targeting ? "none" : "all",
