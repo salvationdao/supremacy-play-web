@@ -24,14 +24,14 @@ export const ChatFontSize = () => {
                 onChange={onChange}
                 sx={{ ".MuiToggleButton-root": { p: ".5rem" } }}
             >
-                <ToggleButton value={0.75}>
+                <ToggleButton value={0.8}>
                     <SvgFontCase size="1rem" sx={{ minWidth: "2rem" }} />
                 </ToggleButton>
                 <ToggleButton value={1}>
                     <SvgFontCase size="1.5rem" sx={{ minWidth: "2rem" }} />
                 </ToggleButton>
 
-                <ToggleButton value={1.5}>
+                <ToggleButton value={1.4}>
                     <SvgFontCase size="2rem" sx={{ minWidth: "2rem" }} />
                 </ToggleButton>
             </ToggleButtonGroup>

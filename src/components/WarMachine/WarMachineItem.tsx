@@ -93,10 +93,10 @@ const WarMachineItemInner = ({
     const numSkillBars = gameAbilities ? gameAbilities.length : 0
     const isAlive = !warMachineDestroyedRecord
 
-    const handleClick = (mechHash: string) => {
-        if (mechHash === highlightedMechHash) {
+    const handleClick = () => {
+        if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
-        } else setHighlightedMechHash(mechHash)
+        } else setHighlightedMechHash(hash)
     }
 
     /* Toggle out isExpanded if other mech is highlighted */
@@ -152,7 +152,11 @@ const WarMachineItemInner = ({
     }, [state, subscribe, participantID])
 
     return (
-        <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
+        <BoxSlanted
+            key={`WarMachineItem-${participantID}`}
+            clipSlantSize="0.2rem"
+            sx={{ transform: `scale(${scale})` }}
+        >
             <Stack
                 ref={popoverRef}
                 direction="row"
@@ -226,7 +230,7 @@ const WarMachineItemInner = ({
                 >
                     <Box sx={{ background: `linear-gradient(${primary}, #000000)` }}>
                         <Box
-                            onClick={() => handleClick(warMachine.hash)}
+                            onClick={handleClick}
                             sx={{
                                 position: "relative",
                                 width: `${WIDTH_WM_IMAGE}rem`,
@@ -371,8 +375,15 @@ const WarMachineItemInner = ({
                     {gameAbilities && gameAbilities.length > 0 && (
                         <>
                             <BoxSlanted
-                                clipSlantSize="20px"
-                                onClick={isAlive ? togglePopoverOpen : null}
+                                clipSlantSize="0.2rem"
+                                onClick={
+                                    isAlive
+                                        ? () => {
+                                              if (!isExpanded) handleClick()
+                                              togglePopoverOpen()
+                                          }
+                                        : undefined
+                                }
                                 sx={{
                                     position: "relative",
                                     width: `${WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR}rem`,

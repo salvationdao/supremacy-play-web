@@ -32,25 +32,25 @@ export const BarContainer = createContainer(() => {
 
         // This waits for the transition to occur before calculating the responsive stuff
         setTimeout(() => {
-            if (width < 500) {
+            if (width < 530) {
                 setActiveBars({
                     enlist: false,
                     wallet: false,
                     profile: false,
                 })
-            } else if (width < 630) {
+            } else if (width < 660) {
                 setActiveBars({
                     enlist: false,
                     wallet: false,
                     profile: true,
                 })
-            } else if (width < 1015) {
+            } else if (width < 1045) {
                 setActiveBars({
                     enlist: false,
                     wallet: true,
                     profile: false,
                 })
-            } else if (width < 1165) {
+            } else if (width < 1195) {
                 setActiveBars({
                     enlist: true,
                     wallet: true,
@@ -75,14 +75,14 @@ export const BarContainer = createContainer(() => {
             const width = getBarWidth()
             if (!width) return
 
-            if (width < 1015) {
+            if (width < 1045) {
                 setActiveBars({
                     enlist: false,
                     wallet: false,
                     profile: false,
                     [barName]: newStatus,
                 })
-            } else if (width < 1165 && count > 2) {
+            } else if (width < 1195 && count > 2) {
                 setActiveBars({
                     enlist: barName !== "profile",
                     wallet: true,

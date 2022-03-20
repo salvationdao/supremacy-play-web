@@ -71,7 +71,7 @@ export const ChatMessage = ({
                 sx={{
                     wordBreak: "break-word",
                     "*": {
-                        userSelect: "text",
+                        userSelect: "text !important",
                     },
                 }}
             >
