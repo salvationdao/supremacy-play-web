@@ -13,6 +13,7 @@ export const ChatMessage = ({
     multiplierValue,
     isCitizen,
     filterZeros,
+    fontSize,
 }: {
     chat: ChatData
     isSent?: boolean
@@ -20,6 +21,7 @@ export const ChatMessage = ({
     multiplierValue?: string
     isCitizen: boolean
     filterZeros?: boolean
+    fontSize: number
 }) => {
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at, self } =
         chat
@@ -35,8 +37,8 @@ export const ChatMessage = ({
                 <Box
                     sx={{
                         mt: "-0.1rem !important",
-                        width: "1.8rem",
-                        height: "1.8rem",
+                        width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
+                        height: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
                         flexShrink: 0,
                         backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
                         backgroundRepeat: "no-repeat",
@@ -52,8 +54,8 @@ export const ChatMessage = ({
                 <Box
                     sx={{
                         mt: "-0.1rem !important",
-                        width: "1.8rem",
-                        height: "1.8rem",
+                        width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
+                        height: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
                         flexShrink: 0,
                         backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction_logo_blob_id})`,
                         backgroundRepeat: "no-repeat",
@@ -74,7 +76,14 @@ export const ChatMessage = ({
                 }}
             >
                 <Box>
-                    <Typography sx={{ display: "inline", color: message_color, fontWeight: 700, fontSize: "1.3rem" }}>
+                    <Typography
+                        sx={{
+                            display: "inline",
+                            color: message_color,
+                            fontWeight: 700,
+                            fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
+                        }}
+                    >
                         {truncate(from_username, 24)}
                     </Typography>
                     <Typography
@@ -89,7 +98,7 @@ export const ChatMessage = ({
                                     : colors.orange,
                             textAlign: "center",
                             fontFamily: "Nostromo Regular Bold",
-                            fontSize: ".86rem",
+                            fontSize: fontSize ? `${0.86 * fontSize}rem` : "0.86rem",
                             verticalAlign: "top",
                             opacity: multiplierValue ? 1 : 0.7,
                         }}
@@ -105,7 +114,7 @@ export const ChatMessage = ({
                                     ml: ".4rem",
                                     textAlign: "center",
                                     fontFamily: "Nostromo Regular Bold",
-                                    fontSize: ".86rem",
+                                    fontSize: fontSize ? `${0.86 * fontSize}rem` : "0.86rem",
                                     verticalAlign: "top",
                                 }}
                             >
@@ -113,12 +122,21 @@ export const ChatMessage = ({
                             </Typography>
                         </TooltipHelper>
                     )}
-                    <Typography variant="caption" sx={{ display: "inline", ml: ".4rem", color: "grey", opacity: 0.5 }}>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            display: "inline",
+                            ml: ".4rem",
+                            color: "grey",
+                            opacity: 0.5,
+                            fontSize: fontSize ? `${1 * fontSize}rem` : "1rem",
+                        }}
+                    >
                         {dateFormatter(sent_at)}
                     </Typography>
                 </Box>
 
-                <Typography sx={{ fontSize: "1.33rem" }}>{message} </Typography>
+                <Typography sx={{ fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem" }}>{message} </Typography>
             </Box>
         </Stack>
     )

@@ -8,6 +8,7 @@ import { UI_OPACITY } from "../../constants"
 import { useDimension } from "../../containers"
 import { clamp, parseString } from "../../helpers"
 import { colors } from "../../theme/theme"
+import { Dimension } from "../../types"
 
 export interface MoveableResizableConfig {
     localStoragePrefix: string
@@ -95,7 +96,7 @@ export const MoveableResizable = ({
     }
 
     // When user resize is done, save into local storage
-    const onResizeStop = (data: { width: number; height: number }) => {
+    const onResizeStop = (data: Dimension) => {
         const size = data || { width: curWidth, height: curHeight }
 
         if (allowResizeX && size.width >= minSizeX && size.width <= width - 2 * PADDING) {
@@ -142,7 +143,7 @@ export const MoveableResizable = ({
             >
                 <Box sx={{ position: "relative", pointerEvents: "all" }}>
                     <ResizeBox
-                        color={colors.darkNeonBlue}
+                        color={theme.factionTheme.primary || colors.darkNeonBlue}
                         onResizeStop={onResizeStop}
                         initialDimensions={[curWidth, curHeight]}
                         minConstraints={[
@@ -188,8 +189,9 @@ export const MoveableResizable = ({
                                 position: "relative",
                                 width: curWidth,
                                 height: curHeight,
+                                transition: "all .2s",
                                 resize: "all",
-                                overflow: "auto",
+                                overflow: "hidden",
                                 backgroundColor: theme.factionTheme.background,
                                 borderRadius: 0.5,
                             }}

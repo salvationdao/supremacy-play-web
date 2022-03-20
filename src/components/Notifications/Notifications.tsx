@@ -8,7 +8,7 @@ import {
     TextAlert,
     WarMachineAbilityAlert,
 } from ".."
-import { MINI_MAP_DEFAULT_HEIGHT, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from "../../constants"
+import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from "../../constants"
 import { useTheme } from "@mui/styles"
 import { Theme } from "@mui/material/styles"
 import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useGame } from "../../containers"
@@ -213,7 +213,7 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        maxHeight: `calc(${height}px - ${MINI_MAP_DEFAULT_HEIGHT + 40}px)`,
+                        maxHeight: `calc(${height}px - ${MINI_MAP_DEFAULT_SIZE + 40}px)`,
                         overflowY: "auto",
                         overflowX: "hidden",
                         pr: ".8rem",
