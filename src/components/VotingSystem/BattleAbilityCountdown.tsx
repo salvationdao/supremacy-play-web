@@ -30,14 +30,15 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
 
     useEffect(() => {
-        let endTime = bribeStage?.end_time
-        if (!endTime) return
+        if (!bribeStage) return
 
+        let endTime = bribeStage.end_time
         const dateNow = new Date()
 
-        // Just a temp fix, if user's pc time is not correct then at least set the 30s for them here
-        if (endTime < dateNow) {
-            endTime = new Date(dateNow.getTime() + 30000)
+        // Just a temp fix, if user's pc time is not correct then at least set for them
+        // Checked by seeing if they have at least 8s to do stuff
+        if (endTime < dateNow || endTime.getTime() - dateNow.getTime() < 8000) {
+            endTime = new Date(dateNow.getTime() + (bribeStage.phase == "BRIBE" ? 30000 : 20000))
         }
 
         setEndTimeState(endTime)
