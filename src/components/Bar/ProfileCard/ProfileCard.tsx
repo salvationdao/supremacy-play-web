@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Avatar, Stack, Typography, Link, Popover } from "@mui/material"
+import { useRef } from "react"
+import { Avatar, Stack, Typography, Popover } from "@mui/material"
 import { BarExpandable, ConnectButton, LogoutButton, NavButton } from "../.."
 import { useEffect } from "react"
 import { SvgAssets, SvgProfile, SvgShop } from "../../../assets"
@@ -7,11 +7,14 @@ import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_SERVER_HOST_IMAGES, PASSPORT
 import { usePassportServerAuth } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
+import { shadeColor } from "../../../helpers"
 
 export const ProfileCard = () => {
-    const { user, sessionID } = usePassportServerAuth()
+    const { user } = usePassportServerAuth()
     const [renderConnectButton, toggleRenderConnectButton] = useToggle()
-    const [anchorEl, setAnchorEl] = useState<HTMLAnchorElement | null>(null)
+
+    const popoverRef = useRef(null)
+    const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
     // Don't show the connect button for couple seconds as it tries to do the auto login
     useEffect(() => {
@@ -25,7 +28,6 @@ export const ProfileCard = () => {
     }
 
     const { username, avatar_id, faction } = user
-    const profileDropdownID = "profile_dropdown"
 
     return (
         <>
@@ -46,69 +48,63 @@ export const ProfileCard = () => {
                     />
                 }
             >
-                <Link
-                    aria-describedby={profileDropdownID}
-                    href={"#"}
-                    sx={{ height: "100%", ":hover p": { opacity: 0.7 } }}
-                    onClick={(e) => {
-                        e.preventDefault()
-                        setAnchorEl(e.currentTarget.closest("a"))
+                <Stack
+                    ref={popoverRef}
+                    onClick={toggleIsPopoverOpen}
+                    direction="row"
+                    alignItems="center"
+                    spacing=".96rem"
+                    sx={{
+                        mx: "1.2rem",
+                        height: "100%",
+                        cursor: "pointer",
+                        ":hover p": { opacity: 0.7 },
+                        overflowX: "auto",
+                        overflowY: "hidden",
+                        scrollbarWidth: "none",
+                        "::-webkit-scrollbar": {
+                            height: ".4rem",
+                        },
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
+                            borderRadius: 3,
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                            background: colors.darkNeonBlue,
+                            borderRadius: 3,
+                        },
                     }}
                 >
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing=".96rem"
+                    <Avatar
+                        src={avatar_id ? `${PASSPORT_WEB}api/files/${avatar_id}` : ""}
+                        alt={`${username}'s Avatar`}
                         sx={{
-                            mx: "1.2rem",
-                            height: "100%",
-                            overflowX: "auto",
-                            overflowY: "hidden",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                height: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: colors.darkNeonBlue,
-                                borderRadius: 3,
-                            },
+                            height: "2.6rem",
+                            width: "2.6rem",
+                            borderRadius: 0.8,
+                            border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
+                        }}
+                        variant="square"
+                    />
+
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            mt: ".29rem !important",
+                            lineHeight: 1,
+                            fontFamily: "Nostromo Regular Black",
+                            color: faction ? faction.theme.primary : "#FFFFFF",
                         }}
                     >
-                        <Avatar
-                            src={avatar_id ? `${PASSPORT_WEB}api/files/${avatar_id}` : ""}
-                            alt={`${username}'s Avatar`}
-                            sx={{
-                                height: "2.6rem",
-                                width: "2.6rem",
-                                borderRadius: 0.8,
-                                border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
-                            }}
-                            variant="square"
-                        />
-
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                mt: ".29rem !important",
-                                lineHeight: 1,
-                                fontFamily: "Nostromo Regular Black",
-                                color: faction ? faction.theme.primary : "#FFFFFF",
-                            }}
-                        >
-                            {username}
-                        </Typography>
-                    </Stack>
-                </Link>
+                        {username}
+                    </Typography>
+                </Stack>
             </BarExpandable>
+
             <Popover
-                id={profileDropdownID}
-                open={!!anchorEl}
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
+                open={isPopoverOpen}
+                anchorEl={popoverRef.current}
+                onClose={() => toggleIsPopoverOpen(false)}
                 anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "left",
@@ -121,12 +117,14 @@ export const ProfileCard = () => {
                     mt: ".8rem",
                     zIndex: 10000,
                     ".MuiPaper-root": {
-                        backgroundColor: colors.darkNavy,
-                        border: "#FFFFFF80 1px solid",
+                        background: "none",
+                        backgroundColor:
+                            user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                        border: "#FFFFFF50 1px solid",
                     },
                 }}
             >
-                <Stack spacing=".32rem" sx={{ p: ".8rem", backgroundColor: colors.darkNavy }}>
+                <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
                     <NavButton
                         href={`${PASSPORT_WEB}collections/${user.username}`}
                         startIcon={<SvgAssets size="1.6rem" />}

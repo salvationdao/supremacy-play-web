@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDrawer } from "."
 import { DRAWER_TRANSITION_DURATION } from "../constants"
-import { useToggle, useWindowDimensions } from "../hooks"
+import { useWindowDimensions } from "../hooks"
 
 export interface ActiveBars {
     enlist: boolean
@@ -14,23 +14,57 @@ export const BarContainer = createContainer(() => {
     const gameBarRef = useRef<HTMLDivElement>()
     const windowDimensions = useWindowDimensions()
     const { isAnyPanelOpen } = useDrawer()
-
-    const [below1500, toggleBelow1500] = useToggle()
-    const [below925, toggleBelow925] = useToggle()
-    const [below812, toggleBelow812] = useToggle()
     const [activeBars, setActiveBars] = useState<ActiveBars>({
         enlist: true,
         wallet: true,
         profile: true,
     })
 
-    const activeAll = () => {
-        setActiveBars({
-            enlist: true,
-            wallet: true,
-            profile: true,
-        })
+    const getBarWidth = () => {
+        const el = gameBarRef.current
+        if (!el) return
+        return el.offsetWidth
     }
+
+    useEffect(() => {
+        const width = getBarWidth()
+        if (!width) return
+
+        // This waits for the transition to occur before calculating the responsive stuff
+        setTimeout(() => {
+            if (width < 530) {
+                setActiveBars({
+                    enlist: false,
+                    wallet: false,
+                    profile: false,
+                })
+            } else if (width < 660) {
+                setActiveBars({
+                    enlist: false,
+                    wallet: false,
+                    profile: true,
+                })
+            } else if (width < 1045) {
+                setActiveBars({
+                    enlist: false,
+                    wallet: true,
+                    profile: false,
+                })
+            } else if (width < 1195) {
+                setActiveBars({
+                    enlist: true,
+                    wallet: true,
+                    profile: false,
+                })
+            } else {
+                setActiveBars({
+                    enlist: true,
+                    wallet: true,
+                    profile: true,
+                })
+            }
+        }, DRAWER_TRANSITION_DURATION + 50)
+    }, [windowDimensions, isAnyPanelOpen])
 
     // Make sure that the bar is limited to only 1, 2, or 3 things expanded at the same time, depending on screen size
     const toggleActiveBar = (barName: keyof ActiveBars, newStatus: boolean) => {
@@ -38,18 +72,21 @@ export const BarContainer = createContainer(() => {
         const count = Object.values(newState).filter(Boolean).length
 
         if (newStatus) {
-            if (below925) {
+            const width = getBarWidth()
+            if (!width) return
+
+            if (width < 1045) {
                 setActiveBars({
                     enlist: false,
                     wallet: false,
                     profile: false,
                     [barName]: newStatus,
                 })
-            } else if (below1500 && count > 2) {
+            } else if (width < 1195 && count > 2) {
                 setActiveBars({
-                    enlist: barName !== "wallet",
-                    wallet: barName === "wallet",
-                    profile: true,
+                    enlist: barName !== "profile",
+                    wallet: true,
+                    profile: barName === "profile",
                     [barName]: newStatus,
                 })
             } else {
@@ -59,41 +96,6 @@ export const BarContainer = createContainer(() => {
             setActiveBars((prev) => ({ ...prev, [barName]: newStatus }))
         }
     }
-
-    useEffect(() => {
-        // This waits for the transition to occur before calculating the responsive stuff
-        setTimeout(() => {
-            const el = gameBarRef.current
-            if (!el) return
-            toggleBelow1500(el.offsetWidth < 1500)
-            toggleBelow925(el.offsetWidth < 925)
-            toggleBelow812(el.offsetWidth < 812)
-        }, DRAWER_TRANSITION_DURATION + 50)
-    }, [windowDimensions, isAnyPanelOpen, toggleBelow1500, toggleBelow925, toggleBelow812])
-
-    useEffect(() => {
-        if (below812) {
-            setActiveBars({
-                enlist: false,
-                wallet: false,
-                profile: false,
-            })
-        } else if (below925) {
-            setActiveBars({
-                enlist: false,
-                wallet: true,
-                profile: false,
-            })
-        } else if (below1500) {
-            setActiveBars({
-                enlist: false,
-                wallet: true,
-                profile: true,
-            })
-        } else {
-            activeAll()
-        }
-    }, [below1500, below925, below812])
 
     return {
         gameBarRef,

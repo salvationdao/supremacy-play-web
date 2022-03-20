@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "."
 import { MESSAGES_BUFFER_SIZE } from "../constants"
+import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys, PassportServerKeys } from "../keys"
 import { ChatData } from "../types/passport"
@@ -27,6 +28,8 @@ export interface SentChatMessageData {
 
 export type SplitOptionType = "tabbed" | "split" | null
 
+export type FontSizeType = 0.8 | 1 | 1.4
+
 export const ChatContainer = createContainer(() => {
     const { user } = usePassportServerAuth()
     const { state, subscribe, send } = usePassportServerWebsocket()
@@ -44,6 +47,10 @@ export const ChatContainer = createContainer(() => {
     )
     const [filterZerosFaction, toggleFilterZerosFaction] = useToggle(
         localStorage.getItem("chatFilterZerosFaction") == "true",
+    )
+
+    const [fontSize, setFontSize] = useState<FontSizeType>(
+        parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType,
     )
 
     // Chat states
@@ -65,7 +72,8 @@ export const ChatContainer = createContainer(() => {
         localStorage.setItem("chatSplitOption", splitOption || "tabbed")
         localStorage.setItem("chatFilterZerosGlobal", filterZerosGlobal ? "true" : "false")
         localStorage.setItem("chatFilterZerosFaction", filterZerosFaction ? "true" : "false")
-    }, [splitOption, filterZerosGlobal, filterZerosFaction])
+        localStorage.setItem("chatFontSize", fontSize ? fontSize.toString() : "1")
+    }, [splitOption, filterZerosGlobal, filterZerosFaction, fontSize])
 
     const onSentMessage = (sentAt: Date) => {
         setSentMessages((prev) => {
@@ -207,6 +215,8 @@ export const ChatContainer = createContainer(() => {
         sentMessages: sentMessages.concat(initialSentDate.global, initialSentDate.faction),
         failedMessages,
         onFailedMessage,
+        fontSize,
+        setFontSize,
     }
 })
 

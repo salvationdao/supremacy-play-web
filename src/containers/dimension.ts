@@ -10,17 +10,18 @@ import {
     STREAM_ASPECT_RATIO_W_H,
 } from "../constants"
 import { useWindowDimensions } from "../hooks"
+import { Dimension } from "../types"
 
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer(() => {
     const { width: windowWidth, height: windowHeight } = useWindowDimensions()
     const { isAnyPanelOpen } = useDrawer()
 
-    const [mainDivDimensions, setMainDivDimensions] = useState<{ width: number; height: number }>({
+    const [mainDivDimensions, setMainDivDimensions] = useState<Dimension>({
         width: 0,
         height: 0,
     })
-    const [streamDimensions, setStreamDimensions] = useState<{ width: number; height: number }>({
+    const [streamDimensions, setStreamDimensions] = useState<Dimension>({
         width: 0,
         height: 0,
     })

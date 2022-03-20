@@ -130,7 +130,7 @@ const ChatSendInner = ({
                     size="small"
                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
                         e.stopPropagation()
-                        if (e.key == "Enter" && !e.shiftKey && !e.ctrlKey) {
+                        if (e.key == "Enter") {
                             e.preventDefault()
                             sendMessage()
                         }

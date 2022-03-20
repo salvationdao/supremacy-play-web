@@ -2,47 +2,16 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useGesture } from "@use-gesture/react"
 import moment from "moment"
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
-import { animated, useSpring } from "react-spring"
-import { Grid, MapWarMachine, SelectionIcon } from ".."
+import { MapWarMachines, SelectionIcon } from ".."
+import { Crosshair } from "../../assets"
 import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
-import { useInterval } from "../../hooks"
+import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { opacityEffect } from "../../theme/keyframes"
-import { GameAbility, Map, WarMachineState } from "../../types"
+import { Dimension, GameAbility, Map, WarMachineState } from "../../types"
 
 export interface MapSelection {
     x: number
     y: number
-}
-
-interface MapWarMachineProps {
-    gridWidth: number
-    gridHeight: number
-    warMachines: WarMachineState[]
-
-    map: Map
-    enlarged: boolean
-    targeting?: boolean
-}
-
-const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting }: MapWarMachineProps) => {
-    if (!map || !warMachines || warMachines.length <= 0) return null
-
-    return (
-        <>
-            {warMachines.map((wm) => (
-                <MapWarMachine
-                    key={`${wm.participantID} - ${wm.hash}`}
-                    gridWidth={gridWidth}
-                    gridHeight={gridHeight}
-                    warMachine={wm}
-                    map={map}
-                    enlarged={enlarged}
-                    targeting={targeting}
-                />
-            ))}
-        </>
-    )
 }
 
 // Count down timer for the selection
@@ -110,17 +79,17 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
 
 interface Props {
     gameAbility?: GameAbility
-    windowDimension: { width: number; height: number }
+    containerDimensions: Dimension
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     enlarged: boolean
 }
 
-export const InteractiveMap = (props: Props) => {
+export const MiniMapInside = (props: Props) => {
     const { state, send } = useGameServerWebsocket()
     const { map, warMachines } = useGame()
 
-    return <InteractiveMapInner {...props} state={state} send={send} map={map} warMachines={warMachines} />
+    return <MiniMapInsideInner {...props} state={state} send={send} map={map} warMachines={warMachines} />
 }
 
 interface PropsInner extends Props, Partial<WebSocketProperties> {
@@ -128,11 +97,11 @@ interface PropsInner extends Props, Partial<WebSocketProperties> {
     warMachines?: WarMachineState[]
 }
 
-const InteractiveMapInner = ({
+const MiniMapInsideInner = ({
     state,
     send,
     gameAbility,
-    windowDimension,
+    containerDimensions,
     targeting,
     setSubmitted,
     enlarged,
@@ -140,9 +109,6 @@ const InteractiveMapInner = ({
     warMachines,
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
-    const [iconLocation] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
-    const prevSelection = useRef<MapSelection>()
-    const isDragging = useRef<boolean>(false)
     const mapElement = useRef<any>()
 
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
@@ -157,62 +123,65 @@ const InteractiveMapInner = ({
             })
             setSubmitted && setSubmitted(true)
             setSelection(undefined)
-            prevSelection.current = undefined
         } catch (e) {
             console.debug(e)
+        }
+    }
+
+    const handleSelection = (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
+        if (mapElement) {
+            const rect = mapElement.current.getBoundingClientRect()
+            // Mouse position
+            const x = e.clientX - rect.left
+            const y = e.clientY - rect.top
+            setSelection({
+                x: x / (gridWidth * mapScale),
+                y: y / (gridHeight * mapScale),
+            })
         }
     }
 
     // Set map scale to minimum scale while staying in-bounds
     useEffect(() => {
         if (!map) return
-        const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
-
-        // the ternary stops the map showing out of bounds
-        enlarged ? set({ scale: minScale, x: 0, y: 0, immediate: true }) : set({ scale: minScale, x: 0, y: 0 })
-    }, [windowDimension, warMachines])
+        const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
+        setDragX(0)
+        setDragY(0)
+        setMapScale(minScale)
+    }, [containerDimensions, map, enlarged])
 
     // --------------- Minimap - useGesture setup -------------------
-
+    const gestureRef = useRef<HTMLDivElement>(null)
     // Prevents map zooming from interfering with the browsers' accessibility zoom
     document.addEventListener("gesturestart", (e) => e.preventDefault())
     document.addEventListener("gesturechange", (e) => e.preventDefault())
     document.addEventListener("gestureend", (e) => e.preventDefault())
 
-    // Create actions
-    const gestureRef = useRef<HTMLDivElement>(null)
-
     // Setup use-gesture props
-    const [{ x, y, scale }, set] = useSpring(() => ({
-        x: 0,
-        y: 0,
-        scale: map ? windowDimension.width / map.width : 1,
-    }))
+    const [dragX, setDragX] = useState(0)
+    const [dragY, setDragY] = useState(0)
+    const [mapScale, setMapScale] = useState(0)
+    const [isGesturing, toggleIsGesturing] = useToggle()
 
     // Setup map drag
     useGesture(
         {
-            onDrag: ({ dragging, wheeling, cancel, offset: [x, y], down }) => {
-                if (wheeling || !map || !enlarged) return cancel()
-
-                // Set dragging
-                dragging
-                    ? (isDragging.current = true)
-                    : setTimeout(() => {
-                          isDragging.current = false
-                      }, 50)
+            onDrag: ({ wheeling, cancel, offset: [x, y] }) => {
+                if (wheeling || !map) return cancel()
 
                 // Set [x,y] offset
-                set({ x: Math.round(x), y: Math.round(y), immediate: down })
+                setDragX(Math.round(x))
+                setDragY(Math.round(y))
             },
-            onWheel: ({ delta: [, deltaY], pinching, dragging, event: e }) => {
-                if (!enlarged || pinching || dragging || !map) return
+            onWheel: ({ delta: [, deltaY], pinching, wheeling, dragging, event: e }) => {
+                if (pinching || dragging || !map || !wheeling) return
+
                 const mapWidth = map.width
                 const mapHeight = map.height
 
                 // Calculate new scale
-                const curScale = scale.get()
-                const newScale = curScale * (deltaY > 0 ? 0.95 : 1.05)
+                const curScale = mapScale
+                const newScale = curScale * (deltaY > 0 ? 0.96 : 1.04)
 
                 // Cursors position in relation to the image
                 const cursorX = e.offsetX
@@ -220,49 +189,71 @@ const InteractiveMapInner = ({
 
                 // Change in x after scaling
                 const displacementX = mapWidth * curScale - mapWidth * newScale
+
                 // The ratio of image between the cursor and the side of the image (x)
                 const sideRatioX = cursorX / mapWidth
+
                 // The new position of x - keeps the ratio of image between the cursor and the edge
-                const newX = x.get() + displacementX * sideRatioX
+                const newX = dragX + displacementX * sideRatioX
 
                 // Change in y after scaling
                 const displacementY = mapHeight * curScale - mapHeight * newScale
+
                 // The ratio of image between the cursor and the top of the image (y)
                 const topRatioY = cursorY / mapHeight
+
                 // The new position of y - keeps the ratio of image between the cursor and the top
-                const newY = y.get() + displacementY * topRatioY
+                const newY = dragY + displacementY * topRatioY
 
                 // Set new scale and positions
                 setScale(newScale, newX, newY)
             },
-            onPinch: ({ movement: [ms], dragging, wheeling }) => {
-                if (!enlarged || dragging || wheeling) return
+            onPinch: ({ movement: [ms], dragging, wheeling, pinching }) => {
+                if (dragging || wheeling || !pinching) return
 
                 // Calculate new scale
-                const curScale = scale.get()
-                const newScale = curScale * (ms > 0 ? 0.95 : 1.05)
+                const curScale = mapScale
+                const newScale = curScale * (ms > 0 ? 0.96 : 1.04)
 
                 setScale(newScale, 0, 0)
+            },
+            onDragStart: () => {
+                toggleIsGesturing(true)
+            },
+            onDragEnd: () => {
+                toggleIsGesturing(false)
+            },
+            onWheelStart: () => {
+                toggleIsGesturing(true)
+            },
+            onWheelEnd: () => {
+                toggleIsGesturing(false)
+            },
+            onPinchStart: () => {
+                toggleIsGesturing(true)
+            },
+            onPinchEnd: () => {
+                toggleIsGesturing(false)
             },
         },
         {
             target: gestureRef,
             eventOptions: { passive: false },
             drag: {
-                from: () => [x.get(), y.get()],
+                from: () => [dragX, dragY],
                 filterTaps: true,
                 preventDefault: true,
                 bounds: () => {
                     if (!map) return
                     return {
                         top:
-                            windowDimension.height <= map.height * scale.get()
-                                ? -(map.height * scale.get() - windowDimension.height)
-                                : (windowDimension.height - map.height * scale.get()) / 2,
+                            containerDimensions.height <= map.height * mapScale
+                                ? -(map.height * mapScale - containerDimensions.height)
+                                : (containerDimensions.height - map.height * mapScale) / 2,
                         left:
-                            windowDimension.width <= map.width * scale.get()
-                                ? -(map.width * scale.get() - windowDimension.width)
-                                : (windowDimension.width - map.width * scale.get()) / 2,
+                            containerDimensions.width <= map.width * mapScale
+                                ? -(map.width * mapScale - containerDimensions.width)
+                                : (containerDimensions.width - map.width * mapScale) / 2,
                         right: 0,
                         bottom: 0,
                     }
@@ -284,9 +275,9 @@ const InteractiveMapInner = ({
     // Set the zoom of the map
     const setScale = (newScale: number, newX: number, newY: number) => {
         if (!map) return
-        const minScale = Math.max(windowDimension.width / map.width, windowDimension.height / map.height)
+        const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
         const maxScale = 1
-        const curScale = scale.get()
+        const curScale = mapScale
 
         // Keeps the map within scale bounds
         if (newScale >= maxScale || minScale >= newScale) {
@@ -300,20 +291,22 @@ const InteractiveMapInner = ({
 
         // Calculate the new boundary
         const xBound =
-            windowDimension.width <= map.width * newScale
-                ? -(map.width * newScale - windowDimension.width)
-                : (windowDimension.width - map.width * newScale) / 2
+            containerDimensions.width <= map.width * newScale
+                ? -(map.width * newScale - containerDimensions.width)
+                : (containerDimensions.width - map.width * newScale) / 2
         const yBound =
-            windowDimension.height <= map.height * newScale
-                ? -(map.height * newScale - windowDimension.height)
-                : (windowDimension.height - map.height * newScale) / 2
+            containerDimensions.height <= map.height * newScale
+                ? -(map.height * newScale - containerDimensions.height)
+                : (containerDimensions.height - map.height * newScale) / 2
 
         // Keep the map in-bounds
         newX = xBound >= newX ? xBound : newX > 0 ? 0 : newX
         newY = yBound >= newY ? yBound : newY > 0 ? 0 : newY
 
         // Set scale and [x,y] offset
-        set({ scale: newScale, x: Math.round(newX), y: Math.round(newY), immediate: true })
+        setDragX(Math.round(newX))
+        setDragY(Math.round(newY))
+        setMapScale(newScale)
     }
 
     if (!map) return null
@@ -328,55 +321,48 @@ const InteractiveMapInner = ({
                     overflow: "hidden",
                 }}
             >
-                {/* Map - can be dragged and zoomed/scaled */}
-                <animated.div ref={gestureRef} style={{ x, y, touchAction: "none", scale, transformOrigin: `0% 0%` }}>
-                    <Box sx={{ cursor: enlarged ? "move" : "" }}>
-                        <Box sx={{ animation: enlarged ? "" : `${opacityEffect} 0.2s 1` }}>
-                            <MapWarMachines
-                                map={map}
-                                gridWidth={gridWidth}
-                                gridHeight={gridHeight}
-                                warMachines={warMachines || []}
-                                enlarged={enlarged}
-                                targeting={targeting}
-                            />
-                        </Box>
+                <Box
+                    ref={gestureRef}
+                    sx={{
+                        touchAction: "none",
+                        transformOrigin: "0% 0%",
+                        transform: `translate(${dragX}px, ${dragY}px) scale(${mapScale})`,
+                        transition: "all .2",
+                    }}
+                >
+                    <SelectionIcon
+                        key={selection && `column-${selection.y}-row-${selection.x}`}
+                        gameAbility={gameAbility}
+                        gridWidth={gridWidth}
+                        gridHeight={gridHeight}
+                        selection={selection}
+                        setSelection={setSelection}
+                        targeting={targeting}
+                    />
 
-                        <SelectionIcon
-                            key={selection && `column-${selection.y}-row-${selection.x}`}
-                            gameAbility={gameAbility}
-                            gridWidth={gridWidth}
-                            gridHeight={gridHeight}
-                            selection={selection}
-                            setSelection={setSelection}
-                            targeting={targeting}
-                            location={iconLocation}
-                            mapElement={mapElement}
-                        />
+                    <MapWarMachines
+                        map={map}
+                        gridWidth={gridWidth}
+                        gridHeight={gridHeight}
+                        warMachines={warMachines || []}
+                        enlarged={enlarged}
+                        targeting={targeting}
+                    />
 
-                        <Grid
-                            map={map}
-                            targeting={targeting}
-                            gridWidth={gridWidth}
-                            gridHeight={gridHeight}
-                            isDragging={isDragging}
-                            setSelection={setSelection}
-                            mapElement={mapElement}
-                            scale={scale}
-                            offset={20}
-                        />
-
-                        {/* Map Image */}
-                        <Box
-                            sx={{
-                                position: "absolute",
-                                width: `${map.width}px`,
-                                height: `${map.height}px`,
-                                backgroundImage: `url(${map.image_url})`,
-                            }}
-                        />
-                    </Box>
-                </animated.div>
+                    {/* Map Image */}
+                    <Box
+                        ref={mapElement}
+                        onClick={targeting ? handleSelection : undefined}
+                        sx={{
+                            position: "absolute",
+                            width: `${map.width}px`,
+                            height: `${map.height}px`,
+                            backgroundImage: `url(${map.image_url})`,
+                            cursor: targeting ? `url(${Crosshair}) 10 10, auto` : "move",
+                            borderSpacing: 0,
+                        }}
+                    />
+                </Box>
             </Stack>
 
             <CountdownText selection={selection} onConfirm={onConfirm} />

@@ -1,80 +1,41 @@
-import { Box, Button, IconButton, Link, Modal, Stack, Switch, Typography } from "@mui/material"
+import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
-import { ClipThing, TooltipHelper } from ".."
-import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
+import { ClipThing } from ".."
+import { SvgClose, SvgExternalLink } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth } from "../../containers"
-import { getRarityDeets, supFormatter } from "../../helpers"
+import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
 
-const AmountItem = ({
-    title,
-    color,
-    value,
-    tooltip,
-}: {
-    title: string
-    color: string
-    value: string | number
-    tooltip: string
-}) => {
-    return (
-        <Stack direction="row" alignItems="center">
-            <Typography sx={{ mr: ".4rem" }}>{title}</Typography>
-            <SvgSupToken size="1.4rem" fill={color} />
-            <Typography sx={{ mr: "3.2rem", color: color }}>{value}</Typography>
-            <TooltipHelper placement="right-start" text={tooltip}>
-                <Box sx={{ ml: "auto" }}>
-                    <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
-                </Box>
-            </TooltipHelper>
-        </Stack>
-    )
-}
-
-export const DeployConfirmation = ({
-    open,
-    asset,
-    queueCost,
-    contractReward,
-    onClose,
-}: {
-    open: boolean
-    asset: Asset
-    queueCost: string
-    contractReward: string
-    onClose: () => void
-}) => {
+export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; asset: Asset; onClose: () => void }) => {
     const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, tier } = asset.data.mech
-    const [needInsured, toggleNeedInsured] = useToggle()
-    const [isDeploying, toggleIsDeploying] = useToggle()
-    const [deployFailed, toggleDeployFailed] = useToggle()
+    const [isLeaving, toggleIsLeaving] = useToggle()
+    const [deployFailed, toggleLeaveFailed] = useToggle()
 
     const rarityDeets = getRarityDeets(tier)
 
     useEffect(() => {
-        if (!open) toggleDeployFailed(false)
+        if (!open) toggleLeaveFailed(false)
     }, [open])
 
-    const onDeploy = async () => {
-        if (state !== WebSocket.OPEN) return
+    const onLeave = async () => {
+        if (state !== WebSocket.OPEN || isLeaving) return
         try {
-            toggleIsDeploying(true)
-            const resp = await send(GameServerKeys.JoinQueue, { asset_hash: hash, need_insured: needInsured })
+            toggleIsLeaving(true)
+            const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: hash })
             if (resp) {
                 onClose()
             }
         } catch (e) {
-            toggleDeployFailed(true)
-            console.debug(e)
+            toggleLeaveFailed(true)
             return
         } finally {
-            toggleIsDeploying(false)
+            toggleIsLeaving(false)
         }
     }
 
@@ -155,7 +116,7 @@ export const DeployConfirmation = ({
                             </Stack>
                         </Box>
 
-                        <Stack spacing=".8rem" sx={{ flex: 1 }}>
+                        <Stack spacing=".8rem">
                             <Box>
                                 <Typography
                                     sx={{
@@ -187,88 +148,36 @@ export const DeployConfirmation = ({
                                 </Typography>
                             </Box>
 
-                            <Stack spacing=".08rem">
-                                <AmountItem
-                                    key={`${contractReward}-contract_reward`}
-                                    title={"Contract reward: "}
-                                    color={colors.yellow}
-                                    value={supFormatter(contractReward, 2)}
-                                    tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
-                                />
-
-                                <AmountItem
-                                    title={"Fee: "}
-                                    color={"#FF4136"}
-                                    value={supFormatter(queueCost, 2)}
-                                    tooltip="The cost to place your war machine into the battle queue."
-                                />
-                            </Stack>
-
-                            <Stack direction="row" alignItems="center">
-                                <Typography
-                                    sx={{
-                                        pt: ".08rem",
-                                        lineHeight: 1,
-                                        color: colors.green,
-                                    }}
-                                >
-                                    Add insurance:
-                                </Typography>
-                                <Switch
-                                    size="small"
-                                    checked={needInsured}
-                                    onChange={toggleNeedInsured}
-                                    sx={{
-                                        transform: "scale(.7)",
-                                        ".Mui-checked": { color: colors.green },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
-                                    }}
-                                />
-                                <TooltipHelper
-                                    placement="right-start"
-                                    text={
-                                        <>
-                                            Insurance costs&nbsp;
-                                            <span style={{ textDecoration: "line-through" }}>10%</span> of the contract
-                                            reward but allows your damaged war machine to be repair much faster so it
-                                            can be ready for the next battle much sooner.
-                                        </>
-                                    }
-                                >
-                                    <Box sx={{ ml: "auto" }}>
-                                        <SvgInfoCircular
-                                            size="1.2rem"
-                                            sx={{ opacity: 0.4, ":hover": { opacity: 1 } }}
-                                        />
-                                    </Box>
-                                </TooltipHelper>
-                            </Stack>
+                            <Typography>
+                                Are you sure you&quot;d like to remove <strong>{name || label}</strong> from the battle
+                                queue? By doing so, you will be refunded the initial queue fee.
+                            </Typography>
 
                             <Button
                                 variant="contained"
                                 size="small"
-                                disabled={isDeploying}
-                                onClick={onDeploy}
+                                disabled={isLeaving}
+                                onClick={onLeave}
                                 sx={{
                                     mt: "auto",
                                     minWidth: 0,
                                     px: ".8rem",
                                     py: ".48rem",
                                     boxShadow: 0,
-                                    backgroundColor: colors.green,
-                                    border: `${colors.green} 1px solid`,
+                                    backgroundColor: colors.red,
+                                    border: `${colors.red} 1px solid`,
                                     borderRadius: 0.3,
-                                    ":hover": { backgroundColor: `${colors.green}90` },
+                                    ":hover": { backgroundColor: `${colors.red}90` },
                                 }}
                             >
                                 <Typography
                                     variant="body2"
                                     sx={{
                                         lineHeight: 1,
-                                        color: isDeploying ? colors.green : "#FFFFFF",
+                                        color: isLeaving ? colors.green : "#FFFFFF",
                                     }}
                                 >
-                                    {isDeploying ? "DEPLOYING..." : "DEPLOY"}
+                                    {isLeaving ? "LEAVING QUEUE..." : "REMOVE FROM QUEUE"}
                                 </Typography>
                             </Button>
 

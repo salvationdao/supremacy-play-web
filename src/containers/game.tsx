@@ -119,7 +119,18 @@ export const GameContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe<WinnerAnnouncementResponse | undefined>(
             GameServerKeys.SubBribeWinnerAnnouncement,
-            (payload) => setWinner(payload),
+            (payload) => {
+                if (!payload) return
+
+                let endTime = payload.end_time
+                const dateNow = new Date()
+
+                // Just a temp fix, if user's pc time is not correct then at least set the 15s for them here
+                if (endTime < dateNow) {
+                    endTime = new Date(dateNow.getTime() + 15000)
+                }
+                setWinner({ ...payload, end_time: endTime })
+            },
             null,
         )
     }, [state, subscribe, faction_id])

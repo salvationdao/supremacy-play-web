@@ -5,6 +5,7 @@ import { useState } from "react"
 import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
 import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "../../containers"
 import { parseString } from "../../helpers"
+import { Dimension } from "../../types"
 
 export const VotingSystem = () => {
     const { bribeStage } = useGame()
@@ -27,7 +28,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
 
     if (!user || !user.faction) return null
 
-    const onResizeStop = (data: { width: number; height: number }) => {
+    const onResizeStop = (data: Dimension) => {
         const size = data || { width: containerWidth, height: containerHeight }
         setContainerWidth(size.width)
         setContainerHeight(size.height)
@@ -47,7 +48,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
             <Slide in={isBattleStarted} direction="right">
                 <Box sx={{ position: "relative" }}>
                     <ResizeBox
-                        color={user.faction.theme.primary}
+                        color={theme.factionTheme.primary}
                         onResizeStop={onResizeStop}
                         initialDimensions={[containerWidth, containerHeight]}
                         minConstraints={[initialSize.minWidth, initialSize.height]}
@@ -73,10 +74,10 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                         border={{
                             isFancy: true,
                             borderThickness: ".3rem",
-                            borderColor: user.faction.theme.primary,
+                            borderColor: theme.factionTheme.primary,
                         }}
                         clipSize="10px"
-                        innerSx={{ width: containerWidth, height: containerHeight }}
+                        innerSx={{ width: containerWidth, height: containerHeight, transition: "all .2s" }}
                     >
                         <Box
                             sx={{

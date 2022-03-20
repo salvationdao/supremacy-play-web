@@ -2,11 +2,12 @@ import { Box, SxProps, Theme } from "@mui/system"
 import { SyntheticEvent, useMemo, useState } from "react"
 import { Resizable, ResizeCallbackData, ResizeHandle } from "react-resizable"
 import { useToggle } from "../../hooks"
+import { Dimension } from "../../types"
 
 interface ResizeBoxProps {
     sx?: SxProps<Theme>
     color: string
-    onResizeStop?: (data: { width: number; height: number }) => void
+    onResizeStop?: (data: Dimension) => void
     initialDimensions?: [number, number]
     minConstraints?: [number, number]
     maxConstraints?: [number, number]
@@ -25,7 +26,7 @@ export const ResizeBox = ({
     handle,
 }: ResizeBoxProps) => {
     const [resizing, toggleResizing] = useToggle()
-    const [resizingDimensions, setResizingDimensions] = useState<{ width: number; height: number }>({
+    const [resizingDimensions, setResizingDimensions] = useState<Dimension>({
         width: initialDimensions ? initialDimensions[0] : minConstraints ? minConstraints[0] : 0,
         height: initialDimensions ? initialDimensions[1] : minConstraints ? minConstraints[1] : 0,
     })
