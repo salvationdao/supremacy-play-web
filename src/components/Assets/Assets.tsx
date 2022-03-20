@@ -295,7 +295,7 @@ export const Assets = () => {
                 }}
             >
                 <DrawerButtons isFixed={false} />
-                <DrawerContent />
+                {isAssetOpen && <DrawerContent />}
             </Stack>
         </Drawer>
     )
