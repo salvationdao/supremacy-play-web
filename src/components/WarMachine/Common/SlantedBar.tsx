@@ -13,7 +13,7 @@ export const SlantedBar = ({
 }) => {
     return (
         <BoxSlanted
-            clipSlantSize="0.2rem"
+            clipSlantSize="20px"
             sx={{
                 height: "100%",
                 width: "100%",
