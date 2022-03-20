@@ -152,11 +152,7 @@ const WarMachineItemInner = ({
     }, [state, subscribe, participantID])
 
     return (
-        <BoxSlanted
-            key={`WarMachineItem-${participantID}`}
-            clipSlantSize="0.2rem"
-            sx={{ transform: `scale(${scale})` }}
-        >
+        <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
             <Stack
                 ref={popoverRef}
                 direction="row"
@@ -375,7 +371,7 @@ const WarMachineItemInner = ({
                     {gameAbilities && gameAbilities.length > 0 && (
                         <>
                             <BoxSlanted
-                                clipSlantSize="0.2rem"
+                                clipSlantSize="20px"
                                 onClick={
                                     isAlive
                                         ? () => {
