@@ -176,7 +176,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     height: dimensions.height,
                                     transition: "all .2s",
                                     overflow: "hidden",
-                                    background: `repeating-linear-gradient(45deg,#000000,#000000 7px,${colors.darkNavy} 7px,${colors.darkNavy} 14px )`,
+                                    backgroundColor: colors.darkNavy,
                                 }}
                             >
                                 {isTargeting ? (

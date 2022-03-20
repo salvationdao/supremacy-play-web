@@ -178,7 +178,7 @@ const ChatMessagesInner = ({
                             sx={{
                                 color: colors.grey,
                                 textAlign: "center",
-                                userSelect: "text",
+                                userSelect: "tex !important",
                             }}
                         >
                             There are no messages yet.

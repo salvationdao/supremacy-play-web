@@ -242,7 +242,7 @@ const DrawerContent = () => {
                                         pt: "1.28rem",
                                         mb: ".56rem",
                                         color: colors.grey,
-                                        userSelect: "text",
+                                        userSelect: "text !important",
                                     }}
                                 >
                                     {"You don't own any assets yet."}
@@ -252,7 +252,7 @@ const DrawerContent = () => {
                                         variant="body2"
                                         sx={{
                                             color: colors.neonBlue,
-                                            userSelect: "text",
+                                            userSelect: "text !important",
                                         }}
                                     >
                                         GO TO ASSET STORE
