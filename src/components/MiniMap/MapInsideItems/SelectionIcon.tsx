@@ -1,5 +1,5 @@
 import { Box } from "@mui/material"
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction, useMemo } from "react"
 import { MapSelection } from "../.."
 import { GAME_SERVER_HOSTNAME } from "../../../constants"
 import { httpProtocol } from "../../../containers"
@@ -23,8 +23,8 @@ export const SelectionIcon = ({
     if (!selection || !gameAbility || !targeting) return null
 
     const { colour, image_url } = gameAbility
-    const sizeX = gridWidth * 1.3
-    const sizeY = gridHeight * 1.3
+    const sizeX = useMemo(() => gridWidth * 1.5, [gridWidth])
+    const sizeY = useMemo(() => gridHeight * 1.5, [gridHeight])
 
     return (
         <Box

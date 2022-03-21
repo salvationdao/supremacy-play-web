@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Box, Stack } from "@mui/material"
 import { NetMessageTickWarMachine, WarMachineState } from "../../types"
 import { BoxSlanted, SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
@@ -17,8 +17,8 @@ export const HealthShieldBars = ({
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
 
-    const healthPercent = (health / maxHealth) * 100
-    const shieldPercent = (shield / maxShield) * 100
+    const healthPercent = useMemo(() => (health / maxHealth) * 100, [health, maxHealth])
+    const shieldPercent = useMemo(() => (shield / maxShield) * 100, [shield, maxShield])
 
     // Listen on current war machine changes
     useEffect(() => {
@@ -99,4 +99,7 @@ export const HealthShieldBars = ({
             </Box>
         </Stack>
     )
+}
+function usMemo(arg0: () => number, arg1: number[]) {
+    throw new Error("Function not implemented.")
 }

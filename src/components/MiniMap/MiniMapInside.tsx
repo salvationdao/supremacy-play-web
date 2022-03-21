@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useGesture } from "@use-gesture/react"
 import moment from "moment"
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
@@ -110,11 +110,17 @@ const MiniMapInsideInner = ({
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
     const mapElement = useRef<any>()
+    // Setup use-gesture props
+    const [dragX, setDragX] = useState(0)
+    const [dragY, setDragY] = useState(0)
+    const [mapScale, setMapScale] = useState(0)
+    const gestureRef = useRef<HTMLDivElement>(null)
+    const [isGesturing, toggleIsGesturing] = useToggle()
 
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
-    const onConfirm = () => {
+    const onConfirm = useCallback(() => {
         try {
             if (state !== WebSocket.OPEN || !selection || !send) return
             send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
@@ -126,20 +132,23 @@ const MiniMapInsideInner = ({
         } catch (e) {
             console.debug(e)
         }
-    }
+    }, [state, send, selection, setSubmitted, setSelection])
 
-    const handleSelection = (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
-        if (mapElement) {
-            const rect = mapElement.current.getBoundingClientRect()
-            // Mouse position
-            const x = e.clientX - rect.left
-            const y = e.clientY - rect.top
-            setSelection({
-                x: x / (gridWidth * mapScale),
-                y: y / (gridHeight * mapScale),
-            })
-        }
-    }
+    const handleSelection = useCallback(
+        (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
+            if (mapElement) {
+                const rect = mapElement.current.getBoundingClientRect()
+                // Mouse position
+                const x = e.clientX - rect.left
+                const y = e.clientY - rect.top
+                setSelection({
+                    x: x / (gridWidth * mapScale),
+                    y: y / (gridHeight * mapScale),
+                })
+            }
+        },
+        [mapElement, gridWidth, gridHeight, mapScale],
+    )
 
     // Set map scale to minimum scale while staying in-bounds
     useEffect(() => {
@@ -151,17 +160,12 @@ const MiniMapInsideInner = ({
     }, [containerDimensions, map, enlarged])
 
     // --------------- Minimap - useGesture setup -------------------
-    const gestureRef = useRef<HTMLDivElement>(null)
     // Prevents map zooming from interfering with the browsers' accessibility zoom
-    document.addEventListener("gesturestart", (e) => e.preventDefault())
-    document.addEventListener("gesturechange", (e) => e.preventDefault())
-    document.addEventListener("gestureend", (e) => e.preventDefault())
-
-    // Setup use-gesture props
-    const [dragX, setDragX] = useState(0)
-    const [dragY, setDragY] = useState(0)
-    const [mapScale, setMapScale] = useState(0)
-    const [isGesturing, toggleIsGesturing] = useToggle()
+    useEffect(() => {
+        document.addEventListener("gesturestart", (e) => e.preventDefault())
+        document.addEventListener("gesturechange", (e) => e.preventDefault())
+        document.addEventListener("gestureend", (e) => e.preventDefault())
+    }, [])
 
     // Setup map drag
     useGesture(
@@ -273,41 +277,44 @@ const MiniMapInsideInner = ({
     )
 
     // Set the zoom of the map
-    const setScale = (newScale: number, newX: number, newY: number) => {
-        if (!map) return
-        const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
-        const maxScale = 1
-        const curScale = mapScale
+    const setScale = useCallback(
+        (newScale: number, newX: number, newY: number) => {
+            if (!map) return
+            const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
+            const maxScale = 1
+            const curScale = mapScale
 
-        // Keeps the map within scale bounds
-        if (newScale >= maxScale || minScale >= newScale) {
-            newScale >= maxScale ? (newScale = maxScale) : (newScale = minScale)
-        }
+            // Keeps the map within scale bounds
+            if (newScale >= maxScale || minScale >= newScale) {
+                newScale >= maxScale ? (newScale = maxScale) : (newScale = minScale)
+            }
 
-        // Return if the map is already at zoom limit
-        if ((curScale === minScale || curScale === maxScale) && (newScale >= maxScale || minScale >= newScale)) {
-            return
-        }
+            // Return if the map is already at zoom limit
+            if ((curScale === minScale || curScale === maxScale) && (newScale >= maxScale || minScale >= newScale)) {
+                return
+            }
 
-        // Calculate the new boundary
-        const xBound =
-            containerDimensions.width <= map.width * newScale
-                ? -(map.width * newScale - containerDimensions.width)
-                : (containerDimensions.width - map.width * newScale) / 2
-        const yBound =
-            containerDimensions.height <= map.height * newScale
-                ? -(map.height * newScale - containerDimensions.height)
-                : (containerDimensions.height - map.height * newScale) / 2
+            // Calculate the new boundary
+            const xBound =
+                containerDimensions.width <= map.width * newScale
+                    ? -(map.width * newScale - containerDimensions.width)
+                    : (containerDimensions.width - map.width * newScale) / 2
+            const yBound =
+                containerDimensions.height <= map.height * newScale
+                    ? -(map.height * newScale - containerDimensions.height)
+                    : (containerDimensions.height - map.height * newScale) / 2
 
-        // Keep the map in-bounds
-        newX = xBound >= newX ? xBound : newX > 0 ? 0 : newX
-        newY = yBound >= newY ? yBound : newY > 0 ? 0 : newY
+            // Keep the map in-bounds
+            newX = xBound >= newX ? xBound : newX > 0 ? 0 : newX
+            newY = yBound >= newY ? yBound : newY > 0 ? 0 : newY
 
-        // Set scale and [x,y] offset
-        setDragX(Math.round(newX))
-        setDragY(Math.round(newY))
-        setMapScale(newScale)
-    }
+            // Set scale and [x,y] offset
+            setDragX(Math.round(newX))
+            setDragY(Math.round(newY))
+            setMapScale(newScale)
+        },
+        [map, containerDimensions, mapScale],
+    )
 
     if (!map) return null
 

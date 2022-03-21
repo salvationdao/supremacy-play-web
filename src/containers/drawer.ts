@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { createContainer } from "unstated-next"
 
 enum DrawerPanels {
@@ -10,12 +10,15 @@ enum DrawerPanels {
 export const DrawerContainer = createContainer(() => {
     const [activePanel, setActivePanel] = useState<DrawerPanels>(DrawerPanels.LiveChat)
 
-    const togglePanel = (newPanel: DrawerPanels, value: boolean) => {
-        setActivePanel((prev) => {
-            if (prev == newPanel || !value) return DrawerPanels.None
-            return newPanel
-        })
-    }
+    const togglePanel = useCallback(
+        (newPanel: DrawerPanels, value: boolean) => {
+            setActivePanel((prev) => {
+                if (prev == newPanel || !value) return DrawerPanels.None
+                return newPanel
+            })
+        },
+        [setActivePanel],
+    )
 
     return {
         isAnyPanelOpen: activePanel != DrawerPanels.None,

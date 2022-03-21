@@ -33,7 +33,7 @@ export const EnlistButtonGroup = () => {
     if (!factionsData) {
         return (
             <Stack alignItems="center" sx={{ position: "relative", width: "13rem" }}>
-                <CircularProgress size={20} />
+                <CircularProgress size="2rem" />
             </Stack>
         )
     }

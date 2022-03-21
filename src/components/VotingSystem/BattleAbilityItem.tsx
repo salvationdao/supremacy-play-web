@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgSupToken } from "../../assets"
 import { GAME_SERVER_HOSTNAME, NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
@@ -102,11 +102,11 @@ export const BattleAbilityItem = () => {
         )
     }, [state, subscribeNetMessage])
 
-    const onBribe = useMemo(
-        () => (voteAmount: string) => {
+    const onBribe = useCallback(
+        (voteAmount: string) => {
             if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount })
         },
-        [],
+        [send],
     )
 
     const isVoting = useMemo(
@@ -135,8 +135,8 @@ export const BattleAbilityItem = () => {
     }
 
     const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
-    const buttonColor = user && user.faction ? user.faction.theme.primary : colour
-    const buttonTextColor = user && user.faction ? user.faction.theme.secondary : "#FFFFFF"
+    const buttonColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colour), [user, colour])
+    const buttonTextColor = useMemo(() => (user && user.faction ? user.faction.theme.secondary : "#FFFFFF"), [user])
 
     return (
         <BattleAbilityItemInner

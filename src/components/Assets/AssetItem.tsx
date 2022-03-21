@@ -1,5 +1,5 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
 import { SvgExternalLink, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
@@ -40,10 +40,8 @@ export const AssetItem = ({
     const [leaveModalOpen, toggleLeaveModalOpen] = useToggle()
 
     const [mouseOver, setMouseOver] = useState<boolean>(false)
-
     const [assetData, setAssetData] = useState<Asset>(asset)
-
-    const rarityDeets = getRarityDeets(assetData.tier)
+    const rarityDeets = useMemo(() => getRarityDeets(assetData.tier), [assetData])
 
     // Subscribe on asset data
     useEffect(() => {
@@ -58,16 +56,22 @@ export const AssetItem = ({
         )
     }, [state, subscribe])
 
-    const isGameServerUp = gsState == WebSocket.OPEN && !UNDER_MAINTENANCE
+    const isGameServerUp = useMemo(() => gsState == WebSocket.OPEN && !UNDER_MAINTENANCE, [gsState])
     const isRepairing = false // To be implemented on gameserver
-    const isInBattle = assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1
-    const isInQueue = assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1
+    const isInBattle = useMemo(
+        () => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1,
+        [assetQueueStatus],
+    )
+    const isInQueue = useMemo(
+        () => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1,
+        [assetQueueStatus],
+    )
 
     if (!assetData || !user) return null
 
     const { hash, name, label, image_url } = assetData.data.mech
 
-    const StatusArea = () => {
+    const statusArea = useMemo(() => {
         // If game server is down, don't show deploy button
         if (!isGameServerUp) {
             return (
@@ -122,7 +126,7 @@ export const AssetItem = ({
             // )
         }
 
-        if (isInBattle) {
+        if (isInBattle && assetQueueStatus) {
             return (
                 <>
                     <Typography
@@ -152,7 +156,7 @@ export const AssetItem = ({
             )
         }
 
-        if (isInQueue) {
+        if (isInQueue && assetQueueStatus) {
             return (
                 <>
                     <Button
@@ -227,7 +231,7 @@ export const AssetItem = ({
                 </Typography>
             </Button>
         )
-    }
+    }, [isGameServerUp, isRepairing, isInQueue, mouseOver, assetQueueStatus])
 
     return (
         <Stack
@@ -318,7 +322,7 @@ export const AssetItem = ({
                 </Typography>
 
                 <Stack alignItems="center" direction="row" spacing=".96rem">
-                    <StatusArea />
+                    {statusArea}
                 </Stack>
             </Stack>
 

@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
-import { useEffect } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
 import { SvgClose, SvgExternalLink } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
@@ -17,13 +17,13 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
     const [isLeaving, toggleIsLeaving] = useToggle()
     const [deployFailed, toggleLeaveFailed] = useToggle()
 
-    const rarityDeets = getRarityDeets(tier)
+    const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
     useEffect(() => {
         if (!open) toggleLeaveFailed(false)
     }, [open])
 
-    const onLeave = async () => {
+    const onLeave = useCallback(async () => {
         if (state !== WebSocket.OPEN || isLeaving) return
         try {
             toggleIsLeaving(true)
@@ -37,7 +37,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
         } finally {
             toggleIsLeaving(false)
         }
-    }
+    }, [state, hash])
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -163,7 +163,6 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                     minWidth: 0,
                                     px: ".8rem",
                                     py: ".48rem",
-                                    boxShadow: 0,
                                     backgroundColor: colors.red,
                                     border: `${colors.red} 1px solid`,
                                     borderRadius: 0.3,

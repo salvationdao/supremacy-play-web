@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Divider, Popover, Stack, Typography } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BarExpandable, SupsTooltipContent, TooltipHelper } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
 import { NullUUID, TOKEN_SALE_PAGE } from "../../../constants"
@@ -39,20 +39,24 @@ export const WalletDetails = () => {
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
     // Free sups button
-    const isFreeSupsEnabled =
-        process.env.REACT_APP_SENTRY_ENVIRONMENT === "staging" ||
-        process.env.REACT_APP_SENTRY_ENVIRONMENT === "development"
+    const isFreeSupsEnabled = useMemo(
+        () =>
+            process.env.REACT_APP_SENTRY_ENVIRONMENT === "staging" ||
+            process.env.REACT_APP_SENTRY_ENVIRONMENT === "development",
+        [],
+    )
+
     const { send: psSend, state: psState } = usePassportServerWebsocket()
     const [timeTilNextClaim, setTimeTilNextClaim] = useState<Date>()
 
-    const getFreeSups = async () => {
+    const getFreeSups = useCallback(async () => {
         if (psState !== SocketState.OPEN || !psSend || !user) return
 
         const resp = await psSend<Date | boolean>(PassportServerKeys.GetFreeSups)
         if (resp instanceof Date) {
             setTimeTilNextClaim(resp)
         }
-    }
+    }, [psState, psSend, user])
 
     useEffect(() => {
         if (battleEndDetail && battleEndDetail.multipliers.length > 0) {
@@ -101,7 +105,7 @@ export const WalletDetails = () => {
     if (!sups) {
         return (
             <Stack alignItems="center" sx={{ width: "26rem" }}>
-                <CircularProgress size={20} />
+                <CircularProgress size="2rem" />
             </Stack>
         )
     }

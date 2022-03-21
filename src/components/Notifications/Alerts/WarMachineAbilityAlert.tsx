@@ -1,4 +1,5 @@
 import { Box, Stack } from "@mui/material"
+import { useMemo } from "react"
 import { StyledImageText, StyledNormalText } from "../.."
 import { GenericWarMachinePNG, SvgEmergency } from "../../../assets"
 import { GAME_SERVER_HOSTNAME } from "../../../constants"
@@ -17,7 +18,7 @@ export const WarMachineAbilityAlert = ({ data }: { data: WarMachineAbilityAlertP
     const { label, colour, image_url } = ability
     const { hash, name, imageAvatar: warMachineImageUrl, faction } = warMachine
 
-    const wmImageUrl = warMachineImageUrl || GenericWarMachinePNG
+    const wmImageUrl = useMemo(() => warMachineImageUrl || GenericWarMachinePNG, [warMachineImageUrl])
 
     return (
         <Stack spacing=".8rem">

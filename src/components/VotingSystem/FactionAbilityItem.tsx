@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import {
     BribeStageResponse,
@@ -93,20 +93,20 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         }
     }, [gameAbilityProgress])
 
-    const onContribute = useMemo(
-        () => (amount: string) => {
+    const onContribute = useCallback(
+        (amount: string) => {
             if (!send) return
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
                 amount,
             })
         },
-        [identity],
+        [send, identity],
     )
 
     const isVoting = useMemo(
         () => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThanOrEqualTo(currentSups),
-        [supsCost, currentSups],
+        [bribeStage, supsCost, currentSups],
     )
 
     return (

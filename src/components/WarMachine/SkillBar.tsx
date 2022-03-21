@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
 import { NullUUID } from "../../constants"
 import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
@@ -28,8 +28,14 @@ export const SkillBar = ({
 
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
 
-    const progressPercent = initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100
-    const costPercent = initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100
+    const progressPercent = useMemo(
+        () => (initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100),
+        [initialTargetCost, currentSups],
+    )
+    const costPercent = useMemo(
+        () => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100),
+        [initialTargetCost, supsCost],
+    )
 
     // Triggered faction ability or war machine ability price ticking
     useEffect(() => {

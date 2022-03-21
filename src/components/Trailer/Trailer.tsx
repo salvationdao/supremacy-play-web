@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
-import { Dispatch, SetStateAction, useRef } from "react"
+import { Dispatch, SetStateAction, useCallback, useRef } from "react"
 import { SvgPlay, TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
 import { useToggle } from "../../hooks"
@@ -15,10 +15,10 @@ export const Trailer = ({
     const videoRef = useRef<HTMLVideoElement>(null)
     const [isPlaying, toggleIsPlaying] = useToggle()
 
-    const onEnded = () => {
+    const onEnded = useCallback(() => {
         setWatchedTrailer(true)
         if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
-    }
+    }, [watchedTrailer])
 
     return (
         <Stack

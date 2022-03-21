@@ -1,5 +1,5 @@
 import { Box, Button, Drawer, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { AssetItem, DrawerButtons } from ".."
 import { SvgRobot } from "../../assets"
 import {
@@ -43,47 +43,50 @@ const DrawerContent = () => {
         Map<string, Asset & { queue_position: number; contract_reward?: string }>
     >(new Map())
 
-    const updateAssetQueueStatus = (a: Asset, status: AssetQueueStat) => {
-        if (status.queue_position) {
-            // If asset is in queue/battle
-            setAssetsInQueue((prev) => {
-                const tempAss = {
-                    ...a,
-                    queue_position: status.queue_position!,
-                    contract_reward: status.contract_reward,
-                }
-                prev.set(a.hash, tempAss)
-                const tempMap = new Map(
-                    Array.from(prev.entries()).sort(([_, a], [__, b]) => a.queue_position - b.queue_position),
-                )
+    const updateAssetQueueStatus = useCallback(
+        (a: Asset, status: AssetQueueStat) => {
+            if (status.queue_position) {
+                // If asset is in queue/battle
+                setAssetsInQueue((prev) => {
+                    const tempAss = {
+                        ...a,
+                        queue_position: status.queue_position!,
+                        contract_reward: status.contract_reward,
+                    }
+                    prev.set(a.hash, tempAss)
+                    const tempMap = new Map(
+                        Array.from(prev.entries()).sort(([_, a], [__, b]) => a.queue_position - b.queue_position),
+                    )
 
-                return tempMap
-            })
-            setAssetsNotInQueue((prev) => {
-                prev.delete(a.hash)
-                const tempMap = new Map(prev)
+                    return tempMap
+                })
+                setAssetsNotInQueue((prev) => {
+                    prev.delete(a.hash)
+                    const tempMap = new Map(prev)
 
-                return tempMap
-            })
-        } else {
-            // If asset is not in queue/battle
-            setAssetsInQueue((prev) => {
-                prev.delete(a.hash)
-                const tempMap = new Map(prev)
+                    return tempMap
+                })
+            } else {
+                // If asset is not in queue/battle
+                setAssetsInQueue((prev) => {
+                    prev.delete(a.hash)
+                    const tempMap = new Map(prev)
 
-                return tempMap
-            })
-            setAssetsNotInQueue((prev) => {
-                const tempAss = {
-                    ...a,
-                }
-                prev.set(a.hash, tempAss)
-                const tempMap = new Map(prev)
+                    return tempMap
+                })
+                setAssetsNotInQueue((prev) => {
+                    const tempAss = {
+                        ...a,
+                    }
+                    prev.set(a.hash, tempAss)
+                    const tempMap = new Map(prev)
 
-                return tempMap
-            })
-        }
-    }
+                    return tempMap
+                })
+            }
+        },
+        [setAssetsInQueue, setAssetsNotInQueue],
+    )
 
     // Subscribe to the list of mechs that the user owns
     useEffect(() => {

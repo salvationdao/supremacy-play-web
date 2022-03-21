@@ -1,5 +1,6 @@
 import { Box, Stack } from "@mui/material"
 import BigNumber from "bignumber.js"
+import { useMemo } from "react"
 import { colors } from "../../../theme/theme"
 
 export const ContributionBar = ({
@@ -17,8 +18,14 @@ export const ContributionBar = ({
     hideRedBar?: boolean
     forceHundredPercent: boolean
 }) => {
-    const progressPercent = initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100
-    const costPercent = initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100
+    const progressPercent = useMemo(
+        () => (initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100),
+        [initialTargetCost, currentSups],
+    )
+    const costPercent = useMemo(
+        () => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100),
+        [initialTargetCost, supsCost],
+    )
 
     return (
         <Stack

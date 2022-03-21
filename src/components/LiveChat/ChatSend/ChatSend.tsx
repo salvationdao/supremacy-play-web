@@ -1,5 +1,5 @@
 import { IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
-import { useState, useRef, useMemo } from "react"
+import { useState, useRef, useMemo, useCallback } from "react"
 import { ChatSettings, EmojiPopover } from "../.."
 import { SvgEmoji, SvgSend } from "../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../constants"
@@ -61,15 +61,18 @@ const ChatSendInner = ({
 
     const messageColor = useMemo(() => initialMessageColor || getRandomChatColor(), [initialMessageColor])
 
-    const setMessageWithCheck = (newMessage: string, append?: boolean) => {
-        setMessage((prev) => {
-            const m = append ? prev + newMessage : newMessage
-            if (m.length > MAX_CHAT_MESSAGE_LENGTH) return prev
-            return m
-        })
-    }
+    const setMessageWithCheck = useCallback(
+        (newMessage: string, append?: boolean) => {
+            setMessage((prev) => {
+                const m = append ? prev + newMessage : newMessage
+                if (m.length > MAX_CHAT_MESSAGE_LENGTH) return prev
+                return m
+            })
+        },
+        [setMessage],
+    )
 
-    const sendMessage = async () => {
+    const sendMessage = useCallback(async () => {
         if (!message.trim() || !user || state !== WebSocket.OPEN || !send) return
 
         const sentAt = new Date()
@@ -100,7 +103,7 @@ const ChatSendInner = ({
         } catch (err) {
             onFailedMessage(sentAt)
         }
-    }
+    }, [message, user, state, send])
 
     return (
         <form

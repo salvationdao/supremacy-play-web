@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "."
 import { MESSAGES_BUFFER_SIZE } from "../constants"
@@ -75,37 +75,46 @@ export const ChatContainer = createContainer(() => {
         localStorage.setItem("chatFontSize", fontSize ? fontSize.toString() : "1")
     }, [splitOption, filterZerosGlobal, filterZerosFaction, fontSize])
 
-    const onSentMessage = (sentAt: Date) => {
-        setSentMessages((prev) => {
-            // Buffer the array
-            const newArray = prev.concat(sentAt)
-            return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-        })
-    }
-
-    const onFailedMessage = (sentAt: Date) => {
-        setFailedMessages((prev) => {
-            // Buffer the array
-            const newArray = prev.concat(sentAt)
-            return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-        })
-    }
-
-    const newMessageHandler = (message: ChatData, faction_id: string | null) => {
-        if (faction_id === null) {
-            setGlobalChatMessages((prev) => {
-                // Buffer the messages
-                const newArray = prev.concat(message)
+    const onSentMessage = useCallback(
+        (sentAt: Date) => {
+            setSentMessages((prev) => {
+                // Buffer the array
+                const newArray = prev.concat(sentAt)
                 return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
             })
-        } else {
-            setFactionChatMessages((prev) => {
-                // Buffer the messages
-                const newArray = prev.concat(message)
+        },
+        [setSentMessages],
+    )
+
+    const onFailedMessage = useCallback(
+        (sentAt: Date) => {
+            setFailedMessages((prev) => {
+                // Buffer the array
+                const newArray = prev.concat(sentAt)
                 return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
             })
-        }
-    }
+        },
+        [setFailedMessages],
+    )
+
+    const newMessageHandler = useCallback(
+        (message: ChatData, faction_id: string | null) => {
+            if (faction_id === null) {
+                setGlobalChatMessages((prev) => {
+                    // Buffer the messages
+                    const newArray = prev.concat(message)
+                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
+                })
+            } else {
+                setFactionChatMessages((prev) => {
+                    // Buffer the messages
+                    const newArray = prev.concat(message)
+                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
+                })
+            }
+        },
+        [setGlobalChatMessages, setFactionChatMessages],
+    )
 
     // Collect Past Messages
     useEffect(() => {

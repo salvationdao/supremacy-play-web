@@ -1,7 +1,7 @@
 import { Box, Slide, Stack } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import { useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
 import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "../../containers"
 import { parseString } from "../../helpers"
@@ -24,16 +24,19 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
         streamDimensions: { height },
     } = useDimension()
 
-    const isBattleStarted = bribeStage && bribeStage.phase !== "HOLD"
+    const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
     if (!user || !user.faction) return null
 
-    const onResizeStop = (data: Dimension) => {
-        const size = data || { width: containerWidth, height: containerHeight }
-        setContainerWidth(size.width)
-        setContainerHeight(size.height)
-        localStorage.setItem("votingSystemWidth", size.width.toString())
-    }
+    const onResizeStop = useCallback(
+        (data: Dimension) => {
+            const size = data || { width: containerWidth, height: containerHeight }
+            setContainerWidth(size.width)
+            setContainerHeight(size.height)
+            localStorage.setItem("votingSystemWidth", size.width.toString())
+        },
+        [containerWidth, containerHeight],
+    )
 
     return (
         <Stack
