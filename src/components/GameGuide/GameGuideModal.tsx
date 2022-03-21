@@ -78,6 +78,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                             ".MuiTab-root": {
                                 minHeight: "5rem",
                                 p: 0,
+                                px: "2rem",
                                 fontSize: "1.6rem",
                                 opacity: 0.7,
                                 fontFamily: "Share Tech",

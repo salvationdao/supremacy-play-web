@@ -37,7 +37,7 @@ const DrawerContent = () => {
 
     const { state: gsState, subscribe: gsSubscribe, send: gsSend } = useGameServerWebsocket()
 
-    const [assets, setAssets] = useState<Asset[]>([])
+    const [assets, setAssets] = useState<Asset[]>()
     const [assetsNotInQueue, setAssetsNotInQueue] = useState<Map<string, Asset>>(new Map())
     const [assetsInQueue, setAssetsInQueue] = useState<
         Map<string, Asset & { queue_position: number; contract_reward?: string }>
@@ -111,7 +111,7 @@ const DrawerContent = () => {
     // Mechs that are in queue and out of the queue are separated into two javascript maps
     // The map that stores queued mechs is sorted by queue position
     useEffect(() => {
-        if (gsState !== WebSocket.OPEN || !gsSubscribe || assets.length === 0) return
+        if (gsState !== WebSocket.OPEN || !gsSubscribe || !assets || assets.length === 0) return
 
         const callbacks = assets.map((a) =>
             gsSubscribe<AssetQueueStat>(
@@ -128,7 +128,7 @@ const DrawerContent = () => {
 
     // Every time the battle queue has been updated (i.e. a mech leaves the queue), refetch all mech's queue positions once
     useEffect(() => {
-        if (gsState !== WebSocket.OPEN || !gsSubscribe || !gsSend || assets.length === 0) return
+        if (gsState !== WebSocket.OPEN || !gsSubscribe || !gsSend || !assets || assets.length === 0) return
 
         return gsSubscribe(GameServerKeys.TriggerBattleQueueUpdated, async () => {
             console.info("Battle queue updated, refetching queue positions")
@@ -148,7 +148,7 @@ const DrawerContent = () => {
 
     // Every time the game ends, refetch all mech's queue positions once
     useEffect(() => {
-        if (gsState !== WebSocket.OPEN || !gsSend || assets.length === 0) return
+        if (gsState !== WebSocket.OPEN || !gsSend || !assets || assets.length === 0) return
 
         console.info("Game end, refetching queue positions")
         assets.forEach(async (a) => {
@@ -208,7 +208,7 @@ const DrawerContent = () => {
                     }}
                 >
                     <Stack spacing={0.6}>
-                        {assetsNotInQueue.size > 0 || assetsInQueue.size > 0 ? (
+                        {assets && (assetsNotInQueue.size > 0 || assetsInQueue.size > 0) ? (
                             <>
                                 {/* Assets in the queue/battle */}
                                 {Array.from(assetsInQueue).map(([hash, a], index) => (
@@ -243,9 +243,10 @@ const DrawerContent = () => {
                                         mb: ".56rem",
                                         color: colors.grey,
                                         userSelect: "text !important",
+                                        opacity: !assets ? 0.6 : 1,
                                     }}
                                 >
-                                    {"You don't own any assets yet."}
+                                    {!assets ? "Loading your assets..." : "You don't own any assets yet."}
                                 </Typography>
                                 <Button href={`${PASSPORT_WEB}stores`} target="_blank" size="small" variant="outlined">
                                     <Typography
