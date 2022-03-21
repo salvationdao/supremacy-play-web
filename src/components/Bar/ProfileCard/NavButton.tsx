@@ -1,4 +1,4 @@
-import { Button, SxProps, Theme } from "@mui/material"
+import { Box, Button, Stack, SxProps, Theme } from "@mui/material"
 import { colors } from "../../../theme/theme"
 
 interface NavButtonProps {
@@ -16,6 +16,9 @@ export const NavButton: React.FC<NavButtonProps> = ({ href, active, sx, startIco
                 alignItems: "center",
                 justifyContent: "start",
                 fontFamily: "Nostromo Regular Bold",
+                px: "1.2rem",
+                pt: ".9rem",
+                pb: ".6rem",
                 color: "#FFFFFF",
                 backgroundColor: active ? colors.darkNavyBlue : undefined,
                 ":hover": {
@@ -23,13 +26,14 @@ export const NavButton: React.FC<NavButtonProps> = ({ href, active, sx, startIco
                 },
                 ...sx,
             }}
-            // component={"a"}
             href={href || ""}
             target={href ? "_blank" : undefined}
-            startIcon={startIcon}
             onClick={onClick}
         >
-            {children}
+            <Stack spacing="1rem" direction="row" alignItems="center">
+                {startIcon}
+                <Box>{children}</Box>
+            </Stack>
         </Button>
     )
 }

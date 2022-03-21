@@ -1,43 +1,21 @@
-import { useCallback, useRef, useState } from 'react'
-import {
-    Avatar,
-    Stack,
-    Typography,
-    Popover,
-    Dialog,
-    DialogTitle,
-    DialogActions,
-    DialogContent,
-    FormControlLabel, Switch, Alert,
-} from '@mui/material'
-import { BarExpandable, ConnectButton, FancyButton, LogoutButton, NavButton } from '../..'
+import { useRef } from "react"
+import { Avatar, Stack, Typography, Popover } from "@mui/material"
+import { BarExpandable, ConnectButton, LogoutButton, NavButton, PreferencesModal } from "../.."
 import { useEffect } from "react"
-import { SvgAssets, SvgProfile, SvgShop } from "../../../assets"
+import { SvgAssets, SvgProfile, SvgShop, SvgSettings } from "../../../assets"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_SERVER_HOST_IMAGES, PASSPORT_WEB } from "../../../constants"
-import { useGameServerWebsocket, usePassportServerAuth } from '../../../containers'
+import { usePassportServerAuth } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { shadeColor } from "../../../helpers"
-import { ViewerLiveCount } from '../../../types'
-import { GameServerKeys } from '../../../keys'
-
-interface PlayerPrefs {
-    notifications_battle_queue_sms: boolean
-    notifications_battle_queue_browser: boolean
-    notifications_battle_queue_push_notifications: boolean
-}
 
 export const ProfileCard = () => {
     const { user } = usePassportServerAuth()
-    const {subscribe, send} = useGameServerWebsocket()
     const [renderConnectButton, toggleRenderConnectButton] = useToggle()
-    const [preferencesOpen, setPreferencesOpen] = useState<boolean>(false)
-    const [playerPrefs, setPlayerPrefs] = useState<PlayerPrefs>()
-
-    const [error, setError] = useState<string>()
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
+    const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
 
     // Don't show the connect button for couple seconds as it tries to do the auto login
     useEffect(() => {
@@ -46,37 +24,11 @@ export const ProfileCard = () => {
         }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS)
     }, [])
 
-    useEffect(()=>{
-        if (!user || !subscribe) return
-        return subscribe<PlayerPrefs>(
-            GameServerKeys.SubPlayerPrefs,
-            (payload) => {
-                setPlayerPrefs(payload)
-            }
-        )
-    },[user, subscribe])
-
-    const toggleNotificationsBattleQueueSMS = useCallback(async()=>{
-        try {
-            await send(GameServerKeys.TogglePlayerBattleQueueSMS, {
-                battle_queue_sms: !playerPrefs?.notifications_battle_queue_sms
-            })
-            setPlayerPrefs((prev) => {
-                if (!prev) return prev
-                return {...prev, notifications_battle_queue_sms: !prev.notifications_battle_queue_sms}
-            })
-            setError(undefined)
-        } catch (e: any) {
-            setError(e)
-        }
-    },[send, setPlayerPrefs, playerPrefs])
-
     if (!user) {
         return <ConnectButton renderButton={renderConnectButton} />
     }
 
     const { username, avatar_id, faction } = user
-
 
     return (
         <>
@@ -153,7 +105,10 @@ export const ProfileCard = () => {
             <Popover
                 open={isPopoverOpen}
                 anchorEl={popoverRef.current}
-                onClose={() => toggleIsPopoverOpen(false)}
+                onClose={() => {
+                    toggleIsPopoverOpen(false)
+                    togglePreferencesModalOpen(false)
+                }}
                 anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "left",
@@ -176,41 +131,39 @@ export const ProfileCard = () => {
                 <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
                     <NavButton
                         href={`${PASSPORT_WEB}collections/${user.username}`}
-                        startIcon={<SvgAssets size="1.6rem" />}
+                        startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}
                     >
                         My Inventory
                     </NavButton>
-                    <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop size="1.6rem" />}>
+                    <NavButton
+                        href={`${PASSPORT_WEB}stores`}
+                        startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />}
+                    >
                         Purchase Assets
                     </NavButton>
                     <NavButton
                         href={`${PASSPORT_WEB}profile/${user.username}/edit`}
-                        startIcon={<SvgProfile size="1.6rem" />}
+                        startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}
                     >
                         Edit Profile
                     </NavButton>
                     <NavButton
-                        onClick={()=>setPreferencesOpen(true)}
-                        startIcon={<SvgProfile size="1.6rem" />}
+                        onClick={() => {
+                            togglePreferencesModalOpen(true)
+                            toggleIsPopoverOpen(false)
+                        }}
+                        startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}
                     >
                         Preferences
                     </NavButton>
                     <LogoutButton />
                 </Stack>
             </Popover>
-            <Dialog open={preferencesOpen} onClose={()=>setPreferencesOpen(false)}>
-                <DialogTitle>
-                    Preferences
-                </DialogTitle>
-                <DialogContent>
-                    <FormControlLabel control={<Switch checked={!!playerPrefs?.notifications_battle_queue_sms} onChange={()=>toggleNotificationsBattleQueueSMS()} />} label="Enable Battle Queue SMS Notifications" />
 
-                </DialogContent>
-                <DialogActions>
-                    {error && <Alert severity={"error"}>{error}</Alert> }
-                    <FancyButton onClick={()=>setPreferencesOpen(false)}>Close</FancyButton>
-                </DialogActions>
-            </Dialog>
+            {isPopoverOpen ||
+                (preferencesModalOpen && (
+                    <PreferencesModal open={preferencesModalOpen} toggle={togglePreferencesModalOpen} />
+                ))}
         </>
     )
 }

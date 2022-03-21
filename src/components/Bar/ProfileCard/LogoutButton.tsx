@@ -5,6 +5,7 @@ import { SvgLogout } from "../../../assets"
 import { usePassportServerAuth } from "../../../containers"
 import { PASSPORT_WEB } from "../../../constants"
 import { colors } from "../../../theme/theme"
+import { NavButton } from "../.."
 
 export const LogoutButton = () => {
     const [isProcessing, setIsProcessing] = useState(false)
@@ -58,24 +59,19 @@ export const LogoutButton = () => {
         }
     }, [user, passportPopup])
 
-    if (!user) {
-        return null
-    }
+    if (!user) return null
+
     return (
-        <Button
-            startIcon={<SvgLogout size="1.6rem" sx={{ ml: ".08rem" }} />}
+        <NavButton
             onClick={onClick}
+            startIcon={<SvgLogout sx={{ pb: ".5rem" }} size="1.6rem" />}
             sx={{
-                justifyContent: "flex-start",
-                width: "100%",
-                color: "#FFFFFF",
                 ":hover": {
                     backgroundColor: colors.red,
                 },
-                fontFamily: "Nostromo Regular Bold",
             }}
         >
             Logout
-        </Button>
+        </NavButton>
     )
 }

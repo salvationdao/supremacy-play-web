@@ -158,6 +158,7 @@ const MapWarMachineInner = ({
                               backgroundSize: "cover",
                               border: `${primaryColor} solid 1px`,
                               borderRadius: 1,
+                              opacity: isAlive ? 1 : 0.7,
                               boxShadow:
                                   highlightedMechHash === warMachine.hash
                                       ? `0px 0px 20px 10px ${colors.neonBlue}`
@@ -190,12 +191,12 @@ const MapWarMachineInner = ({
                             width: "100%",
                             height: "100%",
                             background: "linear-gradient(#00000040, #00000090)",
-                            opacity: enlarged ? 1 : 0.5,
+                            opacity: enlarged ? 1 : 0.6,
                         }}
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size={enlarged ? `${0.5 * SIZE}px` : isSpawnedAI ? `${1.3 * SIZE}px` : `${1.8 * SIZE}px`}
+                            size={enlarged ? `${0.8 * SIZE}px` : isSpawnedAI ? `${1 * SIZE}px` : `${1.3 * SIZE}px`}
                             sx={{
                                 position: "absolute",
                                 top: "52%",

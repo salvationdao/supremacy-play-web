@@ -251,7 +251,7 @@ export const EnlistDetailsPopover = ({
                             <Box sx={{ px: "2.4rem", py: "1.2rem" }}>
                                 <Typography
                                     variant="caption"
-                                    sx={{ fontFamily: "Nostromo Regular Bold", color: colors.grey }}
+                                    sx={{ opacity: 0.6, fontFamily: "Nostromo Regular Bold", color: colors.grey }}
                                 >
                                     Loading...
                                 </Typography>

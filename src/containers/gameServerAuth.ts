@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User } from "../types"
 import { useGameServerWebsocket, usePassportServerAuth } from "."
-import { init } from "@sentry/react"
 
 export interface AuthContainerType {
     user: User | undefined
@@ -11,10 +10,6 @@ export interface AuthContainerType {
     faction_id: string | undefined
     authSessionIDGetLoading: boolean
     authSessionIDGetError: undefined
-}
-
-const emptyFn = (user: User) => {
-    console.debug("empty function that should never run")
 }
 
 /**
