@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { sleep } from "../helpers"

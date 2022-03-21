@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Link, Modal, Stack, Switch, Typography } from "@mui/material"
-import { useEffect } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { ClipThing, TooltipHelper } from ".."
 import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
@@ -55,13 +55,13 @@ export const DeployConfirmation = ({
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, toggleDeployFailed] = useToggle()
 
-    const rarityDeets = getRarityDeets(tier)
+    const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
     useEffect(() => {
         if (!open) toggleDeployFailed(false)
     }, [open])
 
-    const onDeploy = async () => {
+    const onDeploy = useCallback(async () => {
         if (state !== WebSocket.OPEN) return
         try {
             toggleIsDeploying(true)
@@ -76,7 +76,7 @@ export const DeployConfirmation = ({
         } finally {
             toggleIsDeploying(false)
         }
-    }
+    }, [state, hash, needInsured])
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -109,13 +109,7 @@ export const DeployConfirmation = ({
                             backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
                         }}
                     >
-                        <Box sx={{
-                            display:'flex',
-                            flexDirection: 'row',
-                            gap:'1rem',
-                        }}>
-
-
+                        <Stack direction="row" spacing="1rem">
                             <Box
                                 sx={{
                                     position: "relative",
@@ -237,9 +231,9 @@ export const DeployConfirmation = ({
                                         text={
                                             <>
                                                 Insurance costs&nbsp;
-                                                <span style={{ textDecoration: "line-through" }}>10%</span> of the contract
-                                                reward but allows your damaged war machine to be repair much faster so it
-                                                can be ready for the next battle much sooner.
+                                                <span style={{ textDecoration: "line-through" }}>10%</span> of the
+                                                contract reward but allows your damaged war machine to be repair much
+                                                faster so it can be ready for the next battle much sooner.
                                             </>
                                         }
                                     >
@@ -262,7 +256,6 @@ export const DeployConfirmation = ({
                                         minWidth: 0,
                                         px: ".8rem",
                                         py: ".48rem",
-                                        boxShadow: 0,
                                         backgroundColor: colors.green,
                                         border: `${colors.green} 1px solid`,
                                         borderRadius: 0.3,
@@ -278,9 +271,7 @@ export const DeployConfirmation = ({
                                     >
                                         {isDeploying ? "DEPLOYING..." : "DEPLOY"}
                                     </Typography>
-
                                 </Button>
-
 
                                 {deployFailed && (
                                     <Typography
@@ -302,9 +293,13 @@ export const DeployConfirmation = ({
                             >
                                 <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                             </IconButton>
-                        </Box>
-                        <Typography>To get alerts when you War Machine is soon to battle, ensure you enabled notifications in preferences located by clicking your username in the top right and selecting &quot;Preferences&quot;.</Typography>
+                        </Stack>
 
+                        <Typography variant="body2">
+                            To get alerts when you War Machine is soon to battle, ensure you enabled notifications in
+                            preferences located by clicking your username in the top right and selecting
+                            &quot;Preferences&quot;.
+                        </Typography>
                     </Stack>
                 </ClipThing>
             </Box>

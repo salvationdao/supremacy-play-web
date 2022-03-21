@@ -6,6 +6,7 @@ import { colors } from "../../theme/theme"
 
 export const Logo = () => {
     const [text, setText] = useState<string>("EARLY ACCESS")
+
     return (
         <Stack direction="row" alignItems="center" spacing="1.44rem" sx={{ px: "1.6rem", zIndex: 1 }}>
             <Link href={PASSPORT_WEB} target="_blank">

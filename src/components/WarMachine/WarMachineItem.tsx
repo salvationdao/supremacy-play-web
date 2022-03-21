@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
     BoxSlanted,
     ClipThing,
@@ -86,25 +86,25 @@ const WarMachineItemInner = ({
         theme: { primary, secondary, background },
     } = faction
 
-    const rarityDeets = getRarityDeets(tier)
+    const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
-    const wmImageUrl = imageAvatar || GenericWarMachinePNG
-    const isOwnFaction = faction_id == warMachine.factionID
-    const numSkillBars = gameAbilities ? gameAbilities.length : 0
+    const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
+    const isOwnFaction = useMemo(() => faction_id == warMachine.factionID, [faction_id, warMachine])
+    const numSkillBars = useMemo(() => (gameAbilities ? gameAbilities.length : 0), [gameAbilities])
     const isAlive = !warMachineDestroyedRecord
 
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
         } else setHighlightedMechHash(hash)
-    }
+    }, [hash, highlightedMechHash])
 
-    const openSkillsPopover = () => {
+    const openSkillsPopover = useCallback(() => {
         // Need this time out so that it waits for it expand first then popover, else positioning is wrong
         setTimeout(() => {
             togglePopoverOpen(true)
         }, 300)
-    }
+    }, [])
 
     /* Toggle out isExpanded if other mech is highlighted */
     useEffect(() => {

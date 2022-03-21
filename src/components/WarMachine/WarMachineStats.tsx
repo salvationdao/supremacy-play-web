@@ -1,7 +1,7 @@
 import { Box, Slide, Stack } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
-import { ReactElement, useEffect } from "react"
+import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { useDimension, useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
@@ -98,9 +98,15 @@ export const WarMachineStats = () => {
 
     if (!warMachines || warMachines.length <= 0) return null
 
-    const factionMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == faction_id)
-    const otherMechs = warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != faction_id)
-    const haveFactionMechs = factionMechs.length > 0
+    const factionMechs = useMemo(
+        () => warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == faction_id),
+        [warMachines, faction_id],
+    )
+    const otherMechs = useMemo(
+        () => warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != faction_id),
+        [warMachines, faction_id],
+    )
+    const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
 
     return (
         <Slide in direction="up">

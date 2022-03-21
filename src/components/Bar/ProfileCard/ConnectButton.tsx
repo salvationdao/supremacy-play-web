@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { Box, Button, Dialog, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { usePassportServerAuth } from "../../../containers"
@@ -10,7 +10,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const { sessionID, authRingCheckError, setAuthRingCheckError } = usePassportServerAuth()
 
-    const href = `${PASSPORT_WEB}nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`
+    const href = useMemo(() => `${PASSPORT_WEB}nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`, [sessionID])
 
     // Check if login in the iframe has been successful (widnow closed), do clean up
     useEffect(() => {
@@ -30,7 +30,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
     }, [passportPopup])
 
     // Open iframe to passport web to login
-    const onClick = async () => {
+    const onClick = useCallback(async () => {
         if (isProcessing) return
         setIsProcessing(true)
 
@@ -49,7 +49,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
         }
 
         setPassportPopup(popup)
-    }
+    }, [isProcessing])
 
     return (
         <>

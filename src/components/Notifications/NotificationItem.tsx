@@ -1,4 +1,4 @@
-import { Box, Fade, Slide } from "@mui/material"
+import { Box, Slide } from "@mui/material"
 import { ReactElement, useEffect } from "react"
 import { ClipThing } from ".."
 import { useDebounce } from "../../hooks"

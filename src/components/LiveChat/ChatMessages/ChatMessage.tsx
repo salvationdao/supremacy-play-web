@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { SvgInfoCircular } from "../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { dateFormatter, truncate } from "../../../helpers"
@@ -25,7 +26,7 @@ export const ChatMessage = ({
 }) => {
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at, self } =
         chat
-    const multiplierInt = multiplierValue ? parseInt(multiplierValue) : 0
+    const multiplierInt = useMemo(() => (multiplierValue ? parseInt(multiplierValue) : 0), [multiplierValue])
 
     if (!self && filterZeros && multiplierInt <= 0) return null
 

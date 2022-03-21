@@ -1,5 +1,5 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { ChatMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
 import {
@@ -98,6 +98,7 @@ const ChatMessagesInner = ({
             null,
         )
     }, [state, subscribe])
+
     useLayoutEffect(() => {
         if (!autoScroll || !scrollableRef.current || chatMessages.length === 0) {
             return
@@ -105,23 +106,26 @@ const ChatMessagesInner = ({
         scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight
     }, [chatMessages, autoScroll])
 
-    const onClickScrollToBottom = () => {
+    const onClickScrollToBottom = useCallback(() => {
         if (!scrollableRef.current) return
         scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight
-    }
+    }, [])
 
-    const scrollHandler = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-        const { currentTarget } = e
-        const extraHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
-        const scrollUpTooMuch = currentTarget.scrollTop < extraHeight - 0.5 * currentTarget.offsetHeight
+    const scrollHandler = useCallback(
+        (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+            const { currentTarget } = e
+            const extraHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
+            const scrollUpTooMuch = currentTarget.scrollTop < extraHeight - 0.5 * currentTarget.offsetHeight
 
-        // Enable autoscroll if they havent scroll more than half of the container
-        if (autoScroll && scrollUpTooMuch) {
-            setAutoScroll(false)
-        } else if (!autoScroll && !scrollUpTooMuch) {
-            setAutoScroll(true)
-        }
-    }
+            // Enable autoscroll if they havent scroll more than half of the container
+            if (autoScroll && scrollUpTooMuch) {
+                setAutoScroll(false)
+            } else if (!autoScroll && !scrollUpTooMuch) {
+                setAutoScroll(true)
+            }
+        },
+        [autoScroll],
+    )
 
     return (
         <>

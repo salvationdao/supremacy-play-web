@@ -1,5 +1,5 @@
 import { Box, Fade, useTheme } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
@@ -59,7 +59,10 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
     const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
     const [submitted, setSubmitted] = useState<boolean>(false)
 
-    const isTargeting = winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT"
+    const isTargeting = useMemo(
+        () => winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT",
+        [winner, timeReachZero, submitted, bribeStage],
+    )
 
     // Set initial size
     useEffect(() => {
@@ -115,7 +118,10 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
 
     if (!map) return null
 
-    const mainColor = isTargeting ? winner.game_ability.colour : theme.factionTheme.primary
+    const mainColor = useMemo(
+        () => (isTargeting && winner ? winner.game_ability.colour : theme.factionTheme.primary),
+        [isTargeting, winner, theme],
+    )
 
     return (
         <Box
@@ -179,7 +185,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     backgroundColor: colors.darkNavy,
                                 }}
                             >
-                                {isTargeting ? (
+                                {isTargeting && winner ? (
                                     <MiniMapInside
                                         gameAbility={winner.game_ability}
                                         containerDimensions={dimensions}
@@ -199,7 +205,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     toggleIsMapOpen={toggleIsMapOpen}
                                 />
 
-                                {isTargeting && (
+                                {isTargeting && winner && (
                                     <TargetTimerCountdown
                                         gameAbility={winner.game_ability}
                                         setTimeReachZero={setTimeReachZero}

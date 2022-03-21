@@ -1,6 +1,6 @@
 import { Box, Stack, Theme } from "@mui/material"
 import { useTheme } from "@mui/styles"
-import { ReactElement, useEffect, useState } from "react"
+import { ReactElement, useCallback, useEffect, useState } from "react"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
 import { ResizeBox } from ".."
 import { SvgDrag, SvgResizeX, SvgResizeY, SvgResizeXY, SvgHide } from "../../assets"
@@ -88,28 +88,31 @@ export const MoveableResizable = ({
 
     // When dragging stops, just set the position and save to local storage
     // The bounds in the  Draggable component already limits it's range of motion
-    const onDragStop = (e: DraggableEvent, data: DraggableData) => {
+    const onDragStop = useCallback((e: DraggableEvent, data: DraggableData) => {
         setCurPosX(data.x)
         setCurPosY(data.y)
         localStorage.setItem(`${localStoragePrefix}PosX`, data.x.toString())
         localStorage.setItem(`${localStoragePrefix}PosY`, data.y.toString())
-    }
+    }, [])
 
     // When user resize is done, save into local storage
-    const onResizeStop = (data: Dimension) => {
-        const size = data || { width: curWidth, height: curHeight }
+    const onResizeStop = useCallback(
+        (data: Dimension) => {
+            const size = data || { width: curWidth, height: curHeight }
 
-        if (allowResizeX && size.width >= minSizeX && size.width <= width - 2 * PADDING) {
-            setCurWidth(size.width)
-        }
+            if (allowResizeX && size.width >= minSizeX && size.width <= width - 2 * PADDING) {
+                setCurWidth(size.width)
+            }
 
-        if (allowResizeY && size.height >= minSizeY && size.height <= height - 2 * PADDING) {
-            setCurHeight(size.height)
-        }
+            if (allowResizeY && size.height >= minSizeY && size.height <= height - 2 * PADDING) {
+                setCurHeight(size.height)
+            }
 
-        localStorage.setItem(`${localStoragePrefix}SizeX`, size.width.toString())
-        localStorage.setItem(`${localStoragePrefix}SizeY`, size.height.toString())
-    }
+            localStorage.setItem(`${localStoragePrefix}SizeX`, size.width.toString())
+            localStorage.setItem(`${localStoragePrefix}SizeY`, size.height.toString())
+        },
+        [curWidth, curHeight, allowResizeX, allowResizeY, minSizeX, minSizeY, width, height],
+    )
 
     return (
         <Stack

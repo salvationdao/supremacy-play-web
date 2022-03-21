@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from "react"
 
 export const usePagination = ({ pageSize: _pageSize, page: _page } = { pageSize: 10, page: 1 }) => {
     const [pageSize, setPageSize] = useState<number>(_pageSize)

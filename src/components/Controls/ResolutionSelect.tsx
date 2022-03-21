@@ -1,5 +1,5 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useStream } from "../../containers"
 import { colors } from "../../theme/theme"
 
@@ -12,11 +12,14 @@ export const ResolutionSelect = () => {
         setOptions(streamResolutions)
     }, [streamResolutions])
 
-    const changeStreamQuality = (quality: number) => {
-        if (webRtc?.current && currentStream) {
-            webRtc.current.forceStreamQuality(currentStream.stream_id, quality)
-        }
-    }
+    const changeStreamQuality = useCallback(
+        (quality: number) => {
+            if (webRtc?.current && currentStream) {
+                webRtc.current.forceStreamQuality(currentStream.stream_id, quality)
+            }
+        },
+        [webRtc],
+    )
 
     if (options.length <= 0) return null
 

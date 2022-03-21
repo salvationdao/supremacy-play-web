@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
 import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
 import { shadeColor } from "../../../helpers"
@@ -114,14 +114,11 @@ const MapWarMachineInner = ({
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage])
 
-    const handleClick = useMemo(
-        () => () => {
-            if (hash === highlightedMechHash) {
-                setHighlightedMechHash(undefined)
-            } else setHighlightedMechHash(hash)
-        },
-        [hash, highlightedMechHash],
-    )
+    const handleClick = useCallback(() => {
+        if (hash === highlightedMechHash) {
+            setHighlightedMechHash(undefined)
+        } else setHighlightedMechHash(hash)
+    }, [hash, highlightedMechHash])
 
     if (!position) return null
 

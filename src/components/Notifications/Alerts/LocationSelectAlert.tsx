@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { NotificationResponse, StyledImageText, StyledNormalText } from "../.."
 import { SvgCancelled, SvgDisconnected, SvgHourglass, SvgLocation, SvgDeath } from "../../../assets"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
@@ -70,7 +71,7 @@ export const LocationSelectAlert = ({
     const { label, colour, image_url } = ability
     const { username, faction } = currentUser || FallbackUser
 
-    const abilityImageUrl = `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`
+    const abilityImageUrl = useMemo(() => `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`, [image_url])
 
     if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
         return (

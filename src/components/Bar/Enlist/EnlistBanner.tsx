@@ -90,7 +90,7 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
     if (!user || !user.faction || !userStat) {
         return (
             <Stack alignItems="center" sx={{ width: "13rem" }}>
-                <CircularProgress size={20} />
+                <CircularProgress size="2rem" />
             </Stack>
         )
     }

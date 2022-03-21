@@ -1,4 +1,5 @@
 import { Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { FancyButton } from "../.."
 import { useWallet } from "../../../containers"
 
@@ -25,7 +26,10 @@ export const VotingButton = ({
 }: VotingButtonProps) => {
     const { onWorldSups } = useWallet()
 
-    const isVotable = isVoting && onWorldSups && onWorldSups.dividedBy(1000000000000000000).isGreaterThanOrEqualTo(cost)
+    const isVotable = useMemo(
+        () => isVoting && onWorldSups && onWorldSups.dividedBy(1000000000000000000).isGreaterThanOrEqualTo(cost),
+        [isVoting, onWorldSups, onWorldSups],
+    )
 
     return (
         <FancyButton

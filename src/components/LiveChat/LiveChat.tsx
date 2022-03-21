@@ -1,4 +1,5 @@
 import { Badge, Box, Drawer, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { DrawerButtons } from ".."
 import { SvgGlobal } from "../../assets"
 import {
@@ -190,14 +191,16 @@ const SplitLayout = () => {
     const { user } = usePassportServerAuth()
     const { globalChatMessages, factionChatMessages } = useChat()
 
-    const isEnlisted = user && user.faction_id && user.faction
-
-    let factionTabLabel = ""
-    if (isEnlisted) {
-        factionTabLabel = user.faction.label
-        if (factionTabLabel.length > 8) factionTabLabel = acronym(factionTabLabel)
-        factionTabLabel += " CHAT"
-    }
+    const isEnlisted = useMemo(() => user && user.faction_id && user.faction, [user])
+    const factionTabLabel = useMemo(() => {
+        if (isEnlisted && user) {
+            let aaa = user.faction.label
+            if (aaa.length > 8) aaa = acronym(aaa)
+            aaa += " CHAT"
+            return aaa
+        }
+        return ""
+    }, [isEnlisted, user])
 
     return (
         <Stack sx={{ flex: 1 }}>
@@ -240,7 +243,7 @@ const SplitLayout = () => {
                 />
             </Stack>
 
-            {isEnlisted && (
+            {isEnlisted && user && (
                 <Stack
                     sx={{ position: "relative", height: "50%", backgroundColor: `${user?.faction.theme.primary}06` }}
                 >

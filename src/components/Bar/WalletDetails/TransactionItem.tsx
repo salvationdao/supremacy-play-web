@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgContentCopyIcon, SvgSupToken } from "../../../assets"
 import { useToggle } from "../../../hooks"
@@ -8,8 +8,6 @@ import { TooltipHelper } from "../.."
 import { dateFormatter, supFormatterNoFixed } from "../../../helpers"
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
-    const isCredit = userID === transaction.credit
-    const color = isCredit ? "#01FF70" : "#FF4136"
     const [copySuccess, toggleCopySuccess] = useToggle()
 
     useEffect(() => {
@@ -20,7 +18,12 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
         }
     }, [copySuccess])
 
-    const tooltipText = transaction.description || transaction.sub_group || transaction.group
+    const isCredit = useMemo(() => userID === transaction.credit, [userID, transaction])
+    const color = useMemo(() => (isCredit ? "#01FF70" : "#FF4136"), [isCredit])
+    const tooltipText = useMemo(
+        () => transaction.description || transaction.sub_group || transaction.group,
+        [transaction],
+    )
 
     return (
         <TooltipHelper placement="left" text={tooltipText ? `  ${tooltipText.toUpperCase()}` : ""}>

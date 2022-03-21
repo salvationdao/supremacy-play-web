@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User } from "../types"
@@ -59,7 +59,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     }, [state, subscribe])
 
     // Temporary
-    const buildUserStruct = (u: any) => {
+    const buildUserStruct = useCallback((u: any) => {
         return {
             ...u,
             faction_id: u.faction_id !== "00000000-0000-0000-0000-000000000000" ? u.faction_id : null,
@@ -73,7 +73,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                   }
                 : null,
         }
-    }
+    }, [])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || user || gameserverSessionID) return

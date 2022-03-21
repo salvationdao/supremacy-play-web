@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDrawer } from "."
 import { DRAWER_TRANSITION_DURATION } from "../constants"
@@ -20,11 +20,11 @@ export const BarContainer = createContainer(() => {
         profile: true,
     })
 
-    const getBarWidth = () => {
+    const getBarWidth = useCallback(() => {
         const el = gameBarRef.current
         if (!el) return
         return el.offsetWidth
-    }
+    }, [])
 
     useEffect(() => {
         const width = getBarWidth()
@@ -67,35 +67,38 @@ export const BarContainer = createContainer(() => {
     }, [windowDimensions, isAnyPanelOpen])
 
     // Make sure that the bar is limited to only 1, 2, or 3 things expanded at the same time, depending on screen size
-    const toggleActiveBar = (barName: keyof ActiveBars, newStatus: boolean) => {
-        const newState = { ...activeBars, [barName]: newStatus }
-        const count = Object.values(newState).filter(Boolean).length
+    const toggleActiveBar = useCallback(
+        (barName: keyof ActiveBars, newStatus: boolean) => {
+            const newState = { ...activeBars, [barName]: newStatus }
+            const count = Object.values(newState).filter(Boolean).length
 
-        if (newStatus) {
-            const width = getBarWidth()
-            if (!width) return
+            if (newStatus) {
+                const width = getBarWidth()
+                if (!width) return
 
-            if (width < 1045) {
-                setActiveBars({
-                    enlist: false,
-                    wallet: false,
-                    profile: false,
-                    [barName]: newStatus,
-                })
-            } else if (width < 1195 && count > 2) {
-                setActiveBars({
-                    enlist: barName !== "profile",
-                    wallet: true,
-                    profile: barName === "profile",
-                    [barName]: newStatus,
-                })
+                if (width < 1045) {
+                    setActiveBars({
+                        enlist: false,
+                        wallet: false,
+                        profile: false,
+                        [barName]: newStatus,
+                    })
+                } else if (width < 1195 && count > 2) {
+                    setActiveBars({
+                        enlist: barName !== "profile",
+                        wallet: true,
+                        profile: barName === "profile",
+                        [barName]: newStatus,
+                    })
+                } else {
+                    setActiveBars((prev) => ({ ...prev, [barName]: newStatus }))
+                }
             } else {
                 setActiveBars((prev) => ({ ...prev, [barName]: newStatus }))
             }
-        } else {
-            setActiveBars((prev) => ({ ...prev, [barName]: newStatus }))
-        }
-    }
+        },
+        [activeBars, getBarWidth, setActiveBars],
+    )
 
     return {
         gameBarRef,

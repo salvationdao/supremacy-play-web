@@ -12,7 +12,6 @@ interface BarExpandableProps {
 
 export const BarExpandable = ({ barName, iconComponent, children, noDivider }: BarExpandableProps) => {
     const { activeBars, toggleActiveBar } = useBar()
-
     const isActive = activeBars[barName]
 
     return (

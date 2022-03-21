@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
 
@@ -24,12 +24,15 @@ const OverlayTogglesContainer = createContainer(() => {
         localStorage.setItem("mapOverlay", isMapOpen)
     }, [isMapOpen])
 
-    const togglePanel = (newPanel: LeftDrawerPanels, value: boolean) => {
-        setActivePanel((prev) => {
-            if (prev == newPanel || !value) return LeftDrawerPanels.None
-            return newPanel
-        })
-    }
+    const togglePanel = useCallback(
+        (newPanel: LeftDrawerPanels, value: boolean) => {
+            setActivePanel((prev) => {
+                if (prev == newPanel || !value) return LeftDrawerPanels.None
+                return newPanel
+            })
+        },
+        [setActivePanel],
+    )
 
     return {
         // Left side panels are a little different, only 1 can be open at a time

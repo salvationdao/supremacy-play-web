@@ -1,5 +1,5 @@
 import { Box, SxProps, Theme } from "@mui/system"
-import { SyntheticEvent, useMemo, useState } from "react"
+import { SyntheticEvent, useCallback, useMemo, useState } from "react"
 import { Resizable, ResizeCallbackData, ResizeHandle } from "react-resizable"
 import { useToggle } from "../../hooks"
 import { Dimension } from "../../types"
@@ -39,16 +39,13 @@ export const ResizeBox = ({
         [],
     )
 
-    const onResizeStart = useMemo(() => () => toggleResizing(true), [])
+    const onResizeStart = useCallback(() => toggleResizing(true), [])
 
-    const onResizeStop2 = useMemo(
-        () => () => {
-            if (!resizingDimensions || resizingDimensions.width <= 0 || resizingDimensions.height <= 0) return
-            onResizeStop && onResizeStop(resizingDimensions)
-            toggleResizing(false)
-        },
-        [resizingDimensions],
-    )
+    const onResizeStop2 = useCallback(() => {
+        if (!resizingDimensions || resizingDimensions.width <= 0 || resizingDimensions.height <= 0) return
+        onResizeStop && onResizeStop(resizingDimensions)
+        toggleResizing(false)
+    }, [resizingDimensions])
 
     return (
         <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, zIndex: 99, pointerEvents: "none" }}>

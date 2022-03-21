@@ -42,14 +42,21 @@ export const BattleEndScreen = () => {
         if (map) toggleIsEndBattleDetailOpen(false)
     }, [map])
 
-    const primaryColor =
-        battleEndDetail && battleEndDetail.winning_faction
-            ? battleEndDetail.winning_faction.theme.primary
-            : colors.neonBlue
-    const backgroundColor =
-        battleEndDetail && battleEndDetail.winning_faction
-            ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96)
-            : colors.darkNavyBlue
+    const primaryColor = useMemo(
+        () =>
+            battleEndDetail && battleEndDetail.winning_faction
+                ? battleEndDetail.winning_faction.theme.primary
+                : colors.neonBlue,
+        [battleEndDetail],
+    )
+
+    const backgroundColor = useMemo(
+        () =>
+            battleEndDetail && battleEndDetail.winning_faction
+                ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96)
+                : colors.darkNavyBlue,
+        [battleEndDetail],
+    )
 
     const backgroundColorGradient = useMemo(
         () => ({

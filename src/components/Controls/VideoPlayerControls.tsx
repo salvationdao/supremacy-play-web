@@ -1,4 +1,5 @@
 import { Box, IconButton, Slider, Stack } from "@mui/material"
+import { useCallback } from "react"
 import { SvgFullscreen, SvgVolume, SvgVolumeMute } from "../../assets"
 import { useGameServerAuth, useStream } from "../../containers"
 import { colors } from "../../theme/theme"
@@ -7,11 +8,11 @@ export const VideoPlayerControls = () => {
     const { user } = useGameServerAuth()
     const { toggleIsMute, isMute, volume, setVolume } = useStream()
 
-    const handleVolumeChange = (_: Event, newValue: number | number[]) => {
+    const handleVolumeChange = useCallback((_: Event, newValue: number | number[]) => {
         setVolume(newValue as number)
-    }
+    }, [])
 
-    const toggleFullscreen = () => {
+    const toggleFullscreen = useCallback(() => {
         const elem = document.documentElement
         const doc = document
 
@@ -22,7 +23,7 @@ export const VideoPlayerControls = () => {
         if (elem.requestFullscreen) {
             elem.requestFullscreen()
         }
-    }
+    }, [])
 
     return (
         <Stack direction="row" alignItems="center">

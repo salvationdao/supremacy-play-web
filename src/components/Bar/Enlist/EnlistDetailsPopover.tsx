@@ -1,5 +1,5 @@
 import { Box, Fade, IconButton, Popover, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SvgArrowRightAltSharpIcon, SvgSupToken, SvgWrapperProps } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
@@ -69,7 +69,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
         return
     }, [send, state, factionData])
 
-    const factionExtraInfo = () => {
+    const factionExtraInfo = useMemo(() => {
         if (!factionStat) return null
         const { velocity, recruit_number, win_count, loss_count, kill_count, death_count, mvp } = factionStat
         return (
@@ -113,7 +113,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                 </Stack>
             </Fade>
         )
-    }
+    }, [factionStat])
 
     const {
         label,
@@ -162,7 +162,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                     </Fade>
                 )}
 
-                {page === 1 && factionExtraInfo()}
+                {page === 1 && factionExtraInfo}
 
                 <Stack
                     direction="row"
@@ -212,7 +212,6 @@ export const EnlistDetailsPopover = ({
     popoverRef,
     popoverOpen,
     togglePopoverOpen,
-    faction_id,
     factionData,
 }: EnlistDetailsProps) => {
     const {

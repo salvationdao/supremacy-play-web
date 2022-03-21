@@ -12,7 +12,7 @@ import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACI
 import { useTheme } from "@mui/styles"
 import { Theme } from "@mui/material/styles"
 import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useGame } from "../../containers"
-import { useEffect } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { GameServerKeys } from "../../keys"
 import { useArray } from "../../hooks"
 import {
@@ -97,106 +97,113 @@ export const Notifications = () => {
     }, [])
 
     // Function to add new notification to array, and will clear itself out after certain time
-    const newNotification = (notification: NotificationResponse | undefined, justOne?: boolean) => {
-        if (!notification) return
+    const newNotification = useCallback(
+        (notification: NotificationResponse | undefined, justOne?: boolean) => {
+            if (!notification) return
 
-        const notiID = makeid()
-        const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 100 : NOTIFICATION_TIME
-        addNotification({ notiID, ...notification, duration })
+            const notiID = makeid()
+            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 100 : NOTIFICATION_TIME
+            addNotification({ notiID, ...notification, duration })
 
-        // Linger is for the slide animation to play before clearing off the component
-        setTimeout(() => {
-            removeByID(notiID)
-        }, duration + NOTIFICATION_LINGER)
+            // Linger is for the slide animation to play before clearing off the component
+            setTimeout(() => {
+                removeByID(notiID)
+            }, duration + NOTIFICATION_LINGER)
 
-        if (justOne) return
+            if (justOne) return
 
-        // These cases renders another notification (so two)
-        if (
-            notification.type == "LOCATION_SELECT" &&
-            (notification.data.type == "FAILED_TIMEOUT" || notification.data.type == "FAILED_DISCONNECTED")
-        ) {
-            const {
-                data: { ability, nextUser },
-            } = notification
-            newNotification(
-                {
-                    type: "LOCATION_SELECT",
-                    data: {
-                        type: "ASSIGNED",
-                        currentUser: nextUser,
-                        ability,
-                        reason: "",
+            // These cases renders another notification (so two)
+            if (
+                notification.type == "LOCATION_SELECT" &&
+                (notification.data.type == "FAILED_TIMEOUT" || notification.data.type == "FAILED_DISCONNECTED")
+            ) {
+                const {
+                    data: { ability, nextUser },
+                } = notification
+                newNotification(
+                    {
+                        type: "LOCATION_SELECT",
+                        data: {
+                            type: "ASSIGNED",
+                            currentUser: nextUser,
+                            ability,
+                            reason: "",
+                        },
                     },
-                },
-                true,
-            )
-        }
-
-        if (notification.type == "BATTLE_ABILITY") {
-            const {
-                data: { ability, user },
-            } = notification
-            newNotification(
-                {
-                    type: "LOCATION_SELECT",
-                    data: {
-                        type: "ASSIGNED",
-                        currentUser: user,
-                        ability,
-                        reason: "",
-                    },
-                },
-                true,
-            )
-        }
-    }
-
-    const notificationsJsx = notifications
-        .filter((n) => !!n)
-        .reverse()
-        .map((n) => {
-            if (!n) return null
-
-            switch (n.type) {
-                case "TEXT":
-                    return (
-                        <NotificationItem key={n.notiID} duration={n.duration}>
-                            <TextAlert data={n.data} />
-                        </NotificationItem>
-                    )
-                case "LOCATION_SELECT":
-                    return (
-                        <NotificationItem key={n.notiID} duration={n.duration}>
-                            <LocationSelectAlert data={n.data} factionsAll={factionsAll} />
-                        </NotificationItem>
-                    )
-                case "BATTLE_ABILITY":
-                    return (
-                        <NotificationItem key={n.notiID} duration={n.duration}>
-                            <BattleAbilityAlert data={n.data} factionsAll={factionsAll} />
-                        </NotificationItem>
-                    )
-                case "FACTION_ABILITY":
-                    return (
-                        <NotificationItem key={n.notiID} duration={n.duration}>
-                            <FactionAbilityAlert data={n.data} factionsAll={factionsAll} />
-                        </NotificationItem>
-                    )
-                case "WAR_MACHINE_ABILITY":
-                    return (
-                        <NotificationItem key={n.notiID} duration={n.duration}>
-                            <WarMachineAbilityAlert data={n.data} />
-                        </NotificationItem>
-                    )
-                case "WAR_MACHINE_DESTROYED":
-                    return (
-                        <NotificationItem key={n.notiID} duration={n.duration}>
-                            <KillAlert data={n.data} />
-                        </NotificationItem>
-                    )
+                    true,
+                )
             }
-        })
+
+            if (notification.type == "BATTLE_ABILITY") {
+                const {
+                    data: { ability, user },
+                } = notification
+                newNotification(
+                    {
+                        type: "LOCATION_SELECT",
+                        data: {
+                            type: "ASSIGNED",
+                            currentUser: user,
+                            ability,
+                            reason: "",
+                        },
+                    },
+                    true,
+                )
+            }
+        },
+        [addNotification],
+    )
+
+    const notificationsJsx = useMemo(
+        () =>
+            notifications
+                .filter((n) => !!n)
+                .reverse()
+                .map((n) => {
+                    if (!n) return null
+
+                    switch (n.type) {
+                        case "TEXT":
+                            return (
+                                <NotificationItem key={n.notiID} duration={n.duration}>
+                                    <TextAlert data={n.data} />
+                                </NotificationItem>
+                            )
+                        case "LOCATION_SELECT":
+                            return (
+                                <NotificationItem key={n.notiID} duration={n.duration}>
+                                    <LocationSelectAlert data={n.data} factionsAll={factionsAll} />
+                                </NotificationItem>
+                            )
+                        case "BATTLE_ABILITY":
+                            return (
+                                <NotificationItem key={n.notiID} duration={n.duration}>
+                                    <BattleAbilityAlert data={n.data} factionsAll={factionsAll} />
+                                </NotificationItem>
+                            )
+                        case "FACTION_ABILITY":
+                            return (
+                                <NotificationItem key={n.notiID} duration={n.duration}>
+                                    <FactionAbilityAlert data={n.data} factionsAll={factionsAll} />
+                                </NotificationItem>
+                            )
+                        case "WAR_MACHINE_ABILITY":
+                            return (
+                                <NotificationItem key={n.notiID} duration={n.duration}>
+                                    <WarMachineAbilityAlert data={n.data} />
+                                </NotificationItem>
+                            )
+                        case "WAR_MACHINE_DESTROYED":
+                            return (
+                                <NotificationItem key={n.notiID} duration={n.duration}>
+                                    <KillAlert data={n.data} />
+                                </NotificationItem>
+                            )
+                    }
+                }),
+        [notifications],
+    )
 
     return (
         <Stack
