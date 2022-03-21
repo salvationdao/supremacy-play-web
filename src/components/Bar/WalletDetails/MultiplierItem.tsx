@@ -24,7 +24,9 @@ export const MultiplierItem = ({ multiplier }: { multiplier: Multiplier }) => {
                             border: "#FFFFFF80 1px solid",
                         }}
                     />
-                    <Typography variant="body1">{multiplier.key.toUpperCase()}</Typography>
+                    <Typography variant="body1" sx={{ pt: ".1rem" }}>
+                        {multiplier.key.toUpperCase()}
+                    </Typography>
                 </Stack>
 
                 <Typography sx={{ minWidth: "2.5rem", textAlign: "end" }} variant="body1">
