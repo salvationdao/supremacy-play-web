@@ -2,7 +2,7 @@ import { Button, SxProps, Theme } from "@mui/material"
 import { colors } from "../../../theme/theme"
 
 interface NavButtonProps {
-    href: string
+    href?: string
     active?: boolean
     sx?: SxProps<Theme>
     startIcon?: React.ReactNode
@@ -23,9 +23,9 @@ export const NavButton: React.FC<NavButtonProps> = ({ href, active, sx, startIco
                 },
                 ...sx,
             }}
-            component={"a"}
-            href={href}
-            target={"_blank"}
+            // component={"a"}
+            href={href || ""}
+            target={href ? "_blank" : undefined}
             startIcon={startIcon}
             onClick={onClick}
         >

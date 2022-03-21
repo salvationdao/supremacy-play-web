@@ -327,7 +327,6 @@ const MiniMapInsideInner = ({
                         touchAction: "none",
                         transformOrigin: "0% 0%",
                         transform: `translate(${dragX}px, ${dragY}px) scale(${mapScale})`,
-                        transition: "all .2",
                     }}
                 >
                     <SelectionIcon
