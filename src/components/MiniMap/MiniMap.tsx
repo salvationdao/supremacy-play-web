@@ -116,12 +116,12 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
         }
     }, [timeReachZero, submitted])
 
-    if (!map) return null
-
     const mainColor = useMemo(
         () => (isTargeting && winner ? winner.game_ability.colour : theme.factionTheme.primary),
         [isTargeting, winner, theme],
     )
+
+    if (!map) return null
 
     return (
         <Box
