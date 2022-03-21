@@ -8,13 +8,15 @@ import { useToggle } from "../../hooks"
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: any }) => {
     const { onWorldSups } = useWallet()
 
-    const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
-
     // Doing it here prevents index.tsx from re-rendering continuously from sup ticks
     useEffect(() => {
+        if (!onWorldSups) return
+
+        const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
+
         if (supsAboveZero && !haveSups) toggleHaveSups(true)
         if (!supsAboveZero && haveSups) toggleHaveSups(false)
-    }, [onWorldSups, supsAboveZero, haveSups])
+    }, [onWorldSups, haveSups])
 
     if (!render) return null
     return null
