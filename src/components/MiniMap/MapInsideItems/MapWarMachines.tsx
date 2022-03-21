@@ -153,7 +153,7 @@ const MapWarMachineInner = ({
                               backgroundRepeat: "no-repeat",
                               backgroundPosition: "center",
                               backgroundSize: "cover",
-                              border: `${primaryColor} solid 1px`,
+                              border: `${primaryColor} solid 3px`,
                               borderRadius: 1,
                               opacity: isAlive ? 1 : 0.7,
                               boxShadow:

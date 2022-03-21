@@ -75,10 +75,25 @@ export const StreamContainer = createContainer(() => {
     const [isMute, toggleIsMute] = useToggle(true)
 
     // resolution
+    const [selectedResolution, setSelectedResolution] = useState<number>()
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
 
     // no stream error
     const [noStreamExist, setNoStreamExist] = useState(false)
+
+    // When resolutions array is populated / updated, select the highest one
+    useEffect(() => {
+        if (webRtc?.current && currentStream && streamResolutions && streamResolutions.length > 0) {
+            setSelectedResolution(Math.max.apply(null, streamResolutions))
+        }
+    }, [streamResolutions, currentStream])
+
+    // When user selects a resolution, make the change into the stream
+    useEffect(() => {
+        if (selectedResolution && selectedResolution > 0 && webRtc?.current && currentStream) {
+            webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
+        }
+    }, [selectedResolution])
 
     useEffect(() => {
         localStorage.setItem("streamVolume", volume.toString())
@@ -200,10 +215,6 @@ export const StreamContainer = createContainer(() => {
                                 }
                             })
                             setStreamResolutions(resolutions)
-
-                            if (webRtc?.current && currentStream && resolutions && resolutions.length > 0) {
-                                webRtc.current.forceStreamQuality(currentStream.stream_id, resolutions[0])
-                            }
                         } else if (info == "closed") {
                             webRtc.current = undefined
                             if (typeof obj != "undefined") {
@@ -236,6 +247,8 @@ export const StreamContainer = createContainer(() => {
         changeStream,
 
         streamResolutions,
+        selectedResolution,
+        setSelectedResolution,
 
         volume,
         setVolume,

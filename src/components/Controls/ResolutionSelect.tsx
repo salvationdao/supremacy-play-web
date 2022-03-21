@@ -1,27 +1,11 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
 import { useStream } from "../../containers"
 import { colors } from "../../theme/theme"
 
 export const ResolutionSelect = () => {
-    const { webRtc, currentStream, streamResolutions } = useStream()
-    const [options, setOptions] = useState<number[]>([])
+    const { streamResolutions, selectedResolution, setSelectedResolution } = useStream()
 
-    useMemo(() => {
-        if (streamResolutions.length == 0) return
-        setOptions(streamResolutions)
-    }, [streamResolutions])
-
-    const changeStreamQuality = useCallback(
-        (quality: number) => {
-            if (webRtc?.current && currentStream) {
-                webRtc.current.forceStreamQuality(currentStream.stream_id, quality)
-            }
-        },
-        [webRtc],
-    )
-
-    if (options.length <= 0) return null
+    if (!streamResolutions || streamResolutions.length <= 0) return null
 
     return (
         <Stack direction="row" spacing=".24rem" alignItems="center">
@@ -38,7 +22,8 @@ export const ResolutionSelect = () => {
                     },
                     "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
                 }}
-                defaultValue={options[0]}
+                defaultValue={streamResolutions[0]}
+                value={selectedResolution}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -54,12 +39,12 @@ export const ResolutionSelect = () => {
                     },
                 }}
             >
-                {options.map((x) => {
+                {streamResolutions.map((x) => {
                     return (
                         <MenuItem
                             key={x}
                             value={x}
-                            onClick={() => changeStreamQuality(x)}
+                            onClick={() => setSelectedResolution(x)}
                             sx={{
                                 "&:hover": {
                                     backgroundColor: colors.darkNavyBlue,
