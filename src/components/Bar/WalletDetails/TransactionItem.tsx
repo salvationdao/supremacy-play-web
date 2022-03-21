@@ -32,7 +32,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 <Stack direction="row" alignItems="center">
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>
                     <SvgSupToken size="1.3rem" fill={color} />
-                    <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount)}</Typography>
+                    <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount, 18)}</Typography>
                 </Stack>
 
                 <Typography
