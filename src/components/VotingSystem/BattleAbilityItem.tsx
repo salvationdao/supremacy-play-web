@@ -125,6 +125,7 @@ export const BattleAbilityItem = () => {
                     mt: ".5rem",
                     lineHeight: 1,
                     color: colors.text,
+                    opacity: 0.6,
                     fontWeight: "fontWeightBold",
                 }}
             >
