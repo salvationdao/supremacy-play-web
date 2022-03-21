@@ -9,6 +9,7 @@ import {
     useOverlayToggles,
     BribeStageResponse,
     WinnerAnnouncementResponse,
+    useGameServerAuth,
 } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
@@ -21,11 +22,25 @@ interface MiniMapProps {
     bribeStage?: BribeStageResponse
     isMapOpen: boolean
     toggleIsMapOpen: (open?: boolean) => void
+    factionColor: string
 }
 
 export const MiniMap = () => {
+    const { user } = useGameServerAuth()
     const { map, winner, setWinner, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
+    const [isRender, toggleIsRender] = useToggle(isMapOpen)
+
+    // A little timeout so fade transition can play
+    useEffect(() => {
+        if (isMapOpen) return toggleIsRender(true)
+        setTimeout(() => {
+            toggleIsRender(false)
+        }, 250)
+    }, [isMapOpen])
+
+    if (!isRender) return null
+
     return (
         <MiniMapInner
             map={map}
@@ -34,11 +49,20 @@ export const MiniMap = () => {
             bribeStage={bribeStage}
             isMapOpen={isMapOpen}
             toggleIsMapOpen={toggleIsMapOpen}
+            factionColor={user && user.faction ? user.faction.theme.primary : colors.neonBlue}
         />
     )
 }
 
-export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen }: MiniMapProps) => {
+export const MiniMapInner = ({
+    map,
+    winner,
+    setWinner,
+    bribeStage,
+    isMapOpen,
+    toggleIsMapOpen,
+    factionColor,
+}: MiniMapProps) => {
     const {
         streamDimensions: { width, height },
     } = useDimension()
@@ -117,8 +141,8 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
     }, [timeReachZero, submitted])
 
     const mainColor = useMemo(
-        () => (isTargeting && winner ? winner.game_ability.colour : theme.factionTheme.primary),
-        [isTargeting, winner, theme],
+        () => (isTargeting && winner ? winner.game_ability.colour : factionColor),
+        [isTargeting, winner, theme, factionColor],
     )
 
     if (!map) return null
