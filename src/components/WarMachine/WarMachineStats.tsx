@@ -96,17 +96,19 @@ export const WarMachineStats = () => {
         shouldBeExpandedOthers: false,
     }
 
-    if (!warMachines || warMachines.length <= 0) return null
-
     const factionMechs = useMemo(
-        () => warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == faction_id),
+        () =>
+            warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == faction_id) : [],
         [warMachines, faction_id],
     )
     const otherMechs = useMemo(
-        () => warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != faction_id),
+        () =>
+            warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != faction_id) : [],
         [warMachines, faction_id],
     )
     const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
+
+    if (!warMachines || warMachines.length <= 0) return null
 
     return (
         <Slide in direction="up">
