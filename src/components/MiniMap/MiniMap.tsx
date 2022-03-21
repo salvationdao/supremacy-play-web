@@ -39,6 +39,12 @@ export const MiniMap = () => {
         }, 250)
     }, [isMapOpen])
 
+    useEffect(() => {
+        if (winner && bribeStage?.phase == "LOCATION_SELECT") {
+            toggleIsMapOpen(true)
+        }
+    }, [winner, bribeStage])
+
     if (!isRender) return null
 
     return (
@@ -129,7 +135,6 @@ export const MiniMapInner = ({
     useEffect(() => {
         if (winner && bribeStage?.phase == "LOCATION_SELECT") {
             toggleEnlarged(true)
-            toggleIsMapOpen(true)
         }
     }, [winner, bribeStage])
 
