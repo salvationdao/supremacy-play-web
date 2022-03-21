@@ -16,7 +16,7 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
 
         if (supsAboveZero && !haveSups) toggleHaveSups(true)
         if (!supsAboveZero && haveSups) toggleHaveSups(false)
-    }, [onWorldSups, onWorldSups, haveSups])
+    }, [onWorldSups, haveSups])
 
     if (!render) return null
     return null
