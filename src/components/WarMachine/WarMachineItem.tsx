@@ -99,12 +99,20 @@ const WarMachineItemInner = ({
         } else setHighlightedMechHash(hash)
     }
 
+    const openSkillsPopover = () => {
+        // Need this time out so that it waits for it expand first then popover, else positioning is wrong
+        setTimeout(() => {
+            togglePopoverOpen(true)
+        }, 300)
+    }
+
     /* Toggle out isExpanded if other mech is highlighted */
     useEffect(() => {
         if (highlightedMechHash !== warMachine.hash) {
             toggleIsExpanded(shouldBeExpanded)
         } else {
             toggleIsExpanded(true)
+            openSkillsPopover()
         }
     }, [highlightedMechHash])
 
@@ -376,7 +384,7 @@ const WarMachineItemInner = ({
                                     isAlive
                                         ? () => {
                                               if (!isExpanded) handleClick()
-                                              togglePopoverOpen()
+                                              openSkillsPopover()
                                           }
                                         : undefined
                                 }
@@ -438,7 +446,7 @@ const WarMachineItemInner = ({
                 <WarMachineAbilitiesPopover
                     popoverRef={popoverRef}
                     open={popoverOpen}
-                    toggleOpen={togglePopoverOpen}
+                    onClose={() => togglePopoverOpen(false)}
                     warMachine={warMachine}
                     gameAbilities={gameAbilities}
                     maxAbilityPriceMap={maxAbilityPriceMap}

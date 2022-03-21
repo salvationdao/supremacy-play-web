@@ -7,7 +7,7 @@ import { GameAbility, WarMachineState } from "../../types"
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
     open: boolean
-    toggleOpen: (_state: boolean) => void
+    onClose: () => void
     warMachine: WarMachineState
     gameAbilities: GameAbility[]
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
@@ -16,7 +16,7 @@ interface WarMachineAbilitiesPopoverProps {
 export const WarMachineAbilitiesPopover = ({
     popoverRef,
     open,
-    toggleOpen,
+    onClose,
     warMachine,
     gameAbilities,
     maxAbilityPriceMap,
@@ -27,7 +27,7 @@ export const WarMachineAbilitiesPopover = ({
         <Popover
             open={open}
             anchorEl={popoverRef.current}
-            onClose={() => toggleOpen(false)}
+            onClose={onClose}
             anchorOrigin={{
                 vertical: "top",
                 horizontal: "left",

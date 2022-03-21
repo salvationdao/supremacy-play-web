@@ -53,6 +53,9 @@ export enum GameServerKeys {
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
 
     SubscribeMultiplierMap = "MULTIPLIER:MAP:SUBSCRIBE",
+
+    SubPlayerPrefs = "PLAYER:PREFERENCES_SUBSCRIBE",
+    TogglePlayerBattleQueueSMS = "PLAYER:TOGGLE_BATTLE_QUEUE_SMS",
 }
 
 export enum PassportServerKeys {
