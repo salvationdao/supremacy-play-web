@@ -64,6 +64,7 @@ export const StreamContainer = createContainer(() => {
     // video
     const webRtc = useRef<WebRTCAdaptorType>()
     const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
+    const [currentInitiatedStreamID, setCurrentInitiatedStreamID] = useState<string>()
 
     // stream
     const [streams, setStreams] = useState<Stream[]>([])
@@ -83,24 +84,31 @@ export const StreamContainer = createContainer(() => {
 
     // When resolutions array is populated / updated, select the highest one
     useEffect(() => {
-        if (webRtc?.current && currentStream && streamResolutions && streamResolutions.length > 0) {
+        if (
+            webRtc?.current &&
+            currentStream &&
+            currentStream.stream_id == currentInitiatedStreamID &&
+            streamResolutions &&
+            streamResolutions.length > 0
+        ) {
             setSelectedResolution(Math.max.apply(null, streamResolutions))
         }
-    }, [streamResolutions, currentStream])
+    }, [streamResolutions, currentStream, currentInitiatedStreamID])
 
     // When user selects a resolution, make the change into the stream
     useEffect(() => {
         if (
+            webRtc?.current &&
             selectedResolution &&
             selectedResolution > 0 &&
             streamResolutions &&
             streamResolutions.length > 0 &&
-            webRtc?.current &&
-            currentStream
+            currentStream &&
+            currentStream.stream_id == currentInitiatedStreamID
         ) {
             webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
         }
-    }, [selectedResolution, currentStream, streamResolutions])
+    }, [selectedResolution, currentStream, streamResolutions, currentInitiatedStreamID])
 
     useEffect(() => {
         localStorage.setItem("streamVolume", volume.toString())
@@ -210,6 +218,7 @@ export const StreamContainer = createContainer(() => {
                         if (info == "initialized") {
                             if (!webRtc || !webRtc.current || !webRtc.current.play) return
                             webRtc.current.play(currentStream.stream_id, "")
+                            setCurrentInitiatedStreamID(currentStream.stream_id)
                         } else if (info == "play_started") {
                             if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
                             webRtc.current.getStreamInfo(currentStream.stream_id)
