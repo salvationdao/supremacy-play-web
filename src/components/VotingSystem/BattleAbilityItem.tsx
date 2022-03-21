@@ -118,6 +118,13 @@ export const BattleAbilityItem = () => {
         [battleAbilityProgress, bribeStage],
     )
 
+    const buttonColor = useMemo(
+        () =>
+            user && user.faction ? user.faction.theme.primary : battleAbility ? battleAbility.colour : colors.neonBlue,
+        [user],
+    )
+    const buttonTextColor = useMemo(() => (user && user.faction ? user.faction.theme.secondary : "#FFFFFF"), [user])
+
     if (!battleAbility || !battleAbilityProgress || battleAbilityProgress.length <= 0) {
         return (
             <Typography
@@ -135,8 +142,6 @@ export const BattleAbilityItem = () => {
     }
 
     const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
-    const buttonColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colour), [user, colour])
-    const buttonTextColor = useMemo(() => (user && user.faction ? user.faction.theme.secondary : "#FFFFFF"), [user])
 
     return (
         <BattleAbilityItemInner
