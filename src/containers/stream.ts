@@ -90,10 +90,17 @@ export const StreamContainer = createContainer(() => {
 
     // When user selects a resolution, make the change into the stream
     useEffect(() => {
-        if (selectedResolution && selectedResolution > 0 && webRtc?.current && currentStream) {
+        if (
+            selectedResolution &&
+            selectedResolution > 0 &&
+            streamResolutions &&
+            streamResolutions.length > 0 &&
+            webRtc?.current &&
+            currentStream
+        ) {
             webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
         }
-    }, [selectedResolution])
+    }, [selectedResolution, currentStream, streamResolutions])
 
     useEffect(() => {
         localStorage.setItem("streamVolume", volume.toString())
