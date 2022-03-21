@@ -1,16 +1,23 @@
 import { Box, Button, Divider, Link, Modal, Stack, Typography } from "@mui/material"
 import { colors } from "../../theme/theme"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useToggle } from "../../hooks/useToggle"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
-import { useGameServerAuth } from "../../containers"
+import { usePassportServerAuth } from "../../containers"
 
 export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
-    const { user } = useGameServerAuth()
+    const { user } = usePassportServerAuth()
     const [open, toggleOpen] = useToggle(false)
+    // Skip first iternation as haveSups is false by default but don't wanna show it
+    const skip = useRef(true)
 
     useEffect(() => {
+        if (skip.current) {
+            skip.current = false
+            return
+        }
+
         if (!haveSups) return toggleOpen(true)
         toggleOpen(false)
     }, [haveSups])

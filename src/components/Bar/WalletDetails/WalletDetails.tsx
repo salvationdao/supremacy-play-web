@@ -21,11 +21,10 @@ import { Transaction } from "../../../types/passport"
 
 export const WalletDetails = () => {
     const { state, subscribe } = useGameServerWebsocket()
-    const { setOnWorldSupsRaw } = useWallet()
     const { battleEndDetail } = useGame()
     const { user, userID } = usePassportServerAuth()
     const { userID: gameserverUserID } = useGameServerAuth()
-    const { payload: sups } = usePassportServerSecureSubscription<string>(PassportServerKeys.SubscribeWallet)
+    const { onWorldSupsRaw } = useWallet()
     const [multipliers, setMultipliers] = useState<MultipliersAll>()
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const { payload: transactionsPayload } = usePassportServerSecureSubscription<Transaction[]>(
@@ -96,13 +95,7 @@ export const WalletDetails = () => {
         setTransactions([...latestTransactionPayload, ...transactions])
     }, [latestTransactionPayload])
 
-    // Set the sups amount in wallet container
-    useEffect(() => {
-        if (!sups) return
-        setOnWorldSupsRaw(sups)
-    }, [sups, setOnWorldSupsRaw])
-
-    if (!sups) {
+    if (!onWorldSupsRaw) {
         return (
             <Stack alignItems="center" sx={{ width: "26rem" }}>
                 <CircularProgress size="2rem" />
@@ -174,7 +167,7 @@ export const WalletDetails = () => {
                             <SvgWallet size="2.3rem" sx={{ mr: "1.04rem" }} />
                             <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />
                             <Typography sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1 }}>
-                                {sups ? supFormatterNoFixed(sups, 2) : "0.00"}
+                                {onWorldSupsRaw ? supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"}
                             </Typography>
 
                             {multipliers && (
@@ -270,7 +263,7 @@ export const WalletDetails = () => {
                 }}
             >
                 <SupsTooltipContent
-                    sups={sups}
+                    sups={onWorldSupsRaw}
                     multipliers={multipliers}
                     userID={userID || ""}
                     transactions={transactions}
