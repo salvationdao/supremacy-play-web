@@ -147,7 +147,7 @@ export const WalletDetails = () => {
                     >
                         <Stack
                             ref={popoverRef}
-                            onClick={toggleIsPopoverOpen}
+                            onClick={() => toggleIsPopoverOpen()}
                             direction="row"
                             alignItems="center"
                             sx={{

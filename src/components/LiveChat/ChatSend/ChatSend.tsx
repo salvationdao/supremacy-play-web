@@ -162,7 +162,7 @@ const ChatSendInner = ({
                                 <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
                                 <IconButton
                                     ref={popoverRef}
-                                    onClick={toggleIsEmojiOpen}
+                                    onClick={() => toggleIsEmojiOpen()}
                                     edge="end"
                                     size="small"
                                     sx={{

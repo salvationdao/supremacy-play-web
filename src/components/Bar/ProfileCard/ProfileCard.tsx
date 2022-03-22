@@ -51,7 +51,7 @@ export const ProfileCard = () => {
             >
                 <Stack
                     ref={popoverRef}
-                    onClick={toggleIsPopoverOpen}
+                    onClick={() => toggleIsPopoverOpen()}
                     direction="row"
                     alignItems="center"
                     spacing=".96rem"

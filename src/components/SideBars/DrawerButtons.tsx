@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack, SxProps, Typography } from "@mui/material"
 import { ReactElement } from "react"
 import { SvgChat, SvgRobot } from "../../assets"
 import { GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../constants"
@@ -17,7 +17,7 @@ const SideButton = ({
 }: {
     isEnabled: boolean
     isOpen: boolean
-    toggleIsOpen: any
+    toggleIsOpen: (value?: boolean) => void
     text: string
     Svg?: ReactElement
 }) => {
@@ -25,7 +25,7 @@ const SideButton = ({
 
     return (
         <Stack
-            onClick={toggleIsOpen}
+            onClick={() => toggleIsOpen()}
             direction="row"
             spacing=".4rem"
             alignItems="center"
@@ -70,7 +70,7 @@ export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
 
     const numberOfButtons = user ? 2 : 1
 
-    const styles: any = isFixed
+    const styles: SxProps = isFixed
         ? {
               position: "fixed",
               top: 0,

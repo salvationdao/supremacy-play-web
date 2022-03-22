@@ -222,7 +222,7 @@ export const WarMachineDestroyedInfo = ({
     warMachineDestroyedRecord,
 }: {
     open: boolean
-    toggleOpen: any
+    toggleOpen: (value?: boolean) => void
     warMachineDestroyedRecord: WarMachineDestroyedRecord
 }) => {
     const { destroyed_war_machine, killed_by_war_machine, killed_by, damage_records } = warMachineDestroyedRecord

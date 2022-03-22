@@ -17,7 +17,7 @@ const SideButton = ({
 }: {
     isEnabled: boolean
     isOpen: boolean
-    toggleIsOpen: any
+    toggleIsOpen: (value?: boolean) => void
     text: string
     Svg?: ReactElement
 }) => {
@@ -25,7 +25,7 @@ const SideButton = ({
 
     return (
         <Stack
-            onClick={toggleIsOpen}
+            onClick={() => toggleIsOpen()}
             direction="row"
             spacing=".4rem"
             alignItems="center"

@@ -7,7 +7,7 @@ import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { BattleAbility, User } from "../../../types"
 
-interface BattleFactionAbilityAlertProps {
+export interface BattleFactionAbilityAlertProps {
     user?: User
     ability: BattleAbility
 }

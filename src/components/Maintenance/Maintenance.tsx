@@ -1,7 +1,6 @@
 import { Box, IconButton, Link, Stack, Typography } from "@mui/material"
 import { LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube, MaintenancePNG } from "../../assets"
 import { SUPREMACY_PAGE } from "../../constants"
-import { useTimer } from "../../hooks"
 import { colors } from "../../theme/theme"
 
 export const Maintenance = () => {
@@ -97,42 +96,42 @@ export const Maintenance = () => {
     )
 }
 
-const CountdownTimer = ({ endTime }: { endTime: Date }) => {
-    const { hours, minutes, seconds } = useTimer(endTime)
+// const CountdownTimer = ({ endTime }: { endTime: Date }) => {
+//     const { hours, minutes, seconds } = useTimer(endTime)
 
-    return (
-        <Stack
-            direction="row"
-            justifyContent="space-around"
-            sx={{ mt: "1.6rem", backgroundColor: "#00000099", borderRadius: 1 }}
-        >
-            <Stack
-                alignItems="center"
-                sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
-            >
-                <Typography variant="h5" sx={{ color: colors.neonBlue }}>
-                    {hours}
-                </Typography>
-                <Typography variant="h6">HOURS</Typography>
-            </Stack>
-            <Stack
-                alignItems="center"
-                sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
-            >
-                <Typography variant="h5" sx={{ color: colors.neonBlue }}>
-                    {minutes}
-                </Typography>
-                <Typography variant="h6">MINUTES</Typography>
-            </Stack>
-            <Stack
-                alignItems="center"
-                sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
-            >
-                <Typography variant="h5" sx={{ color: colors.neonBlue }}>
-                    {seconds}
-                </Typography>
-                <Typography variant="h6">SECONDS</Typography>
-            </Stack>
-        </Stack>
-    )
-}
+//     return (
+//         <Stack
+//             direction="row"
+//             justifyContent="space-around"
+//             sx={{ mt: "1.6rem", backgroundColor: "#00000099", borderRadius: 1 }}
+//         >
+//             <Stack
+//                 alignItems="center"
+//                 sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
+//             >
+//                 <Typography variant="h5" sx={{ color: colors.neonBlue }}>
+//                     {hours}
+//                 </Typography>
+//                 <Typography variant="h6">HOURS</Typography>
+//             </Stack>
+//             <Stack
+//                 alignItems="center"
+//                 sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
+//             >
+//                 <Typography variant="h5" sx={{ color: colors.neonBlue }}>
+//                     {minutes}
+//                 </Typography>
+//                 <Typography variant="h6">MINUTES</Typography>
+//             </Stack>
+//             <Stack
+//                 alignItems="center"
+//                 sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
+//             >
+//                 <Typography variant="h5" sx={{ color: colors.neonBlue }}>
+//                     {seconds}
+//                 </Typography>
+//                 <Typography variant="h6">SECONDS</Typography>
+//             </Stack>
+//         </Stack>
+//     )
+// }

@@ -16,7 +16,7 @@ export const OverlayToggles = () => {
             <TooltipHelper text="Toggle the live voting chart.">
                 <IconButton
                     size="small"
-                    onClick={toggleIsLiveChartOpen}
+                    onClick={() => toggleIsLiveChartOpen()}
                     sx={{
                         filter: isLiveChartOpen ? "grayscale(0)" : "grayscale(1)",
                         opacity: isLiveChartOpen ? 1 : 0.4,
@@ -33,7 +33,7 @@ export const OverlayToggles = () => {
             <TooltipHelper text="Toggle the mini map, it will show when the battle begins.">
                 <IconButton
                     size="small"
-                    onClick={toggleIsMapOpen}
+                    onClick={() => toggleIsMapOpen()}
                     sx={{
                         filter: isMapOpen ? "grayscale(0)" : "grayscale(1)",
                         opacity: isMapOpen ? 1 : 0.4,

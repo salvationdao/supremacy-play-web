@@ -82,7 +82,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                             onClick={() => {
                                 navigator.clipboard.writeText(transaction.transaction_reference).then(
                                     () => toggleCopySuccess(true),
-                                    (err) => toggleCopySuccess(false),
+                                    () => toggleCopySuccess(false),
                                 )
                             }}
                         >

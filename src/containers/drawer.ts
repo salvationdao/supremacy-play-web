@@ -11,9 +11,9 @@ export const DrawerContainer = createContainer(() => {
     const [activePanel, setActivePanel] = useState<DrawerPanels>(DrawerPanels.LiveChat)
 
     const togglePanel = useCallback(
-        (newPanel: DrawerPanels, value: boolean) => {
+        (newPanel: DrawerPanels, value?: boolean) => {
             setActivePanel((prev) => {
-                if (prev == newPanel || !value) return DrawerPanels.None
+                if (prev == newPanel || value === false) return DrawerPanels.None
                 return newPanel
             })
         },
@@ -24,8 +24,8 @@ export const DrawerContainer = createContainer(() => {
         isAnyPanelOpen: activePanel != DrawerPanels.None,
         isLiveChatOpen: activePanel == DrawerPanels.LiveChat,
         isAssetOpen: activePanel == DrawerPanels.Assets,
-        toggleIsLiveChatOpen: (value: boolean) => togglePanel(DrawerPanels.LiveChat, value),
-        toggleIsAssetOpen: (value: boolean) => togglePanel(DrawerPanels.Assets, value),
+        toggleIsLiveChatOpen: (value?: boolean) => togglePanel(DrawerPanels.LiveChat, value),
+        toggleIsAssetOpen: (value?: boolean) => togglePanel(DrawerPanels.Assets, value),
     }
 })
 

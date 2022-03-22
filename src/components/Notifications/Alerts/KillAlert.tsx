@@ -3,7 +3,7 @@ import { StyledImageText } from "../.."
 import { SvgDeath, SvgSkull2 } from "../../../assets"
 import { WarMachineState } from "../../../types"
 
-interface KillAlertProps {
+export interface KillAlertProps {
     destroyed_war_machine: WarMachineState
     killed_by_war_machine_id?: WarMachineState
     killed_by?: string

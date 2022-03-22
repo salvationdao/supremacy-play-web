@@ -7,7 +7,7 @@ import { httpProtocol } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { BattleAbility, User, WarMachineState } from "../../../types"
 
-interface WarMachineAbilityAlertProps {
+export interface WarMachineAbilityAlertProps {
     user?: User
     ability: BattleAbility
     warMachine: WarMachineState

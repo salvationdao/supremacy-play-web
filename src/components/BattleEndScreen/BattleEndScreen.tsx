@@ -11,15 +11,12 @@ import {
 } from ".."
 import { useGame, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
-import { sampleBattleEndDetail } from "../../samepleData"
 import { colors } from "../../theme/theme"
-
-const SPAWN_TEST_DATA = false
 
 export const BOTTOM_BUTTONS_HEIGHT = 5 //rems
 
 export const BattleEndScreen = () => {
-    const { map, battleEndDetail, setBattleEndDetail } = useGame()
+    const { map, battleEndDetail } = useGame()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
 
     useEffect(() => {
@@ -28,14 +25,6 @@ export const BattleEndScreen = () => {
             toggleIsEndBattleDetailOpen(true)
         }
     }, [battleEndDetail])
-
-    useEffect(() => {
-        if (SPAWN_TEST_DATA) {
-            setBattleEndDetail(sampleBattleEndDetail)
-            toggleIsEndBattleDetailEnabled(true)
-            toggleIsEndBattleDetailOpen(true)
-        }
-    }, [])
 
     // New game started, so close the panel
     useEffect(() => {

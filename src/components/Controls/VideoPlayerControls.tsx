@@ -31,7 +31,7 @@ export const VideoPlayerControls = () => {
                 <Stack spacing="1.2rem" direction="row" alignItems="center">
                     <IconButton
                         size="small"
-                        onClick={toggleIsMute}
+                        onClick={() => toggleIsMute()}
                         sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
                     >
                         {isMute || volume <= 0 ? (

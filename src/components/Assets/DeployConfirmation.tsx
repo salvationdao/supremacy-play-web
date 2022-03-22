@@ -219,7 +219,7 @@ export const DeployConfirmation = ({
                                     <Switch
                                         size="small"
                                         checked={needInsured}
-                                        onChange={toggleNeedInsured}
+                                        onChange={() => toggleNeedInsured()}
                                         sx={{
                                             transform: "scale(.7)",
                                             ".Mui-checked": { color: colors.green },

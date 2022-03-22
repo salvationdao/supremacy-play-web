@@ -62,7 +62,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
             return
         }
         try {
-            await send<any, EnlistFactionRequest>(PassportServerKeys.EnlistFaction, { faction_id: factionData.id })
+            await send<null, EnlistFactionRequest>(PassportServerKeys.EnlistFaction, { faction_id: factionData.id })
         } catch (e) {
             throw typeof e === "string" ? e : "Something went wrong, please try again."
         }

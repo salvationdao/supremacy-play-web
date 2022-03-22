@@ -189,7 +189,7 @@ const WarMachineItemInner = ({
             >
                 {!isAlive && (
                     <Box
-                        onClick={toggleIsDestroyedInfoOpen}
+                        onClick={() => toggleIsDestroyedInfoOpen()}
                         sx={{
                             position: "absolute",
                             top: ".15rem",

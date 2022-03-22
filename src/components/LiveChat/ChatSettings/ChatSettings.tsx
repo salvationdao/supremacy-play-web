@@ -16,7 +16,7 @@ export const ChatSettings = ({ primaryColor, faction_id }: { primaryColor: strin
         <>
             <IconButton
                 ref={popoverRef}
-                onClick={toggleIsPopoverOpen}
+                onClick={() => toggleIsPopoverOpen()}
                 edge="end"
                 size="small"
                 sx={{ mr: 0.08, opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}

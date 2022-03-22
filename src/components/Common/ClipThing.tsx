@@ -1,6 +1,5 @@
 import { Box, SxProps } from "@mui/system"
 import React from "react"
-import { Theme } from "@mui/material/styles"
 import { colors } from "../../theme/theme"
 
 export interface ClipThingProps {
@@ -13,8 +12,8 @@ export interface ClipThingProps {
               isFancy?: boolean
           }
         | boolean
-    sx?: SxProps<Theme>
-    innerSx?: SxProps<Theme>
+    sx?: SxProps
+    innerSx?: SxProps
     fillHeight?: boolean
     skipRightCorner?: boolean
 }
@@ -29,7 +28,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     fillHeight,
     skipRightCorner,
 }) => {
-    const innerClipStyles: any = {
+    const innerClipStyles: SxProps = {
         height: fillHeight ? "100%" : "fit-content",
         lineHeight: 1,
         clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
@@ -39,7 +38,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
         } calc(100% - ${clipSize}))`,
     }
 
-    const outerClipStyles: any = {
+    const outerClipStyles: SxProps = {
         height: fillHeight ? "100%" : "fit-content",
         lineHeight: 1,
         clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
@@ -47,7 +46,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
         }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, 0% calc(100% - ${clipSize}))`,
     }
 
-    const borderStyles: any = {
+    const borderStyles: SxProps = {
         borderTopLeftRadius: "2px",
         borderBottomRightRadius: "2px",
     }
@@ -77,10 +76,12 @@ export const ClipThing: React.FC<ClipThingProps> = ({
             }}
         >
             <Box
-                sx={{
-                    ...innerSx,
-                    ...innerClipStyles,
-                }}
+                sx={
+                    {
+                        ...innerSx,
+                        ...innerClipStyles,
+                    } as Record<string, unknown>
+                }
             >
                 {children}
             </Box>

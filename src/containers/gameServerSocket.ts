@@ -10,6 +10,7 @@ import { GameAbilityProgress, NetMessageTick, NetMessageType, User } from "../ty
 interface MessageData {
     key: string
     transaction_id: string
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     payload: any
 }
 
@@ -27,6 +28,7 @@ const DateParse = () => {
     const reISO =
         /^([0-9]+)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])[Tt]([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\.[0-9]+)?(([Zz])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/
 
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     return function (key: string, value: any) {
         if (typeof value === "string") {
             const a = reISO.exec(value)
@@ -53,12 +55,14 @@ export enum SocketState {
     CLOSED = WebSocket.CLOSED,
 }
 
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export type WSSendFn = <Y = any, X = any>(key: string, payload?: X) => Promise<Y>
 
 export interface WebSocketProperties {
     send: WSSendFn
     connect: () => Promise<undefined>
     state: SocketState
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     subscribe: <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => () => void
     subscribeNetMessage: <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => () => void
     subscribeAbilityNetMessage: <T>(abilityID: string, callback: (payload: T) => void) => () => void
@@ -66,6 +70,7 @@ export interface WebSocketProperties {
     isServerUp: boolean
 }
 
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 type SubscribeCallback = (payload: any) => void
 
 export interface Message<T> {
@@ -74,6 +79,7 @@ export interface Message<T> {
     payload: T
 }
 
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 type WSCallback<T = any> = (data: T) => void
 
 interface HubError {
@@ -83,7 +89,7 @@ interface HubError {
 }
 
 const backoffIntervalCalc = async (num: number) => {
-    const calc = new Promise<number>((resolve, reject) => {
+    const calc = new Promise<number>((resolve) => {
         const jitter = Math.floor((Math.random() * 1000000) / 1000)
         const backoffInterval = 2 ** (num - 1) * 5 + jitter
         resolve(backoffInterval)
@@ -149,6 +155,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
 
     // ******* Reconnect Logic End ******* //
 
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
         const transaction_id = makeid()
 
@@ -182,6 +189,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
     const subs = useRef<{ [key: string]: SubscribeCallback[] }>({})
 
     const subscribe = useMemo(() => {
+        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         return <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => {
             const transaction_id = makeid()
 
@@ -200,6 +208,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                 subs.current[subKey] = [callback2]
             }
 
+            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             const setSubscribeState = async (key: string, open: boolean, args?: any) => {
                 while (webSocket.current === null) {
                     await sleep(1000)
@@ -278,14 +287,15 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
 
     const setupWS = useMemo(
         () => (ws: WebSocket, onopen?: () => void) => {
+            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             ;(window as any).ws = ws
 
-            ws.onopen = (e) => {
+            ws.onopen = () => {
                 // Use network sub menu to see payloads traveling between client and server
                 // https://stackoverflow.com/a/5757171
                 // console.info("WebSocket open.")
             }
-            ws.onerror = (e) => {
+            ws.onerror = () => {
                 // Use network sub menu to see payloads traveling between client and server
                 // https://stackoverflow.com/a/5757171
                 // console.error("onerror", e)
@@ -350,7 +360,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                     }
                 }
             }
-            ws.onclose = (e) => {
+            ws.onclose = () => {
                 setReadyState()
                 setIsReconnect(true)
             }
@@ -360,7 +370,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
 
     const connect = useMemo(() => {
         return (): Promise<undefined> => {
-            return new Promise(function (resolve, reject) {
+            return new Promise(function (resolve) {
                 setState(WebSocket.CONNECTING)
                 setTimeout(() => {
                     webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)

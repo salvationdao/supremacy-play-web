@@ -17,6 +17,18 @@ interface StreamInfoEntry {
     videoCodec: string
 }
 
+interface WebRTCCallbackObj {
+    command: string
+    streamId: string
+    streamInfo: {
+        videoBitrate: number
+        streamWidth: number
+        streamHeight: number
+        audioBitrate: number
+        videoCodec: string
+    }[]
+}
+
 interface WebRTCAdaptorType {
     websocket_url: string
     mediaConstraints: {
@@ -31,7 +43,7 @@ interface WebRTCAdaptorType {
     isPlayMode: boolean
     debug: boolean
     candidateTypes: string[]
-    callback: (info: string, obj: any) => void
+    callback: (info: string, obj: WebRTCCallbackObj | null) => void
     callbackError: (error: string) => void
 
     forceStreamQuality: (stream_id: string, quality: number) => void
@@ -64,7 +76,7 @@ export const StreamContainer = createContainer(() => {
     // video
     const webRtc = useRef<WebRTCAdaptorType>()
     const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
-    const [currentInitiatedStreamID, setCurrentInitiatedStreamID] = useState<string>()
+    const [currentPlayingStreamHost, setCurrentPlayingStreamHost] = useState<string>()
 
     // stream
     const [streams, setStreams] = useState<Stream[]>([])
@@ -78,22 +90,7 @@ export const StreamContainer = createContainer(() => {
     // resolution
     const [selectedResolution, setSelectedResolution] = useState<number>()
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
-
-    // no stream error
-    const [noStreamExist, setNoStreamExist] = useState(false)
-
-    // When resolutions array is populated / updated, select the highest one
-    useEffect(() => {
-        if (
-            webRtc?.current &&
-            currentStream &&
-            currentStream.stream_id == currentInitiatedStreamID &&
-            streamResolutions &&
-            streamResolutions.length > 0
-        ) {
-            setSelectedResolution(Math.max.apply(null, streamResolutions))
-        }
-    }, [streamResolutions, currentStream, currentInitiatedStreamID])
+    const [, setFailedToChangeRed] = useState(false)
 
     // When user selects a resolution, make the change into the stream
     useEffect(() => {
@@ -104,11 +101,16 @@ export const StreamContainer = createContainer(() => {
             streamResolutions &&
             streamResolutions.length > 0 &&
             currentStream &&
-            currentStream.stream_id == currentInitiatedStreamID
+            currentStream.host === currentPlayingStreamHost
         ) {
-            webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
+            try {
+                webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
+                setFailedToChangeRed(false)
+            } catch {
+                setFailedToChangeRed(true)
+            }
         }
-    }, [selectedResolution, currentStream, streamResolutions, currentInitiatedStreamID])
+    }, [selectedResolution, currentStream, streamResolutions, currentPlayingStreamHost])
 
     useEffect(() => {
         localStorage.setItem("streamVolume", volume.toString())
@@ -214,11 +216,10 @@ export const StreamContainer = createContainer(() => {
                     isPlayMode: true,
                     debug: false,
                     candidateTypes: ["tcp", "udp"],
-                    callback: (info: string, obj: any) => {
+                    callback: (info: string, obj: WebRTCCallbackObj) => {
                         if (info == "initialized") {
                             if (!webRtc || !webRtc.current || !webRtc.current.play) return
                             webRtc.current.play(currentStream.stream_id, "")
-                            setCurrentInitiatedStreamID(currentStream.stream_id)
                         } else if (info == "play_started") {
                             if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
                             webRtc.current.getStreamInfo(currentStream.stream_id)
@@ -231,6 +232,8 @@ export const StreamContainer = createContainer(() => {
                                 }
                             })
                             setStreamResolutions(resolutions)
+                            setSelectedResolution(Math.max.apply(null, resolutions))
+                            setCurrentPlayingStreamHost(currentStream.host)
                         } else if (info == "closed") {
                             webRtc.current = undefined
                             if (typeof obj != "undefined") {
@@ -272,8 +275,6 @@ export const StreamContainer = createContainer(() => {
         toggleIsMute,
 
         defaultResolution,
-
-        noStreamExist,
     }
 })
 

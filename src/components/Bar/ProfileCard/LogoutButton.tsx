@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react"
-import { Button } from "@mui/material"
 import { useEffect } from "react"
 import { SvgLogout } from "../../../assets"
 import { usePassportServerAuth } from "../../../containers"

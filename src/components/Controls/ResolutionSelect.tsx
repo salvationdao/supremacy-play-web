@@ -23,7 +23,7 @@ export const ResolutionSelect = () => {
                     "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
                 }}
                 defaultValue={streamResolutions[0]}
-                value={selectedResolution}
+                value={selectedResolution || streamResolutions[0] || -1}
                 MenuProps={{
                     variant: "menu",
                     sx: {

@@ -30,6 +30,7 @@ export const Capitalize = (str: string): string => str[0].toUpperCase() + str.su
  * @param item
  * @returns {boolean}
  */
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const isObject = (item: any) => {
     return item && typeof item === "object" && !Array.isArray(item)
 }
@@ -45,6 +46,7 @@ export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
  * @param target
  * @param ...sources
  */
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const mergeDeep = (target: any, ...sources: any): any => {
     if (!sources.length) return target
     const source = sources.shift()
@@ -125,6 +127,7 @@ export const parseString = (val: string | null, defaultVal: number): number => {
     return parseFloat(val)
 }
 
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const getObjectFromArrayByKey = (array: any[], idValue: string, idName = "id") => {
     for (let i = 0; i < array.length; i++) {
         if (array[i][idName] === idValue) {

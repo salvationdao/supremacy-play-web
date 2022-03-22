@@ -109,13 +109,13 @@ const MiniMapInsideInner = ({
     warMachines,
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
-    const mapElement = useRef<any>()
+    const mapElement = useRef<HTMLDivElement>()
     // Setup use-gesture props
     const [dragX, setDragX] = useState(0)
     const [dragY, setDragY] = useState(0)
     const [mapScale, setMapScale] = useState(0)
     const gestureRef = useRef<HTMLDivElement>(null)
-    const [isGesturing, toggleIsGesturing] = useToggle()
+    const [, toggleIsGesturing] = useToggle()
 
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
@@ -136,7 +136,7 @@ const MiniMapInsideInner = ({
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
-            if (mapElement) {
+            if (mapElement && mapElement.current) {
                 const rect = mapElement.current.getBoundingClientRect()
                 // Mouse position
                 const x = e.clientX - rect.left

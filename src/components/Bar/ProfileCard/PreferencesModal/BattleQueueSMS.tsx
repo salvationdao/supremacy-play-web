@@ -27,8 +27,9 @@ export const BattleQueueSMS = ({ playerPrefs, setPlayerPrefs, send }: BattleQueu
             })
 
             setError(undefined)
-        } catch (e: any) {
-            setError(e)
+        } catch (e) {
+            if (typeof e === "string") return setError(e)
+            setError("Unable to update SMS preference, please try again.")
         }
     }, [send, playerPrefs, setPlayerPrefs])
 

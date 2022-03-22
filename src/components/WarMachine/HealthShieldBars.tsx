@@ -100,6 +100,3 @@ export const HealthShieldBars = ({
         </Stack>
     )
 }
-function usMemo(arg0: () => number, arg1: number[]) {
-    throw new Error("Function not implemented.")
-}

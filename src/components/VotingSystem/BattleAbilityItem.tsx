@@ -164,7 +164,7 @@ export const BattleAbilityItem = () => {
 
 interface InnerProps {
     isVoting: boolean
-    fadeEffect: string
+    fadeEffect: boolean
     factionsAll: FactionsAll
     colour: string
     description: string
@@ -198,7 +198,7 @@ const BattleAbilityItemInner = ({
             <Stack spacing=".56rem">
                 <BattleAbilityCountdown />
 
-                <Stack key={fadeEffect} spacing="1.04rem">
+                <Stack key={fadeEffect.toString()} spacing="1.04rem">
                     <Fade in={true}>
                         <Box>
                             <ClipThing clipSize="6px">

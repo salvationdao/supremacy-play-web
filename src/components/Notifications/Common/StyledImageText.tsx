@@ -1,4 +1,4 @@
-import { Box, Typography, TypographyPropsVariantOverrides } from "@mui/material"
+import { Box, SxProps, Typography, TypographyPropsVariantOverrides } from "@mui/material"
 import { Variant } from "@mui/material/styles/createTypography"
 import { OverridableStringUnion } from "@mui/types"
 import { useMemo } from "react"
@@ -36,7 +36,7 @@ export const StyledImageText = ({
     noImageBackgroundColor?: boolean
     imageMb?: number
 }) => {
-    const truncateStyle: any = useMemo(
+    const truncateStyle: SxProps = useMemo(
         () =>
             truncateLine
                 ? {

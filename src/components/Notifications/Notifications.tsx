@@ -3,6 +3,10 @@ import {
     BattleAbilityAlert,
     FactionAbilityAlert,
     KillAlert,
+    BattleFactionAbilityAlertProps,
+    LocationSelectAlertProps,
+    WarMachineAbilityAlertProps,
+    KillAlertProps,
     LocationSelectAlert,
     NotificationItem,
     TextAlert,
@@ -15,21 +19,6 @@ import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useGam
 import { useCallback, useEffect, useMemo } from "react"
 import { GameServerKeys } from "../../keys"
 import { useArray } from "../../hooks"
-import {
-    locationSelectNoti,
-    locationSelectNoti2,
-    locationSelectNoti3,
-    locationSelectNoti4,
-    locationSelectNoti5,
-    battleAbilityNoti,
-    factionAbilityNoti,
-    warMachineAbilityNoti,
-    textNoti,
-    killNoti,
-    killNoti2,
-} from "../../samepleData"
-
-const SPAWN_TEST_NOTIFICATIONS = false
 
 /*
 WAR_MACHINE_DESTROYED: when a war machine is destroyed
@@ -39,15 +28,23 @@ FACTION_ABILITY: when a faction has initiated a faction ability
 WARMACHINE_ABILITY: when a faction has initiated a war machine ability
 TEXT: generic notification with no styles, just text
 */
+
+type NotificationType =
+    | "TEXT"
+    | "LOCATION_SELECT"
+    | "BATTLE_ABILITY"
+    | "FACTION_ABILITY"
+    | "WAR_MACHINE_ABILITY"
+    | "WAR_MACHINE_DESTROYED"
+
 export interface NotificationResponse {
-    type:
-        | "TEXT"
-        | "LOCATION_SELECT"
-        | "BATTLE_ABILITY"
-        | "FACTION_ABILITY"
-        | "WAR_MACHINE_ABILITY"
-        | "WAR_MACHINE_DESTROYED"
-    data: any
+    type: NotificationType
+    data:
+        | BattleFactionAbilityAlertProps
+        | KillAlertProps
+        | LocationSelectAlertProps
+        | WarMachineAbilityAlertProps
+        | string
 }
 
 export const Notifications = () => {
@@ -72,29 +69,13 @@ export const Notifications = () => {
                 newNotification(payload)
 
                 if (payload?.type === "BATTLE_ABILITY") {
-                    setForceDisplay100Percentage(payload?.data?.user?.faction_id || "")
+                    const p = payload as { type: NotificationType; data: BattleFactionAbilityAlertProps }
+                    setForceDisplay100Percentage(p?.data?.user?.faction_id || "")
                 }
             },
             null,
         )
     }, [state, subscribe, user])
-
-    // Test cases
-    useEffect(() => {
-        if (!SPAWN_TEST_NOTIFICATIONS) return
-
-        newNotification(locationSelectNoti)
-        newNotification(locationSelectNoti2)
-        newNotification(locationSelectNoti3)
-        newNotification(locationSelectNoti4)
-        newNotification(locationSelectNoti5)
-        newNotification(battleAbilityNoti)
-        newNotification(factionAbilityNoti)
-        newNotification(warMachineAbilityNoti)
-        newNotification(textNoti)
-        newNotification(killNoti)
-        newNotification(killNoti2)
-    }, [])
 
     // Function to add new notification to array, and will clear itself out after certain time
     const newNotification = useCallback(
@@ -102,7 +83,7 @@ export const Notifications = () => {
             if (!notification) return
 
             const notiID = makeid()
-            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 100 : NOTIFICATION_TIME
+            const duration = NOTIFICATION_TIME
             addNotification({ notiID, ...notification, duration })
 
             // Linger is for the slide animation to play before clearing off the component
@@ -113,13 +94,13 @@ export const Notifications = () => {
             if (justOne) return
 
             // These cases renders another notification (so two)
-            if (
-                notification.type == "LOCATION_SELECT" &&
-                (notification.data.type == "FAILED_TIMEOUT" || notification.data.type == "FAILED_DISCONNECTED")
-            ) {
+            if (notification.type == "LOCATION_SELECT") {
+                const noti = notification as { type: NotificationType; data: LocationSelectAlertProps }
+                if (noti.data.type != "FAILED_TIMEOUT" && noti.data.type != "FAILED_DISCONNECTED") return
+
                 const {
                     data: { ability, nextUser },
-                } = notification
+                } = noti
                 newNotification(
                     {
                         type: "LOCATION_SELECT",
@@ -127,7 +108,6 @@ export const Notifications = () => {
                             type: "ASSIGNED",
                             currentUser: nextUser,
                             ability,
-                            reason: "",
                         },
                     },
                     true,
@@ -137,7 +117,7 @@ export const Notifications = () => {
             if (notification.type == "BATTLE_ABILITY") {
                 const {
                     data: { ability, user },
-                } = notification
+                } = notification as { type: NotificationType; data: BattleFactionAbilityAlertProps }
                 newNotification(
                     {
                         type: "LOCATION_SELECT",
@@ -145,7 +125,6 @@ export const Notifications = () => {
                             type: "ASSIGNED",
                             currentUser: user,
                             ability,
-                            reason: "",
                         },
                     },
                     true,

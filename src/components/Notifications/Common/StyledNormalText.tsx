@@ -1,7 +1,7 @@
-import { Typography } from "@mui/material"
+import { SxProps, Typography } from "@mui/material"
 import { colors } from "../../../theme/theme"
 
-export const StyledNormalText = ({ text, sx }: { text: string; sx?: any }) => {
+export const StyledNormalText = ({ text, sx }: { text: string; sx?: SxProps }) => {
     return (
         <Typography
             component="span"

@@ -1,10 +1,8 @@
-// @ts-nocheck //TODO: remove this and fix
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
 import { Box, styled, SxProps } from "@mui/system"
 import React from "react"
 import { colors } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
-import { Theme } from "@mui/material/styles"
 
 const Base = styled(LoadingButton)({
     borderRadius: 0,
@@ -39,13 +37,14 @@ const Triangle = styled("div")({
 
 interface FancyButtonProps extends LoadingButtonProps, ClipThingProps {
     borderColor?: string
+    borderThickness?: string
     backgroundColor?: string
     excludeCaret?: boolean
-    sx?: SxProps<Theme>
-    clipSx?: SxProps<Theme>
+    sx?: SxProps
+    clipSx?: SxProps
 }
 
-export const FancyButton: React.FC<FancyButtonProps> = ({
+export const FancyButton = ({
     children,
     borderColor,
     backgroundColor,
@@ -53,11 +52,11 @@ export const FancyButton: React.FC<FancyButtonProps> = ({
     clipSx,
     sx,
     fullWidth,
-    border,
+    borderThickness,
     excludeCaret = false,
     disabled,
     ...props
-}) => {
+}: FancyButtonProps) => {
     return (
         <ClipThing
             clipSize={clipSize}
@@ -68,7 +67,7 @@ export const FancyButton: React.FC<FancyButtonProps> = ({
                 position: "relative",
             }}
             border={{
-                ...border,
+                borderThickness,
                 isFancy: true,
                 borderColor: borderColor,
             }}

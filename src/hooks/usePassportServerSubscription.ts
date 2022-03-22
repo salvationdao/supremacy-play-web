@@ -6,6 +6,7 @@ import { PassportServerKeys } from "../keys"
 /** Subscribe to a hub key
  * @param args optional arguments; if set will send a ":SUBSCRIBE" (and ":UNSUBSCRIBE") message to tell server we're listening
  */
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export function usePassportServerSubscription<T>(key: PassportServerKeys, args?: any, listenOnly?: boolean) {
     const { subscribe } = usePassportServerWebsocket()
 
@@ -26,6 +27,7 @@ export function usePassportServerSubscription<T>(key: PassportServerKeys, args?:
     return { payload, setArguments }
 }
 
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export function usePassportServerSecureSubscription<T>(key: PassportServerKeys, args?: any, listenOnly?: boolean) {
     const { subscribe } = usePassportServerWebsocket()
     const { userID } = usePassportServerAuth()

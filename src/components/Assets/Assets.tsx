@@ -50,12 +50,12 @@ const DrawerContent = () => {
                 setAssetsInQueue((prev) => {
                     const tempAss = {
                         ...a,
-                        queue_position: status.queue_position!,
+                        queue_position: status.queue_position || -1,
                         contract_reward: status.contract_reward,
                     }
                     prev.set(a.hash, tempAss)
                     const tempMap = new Map(
-                        Array.from(prev.entries()).sort(([_, a], [__, b]) => a.queue_position - b.queue_position),
+                        Array.from(prev.entries()).sort(([, a], [, b]) => a.queue_position - b.queue_position),
                     )
 
                     return tempMap

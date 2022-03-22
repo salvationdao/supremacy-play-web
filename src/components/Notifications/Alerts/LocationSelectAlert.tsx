@@ -1,6 +1,6 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { NotificationResponse, StyledImageText, StyledNormalText } from "../.."
+import { StyledImageText, StyledNormalText } from "../.."
 import { SvgCancelled, SvgDisconnected, SvgHourglass, SvgLocation, SvgDeath } from "../../../assets"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { FactionsAll, httpProtocol } from "../../../containers"
@@ -26,7 +26,7 @@ Some examples:
 => {currentUserName} has chosen a target location for {ability}
 */
 
-interface LocationSelectAlertProps {
+export interface LocationSelectAlertProps {
     type:
         | "CANCELLED_NO_PLAYER"
         | "CANCELLED_DISCONNECT"

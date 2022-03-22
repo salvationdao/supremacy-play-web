@@ -1,16 +1,10 @@
 import { Box, Stack } from "@mui/material"
-import { StyledImageText, StyledNormalText } from "../.."
+import { BattleFactionAbilityAlertProps, StyledImageText, StyledNormalText } from "../.."
 import { SvgEmergency } from "../../../assets"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { FactionsAll, httpProtocol } from "../../../containers"
 import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { BattleAbility, User } from "../../../types"
-
-interface BattleFactionAbilityAlertProps {
-    user?: User
-    ability: BattleAbility
-}
 
 export const FactionAbilityAlert = ({
     data,

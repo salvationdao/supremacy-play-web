@@ -18,7 +18,7 @@ export const ChatFilter = ({ faction_id }: { faction_id: string | null }) => {
             <Switch
                 size="small"
                 checked={faction_id ? filterZerosFaction : filterZerosGlobal}
-                onChange={faction_id ? toggleFilterZerosFaction : toggleFilterZerosGlobal}
+                onChange={faction_id ? () => toggleFilterZerosFaction() : () => toggleFilterZerosGlobal()}
                 sx={{
                     transform: "scale(.7)",
                     ".Mui-checked": { color: colors.neonBlue },

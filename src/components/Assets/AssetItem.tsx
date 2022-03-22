@@ -5,22 +5,22 @@ import { SvgExternalLink, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
-import { useTimer, useToggle } from "../../hooks"
+import { useToggle } from "../../hooks"
 import { PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset, AssetQueueStat } from "../../types/assets"
 import { LeaveConfirmation } from "./LeaveConfirmation"
 
-const RepairCountdown = ({ endTime }: { endTime: Date }) => {
-    const { hours, minutes, seconds } = useTimer(endTime)
+// const RepairCountdown = ({ endTime }: { endTime: Date }) => {
+//     const { hours, minutes, seconds } = useTimer(endTime)
 
-    return (
-        <>
-            {hours && hours > 0 ? `${hours}h` : ""} {minutes && minutes > 0 ? `${minutes}h` : ""}{" "}
-            {seconds && seconds > 0 ? `${seconds}h` : ""}
-        </>
-    )
-}
+//     return (
+//         <>
+//             {hours && hours > 0 ? `${hours}h` : ""} {minutes && minutes > 0 ? `${minutes}h` : ""}{" "}
+//             {seconds && seconds > 0 ? `${seconds}h` : ""}
+//         </>
+//     )
+// }
 
 export const AssetItem = ({
     asset,

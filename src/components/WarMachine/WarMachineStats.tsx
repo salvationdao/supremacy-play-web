@@ -4,13 +4,13 @@ import { useTheme } from "@mui/styles"
 import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { useDimension, useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
+import { useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { WarMachineItem } from "./WarMachineItem"
 
-const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
-const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245
-const WIDTH_MECH_ITEM_OTHER_COLLAPSED = 120
+// const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
+// const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245
+// const WIDTH_MECH_ITEM_OTHER_COLLAPSED = 120
 
 const ScrollContainer = ({ children }: { children: ReactElement }) => {
     const theme = useTheme<Theme>()

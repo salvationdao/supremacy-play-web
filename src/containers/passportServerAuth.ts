@@ -1,13 +1,8 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { PassportServerKeys } from "../keys"
 import { UserData } from "../types/passport"
 import { usePassportServerWebsocket } from "./passportServerSocket"
-import { User } from "../types"
-
-const emptyFn = (user: UserData) => {
-    console.debug("empty function that should never run")
-}
 
 /**
  * A Container that handles Authorisation
@@ -39,6 +34,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
                 setSessionIDLoading(true)
                 const resp = await send<string>(PassportServerKeys.GetSessionID)
                 setSessionID(resp)
+                // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             } catch (e: any) {
                 console.debug(e)
                 setSessionIDError(e)
@@ -67,6 +63,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
                 setAuthRingCheckLoading(true)
                 await send(PassportServerKeys.AuthRingCheck, { gameserver_session_id: gameserverSessionID })
                 setAuthRingCheckSuccess(true)
+                // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             } catch (e: any) {
                 console.debug(e)
                 setAuthRingCheckError(e)

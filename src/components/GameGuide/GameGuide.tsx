@@ -20,7 +20,7 @@ const GameGuide = () => {
                     color: colors.neonBlue,
                     minWidth: 0,
                 }}
-                onClick={toggleClosed}
+                onClick={() => toggleClosed()}
             >
                 <SvgQuestionMark size="1.5rem" fill={colors.neonBlue} />
                 {below1440 ? null : (

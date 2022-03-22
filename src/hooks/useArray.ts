@@ -1,6 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState } from "react"
 
-export const useArray = (initial: any, notiID = 'id') => {
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+export const useArray = (initial: any, notiID = "id") => {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     const [value, setValue] = useState<any[]>(initial)
 
     return {

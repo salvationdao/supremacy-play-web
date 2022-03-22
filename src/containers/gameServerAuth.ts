@@ -59,6 +59,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     }, [state, subscribe])
 
     // Temporary
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     const buildUserStruct = useCallback((u: any) => {
         return {
             ...u,
@@ -82,6 +83,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                 setAuthSessionIDGetLoading(true)
                 const resp = await send<string, null>(GameServerKeys.AuthSessionIDGet)
                 setGameserverSessionID(resp)
+                // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             } catch (e: any) {
                 setAuthSessionIDGetError(e)
             } finally {
