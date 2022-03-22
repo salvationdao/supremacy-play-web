@@ -132,23 +132,33 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
 
     useEffect(() => {
         if (!reconnect) return
-        serverCheckInterval(1)
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             setIsServerUp(false)
         }, 90000)
+        serverCheckInterval(1, timeout)
     }, [reconnect])
 
-    const serverCheckInterval = async (num: number) => {
+    const serverCheckInterval = async (num: number, timeout: NodeJS.Timeout) => {
         const i = await backoffIntervalCalc(num)
         setTimeout(async () => {
             try {
                 const resp = await fetch(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/check`)
                 const body = resp.ok as boolean
                 if (body) {
-                    window.location.reload()
+                    await connect()
+                    clearTimeout(timeout)
+                    setIsServerUp(true)
+                    setIsReconnect(false)
+                    const jwtToken = localStorage.getItem("ring_check_token")
+                    if (jwtToken) {
+                        send.current<string, { token: string }>(GameServerKeys.AuthJWTCheck, {
+                            token: jwtToken,
+                        })
+                    }
                 }
-            } catch {
-                serverCheckInterval(num + 1)
+            } catch (e) {
+                console.error(e)
+                serverCheckInterval(num + 1, timeout)
             }
         }, i)
     }

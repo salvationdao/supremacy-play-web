@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
+import { useGameServerWebsocket, usePassportServerAuth } from "."
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User } from "../types"
-import { useGameServerWebsocket, usePassportServerAuth } from "."
 
 export interface AuthContainerType {
     user: User | undefined
@@ -81,6 +81,13 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         ;(async () => {
             try {
                 setAuthSessionIDGetLoading(true)
+                const jwtToken = localStorage.getItem("ring_check_token")
+                if (jwtToken) {
+                    send<string, { token: string }>(GameServerKeys.AuthJWTCheck, {
+                        token: jwtToken,
+                    })
+                }
+
                 const resp = await send<string, null>(GameServerKeys.AuthSessionIDGet)
                 setGameserverSessionID(resp)
                 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -91,6 +98,11 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             }
         })()
     }, [gameserverSessionID, send, state, user])
+
+    useEffect(() => {
+        if (state !== WebSocket.CLOSED) return
+        setUser(undefined)
+    }, [state])
 
     return {
         user,

@@ -3,6 +3,7 @@ export enum GameServerKeys {
     Welcome = "WELCOME",
     UserSubscribe = "USER:SUBSCRIBE",
     AuthSessionIDGet = "AUTH:SESSION:ID:GET",
+    AuthJWTCheck = "AUTH:JWT:CHECK",
     RingCheck = "RING:CHECK",
 
     // Notification container

@@ -48,7 +48,7 @@ export const LogoutButton = () => {
             setIsProcessing(false)
             return
         }
-
+        window.localStorage.removeItem("ring_check_token")
         setPassportPopup(popup)
     }, [isProcessing, sessionID])
 

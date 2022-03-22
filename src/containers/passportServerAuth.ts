@@ -4,6 +4,11 @@ import { PassportServerKeys } from "../keys"
 import { UserData } from "../types/passport"
 import { usePassportServerWebsocket } from "./passportServerSocket"
 
+interface SubscribeGamebar {
+    user: UserData
+    jwt_token: string
+}
+
 /**
  * A Container that handles Authorisation
  */
@@ -46,10 +51,11 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
 
     useEffect(() => {
         if (!subscribe || !sessionID || state !== WebSocket.OPEN) return
-        return subscribe<UserData>(
+        return subscribe<SubscribeGamebar>(
             PassportServerKeys.SubscribeGamebarUser,
             (u) => {
-                setUser(u)
+                setUser(u.user)
+                localStorage.setItem("ring_check_token", u.jwt_token)
             },
             { session_id: sessionID },
         )
