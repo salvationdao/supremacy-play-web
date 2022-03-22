@@ -104,20 +104,19 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             </Stack>
                         </Stack>
 
-                        <Stack spacing="1.2rem">
-                            <Typography
-                                variant="h5"
-                                sx={{
-                                    color: colors.neonBlue,
-                                    fontFamily: "Nostromo Regular Black",
-                                }}
-                            >
-                                BONUSES
-                            </Typography>
+                        {multiplicative && multiplicative.length > 0 && (
+                            <Stack spacing="1.2rem">
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        color: colors.neonBlue,
+                                        fontFamily: "Nostromo Regular Black",
+                                    }}
+                                >
+                                    BONUSES
+                                </Typography>
 
-                            {multiplicative &&
-                                multiplicative.length > 0 &&
-                                multiplicative.map((m) => {
+                                {multiplicative.map((m) => {
                                     const deets = getMutiplierDeets(m.key)
                                     return (
                                         <TooltipHelper key={m.key} placement="right" text={m.description}>
@@ -146,17 +145,21 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                     )
                                 })}
 
-                            <Divider sx={{ py: ".24rem", borderColor: "#FFFFFF", opacity: 0.1 }} />
+                                <Divider sx={{ py: ".24rem", borderColor: "#FFFFFF", opacity: 0.1 }} />
 
-                            <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                                    SUBTOTAL:{" "}
-                                </Typography>
-                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}>
-                                    {totalMultiplicativeValue * 100}%
-                                </Typography>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                        SUBTOTAL:{" "}
+                                    </Typography>
+                                    <Typography
+                                        variant="h5"
+                                        sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}
+                                    >
+                                        {totalMultiplicativeValue * 100}%
+                                    </Typography>
+                                </Stack>
                             </Stack>
-                        </Stack>
+                        )}
 
                         <Stack spacing="1.2rem">
                             <Typography
@@ -173,8 +176,15 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                 variant="h5"
                                 sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}
                             >
-                                <span>{totalMultiplierValue}x</span> x <span>{totalMultiplicativeValue * 100}%</span> ={" "}
-                                <span>{total_multipliers}</span>
+                                {multiplicative && multiplicative.length > 0 ? (
+                                    <>
+                                        <span>{totalMultiplierValue}x</span> x{" "}
+                                        <span>{totalMultiplicativeValue * 100}%</span> ={" "}
+                                        <span>{total_multipliers}</span>
+                                    </>
+                                ) : (
+                                    <span>{total_multipliers}</span>
+                                )}
                             </Typography>
                         </Stack>
                     </Stack>

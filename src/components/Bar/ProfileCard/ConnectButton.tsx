@@ -49,7 +49,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
         }
 
         setPassportPopup(popup)
-    }, [isProcessing])
+    }, [isProcessing, href])
 
     return (
         <>
