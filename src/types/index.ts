@@ -199,6 +199,7 @@ export interface Multiplier {
     key: string
     value: string
     description: string
+    is_multiplicative: boolean
 }
 
 export interface MultipliersAll {

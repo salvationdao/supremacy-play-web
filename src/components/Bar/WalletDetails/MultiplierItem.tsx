@@ -30,7 +30,7 @@ export const MultiplierItem = ({ multiplier }: { multiplier: Multiplier }) => {
                 </Stack>
 
                 <Typography sx={{ minWidth: "2.5rem", textAlign: "end" }} variant="body1">
-                    {multiplier.value}
+                    {multiplier.is_multiplicative ? `${parseInt(multiplier.value) * 100}%` : `${multiplier.value}x`}
                 </Typography>
             </Stack>
         </TooltipHelper>

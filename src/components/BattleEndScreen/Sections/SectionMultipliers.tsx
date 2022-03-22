@@ -1,11 +1,29 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
 import { BattleEndTooltip, StyledImageText, TooltipHelper } from "../.."
 import { getMutiplierDeets } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { BattleEndDetail } from "../../../types"
+import { BattleEndDetail, Multiplier } from "../../../types"
 
 export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { total_multipliers, multipliers } = battleEndDetail
+
+    const [multiplicative, setMultiplicative] = useState<Multiplier[]>([])
+    const [multiplierList, setMultiplierList] = useState<Multiplier[]>([])
+    const [totalMultiplierValue, setTotalMultiplierValue] = useState(0)
+    const [totalMultiplicativeValue, setTotalMultiplicativeValue] = useState(0)
+
+    useEffect(() => {
+        const m1 = multipliers.filter((m) => !m.is_multiplicative)
+        const m2 = multipliers.filter((m) => m.is_multiplicative)
+        setMultiplierList(m1)
+        setMultiplicative(m2)
+
+        const total1 = m1.reduce((acc, m) => acc + Math.round(parseFloat(m.value) * 10) / 10, 0)
+        const total2 = m2.reduce((acc, m) => acc + Math.round(parseFloat(m.value) * 10) / 10, 0)
+        setTotalMultiplierValue(total1)
+        setTotalMultiplicativeValue(total2)
+    }, [multipliers])
 
     return (
         <Stack>
@@ -32,40 +50,131 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                 spacing="2.56rem"
                 sx={{ pl: "1.44rem", pr: "1.84rem", pt: "2rem", pb: "1.6rem", backgroundColor: "#FFFFFF05" }}
             >
-                {multipliers && multipliers.length > 0 ? (
-                    <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
-                        {multipliers.map((m) => {
-                            const deets = getMutiplierDeets(m.key)
-                            return (
-                                <TooltipHelper key={m.key} placement="right" text={m.description}>
-                                    <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                        <StyledImageText
-                                            color={colors.text}
-                                            imageBorderColor="#FFFFFF60"
-                                            imageBackgroundColor="#FFFFFF"
-                                            text={m.key.toUpperCase()}
-                                            imageUrl={deets.image}
-                                            variant="h5"
-                                            imageSize={2.9}
-                                            imageBorderThickness=".2rem"
-                                            fontWeight="normal"
-                                            truncateLine
-                                            imageMb={-0.8}
-                                        />
-                                        <Typography variant="h6">{m.value}</Typography>
-                                    </Stack>
-                                </TooltipHelper>
-                            )
-                        })}
-
-                        <Divider sx={{ py: ".24rem", borderColor: "#FFFFFF", opacity: 0.15 }} />
-
-                        <Stack direction="row" alignItems="center" justifyContent="space-between">
-                            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                                TOTAL:{" "}
+                {multiplierList && multiplierList.length > 0 ? (
+                    <Stack spacing="3.5rem" sx={{ pl: ".8rem" }}>
+                        <Stack spacing="1.2rem">
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    color: colors.neonBlue,
+                                    fontFamily: "Nostromo Regular Black",
+                                }}
+                            >
+                                MULTIPLIERS
                             </Typography>
-                            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                                {total_multipliers}
+
+                            {multiplierList.map((m) => {
+                                const deets = getMutiplierDeets(m.key)
+                                return (
+                                    <TooltipHelper key={m.key} placement="right" text={m.description}>
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                            sx={{ px: ".8rem" }}
+                                        >
+                                            <StyledImageText
+                                                color={colors.text}
+                                                imageBorderColor="#FFFFFF60"
+                                                imageBackgroundColor="#FFFFFF"
+                                                text={m.key.toUpperCase()}
+                                                imageUrl={deets.image}
+                                                variant="h5"
+                                                imageSize={2.9}
+                                                imageBorderThickness=".2rem"
+                                                fontWeight="normal"
+                                                truncateLine
+                                                imageMb={-0.8}
+                                            />
+                                            <Typography variant="h6">{m.value}x</Typography>
+                                        </Stack>
+                                    </TooltipHelper>
+                                )
+                            })}
+
+                            <Divider sx={{ py: ".24rem", borderColor: "#FFFFFF", opacity: 0.1 }} />
+
+                            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                    SUBTOTAL:{" "}
+                                </Typography>
+                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}>
+                                    {totalMultiplierValue}x
+                                </Typography>
+                            </Stack>
+                        </Stack>
+
+                        <Stack spacing="1.2rem">
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    color: colors.neonBlue,
+                                    fontFamily: "Nostromo Regular Black",
+                                }}
+                            >
+                                BONUSES
+                            </Typography>
+
+                            {multiplicative &&
+                                multiplicative.length > 0 &&
+                                multiplicative.map((m) => {
+                                    const deets = getMutiplierDeets(m.key)
+                                    return (
+                                        <TooltipHelper key={m.key} placement="right" text={m.description}>
+                                            <Stack
+                                                direction="row"
+                                                alignItems="center"
+                                                justifyContent="space-between"
+                                                sx={{ px: ".8rem" }}
+                                            >
+                                                <StyledImageText
+                                                    color={colors.text}
+                                                    imageBorderColor="#FFFFFF60"
+                                                    imageBackgroundColor="#FFFFFF"
+                                                    text={m.key.toUpperCase()}
+                                                    imageUrl={deets.image}
+                                                    variant="h5"
+                                                    imageSize={2.9}
+                                                    imageBorderThickness=".2rem"
+                                                    fontWeight="normal"
+                                                    truncateLine
+                                                    imageMb={-0.8}
+                                                />
+                                                <Typography variant="h6">{parseInt(m.value) * 100}%</Typography>
+                                            </Stack>
+                                        </TooltipHelper>
+                                    )
+                                })}
+
+                            <Divider sx={{ py: ".24rem", borderColor: "#FFFFFF", opacity: 0.1 }} />
+
+                            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                    SUBTOTAL:{" "}
+                                </Typography>
+                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}>
+                                    {totalMultiplicativeValue * 100}%
+                                </Typography>
+                            </Stack>
+                        </Stack>
+
+                        <Stack spacing="1.2rem">
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    color: colors.neonBlue,
+                                    fontFamily: "Nostromo Regular Black",
+                                }}
+                            >
+                                TOTAL MULTIPLIERS
+                            </Typography>
+
+                            <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}
+                            >
+                                <span>{totalMultiplierValue}x</span> x <span>{totalMultiplicativeValue * 100}%</span> ={" "}
+                                <span>{total_multipliers}</span>
                             </Typography>
                         </Stack>
                     </Stack>
