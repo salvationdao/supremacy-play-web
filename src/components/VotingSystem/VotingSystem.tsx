@@ -26,8 +26,6 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
 
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
-    if (!user || !user.faction) return null
-
     const onResizeStop = useCallback(
         (data: Dimension) => {
             const size = data || { width: containerWidth, height: containerHeight }
@@ -37,6 +35,8 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
         },
         [containerWidth, containerHeight],
     )
+
+    if (!user || !user.faction) return null
 
     return (
         <Stack

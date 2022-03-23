@@ -239,6 +239,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
             ws.onclose = () => {
                 setReadyState()
                 setIsReconnect(true)
+                window.localStorage.removeItem("ring_check_token")
             }
         },
         [],

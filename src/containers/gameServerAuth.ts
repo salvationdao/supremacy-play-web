@@ -31,12 +31,16 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
-        if (!subscribe || state !== WebSocket.OPEN || !userID) return
+        if (!subscribe || state !== WebSocket.OPEN || !userID || !window.localStorage.getItem("ring_check_token"))
+            return
         return subscribe<User>(
             GameServerKeys.UserSubscribe,
             (u) => {
-                if (u) setUser(u)
-                if (u?.faction?.theme) updateTheme(u.faction.theme)
+                if (u) {
+                    const betterU = buildUserStruct(u)
+                    setUser(betterU)
+                    if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)
+                }
             },
             { id: userID },
         )
@@ -83,11 +87,10 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                 setAuthSessionIDGetLoading(true)
                 const jwtToken = localStorage.getItem("ring_check_token")
                 if (jwtToken) {
-                    send<string, { token: string }>(GameServerKeys.AuthJWTCheck, {
+                    send<User, { token: string }>(GameServerKeys.AuthJWTCheck, {
                         token: jwtToken,
                     })
                 }
-
                 const resp = await send<string, null>(GameServerKeys.AuthSessionIDGet)
                 setGameserverSessionID(resp)
                 // eslint-disable-next-line  @typescript-eslint/no-explicit-any

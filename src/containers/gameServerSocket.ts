@@ -151,7 +151,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                     setIsReconnect(false)
                     const jwtToken = localStorage.getItem("ring_check_token")
                     if (jwtToken) {
-                        send.current<string, { token: string }>(GameServerKeys.AuthJWTCheck, {
+                        send.current<User, { token: string }>(GameServerKeys.AuthJWTCheck, {
                             token: jwtToken,
                         })
                     }
