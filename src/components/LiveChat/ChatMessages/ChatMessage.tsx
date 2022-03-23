@@ -7,6 +7,16 @@ import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
+const getMultiplierColor = (multiplierInt: number): string => {
+    return multiplierInt >= 149
+        ? colors.neonBlue
+        : multiplierInt >= 99
+        ? colors.health
+        : multiplierInt >= 49
+        ? colors.yellow
+        : colors.orange
+}
+
 export const ChatMessage = ({
     chat,
     isSent,
@@ -29,6 +39,8 @@ export const ChatMessage = ({
     const multiplierInt = useMemo(() => (multiplierValue ? parseInt(multiplierValue) : 0), [multiplierValue])
 
     if (!self && filterZeros && multiplierInt <= 0) return null
+
+    const multiplierColor = useMemo(() => getMultiplierColor(multiplierInt), [multiplierInt])
 
     return (
         <Stack direction="row" spacing=".4rem" sx={{ opacity: isSent ? 1 : 0.45 }}>
@@ -91,12 +103,7 @@ export const ChatMessage = ({
                         sx={{
                             display: "inline",
                             ml: ".4rem",
-                            color:
-                                multiplierInt >= 50
-                                    ? colors.neonBlue
-                                    : multiplierInt >= 15
-                                    ? colors.yellow
-                                    : colors.orange,
+                            color: multiplierColor,
                             textAlign: "center",
                             fontFamily: "Nostromo Regular Bold",
                             fontSize: fontSize ? `${0.86 * fontSize}rem` : "0.86rem",

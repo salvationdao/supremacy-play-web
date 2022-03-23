@@ -212,6 +212,7 @@ export interface MultiplierGuide {
     description: string
     title: string
     amount: number
+    isMultiplicative: boolean
     duration: number
 }
 

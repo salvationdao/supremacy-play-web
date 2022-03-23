@@ -3,7 +3,7 @@ import { getMultiplierGuide, getMutiplierDeets } from "../../helpers"
 import { colors } from "../../theme/theme"
 
 const MultiplierGuideComponent = ({ multiplierKey }: { multiplierKey: string }) => {
-    const { title, description, amount, duration } = getMultiplierGuide(multiplierKey)
+    const { title, description, amount, isMultiplicative, duration } = getMultiplierGuide(multiplierKey)
 
     return (
         <Stack direction="row" spacing="1.3rem">
@@ -26,7 +26,15 @@ const MultiplierGuideComponent = ({ multiplierKey }: { multiplierKey: string }) 
                     {title.toUpperCase()}
                 </Typography>
                 <Typography sx={{ fontSize: "1.5rem" }}>
-                    <strong>Multiplier:</strong> {amount}x
+                    {isMultiplicative ? (
+                        <>
+                            <strong>Bonus:</strong> {amount * 100}%
+                        </>
+                    ) : (
+                        <>
+                            <strong>Multiplier:</strong> {amount}x
+                        </>
+                    )}
                     <br />
                     <strong>Duration:</strong> {duration} battle{duration == 1 ? "" : "s"}
                     <br />

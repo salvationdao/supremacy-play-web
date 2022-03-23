@@ -289,6 +289,7 @@ export const getMultiplierGuide = (multiplierKey: string): MultiplierGuide => {
     let description: string
     let title: string
     let amount: number
+    let isMultiplicative = false
     let duration: number
 
     switch (multiplierKey.toLowerCase()) {
@@ -379,6 +380,7 @@ export const getMultiplierGuide = (multiplierKey: string): MultiplierGuide => {
         case "won battle":
             title = multiplierKey
             amount = 5
+            isMultiplicative = true
             duration = 1
             description = `When a player’s syndicate has won the last battle.`
             break
@@ -393,11 +395,11 @@ export const getMultiplierGuide = (multiplierKey: string): MultiplierGuide => {
             title = multiplierKey
             amount = 2
             duration = 2
-            description = `When a player is within the top 80% of ability $SUPS average.`
+            description = `For a player whose syndicate won the battle and they are within the 95% of $SUPS spent. For a player whose syndicate did't win the battle and they are within the top 80% of $SUPS spent.`
             break
     }
 
-    return { key: multiplierKey, title, description, amount, duration }
+    return { key: multiplierKey, title, description, amount, isMultiplicative, duration }
 }
 
 export const dateFormatter = (date: Date, showSeconds?: boolean): string => {

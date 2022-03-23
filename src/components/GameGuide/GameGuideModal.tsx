@@ -30,8 +30,8 @@ const multiplierKeys: string[] = [
     "C-c-c-c-combo breaker",
     "Mech commander",
     "Admiral",
-    "Won battle",
     "Won last three battles",
+    "Won battle",
 ]
 
 const TabPanel = (props: TabPanelProps) => {
