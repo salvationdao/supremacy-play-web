@@ -25,11 +25,13 @@ import { LeaveConfirmation } from "./LeaveConfirmation"
 export const AssetItem = ({
     asset,
     assetQueueStatus,
+    queueLength,
     queueCost,
     contractReward,
 }: {
     asset: Asset
     assetQueueStatus?: AssetQueueStat
+    queueLength: number
     queueCost: string
     contractReward: string
 }) => {
@@ -337,6 +339,7 @@ export const AssetItem = ({
             <DeployConfirmation
                 open={deployModalOpen}
                 asset={asset}
+                queueLength={queueLength}
                 queueCost={queueCost}
                 contractReward={contractReward}
                 onClose={() => toggleDeployModalOpen(false)}

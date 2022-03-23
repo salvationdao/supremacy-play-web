@@ -32,6 +32,7 @@ const DrawerContent = () => {
     const { faction_id } = usePassportServerAuth()
     const { battleEndDetail } = useGame()
     const { user } = useGameServerAuth()
+    const [queueLength, setQueueLength] = useState<number>(0)
     const [queueCost, setQueueCost] = useState<string>("")
     const [contractReward, setContractReward] = useState<string>("")
 
@@ -105,6 +106,7 @@ const DrawerContent = () => {
         if (gsState !== WebSocket.OPEN || !gsSubscribe || !user) return
         return gsSubscribe<QueueFeed>(GameServerKeys.SubQueueStatus, (payload) => {
             if (!payload) return
+            setQueueLength(payload.queue_length)
             setQueueCost(payload.queue_cost)
             setContractReward(payload.contract_reward)
         })
@@ -222,6 +224,7 @@ const DrawerContent = () => {
                                             queue_position: a.queue_position,
                                             contract_reward: a.contract_reward,
                                         }}
+                                        queueLength={queueLength}
                                         queueCost={queueCost}
                                         contractReward={contractReward}
                                     />
@@ -231,6 +234,7 @@ const DrawerContent = () => {
                                     <AssetItem
                                         key={`${hash}-${index}`}
                                         asset={a}
+                                        queueLength={queueLength}
                                         queueCost={queueCost}
                                         contractReward={contractReward}
                                     />
