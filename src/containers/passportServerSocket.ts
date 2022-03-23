@@ -106,11 +106,12 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
         setTimeout(async () => {
             try {
                 const resp = await fetch(`${window.location.protocol}//${host}/api/check`)
-                const body = resp.ok as boolean
-                if (body) {
+                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
+                if (ok) {
                     window.location.reload()
                 }
-            } catch {
+            } catch (e) {
+                console.error(e)
                 serverCheckInterval(num + 1)
             }
         }, i)
@@ -270,8 +271,8 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
         ;(async () => {
             try {
                 const resp = await fetch(`${window.location.protocol}//${host}/api/check`)
-                const body = resp.ok as boolean
-                if (body) {
+                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
+                if (ok) {
                     webSocket.current = new WebSocket(`${protocol()}://${host}/api/ws`)
                     setupWS(webSocket.current)
 
@@ -279,7 +280,8 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
                         if (webSocket.current) webSocket.current.close()
                     }
                 }
-            } catch {
+            } catch (e) {
+                console.error(e)
                 setIsReconnect(true)
             }
         })()

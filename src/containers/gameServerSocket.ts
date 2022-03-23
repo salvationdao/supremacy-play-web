@@ -114,8 +114,8 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
         ;(async () => {
             try {
                 const resp = await fetch(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/check`)
-                const body = resp.ok as boolean
-                if (body) {
+                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
+                if (ok) {
                     webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
                     webSocket.current.binaryType = "arraybuffer"
                     setupWS(webSocket.current)
@@ -124,7 +124,8 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                         if (webSocket.current) webSocket.current.close()
                     }
                 }
-            } catch {
+            } catch (e) {
+                console.error(e)
                 setIsReconnect(true)
             }
         })()
@@ -143,8 +144,8 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
         setTimeout(async () => {
             try {
                 const resp = await fetch(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/check`)
-                const body = resp.ok as boolean
-                if (body) {
+                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
+                if (ok) {
                     await connect()
                     clearTimeout(timeout)
                     setIsServerUp(true)
