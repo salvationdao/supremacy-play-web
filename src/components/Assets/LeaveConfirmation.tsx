@@ -47,7 +47,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "42rem",
+                    width: "46rem",
                 }}
             >
                 <ClipThing
@@ -148,9 +148,9 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                 </Typography>
                             </Box>
 
-                            <Typography>
-                                Are you sure you&quot;d like to remove <strong>{name || label}</strong> from the battle
-                                queue? By doing so, you will be refunded the initial queue fee.
+                            <Typography sx={{ strong: { color: colors.neonBlue } }}>
+                                Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle
+                                queue? Your will be refunded the initial queuing fee.
                             </Typography>
 
                             <Button

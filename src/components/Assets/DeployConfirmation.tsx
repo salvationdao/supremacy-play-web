@@ -289,7 +289,7 @@ export const DeployConfirmation = ({
                                 </Button>
                                 <TooltipHelper
                                     placement="right-start"
-                                    text='To get alerts when you War Machine is soon to battle, ensure you enabled notifications in preferences located by clicking your username in the top right and selecting "Preferences".'
+                                    text='To get alerts when your war machine is soon to battle, enable SMS option by clicking on your username in the top right, and select "Preferences" in the dropdown menu.'
                                 >
                                     <Box sx={{ ml: "auto" }}>
                                         <SvgInfoCircular

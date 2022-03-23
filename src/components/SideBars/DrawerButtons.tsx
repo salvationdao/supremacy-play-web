@@ -107,7 +107,7 @@ export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
                     }rem + ${GAME_BAR_HEIGHT}rem)) rotate(-90deg)`,
                 }}
             >
-                {user && (
+                {user && user.faction && (
                     <SideButton
                         isEnabled={true}
                         isOpen={isAssetOpen}

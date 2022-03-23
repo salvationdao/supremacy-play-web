@@ -1,5 +1,5 @@
-import { Box, Button, Drawer, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { Box, Button, Drawer, Fade, Grid, Skeleton, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { AssetItem, DrawerButtons } from ".."
 import { SvgRobot } from "../../assets"
 import {
@@ -27,6 +27,25 @@ interface QueueFeed {
     contract_reward: string
 }
 
+const LoadingSkeleton = ({ num }: { num?: number }) => (
+    <Box>
+        <Grid container spacing={2} sx={{ p: "1rem" }}>
+            {new Array(num || 6).fill(0).map((_, index) => (
+                <Grid item xs={12} key={`loading-skeleton-${index}`}>
+                    <Stack direction="row" spacing="1.3rem">
+                        <Skeleton variant="rectangular" width="7.2rem" height="7.2rem" />
+                        <Stack sx={{ flex: 1 }}>
+                            <Skeleton variant="text" width="95%" height="2rem" />
+                            <Skeleton variant="text" width="60%" height="2rem" />
+                            <Skeleton variant="rectangular" width="8rem" height="2.3rem" sx={{ mt: ".6rem" }} />
+                        </Stack>
+                    </Stack>
+                </Grid>
+            ))}
+        </Grid>
+    </Box>
+)
+
 const DrawerContent = () => {
     const { state, subscribe } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
@@ -43,6 +62,8 @@ const DrawerContent = () => {
     const [assetsInQueue, setAssetsInQueue] = useState<
         Map<string, Asset & { queue_position: number; contract_reward?: string }>
     >(new Map())
+
+    const [isLoading, setIsLoading] = useState(true)
 
     const updateAssetQueueStatus = useCallback(
         (a: Asset, status: AssetQueueStat) => {
@@ -98,8 +119,9 @@ const DrawerContent = () => {
                 return asset.on_chain_status !== "STAKABLE" && asset.unlocked_at <= new Date(Date.now())
             })
             setAssets(payload)
+            if (isLoading) setIsLoading(false)
         })
-    }, [state, subscribe, faction_id])
+    }, [state, subscribe, faction_id, isLoading])
 
     // Subscribe to queue status
     useEffect(() => {
@@ -169,6 +191,71 @@ const DrawerContent = () => {
         })
     }, [gsSend, gsSubscribe, assets, battleEndDetail?.battle_id])
 
+    const content = useMemo(() => {
+        if (isLoading) return <LoadingSkeleton />
+
+        if (assets && assets.length > 0 && (assetsNotInQueue.size > 0 || assetsInQueue.size > 0)) {
+            return (
+                <>
+                    {/* Assets in the queue/battle */}
+                    {Array.from(assetsInQueue).map(([hash, a], index) => (
+                        <AssetItem
+                            key={`${hash}-${index}`}
+                            asset={a}
+                            assetQueueStatus={{
+                                queue_position: a.queue_position,
+                                contract_reward: a.contract_reward,
+                            }}
+                            queueLength={queueLength}
+                            queueCost={queueCost}
+                            contractReward={contractReward}
+                        />
+                    ))}
+
+                    {/* Assets outside of the queue and not battling */}
+                    {Array.from(assetsNotInQueue).map(([hash, a], index) => (
+                        <AssetItem
+                            key={`${hash}-${index}`}
+                            asset={a}
+                            queueLength={queueLength}
+                            queueCost={queueCost}
+                            contractReward={contractReward}
+                        />
+                    ))}
+                </>
+            )
+        }
+
+        return (
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        px: "1.28rem",
+                        pt: "1.28rem",
+                        mb: ".56rem",
+                        color: colors.grey,
+                        userSelect: "text !important",
+                        opacity: !assets ? 0.6 : 1,
+                    }}
+                >
+                    {"You don't own any assets yet."}
+                </Typography>
+                <Button href={`${PASSPORT_WEB}stores`} target="_blank" size="small" variant="outlined">
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: colors.neonBlue,
+                            userSelect: "text !important",
+                        }}
+                    >
+                        GO TO ASSET STORE
+                    </Typography>
+                </Button>
+            </Stack>
+        )
+    }, [isLoading, assets, assetsNotInQueue, assetsInQueue, queueLength, queueCost, contractReward])
+
     return (
         <Stack sx={{ flex: 1 }}>
             <Stack
@@ -212,63 +299,7 @@ const DrawerContent = () => {
                         },
                     }}
                 >
-                    <Stack spacing={0.6}>
-                        {assets && (assetsNotInQueue.size > 0 || assetsInQueue.size > 0) ? (
-                            <>
-                                {/* Assets in the queue/battle */}
-                                {Array.from(assetsInQueue).map(([hash, a], index) => (
-                                    <AssetItem
-                                        key={`${hash}-${index}`}
-                                        asset={a}
-                                        assetQueueStatus={{
-                                            queue_position: a.queue_position,
-                                            contract_reward: a.contract_reward,
-                                        }}
-                                        queueLength={queueLength}
-                                        queueCost={queueCost}
-                                        contractReward={contractReward}
-                                    />
-                                ))}
-                                {/* Assets outside of the queue and not battling */}
-                                {Array.from(assetsNotInQueue).map(([hash, a], index) => (
-                                    <AssetItem
-                                        key={`${hash}-${index}`}
-                                        asset={a}
-                                        queueLength={queueLength}
-                                        queueCost={queueCost}
-                                        contractReward={contractReward}
-                                    />
-                                ))}
-                            </>
-                        ) : (
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        px: "1.28rem",
-                                        pt: "1.28rem",
-                                        mb: ".56rem",
-                                        color: colors.grey,
-                                        userSelect: "text !important",
-                                        opacity: !assets ? 0.6 : 1,
-                                    }}
-                                >
-                                    {!assets ? "Loading your assets..." : "You don't own any assets yet."}
-                                </Typography>
-                                <Button href={`${PASSPORT_WEB}stores`} target="_blank" size="small" variant="outlined">
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            color: colors.neonBlue,
-                                            userSelect: "text !important",
-                                        }}
-                                    >
-                                        GO TO ASSET STORE
-                                    </Typography>
-                                </Button>
-                            </Stack>
-                        )}
-                    </Stack>
+                    <Stack spacing={0.6}>{content}</Stack>
                 </Box>
             </Fade>
         </Stack>
