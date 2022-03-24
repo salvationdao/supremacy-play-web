@@ -287,17 +287,17 @@ export const DeployConfirmation = ({
                                         {isDeploying ? "DEPLOYING..." : "DEPLOY"}
                                     </Typography>
                                 </Button>
-                                <TooltipHelper
-                                    placement="right-start"
-                                    text='To get alerts when your war machine is soon to battle, enable SMS option by clicking on your username in the top right, and select "Preferences" in the dropdown menu.'
-                                >
-                                    <Box sx={{ ml: "auto" }}>
-                                        <SvgInfoCircular
-                                            size="1.2rem"
-                                            sx={{ opacity: 0.4, ":hover": { opacity: 1 } }}
-                                        />
-                                    </Box>
-                                </TooltipHelper>
+                                {/*<TooltipHelper*/}
+                                {/*    placement="right-start"*/}
+                                {/*    text='To get alerts when your war machine is soon to battle, enable SMS option by clicking on your username in the top right, and select "Preferences" in the dropdown menu.'*/}
+                                {/*>*/}
+                                {/*    <Box sx={{ ml: "auto" }}>*/}
+                                {/*        <SvgInfoCircular*/}
+                                {/*            size="1.2rem"*/}
+                                {/*            sx={{ opacity: 0.4, ":hover": { opacity: 1 } }}*/}
+                                {/*        />*/}
+                                {/*    </Box>*/}
+                                {/*</TooltipHelper>*/}
                             </Stack>
 
                             {deployFailed && (

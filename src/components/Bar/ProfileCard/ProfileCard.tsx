@@ -147,15 +147,15 @@ export const ProfileCard = () => {
                     >
                         Edit Profile
                     </NavButton>
-                    <NavButton
-                        onClick={() => {
-                            togglePreferencesModalOpen(true)
-                            toggleIsPopoverOpen(false)
-                        }}
-                        startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}
-                    >
-                        Preferences
-                    </NavButton>
+                    {/*<NavButton*/}
+                    {/*    onClick={() => {*/}
+                    {/*        togglePreferencesModalOpen(true)*/}
+                    {/*        toggleIsPopoverOpen(false)*/}
+                    {/*    }}*/}
+                    {/*    startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}*/}
+                    {/*>*/}
+                    {/*    Preferences*/}
+                    {/*</NavButton>*/}
                     <LogoutButton />
                 </Stack>
             </Popover>
