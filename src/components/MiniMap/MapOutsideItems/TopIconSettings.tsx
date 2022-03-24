@@ -17,6 +17,12 @@ export const TopIconSettings = ({
     toggleEnlarged: () => void
     toggleIsMapOpen: () => void
 }) => {
+
+    let name = map.name
+    if (name === "NeoTokyo") {
+        name = "City Block X2"
+    }
+
     return (
         <Box
             sx={{
@@ -70,7 +76,7 @@ export const TopIconSettings = ({
                     lineHeight: 1,
                 }}
             >
-                {map.name
+                {name
                     .replace(/([A-Z])/g, " $1")
                     .trim()
                     .toUpperCase()}
