@@ -35,7 +35,7 @@ export enum GameServerKeys {
     SubStreamClose = "STREAM:CLOSE:SUBSCRIBE",
 
     // Streams
-    GetStreamList = "STREAMLIST:SUBSCRIBE",
+    SubStreamList = "STREAMLIST:SUBSCRIBE",
 
     // Queue
     JoinQueue = "BATTLE:QUEUE:JOIN",
@@ -53,7 +53,7 @@ export enum GameServerKeys {
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
 
-    SubscribeMultiplierMap = "MULTIPLIER:MAP:SUBSCRIBE",
+    SubMultiplierMap = "MULTIPLIER:MAP:SUBSCRIBE",
 
     SubPlayerPrefs = "PLAYER:PREFERENCES_SUBSCRIBE",
     TogglePlayerBattleQueueNotifications = "PLAYER:TOGGLE_BATTLE_QUEUE_NOTIFICATIONS",

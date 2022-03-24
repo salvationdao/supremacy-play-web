@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
 import { SvgClose, SvgExternalLink } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
-import { useGameServerWebsocket, usePassportServerAuth } from "../../containers"
+import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -11,6 +11,7 @@ import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
 
 export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; asset: Asset; onClose: () => void }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, tier } = asset.data.mech
@@ -30,9 +31,12 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
             const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: hash })
             if (resp) {
                 onClose()
+                newSnackbarMessage("Successfully remove war machine from queue.", "success")
             }
         } catch (e) {
             toggleLeaveFailed(true)
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to leave queue.", "error")
+            console.debug(e)
             return
         } finally {
             toggleIsLeaving(false)
@@ -173,7 +177,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                     variant="body2"
                                     sx={{
                                         lineHeight: 1,
-                                        color: isLeaving ? colors.green : "#FFFFFF",
+                                        color: "#FFFFFF",
                                     }}
                                 >
                                     {isLeaving ? "LEAVING QUEUE..." : "REMOVE FROM QUEUE"}

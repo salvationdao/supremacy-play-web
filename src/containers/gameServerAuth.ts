@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useGameServerWebsocket, usePassportServerAuth } from "."
+import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User } from "../types"
 
@@ -16,6 +16,7 @@ export interface AuthContainerType {
  * A Container that handles Authorisation
  */
 const AuthContainer = createContainer((initialState?: { setLogin(user: User): void }): AuthContainerType => {
+    const { newSnackbarMessage } = useSnackbar()
     const { gameserverSessionID, setGameserverSessionID } = usePassportServerAuth()
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useGameServerWebsocket()
@@ -95,7 +96,9 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                 setGameserverSessionID(resp)
                 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             } catch (e: any) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to get session ID from game server.", "error")
                 setAuthSessionIDGetError(e)
+                console.debug(e)
             } finally {
                 setAuthSessionIDGetLoading(false)
             }

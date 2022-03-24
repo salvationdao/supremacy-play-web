@@ -1,9 +1,9 @@
 import { Box, Button, IconButton, Link, Modal, Stack, Switch, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, TooltipHelper } from ".."
 import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
-import { useGameServerWebsocket, usePassportServerAuth } from "../../containers"
+import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -52,29 +52,31 @@ export const DeployConfirmation = ({
     contractReward: string
     onClose: () => void
 }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, tier } = asset.data.mech
     const [needInsured, toggleNeedInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
-    const [deployFailed, toggleDeployFailed] = useToggle()
+    const [deployFailed, setDeployFailed] = useState("")
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
     useEffect(() => {
-        if (!open) toggleDeployFailed(false)
+        if (!open) setDeployFailed("")
     }, [open])
 
     const onDeploy = useCallback(async () => {
         if (state !== WebSocket.OPEN) return
         try {
-            toggleIsDeploying(true)
             const resp = await send(GameServerKeys.JoinQueue, { asset_hash: hash, need_insured: needInsured })
             if (resp) {
                 onClose()
+                newSnackbarMessage("Successfully deployed war machine.", "success")
+                setDeployFailed("")
             }
         } catch (e) {
-            toggleDeployFailed(true)
+            setDeployFailed(typeof e === "string" ? e : "Failed to deploy war machine.")
             console.debug(e)
             return
         } finally {
@@ -308,7 +310,7 @@ export const DeployConfirmation = ({
                                         color: "red",
                                     }}
                                 >
-                                    Failed to deploy.
+                                    {deployFailed}
                                 </Typography>
                             )}
                         </Stack>

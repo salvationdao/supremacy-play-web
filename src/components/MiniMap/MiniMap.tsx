@@ -10,6 +10,8 @@ import {
     BribeStageResponse,
     WinnerAnnouncementResponse,
     useGameServerAuth,
+    useSnackbar,
+    Severity,
 } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
@@ -23,9 +25,11 @@ interface MiniMapProps {
     isMapOpen: boolean
     toggleIsMapOpen: (open?: boolean) => void
     factionColor: string
+    newSnackbarMessage: (message: string, severity?: Severity) => void
 }
 
 export const MiniMap = () => {
+    const { newSnackbarMessage } = useSnackbar()
     const { user } = useGameServerAuth()
     const { map, winner, setWinner, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
@@ -55,6 +59,7 @@ export const MiniMap = () => {
             bribeStage={bribeStage}
             isMapOpen={isMapOpen}
             toggleIsMapOpen={toggleIsMapOpen}
+            newSnackbarMessage={newSnackbarMessage}
             factionColor={user && user.faction ? user.faction.theme.primary : colors.neonBlue}
         />
     )
@@ -68,6 +73,7 @@ export const MiniMapInner = ({
     isMapOpen,
     toggleIsMapOpen,
     factionColor,
+    newSnackbarMessage,
 }: MiniMapProps) => {
     const {
         streamDimensions: { width, height },
@@ -142,6 +148,10 @@ export const MiniMapInner = ({
         if (timeReachZero || submitted) {
             toggleEnlarged(false)
             setWinner(undefined)
+        }
+
+        if (timeReachZero) {
+            newSnackbarMessage("Failed to submit target location on time.", "error")
         }
     }, [timeReachZero, submitted])
 
@@ -221,9 +231,14 @@ export const MiniMapInner = ({
                                         targeting
                                         setSubmitted={setSubmitted}
                                         enlarged={enlarged}
+                                        newSnackbarMessage={newSnackbarMessage}
                                     />
                                 ) : (
-                                    <MiniMapInside containerDimensions={dimensions} enlarged={enlarged} />
+                                    <MiniMapInside
+                                        containerDimensions={dimensions}
+                                        enlarged={enlarged}
+                                        newSnackbarMessage={newSnackbarMessage}
+                                    />
                                 )}
 
                                 <TopIconSettings

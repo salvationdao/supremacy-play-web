@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { NullUUID } from "../constants"
 import { GameServerKeys, PassportServerKeys } from "../keys"
 import { BribeStage, Map, WarMachineState, GameAbility, BattleEndDetail } from "../types"
-import { useGameServerAuth, usePassportServerWebsocket } from "."
+import { useGameServerAuth, usePassportServerWebsocket, useSnackbar } from "."
 import { useGameServerWebsocket } from "."
 import { FactionGeneralData } from "../types/passport"
 
@@ -30,6 +30,7 @@ export interface FactionsAll {
 
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
+    const { newSnackbarMessage } = useSnackbar()
     const { state, send, subscribe } = useGameServerWebsocket()
     const { send: sendPassportWS } = usePassportServerWebsocket()
     const { faction_id, userID } = useGameServerAuth()
@@ -79,6 +80,7 @@ export const GameContainer = createContainer(() => {
                     setFactionsAll(currentData)
                 }
             } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
                 console.debug(e)
                 return false
             }
