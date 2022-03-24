@@ -3,7 +3,13 @@ import { useState, useRef, useMemo, useCallback } from "react"
 import { ChatSettings, EmojiPopover } from "../.."
 import { SvgEmoji, SvgSend } from "../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../constants"
-import { useChat, usePassportServerAuth, usePassportServerWebsocket, WebSocketProperties } from "../../../containers"
+import {
+    useChat,
+    usePassportServerAuth,
+    usePassportServerWebsocket,
+    useSnackbar,
+    WebSocketProperties,
+} from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -52,6 +58,7 @@ const ChatSendInner = ({
     newMessageHandler,
     initialMessageColor,
 }: ChatSendInnerProps) => {
+    const { newSnackbarMessage } = useSnackbar()
     // Message field
     const [message, setMessage] = useState("")
     const inputRef = useRef<HTMLInputElement>(null)
@@ -100,8 +107,10 @@ const ChatSendInner = ({
                 message_color: messageColor,
             })
             if (resp) onSentMessage(sentAt)
-        } catch (err) {
+        } catch (e) {
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
             onFailedMessage(sentAt)
+            console.debug(e)
         }
     }, [message, user, state, send])
 

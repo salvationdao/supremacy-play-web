@@ -16,6 +16,7 @@ import {
     useGameServerWebsocket,
     usePassportServerAuth,
     usePassportServerWebsocket,
+    useSnackbar,
 } from "../../containers"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
@@ -47,6 +48,7 @@ const LoadingSkeleton = ({ num }: { num?: number }) => (
 )
 
 const DrawerContent = () => {
+    const { newSnackbarMessage } = useSnackbar()
     const { state, subscribe } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
     const { battleEndDetail } = useGame()
@@ -158,7 +160,6 @@ const DrawerContent = () => {
         if (gsState !== WebSocket.OPEN || !gsSubscribe || !gsSend || !assets || assets.length === 0) return
 
         return gsSubscribe(GameServerKeys.TriggerBattleQueueUpdated, async () => {
-            console.info("Battle queue updated, refetching queue positions")
             assets.forEach(async (a) => {
                 try {
                     const resp = await gsSend<AssetQueueStat>(GameServerKeys.AssetQueueStatus, {
@@ -167,7 +168,8 @@ const DrawerContent = () => {
                     if (!resp) return
                     updateAssetQueueStatus(a, resp)
                 } catch (e) {
-                    console.warn("Failed to refetch queue position: ", e)
+                    newSnackbarMessage(typeof e === "string" ? e : "Failed to get syndicate queue details.", "error")
+                    console.debug(e)
                 }
             })
         })
@@ -177,7 +179,6 @@ const DrawerContent = () => {
     useEffect(() => {
         if (gsState !== WebSocket.OPEN || !gsSend || !assets || assets.length === 0) return
 
-        console.info("Game end, refetching queue positions")
         assets.forEach(async (a) => {
             try {
                 const resp = await gsSend<AssetQueueStat>(GameServerKeys.AssetQueueStatus, {
@@ -186,13 +187,14 @@ const DrawerContent = () => {
                 if (!resp) return
                 updateAssetQueueStatus(a, resp)
             } catch (e) {
-                console.warn("Failed to refetch queue position: ", e)
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to get syndicate queue details.", "error")
+                console.debug(e)
             }
         })
     }, [gsSend, gsSubscribe, assets, battleEndDetail?.battle_id])
 
     const content = useMemo(() => {
-        if (isLoading) return <LoadingSkeleton />
+        if (isLoading || !assets) return <LoadingSkeleton />
 
         if (assets && assets.length > 0 && (assetsNotInQueue.size > 0 || assetsInQueue.size > 0)) {
             return (

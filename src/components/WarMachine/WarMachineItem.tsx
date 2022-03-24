@@ -10,7 +10,7 @@ import {
     WarMachineAbilitiesPopover,
     WarMachineDestroyedInfo,
 } from ".."
-import { GenericWarMachinePNG, SvgInfoCircularIcon, SvgSkull } from "../../assets"
+import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { getRarityDeets } from "../../helpers"
@@ -208,7 +208,7 @@ const WarMachineItemInner = ({
                             zIndex: 99,
                         }}
                     >
-                        <SvgInfoCircularIcon fill={"white"} size="1.5rem" />
+                        <SvgInfoCircular fill={"white"} size="1.5rem" />
                     </Box>
                 )}
 

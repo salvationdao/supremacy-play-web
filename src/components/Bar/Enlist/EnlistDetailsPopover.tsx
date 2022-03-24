@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SvgArrowRightAltSharpIcon, SvgSupToken, SvgWrapperProps } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { usePassportServerWebsocket } from "../../../containers"
+import { usePassportServerWebsocket, useSnackbar } from "../../../containers"
 import { usePassportServerSubscription } from "../../../hooks"
 import { PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -50,6 +50,7 @@ interface EnlistFactionRequest {
 }
 
 const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const factionStat = usePassportServerSubscription<FactionStat>(PassportServerKeys.SubscribeFactionStat, {
         faction_id: factionData.id,
     }).payload
@@ -63,8 +64,10 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
         }
         try {
             await send<null, EnlistFactionRequest>(PassportServerKeys.EnlistFaction, { faction_id: factionData.id })
+            newSnackbarMessage("Successfully enlisted into syndicate.", "success")
         } catch (e) {
-            throw typeof e === "string" ? e : "Something went wrong, please try again."
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to enlist into syndicate.", "error")
+            console.debug(e)
         }
         return
     }, [send, state, factionData])

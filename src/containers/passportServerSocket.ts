@@ -4,6 +4,7 @@ import { PassportServerKeys } from "../keys"
 import { sleep } from "../helpers"
 import { PASSPORT_SERVER_HOST } from "../constants"
 import { UserData } from "../types/passport"
+import { useSnackbar } from "."
 
 // makeid is used to generate a random transaction_id for the websocket
 function makeid(length = 12): string {
@@ -83,6 +84,7 @@ const backoffIntervalCalc = async (num: number) => {
 }
 
 const PassportServerWebsocket = (initialState?: { host?: string; login: UserData | null }): WebSocketProperties => {
+    const { newSnackbarMessage } = useSnackbar()
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
 
@@ -111,7 +113,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
                     window.location.reload()
                 }
             } catch (e) {
-                console.error(e)
+                console.debug(e)
                 serverCheckInterval(num + 1)
             }
         }, i)
@@ -241,6 +243,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
                 setReadyState()
                 setIsReconnect(true)
                 window.localStorage.removeItem("ring_check_token")
+                newSnackbarMessage("Disconnected from passport server, reconnecting...", "error")
             }
         },
         [],
@@ -281,8 +284,12 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
                     }
                 }
             } catch (e) {
-                console.error(e)
+                console.debug(e)
                 setIsReconnect(true)
+                newSnackbarMessage(
+                    typeof e === "string" ? e : "Failed to connect to passport server, retrying...",
+                    "error",
+                )
             }
         })()
     }, [host, setupWS])

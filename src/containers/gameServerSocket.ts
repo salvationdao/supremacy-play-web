@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
+import { useSnackbar } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { sleep } from "../helpers"
 import { parseNetMessage } from "../helpers/netMessages"
@@ -99,6 +100,7 @@ const backoffIntervalCalc = async (num: number) => {
 }
 
 const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketProperties => {
+    const { newSnackbarMessage } = useSnackbar()
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
 
@@ -125,6 +127,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                     }
                 }
             } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to connect to game server, retrying...", "error")
                 console.error(e)
                 setIsReconnect(true)
             }
@@ -158,7 +161,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                     }
                 }
             } catch (e) {
-                console.error(e)
+                console.debug(e)
                 serverCheckInterval(num + 1, timeout)
             }
         }, i)
@@ -374,6 +377,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
             ws.onclose = () => {
                 setReadyState()
                 setIsReconnect(true)
+                newSnackbarMessage("Disconnected from game server, reconnecting...", "error")
             }
         },
         [],

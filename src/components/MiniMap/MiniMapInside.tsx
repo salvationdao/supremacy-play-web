@@ -4,7 +4,7 @@ import moment from "moment"
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
-import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { Severity, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { Dimension, GameAbility, Map, WarMachineState } from "../../types"
@@ -83,6 +83,7 @@ interface Props {
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     enlarged: boolean
+    newSnackbarMessage: (message: string, severity?: Severity) => void
 }
 
 export const MiniMapInside = (props: Props) => {
@@ -107,6 +108,7 @@ const MiniMapInsideInner = ({
     enlarged,
     map,
     warMachines,
+    newSnackbarMessage,
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
     const mapElement = useRef<HTMLDivElement>()
@@ -120,7 +122,7 @@ const MiniMapInsideInner = ({
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
-    const onConfirm = useCallback(() => {
+    const onConfirm = useCallback(async () => {
         try {
             if (state !== WebSocket.OPEN || !selection || !send) return
             send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
@@ -129,7 +131,9 @@ const MiniMapInsideInner = ({
             })
             setSubmitted && setSubmitted(true)
             setSelection(undefined)
+            newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (e) {
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
             console.debug(e)
         }
     }, [state, send, selection, setSubmitted, setSelection])

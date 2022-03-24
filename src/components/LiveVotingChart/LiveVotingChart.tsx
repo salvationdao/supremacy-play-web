@@ -2,7 +2,7 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig, TooltipHelper } from ".."
-import { SvgInfoCircularIcon, SvgSupToken } from "../../assets"
+import { SvgInfoCircular, SvgSupToken } from "../../assets"
 import { useGameServerWebsocket, useOverlayToggles } from "../../containers"
 import { parseString } from "../../helpers"
 import { useToggle } from "../../hooks"
@@ -141,7 +141,7 @@ const Content = () => {
                                     ":hover": { opacity: 1 },
                                 }}
                             >
-                                <SvgInfoCircularIcon fill={colors.text} size="1.2rem" />
+                                <SvgInfoCircular fill={colors.text} size="1.2rem" />
                             </Box>
                         </TooltipHelper>
 

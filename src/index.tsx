@@ -18,6 +18,7 @@ import {
     Notifications,
     Maintenance,
     BattleCloseAlert,
+    GlobalSnackbar,
 } from "./components"
 import {
     DRAWER_TRANSITION_DURATION,
@@ -40,6 +41,7 @@ import {
     WalletProvider,
     PassportServerSocketProvider,
     PassportServerAuthProvider,
+    SnackBarProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
@@ -145,6 +147,8 @@ const AppInner = () => {
                     zIndex: -1,
                 }}
             />
+
+            <GlobalSnackbar />
         </>
     )
 }
@@ -183,27 +187,29 @@ const App = () => {
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
-                <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login: passLogin }}>
-                    <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
-                        <GameServerSocketProvider initialState={{ login: authLogin }}>
-                            <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
-                                <StreamProvider>
-                                    <WalletProvider>
-                                        <DrawerProvider>
-                                            <GameProvider>
-                                                <DimensionProvider>
-                                                    <OverlayTogglesProvider>
-                                                        <AppInner />
-                                                    </OverlayTogglesProvider>
-                                                </DimensionProvider>
-                                            </GameProvider>
-                                        </DrawerProvider>
-                                    </WalletProvider>
-                                </StreamProvider>
-                            </GameServerAuthProvider>
-                        </GameServerSocketProvider>
-                    </PassportServerAuthProvider>
-                </PassportServerSocketProvider>
+                <SnackBarProvider>
+                    <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login: passLogin }}>
+                        <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
+                            <GameServerSocketProvider initialState={{ login: authLogin }}>
+                                <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
+                                    <StreamProvider>
+                                        <WalletProvider>
+                                            <DrawerProvider>
+                                                <GameProvider>
+                                                    <DimensionProvider>
+                                                        <OverlayTogglesProvider>
+                                                            <AppInner />
+                                                        </OverlayTogglesProvider>
+                                                    </DimensionProvider>
+                                                </GameProvider>
+                                            </DrawerProvider>
+                                        </WalletProvider>
+                                    </StreamProvider>
+                                </GameServerAuthProvider>
+                            </GameServerSocketProvider>
+                        </PassportServerAuthProvider>
+                    </PassportServerSocketProvider>
+                </SnackBarProvider>
             </ThemeProvider>
         </UpdateTheme.Provider>
     )

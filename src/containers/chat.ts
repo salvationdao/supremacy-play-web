@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "."
+import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "."
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
@@ -31,6 +31,7 @@ export type SplitOptionType = "tabbed" | "split" | null
 export type FontSizeType = 0.8 | 1 | 1.4
 
 export const ChatContainer = createContainer(() => {
+    const { newSnackbarMessage } = useSnackbar()
     const { user } = usePassportServerAuth()
     const { state, subscribe, send } = usePassportServerWebsocket()
     const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
@@ -119,28 +120,40 @@ export const ChatContainer = createContainer(() => {
     // Collect Past Messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
-        send<ChatData[]>(PassportServerKeys.ChatPastMessages).then((resp) => {
-            setGlobalChatMessages(resp)
-            setInitialSentDate((prev) => ({
-                ...prev,
-                global: resp.map((m) => m.sent_at),
-            }))
-        })
+        try {
+            send<ChatData[]>(PassportServerKeys.ChatPastMessages).then((resp) => {
+                setGlobalChatMessages(resp)
+                setInitialSentDate((prev) => ({
+                    ...prev,
+                    global: resp.map((m) => m.sent_at),
+                }))
+            })
+        } catch (e) {
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve global chat history.", "error")
+            console.debug(e)
+            return
+        }
     }, [state, send])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
-        send<ChatData[]>(PassportServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
-            setFactionChatMessages(resp)
-            setInitialSentDate((prev) => ({
-                ...prev,
-                faction: resp.map((m) => m.sent_at),
-            }))
-            const selfMessage = resp.find((m) => m.from_user_id === user.id)
-            if (selfMessage) {
-                setInitialMessageColor(selfMessage.message_color)
-            }
-        })
+        try {
+            send<ChatData[]>(PassportServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
+                setFactionChatMessages(resp)
+                setInitialSentDate((prev) => ({
+                    ...prev,
+                    faction: resp.map((m) => m.sent_at),
+                }))
+                const selfMessage = resp.find((m) => m.from_user_id === user.id)
+                if (selfMessage) {
+                    setInitialMessageColor(selfMessage.message_color)
+                }
+            })
+        } catch (e) {
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate chat history.", "error")
+            console.debug(e)
+            return
+        }
     }, [state, user, send])
 
     useEffect(() => {
@@ -161,7 +174,7 @@ export const ChatContainer = createContainer(() => {
     // Subscribe to multiplier map
     useEffect(() => {
         if (gsState !== WebSocket.OPEN) return
-        return gsSubscribe<UserMultiplierResponse>(GameServerKeys.SubscribeMultiplierMap, (payload) => {
+        return gsSubscribe<UserMultiplierResponse>(GameServerKeys.SubMultiplierMap, (payload) => {
             if (!payload) {
                 setUserMultiplierMap({})
                 setCitizenPlayerIDs([])

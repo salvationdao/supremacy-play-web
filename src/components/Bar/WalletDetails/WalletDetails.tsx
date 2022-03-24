@@ -10,6 +10,7 @@ import {
     useGameServerWebsocket,
     usePassportServerAuth,
     usePassportServerWebsocket,
+    useSnackbar,
     useWallet,
 } from "../../../containers"
 import { dateFormatter, shadeColor, supFormatterNoFixed } from "../../../helpers"
@@ -20,6 +21,7 @@ import { MultipliersAll } from "../../../types"
 import { Transaction } from "../../../types/passport"
 
 export const WalletDetails = () => {
+    const { newSnackbarMessage } = useSnackbar()
     const { state, subscribe } = useGameServerWebsocket()
     const { battleEndDetail } = useGame()
     const { user, userID } = usePassportServerAuth()
@@ -51,9 +53,13 @@ export const WalletDetails = () => {
     const getFreeSups = useCallback(async () => {
         if (psState !== SocketState.OPEN || !psSend || !user) return
 
-        const resp = await psSend<Date | boolean>(PassportServerKeys.GetFreeSups)
-        if (resp instanceof Date) {
-            setTimeTilNextClaim(resp)
+        try {
+            const resp = await psSend<Date | boolean>(PassportServerKeys.GetFreeSups)
+            newSnackbarMessage("Successfully claimed free sups.", "success")
+            if (resp instanceof Date) setTimeTilNextClaim(resp)
+        } catch (e) {
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to claim free sups.", "error")
+            console.debug(e)
         }
     }, [psState, psSend, user])
 

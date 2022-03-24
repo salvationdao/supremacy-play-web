@@ -2,12 +2,13 @@ import { Box, CircularProgress, Divider, Stack, Typography } from "@mui/material
 import { useEffect, useState } from "react"
 import { BarExpandable, EnlistButton } from "../.."
 import { RedMountainLogo } from "../../../assets"
-import { usePassportServerWebsocket } from "../../../containers"
+import { usePassportServerWebsocket, useSnackbar } from "../../../containers"
 import { PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { FactionGeneralData } from "../../../types/passport"
 
 export const EnlistButtonGroup = () => {
+    const { newSnackbarMessage } = useSnackbar()
     const { state, send } = usePassportServerWebsocket()
     const [factionsData, setFactionsData] = useState<FactionGeneralData[]>()
 
@@ -25,6 +26,8 @@ export const EnlistButtonGroup = () => {
                 }
             } catch (e) {
                 setFactionsData(undefined)
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
+                console.debug(e)
                 return false
             }
         })()

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
+import { useSnackbar } from "."
 import { PassportServerKeys } from "../keys"
 import { UserData } from "../types/passport"
 import { usePassportServerWebsocket } from "./passportServerSocket"
@@ -13,6 +14,7 @@ interface SubscribeGamebar {
  * A Container that handles Authorisation
  */
 const AuthContainer = createContainer((initialState?: { setLogin(user: UserData): void }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
     const userID = user?.id
@@ -41,6 +43,10 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
                 setSessionID(resp)
                 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             } catch (e: any) {
+                newSnackbarMessage(
+                    typeof e === "string" ? e : "Failed to get session ID from passport server.",
+                    "error",
+                )
                 console.debug(e)
                 setSessionIDError(e)
             } finally {
@@ -71,6 +77,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
                 setAuthRingCheckSuccess(true)
                 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             } catch (e: any) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to complete passport ring check.", "error")
                 console.debug(e)
                 setAuthRingCheckError(e)
                 setAuthRingCheckSuccess(false)

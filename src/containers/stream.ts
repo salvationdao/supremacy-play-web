@@ -4,7 +4,7 @@ import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { useToggle } from "../hooks"
 import { Stream } from "../types"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
-import { useGameServerWebsocket } from "."
+import { useGameServerWebsocket, useSnackbar } from "."
 import { GameServerKeys } from "../keys"
 
 const MAX_OPTIONS = 10
@@ -70,6 +70,7 @@ const blankOption: Stream = {
 }
 
 export const StreamContainer = createContainer(() => {
+    const { newSnackbarMessage } = useSnackbar()
     const { state, subscribe } = useGameServerWebsocket()
     const defaultResolution = 720
 
@@ -135,7 +136,7 @@ export const StreamContainer = createContainer(() => {
     // Subscribe to list of streams
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<Stream[]>(GameServerKeys.GetStreamList, (payload) => {
+        return subscribe<Stream[]>(GameServerKeys.SubStreamList, (payload) => {
             if (!payload) return
             setStreams([blankOption, ...payload])
         })
@@ -241,9 +242,10 @@ export const StreamContainer = createContainer(() => {
                             }
                         }
                     },
-                    callbackError: (error: string) => {
-                        if (error === "no_stream_exist" || error === "WebSocketNotConnected") {
-                            console.debug(`--- ERROR ---`, error)
+                    callbackError: (e: string) => {
+                        if (e === "no_stream_exist" || e === "WebSocketNotConnected") {
+                            console.debug("Failed to start stream:", e)
+                            newSnackbarMessage("Failed to start stream.", "error")
                         }
                     },
                 })

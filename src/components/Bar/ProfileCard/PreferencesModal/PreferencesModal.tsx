@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { useGameServerWebsocket, usePassportServerAuth } from "../../../../containers"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { BattleQueueSMS } from "./BattleQueueSMS"
+import { BattleQueueNotifications } from "./BattleQueueNotifications"
 
 interface PreferencesModalProps {
     open: boolean
@@ -27,6 +27,16 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
             setPlayerPrefs(payload)
         })
     }, [user, subscribe])
+
+    useEffect(() => {
+        if (!user || !subscribe || !playerPrefs?.notifications_battle_queue_browser) return
+        return subscribe<string>(GameServerKeys.SubPlayerBattleQueueBrowser, (payload) => {
+            if (playerPrefs.notifications_battle_queue_browser) {
+                const notification = new Notification("Supremacy: Get ready for battle...", { body: payload })
+                setTimeout(() => notification.close(), 10000)
+            }
+        })
+    }, [user, subscribe, playerPrefs?.notifications_battle_queue_browser])
 
     return (
         <Modal open={open} onClose={() => toggle(false)}>
@@ -56,7 +66,11 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
                         PREFERENCES
                     </Typography>
                     {playerPrefs && setPlayerPrefs ? (
-                        <BattleQueueSMS playerPrefs={playerPrefs} setPlayerPrefs={setPlayerPrefs} send={send} />
+                        <BattleQueueNotifications
+                            playerPrefs={playerPrefs}
+                            setPlayerPrefs={setPlayerPrefs}
+                            send={send}
+                        />
                     ) : (
                         <Typography sx={{ opacity: 0.6 }}>Loading...</Typography>
                     )}
