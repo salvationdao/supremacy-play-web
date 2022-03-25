@@ -76,6 +76,7 @@ export const MiniMapInner = ({
     newSnackbarMessage,
 }: MiniMapProps) => {
     const {
+        pxToRemRatio,
         streamDimensions: { width, height },
     } = useDimension()
     const theme = useTheme()
@@ -95,6 +96,8 @@ export const MiniMapInner = ({
     const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
     const [submitted, setSubmitted] = useState<boolean>(false)
 
+    const adjustment = useMemo(() => Math.min(pxToRemRatio, 9) / 9, [pxToRemRatio])
+
     const isTargeting = useMemo(
         () => winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT",
         [winner, timeReachZero, submitted, bribeStage],
@@ -104,11 +107,11 @@ export const MiniMapInner = ({
     useEffect(() => {
         if (!map) return
         const ratio = map ? map.height / map.width : 1
-        const res = { width: MINI_MAP_DEFAULT_SIZE, height: MINI_MAP_DEFAULT_SIZE * ratio }
+        const res = { width: MINI_MAP_DEFAULT_SIZE * adjustment, height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment }
         setDefaultDimensions(res)
         setDimensions(res)
         setMapHeightWidthRatio(ratio)
-    }, [map])
+    }, [map, adjustment])
 
     useEffect(() => {
         if (width <= 0 || height <= 0) return
@@ -124,10 +127,10 @@ export const MiniMapInner = ({
             targetingWidth = targetingHeight / mapHeightWidthRatio
         }
 
-        const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width
-        const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height
+        const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width * adjustment
+        const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height * adjustment
         setDimensions({ width: newWidth, height: newHeight })
-    }, [width, height, enlarged, defaultDimensions])
+    }, [width, height, enlarged, defaultDimensions, adjustment])
 
     useEffect(() => {
         const endTime = winner?.end_time
@@ -179,6 +182,7 @@ export const MiniMapInner = ({
                 <ResizeBox
                     sx={{ bottom: 0, right: 0 }}
                     color={mainColor}
+                    adjustment={adjustment}
                     onResizeStop={setDimensions}
                     initialDimensions={[dimensions.width, dimensions.height]}
                     minConstraints={[defaultDimensions.width, defaultDimensions.height]}

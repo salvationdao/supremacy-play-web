@@ -21,10 +21,13 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
     const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
     const theme = useTheme<Theme>()
     const {
+        pxToRemRatio,
         streamDimensions: { height },
     } = useDimension()
 
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
+
+    const adjustment = useMemo(() => Math.min(pxToRemRatio, 9) / 9, [pxToRemRatio])
 
     const onResizeStop = useCallback(
         (data: Dimension) => {
@@ -53,6 +56,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                     <ResizeBox
                         color={theme.factionTheme.primary}
                         onResizeStop={onResizeStop}
+                        adjustment={adjustment}
                         initialDimensions={[containerWidth, containerHeight]}
                         minConstraints={[initialSize.minWidth, initialSize.height]}
                         maxConstraints={[500, initialSize.height]}

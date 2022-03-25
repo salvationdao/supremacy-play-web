@@ -4,13 +4,9 @@ import { useTheme } from "@mui/styles"
 import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
+import { useDimension, useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { WarMachineItem } from "./WarMachineItem"
-
-// const WIDTH_MECH_ITEM_FACTION_EXPANDED = 370
-// const WIDTH_MECH_ITEM_OTHER_EXPANDED = 245
-// const WIDTH_MECH_ITEM_OTHER_COLLAPSED = 120
 
 const ScrollContainer = ({ children }: { children: ReactElement }) => {
     const theme = useTheme<Theme>()
@@ -43,53 +39,20 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
 }
 
 export const WarMachineStats = () => {
+    const { pxToRemRatio } = useDimension()
     const { faction_id } = useGameServerAuth()
     const { warMachines } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
-    // const {
-    //     streamDimensions: { width },
-    // } = useDimension()
     const { isMapOpen } = useOverlayToggles()
+
+    const adjustment = useMemo(() => Math.min(pxToRemRatio, 10) / 10, [pxToRemRatio])
 
     // Subscribe to the result of the vote
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe(GameServerKeys.TriggerWarMachineLocationUpdated, () => null, null)
     }, [state, subscribe])
-
-    // Determine whether the mech items should be expanded out or collapsed
-    // const shouldBeExpanded = useMemo(() => {
-    //     let shouldBeExpandedFaction = true
-    //     let shouldBeExpandedOthers = true
-
-    //     if (!warMachines || warMachines.length <= 0)
-    //         return {
-    //             shouldBeExpandedFaction,
-    //             shouldBeExpandedOthers,
-    //         }
-    //     const factionMechs = warMachines.filter((wm) => wm.factionID == faction_id)
-    //     const otherMechs = warMachines.filter((wm) => wm.factionID != faction_id)
-
-    //     if (
-    //         factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
-    //             otherMechs.length * WIDTH_MECH_ITEM_OTHER_EXPANDED >
-    //         width
-    //     ) {
-    //         if (
-    //             factionMechs.length * WIDTH_MECH_ITEM_FACTION_EXPANDED +
-    //                 otherMechs.length * WIDTH_MECH_ITEM_OTHER_COLLAPSED >
-    //             width
-    //         ) {
-    //             shouldBeExpandedFaction = false
-    //             shouldBeExpandedOthers = false
-    //         } else {
-    //             shouldBeExpandedOthers = false
-    //         }
-    //     }
-
-    //     return { shouldBeExpandedFaction, shouldBeExpandedOthers }
-    // }, [width, faction_id, warMachines])
 
     const shouldBeExpanded = {
         shouldBeExpandedFaction: false,
@@ -119,7 +82,7 @@ export const WarMachineStats = () => {
                     position: "absolute",
                     bottom: 0,
                     left: 0,
-                    right: isMapOpen ? `calc(${MINI_MAP_DEFAULT_SIZE}px + 1.5rem)` : 0,
+                    right: isMapOpen ? `calc(${MINI_MAP_DEFAULT_SIZE * adjustment}px + 1.5rem)` : 0,
                     zIndex: 13,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",

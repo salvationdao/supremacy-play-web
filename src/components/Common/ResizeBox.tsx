@@ -1,5 +1,5 @@
 import { Box, SxProps, Theme } from "@mui/system"
-import { SyntheticEvent, useCallback, useMemo, useState } from "react"
+import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { Resizable, ResizeCallbackData, ResizeHandle } from "react-resizable"
 import { useToggle } from "../../hooks"
 import { Dimension } from "../../types"
@@ -13,6 +13,7 @@ interface ResizeBoxProps {
     maxConstraints?: [number, number]
     resizeHandles?: ResizeHandle[]
     handle?: React.ReactNode
+    adjustment?: number
 }
 
 export const ResizeBox = ({
@@ -24,6 +25,7 @@ export const ResizeBox = ({
     maxConstraints,
     resizeHandles,
     handle,
+    adjustment,
 }: ResizeBoxProps) => {
     const [resizing, toggleResizing] = useToggle()
     const [resizingDimensions, setResizingDimensions] = useState<Dimension>({
@@ -34,16 +36,33 @@ export const ResizeBox = ({
     const onResize = useMemo(
         () => (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => {
             if (!data) return
-            setResizingDimensions({ width: data.size.width, height: data.size.height })
+            setResizingDimensions({
+                width: data.size.width,
+                height: data.size.height,
+            })
         },
         [],
     )
+
+    // When user resizes the window and the dimensions are smaller than the min, then we need to limit it
+    useEffect(() => {
+        minConstraints &&
+            onResizeStop &&
+            onResizeStop({
+                width: minConstraints[0] * (adjustment || 1),
+                height: minConstraints[1] * (adjustment || 1),
+            })
+    }, [adjustment])
 
     const onResizeStart = useCallback(() => toggleResizing(true), [])
 
     const onResizeStop2 = useCallback(() => {
         if (!resizingDimensions || resizingDimensions.width <= 0 || resizingDimensions.height <= 0) return
-        onResizeStop && onResizeStop(resizingDimensions)
+        onResizeStop &&
+            onResizeStop({
+                width: resizingDimensions.width * (adjustment || 1),
+                height: resizingDimensions.height * (adjustment || 1),
+            })
         toggleResizing(false)
     }, [resizingDimensions])
 
@@ -53,8 +72,8 @@ export const ResizeBox = ({
                 <Box
                     sx={{
                         position: "absolute",
-                        width: resizingDimensions?.width,
-                        height: resizingDimensions?.height,
+                        width: resizingDimensions?.width * (adjustment || 1),
+                        height: resizingDimensions?.height * (adjustment || 1),
                         border: `${color} 2px dashed`,
                         borderRadius: 0.5,
                         zIndex: 9,

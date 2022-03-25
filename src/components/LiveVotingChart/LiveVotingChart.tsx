@@ -111,7 +111,7 @@ const Content = () => {
             defaultSizeX: 380,
             defaultSizeY: 115,
             // Limits
-            minSizeX: 350,
+            minSizeX: 355,
             minSizeY: 115,
             // Toggles
             allowResizeX: true,

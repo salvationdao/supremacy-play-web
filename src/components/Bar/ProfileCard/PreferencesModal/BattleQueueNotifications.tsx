@@ -1,16 +1,16 @@
 import { Stack, Switch, Typography } from "@mui/material"
-import { Dispatch, useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { PlayerPrefs } from "../../.."
-import { WebSocketProperties } from "../../../../containers"
+import { useSnackbar, WebSocketProperties } from "../../../../containers"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 
 interface BattleQueueNotifcationsProps extends Partial<WebSocketProperties> {
     playerPrefs: PlayerPrefs
-    setPlayerPrefs: Dispatch<React.SetStateAction<PlayerPrefs | undefined>>
 }
 
-export const BattleQueueNotifications = ({ playerPrefs, setPlayerPrefs, send }: BattleQueueNotifcationsProps) => {
+export const BattleQueueNotifications = ({ playerPrefs, send }: BattleQueueNotifcationsProps) => {
+    const { newSnackbarMessage } = useSnackbar()
     const [error, setError] = useState<string>()
 
     const toggleNotificationsBattleQueueSMS = useCallback(async () => {
@@ -21,17 +21,14 @@ export const BattleQueueNotifications = ({ playerPrefs, setPlayerPrefs, send }: 
                 battle_queue_sms: !playerPrefs?.notifications_battle_queue_sms,
             })
 
-            setPlayerPrefs((prev) => {
-                if (!prev) return prev
-                return { ...prev, notifications_battle_queue_sms: !prev.notifications_battle_queue_sms }
-            })
-
             setError(undefined)
+            newSnackbarMessage("Saved notification preference.", "success")
         } catch (e) {
-            if (typeof e === "string") return setError(e)
-            setError("Unable to update SMS preference, please try again.")
+            setError(
+                typeof e === "string" ? e : "Unable to update SMS preference, please try again or contact support.",
+            )
         }
-    }, [send, playerPrefs, setPlayerPrefs])
+    }, [send, playerPrefs])
 
     const toggleNotificationsBattleQueueBrowser = useCallback(async () => {
         if (!send) return
@@ -40,57 +37,44 @@ export const BattleQueueNotifications = ({ playerPrefs, setPlayerPrefs, send }: 
             if (!("Notification" in window)) {
                 throw "This browser does not support notifications."
             }
+
+            // If user updates to enabled, then check permissions again
             if (!playerPrefs.notifications_battle_queue_browser) {
                 const permission = await Notification.requestPermission()
                 if (permission === "denied") {
                     throw "Notification permissions denied, please enable them in your browser."
                 }
             }
+
             await send(GameServerKeys.TogglePlayerBattleQueueNotifications, {
                 battle_queue_browser: !playerPrefs?.notifications_battle_queue_browser,
             })
 
-            setPlayerPrefs((prev) => {
-                if (!prev) return prev
-                return { ...prev, notifications_battle_queue_browser: !prev.notifications_battle_queue_browser }
-            })
-
             setError(undefined)
+            newSnackbarMessage("Saved notification preference.", "success")
         } catch (e) {
-            if (typeof e === "string") return setError(e)
-            setError("Unable to update browser preference, please try again or contact support.")
+            setError(
+                typeof e === "string" ? e : "Unable to update browser preference, please try again or contact support.",
+            )
         }
-    }, [send, playerPrefs, setPlayerPrefs])
-
-    useEffect(() => {
-        //if the user has their browser settings to true, checking that the browser has notification permissions (sometimes, user can set time limit), if not, requests it again
-        ;(async () => {
-            try {
-                if (playerPrefs.notifications_battle_queue_browser) {
-                    if (!("Notification" in window)) {
-                        throw "This browser does not support notifications."
-                    }
-
-                    await Notification.requestPermission()
-                }
-            } catch (e) {
-                if (typeof e === "string") return setError(e)
-                setError("This browser does not support notifications.")
-            }
-        })()
-    }, [playerPrefs])
+    }, [send, playerPrefs])
 
     return (
-        <Stack sx={{ px: "1.2rem", py: ".6rem", backgroundColor: "#FFFFFF05", borderRadius: 1 }}>
+        <Stack sx={{ px: "1.5rem", py: ".8rem", backgroundColor: "#FFFFFF08", borderRadius: 1 }}>
+            <Typography gutterBottom sx={{ opacity: 0.8 }}>
+                NOTIFICATIONS
+            </Typography>
+
             <PreferenceToggle
-                title="Enable Battle Queue SMS Notifications:"
-                checked={!!playerPrefs?.notifications_battle_queue_sms}
-                onChangeFunction={toggleNotificationsBattleQueueSMS}
-            />
-            <PreferenceToggle
-                title="Enable Battle Queue Browser Notifications:"
+                title="Enable battle queue browser notifications:"
                 checked={!!playerPrefs?.notifications_battle_queue_browser}
                 onChangeFunction={toggleNotificationsBattleQueueBrowser}
+            />
+
+            <PreferenceToggle
+                title="Enable battle queue SMS notifications:"
+                checked={!!playerPrefs?.notifications_battle_queue_sms}
+                onChangeFunction={toggleNotificationsBattleQueueSMS}
             />
 
             {error && (

@@ -31,7 +31,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
             const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: hash })
             if (resp) {
                 onClose()
-                newSnackbarMessage("Successfully remove war machine from queue.", "success")
+                newSnackbarMessage("Successfully removed war machine from queue.", "success")
             }
         } catch (e) {
             toggleLeaveFailed(true)

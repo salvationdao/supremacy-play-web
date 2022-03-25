@@ -1,9 +1,10 @@
 import { Box, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
+import { BattleQueueNotifications } from "../../.."
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 import { useGameServerWebsocket, usePassportServerAuth } from "../../../../containers"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { BattleQueueNotifications } from "./BattleQueueNotifications"
 
 interface PreferencesModalProps {
     open: boolean
@@ -21,6 +22,7 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
     const { subscribe, send } = useGameServerWebsocket()
     const [playerPrefs, setPlayerPrefs] = useState<PlayerPrefs>()
 
+    // Subscribe to player preferences
     useEffect(() => {
         if (!user || !subscribe) return
         return subscribe<PlayerPrefs>(GameServerKeys.SubPlayerPrefs, (payload) => {
@@ -28,12 +30,36 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
         })
     }, [user, subscribe])
 
+    // If the user has their browser settings to true, check that the browser has
+    // notification permissions (sometimes, user can set time limit etc), if not, requests it again
     useEffect(() => {
-        if (!user || !subscribe || !playerPrefs?.notifications_battle_queue_browser) return
+        ;(async () => {
+            if (!playerPrefs) return
+            try {
+                if (playerPrefs.notifications_battle_queue_browser) {
+                    if (!("Notification" in window)) {
+                        throw "This browser does not support notifications."
+                    }
+
+                    await Notification.requestPermission()
+                }
+            } catch (e) {
+                console.debug(e)
+            }
+        })()
+    }, [playerPrefs])
+
+    // Subscribe to browser notifications
+    useEffect(() => {
+        if (!user || !subscribe || !playerPrefs?.notifications_battle_queue_browser || !("Notification" in window))
+            return
         return subscribe<string>(GameServerKeys.SubPlayerBattleQueueBrowser, (payload) => {
+            if (!payload) return
             if (playerPrefs.notifications_battle_queue_browser) {
-                const notification = new Notification("Supremacy: Get ready for battle...", { body: payload })
-                setTimeout(() => notification.close(), 10000)
+                new Notification("Supremacy: get ready for battle!", {
+                    body: payload,
+                    icon: `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user?.faction.logo_blob_id}`,
+                })
             }
         })
     }, [user, subscribe, playerPrefs?.notifications_battle_queue_browser])
@@ -65,12 +91,8 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
                     <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                         PREFERENCES
                     </Typography>
-                    {playerPrefs && setPlayerPrefs ? (
-                        <BattleQueueNotifications
-                            playerPrefs={playerPrefs}
-                            setPlayerPrefs={setPlayerPrefs}
-                            send={send}
-                        />
+                    {playerPrefs ? (
+                        <BattleQueueNotifications playerPrefs={playerPrefs} send={send} subscribe={subscribe} />
                     ) : (
                         <Typography sx={{ opacity: 0.6 }}>Loading...</Typography>
                     )}

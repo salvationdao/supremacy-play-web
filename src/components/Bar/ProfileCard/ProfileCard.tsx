@@ -160,10 +160,7 @@ export const ProfileCard = () => {
                 </Stack>
             </Popover>
 
-            {isPopoverOpen ||
-                (preferencesModalOpen && (
-                    <PreferencesModal open={preferencesModalOpen} toggle={togglePreferencesModalOpen} />
-                ))}
+            <PreferencesModal open={preferencesModalOpen} toggle={togglePreferencesModalOpen} />
         </>
     )
 }

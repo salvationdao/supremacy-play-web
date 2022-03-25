@@ -64,7 +64,7 @@ export const TopIconSettings = ({
                 sx={{
                     position: "absolute",
                     left: enlarged ? "5.6rem" : "7.6rem",
-                    top: 6.5,
+                    top: 7.2,
                     fontSize: "1.1rem",
                     fontWeight: "fontWeightBold",
                     lineHeight: 1,

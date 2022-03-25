@@ -1,6 +1,6 @@
 import { Box, Stack, Theme } from "@mui/material"
 import { useTheme } from "@mui/styles"
-import { ReactElement, useCallback, useEffect, useState } from "react"
+import { ReactElement, useCallback, useEffect, useMemo, useState } from "react"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
 import { ResizeBox } from ".."
 import { SvgDrag, SvgResizeX, SvgResizeY, SvgResizeXY, SvgHide } from "../../assets"
@@ -56,6 +56,7 @@ export const MoveableResizable = ({
 
     const theme = useTheme<Theme>()
     const {
+        pxToRemRatio,
         streamDimensions: { width, height },
     } = useDimension()
     const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), -1))
@@ -66,6 +67,8 @@ export const MoveableResizable = ({
     const [curHeight, setCurHeight] = useState(
         parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultSizeY),
     )
+
+    const adjustment = useMemo(() => Math.min(pxToRemRatio, 9) / 9, [pxToRemRatio])
 
     // Position shouldn't be loading from local storage with initial state, since it depends on current width and height
     // Make sure live voting chart is inside iframe when page is resized etc.
@@ -100,18 +103,18 @@ export const MoveableResizable = ({
         (data: Dimension) => {
             const size = data || { width: curWidth, height: curHeight }
 
-            if (allowResizeX && size.width >= minSizeX && size.width <= width - 2 * PADDING) {
+            if (allowResizeX && size.width >= minSizeX * adjustment && size.width <= width - 2 * PADDING) {
                 setCurWidth(size.width)
             }
 
-            if (allowResizeY && size.height >= minSizeY && size.height <= height - 2 * PADDING) {
+            if (allowResizeY && size.height >= minSizeY * adjustment && size.height <= height - 2 * PADDING) {
                 setCurHeight(size.height)
             }
 
             localStorage.setItem(`${localStoragePrefix}SizeX`, size.width.toString())
             localStorage.setItem(`${localStoragePrefix}SizeY`, size.height.toString())
         },
-        [curWidth, curHeight, allowResizeX, allowResizeY, minSizeX, minSizeY, width, height],
+        [curWidth, curHeight, allowResizeX, allowResizeY, minSizeX, minSizeY, width, height, adjustment],
     )
 
     return (
@@ -148,6 +151,7 @@ export const MoveableResizable = ({
                     <ResizeBox
                         color={theme.factionTheme.primary || colors.darkNeonBlue}
                         onResizeStop={onResizeStop}
+                        adjustment={adjustment}
                         initialDimensions={[curWidth, curHeight]}
                         minConstraints={[
                             allowResizeX ? minSizeX : defaultSizeX,
