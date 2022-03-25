@@ -1,7 +1,9 @@
+import WarningIcon from "@mui/icons-material/Warning"
 import { Box, Button, IconButton, Link, Modal, Stack, Switch, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { ClipThing, TooltipHelper } from ".."
-import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
+import { ClipThing, PlayerPrefs, TooltipHelper } from ".."
+import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken, SvgWrapper } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
@@ -53,14 +55,35 @@ export const DeployConfirmation = ({
     onClose: () => void
 }) => {
     const { newSnackbarMessage } = useSnackbar()
-    const { state, send } = useGameServerWebsocket()
+    const { state, subscribe, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, tier } = asset.data.mech
+    const [enableNotifications, setEnableNotifications] = useState(false)
     const [needInsured, toggleNeedInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
+    const [playerPrefs, setPlayerPrefs] = useState<PlayerPrefs>()
+    const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueCost, 2))
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
+
+    useEffect(() => {
+        let qc = new BigNumber(queueCost).shiftedBy(-18)
+        if (enableNotifications) {
+            qc = qc.multipliedBy(1.1)
+            setActualQueueCost(qc.toFixed(3))
+        } else {
+            setActualQueueCost(qc.toFixed(3))
+        }
+    }, [enableNotifications, queueCost])
+
+    // Subscribe to player preferences
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !user || !subscribe) return
+        return subscribe<PlayerPrefs>(GameServerKeys.SubPlayerPrefs, (payload) => {
+            setPlayerPrefs(payload)
+        })
+    }, [user, subscribe])
 
     useEffect(() => {
         if (!open) setDeployFailed("")
@@ -69,7 +92,11 @@ export const DeployConfirmation = ({
     const onDeploy = useCallback(async () => {
         if (state !== WebSocket.OPEN) return
         try {
-            const resp = await send(GameServerKeys.JoinQueue, { asset_hash: hash, need_insured: needInsured })
+            const resp = await send(GameServerKeys.JoinQueue, {
+                asset_hash: hash,
+                need_insured: needInsured,
+                enable_notifications: enableNotifications,
+            })
             if (resp) {
                 onClose()
                 newSnackbarMessage("Successfully deployed war machine.", "success")
@@ -82,7 +109,7 @@ export const DeployConfirmation = ({
         } finally {
             toggleIsDeploying(false)
         }
-    }, [state, hash, needInsured])
+    }, [state, hash, needInsured, enableNotifications])
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -194,73 +221,153 @@ export const DeployConfirmation = ({
                                 </Typography>
                             </Box>
 
-                            <Stack spacing=".08rem">
-                                {queueLength >= 0 && (
-                                    <AmountItem
-                                        key={`${queueLength}-queue_length`}
-                                        title={"Position: "}
-                                        color="#FFFFFF"
-                                        value={`${queueLength + 1}`}
-                                        tooltip="The queue position of your war machine if you deploy now."
-                                        disableIcon
-                                    />
-                                )}
-
-                                <AmountItem
-                                    key={`${contractReward}-contract_reward`}
-                                    title={"Contract reward: "}
-                                    color={colors.yellow}
-                                    value={supFormatter(contractReward, 2)}
-                                    tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
-                                />
-
-                                <AmountItem
-                                    title={"Fee: "}
-                                    color={"#FF4136"}
-                                    value={supFormatter(queueCost, 2)}
-                                    tooltip="The cost to place your war machine into the battle queue."
-                                />
-                            </Stack>
-
-                            <Stack direction="row" alignItems="center">
-                                <Typography
-                                    sx={{
-                                        pt: ".08rem",
-                                        lineHeight: 1,
-                                        color: colors.green,
-                                    }}
-                                >
-                                    Add insurance:
-                                </Typography>
-                                <Switch
-                                    size="small"
-                                    checked={needInsured}
-                                    onChange={() => toggleNeedInsured()}
-                                    sx={{
-                                        transform: "scale(.7)",
-                                        ".Mui-checked": { color: colors.green },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
-                                    }}
-                                />
-                                <TooltipHelper
-                                    placement="right-start"
-                                    text={
-                                        <>
-                                            Insurance costs&nbsp;
-                                            <span style={{ textDecoration: "line-through" }}>10%</span> of the contract
-                                            reward but allows your damaged war machine to be repair much faster so it
-                                            can be ready for the next battle much sooner.
-                                        </>
-                                    }
-                                >
-                                    <Box sx={{ ml: "auto" }}>
-                                        <SvgInfoCircular
-                                            size="1.2rem"
-                                            sx={{ opacity: 0.4, ":hover": { opacity: 1 } }}
+                            <Box>
+                                <Stack spacing=".08rem">
+                                    {queueLength >= 0 && (
+                                        <AmountItem
+                                            key={`${queueLength}-queue_length`}
+                                            title={"Position: "}
+                                            color="#FFFFFF"
+                                            value={`${queueLength + 1}`}
+                                            tooltip="The queue position of your war machine if you deploy now."
+                                            disableIcon
                                         />
-                                    </Box>
-                                </TooltipHelper>
-                            </Stack>
+                                    )}
+
+                                    <AmountItem
+                                        key={`${contractReward}-contract_reward`}
+                                        title={"Contract reward: "}
+                                        color={colors.yellow}
+                                        value={supFormatter(contractReward, 2)}
+                                        tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
+                                    />
+
+                                    <AmountItem
+                                        title={"Fee: "}
+                                        color={"#FF4136"}
+                                        value={actualQueueCost}
+                                        tooltip="The cost to place your war machine into the battle queue."
+                                    />
+                                </Stack>
+
+                                <Stack direction="row" alignItems="center">
+                                    <Typography
+                                        sx={{
+                                            pt: ".08rem",
+                                            lineHeight: 1,
+                                            color: colors.green,
+                                        }}
+                                    >
+                                        Add insurance:
+                                    </Typography>
+                                    <Switch
+                                        size="small"
+                                        checked={needInsured}
+                                        onChange={() => toggleNeedInsured()}
+                                        sx={{
+                                            transform: "scale(.7)",
+                                            ".Mui-checked": { color: colors.green },
+                                            ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
+                                        }}
+                                    />
+                                    <TooltipHelper
+                                        placement="right-start"
+                                        text={
+                                            <>
+                                                Insurance costs&nbsp;
+                                                <span style={{ textDecoration: "line-through" }}>10%</span> of the
+                                                contract reward but allows your damaged war machine to be repair much
+                                                faster so it can be ready for the next battle much sooner.
+                                            </>
+                                        }
+                                    >
+                                        <Box sx={{ ml: "auto" }}>
+                                            <SvgInfoCircular
+                                                size="1.2rem"
+                                                sx={{ opacity: 0.4, ":hover": { opacity: 1 } }}
+                                            />
+                                        </Box>
+                                    </TooltipHelper>
+                                </Stack>
+
+                                <Stack direction="row" alignItems="center">
+                                    <Typography
+                                        sx={{
+                                            pt: ".08rem",
+                                            lineHeight: 1,
+                                            color: colors.yellow,
+                                        }}
+                                    >
+                                        Enable notifications:
+                                    </Typography>
+                                    <Switch
+                                        size="small"
+                                        checked={enableNotifications}
+                                        onChange={(e) => {
+                                            setEnableNotifications(e.currentTarget.checked)
+                                        }}
+                                        sx={{
+                                            transform: "scale(.7)",
+                                            ".Mui-checked": { color: colors.green },
+                                            ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
+                                        }}
+                                    />
+                                    <Box ml="auto" />
+                                    {!playerPrefs?.notifications_battle_queue_sms && (
+                                        <TooltipHelper
+                                            placement="right-start"
+                                            text={
+                                                <>
+                                                    You currently do not have battle queue SMS notifications enabled.
+                                                    You must have it enabled in order for this feature to work. To get
+                                                    alerts when your war machine is soon to battle, enable SMS option by
+                                                    clicking on your username in the top right, and select
+                                                    &quot;Preferences&quot; in the dropdown menu.
+                                                </>
+                                            }
+                                        >
+                                            <Box>
+                                                <SvgWrapper
+                                                    size="1.2rem"
+                                                    sx={{
+                                                        paddingBottom: 0,
+                                                    }}
+                                                    fill={colors.orange}
+                                                >
+                                                    <WarningIcon
+                                                        sx={{
+                                                            opacity: 0.6,
+                                                            ":hover": { opacity: 1 },
+                                                        }}
+                                                    />
+                                                </SvgWrapper>
+                                            </Box>
+                                        </TooltipHelper>
+                                    )}
+                                    <TooltipHelper
+                                        placement="right-start"
+                                        text={
+                                            <>
+                                                Enabling notifications will add&nbsp;<strong>10%</strong> to the queue
+                                                cost. We will notify you via SMS when your war machine is within the top
+                                                10 in queue.
+                                            </>
+                                        }
+                                    >
+                                        <Box>
+                                            <SvgInfoCircular
+                                                size="1.2rem"
+                                                sx={{
+                                                    marginLeft: ".5rem",
+                                                    paddingBottom: 0,
+                                                    opacity: 0.4,
+                                                    ":hover": { opacity: 1 },
+                                                }}
+                                            />
+                                        </Box>
+                                    </TooltipHelper>
+                                </Stack>
+                            </Box>
 
                             <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
                                 <Button
@@ -289,17 +396,6 @@ export const DeployConfirmation = ({
                                         {isDeploying ? "DEPLOYING..." : "DEPLOY"}
                                     </Typography>
                                 </Button>
-                                <TooltipHelper
-                                    placement="right-start"
-                                    text='To get alerts when your war machine is soon to battle, enable SMS option by clicking on your username in the top right, and select "Preferences" in the dropdown menu.'
-                                >
-                                    <Box sx={{ ml: "auto" }}>
-                                        <SvgInfoCircular
-                                            size="1.2rem"
-                                            sx={{ opacity: 0.4, ":hover": { opacity: 1 } }}
-                                        />
-                                    </Box>
-                                </TooltipHelper>
                             </Stack>
 
                             {deployFailed && (
