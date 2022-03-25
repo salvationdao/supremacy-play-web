@@ -16,7 +16,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, tier } = asset.data.mech
     const [isLeaving, toggleIsLeaving] = useToggle()
-    const [deployFailed, toggleLeaveFailed] = useToggle()
+    const [leaveFailed, toggleLeaveFailed] = useToggle()
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
@@ -184,7 +184,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                 </Typography>
                             </Button>
 
-                            {deployFailed && (
+                            {leaveFailed && (
                                 <Typography
                                     variant="caption"
                                     sx={{
@@ -192,7 +192,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                         color: "red",
                                     }}
                                 >
-                                    Failed to deploy.
+                                    Failed to leave queue.
                                 </Typography>
                             )}
                         </Stack>
