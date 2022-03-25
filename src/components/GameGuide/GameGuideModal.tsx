@@ -197,16 +197,12 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                             </Typography>
                             <Typography sx={{ fontSize: "1.5rem" }}>
                                 To achieve Multipliers to earn rewards from the Spoils of War, you must first unlock the
-                                “CITIZEN” multiplier. This is achieved by being in the top 80% of contributors to the
-                                Spoils of War in that round with the Multiplier of “Citizen” being allocated after the
-                                conclusion of that Battle. This specific multiplier lasts for the next 2 Battles.
+                                “CITIZEN” multiplier. It is for a player whose syndicate won the battle and they are
+                                within the 95% of $SUPS spent, or for a player whose syndicate didn&apos;t win the
+                                battle but they are within the top 80% of $SUPS spent.
                                 <br />
                                 <br />
-                                After achieving CITIZEN, for the duration you have that CITIZEN multiplier, you can
-                                unlock the following multipliers and stack them to earn your share of the Spoils of War.
-                                <br />
-                                <br />
-                                You Must achieve CITIZEN first before you can achieve any of the following Multipliers:
+                                You must achieve CITIZEN before you can achieve any of the following Multipliers:
                             </Typography>
 
                             <Stack spacing="1.5rem">

@@ -395,7 +395,7 @@ export const getMultiplierGuide = (multiplierKey: string): MultiplierGuide => {
             title = multiplierKey
             amount = 2
             duration = 2
-            description = `For a player whose syndicate won the battle and they are within the 95% of $SUPS spent. For a player whose syndicate did't win the battle and they are within the top 80% of $SUPS spent.`
+            description = `For a player whose syndicate won the battle and they are within the 95% of $SUPS spent. For a player whose syndicate did't win the battle but they are within the top 80% of $SUPS spent.`
             break
     }
 
