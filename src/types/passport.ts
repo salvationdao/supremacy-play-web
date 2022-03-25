@@ -48,6 +48,7 @@ export interface UserStat {
     view_battle_count: number
     total_ability_triggered: number
     kill_count: number
+    mech_kill_count: number
 }
 
 export interface ChatData {

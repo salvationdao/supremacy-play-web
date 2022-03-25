@@ -1,7 +1,15 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { BarExpandable, TooltipHelper } from "../.."
-import { SvgAbility, SvgDeath, SvgView, SvgWrapperProps } from "../../../assets"
+import {
+    SvgAbility,
+    SvgBostonKillIcon,
+    SvgDeath,
+    SvgRedMoutainKillIcon,
+    SvgView,
+    SvgWrapperProps,
+    SvgZaibatsuKillIcon,
+} from "../../../assets"
 import { colors } from "../../../theme/theme"
 import { useGame, useGameServerWebsocket, usePassportServerAuth, WebSocketProperties } from "../../../containers"
 import { UserData, UserStat } from "../../../types/passport"
@@ -20,8 +28,8 @@ const BannerInfo = ({
     PrefixSvg?: SvgWrapperProps
 }) => {
     return (
-        <Box>
-            <TooltipHelper text={tooltip}>
+        <TooltipHelper text={tooltip}>
+            <Box>
                 <Typography
                     variant="subtitle2"
                     sx={{
@@ -34,17 +42,18 @@ const BannerInfo = ({
                 >
                     {title}
                 </Typography>
-            </TooltipHelper>
-            <Stack direction="row" alignItems="center" spacing=".64rem">
-                {PrefixSvg}
-                <Typography
-                    variant="subtitle2"
-                    sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}
-                >
-                    {content}
-                </Typography>
-            </Stack>
-        </Box>
+
+                <Stack direction="row" alignItems="center" spacing=".64rem">
+                    {PrefixSvg}
+                    <Typography
+                        variant="subtitle2"
+                        sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}
+                    >
+                        {content}
+                    </Typography>
+                </Stack>
+            </Box>
+        </TooltipHelper>
     )
 }
 
@@ -76,7 +85,26 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
         total_ability_triggered: 0,
         kill_count: 0,
         view_battle_count: 0,
+        mech_kill_count: 0,
     })
+
+    const killIcon = useMemo(() => {
+        if (!user) return <SvgDeath size="1.1rem" />
+
+        switch (user.faction_id) {
+            case "880db344-e405-428d-84e5-6ebebab1fe6d":
+                return <SvgZaibatsuKillIcon size="1.1rem" />
+                break
+            case "7c6dde21-b067-46cf-9e56-155c88a520e2":
+                return <SvgBostonKillIcon size="1.1rem" />
+                break
+            case "98bf7bb3-1a7c-4f21-8843-458d62884060":
+                return <SvgRedMoutainKillIcon size="1.1rem" />
+                break
+            default:
+                return <SvgDeath size="1.1rem" />
+        }
+    }, [user?.faction_id])
 
     // start to subscribe user update
     useEffect(() => {
@@ -100,7 +128,7 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
         logo_blob_id,
     } = user.faction
 
-    const { total_ability_triggered, kill_count, view_battle_count } = userStat
+    const { total_ability_triggered, kill_count, view_battle_count, mech_kill_count } = userStat
 
     return (
         <BarExpandable
@@ -180,12 +208,17 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
                     />
 
                     <BannerInfo
-                        title={`KILLS`}
-                        tooltip="The number of times your triggered ability or your deployed war machine has destroyed another war machine."
+                        title={`ABILITY KILLS`}
+                        tooltip="The number of times your triggered ability destroyed another war machine. Destroying your own syndicate's war machine will bring your kill count down"
                         content={`${kill_count}`}
                         PrefixSvg={<SvgDeath size="1.1rem" />}
                     />
-
+                    <BannerInfo
+                        title={`MECH KILLS`}
+                        tooltip="The number of times your queued mech gets a kill."
+                        content={`${mech_kill_count}`}
+                        PrefixSvg={killIcon}
+                    />
                     <BannerInfo
                         title={`SPECTATED`}
                         tooltip="The number of battles you have watched."

@@ -87,6 +87,9 @@ import BottomMechWEBP from "./images/BottomMech.webp"
 import SupBackground from "./images/SupBackground.webp"
 import Crosshair from "./images/Crosshair.png"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
+import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
+import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
+import RedMoutainMechKillIcon from "!@svgr/webpack!./svg/RedMountainKillIcon.svg"
 
 // Multiplier images (no spaces in file names, won't work!)
 import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
@@ -611,6 +614,24 @@ export const SvgChatTabbed: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgFontCase: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <FontCase />
+    </SvgWrapper>
+)
+
+export const SvgZaibatsuKillIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ZaibatsuMechKillIcon />
+    </SvgWrapper>
+)
+
+export const SvgBostonKillIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <BostonMechKillIcon />
+    </SvgWrapper>
+)
+
+export const SvgRedMoutainKillIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <RedMoutainMechKillIcon />
     </SvgWrapper>
 )
 
