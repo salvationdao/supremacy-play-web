@@ -39,6 +39,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             (u) => {
                 if (u) {
                     const betterU = buildUserStruct(u)
+                    console.log("UserSubscribe: ", u.faction)
                     setUser(betterU)
                     if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)
                 }
@@ -47,12 +48,19 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         )
     }, [state, subscribe, userID])
 
+    //    export interface FactionTheme {
+    //         primary: string
+    //         secondary: string
+    //         background: string
+    //     }
+
     useEffect(() => {
         if (!subscribe || state !== WebSocket.OPEN) return
         return subscribe<User>(
             GameServerKeys.RingCheck,
             (u) => {
                 if (u) {
+                    console.log("ringcheck: ", u.faction)
                     const betterU = buildUserStruct(u)
                     setUser(betterU)
                     if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)
@@ -72,9 +80,9 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             faction: u.faction
                 ? {
                       theme: {
-                          primary: u.faction.primary_color,
-                          secondary: u.faction.secondary_color,
-                          background: u.faction.background_color,
+                          primary: u.faction.theme.primary,
+                          secondary: u.faction.theme.secondary,
+                          background: u.faction.theme.background,
                       },
                   }
                 : null,

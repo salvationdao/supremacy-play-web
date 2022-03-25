@@ -19,6 +19,7 @@ export const BattleQueueNotifications = ({ playerPrefs, send }: BattleQueueNotif
         try {
             await send(GameServerKeys.TogglePlayerBattleQueueNotifications, {
                 battle_queue_sms: !playerPrefs?.notifications_battle_queue_sms,
+                battle_queue_browser: playerPrefs?.notifications_battle_queue_browser,
             })
 
             setError(undefined)
@@ -48,6 +49,7 @@ export const BattleQueueNotifications = ({ playerPrefs, send }: BattleQueueNotif
 
             await send(GameServerKeys.TogglePlayerBattleQueueNotifications, {
                 battle_queue_browser: !playerPrefs?.notifications_battle_queue_browser,
+                battle_queue_sms: playerPrefs?.notifications_battle_queue_sms,
             })
 
             setError(undefined)

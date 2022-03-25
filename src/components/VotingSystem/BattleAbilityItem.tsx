@@ -193,6 +193,9 @@ const BattleAbilityItemInner = ({
     battleAbilityProgress,
     onBribe,
 }: InnerProps) => {
+
+
+
     return (
         <Fade in={true}>
             <Stack spacing=".56rem">
