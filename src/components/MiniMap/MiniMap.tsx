@@ -107,8 +107,12 @@ export const MiniMapInner = ({
     useEffect(() => {
         if (!map) return
         const ratio = map ? map.height / map.width : 1
-        const res = { width: MINI_MAP_DEFAULT_SIZE * adjustment, height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment }
-        setDefaultDimensions(res)
+        const defaultRes = {
+            width: MINI_MAP_DEFAULT_SIZE * adjustment,
+            height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment,
+        }
+        const res = { width: dimensions.width, height: dimensions.width * ratio }
+        setDefaultDimensions(defaultRes)
         setDimensions(res)
         setMapHeightWidthRatio(ratio)
     }, [map, adjustment])
@@ -130,7 +134,7 @@ export const MiniMapInner = ({
         const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width * adjustment
         const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height * adjustment
         setDimensions({ width: newWidth, height: newHeight })
-    }, [width, height, enlarged, defaultDimensions, adjustment])
+    }, [width, height, enlarged, adjustment])
 
     useEffect(() => {
         const endTime = winner?.end_time

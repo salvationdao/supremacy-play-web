@@ -203,26 +203,26 @@ const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }:
                     <BannerInfo
                         title={`ABILITIES`}
                         tooltip="The number of abilities you have triggered."
-                        content={`${total_ability_triggered}`}
+                        content={`${total_ability_triggered || 0}`}
                         PrefixSvg={<SvgAbility size="1.1rem" />}
                     />
 
                     <BannerInfo
                         title={`ABILITY KILLS`}
                         tooltip="The number of times your triggered ability destroyed another war machine. Destroying your own syndicate's war machine will bring your kill count down"
-                        content={`${kill_count}`}
+                        content={`${kill_count || 0}`}
                         PrefixSvg={<SvgDeath size="1.1rem" />}
                     />
                     <BannerInfo
                         title={`MECH KILLS`}
                         tooltip="The number of times your queued mech gets a kill."
-                        content={`${mech_kill_count}`}
+                        content={`${mech_kill_count || 0}`}
                         PrefixSvg={killIcon}
                     />
                     <BannerInfo
                         title={`SPECTATED`}
                         tooltip="The number of battles you have watched."
-                        content={`${view_battle_count}`}
+                        content={`${view_battle_count || 0}`}
                         PrefixSvg={<SvgView size="1.1rem" />}
                     />
                 </Stack>

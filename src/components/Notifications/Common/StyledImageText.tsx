@@ -49,7 +49,7 @@ export const StyledImageText = ({
     )
 
     return (
-        <span>
+        <span style={{ display: "inline-block" }}>
             {imageUrl && (
                 <Box
                     sx={{
@@ -75,7 +75,6 @@ export const StyledImageText = ({
                 variant={variant}
                 sx={{
                     display: "inline",
-                    lineHeight: 1,
                     fontFamily,
                     fontWeight,
                     color,

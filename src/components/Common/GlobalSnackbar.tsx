@@ -61,7 +61,7 @@ export const GlobalSnackbar = () => {
                         py: "1.1rem",
                         pr: ".9rem",
                         backgroundColor: severityDeets.color,
-                        borderRadius: 0.8,
+                        borderRadius: 0.4,
                         boxShadow: 23,
                     }}
                 >

@@ -34,10 +34,11 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
 
         let endTime = bribeStage.end_time
         const dateNow = new Date()
+        const diff = endTime.getTime() - dateNow.getTime()
 
         // Just a temp fix, if user's pc time is not correct then at least set for them
         // Checked by seeing if they have at least 8s to do stuff
-        if (endTime < dateNow || endTime.getTime() - dateNow.getTime() < 8000) {
+        if (endTime < dateNow || diff < 8000 || diff > 40000) {
             endTime = new Date(dateNow.getTime() + (bribeStage.phase == "BRIBE" ? 30000 : 20000))
         }
 

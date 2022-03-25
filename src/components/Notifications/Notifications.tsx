@@ -19,6 +19,21 @@ import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useGam
 import { useCallback, useEffect, useMemo } from "react"
 import { GameServerKeys } from "../../keys"
 import { useArray } from "../../hooks"
+import {
+    locationSelectNoti,
+    locationSelectNoti2,
+    locationSelectNoti3,
+    locationSelectNoti4,
+    locationSelectNoti5,
+    battleAbilityNoti,
+    factionAbilityNoti,
+    warMachineAbilityNoti,
+    textNoti,
+    killNoti,
+    killNoti2,
+} from "./testData"
+
+const SPAWN_TEST_NOTIFICATIONS = false
 
 /*
 WAR_MACHINE_DESTROYED: when a war machine is destroyed
@@ -60,6 +75,23 @@ export const Notifications = () => {
     // Notification array
     const { value: notifications, add: addNotification, removeByID } = useArray([], "notiID")
 
+    // Test cases
+    useEffect(() => {
+        if (!SPAWN_TEST_NOTIFICATIONS) return
+
+        newNotification(locationSelectNoti)
+        newNotification(locationSelectNoti2)
+        newNotification(locationSelectNoti3)
+        newNotification(locationSelectNoti4)
+        newNotification(locationSelectNoti5)
+        newNotification(battleAbilityNoti)
+        newNotification(factionAbilityNoti)
+        newNotification(warMachineAbilityNoti)
+        newNotification(textNoti)
+        newNotification(killNoti)
+        newNotification(killNoti2)
+    }, [])
+
     // Notifications
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -83,7 +115,7 @@ export const Notifications = () => {
             if (!notification) return
 
             const notiID = makeid()
-            const duration = NOTIFICATION_TIME
+            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 100 : NOTIFICATION_TIME
             addNotification({ notiID, ...notification, duration })
 
             // Linger is for the slide animation to play before clearing off the component
@@ -170,7 +202,7 @@ export const Notifications = () => {
                         case "WAR_MACHINE_ABILITY":
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <WarMachineAbilityAlert data={n.data} />
+                                    <WarMachineAbilityAlert data={n.data} factionsAll={factionsAll} />
                                 </NotificationItem>
                             )
                         case "WAR_MACHINE_DESTROYED":

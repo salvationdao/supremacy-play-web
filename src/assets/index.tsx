@@ -88,6 +88,7 @@ import SupBackground from "./images/SupBackground.webp"
 import Crosshair from "./images/Crosshair.png"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
+import WarningIcon from "@mui/icons-material/Warning"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
 import RedMoutainMechKillIcon from "!@svgr/webpack!./svg/RedMountainKillIcon.svg"
 
@@ -650,5 +651,11 @@ export const SvgSuccess: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
 export const SvgClose2: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Close2 />
+    </SvgWrapper>
+)
+
+export const SvgWarningIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <WarningIcon />
     </SvgWrapper>
 )

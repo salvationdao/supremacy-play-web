@@ -1,9 +1,8 @@
-import WarningIcon from "@mui/icons-material/Warning"
 import { Box, Button, IconButton, Link, Modal, Stack, Switch, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, PlayerPrefs, TooltipHelper } from ".."
-import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken, SvgWrapper } from "../../assets"
+import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken, SvgWarningIcon } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
@@ -27,7 +26,7 @@ const AmountItem = ({
 }) => {
     return (
         <Stack direction="row" alignItems="center">
-            <Typography sx={{ mr: ".4rem" }}>{title}</Typography>
+            <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
             {!disableIcon && <SvgSupToken size="1.4rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
             <Typography sx={{ mr: "3.2rem", color: color }}>{value}</Typography>
             <TooltipHelper placement="right-start" text={tooltip}>
@@ -256,6 +255,7 @@ export const DeployConfirmation = ({
                                             pt: ".08rem",
                                             lineHeight: 1,
                                             color: colors.green,
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
                                         Add insurance:
@@ -265,7 +265,7 @@ export const DeployConfirmation = ({
                                         checked={needInsured}
                                         onChange={() => toggleNeedInsured()}
                                         sx={{
-                                            transform: "scale(.7)",
+                                            transform: "scale(.6)",
                                             ".Mui-checked": { color: colors.green },
                                             ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
                                         }}
@@ -290,15 +290,16 @@ export const DeployConfirmation = ({
                                     </TooltipHelper>
                                 </Stack>
 
-                                <Stack direction="row" alignItems="center">
+                                <Stack direction="row" alignItems="center" sx={{ mt: "-0.55rem" }}>
                                     <Typography
                                         sx={{
                                             pt: ".08rem",
                                             lineHeight: 1,
-                                            color: colors.yellow,
+                                            color: colors.green,
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
-                                        Enable notifications:
+                                        Enable SMS notifications:
                                     </Typography>
                                     <Switch
                                         size="small"
@@ -307,7 +308,7 @@ export const DeployConfirmation = ({
                                             setEnableNotifications(e.currentTarget.checked)
                                         }}
                                         sx={{
-                                            transform: "scale(.7)",
+                                            transform: "scale(.6)",
                                             ".Mui-checked": { color: colors.green },
                                             ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
                                         }}
@@ -327,20 +328,15 @@ export const DeployConfirmation = ({
                                             }
                                         >
                                             <Box>
-                                                <SvgWrapper
+                                                <SvgWarningIcon
                                                     size="1.2rem"
+                                                    fill={colors.orange}
                                                     sx={{
                                                         paddingBottom: 0,
+                                                        opacity: 0.6,
+                                                        ":hover": { opacity: 1 },
                                                     }}
-                                                    fill={colors.orange}
-                                                >
-                                                    <WarningIcon
-                                                        sx={{
-                                                            opacity: 0.6,
-                                                            ":hover": { opacity: 1 },
-                                                        }}
-                                                    />
-                                                </SvgWrapper>
+                                                />
                                             </Box>
                                         </TooltipHelper>
                                     )}

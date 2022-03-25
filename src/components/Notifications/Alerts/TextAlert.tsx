@@ -1,16 +1,29 @@
 import { Box, Typography } from "@mui/material"
-import { StyledNormalText } from "../.."
-import { SvgInfoCircular } from "../../../assets"
+import { ClipThing } from "../.."
 import { colors } from "../../../theme/theme"
 
 export const TextAlert = ({ data }: { data: string }) => {
     return (
-        <Box>
-            <SvgInfoCircular size="1.1rem" sx={{ display: "inline", mr: ".48rem" }} />
-            <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
-            <Typography variant="body1" sx={{ display: "inline", color: colors.offWhite }}>
-                {data}
-            </Typography>
-        </Box>
+        <ClipThing
+            clipSize="8px"
+            border={{
+                borderColor: "none",
+                isFancy: true,
+                borderThickness: ".2rem",
+            }}
+        >
+            <Box
+                sx={{
+                    px: "1.44rem",
+                    pt: "1.2rem",
+                    pb: ".8rem",
+                    backgroundColor: colors.darkNavy,
+                }}
+            >
+                <Typography variant="body1" sx={{ display: "inline", color: colors.offWhite }}>
+                    {data}
+                </Typography>
+            </Box>
+        </ClipThing>
     )
 }

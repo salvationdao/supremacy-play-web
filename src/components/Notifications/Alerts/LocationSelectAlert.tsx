@@ -1,9 +1,10 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { StyledImageText, StyledNormalText } from "../.."
+import { ClipThing, StyledImageText, StyledNormalText } from "../.."
 import { SvgCancelled, SvgDisconnected, SvgHourglass, SvgLocation, SvgDeath } from "../../../assets"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { FactionsAll, httpProtocol } from "../../../containers"
+import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { BattleAbility, User } from "../../../types"
 
@@ -49,7 +50,7 @@ export const FallbackUser: User = {
     sups: 0,
     faction: {
         id: "",
-        label: "xxx",
+        label: "",
         logo_blob_id: "",
         background_blob_id: "",
         theme: {
@@ -72,27 +73,44 @@ export const LocationSelectAlert = ({
     const { username, faction } = currentUser || FallbackUser
 
     const abilityImageUrl = useMemo(() => `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`, [image_url])
+    const mainColor = faction.theme.primary
 
-    if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
-        return (
-            <Stack spacing=".8rem">
-                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
-                <Box>
-                    <SvgCancelled fill="grey" size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
-                    <StyledNormalText text="It has been cancelled as there were no players available to choose a target location." />
-                </Box>
-            </Stack>
-        )
+    const Icon = () => {
+        if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
+            return <SvgCancelled fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
+        }
+
+        if (type == "FAILED_TIMEOUT") {
+            return <SvgHourglass fill="#FFFFFF" size="1.15rem" sx={{ display: "inline", mx: ".4rem" }} />
+        }
+
+        if (type == "FAILED_DISCONNECTED") {
+            return <SvgDisconnected fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
+        }
+
+        if (type == "TRIGGER") {
+            return <SvgDeath fill="#FFFFFF" size="1.25rem" sx={{ display: "inline", mx: ".4rem" }} />
+        }
+
+        if (type == "ASSIGNED") {
+            return <SvgLocation fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
+        }
+
+        return <SvgDeath fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
     }
 
-    if (type == "FAILED_TIMEOUT") {
-        return (
-            <Stack spacing=".8rem">
-                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
+    const Content = () => {
+        if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
+            return (
                 <Box>
-                    <SvgHourglass fill="grey" size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
+                    <StyledNormalText text="Cancelled as there were no players available to choose a target." />
+                </Box>
+            )
+        }
+
+        if (type == "FAILED_TIMEOUT" || type == "FAILED_DISCONNECTED") {
+            return (
+                <Box>
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}
@@ -101,21 +119,16 @@ export const LocationSelectAlert = ({
                                 ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}`
                                 : undefined
                         }
-                        imageMb={-0.3}
+                        imageMb={-0.2}
                     />
-                    <StyledNormalText text=" failed to choose a target location." />
+                    <StyledNormalText text=" failed to choose a target." />
                 </Box>
-            </Stack>
-        )
-    }
+            )
+        }
 
-    if (type == "FAILED_DISCONNECTED") {
-        return (
-            <Stack spacing=".8rem">
-                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
+        if (type == "TRIGGER") {
+            return (
                 <Box>
-                    <SvgDisconnected fill="grey" size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}
@@ -124,21 +137,16 @@ export const LocationSelectAlert = ({
                                 ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}`
                                 : undefined
                         }
-                        imageMb={-0.3}
+                        imageMb={-0.2}
                     />
-                    <StyledNormalText text=" has disconnected." />
+                    <StyledNormalText text=" has confirmed target." />
                 </Box>
-            </Stack>
-        )
-    }
+            )
+        }
 
-    if (type == "TRIGGER") {
-        return (
-            <Stack spacing=".8rem">
-                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
+        if (type == "ASSIGNED") {
+            return (
                 <Box>
-                    <SvgDeath fill={colors.red} size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
                     <StyledImageText
                         text={username}
                         color={faction.theme.primary}
@@ -147,36 +155,46 @@ export const LocationSelectAlert = ({
                                 ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}`
                                 : undefined
                         }
-                        imageMb={-0.3}
+                        imageMb={-0.2}
                     />
-                    <StyledNormalText text=" has chosen a target location." />
+                    <StyledNormalText text=" is assigned to choose a target." />
                 </Box>
-            </Stack>
-        )
+            )
+        }
+
+        return null
     }
 
-    if (type == "ASSIGNED") {
-        return (
-            <Stack spacing=".8rem">
-                <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.3} />
+    return (
+        <ClipThing
+            clipSize="8px"
+            border={{
+                borderColor: mainColor || "none",
+                isFancy: true,
+                borderThickness: ".2rem",
+            }}
+        >
+            <Stack
+                spacing=".5rem"
+                sx={{
+                    px: "1.44rem",
+                    pt: "1.2rem",
+                    pb: ".8rem",
+                    backgroundColor: colors.darkNavy,
+                }}
+            >
                 <Box>
-                    <SvgLocation fill={colors.yellow} size="1.2rem" sx={{ display: "inline", mr: ".4rem" }} />
-                    <StyledNormalText text="|" sx={{ opacity: 0.2, ml: ".24rem", mr: ".8rem" }} />
                     <StyledImageText
-                        text={username}
-                        color={faction.theme.primary}
-                        imageUrl={
-                            faction
-                                ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}`
-                                : undefined
-                        }
-                        imageMb={-0.3}
+                        text={acronym(faction.label) || "GABS"}
+                        color={mainColor || "grey !important"}
+                        imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}`}
+                        imageMb={-0.2}
                     />
-                    <StyledNormalText text=" is choosing a target location." />
+                    <Icon />
+                    <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.2} />
                 </Box>
+                <Content />
             </Stack>
-        )
-    }
-
-    return null
+        </ClipThing>
+    )
 }
