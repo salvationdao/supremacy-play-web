@@ -37,10 +37,9 @@ export const ChatMessage = ({
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at, self } =
         chat
     const multiplierInt = useMemo(() => (multiplierValue ? parseInt(multiplierValue) : 0), [multiplierValue])
+    const multiplierColor = useMemo(() => getMultiplierColor(multiplierInt), [multiplierInt])
 
     if (!self && filterZeros && multiplierInt <= 0) return null
-
-    const multiplierColor = useMemo(() => getMultiplierColor(multiplierInt), [multiplierInt])
 
     return (
         <Stack direction="row" spacing=".4rem" sx={{ opacity: isSent ? 1 : 0.45 }}>
