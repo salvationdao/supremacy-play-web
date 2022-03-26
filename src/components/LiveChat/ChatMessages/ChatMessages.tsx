@@ -8,6 +8,7 @@ import {
     useChat,
     useGameServerWebsocket,
     usePassportServerAuth,
+    UserIDMap,
     UserMultiplierMap,
     WebSocketProperties,
 } from "../../../containers"
@@ -34,6 +35,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
         citizenPlayerIDs,
         splitOption,
         fontSize,
+        userStatMap,
     } = useChat()
 
     return (
@@ -49,6 +51,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
             faction_id={props.faction_id}
             splitOption={splitOption}
             fontSize={fontSize}
+            userStatMap={userStatMap}
         />
     )
 }
@@ -61,6 +64,7 @@ interface ChatMessagesInnerProps extends ChatMessagesProps, Partial<WebSocketPro
     citizenPlayerIDs: string[]
     splitOption: SplitOptionType
     fontSize: FontSizeType
+    userStatMap: UserIDMap
 }
 
 const ChatMessagesInner = ({
@@ -77,6 +81,7 @@ const ChatMessagesInner = ({
     faction_id,
     splitOption,
     fontSize,
+    userStatMap,
 }: ChatMessagesInnerProps) => {
     const { user } = usePassportServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
@@ -84,6 +89,7 @@ const ChatMessagesInner = ({
 
     // Subscribe to global announcement message
     const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()
+
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<GlobalAnnouncementType>(
@@ -174,6 +180,7 @@ const ChatMessagesInner = ({
                                 multiplierValue={userMultiplierMap[c.from_user_id]}
                                 isCitizen={citizenPlayerIDs.some((cp) => cp === c.from_user_id)}
                                 fontSize={fontSize}
+                                userStat={userStatMap[c.from_user_id]}
                             />
                         ))
                     ) : (

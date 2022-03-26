@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
+import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User } from "../types"
 
@@ -16,6 +17,7 @@ export interface AuthContainerType {
  * A Container that handles Authorisation
  */
 const AuthContainer = createContainer((initialState?: { setLogin(user: User): void }): AuthContainerType => {
+    const isActive = useInactivity(120000)
     const { newSnackbarMessage } = useSnackbar()
     const { gameserverSessionID, setGameserverSessionID } = usePassportServerAuth()
     const { updateTheme } = React.useContext(UpdateTheme)
@@ -30,6 +32,19 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
     const [authSessionIDGetError, setAuthSessionIDGetError] = useState()
 
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !user) return
+        ;(async () => {
+            try {
+                await send<null, { payload: "APPLE" | "BANANA" }>(GameServerKeys.ToggleGojiBerryTea, {
+                    payload: isActive ? "APPLE" : "BANANA",
+                })
+            } catch (e) {
+                console.debug(e)
+            }
+        })()
+    }, [isActive, user])
+
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
         if (!subscribe || state !== WebSocket.OPEN || !userID || !window.localStorage.getItem("ring_check_token"))
@@ -39,7 +54,6 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             (u) => {
                 if (u) {
                     const betterU = buildUserStruct(u)
-                    console.log("UserSubscribe: ", u.faction)
                     setUser(betterU)
                     if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)
                 }
@@ -48,19 +62,12 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         )
     }, [state, subscribe, userID])
 
-    //    export interface FactionTheme {
-    //         primary: string
-    //         secondary: string
-    //         background: string
-    //     }
-
     useEffect(() => {
         if (!subscribe || state !== WebSocket.OPEN) return
         return subscribe<User>(
             GameServerKeys.RingCheck,
             (u) => {
                 if (u) {
-                    console.log("ringcheck: ", u.faction)
                     const betterU = buildUserStruct(u)
                     setUser(betterU)
                     if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)

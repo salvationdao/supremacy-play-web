@@ -16,14 +16,10 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, tier } = asset.data.mech
     const [isLeaving, toggleIsLeaving] = useToggle()
-    // const [deployFailed, toggleLeaveFailed] = useToggle()
     const [error, setError] = useState<string>()
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
-    // useEffect(() => {
-    //     if (!open) toggleLeaveFailed(false)
-    // }, [open])
 
     const onLeave = useCallback(async () => {
         if (state !== WebSocket.OPEN || isLeaving) return
