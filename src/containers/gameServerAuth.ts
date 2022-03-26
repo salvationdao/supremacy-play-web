@@ -60,7 +60,6 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             GameServerKeys.RingCheck,
             (u) => {
                 if (u) {
-                    console.log("ringcheck: ", u.faction)
                     const betterU = buildUserStruct(u)
                     setUser(betterU)
                     if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)

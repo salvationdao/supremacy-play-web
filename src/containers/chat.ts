@@ -5,7 +5,7 @@ import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys, PassportServerKeys } from "../keys"
-import { ChatData } from "../types/passport"
+import { ChatData, UserStat } from "../types/passport"
 
 export interface UserMultiplier {
     player_id: string
@@ -14,6 +14,10 @@ export interface UserMultiplier {
 
 export interface UserMultiplierMap {
     [player_id: string]: string
+}
+
+export interface UserIDMap {
+    [player_id: string]: UserStat
 }
 
 export interface UserMultiplierResponse {
@@ -63,6 +67,7 @@ export const ChatContainer = createContainer(() => {
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const [userMultiplierMap, setUserMultiplierMap] = useState<UserMultiplierMap>({})
     const [citizenPlayerIDs, setCitizenPlayerIDs] = useState<string[]>([])
+    const [userStatMap, setUserStatMap] = useState<UserIDMap>({})
 
     // Store list of messages that were successfully sent or failed
     const [sentMessages, setSentMessages] = useState<Date[]>([])
@@ -192,6 +197,29 @@ export const ChatContainer = createContainer(() => {
         })
     }, [gsState, gsSubscribe])
 
+    // Subscribe to user stats
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !gsSubscribe) return
+        return gsSubscribe<UserStat[]>(
+            GameServerKeys.SubscribeChatUserStats,
+            (payload: UserStat[]) => {
+                if (!payload) {
+                    setUserStatMap({})
+                    return
+                }
+
+                const um: UserIDMap = {}
+                payload.forEach((m) => {
+                    um[m.id] = m
+                })
+
+                setUserStatMap(um)
+            },
+            null,
+            true,
+        )
+    }, [state, gsSubscribe])
+
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
@@ -239,6 +267,7 @@ export const ChatContainer = createContainer(() => {
         onFailedMessage,
         fontSize,
         setFontSize,
+        userStatMap,
     }
 })
 

@@ -58,6 +58,7 @@ export enum GameServerKeys {
     SubPlayerPrefs = "PLAYER:PREFERENCES_SUBSCRIBE",
     TogglePlayerBattleQueueNotifications = "PLAYER:TOGGLE_BATTLE_QUEUE_NOTIFICATIONS",
     SubPlayerBattleQueueBrowser = "PLAYER:BROWSER_NOFTICATION_SUBSCRIBE",
+    SubscribeChatUserStats = "PLAYER:USER:STAT:CHAT:SUBSCRIBE",
 }
 
 export enum PassportServerKeys {
