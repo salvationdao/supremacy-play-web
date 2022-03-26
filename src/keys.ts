@@ -5,6 +5,7 @@ export enum GameServerKeys {
     AuthSessionIDGet = "AUTH:SESSION:ID:GET",
     AuthJWTCheck = "AUTH:JWT:CHECK",
     RingCheck = "RING:CHECK",
+    ToggleGojiBerryTea = "GOJI:BERRY:TEA",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
