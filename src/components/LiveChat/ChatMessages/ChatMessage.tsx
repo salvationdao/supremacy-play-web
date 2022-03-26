@@ -51,14 +51,13 @@ export const ChatMessage = ({
     const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at, self } =
         chat
     const multiplierInt = useMemo(() => (multiplierValue ? parseInt(multiplierValue) : 0), [multiplierValue])
-
-    if (!self && filterZeros && multiplierInt <= 0) return null
-
     const multiplierColor = useMemo(() => getMultiplierColor(multiplierInt), [multiplierInt])
     const abilityKillColor = useMemo(() => {
         if (!userStat) return 0
         getAbilityKillColor(userStat.kill_count)
     }, [userStat])
+
+    if (!self && filterZeros && multiplierInt <= 0) return null
 
     return (
         <Box sx={{ opacity: isSent ? 1 : 0.45 }}>
