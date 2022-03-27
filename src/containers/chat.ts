@@ -178,7 +178,7 @@ export const ChatContainer = createContainer(() => {
 
     // Subscribe to multiplier map
     useEffect(() => {
-        if (gsState !== WebSocket.OPEN) return
+        if (gsState !== WebSocket.OPEN || !gsSubscribe) return
         return gsSubscribe<UserMultiplierResponse>(GameServerKeys.SubMultiplierMap, (payload) => {
             if (!payload) {
                 setUserMultiplierMap({})
@@ -192,14 +192,13 @@ export const ChatContainer = createContainer(() => {
             })
 
             setUserMultiplierMap(um)
-
             setCitizenPlayerIDs(payload.citizen_player_ids)
         })
     }, [gsState, gsSubscribe])
 
     // Subscribe to user stats
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !gsSubscribe) return
+        if (gsState !== WebSocket.OPEN || !gsSubscribe) return
         return gsSubscribe<UserStat[]>(
             GameServerKeys.SubscribeChatUserStats,
             (payload: UserStat[]) => {
@@ -218,7 +217,7 @@ export const ChatContainer = createContainer(() => {
             null,
             true,
         )
-    }, [state, gsSubscribe])
+    }, [gsState, gsSubscribe])
 
     // Subscribe to global chat messages
     useEffect(() => {

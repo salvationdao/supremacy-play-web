@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from ".."
 import { SvgClose, SvgExternalLink } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
@@ -19,7 +19,6 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
     const [error, setError] = useState<string>()
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
-
 
     const onLeave = useCallback(async () => {
         if (state !== WebSocket.OPEN || isLeaving) return
