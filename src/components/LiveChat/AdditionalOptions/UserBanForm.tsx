@@ -8,7 +8,43 @@ import { colors } from "../../../theme/theme"
 import { UserData } from "../../../types/passport"
 
 const testUser = {
-    id: "string",
+    id: "1",
+    username: "jayli3n",
+    avatar_id: "string",
+    faction_id: "string",
+    faction: {
+        id: "string",
+        label: "string",
+        logo_blob_id: "string",
+        background_blob_id: "string",
+        theme: {
+            primary: "#C24242",
+            secondary: "#FFFFFF",
+            background: "#0D0404",
+        },
+        description: "string",
+    },
+}
+const testUser2 = {
+    id: "2",
+    username: "jayli3n",
+    avatar_id: "string",
+    faction_id: "string",
+    faction: {
+        id: "string",
+        label: "string",
+        logo_blob_id: "string",
+        background_blob_id: "string",
+        theme: {
+            primary: "#C24242",
+            secondary: "#FFFFFF",
+            background: "#0D0404",
+        },
+        description: "string",
+    },
+}
+const testUser3 = {
+    id: "3",
     username: "jayli3n",
     avatar_id: "string",
     faction_id: "string",
@@ -27,7 +63,7 @@ const testUser = {
 }
 
 const DropdownItem = ({ props, option }: { props: React.HTMLAttributes<HTMLLIElement>; option: UserData }) => (
-    <Box component="li" {...props}>
+    <Box key={option.id} component="li" {...props}>
         <Stack direction="row" spacing=".56rem" alignItems="center">
             <Box
                 sx={{
@@ -52,6 +88,7 @@ const DropdownItem = ({ props, option }: { props: React.HTMLAttributes<HTMLLIEle
 export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: boolean; onClose: () => void }) => {
     const [textField, setTextField] = useState("")
     const [search, setSearch] = useDebounce<string>("", 1000)
+    const [selectedUser, setSelectedUser] = useState<UserData>()
 
     const primaryColor = (user && user.faction.theme.primary) || colors.neonBlue
 
@@ -61,7 +98,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
 
     const isLoading = true
 
-    const options: UserData[] = [testUser, testUser, testUser]
+    const options: UserData[] = [testUser, testUser2, testUser3]
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -105,6 +142,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                     top: "calc(50% - 9px)",
                                 },
                             }}
+                            onChange={(e, value) => value && setSelectedUser(value)}
                             renderOption={(props, option) => <DropdownItem props={props} option={option} />}
                             getOptionLabel={(option) => option.username}
                             renderInput={(params) => (
