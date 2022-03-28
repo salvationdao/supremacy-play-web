@@ -55,6 +55,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
                         borderThickness: ".3rem",
                     }}
+                    innerSx={{ position: "relative" }}
                 >
                     <Stack
                         direction="row"
@@ -190,15 +191,15 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                 </Typography>
                             )}
                         </Stack>
-
-                        <IconButton
-                            size="small"
-                            onClick={onClose}
-                            sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}
-                        >
-                            <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                        </IconButton>
                     </Stack>
+
+                    <IconButton
+                        size="small"
+                        onClick={onClose}
+                        sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}
+                    >
+                        <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    </IconButton>
                 </ClipThing>
             </Box>
         </Modal>

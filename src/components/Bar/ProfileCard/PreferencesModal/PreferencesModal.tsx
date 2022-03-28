@@ -74,7 +74,7 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
                     transform: "translate(-50%, -50%)",
                     width: "40rem",
                     backgroundColor: `${colors.darkNavyBlue}`,
-                    outline: "1px solid #FFFFFF",
+                    outline: "1px solid #FFFFFF60",
                     borderRadius: 1,
                     boxShadow: 24,
                 }}
