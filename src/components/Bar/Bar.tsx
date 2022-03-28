@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_WIDTH } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useBar, useDrawer, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
@@ -79,7 +79,7 @@ export const Bar = () => {
                         background: colors.darkNeonBlue,
                         borderRadius: 3,
                     },
-                    width: isAnyPanelOpen ? `calc(100vw - ${LIVE_CHAT_DRAWER_WIDTH - 0.1}rem)` : "100vw",
+                    width: isAnyPanelOpen ? `calc(100vw - ${RIGHT_DRAWER_WIDTH - 0.1}rem)` : "100vw",
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
             >
