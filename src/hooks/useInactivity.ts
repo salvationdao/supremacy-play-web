@@ -2,17 +2,17 @@ import { useEffect, useState } from "react"
 
 // Default is 15min (900k ms)
 export const useInactivity = (duration: number = 900000) => {
-    const [inactive, setInactive] = useState(false)
+    const [isActive, setIsActive] = useState(true)
 
     useEffect(() => {
         let timeout: NodeJS.Timeout
 
         const whenMouseMoves = () => {
             clearTimeout(timeout)
+            setIsActive(true)
 
             timeout = setTimeout(() => {
-                console.debug("User has been inactive.")
-                setInactive(true)
+                setIsActive(false)
             }, duration)
         }
 
@@ -22,5 +22,5 @@ export const useInactivity = (duration: number = 900000) => {
         }
     }, [])
 
-    return inactive
+    return isActive
 }

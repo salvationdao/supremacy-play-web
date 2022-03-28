@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from ".."
 import { SvgClose, SvgExternalLink } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
@@ -16,13 +16,9 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, tier } = asset.data.mech
     const [isLeaving, toggleIsLeaving] = useToggle()
-    const [leaveFailed, toggleLeaveFailed] = useToggle()
+    const [error, setError] = useState<string>()
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
-
-    useEffect(() => {
-        if (!open) toggleLeaveFailed(false)
-    }, [open])
 
     const onLeave = useCallback(async () => {
         if (state !== WebSocket.OPEN || isLeaving) return
@@ -34,10 +30,8 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                 newSnackbarMessage("Successfully removed war machine from queue.", "success")
             }
         } catch (e) {
-            toggleLeaveFailed(true)
-            newSnackbarMessage(typeof e === "string" ? e : "Failed to leave queue.", "error")
+            setError(typeof e === "string" ? e : "Failed to leave queue.")
             console.debug(e)
-            return
         } finally {
             toggleIsLeaving(false)
         }
@@ -184,7 +178,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                 </Typography>
                             </Button>
 
-                            {leaveFailed && (
+                            {error && (
                                 <Typography
                                     variant="caption"
                                     sx={{
@@ -192,7 +186,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                         color: "red",
                                     }}
                                 >
-                                    Failed to leave queue.
+                                    {error}
                                 </Typography>
                             )}
                         </Stack>
