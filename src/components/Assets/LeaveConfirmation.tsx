@@ -49,7 +49,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                 }}
             >
                 <ClipThing
-                    clipSize="10px"
+                    clipSize="0"
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,

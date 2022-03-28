@@ -122,7 +122,7 @@ export const DeployConfirmation = ({
                 }}
             >
                 <ClipThing
-                    clipSize="10px"
+                    clipSize="0"
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
