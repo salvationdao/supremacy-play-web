@@ -102,10 +102,11 @@ const UserItem = ({ user }: { user: UserData }) => (
 )
 
 export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: boolean; onClose: () => void }) => {
-    const [textField, setTextField] = useState("")
+    const [searchText, setSearchText] = useState("")
     const [search, setSearch] = useDebounce<string>("", 1000)
     const [selectedUser, setSelectedUser] = useState<UserData | null>()
     const [selectedReason, setSelectedReason] = useState<string>()
+    const [comments, setComments] = useState<string>()
 
     const primaryColor = (user && user.faction.theme.primary) || colors.neonBlue
 
@@ -126,6 +127,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "42rem",
+                    boxShadow: 24,
                 }}
             >
                 <ClipThing
@@ -141,7 +143,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                         sx={{
                             px: "2rem",
                             pt: "1.8rem",
-                            pb: "1.8rem",
+                            pb: "2rem",
                             backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
                             ".MuiAutocomplete-popper": {
                                 zIndex: 99999,
@@ -154,7 +156,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                         }}
                     >
                         <Typography sx={{ mb: ".9rem", fontFamily: "Nostromo Regular Black" }}>
-                            PUNISH A USER
+                            PUNISH A PLAYER
                         </Typography>
 
                         <Autocomplete
@@ -175,10 +177,10 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                             getOptionLabel={(option) => option.username}
                             renderInput={(params) => (
                                 <TextField
-                                    value={textField}
+                                    value={searchText}
                                     placeholder="Search for username..."
                                     onChange={(e) => {
-                                        setTextField(e.currentTarget.value)
+                                        setSearchText(e.currentTarget.value)
                                         setSearch(e.currentTarget.value)
                                     }}
                                     type="text"
@@ -217,7 +219,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                         <Stack spacing="1.2rem" sx={{ mt: "1.6rem" }}>
                             <Stack spacing=".1rem">
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                                    BAN USER:
+                                    USER:
                                 </Typography>
                                 {selectedUser ? (
                                     <UserItem user={selectedUser} />
@@ -228,7 +230,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                 )}
                             </Stack>
 
-                            <Stack spacing=".3rem" sx={{ pb: ".2rem" }}>
+                            <Stack spacing=".3rem" sx={{ pb: ".4rem" }}>
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
                                     REASON:
                                 </Typography>
@@ -282,11 +284,10 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                     ADDITIONAL COMMENTS <i>(optional)</i>:
                                 </Typography>
                                 <TextField
-                                    value={textField}
+                                    value={comments}
                                     placeholder="Type a message (optional)"
                                     onChange={(e) => {
-                                        setTextField(e.currentTarget.value)
-                                        setSearch(e.currentTarget.value)
+                                        setComments(e.currentTarget.value)
                                     }}
                                     type="text"
                                     hiddenLabel
@@ -306,6 +307,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                             borderColor: `${primaryColor} !important`,
                                         },
                                         input: {
+                                            p: 0,
                                             color: "#FFFFFF",
                                         },
                                     }}

@@ -1,6 +1,6 @@
 import { Box, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { BattleQueueNotifications } from "../../.."
+import { BattleQueueNotifications, ClipThing } from "../../.."
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 import { useGameServerWebsocket, usePassportServerAuth } from "../../../../containers"
 import { GameServerKeys } from "../../../../keys"
@@ -64,6 +64,8 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
         })
     }, [user, subscribe, playerPrefs?.notifications_battle_queue_browser])
 
+    const primaryColor = (user && user.faction.theme.primary) || colors.neonBlue
+
     return (
         <Modal open={open} onClose={() => toggle(false)}>
             <Box
@@ -79,24 +81,33 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
                     boxShadow: 24,
                 }}
             >
-                <Stack
-                    spacing=".7rem"
-                    sx={{
-                        position: "relative",
-                        px: "1.8rem",
-                        py: "1.6rem",
-                        pb: "1.6rem",
+                <ClipThing
+                    clipSize="0"
+                    border={{
+                        isFancy: true,
+                        borderColor: primaryColor,
+                        borderThickness: ".3rem",
                     }}
                 >
-                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                        PREFERENCES
-                    </Typography>
-                    {playerPrefs ? (
-                        <BattleQueueNotifications playerPrefs={playerPrefs} send={send} subscribe={subscribe} />
-                    ) : (
-                        <Typography sx={{ opacity: 0.6 }}>Loading...</Typography>
-                    )}
-                </Stack>
+                    <Stack
+                        spacing=".7rem"
+                        sx={{
+                            position: "relative",
+                            px: "1.8rem",
+                            py: "1.6rem",
+                            pb: "1.6rem",
+                        }}
+                    >
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            PREFERENCES
+                        </Typography>
+                        {playerPrefs ? (
+                            <BattleQueueNotifications playerPrefs={playerPrefs} send={send} subscribe={subscribe} />
+                        ) : (
+                            <Typography sx={{ opacity: 0.6 }}>Loading...</Typography>
+                        )}
+                    </Stack>
+                </ClipThing>
             </Box>
         </Modal>
     )
