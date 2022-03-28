@@ -114,6 +114,8 @@ const ChatSendInner = ({
         }
     }, [message, user, state, send])
 
+    const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
+
     return (
         <form
             onSubmit={(e) => {
@@ -127,7 +129,7 @@ const ChatSendInner = ({
                     position: "relative",
                     px: "1.28rem",
                     pt: ".32rem",
-                    pb: "2.4rem",
+                    pb: showCharCount ? "2.4rem" : "1.1rem",
                 }}
             >
                 <TextField
@@ -196,18 +198,20 @@ const ChatSendInner = ({
                     }}
                 />
 
-                <Typography
-                    variant="caption"
-                    sx={{
-                        position: "absolute",
-                        bottom: ".5rem",
-                        right: "1.5rem",
-                        opacity: message.length >= MAX_CHAT_MESSAGE_LENGTH ? 1 : 0.4,
-                        color: message.length >= MAX_CHAT_MESSAGE_LENGTH ? colors.red : "#FFFFFF",
-                    }}
-                >
-                    {message.length}/{MAX_CHAT_MESSAGE_LENGTH}
-                </Typography>
+                {showCharCount && (
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            position: "absolute",
+                            bottom: ".5rem",
+                            right: "1.5rem",
+                            opacity: showCharCount ? 1 : 0.4,
+                            color: showCharCount ? colors.red : "#FFFFFF",
+                        }}
+                    >
+                        {message.length}/{MAX_CHAT_MESSAGE_LENGTH}
+                    </Typography>
+                )}
             </Stack>
 
             <EmojiPopover
