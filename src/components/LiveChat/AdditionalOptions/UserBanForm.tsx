@@ -156,7 +156,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                         }}
                     >
                         <Typography sx={{ mb: ".9rem", fontFamily: "Nostromo Regular Black" }}>
-                            PUNISH A PLAYER
+                            PROPOSAL TO PUNISH A PLAYER
                         </Typography>
 
                         <Autocomplete
