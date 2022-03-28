@@ -32,7 +32,7 @@ export interface SentChatMessageData {
 
 export type SplitOptionType = "tabbed" | "split" | null
 
-export type FontSizeType = 0.8 | 1 | 1.4
+export type FontSizeType = 0.8 | 1 | 1.35
 
 export const ChatContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()

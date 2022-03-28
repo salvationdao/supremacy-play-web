@@ -1,6 +1,6 @@
 import { Badge, Box, Drawer, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { DrawerButtons } from ".."
+import { AdditionalOptionsButton, DrawerButtons } from ".."
 import { SvgGlobal } from "../../assets"
 import {
     DRAWER_TRANSITION_DURATION,
@@ -93,6 +93,7 @@ const TabbedLayout = () => {
         <Stack
             sx={{
                 flex: 1,
+                height: 0,
                 position: "relative",
                 backgroundColor:
                     tabValue == 1 && user && user.faction
@@ -203,7 +204,7 @@ const SplitLayout = () => {
     }, [isEnlisted, user])
 
     return (
-        <Stack sx={{ flex: 1 }}>
+        <Stack sx={{ flex: 1, height: 0 }}>
             <Stack
                 sx={{
                     position: "relative",
@@ -313,7 +314,10 @@ export const LiveChat = () => {
         >
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
                 <DrawerButtons isFixed={false} />
-                {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+                <Stack sx={{ width: "100%", height: "100%" }}>
+                    {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+                    <AdditionalOptionsButton />
+                </Stack>
             </Stack>
         </Drawer>
     )

@@ -41,6 +41,7 @@ export const colors = {
     darkNavyBlue: "#070719",
     navy: "#28283f",
     darkNavy: "#101019",
+    darkerNavy: "#08080C",
 
     health: "#BFF600",
     shield: "#00F7F7",
