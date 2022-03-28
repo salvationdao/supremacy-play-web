@@ -12,7 +12,6 @@ import {
     UserMultiplierMap,
     WebSocketProperties,
 } from "../../../containers"
-import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
@@ -25,7 +24,6 @@ interface ChatMessagesProps {
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
-    const { state, subscribe } = useGameServerWebsocket()
     const {
         filterZerosGlobal,
         filterZerosFaction,
@@ -36,13 +34,12 @@ export const ChatMessages = (props: ChatMessagesProps) => {
         splitOption,
         fontSize,
         userStatMap,
+        globalAnnouncement,
     } = useChat()
 
     return (
         <ChatMessagesInner
             {...props}
-            state={state}
-            subscribe={subscribe}
             filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
             sentMessages={sentMessages}
             failedMessages={failedMessages}
@@ -52,11 +49,12 @@ export const ChatMessages = (props: ChatMessagesProps) => {
             splitOption={splitOption}
             fontSize={fontSize}
             userStatMap={userStatMap}
+            globalAnnouncement={globalAnnouncement}
         />
     )
 }
 
-interface ChatMessagesInnerProps extends ChatMessagesProps, Partial<WebSocketProperties> {
+interface ChatMessagesInnerProps extends ChatMessagesProps {
     filterZeros?: boolean
     sentMessages: Date[]
     failedMessages: Date[]
@@ -65,14 +63,13 @@ interface ChatMessagesInnerProps extends ChatMessagesProps, Partial<WebSocketPro
     splitOption: SplitOptionType
     fontSize: FontSizeType
     userStatMap: UserIDMap
+    globalAnnouncement?: GlobalAnnouncementType
 }
 
 const ChatMessagesInner = ({
     primaryColor,
     secondaryColor,
     chatMessages,
-    state,
-    subscribe,
     filterZeros,
     sentMessages,
     failedMessages,
@@ -82,28 +79,11 @@ const ChatMessagesInner = ({
     splitOption,
     fontSize,
     userStatMap,
+    globalAnnouncement,
 }: ChatMessagesInnerProps) => {
     const { user } = usePassportServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
-
-    // Subscribe to global announcement message
-    const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()
-
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<GlobalAnnouncementType>(
-            GameServerKeys.SubGlobalAnnouncement,
-            (payload: GlobalAnnouncementType) => {
-                if (!payload || !payload.message) {
-                    setGlobalAnnouncement(undefined)
-                    return
-                }
-                setGlobalAnnouncement(payload)
-            },
-            null,
-        )
-    }, [state, subscribe])
 
     useLayoutEffect(() => {
         if (!autoScroll || !scrollableRef.current || chatMessages.length === 0) {

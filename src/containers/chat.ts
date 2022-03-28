@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "."
+import { GlobalAnnouncementType } from "../components/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
@@ -57,6 +58,9 @@ export const ChatContainer = createContainer(() => {
     const [fontSize, setFontSize] = useState<FontSizeType>(
         parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType,
     )
+
+    // Global announcement message
+    const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()
 
     // Chat states
     const [initialSentDate, setInitialSentDate] = useState<SentChatMessageData>({ global: [], faction: [] })
@@ -121,6 +125,22 @@ export const ChatContainer = createContainer(() => {
         },
         [setGlobalChatMessages, setFactionChatMessages],
     )
+
+    // Global announcements
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<GlobalAnnouncementType>(
+            GameServerKeys.SubGlobalAnnouncement,
+            (payload: GlobalAnnouncementType) => {
+                if (!payload || !payload.message) {
+                    setGlobalAnnouncement(undefined)
+                    return
+                }
+                setGlobalAnnouncement(payload)
+            },
+            null,
+        )
+    }, [state, subscribe])
 
     // Collect Past Messages
     useEffect(() => {
@@ -267,6 +287,7 @@ export const ChatContainer = createContainer(() => {
         fontSize,
         setFontSize,
         userStatMap,
+        globalAnnouncement,
     }
 })
 
