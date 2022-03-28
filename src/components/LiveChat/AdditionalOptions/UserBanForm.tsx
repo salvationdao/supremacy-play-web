@@ -154,7 +154,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                         }}
                     >
                         <Typography sx={{ mb: ".9rem", fontFamily: "Nostromo Regular Black" }}>
-                            REPORT A USER
+                            PUNISH A USER
                         </Typography>
 
                         <Autocomplete
@@ -279,8 +279,37 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
 
                             <Stack spacing=".3rem">
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                                    ADDITIONAL COMMENTS:
+                                    ADDITIONAL COMMENTS <i>(optional)</i>:
                                 </Typography>
+                                <TextField
+                                    value={textField}
+                                    placeholder="Type a message (optional)"
+                                    onChange={(e) => {
+                                        setTextField(e.currentTarget.value)
+                                        setSearch(e.currentTarget.value)
+                                    }}
+                                    type="text"
+                                    hiddenLabel
+                                    sx={{
+                                        borderRadius: 1,
+                                        "& .MuiInputBase-root": {
+                                            fontFamily: "Share Tech",
+                                            px: "1.1em",
+                                            pt: ".9rem",
+                                            pb: ".7rem",
+                                        },
+                                        ".Mui-disabled": {
+                                            WebkitTextFillColor: "unset",
+                                            color: "#FFFFFF70",
+                                        },
+                                        ".Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: `${primaryColor} !important`,
+                                        },
+                                        input: {
+                                            color: "#FFFFFF",
+                                        },
+                                    }}
+                                />
                             </Stack>
                         </Stack>
                     </Stack>
