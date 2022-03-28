@@ -98,50 +98,6 @@ export const ChatMessage = ({
                         }}
                     />
                 )}
-                {userStat && (
-                    <TooltipHelper placement="top-end" text={"Ability kills."}>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            justifyContent="center"
-                            spacing=".2rem"
-                            sx={{
-                                px: ".4rem",
-                                pt: ".1rem",
-                                height: fontSize ? `${1.6 * fontSize}rem` : "1.6rem",
-                                flexShrink: 0,
-                                borderRadius: 0.6,
-                                border: `${abilityKillColor ? abilityKillColor : colors.grey} 1px solid`,
-                                ":hover": {
-                                    border: `${faction_colour} 1px solid`,
-                                    "*": {
-                                        color: faction_colour,
-                                        fill: faction_colour,
-                                    },
-                                },
-                            }}
-                        >
-                            <SvgDeath
-                                size={fontSize ? `${1 * fontSize}rem` : "1rem"}
-                                sx={{ pb: 0 }}
-                                fill={abilityKillColor ? abilityKillColor : colors.grey}
-                            />
-                            <Typography
-                                sx={{
-                                    mt: ".3rem",
-                                    lineHeight: 1,
-                                    cursor: "default",
-                                    textAlign: "center",
-                                    fontFamily: "Nostromo Regular Black",
-                                    fontSize: fontSize ? `${1 * fontSize}rem` : "1rem",
-                                    color: abilityKillColor ? abilityKillColor : colors.grey,
-                                }}
-                            >
-                                {userStat.kill_count}
-                            </Typography>
-                        </Stack>
-                    </TooltipHelper>
-                )}
                 <Box
                     sx={{
                         wordBreak: "break-word",
@@ -151,6 +107,52 @@ export const ChatMessage = ({
                     }}
                 >
                     <Box>
+                        {userStat && (
+                            <TooltipHelper placement="top-end" text={"Ability kills."}>
+                                <Stack
+                                    direction="row"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    spacing=".2rem"
+                                    sx={{
+                                        display: "inline-flex",
+                                        mr: ".4rem",
+                                        px: ".4rem",
+                                        pt: ".1rem",
+                                        height: fontSize ? `${1.6 * fontSize}rem` : "1.6rem",
+                                        flexShrink: 0,
+                                        borderRadius: 0.6,
+                                        border: `${abilityKillColor ? abilityKillColor : colors.grey} 1px solid`,
+                                        ":hover": {
+                                            border: `${faction_colour} 1px solid`,
+                                            "*": {
+                                                color: faction_colour,
+                                                fill: faction_colour,
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <SvgDeath
+                                        size={fontSize ? `${1 * fontSize}rem` : "1rem"}
+                                        sx={{ pb: 0 }}
+                                        fill={abilityKillColor ? abilityKillColor : colors.grey}
+                                    />
+                                    <Typography
+                                        sx={{
+                                            mt: ".3rem",
+                                            lineHeight: 1,
+                                            cursor: "default",
+                                            textAlign: "center",
+                                            fontFamily: "Nostromo Regular Black",
+                                            fontSize: fontSize ? `${1 * fontSize}rem` : "1rem",
+                                            color: abilityKillColor ? abilityKillColor : colors.grey,
+                                        }}
+                                    >
+                                        {userStat.kill_count}
+                                    </Typography>
+                                </Stack>
+                            </TooltipHelper>
+                        )}
                         <Typography
                             sx={{
                                 display: "inline",
