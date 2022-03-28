@@ -79,7 +79,7 @@ export const AdditionalOptionsButton = () => {
                 </Stack>
             </Popover>
 
-            <UserBanForm user={user} open={banModalOpen} onClose={() => toggleBanModalOpen(false)} />
+            {banModalOpen && <UserBanForm user={user} open={banModalOpen} onClose={() => toggleBanModalOpen(false)} />}
         </>
     )
 }

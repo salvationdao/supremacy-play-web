@@ -61,7 +61,6 @@ const ChatSendInner = ({
     const { newSnackbarMessage } = useSnackbar()
     // Message field
     const [message, setMessage] = useState("")
-    const inputRef = useRef<HTMLInputElement>(null)
     // Emoji
     const popoverRef = useRef(null)
     const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
@@ -136,7 +135,6 @@ const ChatSendInner = ({
                     value={message}
                     placeholder="Send a message..."
                     onChange={(e) => setMessageWithCheck(e.currentTarget.value)}
-                    inputRef={inputRef}
                     type="text"
                     multiline
                     maxRows={4}
@@ -154,6 +152,8 @@ const ChatSendInner = ({
                         "& .MuiInputBase-root": {
                             backgroundColor: "#49494970",
                             fontFamily: "Share Tech",
+                            pt: "1rem",
+                            pb: ".8rem",
                         },
                         ".Mui-disabled": {
                             WebkitTextFillColor: "unset",
