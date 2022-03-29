@@ -76,3 +76,5 @@ export const TRAILER_VIDEO =
 // Maintenance (ENVAR). The local stroage is a hack to let the team members in
 export const UNDER_MAINTENANCE =
     process.env.REACT_APP_MAINTENANCE_PAGE == "true" && !localStorage.getItem("NinjaSecrets@!")
+
+export const PRISMIC_ACCESS_TOKEN = process.env.REACT_PRISMIC_ACCESS_TOKEN

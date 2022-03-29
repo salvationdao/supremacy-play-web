@@ -12,6 +12,7 @@
   REACT_APP_SENTRY_SAMPLERATE = "1"
   REACT_APP_SERVER_HOST_IMAGES = "https://api.xsyn.io"
   REACT_APP_MAINTENANCE_PAGE = "false"
+  REACT_PRISMIC_ACCESS_TOKEN = "MC5ZaEMyMFJFQUFDSUFXZUhm.77-977-977-9FUdeBxkUThw_b17vv70A77-9Se-_ve-_ve-_vSDvv73vv73vv71dTzwqXnZu"
 [context.staging.environment]
   CI="false"
   REACT_APP_TOKEN_SALE_PAGE="https://sale.supremacy.game"
@@ -26,3 +27,4 @@
   REACT_APP_SENTRY_SAMPLERATE = "1"
   REACT_APP_SERVER_HOST_IMAGES = "https://staging-passport.xsyn.io"
   REACT_APP_MAINTENANCE_PAGE = "false"
+  REACT_PRISMIC_ACCESS_TOKEN = "MC5ZaEMyMFJFQUFDSUFXZUhm.77-977-977-9FUdeBxkUThw_b17vv70A77-9Se-_ve-_ve-_vSDvv73vv73vv71dTzwqXnZu"
