@@ -15,7 +15,7 @@ import {
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing } from "../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { MAX_BAN_PROPOSAL_REASON_LENGTH, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useGameServerWebsocket, useSnackbar } from "../../../containers"
 import { snakeToTitle } from "../../../helpers"
 import { useDebounce, useToggle } from "../../../hooks"
@@ -357,10 +357,13 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                     value={reason}
                                     placeholder="Type the reason to punish the user..."
                                     onChange={(e) => {
-                                        setReason(e.currentTarget.value)
+                                        const m = e.currentTarget.value
+                                        if (m.length <= MAX_BAN_PROPOSAL_REASON_LENGTH) setReason(e.currentTarget.value)
                                     }}
                                     type="text"
                                     hiddenLabel
+                                    multiline
+                                    maxRows={2}
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
@@ -376,9 +379,10 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
                                             borderColor: `${primaryColor} !important`,
                                         },
-                                        input: {
+                                        textarea: {
                                             p: 0,
                                             color: "#FFFFFF",
+                                            overflow: "hidden",
                                         },
                                     }}
                                 />
