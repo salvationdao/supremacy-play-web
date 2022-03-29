@@ -1,3 +1,9 @@
+export enum AssetOnChainStatus {
+    MINTABLE = "MINTABLE",
+    STAKABLE = "STAKABLE",
+    UNSTAKABLE = "UNSTAKABLE",
+}
+
 export interface AssetDurability {
     hash: string
     started_at: Date
@@ -13,7 +19,13 @@ export interface AssetQueueStat {
     contract_reward?: string
 }
 
+export interface AssetQueueStatusItem {
+    queue_position: number
+    mech_id: string
+}
+
 export interface Asset {
+    id: string
     hash: string
     collection_id: string
     store_item_id: string
