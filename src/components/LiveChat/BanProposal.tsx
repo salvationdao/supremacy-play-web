@@ -1,5 +1,5 @@
-import { Box, Divider, Stack, Typography } from "@mui/material"
-import { ReactNode, useCallback, useState } from "react"
+import { Box, Divider, Slide, Stack, Typography } from "@mui/material"
+import { ReactNode, useCallback, useEffect, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
 import { useChat, useGameServerWebsocket } from "../../containers"
@@ -27,6 +27,7 @@ const LineItem = ({ title, children, color }: { title: string; children: ReactNo
 export const BanProposal = () => {
     // const { banProposal } = useChat()
     const { state, send } = useGameServerWebsocket()
+    const [outOfTime, setOutOfTime] = useState(false)
     const [submitted, setSubmitted] = useState(false)
     const [error, setError] = useState("")
 
@@ -50,6 +51,18 @@ export const BanProposal = () => {
         },
     }
 
+    // Clean up when out of time
+    useEffect(() => {
+        if (outOfTime) {
+            setSubmitted(false)
+            setError("")
+        }
+    }, [outOfTime])
+
+    useEffect(() => {
+        setOutOfTime(false)
+    }, [banProposal])
+
     const submitVote = useCallback(
         async (isAgree: boolean) => {
             if (state !== WebSocket.OPEN || !send) return
@@ -68,7 +81,6 @@ export const BanProposal = () => {
                 }
             } catch (e) {
                 setError(typeof e === "string" ? e : "Failed to submit your vote.")
-                return
             }
         },
         [state, send, banProposal],
@@ -77,86 +89,88 @@ export const BanProposal = () => {
     if (!banProposal) return null
 
     return (
-        <Box sx={{ m: ".5rem", border: `${colors.red} 2px solid` }}>
-            <Typography
-                sx={{
-                    px: "1rem",
-                    py: ".2rem",
-                    textAlign: "center",
-                    backgroundColor: colors.red,
-                }}
-            >
-                PUNISHMENT PROPOSAL
-            </Typography>
+        <Slide in={true} direction="down">
+            <Box sx={{ m: ".5rem", border: `${colors.red} 2px solid` }}>
+                <Typography
+                    sx={{
+                        px: "1rem",
+                        py: ".2rem",
+                        textAlign: "center",
+                        backgroundColor: colors.red,
+                    }}
+                >
+                    PUNISHMENT PROPOSAL
+                </Typography>
 
-            <Box sx={{ px: "1.2rem", py: ".9rem" }}>
-                <Stack spacing=".3rem">
-                    <LineItem title="FROM" color={colors.green}>
-                        <Typography>{banProposal.issued_by_username}</Typography>
-                    </LineItem>
+                <Box sx={{ px: "1.2rem", py: ".9rem" }}>
+                    <Stack spacing=".3rem">
+                        <LineItem title="FROM" color={colors.green}>
+                            <Typography>{banProposal.issued_by_username}</Typography>
+                        </LineItem>
 
-                    <LineItem title="AGAINST">
-                        <Typography>{banProposal.reported_player_username}</Typography>
-                    </LineItem>
+                        <LineItem title="AGAINST">
+                            <Typography>{banProposal.reported_player_username}</Typography>
+                        </LineItem>
 
-                    <LineItem title="PUNISH">
-                        <Typography>{snakeToTitle(banProposal.punishOption.key)}</Typography>
-                        <TooltipHelper placement="right-start" text={banProposal.punishOption.description}>
-                            <Box>
-                                <SvgInfoCircular
-                                    size="1.1rem"
-                                    sx={{ pt: ".1rem", pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }}
-                                />
-                            </Box>
-                        </TooltipHelper>
-                    </LineItem>
+                        <LineItem title="PUNISH">
+                            <Typography>{snakeToTitle(banProposal.punishOption.key)}</Typography>
+                            <TooltipHelper placement="right-start" text={banProposal.punishOption.description}>
+                                <Box>
+                                    <SvgInfoCircular
+                                        size="1.1rem"
+                                        sx={{ pt: ".1rem", pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }}
+                                    />
+                                </Box>
+                            </TooltipHelper>
+                        </LineItem>
 
-                    <LineItem title="DURATION">
-                        <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
-                            <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
-                            <Typography>{banProposal.punishOption.punish_duration_hours} Hrs</Typography>
-                        </Stack>
-                    </LineItem>
-                </Stack>
-
-                <Divider sx={{ mt: "1.2rem", mb: ".7rem" }} />
-
-                <Stack spacing=".4rem">
-                    <Typography>Do you agree with this proposal?</Typography>
-
-                    <Stack direction="row" spacing=".6rem">
-                        <FancyButton
-                            excludeCaret
-                            clipSize="4px"
-                            sx={{ pt: ".4rem", pb: ".1rem", minWidth: "5rem" }}
-                            clipSx={{ flex: 1, position: "relative" }}
-                            backgroundColor={colors.red}
-                            borderColor={colors.red}
-                            onClick={() => submitVote(true)}
-                        >
-                            <Typography variant="body2">NO</Typography>
-                        </FancyButton>
-
-                        <FancyButton
-                            excludeCaret
-                            clipSize="4px"
-                            sx={{ pt: ".4rem", pb: ".1rem", minWidth: "5rem" }}
-                            clipSx={{ flex: 1, position: "relative" }}
-                            backgroundColor={colors.green}
-                            borderColor={colors.green}
-                            onClick={() => submitVote(false)}
-                        >
-                            <Typography variant="body2">YES</Typography>
-                        </FancyButton>
+                        <LineItem title="DURATION">
+                            <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
+                                <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
+                                <Typography>{banProposal.punishOption.punish_duration_hours} Hrs</Typography>
+                            </Stack>
+                        </LineItem>
                     </Stack>
 
-                    {error && (
-                        <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
-                            {error}
-                        </Typography>
-                    )}
-                </Stack>
+                    <Divider sx={{ mt: "1.2rem", mb: ".7rem" }} />
+
+                    <Stack spacing=".4rem">
+                        <Typography>Do you agree with this proposal?</Typography>
+
+                        <Stack direction="row" spacing=".6rem">
+                            <FancyButton
+                                excludeCaret
+                                clipSize="4px"
+                                sx={{ pt: ".4rem", pb: ".1rem", minWidth: "5rem" }}
+                                clipSx={{ flex: 1, position: "relative" }}
+                                backgroundColor={colors.red}
+                                borderColor={colors.red}
+                                onClick={() => submitVote(true)}
+                            >
+                                <Typography variant="body2">NO</Typography>
+                            </FancyButton>
+
+                            <FancyButton
+                                excludeCaret
+                                clipSize="4px"
+                                sx={{ pt: ".4rem", pb: ".1rem", minWidth: "5rem" }}
+                                clipSx={{ flex: 1, position: "relative" }}
+                                backgroundColor={colors.green}
+                                borderColor={colors.green}
+                                onClick={() => submitVote(false)}
+                            >
+                                <Typography variant="body2">YES</Typography>
+                            </FancyButton>
+                        </Stack>
+
+                        {error && (
+                            <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
+                                {error}
+                            </Typography>
+                        )}
+                    </Stack>
+                </Box>
             </Box>
-        </Box>
+        </Slide>
     )
 }
