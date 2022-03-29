@@ -8,90 +8,41 @@ import {
     Modal,
     Select,
     Stack,
+    SxProps,
     TextField,
     Typography,
 } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing } from "../.."
-import { SvgClose, SvgSupToken } from "../../../assets"
+import { SvgClose, SvgCooldown, SvgSupToken } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGameServerWebsocket } from "../../../containers"
-import { supFormatterNoFixed } from "../../../helpers"
+import { useGameServerWebsocket, useSnackbar } from "../../../containers"
+import { snakeToTitle } from "../../../helpers"
 import { useDebounce, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { UserData } from "../../../types/passport"
 
-const testUser = {
-    id: "1",
-    username: "jayli3n",
-    avatar_id: "string",
-    faction_id: "string",
-    faction: {
-        id: "string",
-        label: "string",
-        logo_blob_id: "string",
-        background_blob_id: "string",
-        theme: {
-            primary: "#C24242",
-            secondary: "#FFFFFF",
-            background: "#0D0404",
-        },
-        description: "string",
-    },
-}
-const testUser2 = {
-    id: "2",
-    username: "jayli3n",
-    avatar_id: "string",
-    faction_id: "string",
-    faction: {
-        id: "string",
-        label: "string",
-        logo_blob_id: "string",
-        background_blob_id: "string",
-        theme: {
-            primary: "#C24242",
-            secondary: "#FFFFFF",
-            background: "#0D0404",
-        },
-        description: "string",
-    },
-}
-const testUser3 = {
-    id: "3",
-    username: "jayli3n",
-    avatar_id: "string",
-    faction_id: "string",
-    faction: {
-        id: "string",
-        label: "string",
-        logo_blob_id: "string",
-        background_blob_id: "string",
-        theme: {
-            primary: "#C24242",
-            secondary: "#FFFFFF",
-            background: "#0D0404",
-        },
-        description: "string",
-    },
-}
-
 interface SubmitRequest {
-    username: string
+    intend_to_punish_player_id: string
+    punish_option_id: string
     reason: string
-    comments?: string
 }
 
-const banReasons = [
-    { label: "Select a reason", value: "" },
-    { label: "Verbal abuse", value: "Verbal abuse" },
-    { label: "Intentional team kill", value: "Intentional team kill" },
-    { label: "Offensive or inappropriate name", value: "Offensive or inappropriate name" },
-]
+interface BanUser {
+    id: string
+    username: string
+}
 
-const UserItem = ({ user }: { user: UserData }) => (
-    <Stack direction="row" spacing=".6rem" alignItems="center">
+export interface BanOption {
+    id: string
+    description: string
+    key: string
+    punish_duration_hours: number
+}
+
+const UserItem = ({ user, banUser, sx }: { user: UserData; banUser: BanUser; sx?: SxProps }) => (
+    <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
         <Box
             sx={{
                 mt: "-0.1rem !important",
@@ -107,31 +58,48 @@ const UserItem = ({ user }: { user: UserData }) => (
                 border: `${user.faction.theme.primary} 1px solid`,
             }}
         />
-        <Typography>{user.username}</Typography>
+        <Typography>{banUser.username}</Typography>
     </Stack>
 )
 
 export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: boolean; onClose: () => void }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const [searchText, setSearchText] = useState("")
-    const [search, setSearch] = useDebounce<string>("", 1000)
+    const [search, setSearch] = useDebounce<string>("", 300)
     const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()
-    const [userDropdown, setUserDropdown] = useState<UserData[]>([testUser, testUser2, testUser3])
+    const [userDropdown, setUserDropdown] = useState<BanUser[]>([])
+    const [banOptions, setBanOptions] = useState<BanOption[]>([])
     const [fee, setFee] = useState("")
     const [error, setError] = useState("")
     // Inputs
-    const [selectedUser, setSelectedUser] = useState<UserData | null>()
-    const [selectedReason, setSelectedReason] = useState("")
+    const [selectedUser, setSelectedUser] = useState<BanUser | null>()
+    const [selectedBanOptionID, setSelectedBanOptionID] = useState("")
     const [comments, setComments] = useState("")
 
     const primaryColor = (user && user.faction.theme.primary) || colors.neonBlue
 
+    // Load the ban options
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (state !== WebSocket.OPEN) return
+                const resp = await send<BanOption[], null>(GameServerKeys.GetBanOptions, null)
+
+                if (resp) setBanOptions(resp)
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to load ban options.", "error")
+            }
+        })()
+    }, [])
+
+    // When searching for player, update the dropdown list
     useEffect(() => {
         ;(async () => {
             toggleIsLoadingUsers(true)
             try {
                 if (state !== WebSocket.OPEN) return
-                const resp = await send<UserData[], { search: string }>(GameServerKeys.GetPlayerList, {
+                const resp = await send<BanUser[], { search: string }>(GameServerKeys.GetPlayerList, {
                     search,
                 })
 
@@ -142,29 +110,33 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
         })()
     }, [search])
 
+    // When a player is selected, get the ban fee for that player
     useEffect(() => {
         ;(async () => {
-            toggleIsLoadingUsers(true)
             try {
                 if (state !== WebSocket.OPEN || !selectedUser) return
-                const resp = await send<string, { username: string }>(GameServerKeys.GetBanPlayerCost, {
-                    username: selectedUser.username,
-                })
+                const resp = await send<string, { intend_to_punish_player_id: string }>(
+                    GameServerKeys.GetBanPlayerCost,
+                    {
+                        intend_to_punish_player_id: selectedUser.id,
+                    },
+                )
 
                 if (resp) setFee(resp)
             } catch (e) {
-                console.debug(e)
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to load users from search.", "error")
             }
         })()
-    }, [])
+    }, [selectedUser])
 
+    // Submit the ban proposal
     const onSubmit = useCallback(async () => {
         try {
-            if (state !== WebSocket.OPEN || !selectedUser || !selectedReason) throw new Error()
+            if (state !== WebSocket.OPEN || !selectedUser || !selectedBanOptionID) throw new Error()
             const resp = await send<boolean, SubmitRequest>(GameServerKeys.SubmitBanProposal, {
-                username: selectedUser.username,
-                reason: selectedReason,
-                comments,
+                intend_to_punish_player_id: selectedUser.id,
+                punish_option_id: selectedBanOptionID,
+                reason: comments,
             })
 
             if (resp) {
@@ -174,9 +146,11 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit proposal.")
         }
-    }, [])
+    }, [selectedUser, selectedBanOptionID, comments])
 
-    const isDisabled = !selectedUser || !selectedReason
+    const isDisabled = !selectedUser || !selectedBanOptionID
+
+    if (!user) return null
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -227,14 +201,20 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                     top: "calc(50% - 9px)",
                                 },
                             }}
+                            open
                             disablePortal
                             onChange={(e, value) => setSelectedUser(value)}
-                            renderOption={(props, user) => (
-                                <Box key={user.id} component="li" {...props}>
-                                    <UserItem user={user} />
+                            renderOption={(props, u) => (
+                                <Box key={u.id} component="li" {...props}>
+                                    <UserItem user={user} banUser={u} />
                                 </Box>
                             )}
-                            getOptionLabel={(user) => user.username}
+                            getOptionLabel={(u) => u.username}
+                            noOptionsText={
+                                <Typography sx={{ opacity: 0.6 }}>
+                                    <i>Start typing a username...</i>
+                                </Typography>
+                            }
                             renderInput={(params) => (
                                 <TextField
                                     value={searchText}
@@ -278,13 +258,13 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                             )}
                         />
 
-                        <Stack spacing="1.2rem" sx={{ mt: "1.6rem" }}>
+                        <Stack spacing="1.5rem" sx={{ mt: "1.6rem" }}>
                             <Stack spacing=".1rem">
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
                                     USER:
                                 </Typography>
                                 {selectedUser ? (
-                                    <UserItem user={selectedUser} />
+                                    <UserItem user={user} banUser={selectedUser} sx={{ pl: ".2rem" }} />
                                 ) : (
                                     <Typography sx={{ opacity: 0.6 }}>
                                         <i>Use the search box to find a user...</i>
@@ -292,9 +272,17 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                 )}
                             </Stack>
 
-                            <Stack spacing=".3rem" sx={{ pb: ".4rem" }}>
+                            <Stack
+                                spacing=".3rem"
+                                sx={{
+                                    pb: ".4rem",
+                                    ".Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: `${primaryColor} !important`,
+                                    },
+                                }}
+                            >
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                                    REASON:
+                                    OPTION:
                                 </Typography>
                                 <Select
                                     displayEmpty
@@ -305,12 +293,12 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                         },
                                         "& .MuiSelect-outlined": { px: "1.6rem", py: ".8rem" },
                                     }}
-                                    value={selectedReason}
+                                    value={selectedBanOptionID}
                                     MenuProps={{
                                         variant: "menu",
                                         sx: {
                                             "&& .Mui-selected": {
-                                                backgroundColor: colors.darkerNeonBlue,
+                                                backgroundColor: "#FFFFFF20",
                                             },
                                         },
                                         PaperProps: {
@@ -322,19 +310,40 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                         },
                                     }}
                                 >
-                                    {banReasons.map((x, i) => {
+                                    {banOptions.map((x, i) => {
                                         return (
                                             <MenuItem
-                                                key={`ban-reason-${i}-${x.value}`}
-                                                value={x.value}
-                                                onClick={() => setSelectedReason(x.value)}
+                                                key={`ban-reason-${x.id}`}
+                                                value={x.id}
+                                                onClick={() => setSelectedBanOptionID(x.id)}
                                                 sx={{
                                                     "&:hover": {
                                                         backgroundColor: "#FFFFFF14",
                                                     },
                                                 }}
                                             >
-                                                <Typography>{x.label}</Typography>
+                                                <Stack direction="row">
+                                                    <Stack
+                                                        spacing=".24rem"
+                                                        direction="row"
+                                                        alignItems="center"
+                                                        justifyContent="center"
+                                                    >
+                                                        <SvgCooldown
+                                                            component="span"
+                                                            size="1.3rem"
+                                                            fill={"grey"}
+                                                            sx={{ pb: ".32rem" }}
+                                                        />
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{ lineHeight: 1, color: "grey !important" }}
+                                                        >
+                                                            {x.punish_duration_hours}hrs
+                                                        </Typography>
+                                                    </Stack>
+                                                    <Typography>{snakeToTitle(x.key)}</Typography>
+                                                </Stack>
                                             </MenuItem>
                                         )
                                     })}
@@ -380,9 +389,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>FEE:</Typography>
                                 <Stack direction="row" alignItems="center">
                                     <SvgSupToken size="1.4rem" fill={colors.yellow} />
-                                    <Typography sx={{ lineHeight: 1 }}>
-                                        {fee ? supFormatterNoFixed(fee, 18) : "---"}
-                                    </Typography>
+                                    <Typography sx={{ lineHeight: 1 }}>{fee || "---"}</Typography>
                                 </Stack>
                             </Stack>
                         </Stack>
@@ -395,7 +402,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                             sx={{
                                 flex: 1,
                                 minWidth: 0,
-                                mt: "2rem",
+                                mt: "1.8rem",
                                 px: ".8rem",
                                 py: ".8rem",
                                 backgroundColor: primaryColor,

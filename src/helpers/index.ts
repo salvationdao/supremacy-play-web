@@ -422,3 +422,9 @@ export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
 
     return `${hours}:${minutes2} ${suffix}`
 }
+
+export const snakeToTitle = (str: string): string =>
+    str
+        .split("_")
+        .map((s) => Capitalize(s))
+        .join(" ")

@@ -63,9 +63,10 @@ export enum GameServerKeys {
     SubscribeChatUserStats = "PLAYER:USER:STAT:CHAT:SUBSCRIBE",
 
     // Ban system
-    GetPlayerList = "XXXXXX",
-    GetBanPlayerCost = "XXXXXX",
-    SubmitBanProposal = "XXXXXX",
+    GetBanOptions = "PUNISH:OPTIONS",
+    GetPlayerList = "FACTION:PLAYER:SEARCH",
+    GetBanPlayerCost = "PUNISH:VOTE:PRICE:QUOTE",
+    SubmitBanProposal = "ISSUE:PUNISH:VOTE",
 }
 
 export enum PassportServerKeys {
