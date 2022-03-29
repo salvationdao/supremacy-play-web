@@ -1,9 +1,10 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
-import { ReactNode } from "react"
+import { ReactNode, useCallback, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
-import { useChat } from "../../containers"
+import { useChat, useGameServerWebsocket } from "../../containers"
 import { snakeToTitle } from "../../helpers"
+import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 
 const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
@@ -25,6 +26,9 @@ const LineItem = ({ title, children, color }: { title: string; children: ReactNo
 
 export const BanProposal = () => {
     // const { banProposal } = useChat()
+    const { state, send } = useGameServerWebsocket()
+    const [submitted, setSubmitted] = useState(false)
+    const [error, setError] = useState("")
 
     const banProposal = {
         id: "123",
@@ -45,6 +49,30 @@ export const BanProposal = () => {
             punish_duration_hours: 24,
         },
     }
+
+    const submitVote = useCallback(
+        async (isAgree: boolean) => {
+            if (state !== WebSocket.OPEN || !send) return
+            try {
+                const resp = await send<boolean, { punish_vote_id: string; is_agreed: boolean }>(
+                    GameServerKeys.SubmitBanVote,
+                    {
+                        punish_vote_id: banProposal.id,
+                        is_agreed: isAgree,
+                    },
+                )
+
+                if (resp) {
+                    setSubmitted(true)
+                    setError("")
+                }
+            } catch (e) {
+                setError(typeof e === "string" ? e : "Failed to submit your vote.")
+                return
+            }
+        },
+        [state, send, banProposal],
+    )
 
     if (!banProposal) return null
 
@@ -104,7 +132,7 @@ export const BanProposal = () => {
                             clipSx={{ flex: 1, position: "relative" }}
                             backgroundColor={colors.red}
                             borderColor={colors.red}
-                            // onClick={onClick}
+                            onClick={() => submitVote(true)}
                         >
                             <Typography variant="body2">NO</Typography>
                         </FancyButton>
@@ -116,11 +144,17 @@ export const BanProposal = () => {
                             clipSx={{ flex: 1, position: "relative" }}
                             backgroundColor={colors.green}
                             borderColor={colors.green}
-                            // onClick={onClick}
+                            onClick={() => submitVote(false)}
                         >
                             <Typography variant="body2">YES</Typography>
                         </FancyButton>
                     </Stack>
+
+                    {error && (
+                        <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
+                            {error}
+                        </Typography>
+                    )}
                 </Stack>
             </Box>
         </Box>
