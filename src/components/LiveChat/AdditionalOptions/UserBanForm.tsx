@@ -75,7 +75,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
     // Inputs
     const [selectedUser, setSelectedUser] = useState<BanUser | null>()
     const [selectedBanOptionID, setSelectedBanOptionID] = useState("")
-    const [comments, setComments] = useState("")
+    const [reason, setReason] = useState("")
 
     const primaryColor = (user && user.faction.theme.primary) || colors.neonBlue
 
@@ -132,23 +132,24 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
     // Submit the ban proposal
     const onSubmit = useCallback(async () => {
         try {
-            if (state !== WebSocket.OPEN || !selectedUser || !selectedBanOptionID) throw new Error()
+            if (state !== WebSocket.OPEN || !selectedUser || !selectedBanOptionID || !reason) throw new Error()
             const resp = await send<boolean, SubmitRequest>(GameServerKeys.SubmitBanProposal, {
                 intend_to_punish_player_id: selectedUser.id,
                 punish_option_id: selectedBanOptionID,
-                reason: comments,
+                reason,
             })
 
             if (resp) {
                 onClose()
                 setError("")
+                newSnackbarMessage("Successfully submitted proposal.", "success")
             }
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit proposal.")
         }
-    }, [selectedUser, selectedBanOptionID, comments])
+    }, [selectedUser, selectedBanOptionID, reason])
 
-    const isDisabled = !selectedUser || !selectedBanOptionID
+    const isDisabled = !selectedUser || !selectedBanOptionID || !reason
 
     if (!user) return null
 
@@ -201,7 +202,6 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                     top: "calc(50% - 9px)",
                                 },
                             }}
-                            open
                             disablePortal
                             onChange={(e, value) => setSelectedUser(value)}
                             renderOption={(props, u) => (
@@ -282,7 +282,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                 }}
                             >
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                                    OPTION:
+                                    BAN OPTION:
                                 </Typography>
                                 <Select
                                     displayEmpty
@@ -298,7 +298,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                         variant: "menu",
                                         sx: {
                                             "&& .Mui-selected": {
-                                                backgroundColor: "#FFFFFF20",
+                                                backgroundColor: "#FFFFFF25",
                                             },
                                         },
                                         PaperProps: {
@@ -318,11 +318,17 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                                 onClick={() => setSelectedBanOptionID(x.id)}
                                                 sx={{
                                                     "&:hover": {
-                                                        backgroundColor: "#FFFFFF14",
+                                                        backgroundColor: "#FFFFFF15",
                                                     },
                                                 }}
                                             >
-                                                <Stack direction="row">
+                                                <Stack
+                                                    direction="row"
+                                                    spacing="1rem"
+                                                    justifyContent="space-between"
+                                                    sx={{ flex: 1 }}
+                                                >
+                                                    <Typography>{snakeToTitle(x.key)}</Typography>
                                                     <Stack
                                                         spacing=".24rem"
                                                         direction="row"
@@ -331,18 +337,11 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                                     >
                                                         <SvgCooldown
                                                             component="span"
-                                                            size="1.3rem"
-                                                            fill={"grey"}
-                                                            sx={{ pb: ".32rem" }}
+                                                            size="1.5rem"
+                                                            sx={{ pb: ".25rem" }}
                                                         />
-                                                        <Typography
-                                                            variant="body2"
-                                                            sx={{ lineHeight: 1, color: "grey !important" }}
-                                                        >
-                                                            {x.punish_duration_hours}hrs
-                                                        </Typography>
+                                                        <Typography>{x.punish_duration_hours}Hrs</Typography>
                                                     </Stack>
-                                                    <Typography>{snakeToTitle(x.key)}</Typography>
                                                 </Stack>
                                             </MenuItem>
                                         )
@@ -352,13 +351,13 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
 
                             <Stack spacing=".3rem">
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                                    ADDITIONAL COMMENTS <i>(optional)</i>:
+                                    REASON:
                                 </Typography>
                                 <TextField
-                                    value={comments}
-                                    placeholder="Type a message (optional)"
+                                    value={reason}
+                                    placeholder="Type a message"
                                     onChange={(e) => {
-                                        setComments(e.currentTarget.value)
+                                        setReason(e.currentTarget.value)
                                     }}
                                     type="text"
                                     hiddenLabel
