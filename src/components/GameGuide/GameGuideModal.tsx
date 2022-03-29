@@ -165,7 +165,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                         flexDirection: "column",
                                         mr: ".8rem",
                                         mt: "1rem",
-                                        mb: "1.6rem",
+                                        mb: "2rem",
                                         px: "3rem",
                                         py: "1rem",
                                         "::-webkit-scrollbar": {
