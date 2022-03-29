@@ -387,6 +387,7 @@ export const DeployConfirmation = ({
                                         variant="body2"
                                         sx={{
                                             lineHeight: 1,
+                                            fontWeight: "fontWeightBold",
                                             color: isDeploying ? colors.green : "#FFFFFF",
                                         }}
                                     >
@@ -399,7 +400,7 @@ export const DeployConfirmation = ({
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        lineHeight: 1,
+                                        mt: ".3rem",
                                         color: "red",
                                     }}
                                 >

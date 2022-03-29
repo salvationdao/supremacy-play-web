@@ -61,6 +61,11 @@ export enum GameServerKeys {
     TogglePlayerBattleQueueNotifications = "PLAYER:TOGGLE_BATTLE_QUEUE_NOTIFICATIONS",
     SubPlayerBattleQueueBrowser = "PLAYER:BROWSER_NOFTICATION_SUBSCRIBE",
     SubscribeChatUserStats = "PLAYER:USER:STAT:CHAT:SUBSCRIBE",
+
+    // Ban system
+    GetPlayerList = "XXXXXX",
+    GetBanPlayerCost = "XXXXXX",
+    SubmitBanProposal = "XXXXXX",
 }
 
 export enum PassportServerKeys {

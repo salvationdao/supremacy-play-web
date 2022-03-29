@@ -74,7 +74,7 @@ export const AdditionalOptionsButton = () => {
                         }}
                         sx={{ backgroundColor: "#00000050" }}
                     >
-                        <Typography variant="body2">PUNISH A PLAYER</Typography>
+                        <Typography variant="body2">PROPOSAL TO PUNISH A PLAYER</Typography>
                     </Button>
                 </Stack>
             </Popover>

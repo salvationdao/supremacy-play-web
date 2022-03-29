@@ -1,6 +1,7 @@
 import {
     Autocomplete,
     Box,
+    Button,
     CircularProgress,
     IconButton,
     MenuItem,
@@ -10,11 +11,13 @@ import {
     TextField,
     Typography,
 } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { ClipThing } from "../.."
 import { SvgClose } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useDebounce } from "../../../hooks"
+import { useGameServerWebsocket } from "../../../containers"
+import { useDebounce, useToggle } from "../../../hooks"
+import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { UserData } from "../../../types/passport"
 
@@ -73,6 +76,12 @@ const testUser3 = {
     },
 }
 
+interface SubmitRequest {
+    username: string
+    reason: string
+    comments?: string
+}
+
 const banReasons = [
     { label: "Select a reason", value: "" },
     { label: "Verbal abuse", value: "Verbal abuse" },
@@ -102,21 +111,54 @@ const UserItem = ({ user }: { user: UserData }) => (
 )
 
 export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: boolean; onClose: () => void }) => {
+    const { state, send } = useGameServerWebsocket()
     const [searchText, setSearchText] = useState("")
     const [search, setSearch] = useDebounce<string>("", 1000)
+    const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()
+    const [userDropdown, setUserDropdown] = useState<UserData[]>([testUser, testUser2, testUser3])
+    const [error, setError] = useState("")
+    // Inputs
     const [selectedUser, setSelectedUser] = useState<UserData | null>()
-    const [selectedReason, setSelectedReason] = useState<string>()
-    const [comments, setComments] = useState<string>()
+    const [selectedReason, setSelectedReason] = useState("")
+    const [comments, setComments] = useState("")
 
     const primaryColor = (user && user.faction.theme.primary) || colors.neonBlue
 
     useEffect(() => {
-        console.log("SEND")
+        ;(async () => {
+            toggleIsLoadingUsers(true)
+            try {
+                if (state !== WebSocket.OPEN) return
+                const resp = await send<UserData[], { search: string }>(GameServerKeys.GetPlayerList, {
+                    search,
+                })
+
+                if (resp) setUserDropdown(resp)
+            } finally {
+                toggleIsLoadingUsers(false)
+            }
+        })()
     }, [search])
 
-    const isLoading = true
+    const onSubmit = useCallback(async () => {
+        try {
+            if (state !== WebSocket.OPEN || !selectedUser || !selectedReason) throw new Error()
+            const resp = await send<boolean, SubmitRequest>(GameServerKeys.SubmitBanProposal, {
+                username: selectedUser.username,
+                reason: selectedReason,
+                comments,
+            })
 
-    const options: UserData[] = [testUser, testUser2, testUser3]
+            if (resp) {
+                onClose()
+                setError("")
+            }
+        } catch (e) {
+            setError(typeof e === "string" ? e : "Failed to submit proposal.")
+        }
+    }, [])
+
+    const isDisabled = !selectedUser || !selectedReason
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -160,8 +202,8 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                         </Typography>
 
                         <Autocomplete
-                            options={options}
-                            loading={isLoading}
+                            options={userDropdown}
+                            loading={isLoadingUsers}
                             sx={{
                                 ".MuiAutocomplete-endAdornment": {
                                     top: "calc(50% - 9px)",
@@ -169,12 +211,12 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                             }}
                             disablePortal
                             onChange={(e, value) => setSelectedUser(value)}
-                            renderOption={(props, option) => (
-                                <Box key={option.id} component="li" {...props}>
-                                    <UserItem user={option} />
+                            renderOption={(props, user) => (
+                                <Box key={user.id} component="li" {...props}>
+                                    <UserItem user={user} />
                                 </Box>
                             )}
-                            getOptionLabel={(option) => option.username}
+                            getOptionLabel={(user) => user.username}
                             renderInput={(params) => (
                                 <TextField
                                     value={searchText}
@@ -207,7 +249,9 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                         ...params.InputProps,
                                         endAdornment: (
                                             <>
-                                                {isLoading ? <CircularProgress color="inherit" size="1.2rem" /> : null}
+                                                {isLoadingUsers ? (
+                                                    <CircularProgress color="inherit" size="1.2rem" />
+                                                ) : null}
                                                 {params.InputProps.endAdornment}
                                             </>
                                         ),
@@ -314,6 +358,35 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                 />
                             </Stack>
                         </Stack>
+
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={onSubmit}
+                            disabled={isDisabled}
+                            sx={{
+                                flex: 1,
+                                minWidth: 0,
+                                mt: "2rem",
+                                px: ".8rem",
+                                py: ".8rem",
+                                backgroundColor: primaryColor,
+                                borderRadius: 0.3,
+                                ":hover": { backgroundColor: `${primaryColor}90` },
+                            }}
+                        >
+                            <Typography
+                                sx={{ lineHeight: 1, fontWeight: "fontWeightBold", opacity: isDisabled ? 0.6 : 1 }}
+                            >
+                                SUBMIT
+                            </Typography>
+                        </Button>
+
+                        {error && (
+                            <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
+                                {error}
+                            </Typography>
+                        )}
                     </Stack>
 
                     <IconButton

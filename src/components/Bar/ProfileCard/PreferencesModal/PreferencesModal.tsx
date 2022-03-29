@@ -64,7 +64,7 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
         })
     }, [user, subscribe, playerPrefs?.notifications_battle_queue_browser])
 
-    const primaryColor = (user && user.faction.theme.primary) || colors.neonBlue
+    const primaryColor = (user && user.faction && user.faction.theme.primary) || colors.neonBlue
 
     return (
         <Modal open={open} onClose={() => toggle(false)}>
