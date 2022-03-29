@@ -1,4 +1,4 @@
-import { Box, Button, Drawer, Fade, Grid, Skeleton, Stack, Typography } from "@mui/material"
+import { Box, Button, Drawer, Fade, Grid, Skeleton, Stack, Typography, CircularProgress } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { AssetItem, DrawerButtons } from ".."
 import { SvgRobot } from "../../assets"
@@ -20,7 +20,7 @@ import {
 } from "../../containers"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { Asset, AssetQueueStat } from "../../types/assets"
+import { Asset, AssetOnChainStatus, AssetQueueStat, AssetQueueStatusItem } from "../../types/assets"
 
 interface QueueFeed {
     queue_length: number
@@ -49,7 +49,7 @@ const LoadingSkeleton = ({ num }: { num?: number }) => (
 
 const DrawerContent = () => {
     const { newSnackbarMessage } = useSnackbar()
-    const { state, subscribe } = usePassportServerWebsocket()
+    const { state, send } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
     const { battleEndDetail } = useGame()
     const { user } = useGameServerAuth()
@@ -59,6 +59,8 @@ const DrawerContent = () => {
 
     const { state: gsState, subscribe: gsSubscribe, send: gsSend } = useGameServerWebsocket()
 
+    const [queuedAssets, setQueuedAssets] = useState<AssetQueueStatusItem[] | null>(null)
+
     const [assets, setAssets] = useState<Asset[]>()
     const [assetsNotInQueue, setAssetsNotInQueue] = useState<Map<string, Asset>>(new Map())
     const [assetsInQueue, setAssetsInQueue] = useState<
@@ -66,6 +68,67 @@ const DrawerContent = () => {
     >(new Map())
 
     const [isLoading, setIsLoading] = useState(true)
+    const [isLoaded, setIsLoaded] = useState(false)
+
+    const loadMoreAssets = useCallback(async () => {
+        if (
+            state !== WebSocket.OPEN ||
+            !send ||
+            !queuedAssets ||
+            isLoaded ||
+            (isLoading && assets) ||
+            !faction_id ||
+            faction_id === NullUUID
+        )
+            return
+        try {
+            setIsLoading(true)
+            const includeAssetIDs = queuedAssets
+                .filter((q) => !assets || !assets.some((a) => a.id === q.mech_id))
+                .map((q) => q.mech_id)
+            const excludeAssetIDs = queuedAssets
+                .filter((q) => assets && assets.some((a) => a.id === q.mech_id))
+                .map((q) => q.mech_id)
+
+            let resp = await send<Asset[]>(PassportServerKeys.SubAssetList, {
+                limit: 20,
+                include_asset_ids: includeAssetIDs,
+                exclude_asset_ids: excludeAssetIDs,
+                after_external_token_id:
+                    assets && assets.length > 0 ? assets[assets.length - 1].data.mech.external_token_id : undefined,
+            })
+            resp = resp.filter((asset) => {
+                return (
+                    asset.on_chain_status !== AssetOnChainStatus.STAKABLE && asset.unlocked_at <= new Date(Date.now())
+                )
+            })
+            setAssets((prev) => (prev ? prev.concat(resp) : resp))
+            setIsLoading(false)
+            if (resp.length < 20) {
+                setIsLoaded(true)
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }, [send, state, isLoaded, isLoading, queuedAssets, assets, faction_id, assets])
+
+    // Load initial assets
+    useEffect(() => {
+        if (!gsSend || queuedAssets !== null) return
+        ;(async () => {
+            try {
+                const resp = await gsSend<AssetQueueStatusItem[]>(GameServerKeys.AssetQueueStatusList)
+                setQueuedAssets(resp)
+            } catch (err) {
+                console.error(err)
+            }
+        })()
+    }, [gsSend, queuedAssets])
+
+    useEffect(() => {
+        if (!queuedAssets || (assets && assets.length > 0)) return
+        loadMoreAssets()
+    }, [loadMoreAssets, queuedAssets, assets])
 
     const updateAssetQueueStatus = useCallback(
         (a: Asset, status: AssetQueueStat) => {
@@ -111,19 +174,6 @@ const DrawerContent = () => {
         },
         [setAssetsInQueue, setAssetsNotInQueue],
     )
-
-    // Subscribe to the list of mechs that the user owns
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
-        return subscribe<Asset[]>(PassportServerKeys.SubAssetList, (payload) => {
-            if (!payload) return
-            payload = payload.filter((asset) => {
-                return asset.on_chain_status !== "STAKABLE" && asset.unlocked_at <= new Date(Date.now())
-            })
-            setAssets(payload)
-            if (isLoading) setIsLoading(false)
-        })
-    }, [state, subscribe, faction_id, isLoading])
 
     // Subscribe to queue status
     useEffect(() => {
@@ -224,6 +274,25 @@ const DrawerContent = () => {
                             contractReward={contractReward}
                         />
                     ))}
+
+                    {/* Add Scroll Pagination */}
+                    {isLoading && assets && assets.length > 0 && (
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <CircularProgress
+                                sx={{
+                                    px: ".8rem",
+                                    pt: ".48rem",
+                                    pb: ".24rem",
+                                }}
+                            />
+                        </Box>
+                    )}
                 </>
             )
         }
@@ -281,6 +350,12 @@ const DrawerContent = () => {
 
             <Fade in={true}>
                 <Box
+                    onScroll={(e) => {
+                        const target = e.currentTarget
+                        if (target.scrollTop + target.offsetHeight >= target.scrollHeight) {
+                            loadMoreAssets()
+                        }
+                    }}
                     sx={{
                         m: ".4rem",
                         flex: 1,

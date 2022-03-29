@@ -43,6 +43,7 @@ export enum GameServerKeys {
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
     SubQueueStatus = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
     AssetQueueStatus = "ASSET:QUEUE:STATUS",
+    AssetQueueStatusList = "ASSET:QUEUE:STATUS:LIST",
     SubAssetQueueStatus = "ASSET:QUEUE:STATUS:SUBSCRIBE",
 
     // Get / sub to data
