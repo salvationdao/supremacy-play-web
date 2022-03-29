@@ -75,9 +75,6 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "40rem",
-                    backgroundColor: `${colors.darkNavyBlue}`,
-                    outline: "1px solid #FFFFFF60",
-                    borderRadius: 1,
                     boxShadow: 24,
                 }}
             >
@@ -96,6 +93,7 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
                             px: "1.8rem",
                             py: "1.6rem",
                             pb: "1.6rem",
+                            backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
                         }}
                     >
                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
