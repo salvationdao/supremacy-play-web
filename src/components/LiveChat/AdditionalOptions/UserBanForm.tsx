@@ -13,9 +13,10 @@ import {
 } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing } from "../.."
-import { SvgClose } from "../../../assets"
+import { SvgClose, SvgSupToken } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useGameServerWebsocket } from "../../../containers"
+import { supFormatterNoFixed } from "../../../helpers"
 import { useDebounce, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -116,6 +117,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
     const [search, setSearch] = useDebounce<string>("", 1000)
     const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()
     const [userDropdown, setUserDropdown] = useState<UserData[]>([testUser, testUser2, testUser3])
+    const [fee, setFee] = useState("")
     const [error, setError] = useState("")
     // Inputs
     const [selectedUser, setSelectedUser] = useState<UserData | null>()
@@ -139,6 +141,22 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
             }
         })()
     }, [search])
+
+    useEffect(() => {
+        ;(async () => {
+            toggleIsLoadingUsers(true)
+            try {
+                if (state !== WebSocket.OPEN || !selectedUser) return
+                const resp = await send<string, { username: string }>(GameServerKeys.GetBanPlayerCost, {
+                    username: selectedUser.username,
+                })
+
+                if (resp) setFee(resp)
+            } catch (e) {
+                console.debug(e)
+            }
+        })()
+    }, [])
 
     const onSubmit = useCallback(async () => {
         try {
@@ -356,6 +374,16 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                         },
                                     }}
                                 />
+                            </Stack>
+
+                            <Stack direction="row" spacing=".4rem">
+                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>FEE:</Typography>
+                                <Stack direction="row" alignItems="center">
+                                    <SvgSupToken size="1.4rem" fill={colors.yellow} />
+                                    <Typography sx={{ lineHeight: 1 }}>
+                                        {fee ? supFormatterNoFixed(fee, 18) : "---"}
+                                    </Typography>
+                                </Stack>
                             </Stack>
                         </Stack>
 
