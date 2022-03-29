@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { useInactivity } from "../hooks/useInactivity"
@@ -24,6 +24,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const { state, send, subscribe } = useGameServerWebsocket()
     const [user, setUser] = useState<User>()
     const userID = user?.id
+    const activeInterval = useRef<NodeJS.Timer>()
 
     useEffect(() => {
         if (user && initialState && initialState.setLogin) initialState.setLogin(user)
@@ -32,18 +33,22 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
     const [authSessionIDGetError, setAuthSessionIDGetError] = useState()
 
+    const sendFruit = useCallback(async () => {
+        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
+        try {
+            await send<null, { fruit: "APPLE" | "BANANA" }>(GameServerKeys.ToggleGojiBerryTea, {
+                fruit: isActive ? "APPLE" : "BANANA",
+            })
+        } catch (e) {
+            console.debug(e)
+        }
+    }, [state, user, isActive])
+
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !user) return
-        ;(async () => {
-            try {
-                await send<null, { payload: "APPLE" | "BANANA" }>(GameServerKeys.ToggleGojiBerryTea, {
-                    payload: isActive ? "APPLE" : "BANANA",
-                })
-            } catch (e) {
-                console.debug(e)
-            }
-        })()
-    }, [isActive, user])
+        sendFruit()
+        activeInterval && activeInterval.current && clearInterval(activeInterval.current)
+        activeInterval.current = setInterval(sendFruit, 60000)
+    }, [state, user, isActive])
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {

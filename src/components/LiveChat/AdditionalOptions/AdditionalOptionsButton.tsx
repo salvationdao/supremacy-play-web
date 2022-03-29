@@ -75,7 +75,7 @@ export const AdditionalOptionsButton = () => {
                         sx={{ backgroundColor: "#00000050", borderRadius: 0.1 }}
                     >
                         <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
-                            PROPOSAL TO PUNISH A PLAYER
+                            PROPOSE TO PUNISH A PLAYER
                         </Typography>
                     </Button>
                 </Stack>
