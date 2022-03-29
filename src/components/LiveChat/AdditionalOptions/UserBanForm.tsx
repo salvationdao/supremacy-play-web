@@ -355,7 +355,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                 </Typography>
                                 <TextField
                                     value={reason}
-                                    placeholder="Type a message"
+                                    placeholder="Type the reason to punish the user..."
                                     onChange={(e) => {
                                         setReason(e.currentTarget.value)
                                     }}
