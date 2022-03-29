@@ -202,8 +202,9 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                                                     >
                                                                         <Box
                                                                             sx={{
-                                                                                p: "2rem",
-                                                                                backgroundColor: colors.darkNavy,
+                                                                                px: "2rem",
+                                                                                py: "1.5rem",
+                                                                                backgroundColor: colors.darkNavyBlue,
                                                                             }}
                                                                         >
                                                                             <Stack direction="row" spacing="1.3rem">
