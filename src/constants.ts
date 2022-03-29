@@ -76,6 +76,4 @@ export const TRAILER_VIDEO =
 export const UNDER_MAINTENANCE =
     process.env.REACT_APP_MAINTENANCE_PAGE == "true" && !localStorage.getItem("NinjaSecrets@!")
 
-export const PRISMIC_ACCESS_TOKEN =
-    process.env.REACT_PRISMIC_ACCESS_TOKEN ||
-    "MC5ZaEMyMFJFQUFDSUFXZUhm.77-977-977-9FUdeBxkUThw_b17vv70A77-9Se-_ve-_ve-_vSDvv73vv73vv71dTzwqXnZu"
+export const PRISMIC_ACCESS_TOKEN = process.env.REACT_PRISMIC_ACCESS_TOKEN
