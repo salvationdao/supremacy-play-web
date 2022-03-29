@@ -330,7 +330,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                                             size="1.5rem"
                                                             sx={{ pb: ".25rem" }}
                                                         />
-                                                        <Typography>{x.punish_duration_hours}Hrs</Typography>
+                                                        <Typography>{x.punish_duration_hours} Hrs</Typography>
                                                     </Stack>
                                                 </Stack>
                                             </MenuItem>
