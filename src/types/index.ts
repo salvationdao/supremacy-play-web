@@ -220,3 +220,30 @@ export interface Dimension {
     width: number
     height: number
 }
+
+export interface BanProposal {
+    id: string
+    punish_option_id: string
+    reason: string
+    faction_id: string
+    issued_by_id: string
+    issued_by_username: string
+    reported_player_id: string
+    reported_player_username: string
+    status: string
+    started_at: Date
+    ended_at: Date
+    punishOption: BanOption
+}
+
+export interface BanUser {
+    id: string
+    username: string
+}
+
+export interface BanOption {
+    id: string
+    description: string
+    key: string
+    punish_duration_hours: number
+}

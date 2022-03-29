@@ -6,6 +6,7 @@ import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys, PassportServerKeys } from "../keys"
+import { BanProposal } from "../types"
 import { ChatData, UserStat } from "../types/passport"
 
 export interface UserMultiplier {
@@ -72,6 +73,7 @@ export const ChatContainer = createContainer(() => {
     const [userMultiplierMap, setUserMultiplierMap] = useState<UserMultiplierMap>({})
     const [citizenPlayerIDs, setCitizenPlayerIDs] = useState<string[]>([])
     const [userStatMap, setUserStatMap] = useState<UserIDMap>({})
+    const [banProposal, setbanProposal] = useState<BanProposal>()
 
     // Store list of messages that were successfully sent or failed
     const [sentMessages, setSentMessages] = useState<Date[]>([])
@@ -251,16 +253,21 @@ export const ChatContainer = createContainer(() => {
 
     // Subscribe to faction chat messages
     useEffect(() => {
-        if (state !== WebSocket.OPEN) return
-        if (!user || !user.faction_id || !user.faction) {
-            return
-        }
+        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<ChatData>(PassportServerKeys.SubscribeFactionChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, m.from_user_id)
             if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
         })
     }, [user, state, subscribe, tabValue, factionChatUnread])
+
+    // Subscribe to ban proposals
+    useEffect(() => {
+        if (gsState !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
+        return gsSubscribe<BanProposal>(GameServerKeys.SubBanProposals, (payload) => {
+            if (!payload) setbanProposal(payload)
+        })
+    }, [user, gsState, gsSubscribe])
 
     return {
         tabValue,
@@ -288,6 +295,7 @@ export const ChatContainer = createContainer(() => {
         setFontSize,
         userStatMap,
         globalAnnouncement,
+        banProposal,
     }
 })
 

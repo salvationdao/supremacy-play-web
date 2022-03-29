@@ -21,24 +21,13 @@ import { snakeToTitle } from "../../../helpers"
 import { useDebounce, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
+import { BanOption, BanUser } from "../../../types"
 import { UserData } from "../../../types/passport"
 
 interface SubmitRequest {
     intend_to_punish_player_id: string
     punish_option_id: string
     reason: string
-}
-
-interface BanUser {
-    id: string
-    username: string
-}
-
-export interface BanOption {
-    id: string
-    description: string
-    key: string
-    punish_duration_hours: number
 }
 
 const UserItem = ({ user, banUser, sx }: { user: UserData; banUser: BanUser; sx?: SxProps }) => (
@@ -65,6 +54,7 @@ const UserItem = ({ user, banUser, sx }: { user: UserData; banUser: BanUser; sx?
 export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: boolean; onClose: () => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
+    // Options and display only
     const [searchText, setSearchText] = useState("")
     const [search, setSearch] = useDebounce<string>("", 300)
     const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()

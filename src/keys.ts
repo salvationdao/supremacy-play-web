@@ -67,6 +67,7 @@ export enum GameServerKeys {
     GetPlayerList = "FACTION:PLAYER:SEARCH",
     GetBanPlayerCost = "PUNISH:VOTE:PRICE:QUOTE",
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
+    SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
 }
 
 export enum PassportServerKeys {
