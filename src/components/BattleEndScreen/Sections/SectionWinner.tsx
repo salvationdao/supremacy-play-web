@@ -39,7 +39,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                         factionsAll[winning_faction.id]?.logo_blob_id
                     }`}
                     variant="h6"
-                    imageSize={4.0}
+                    imageSize={3.6}
                     imageBorderThickness="0px"
                     imageBackgroundSize="contain"
                     truncateLine
