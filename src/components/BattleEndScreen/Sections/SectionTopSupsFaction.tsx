@@ -14,7 +14,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
             <Box sx={{ px: "2rem", py: ".88rem", pr: "3.2rem", backgroundColor: "#FFFFFF15" }}>
                 <Typography
                     component="span"
-                    variant="h5"
+                    variant="h6"
                     sx={{
                         position: "relative",
                         fontFamily: "Nostromo Regular Black",
@@ -34,14 +34,14 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                 <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
                     {top_sups_contribute_factions.map((f, index) => (
                         <Stack key={index} direction="row" spacing="1.04rem" alignItems="center">
-                            <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                 {index + 1}.
                             </Typography>
                             <StyledImageText
                                 color={f.theme.primary}
                                 text={f.label}
                                 imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[f.id]?.logo_blob_id}`}
-                                variant="h5"
+                                variant="h6"
                                 imageSize={2.9}
                                 imageBorderThickness=".2rem"
                                 fontWeight="normal"

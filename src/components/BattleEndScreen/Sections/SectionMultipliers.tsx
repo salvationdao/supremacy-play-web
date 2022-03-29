@@ -30,7 +30,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
             <Box sx={{ px: "2rem", py: ".88rem", pr: "3.2rem", backgroundColor: "#FFFFFF15" }}>
                 <Typography
                     component="span"
-                    variant="h4"
+                    variant="h5"
                     sx={{
                         position: "relative",
                         fontFamily: "Nostromo Regular Black",
@@ -54,7 +54,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                     <Stack spacing="3.5rem" sx={{ pl: ".8rem" }}>
                         <Stack spacing="1.2rem">
                             <Typography
-                                variant="h5"
+                                variant="h6"
                                 sx={{
                                     color: colors.neonBlue,
                                     fontFamily: "Nostromo Regular Black",
@@ -79,7 +79,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                                 imageBackgroundColor="#FFFFFF"
                                                 text={m.key.toUpperCase()}
                                                 imageUrl={deets.image}
-                                                variant="h5"
+                                                variant="h6"
                                                 imageSize={2.9}
                                                 imageBorderThickness=".2rem"
                                                 fontWeight="normal"
@@ -95,10 +95,10 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             <Divider sx={{ py: ".24rem", borderColor: "#FFFFFF", opacity: 0.1 }} />
 
                             <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                                     SUBTOTAL:{" "}
                                 </Typography>
-                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}>
+                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}>
                                     {totalMultiplierValue}x
                                 </Typography>
                             </Stack>
@@ -107,7 +107,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                         {multiplicative && multiplicative.length > 0 && (
                             <Stack spacing="1.2rem">
                                 <Typography
-                                    variant="h5"
+                                    variant="h6"
                                     sx={{
                                         color: colors.neonBlue,
                                         fontFamily: "Nostromo Regular Black",
@@ -132,7 +132,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                                     imageBackgroundColor="#FFFFFF"
                                                     text={m.key.toUpperCase()}
                                                     imageUrl={deets.image}
-                                                    variant="h5"
+                                                    variant="h6"
                                                     imageSize={2.9}
                                                     imageBorderThickness=".2rem"
                                                     fontWeight="normal"
@@ -148,11 +148,11 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                 <Divider sx={{ py: ".24rem", borderColor: "#FFFFFF", opacity: 0.1 }} />
 
                                 <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                                         SUBTOTAL:{" "}
                                     </Typography>
                                     <Typography
-                                        variant="h5"
+                                        variant="h6"
                                         sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}
                                     >
                                         {totalMultiplicativeValue * 100}%
@@ -163,7 +163,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
 
                         <Stack spacing="1.2rem">
                             <Typography
-                                variant="h5"
+                                variant="h6"
                                 sx={{
                                     color: colors.neonBlue,
                                     fontFamily: "Nostromo Regular Black",
@@ -173,7 +173,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             </Typography>
 
                             <Typography
-                                variant="h5"
+                                variant="h6"
                                 sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}
                             >
                                 {multiplicative && multiplicative.length > 0 ? (
@@ -190,9 +190,8 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                     </Stack>
                 ) : (
                     <Typography variant="h6" sx={{ pl: ".8rem", opacity: 0.8 }}>
-                        {"You didn't get any multipliers."}
-                        <br />
-                        Multipliers are awarded to players who participate in the battle.
+                        {"You didn't get any multipliers."} Multipliers are awarded to players who participate in the
+                        battle.
                     </Typography>
                 )}
             </Stack>

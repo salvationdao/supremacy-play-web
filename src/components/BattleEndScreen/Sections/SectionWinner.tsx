@@ -15,7 +15,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
             <Box sx={{ px: "2rem", py: ".88rem", pr: "3.2rem", backgroundColor: "#FFFFFF15" }}>
                 <Typography
                     component="span"
-                    variant="h5"
+                    variant="h6"
                     sx={{
                         position: "relative",
                         fontFamily: "Nostromo Regular Black",
@@ -38,7 +38,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
                         factionsAll[winning_faction.id]?.logo_blob_id
                     }`}
-                    variant="h5"
+                    variant="h6"
                     imageSize={4.0}
                     imageBorderThickness="0px"
                     imageBackgroundSize="contain"
@@ -56,7 +56,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                                 imageBackgroundColor={`${wm.faction.theme.primary}60`}
                                 text={(wm.name || wm.hash).toUpperCase()}
                                 imageUrl={wm.imageAvatar || GenericWarMachinePNG}
-                                variant="h5"
+                                variant="h6"
                                 imageSize={2.9}
                                 imageBorderThickness=".2rem"
                                 fontWeight="normal"
