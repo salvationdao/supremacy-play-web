@@ -45,6 +45,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     }, [state, user, isActive])
 
     useEffect(() => {
+        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         sendFruit()
         activeInterval && activeInterval.current && clearInterval(activeInterval.current)
         activeInterval.current = setInterval(sendFruit, 60000)

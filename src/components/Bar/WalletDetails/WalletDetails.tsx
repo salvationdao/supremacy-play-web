@@ -55,8 +55,10 @@ export const WalletDetails = () => {
 
         try {
             const resp = await psSend<Date | boolean>(PassportServerKeys.GetFreeSups)
-            newSnackbarMessage("Successfully claimed free sups.", "success")
-            if (resp instanceof Date) setTimeTilNextClaim(resp)
+            if (resp instanceof Date) {
+                setTimeTilNextClaim(resp)
+                newSnackbarMessage("Successfully claimed free sups.", "success")
+            }
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to claim free sups.", "error")
             console.debug(e)

@@ -1,6 +1,6 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
-import { ChatMessage } from "../.."
+import { BanProposal, ChatMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
 import {
     FontSizeType,
@@ -118,6 +118,8 @@ const ChatMessagesInner = ({
             {globalAnnouncement && (splitOption == "tabbed" || (splitOption == "split" && faction_id == null)) && (
                 <GlobalAnnouncement globalAnnouncement={globalAnnouncement} />
             )}
+
+            {faction_id != null && <BanProposal />}
 
             <Box
                 id="chat-container"
