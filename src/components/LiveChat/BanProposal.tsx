@@ -2,7 +2,7 @@ import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
-import { useChat, useGameServerWebsocket } from "../../containers"
+import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { snakeToTitle } from "../../helpers"
 import { useInterval, useTimer, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -87,6 +87,7 @@ const BanProposalInner = ({
     toggleOutOfTime: (value?: boolean | undefined) => void
 }) => {
     const { state, send } = useGameServerWebsocket()
+    const { userStat } = useGameServerAuth()
     const [submitted, setSubmitted] = useState(false)
     const [submittedVote, setSubmittedVote] = useState(false)
     const [error, setError] = useState("")
@@ -116,11 +117,13 @@ const BanProposalInner = ({
     )
 
     const bottomSection = useMemo(() => {
-        // if () {
-        //     return (
-
-        //     )
-        // }
+        if (!userStat || userStat.kill_count <= 0) {
+            return (
+                <Typography sx={{ opacity: 0.6 }}>
+                    <i>You need ability kills to be eligible to vote.</i>
+                </Typography>
+            )
+        }
 
         if (submitted) {
             return <Typography>You {submittedVote ? "agreed" : "disagreed"} with this proposal.</Typography>
@@ -163,7 +166,7 @@ const BanProposalInner = ({
                 )}
             </>
         )
-    }, [submitted, submittedVote, submitVote, error])
+    }, [submitted, submittedVote, submitVote, error, userStat])
 
     return (
         <Grow in={!outOfTime} timeout={250}>

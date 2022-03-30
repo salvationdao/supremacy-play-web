@@ -4,6 +4,7 @@ import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User } from "../types"
+import { UserStat } from "../types/passport"
 
 export interface AuthContainerType {
     user: User | undefined
@@ -11,6 +12,7 @@ export interface AuthContainerType {
     faction_id: string | undefined
     authSessionIDGetLoading: boolean
     authSessionIDGetError: undefined
+    userStat: UserStat
 }
 
 /**
@@ -25,6 +27,23 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const [user, setUser] = useState<User>()
     const userID = user?.id
     const activeInterval = useRef<NodeJS.Timer>()
+
+    const [userStat, setUserStat] = useState<UserStat>({
+        id: "",
+        total_ability_triggered: 0,
+        kill_count: 0,
+        view_battle_count: 0,
+        mech_kill_count: 0,
+    })
+
+    // start to subscribe user update
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
+        return subscribe<UserStat>(GameServerKeys.SubscribeUserStat, (us) => {
+            if (!us) return
+            setUserStat(us)
+        })
+    }, [userID, subscribe, state])
 
     useEffect(() => {
         if (user && initialState && initialState.setLogin) initialState.setLogin(user)
@@ -137,6 +156,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         faction_id: user?.faction_id,
         authSessionIDGetLoading,
         authSessionIDGetError,
+        userStat,
     }
 })
 
