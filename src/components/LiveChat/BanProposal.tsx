@@ -1,5 +1,5 @@
-import { Box, Divider, Slide, Stack, Typography } from "@mui/material"
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
 import { useChat, useGameServerWebsocket } from "../../containers"
@@ -166,7 +166,7 @@ const BanProposalInner = ({
     }, [submitted, submittedVote, submitVote, error])
 
     return (
-        <Slide in={!outOfTime} direction="down" timeout={250}>
+        <Grow in={!outOfTime} timeout={250}>
             <Box sx={{ m: ".5rem", border: `${colors.red} 2px solid` }}>
                 <Stack
                     sx={{
@@ -225,6 +225,6 @@ const BanProposalInner = ({
                     <Stack spacing=".4rem">{bottomSection}</Stack>
                 </Box>
             </Box>
-        </Slide>
+        </Grow>
     )
 }
