@@ -6,7 +6,7 @@ import {
     CONTROLS_HEIGHT,
     GAME_BAR_HEIGHT,
     LIVE_CHAT_DRAWER_BUTTON_WIDTH,
-    LIVE_CHAT_DRAWER_WIDTH,
+    RIGHT_DRAWER_WIDTH,
     STREAM_ASPECT_RATIO_W_H,
 } from "../constants"
 import { useWindowDimensions } from "../hooks"
@@ -46,7 +46,7 @@ export const DimensionContainer = createContainer(() => {
     useEffect(() => {
         // Main div dimensions
         const mainDivWidth = isAnyPanelOpen
-            ? windowWidth - LIVE_CHAT_DRAWER_WIDTH * pxToRemRatio
+            ? windowWidth - RIGHT_DRAWER_WIDTH * pxToRemRatio
             : windowWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH * pxToRemRatio
         const mainDivHeight = windowHeight - GAME_BAR_HEIGHT * pxToRemRatio
 

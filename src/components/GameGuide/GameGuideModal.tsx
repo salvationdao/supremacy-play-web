@@ -7,29 +7,51 @@ import { PrismicHowToPlay, PrismicSliceType } from "../../types/prismic"
 import { ClipThing } from "../Common/ClipThing"
 
 const LoadingSkeleton = () => (
-    <Stack sx={{ width: "82rem" }}>
-        <Stack direction="row" spacing="3rem" sx={{ p: "1.5rem" }}>
-            {new Array(3).fill(0).map((_, index) => (
-                <Skeleton key={index} variant="text" width="10rem" height="5rem" />
-            ))}
-        </Stack>
-
-        <Stack sx={{ p: "1.5rem", width: "100%" }} spacing="0.5rem">
-            <Box>
-                <Skeleton variant="text" width="15rem" height="5rem" />
-                {new Array(10).fill(0).map((_, index) => (
-                    <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
+    <Box sx={{ width: "82rem", flex: 1, height: 0, pr: "1.2rem", py: "1.2rem" }}>
+        <Stack
+            sx={{
+                overflowY: "scroll",
+                width: "100%",
+                px: "1.5rem",
+                height: "100%",
+                scrollbarWidth: "none",
+                scrollBehavior: "smooth",
+                "::-webkit-scrollbar": {
+                    width: ".4rem",
+                },
+                "::-webkit-scrollbar-track": {
+                    background: "#FFFFFF15",
+                    borderRadius: 3,
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: `${colors.neonBlue}`,
+                    borderRadius: 3,
+                },
+            }}
+        >
+            <Stack direction="row" spacing="1.5rem" sx={{}}>
+                {new Array(3).fill(0).map((_, index) => (
+                    <Skeleton key={index} variant="text" width="10rem" height="5rem" />
                 ))}
-            </Box>
+            </Stack>
 
-            <Box>
-                <Skeleton variant="text" width="18rem" height="5rem" />
-                {new Array(6).fill(0).map((_, index) => (
-                    <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
-                ))}
-            </Box>
+            <Stack sx={{ width: "100%", mt: "1rem" }} spacing="0.5rem">
+                <Box>
+                    <Skeleton variant="text" width="15rem" height="4rem" />
+                    {new Array(6).fill(0).map((_, index) => (
+                        <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
+                    ))}
+                </Box>
+
+                <Box>
+                    <Skeleton variant="text" width="25rem" height="4rem" />
+                    {new Array(10).fill(0).map((_, index) => (
+                        <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
+                    ))}
+                </Box>
+            </Stack>
         </Stack>
-    </Stack>
+    </Box>
 )
 
 interface GameGuideModalProps {
@@ -76,170 +98,198 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     maxWidth: "82rem",
-                    height: "65vh",
-                    pb: "2rem",
-                    backgroundColor: `${colors.darkNavyBlue}`,
-                    outline: "1px solid #FFFFFF",
-                    borderRadius: 1,
                     boxShadow: 24,
                 }}
             >
-                {state === "loaded" && !showSkeleton && (
-                    <>
-                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                            <Tabs
-                                value={value}
-                                onChange={handleChange}
-                                sx={{
-                                    minHeight: "5rem",
-                                    ".MuiTab-root.Mui-selected": { color: colors.neonBlue, opacity: 1 },
-                                    ".MuiTabs-indicator": { backgroundColor: colors.neonBlue },
-                                    ".MuiTab-root": {
-                                        minHeight: "5rem",
-                                        p: 0,
-                                        px: "2rem",
-                                        fontSize: "1.6rem",
-                                        opacity: 0.7,
-                                        fontFamily: "Share Tech",
-                                    },
-                                }}
-                            >
-                                {document &&
-                                    document.results[0].data.body.map((item, i) => {
-                                        return (
-                                            <Tab
-                                                label={`${
-                                                    item.primary.section_title[0]
-                                                        ? item.primary.section_title[0].text
-                                                        : ""
-                                                }`}
-                                                key={i}
-                                            />
-                                        )
-                                    })}
-                            </Tabs>
-                        </Box>
-                        <Box
+                <ClipThing
+                    clipSize="0"
+                    border={{
+                        isFancy: true,
+                        borderColor: "#FFFFFF",
+                        borderThickness: ".3rem",
+                    }}
+                    innerSx={{ position: "relative" }}
+                >
+                    <Stack
+                        sx={{
+                            height: "65vh",
+                            pb: "2rem",
+                            backgroundColor: `${colors.darkNavyBlue}`,
+                        }}
+                    >
+                        {(state === "loading" || showSkeleton) && <LoadingSkeleton />}
+
+                        {state === "loaded" && !showSkeleton && (
+                            <Stack sx={{ flex: 1, height: 0 }}>
+                                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                                    <Tabs
+                                        value={value}
+                                        onChange={handleChange}
+                                        sx={{
+                                            height: "5rem",
+                                            ".MuiTab-root.Mui-selected": { color: colors.neonBlue, opacity: 1 },
+                                            ".MuiTabs-indicator": { backgroundColor: colors.neonBlue },
+                                            ".MuiTab-root": {
+                                                height: "5rem",
+                                                p: 0,
+                                                px: "2rem",
+                                                fontSize: "1.6rem",
+                                                opacity: 0.7,
+                                                fontFamily: "Share Tech",
+                                            },
+                                        }}
+                                    >
+                                        {document &&
+                                            document.results[0].data.body.map((item, i) => {
+                                                return (
+                                                    <Tab
+                                                        label={`${
+                                                            item.primary.section_title[0]
+                                                                ? item.primary.section_title[0].text
+                                                                : ""
+                                                        }`}
+                                                        key={i}
+                                                    />
+                                                )
+                                            })}
+                                    </Tabs>
+                                </Box>
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        height: 0,
+                                        overflowY: "scroll",
+                                        scrollbarWidth: "none",
+                                        scrollBehavior: "smooth",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        mr: ".8rem",
+                                        mt: "1rem",
+                                        mb: "2rem",
+                                        px: "3rem",
+                                        pt: "1.5rem",
+                                        pb: "1rem",
+                                        "::-webkit-scrollbar": {
+                                            width: ".4rem",
+                                        },
+                                        "::-webkit-scrollbar-track": {
+                                            background: "#FFFFFF15",
+                                            borderRadius: 3,
+                                        },
+                                        "::-webkit-scrollbar-thumb": {
+                                            background: `${colors.neonBlue}`,
+                                            borderRadius: 3,
+                                        },
+                                    }}
+                                >
+                                    {document &&
+                                        document.results[0].data.body.map((item, i) => {
+                                            return (
+                                                <TabPanel value={value} index={i} key={i}>
+                                                    <Stack spacing={2}>
+                                                        <PrismicRichText field={item.primary.section_header} />
+                                                        <PrismicRichText field={item.primary.section_content} />
+                                                        {item.slice_type === PrismicSliceType.MultiContent &&
+                                                            item.items.map((item, i) => {
+                                                                return (
+                                                                    <ClipThing
+                                                                        clipSize="0"
+                                                                        border={{
+                                                                            isFancy: true,
+                                                                            borderColor: colors.offWhite,
+                                                                            borderThickness: ".1rem",
+                                                                        }}
+                                                                        key={i}
+                                                                    >
+                                                                        <Box
+                                                                            sx={{
+                                                                                px: "2rem",
+                                                                                py: "1.5rem",
+                                                                                backgroundColor: colors.darkNavyBlue,
+                                                                            }}
+                                                                        >
+                                                                            <Stack direction="row" spacing="1.3rem">
+                                                                                <Box
+                                                                                    sx={{
+                                                                                        height: "3.2rem",
+                                                                                        width: "3.2rem",
+                                                                                        mt: ".2rem",
+                                                                                        flexShrink: 0,
+                                                                                        backgroundImage: `url(${
+                                                                                            item.section_image_link
+                                                                                                ? item
+                                                                                                      .section_image_link
+                                                                                                      .url
+                                                                                                : ""
+                                                                                        })`,
+                                                                                        backgroundRepeat: "no-repeat",
+                                                                                        backgroundPosition:
+                                                                                            "top center",
+                                                                                        backgroundSize: "contain",
+                                                                                        border: `${"#FFFFFF"} 1px solid`,
+                                                                                        borderRadius: 0.6,
+                                                                                    }}
+                                                                                />
+                                                                                <Stack>
+                                                                                    <PrismicRichText
+                                                                                        field={
+                                                                                            item.section_content_title
+                                                                                        }
+                                                                                    />
+                                                                                    <PrismicRichText
+                                                                                        field={
+                                                                                            item.section_content_subheader
+                                                                                        }
+                                                                                    />
+                                                                                    <PrismicRichText
+                                                                                        field={
+                                                                                            item.section_content_subsubheader
+                                                                                        }
+                                                                                    />
+                                                                                    <PrismicRichText
+                                                                                        field={
+                                                                                            item.section_content_body
+                                                                                        }
+                                                                                    />
+                                                                                </Stack>
+                                                                            </Stack>
+                                                                        </Box>
+                                                                    </ClipThing>
+                                                                )
+                                                            })}
+                                                    </Stack>
+                                                </TabPanel>
+                                            )
+                                        })}
+                                </Box>
+                            </Stack>
+                        )}
+
+                        <Button
+                            variant="outlined"
+                            onClick={() => toggleClosed(true)}
                             sx={{
-                                overflowY: "scroll",
-                                height: "100%",
-                                scrollbarWidth: "none",
-                                scrollBehavior: "smooth",
-                                display: "flex",
-                                flexDirection: "column",
-                                mr: ".8rem",
-                                mt: "1rem",
-                                mb: "1.6rem",
-                                px: "3rem",
-                                py: "1rem",
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: `${colors.neonBlue}`,
-                                    borderRadius: 3,
+                                justifySelf: "flex-end",
+                                mt: "auto",
+                                ml: 3,
+                                pt: ".7rem",
+                                pb: ".4rem",
+                                width: "9rem",
+                                color: colors.neonBlue,
+                                backgroundColor: colors.darkNavy,
+                                borderRadius: 0.7,
+                                fontFamily: "Nostromo Regular Bold",
+                                border: `${colors.neonBlue} 1px solid`,
+                                ":hover": {
+                                    opacity: 0.8,
+                                    border: `${colors.neonBlue} 1px solid`,
                                 },
                             }}
                         >
-                            {document &&
-                                document.results[0].data.body.map((item, i) => {
-                                    return (
-                                        <TabPanel value={value} index={i} key={i}>
-                                            <Stack spacing={2}>
-                                                <PrismicRichText field={item.primary.section_header} />
-                                                <PrismicRichText field={item.primary.section_content} />
-                                                {item.slice_type === PrismicSliceType.MultiContent &&
-                                                    item.items.map((item, i) => {
-                                                        return (
-                                                            <ClipThing
-                                                                clipSize="0"
-                                                                border={{
-                                                                    isFancy: true,
-                                                                    borderColor: colors.offWhite,
-                                                                    borderThickness: ".3rem",
-                                                                }}
-                                                                key={i}
-                                                            >
-                                                                <Box
-                                                                    sx={{ p: "2rem", backgroundColor: colors.darkNavy }}
-                                                                >
-                                                                    <Stack direction="row" spacing="1.3rem">
-                                                                        <Box
-                                                                            sx={{
-                                                                                height: "3.2rem",
-                                                                                width: "3.2rem",
-                                                                                mt: ".2rem",
-                                                                                flexShrink: 0,
-                                                                                backgroundImage: `url(${
-                                                                                    item.section_image_link
-                                                                                        ? item.section_image_link.url
-                                                                                        : ""
-                                                                                })`,
-                                                                                backgroundRepeat: "no-repeat",
-                                                                                backgroundPosition: "top center",
-                                                                                backgroundSize: "contain",
-                                                                                border: `${"#FFFFFF"} 1px solid`,
-                                                                                borderRadius: 0.6,
-                                                                            }}
-                                                                        />
-                                                                        <Stack>
-                                                                            <PrismicRichText
-                                                                                field={item.section_content_title}
-                                                                            />
-                                                                            <PrismicRichText
-                                                                                field={item.section_content_subheader}
-                                                                            />
-                                                                            <PrismicRichText
-                                                                                field={
-                                                                                    item.section_content_subsubheader
-                                                                                }
-                                                                            />
-                                                                            <PrismicRichText
-                                                                                field={item.section_content_body}
-                                                                            />
-                                                                        </Stack>
-                                                                    </Stack>
-                                                                </Box>
-                                                            </ClipThing>
-                                                        )
-                                                    })}
-                                            </Stack>
-                                        </TabPanel>
-                                    )
-                                })}
-                        </Box>
-                    </>
-                )}
-
-                {(state === "loading" || showSkeleton) && <LoadingSkeleton />}
-
-                <Button
-                    variant="outlined"
-                    onClick={() => toggleClosed(true)}
-                    sx={{
-                        justifySelf: "flex-end",
-                        mt: "auto",
-                        ml: 3,
-                        pt: ".7rem",
-                        pb: ".4rem",
-                        width: "9rem",
-                        color: colors.neonBlue,
-                        backgroundColor: colors.darkNavy,
-                        borderRadius: 0.7,
-                        fontFamily: "Nostromo Regular Bold",
-                        border: `${colors.neonBlue} 1px solid`,
-                        ":hover": {
-                            opacity: 0.8,
-                            border: `${colors.neonBlue} 1px solid`,
-                        },
-                    }}
-                >
-                    Close
-                </Button>
+                            Close
+                        </Button>
+                    </Stack>
+                </ClipThing>
             </Stack>
         </Modal>
     )

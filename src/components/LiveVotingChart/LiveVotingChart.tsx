@@ -1,5 +1,6 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack, Theme, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
+import { useTheme } from "@mui/styles"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig, TooltipHelper } from ".."
 import { SvgInfoCircular, SvgSupToken } from "../../assets"
@@ -77,6 +78,7 @@ export const LiveVotingChart = () => {
 }
 
 const Content = () => {
+    const theme = useTheme<Theme>()
     const { state, subscribe } = useGameServerWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
     const [curWidth, setCurWidth] = useState(0)
@@ -111,7 +113,7 @@ const Content = () => {
             defaultSizeX: 380,
             defaultSizeY: 115,
             // Limits
-            minSizeX: 355,
+            minSizeX: 348,
             minSizeY: 115,
             // Toggles
             allowResizeX: true,
@@ -129,7 +131,16 @@ const Content = () => {
         <Fade in={isLiveChartOpen}>
             <Box>
                 <MoveableResizable config={config}>
-                    <Box sx={{ flex: 1, position: "relative", px: ".8rem", pt: ".8rem", pb: ".72rem", width: "100%" }}>
+                    <Box
+                        sx={{
+                            flex: 1,
+                            position: "relative",
+                            px: "1.1rem",
+                            pt: "1rem",
+                            pb: ".8rem",
+                            width: "100%",
+                        }}
+                    >
                         <TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in the next battle based on the multipliers that have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.">
                             <Box
                                 sx={{
@@ -153,6 +164,8 @@ const Content = () => {
                                 px: ".56rem",
                                 pt: "1.6rem",
                                 background: "#00000099",
+                                border: `${theme.factionTheme.primary}10 1px solid`,
+                                borderRadius: 1,
                             }}
                         >
                             <Stack

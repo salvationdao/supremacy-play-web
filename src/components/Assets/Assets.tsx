@@ -5,7 +5,7 @@ import { SvgRobot } from "../../assets"
 import {
     DRAWER_TRANSITION_DURATION,
     GAME_BAR_HEIGHT,
-    LIVE_CHAT_DRAWER_WIDTH,
+    RIGHT_DRAWER_WIDTH,
     NullUUID,
     PASSPORT_WEB,
 } from "../../constants"
@@ -300,7 +300,6 @@ const DrawerContent = () => {
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                 <Typography
-                    variant="body2"
                     sx={{
                         px: "1.28rem",
                         pt: "1.28rem",
@@ -393,11 +392,11 @@ export const Assets = () => {
             variant="persistent"
             anchor="right"
             sx={{
-                width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
+                width: `${RIGHT_DRAWER_WIDTH}rem`,
                 flexShrink: 0,
                 zIndex: 9999,
                 "& .MuiDrawer-paper": {
-                    width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
+                    width: `${RIGHT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
                 },
             }}

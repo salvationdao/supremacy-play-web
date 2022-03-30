@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
 import { BarExpandable, TooltipHelper } from "../.."
 import {
     SvgAbility,
@@ -11,9 +11,8 @@ import {
     SvgZaibatsuKillIcon,
 } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { useGame, useGameServerWebsocket, usePassportServerAuth, WebSocketProperties } from "../../../containers"
+import { useGame, useGameServerAuth, usePassportServerAuth } from "../../../containers"
 import { UserData, UserStat } from "../../../types/passport"
-import { GameServerKeys } from "../../../keys"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 
 const BannerInfo = ({
@@ -59,61 +58,34 @@ const BannerInfo = ({
 
 export const EnlistBanner = () => {
     const { user, userID } = usePassportServerAuth()
-    const { state, subscribe } = useGameServerWebsocket()
+    const { userStat } = useGameServerAuth()
     const { battleIdentifier } = useGame()
 
-    return (
-        <EnlistBannerInner
-            state={state}
-            subscribe={subscribe}
-            user={user}
-            userID={userID}
-            battleIdentifier={battleIdentifier}
-        />
-    )
+    return <EnlistBannerInner user={user} userID={userID} battleIdentifier={battleIdentifier} userStat={userStat} />
 }
 
-interface PropsInner extends Partial<WebSocketProperties> {
+interface PropsInner {
     user?: UserData
     userID?: string
     battleIdentifier?: number
+    userStat: UserStat
 }
 
-const EnlistBannerInner = ({ state, subscribe, user, userID, battleIdentifier }: PropsInner) => {
-    const [userStat, setUserStat] = useState<UserStat>({
-        id: "",
-        total_ability_triggered: 0,
-        kill_count: 0,
-        view_battle_count: 0,
-        mech_kill_count: 0,
-    })
-
+const EnlistBannerInner = ({ user, battleIdentifier, userStat }: PropsInner) => {
     const killIcon = useMemo(() => {
         if (!user) return <SvgDeath size="1.1rem" />
 
         switch (user.faction_id) {
             case "880db344-e405-428d-84e5-6ebebab1fe6d":
                 return <SvgZaibatsuKillIcon size="1.1rem" />
-                break
             case "7c6dde21-b067-46cf-9e56-155c88a520e2":
                 return <SvgBostonKillIcon size="1.1rem" />
-                break
             case "98bf7bb3-1a7c-4f21-8843-458d62884060":
                 return <SvgRedMoutainKillIcon size="1.1rem" />
-                break
             default:
                 return <SvgDeath size="1.1rem" />
         }
     }, [user?.faction_id])
-
-    // start to subscribe user update
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
-        return subscribe<UserStat>(GameServerKeys.SubscribeUserStat, (us) => {
-            if (!us) return
-            setUserStat(us)
-        })
-    }, [userID, subscribe, state])
 
     if (!user || !user.faction || !userStat) {
         return (

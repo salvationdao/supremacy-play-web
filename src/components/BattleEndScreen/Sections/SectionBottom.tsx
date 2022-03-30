@@ -44,7 +44,7 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 direction="row"
                 spacing=".64rem"
                 alignItems="flex-end"
-                sx={{ mr: "auto", pb: ".48rem", height: "100%", opacity: 0.5 }}
+                sx={{ mr: "auto", pb: ".48rem", height: "100%" }}
             >
                 <Typography variant="body2" sx={{ color: "grey !important" }}>
                     BATTLE ID #{battle_identifier.toString().padStart(4, "0")} ({moment(started_at).format("h:mm A")} to{" "}
@@ -57,8 +57,8 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 clipSize="8px"
                 sx={{
                     py: ".16rem",
-                    pt: ".4rem",
-                    width: "10rem",
+                    pt: ".3rem",
+                    width: "9rem",
                     color: secondaryColor,
                     fontFamily: "Nostromo Regular Black",
                 }}

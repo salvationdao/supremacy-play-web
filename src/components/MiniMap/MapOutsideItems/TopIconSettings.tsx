@@ -17,7 +17,6 @@ export const TopIconSettings = ({
     toggleEnlarged: () => void
     toggleIsMapOpen: () => void
 }) => {
-
     let name = map.name
     if (name === "NeoTokyo") {
         name = "City Block X2"
@@ -71,9 +70,10 @@ export const TopIconSettings = ({
                     position: "absolute",
                     left: enlarged ? "5.6rem" : "7.6rem",
                     top: 7.2,
-                    fontSize: "1.1rem",
-                    fontWeight: "fontWeightBold",
+                    fontSize: "1rem",
+                    fontFamily: "Nostromo Regular Bold",
                     lineHeight: 1,
+                    opacity: 0.8,
                 }}
             >
                 {name

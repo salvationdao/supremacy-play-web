@@ -5,7 +5,7 @@ import { SvgGlobal } from "../../assets"
 import {
     DRAWER_TRANSITION_DURATION,
     GAME_BAR_HEIGHT,
-    LIVE_CHAT_DRAWER_WIDTH,
+    RIGHT_DRAWER_WIDTH,
     PASSPORT_SERVER_HOST_IMAGES,
 } from "../../constants"
 import { useChat, useDrawer, usePassportServerAuth } from "../../containers"
@@ -93,6 +93,7 @@ const TabbedLayout = () => {
         <Stack
             sx={{
                 flex: 1,
+                height: 0,
                 position: "relative",
                 backgroundColor:
                     tabValue == 1 && user && user.faction
@@ -107,6 +108,7 @@ const TabbedLayout = () => {
                     height: `${GAME_BAR_HEIGHT}rem`,
                     background: bannerBackgroundColor,
                     boxShadow: 1,
+                    zIndex: 99,
                     ".MuiButtonBase-root": {
                         height: `${GAME_BAR_HEIGHT}rem`,
                     },
@@ -203,7 +205,7 @@ const SplitLayout = () => {
     }, [isEnlisted, user])
 
     return (
-        <Stack sx={{ flex: 1 }}>
+        <Stack sx={{ flex: 1, height: 0 }}>
             <Stack
                 sx={{
                     position: "relative",
@@ -220,6 +222,7 @@ const SplitLayout = () => {
                         px: "1.8rem",
                         background: shadeColor(colors.globalChat, -30),
                         boxShadow: 1,
+                        zIndex: 99,
                     }}
                 >
                     <SvgGlobal size="2rem" />
@@ -256,6 +259,7 @@ const SplitLayout = () => {
                             px: "1.8rem",
                             background: `${user.faction.theme.primary}25`,
                             boxShadow: 1,
+                            zIndex: 99,
                         }}
                     >
                         <Box
@@ -302,18 +306,20 @@ export const LiveChat = () => {
             variant="persistent"
             anchor="right"
             sx={{
-                width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
+                width: `${RIGHT_DRAWER_WIDTH}rem`,
                 flexShrink: 0,
                 zIndex: 9999,
                 "& .MuiDrawer-paper": {
-                    width: `${LIVE_CHAT_DRAWER_WIDTH}rem`,
+                    width: `${RIGHT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
                 },
             }}
         >
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
                 <DrawerButtons isFixed={false} />
-                {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+                <Stack sx={{ width: "100%", height: "100%" }}>
+                    {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+                </Stack>
             </Stack>
         </Drawer>
     )

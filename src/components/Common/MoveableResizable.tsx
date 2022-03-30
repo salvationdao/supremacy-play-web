@@ -9,6 +9,7 @@ import { useDimension } from "../../containers"
 import { clamp, parseString } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Dimension } from "../../types"
+import { ClipThing } from "../../components"
 
 export interface MoveableResizableConfig {
     localStoragePrefix: string
@@ -190,57 +191,70 @@ export const MoveableResizable = ({
                         )}
                     />
 
-                    <Box sx={{ position: "relative" }}>
-                        <Stack
-                            sx={{
-                                position: "relative",
-                                width: curWidth,
-                                height: curHeight,
-                                transition: "all .2s",
-                                resize: "all",
-                                overflow: "hidden",
-                                backgroundColor: theme.factionTheme.background,
-                                borderRadius: 0.5,
-                            }}
-                        >
-                            {children}
-
+                    <ClipThing
+                        border={{
+                            isFancy: true,
+                            borderThickness: ".25rem",
+                            borderColor: theme.factionTheme.primary,
+                        }}
+                    >
+                        <Box sx={{ position: "relative" }}>
                             <Stack
-                                direction="row"
-                                alignItems="center"
-                                justifyContent="flex-end"
-                                sx={{ px: "1.04rem", pb: ".56rem" }}
+                                sx={{
+                                    position: "relative",
+                                    width: curWidth,
+                                    height: curHeight,
+                                    transition: "all .2s",
+                                    resize: "all",
+                                    overflow: "hidden",
+                                    backgroundColor: theme.factionTheme.background,
+                                    borderRadius: 0.5,
+                                }}
                             >
-                                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mr: "auto" }}>
-                                    {CaptionArea}
+                                {children}
+
+                                <Stack
+                                    direction="row"
+                                    alignItems="center"
+                                    justifyContent="flex-end"
+                                    sx={{ px: "1.04rem", pb: ".56rem" }}
+                                >
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        sx={{ mr: "auto" }}
+                                    >
+                                        {CaptionArea}
+                                    </Stack>
+
+                                    <Box
+                                        onClick={() => onHideCallback && onHideCallback()}
+                                        sx={{
+                                            cursor: "pointer",
+                                            mr: ".88rem",
+                                            opacity: 0.4,
+                                            ":hover": { opacity: 1 },
+                                        }}
+                                    >
+                                        <SvgHide size="1.3rem" />
+                                    </Box>
+
+                                    <Box
+                                        className="handle"
+                                        sx={{
+                                            cursor: "move",
+                                            mr: allowResizeX || allowResizeY ? "2rem" : ".3rem",
+                                            opacity: 0.4,
+                                            ":hover": { opacity: 1 },
+                                        }}
+                                    >
+                                        <SvgDrag size="1.3rem" />
+                                    </Box>
                                 </Stack>
-
-                                <Box
-                                    onClick={() => onHideCallback && onHideCallback()}
-                                    sx={{
-                                        cursor: "pointer",
-                                        mr: ".88rem",
-                                        opacity: 0.4,
-                                        ":hover": { opacity: 1 },
-                                    }}
-                                >
-                                    <SvgHide size="1.3rem" />
-                                </Box>
-
-                                <Box
-                                    className="handle"
-                                    sx={{
-                                        cursor: "move",
-                                        mr: allowResizeX || allowResizeY ? "2rem" : ".3rem",
-                                        opacity: 0.4,
-                                        ":hover": { opacity: 1 },
-                                    }}
-                                >
-                                    <SvgDrag size="1.3rem" />
-                                </Box>
                             </Stack>
-                        </Stack>
-                    </Box>
+                        </Box>
+                    </ClipThing>
                 </Box>
             </Draggable>
         </Stack>

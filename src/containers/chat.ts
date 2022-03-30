@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "."
+import { GlobalAnnouncementType } from "../components/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
@@ -32,7 +33,7 @@ export interface SentChatMessageData {
 
 export type SplitOptionType = "tabbed" | "split" | null
 
-export type FontSizeType = 0.8 | 1 | 1.4
+export type FontSizeType = 0.8 | 1 | 1.35
 
 export const ChatContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
@@ -57,6 +58,9 @@ export const ChatContainer = createContainer(() => {
     const [fontSize, setFontSize] = useState<FontSizeType>(
         parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType,
     )
+
+    // Global announcement message
+    const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()
 
     // Chat states
     const [initialSentDate, setInitialSentDate] = useState<SentChatMessageData>({ global: [], faction: [] })
@@ -121,6 +125,22 @@ export const ChatContainer = createContainer(() => {
         },
         [setGlobalChatMessages, setFactionChatMessages],
     )
+
+    // Global announcements
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<GlobalAnnouncementType>(
+            GameServerKeys.SubGlobalAnnouncement,
+            (payload: GlobalAnnouncementType) => {
+                if (!payload || !payload.message) {
+                    setGlobalAnnouncement(undefined)
+                    return
+                }
+                setGlobalAnnouncement(payload)
+            },
+            null,
+        )
+    }, [state, subscribe])
 
     // Collect Past Messages
     useEffect(() => {
@@ -231,10 +251,7 @@ export const ChatContainer = createContainer(() => {
 
     // Subscribe to faction chat messages
     useEffect(() => {
-        if (state !== WebSocket.OPEN) return
-        if (!user || !user.faction_id || !user.faction) {
-            return
-        }
+        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<ChatData>(PassportServerKeys.SubscribeFactionChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, m.from_user_id)
@@ -267,6 +284,7 @@ export const ChatContainer = createContainer(() => {
         fontSize,
         setFontSize,
         userStatMap,
+        globalAnnouncement,
     }
 })
 

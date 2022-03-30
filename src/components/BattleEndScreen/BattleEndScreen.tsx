@@ -66,7 +66,7 @@ export const BattleEndScreen = () => {
                     left: 0,
                     boxShadow: 20,
                     zIndex: 999,
-                    maxWidth: "61.6rem",
+                    maxWidth: "45rem",
                     ...backgroundColorGradient,
                 }}
             >
