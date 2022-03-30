@@ -220,7 +220,7 @@ const BanProposalInner = ({
                         </LineItem>
                     </Stack>
 
-                    <Divider sx={{ mt: "1.2rem", mb: ".7rem" }} />
+                    <Divider sx={{ mt: "1.1rem", mb: ".7rem" }} />
 
                     <Stack spacing=".4rem">{bottomSection}</Stack>
                 </Box>
