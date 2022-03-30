@@ -57,8 +57,8 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 clipSize="8px"
                 sx={{
                     py: ".16rem",
-                    pt: ".4rem",
-                    width: "10rem",
+                    pt: ".3rem",
+                    width: "9rem",
                     color: secondaryColor,
                     fontFamily: "Nostromo Regular Black",
                 }}
