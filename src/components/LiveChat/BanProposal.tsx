@@ -88,6 +88,7 @@ const BanProposalInner = ({
 }) => {
     const { state, send } = useGameServerWebsocket()
     const [submitted, setSubmitted] = useState(false)
+    const [submittedVote, setSubmittedVote] = useState(false)
     const [error, setError] = useState("")
 
     const submitVote = useCallback(
@@ -104,6 +105,7 @@ const BanProposalInner = ({
 
                 if (resp) {
                     setSubmitted(true)
+                    setSubmittedVote(isAgree)
                     setError("")
                 }
             } catch (e) {
@@ -171,38 +173,44 @@ const BanProposalInner = ({
                     <Divider sx={{ mt: "1.2rem", mb: ".7rem" }} />
 
                     <Stack spacing=".4rem">
-                        <Typography>Do you agree with this proposal?</Typography>
+                        {submitted ? (
+                            <Typography>You {submittedVote ? "agreed" : "disagreed"} with this proposal.</Typography>
+                        ) : (
+                            <>
+                                <Typography>Do you agree with this proposal?</Typography>
 
-                        <Stack direction="row" spacing=".6rem">
-                            <FancyButton
-                                excludeCaret
-                                clipSize="4px"
-                                sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
-                                clipSx={{ flex: 1, position: "relative" }}
-                                backgroundColor={colors.red}
-                                borderColor={colors.red}
-                                onClick={() => submitVote(true)}
-                            >
-                                <Typography variant="body2">NO</Typography>
-                            </FancyButton>
+                                <Stack direction="row" spacing=".6rem">
+                                    <FancyButton
+                                        excludeCaret
+                                        clipSize="4px"
+                                        sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
+                                        clipSx={{ flex: 1, position: "relative" }}
+                                        backgroundColor={colors.red}
+                                        borderColor={colors.red}
+                                        onClick={() => submitVote(true)}
+                                    >
+                                        <Typography variant="body2">NO</Typography>
+                                    </FancyButton>
 
-                            <FancyButton
-                                excludeCaret
-                                clipSize="4px"
-                                sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
-                                clipSx={{ flex: 1, position: "relative" }}
-                                backgroundColor={colors.green}
-                                borderColor={colors.green}
-                                onClick={() => submitVote(false)}
-                            >
-                                <Typography variant="body2">YES</Typography>
-                            </FancyButton>
-                        </Stack>
+                                    <FancyButton
+                                        excludeCaret
+                                        clipSize="4px"
+                                        sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
+                                        clipSx={{ flex: 1, position: "relative" }}
+                                        backgroundColor={colors.green}
+                                        borderColor={colors.green}
+                                        onClick={() => submitVote(false)}
+                                    >
+                                        <Typography variant="body2">YES</Typography>
+                                    </FancyButton>
+                                </Stack>
 
-                        {error && (
-                            <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
-                                {error}
-                            </Typography>
+                                {error && (
+                                    <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
+                                        {error}
+                                    </Typography>
+                                )}
+                            </>
                         )}
                     </Stack>
                 </Box>
