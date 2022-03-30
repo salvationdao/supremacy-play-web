@@ -4,8 +4,10 @@ import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
 import { useChat, useGameServerWebsocket } from "../../containers"
 import { snakeToTitle } from "../../helpers"
+import { useInterval, useTimer, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
+import { BanProposalStruct } from "../../types"
 
 const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
     return (
@@ -29,44 +31,64 @@ const LineItem = ({ title, children, color }: { title: string; children: ReactNo
     )
 }
 
+const Countdown = ({
+    startAt,
+    endAt,
+    toggleOutOfTime,
+}: {
+    startAt: Date
+    endAt: Date
+    toggleOutOfTime: (value?: boolean | undefined) => void
+}) => {
+    const duration = endAt.getTime() - startAt.getTime()
+    const endTime = new Date(new Date().getTime() + duration)
+    const { totalSecRemain } = useTimer(endTime)
+
+    useEffect(() => {
+        if (totalSecRemain <= 0) toggleOutOfTime(true)
+    }, [totalSecRemain])
+
+    return <>{totalSecRemain}</>
+}
+
 export const BanProposal = () => {
-    // const { banProposal } = useChat()
-    const { state, send } = useGameServerWebsocket()
-    const [outOfTime, setOutOfTime] = useState(false)
-    const [submitted, setSubmitted] = useState(false)
-    const [error, setError] = useState("")
+    const { banProposal } = useChat()
+    const [render, toggleRender] = useToggle()
+    const [outOfTime, toggleOutOfTime] = useToggle()
 
-    const banProposal = {
-        id: "123",
-        punish_option_id: "456",
-        reason: "string",
-        faction_id: "789",
-        issued_by_id: "123456",
-        issued_by_username: "jayli3n",
-        reported_player_id: "456789",
-        reported_player_username: "darren_hung",
-        status: "PENDING",
-        started_at: new Date(),
-        ended_at: new Date(new Date().getTime() + 30000),
-        punishOption: {
-            id: "456",
-            description: "Limits the user from using map target select for 24 hours.",
-            key: "limit_location_select",
-            punish_duration_hours: 24,
-        },
-    }
+    // When new proposal comes in, reset the out of timer, and render it
+    useEffect(() => {
+        if (!banProposal) return
+        toggleOutOfTime(false)
+        toggleRender(true)
+    }, [banProposal])
 
-    // Clean up when out of time
+    // When out of time, give inner some time to animate, then stop render
     useEffect(() => {
         if (outOfTime) {
-            setSubmitted(false)
-            setError("")
+            setTimeout(() => {
+                toggleRender(false)
+            }, 2000)
         }
     }, [outOfTime])
 
-    useEffect(() => {
-        setOutOfTime(false)
-    }, [banProposal])
+    if (!banProposal || !render) return null
+
+    return <BanProposalInner banProposal={banProposal} outOfTime={outOfTime} toggleOutOfTime={toggleOutOfTime} />
+}
+
+const BanProposalInner = ({
+    banProposal,
+    outOfTime,
+    toggleOutOfTime,
+}: {
+    banProposal: BanProposalStruct
+    outOfTime: boolean
+    toggleOutOfTime: (value?: boolean | undefined) => void
+}) => {
+    const { state, send } = useGameServerWebsocket()
+    const [submitted, setSubmitted] = useState(false)
+    const [error, setError] = useState("")
 
     const submitVote = useCallback(
         async (isAgree: boolean) => {
@@ -91,21 +113,28 @@ export const BanProposal = () => {
         [state, send, banProposal],
     )
 
-    if (!banProposal) return null
-
     return (
-        <Slide in={true} direction="down">
+        <Slide in={!outOfTime} direction="down">
             <Box sx={{ m: ".5rem", border: `${colors.red} 2px solid` }}>
-                <Typography
+                <Stack
                     sx={{
                         px: "1rem",
                         py: ".2rem",
-                        textAlign: "center",
                         backgroundColor: colors.red,
                     }}
+                    direction="row"
+                    justifyContent="space-between"
                 >
-                    PUNISHMENT PROPOSAL
-                </Typography>
+                    <Typography sx={{ fontWeight: "fontWeightBold" }}>PUNISHMENT PROPOSAL</Typography>
+                    <Typography sx={{ fontWeight: "fontWeightBold" }}>
+                        <Countdown
+                            startAt={banProposal.started_at}
+                            endAt={banProposal.ended_at}
+                            toggleOutOfTime={toggleOutOfTime}
+                        />
+                        s
+                    </Typography>
+                </Stack>
 
                 <Box sx={{ px: "1.2rem", py: ".9rem" }}>
                     <Stack spacing=".3rem">

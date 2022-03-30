@@ -6,7 +6,7 @@ import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys, PassportServerKeys } from "../keys"
-import { BanProposal } from "../types"
+import { BanProposalStruct } from "../types"
 import { ChatData, UserStat } from "../types/passport"
 
 export interface UserMultiplier {
@@ -73,7 +73,7 @@ export const ChatContainer = createContainer(() => {
     const [userMultiplierMap, setUserMultiplierMap] = useState<UserMultiplierMap>({})
     const [citizenPlayerIDs, setCitizenPlayerIDs] = useState<string[]>([])
     const [userStatMap, setUserStatMap] = useState<UserIDMap>({})
-    const [banProposal, setbanProposal] = useState<BanProposal>()
+    const [banProposal, setbanProposal] = useState<BanProposalStruct>()
 
     // Store list of messages that were successfully sent or failed
     const [sentMessages, setSentMessages] = useState<Date[]>([])
@@ -264,10 +264,34 @@ export const ChatContainer = createContainer(() => {
     // Subscribe to ban proposals
     useEffect(() => {
         if (gsState !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
-        return gsSubscribe<BanProposal>(GameServerKeys.SubBanProposals, (payload) => {
+        return gsSubscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
             if (!payload) setbanProposal(payload)
         })
     }, [user, gsState, gsSubscribe])
+
+    useEffect(() => {
+        setTimeout(() => {
+            setbanProposal({
+                id: "123",
+                punish_option_id: "456",
+                reason: "string",
+                faction_id: "789",
+                issued_by_id: "123456",
+                issued_by_username: "jayli3n",
+                reported_player_id: "456789",
+                reported_player_username: "darren_hung",
+                status: "PENDING",
+                started_at: new Date(),
+                ended_at: new Date(new Date().getTime() + 8000),
+                punishOption: {
+                    id: "456",
+                    description: "Limits the user from using map target select for 24 hours.",
+                    key: "limit_location_select",
+                    punish_duration_hours: 24,
+                },
+            })
+        }, 3000)
+    }, [])
 
     return {
         tabValue,

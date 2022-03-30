@@ -221,7 +221,7 @@ export interface Dimension {
     height: number
 }
 
-export interface BanProposal {
+export interface BanProposalStruct {
     id: string
     punish_option_id: string
     reason: string
