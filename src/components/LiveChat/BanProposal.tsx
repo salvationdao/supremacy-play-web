@@ -9,17 +9,22 @@ import { colors } from "../../theme/theme"
 
 const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
     return (
-        <Stack direction="row" spacing=".7rem" alignItems="center">
+        <Stack direction="row" spacing=".7rem" alignItems="start">
             <Typography
                 sx={{
+                    py: ".2rem",
+                    flexShrink: 0,
                     width: "7rem",
                     textAlign: "center",
+                    lineHeight: 1,
                     backgroundColor: `${color || colors.red}70`,
                 }}
             >
                 {title}
             </Typography>
-            {children}
+            <Stack direction="row" spacing=".7rem" alignItems="center" sx={{ mt: ".2rem !important" }}>
+                {children}
+            </Stack>
         </Stack>
     )
 }
@@ -105,15 +110,15 @@ export const BanProposal = () => {
                 <Box sx={{ px: "1.2rem", py: ".9rem" }}>
                     <Stack spacing=".3rem">
                         <LineItem title="FROM" color={colors.green}>
-                            <Typography>{banProposal.issued_by_username}</Typography>
+                            <Typography sx={{ lineHeight: 1 }}>{banProposal.issued_by_username}</Typography>
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <Typography>{banProposal.reported_player_username}</Typography>
+                            <Typography sx={{ lineHeight: 1 }}>{banProposal.reported_player_username}</Typography>
                         </LineItem>
 
                         <LineItem title="PUNISH">
-                            <Typography>{snakeToTitle(banProposal.punishOption.key)}</Typography>
+                            <Typography sx={{ lineHeight: 1 }}>{snakeToTitle(banProposal.punishOption.key)}</Typography>
                             <TooltipHelper placement="right-start" text={banProposal.punishOption.description}>
                                 <Box>
                                     <SvgInfoCircular
@@ -127,7 +132,9 @@ export const BanProposal = () => {
                         <LineItem title="DURATION">
                             <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
                                 <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
-                                <Typography>{banProposal.punishOption.punish_duration_hours} Hrs</Typography>
+                                <Typography sx={{ lineHeight: 1 }}>
+                                    {banProposal.punishOption.punish_duration_hours} Hrs
+                                </Typography>
                             </Stack>
                         </LineItem>
                     </Stack>
@@ -141,7 +148,7 @@ export const BanProposal = () => {
                             <FancyButton
                                 excludeCaret
                                 clipSize="4px"
-                                sx={{ pt: ".4rem", pb: ".1rem", minWidth: "5rem" }}
+                                sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
                                 clipSx={{ flex: 1, position: "relative" }}
                                 backgroundColor={colors.red}
                                 borderColor={colors.red}
@@ -153,7 +160,7 @@ export const BanProposal = () => {
                             <FancyButton
                                 excludeCaret
                                 clipSize="4px"
-                                sx={{ pt: ".4rem", pb: ".1rem", minWidth: "5rem" }}
+                                sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
                                 clipSx={{ flex: 1, position: "relative" }}
                                 backgroundColor={colors.green}
                                 borderColor={colors.green}
