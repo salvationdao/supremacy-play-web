@@ -282,7 +282,7 @@ export const ChatContainer = createContainer(() => {
                 reported_player_username: "darren_hung",
                 status: "PENDING",
                 started_at: new Date(),
-                ended_at: new Date(new Date().getTime() + 8000),
+                ended_at: new Date(new Date().getTime() + 30000),
                 punishOption: {
                     id: "456",
                     description: "Limits the user from using map target select for 24 hours.",
@@ -290,7 +290,7 @@ export const ChatContainer = createContainer(() => {
                     punish_duration_hours: 24,
                 },
             })
-        }, 3000)
+        }, 1500)
     }, [])
 
     return {

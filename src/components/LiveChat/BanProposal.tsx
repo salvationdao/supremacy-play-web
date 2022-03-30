@@ -68,7 +68,7 @@ export const BanProposal = () => {
         if (outOfTime) {
             setTimeout(() => {
                 toggleRender(false)
-            }, 2000)
+            }, 250)
         }
     }, [outOfTime])
 
@@ -114,7 +114,7 @@ const BanProposalInner = ({
     )
 
     return (
-        <Slide in={!outOfTime} direction="down">
+        <Slide in={!outOfTime} direction="down" timeout={250}>
             <Box sx={{ m: ".5rem", border: `${colors.red} 2px solid` }}>
                 <Stack
                     sx={{
@@ -126,7 +126,7 @@ const BanProposalInner = ({
                     justifyContent="space-between"
                 >
                     <Typography sx={{ fontWeight: "fontWeightBold" }}>PUNISHMENT PROPOSAL</Typography>
-                    <Typography sx={{ fontWeight: "fontWeightBold" }}>
+                    <Typography sx={{ fontWeight: "fontWeightBold", px: "1rem", backgroundColor: "#00000090" }}>
                         <Countdown
                             startAt={banProposal.started_at}
                             endAt={banProposal.ended_at}
