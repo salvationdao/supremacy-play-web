@@ -93,7 +93,8 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
                             px: "1.8rem",
                             py: "1.6rem",
                             pb: "1.6rem",
-                            backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
+                            backgroundColor:
+                                (user && user.faction && user.faction.theme.background) || colors.darkNavyBlue,
                         }}
                     >
                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>

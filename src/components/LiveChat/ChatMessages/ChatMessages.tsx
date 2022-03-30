@@ -120,7 +120,6 @@ const ChatMessagesInner = ({
             )}
 
             {faction_id != null && <BanProposal />}
-            <BanProposal />
 
             <Box
                 id="chat-container"

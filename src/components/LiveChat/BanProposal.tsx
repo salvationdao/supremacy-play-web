@@ -1,5 +1,5 @@
 import { Box, Divider, Slide, Stack, Typography } from "@mui/material"
-import { ReactNode, useCallback, useEffect, useState } from "react"
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
 import { useChat, useGameServerWebsocket } from "../../containers"
@@ -115,6 +115,56 @@ const BanProposalInner = ({
         [state, send, banProposal],
     )
 
+    const bottomSection = useMemo(() => {
+        // if () {
+        //     return (
+
+        //     )
+        // }
+
+        if (submitted) {
+            return <Typography>You {submittedVote ? "agreed" : "disagreed"} with this proposal.</Typography>
+        }
+
+        return (
+            <>
+                <Typography>Do you agree with this proposal?</Typography>
+
+                <Stack direction="row" spacing=".6rem">
+                    <FancyButton
+                        excludeCaret
+                        clipSize="4px"
+                        sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
+                        clipSx={{ flex: 1, position: "relative" }}
+                        backgroundColor={colors.red}
+                        borderColor={colors.red}
+                        onClick={() => submitVote(true)}
+                    >
+                        <Typography variant="body2">NO</Typography>
+                    </FancyButton>
+
+                    <FancyButton
+                        excludeCaret
+                        clipSize="4px"
+                        sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
+                        clipSx={{ flex: 1, position: "relative" }}
+                        backgroundColor={colors.green}
+                        borderColor={colors.green}
+                        onClick={() => submitVote(false)}
+                    >
+                        <Typography variant="body2">YES</Typography>
+                    </FancyButton>
+                </Stack>
+
+                {error && (
+                    <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
+                        {error}
+                    </Typography>
+                )}
+            </>
+        )
+    }, [submitted, submittedVote, submitVote, error])
+
     return (
         <Slide in={!outOfTime} direction="down" timeout={250}>
             <Box sx={{ m: ".5rem", border: `${colors.red} 2px solid` }}>
@@ -172,47 +222,7 @@ const BanProposalInner = ({
 
                     <Divider sx={{ mt: "1.2rem", mb: ".7rem" }} />
 
-                    <Stack spacing=".4rem">
-                        {submitted ? (
-                            <Typography>You {submittedVote ? "agreed" : "disagreed"} with this proposal.</Typography>
-                        ) : (
-                            <>
-                                <Typography>Do you agree with this proposal?</Typography>
-
-                                <Stack direction="row" spacing=".6rem">
-                                    <FancyButton
-                                        excludeCaret
-                                        clipSize="4px"
-                                        sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
-                                        clipSx={{ flex: 1, position: "relative" }}
-                                        backgroundColor={colors.red}
-                                        borderColor={colors.red}
-                                        onClick={() => submitVote(true)}
-                                    >
-                                        <Typography variant="body2">NO</Typography>
-                                    </FancyButton>
-
-                                    <FancyButton
-                                        excludeCaret
-                                        clipSize="4px"
-                                        sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
-                                        clipSx={{ flex: 1, position: "relative" }}
-                                        backgroundColor={colors.green}
-                                        borderColor={colors.green}
-                                        onClick={() => submitVote(false)}
-                                    >
-                                        <Typography variant="body2">YES</Typography>
-                                    </FancyButton>
-                                </Stack>
-
-                                {error && (
-                                    <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
-                                        {error}
-                                    </Typography>
-                                )}
-                            </>
-                        )}
-                    </Stack>
+                    <Stack spacing=".4rem">{bottomSection}</Stack>
                 </Box>
             </Box>
         </Slide>
