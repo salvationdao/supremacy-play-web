@@ -126,7 +126,19 @@ const BanProposalInner = ({
         }
 
         if (submitted) {
-            return <Typography>You {submittedVote ? "agreed" : "disagreed"} with this proposal.</Typography>
+            return (
+                <Typography>
+                    <i>
+                        You{" "}
+                        {submittedVote ? (
+                            <strong style={{ color: colors.green }}>agreed</strong>
+                        ) : (
+                            <strong style={{ color: colors.red }}>disagreed</strong>
+                        )}{" "}
+                        with this proposal.
+                    </i>
+                </Typography>
+            )
         }
 
         return (
