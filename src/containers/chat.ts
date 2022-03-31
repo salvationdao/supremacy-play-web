@@ -264,8 +264,10 @@ export const ChatContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
             if (payload) {
-                const duration = payload.ended_at.getTime() - payload.started_at.getTime()
-                const endTime = new Date(new Date().getTime() + duration)
+                const startedAtTime = payload.started_at.getTime()
+                const nowTime = new Date().getTime()
+                const duration = payload.ended_at.getTime() - startedAtTime
+                const endTime = new Date(Math.min(startedAtTime, nowTime) + duration)
 
                 setBanProposal({
                     ...payload,
@@ -274,30 +276,6 @@ export const ChatContainer = createContainer(() => {
             }
         })
     }, [user, state, subscribe])
-
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         setBanProposal({
-    //             id: "123",
-    //             punish_option_id: "456",
-    //             reason: "string",
-    //             faction_id: "789",
-    //             issued_by_id: "123456",
-    //             issued_by_username: "jayli3n",
-    //             reported_player_id: "456789",
-    //             reported_player_username: "darren_hung",
-    //             status: "PENDING",
-    //             started_at: new Date(),
-    //             ended_at: new Date(new Date().getTime() + 300000),
-    //             punishOption: {
-    //                 id: "456",
-    //                 description: "Limits the user from using map target select for 24 hours.",
-    //                 key: "limit_location_select",
-    //                 punish_duration_hours: 24,
-    //             },
-    //         })
-    //     }, 1500)
-    // }, [])
 
     return {
         tabValue,

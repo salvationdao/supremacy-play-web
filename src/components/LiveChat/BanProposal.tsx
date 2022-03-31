@@ -56,7 +56,7 @@ export const BanProposal = () => {
     useEffect(() => {
         if (!banProposal) return
         toggleOutOfTime(banProposal.ended_at < new Date())
-        toggleRender(true)
+        toggleRender(banProposal.ended_at > new Date())
     }, [banProposal])
 
     // When out of time, give inner some time to animate, then stop render
@@ -149,7 +149,7 @@ const BanProposalInner = ({
                         clipSx={{ flex: 1, position: "relative" }}
                         backgroundColor={colors.red}
                         borderColor={colors.red}
-                        onClick={() => submitVote(true)}
+                        onClick={() => submitVote(false)}
                     >
                         <Typography variant="body2">NO</Typography>
                     </FancyButton>
@@ -161,7 +161,7 @@ const BanProposalInner = ({
                         clipSx={{ flex: 1, position: "relative" }}
                         backgroundColor={colors.green}
                         borderColor={colors.green}
-                        onClick={() => submitVote(false)}
+                        onClick={() => submitVote(true)}
                     >
                         <Typography variant="body2">YES</Typography>
                     </FancyButton>
