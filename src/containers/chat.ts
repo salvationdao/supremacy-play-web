@@ -263,7 +263,15 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
-            if (payload) setBanProposal(payload)
+            if (payload) {
+                const duration = payload.ended_at.getTime() - payload.started_at.getTime()
+                const endTime = new Date(new Date().getTime() + duration)
+
+                setBanProposal({
+                    ...payload,
+                    ended_at: endTime,
+                })
+            }
         })
     }, [user, state, subscribe])
 
