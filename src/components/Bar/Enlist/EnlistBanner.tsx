@@ -12,8 +12,9 @@ import {
 } from "../../../assets"
 import { colors } from "../../../theme/theme"
 import { useGame, useGameServerAuth, usePassportServerAuth } from "../../../containers"
-import { UserData, UserStat } from "../../../types/passport"
+import { UserData } from "../../../types/passport"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { UserStat } from "../../../types"
 
 const BannerInfo = ({
     title,
