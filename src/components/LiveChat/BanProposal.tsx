@@ -1,10 +1,10 @@
 import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
 import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { snakeToTitle } from "../../helpers"
-import { useInterval, useTimer, useToggle } from "../../hooks"
+import { useTimer, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { BanProposalStruct } from "../../types"
@@ -71,6 +71,8 @@ export const BanProposal = () => {
             }, 250)
         }
     }, [outOfTime])
+
+    console.log({ banProposal, render, outOfTime })
 
     if (!banProposal || !render) return null
 
@@ -214,8 +216,10 @@ const BanProposalInner = ({
                         </LineItem>
 
                         <LineItem title="PUNISH">
-                            <Typography sx={{ lineHeight: 1 }}>{snakeToTitle(banProposal.punishOption.key)}</Typography>
-                            <TooltipHelper placement="right-start" text={banProposal.punishOption.description}>
+                            <Typography sx={{ lineHeight: 1 }}>
+                                {snakeToTitle(banProposal.punish_option.key)}
+                            </Typography>
+                            <TooltipHelper placement="right-start" text={banProposal.punish_option.description}>
                                 <Box>
                                     <SvgInfoCircular
                                         size="1.1rem"
@@ -229,7 +233,7 @@ const BanProposalInner = ({
                             <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
                                 <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
                                 <Typography sx={{ lineHeight: 1 }}>
-                                    {banProposal.punishOption.punish_duration_hours} Hrs
+                                    {banProposal.punish_option.punish_duration_hours} Hrs
                                 </Typography>
                             </Stack>
                         </LineItem>

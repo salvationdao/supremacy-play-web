@@ -71,7 +71,7 @@ export const ChatContainer = createContainer(() => {
     const [userMultiplierMap, setUserMultiplierMap] = useState<UserMultiplierMap>({})
     const [citizenPlayerIDs, setCitizenPlayerIDs] = useState<string[]>([])
     const [userStatMap, setUserStatMap] = useState<UserIDMap>({})
-    const [banProposal, setbanProposal] = useState<BanProposalStruct>()
+    const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
     // Store list of messages that were successfully sent or failed
     const [sentMessages, setSentMessages] = useState<Date[]>([])
@@ -263,13 +263,13 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
-            if (!payload) setbanProposal(payload)
+            if (payload) setBanProposal(payload)
         })
     }, [user, state, subscribe])
 
     // useEffect(() => {
     //     setTimeout(() => {
-    //         setbanProposal({
+    //         setBanProposal({
     //             id: "123",
     //             punish_option_id: "456",
     //             reason: "string",
