@@ -1,8 +1,8 @@
-import { Box, Divider, Slide, Stack, Typography } from "@mui/material"
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
-import { useChat, useGameServerWebsocket } from "../../containers"
+import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { snakeToTitle } from "../../helpers"
 import { useInterval, useTimer, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -87,6 +87,7 @@ const BanProposalInner = ({
     toggleOutOfTime: (value?: boolean | undefined) => void
 }) => {
     const { state, send } = useGameServerWebsocket()
+    const { userStat } = useGameServerAuth()
     const [submitted, setSubmitted] = useState(false)
     const [submittedVote, setSubmittedVote] = useState(false)
     const [error, setError] = useState("")
@@ -116,14 +117,28 @@ const BanProposalInner = ({
     )
 
     const bottomSection = useMemo(() => {
-        // if () {
-        //     return (
-
-        //     )
-        // }
+        if (!userStat || userStat.kill_count <= 0) {
+            return (
+                <Typography sx={{ opacity: 0.6 }}>
+                    <i>You need ability kills to be eligible to vote.</i>
+                </Typography>
+            )
+        }
 
         if (submitted) {
-            return <Typography>You {submittedVote ? "agreed" : "disagreed"} with this proposal.</Typography>
+            return (
+                <Typography>
+                    <i>
+                        You{" "}
+                        {submittedVote ? (
+                            <strong style={{ color: colors.green }}>agreed</strong>
+                        ) : (
+                            <strong style={{ color: colors.red }}>disagreed</strong>
+                        )}{" "}
+                        with this proposal.
+                    </i>
+                </Typography>
+            )
         }
 
         return (
@@ -163,10 +178,10 @@ const BanProposalInner = ({
                 )}
             </>
         )
-    }, [submitted, submittedVote, submitVote, error])
+    }, [submitted, submittedVote, submitVote, error, userStat])
 
     return (
-        <Slide in={!outOfTime} direction="down" timeout={250}>
+        <Grow in={!outOfTime} timeout={250}>
             <Box sx={{ m: ".5rem", border: `${colors.red} 2px solid` }}>
                 <Stack
                     sx={{
@@ -220,11 +235,11 @@ const BanProposalInner = ({
                         </LineItem>
                     </Stack>
 
-                    <Divider sx={{ mt: "1.2rem", mb: ".7rem" }} />
+                    <Divider sx={{ mt: "1.1rem", mb: ".7rem" }} />
 
                     <Stack spacing=".4rem">{bottomSection}</Stack>
                 </Box>
             </Box>
-        </Slide>
+        </Grow>
     )
 }

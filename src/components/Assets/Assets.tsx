@@ -244,7 +244,7 @@ const DrawerContent = () => {
     }, [gsSend, gsSubscribe, assets, battleEndDetail?.battle_id])
 
     const content = useMemo(() => {
-        if (isLoading || !assets) return <LoadingSkeleton />
+        if (isLoading && !assets) return <LoadingSkeleton />
 
         if (assets && assets.length > 0 && (assetsNotInQueue.size > 0 || assetsInQueue.size > 0)) {
             return (
