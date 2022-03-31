@@ -161,11 +161,11 @@ export const ChatMessage = ({
     }, [userStat, message_color])
     const factionColor = useMemo(
         () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.theme.primary : message_color),
-        [from_user_faction_id],
+        [from_user_faction_id, factionsAll],
     )
     const factionLogoBlobID = useMemo(
         () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.logo_blob_id : ""),
-        [from_user_faction_id],
+        [from_user_faction_id, factionsAll],
     )
 
     if (!self && filterZeros && multiplierInt <= 0) return null
