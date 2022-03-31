@@ -1,13 +1,18 @@
-import { Box, Button, IconButton, Link, Modal, Stack, Switch, Typography } from "@mui/material"
+import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { ClipThing, PlayerPrefs, TooltipHelper } from ".."
-import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken, SvgWarningIcon } from "../../assets"
+import { ClipThing, TooltipHelper } from ".."
+import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../containers"
+import {
+    useGameServerWebsocket,
+    usePassportServerAuth,
+    usePassportServerWebsocket,
+    useSnackbar,
+} from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { GameServerKeys } from "../../keys"
+import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
 
@@ -38,6 +43,17 @@ const AmountItem = ({
     )
 }
 
+interface MobileNumberSave {
+    id: string
+    mobile_number: string
+}
+
+interface NotificationsSettings {
+    telegram_notifications: boolean
+    push_notifications: boolean
+    sms_notifications: boolean
+}
+
 export const DeployConfirmation = ({
     open,
     asset,
@@ -54,47 +70,107 @@ export const DeployConfirmation = ({
     onClose: () => void
 }) => {
     const { newSnackbarMessage } = useSnackbar()
-    const { state, subscribe, send } = useGameServerWebsocket()
+    const { state, send } = useGameServerWebsocket()
+    const { send: psSend } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, tier } = asset.data.mech
-    const [enableNotifications, setEnableNotifications] = useState(false)
     const [needInsured, toggleNeedInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
-    const [playerPrefs, setPlayerPrefs] = useState<PlayerPrefs>()
     const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueCost, 2))
 
+    const initialSettings: NotificationsSettings = {
+        sms_notifications: false,
+        push_notifications: false,
+        telegram_notifications: false,
+    }
+    const [mobile, setMobile] = useState(user?.mobile_number)
+    const [saveMobile, setSaveMobile] = useState(false)
+    const [dbSettings, setDbSettings] = useState<NotificationsSettings | null>(null)
+    const [currentSettings, setCurrentSettings] = useState<NotificationsSettings>(initialSettings)
+    const [saveSettings, setSaveSettings] = useState(false)
+
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
+    const notificationsOn =
+        currentSettings.push_notifications ||
+        currentSettings.sms_notifications ||
+        currentSettings.telegram_notifications
+    const settingsMatch =
+        currentSettings.push_notifications === dbSettings?.push_notifications &&
+        currentSettings.sms_notifications === dbSettings.sms_notifications &&
+        currentSettings.telegram_notifications === dbSettings.telegram_notifications
+
+    useEffect(() => {
+        if (!user || !send) return
+        ;(async () => {
+            try {
+                const resp = await send<NotificationsSettings | null>(GameServerKeys.GetSettings, {
+                    key: "notification_settings",
+                })
+
+                if (resp === null) {
+                    setDbSettings(null)
+                    return
+                }
+                setDbSettings(resp)
+                setCurrentSettings(resp)
+            } catch (err) {
+                newSnackbarMessage(
+                    typeof err === "string" ? err : "Issue getting settings, try again or contact support.",
+                    "error",
+                )
+            }
+        })()
+    }, [user, send])
 
     useEffect(() => {
         let qc = new BigNumber(queueCost).shiftedBy(-18)
-        if (enableNotifications) {
+        if (notificationsOn) {
             qc = qc.multipliedBy(1.1)
-            setActualQueueCost(qc.toFixed(3))
-        } else {
-            setActualQueueCost(qc.toFixed(3))
         }
-    }, [enableNotifications, queueCost])
-
-    // Subscribe to player preferences
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !user || !subscribe) return
-        return subscribe<PlayerPrefs>(GameServerKeys.SubPlayerPrefs, (payload) => {
-            setPlayerPrefs(payload)
-        })
-    }, [user, subscribe])
+        setActualQueueCost(qc.toFixed(3))
+    }, [notificationsOn, queueCost])
 
     useEffect(() => {
         if (!open) setDeployFailed("")
     }, [open])
 
     const onDeploy = useCallback(async () => {
-        if (state !== WebSocket.OPEN) return
+        if (state !== WebSocket.OPEN || !user) return
         try {
+            //save mobile number if checked
+            if (saveMobile && mobile != user?.mobile_number) {
+                const saveMobileNum = await psSend<MobileNumberSave>(PassportServerKeys.UserUpdate, {
+                    id: user.id,
+                    mobile_number: mobile,
+                })
+                saveMobileNum
+                    ? newSnackbarMessage("Updated mobile number", "success")
+                    : newSnackbarMessage("Issue updating mobile number.", "warning")
+            }
+
+            //if saveSettings is true, send an updated settings
+            if (saveSettings) {
+                const updatedSettings = { key: "notification_settings", value: currentSettings }
+                ;(async () => {
+                    try {
+                        const resp = await send<NotificationsSettings>(GameServerKeys.UpdateSettings, updatedSettings)
+                        setDbSettings(resp)
+                        setCurrentSettings(resp)
+                    } catch (err) {
+                        newSnackbarMessage(
+                            typeof err === "string" ? err : "Issue getting settings, try again or contact support.",
+                            "error",
+                        )
+                    }
+                })()
+            }
+
             const resp = await send(GameServerKeys.JoinQueue, {
                 asset_hash: hash,
                 need_insured: needInsured,
-                enable_notifications: enableNotifications,
+                enable_push_notifications: currentSettings.push_notifications,
+                mobile_number: mobile,
             })
             if (resp) {
                 onClose()
@@ -108,7 +184,7 @@ export const DeployConfirmation = ({
         } finally {
             toggleIsDeploying(false)
         }
-    }, [state, hash, needInsured, enableNotifications])
+    }, [state, hash, needInsured, currentSettings, saveMobile, mobile, saveSettings])
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -118,7 +194,7 @@ export const DeployConfirmation = ({
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "46rem",
+                    width: "70rem",
                     boxShadow: 6,
                 }}
             >
@@ -139,6 +215,7 @@ export const DeployConfirmation = ({
                             pl: "1.76rem",
                             pr: "2.56rem",
                             py: "2.4rem",
+                            display: "flex",
                             backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
                         }}
                     >
@@ -150,6 +227,8 @@ export const DeployConfirmation = ({
                                 py: "1.2rem",
                                 borderRadius: 0.6,
                                 boxShadow: "inset 0 0 12px 6px #00000055",
+                                maxHeight: "130px",
+                                alignSelf: "center",
                             }}
                         >
                             <Box
@@ -290,80 +369,6 @@ export const DeployConfirmation = ({
                                         </Box>
                                     </TooltipHelper>
                                 </Stack>
-
-                                <Stack direction="row" alignItems="center" sx={{ mt: "-0.55rem" }}>
-                                    <Typography
-                                        sx={{
-                                            pt: ".08rem",
-                                            lineHeight: 1,
-                                            color: colors.green,
-                                            fontWeight: "fontWeightBold",
-                                        }}
-                                    >
-                                        Enable SMS notifications:
-                                    </Typography>
-                                    <Switch
-                                        size="small"
-                                        checked={enableNotifications}
-                                        onChange={(e) => {
-                                            setEnableNotifications(e.currentTarget.checked)
-                                        }}
-                                        sx={{
-                                            transform: "scale(.6)",
-                                            ".Mui-checked": { color: colors.green },
-                                            ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
-                                        }}
-                                    />
-                                    <Box ml="auto" />
-                                    {!playerPrefs?.notifications_battle_queue_sms && (
-                                        <TooltipHelper
-                                            placement="right-start"
-                                            text={
-                                                <>
-                                                    You currently do not have battle queue SMS notifications enabled.
-                                                    You must have it enabled in order for this feature to work. To get
-                                                    alerts when your war machine is soon to battle, enable SMS option by
-                                                    clicking on your username in the top right, and select
-                                                    &quot;Preferences&quot; in the dropdown menu.
-                                                </>
-                                            }
-                                        >
-                                            <Box>
-                                                <SvgWarningIcon
-                                                    size="1.2rem"
-                                                    fill={colors.orange}
-                                                    sx={{
-                                                        paddingBottom: 0,
-                                                        opacity: 0.6,
-                                                        ":hover": { opacity: 1 },
-                                                    }}
-                                                />
-                                            </Box>
-                                        </TooltipHelper>
-                                    )}
-                                    <TooltipHelper
-                                        placement="right-start"
-                                        text={
-                                            <>
-                                                Enabling notifications will add&nbsp;<strong>10%</strong> to the queue
-                                                cost. We will notify you via SMS when your war machine is within the top
-                                                10 in queue.
-                                            </>
-                                        }
-                                    >
-                                        <Box>
-                                            <SvgInfoCircular
-                                                size="1.2rem"
-                                                sx={{
-                                                    marginLeft: ".5rem",
-                                                    paddingBottom: 0,
-                                                    opacity: 0.4,
-                                                    ":hover": { opacity: 1 },
-                                                }}
-                                            />
-                                        </Box>
-                                    </TooltipHelper>
-                                </Stack>
                             </Box>
 
                             <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
@@ -408,6 +413,125 @@ export const DeployConfirmation = ({
                                 </Typography>
                             )}
                         </Stack>
+                        <Stack>
+                            <Typography>Notifications</Typography>
+                            <Stack direction="row" alignItems="center" sx={{ mt: "-0.55rem" }}>
+                                <Typography
+                                    sx={{
+                                        pt: ".08rem",
+                                        lineHeight: 1,
+                                        color: colors.green,
+                                        fontWeight: "fontWeightBold",
+                                    }}
+                                >
+                                    Enable SMS notifications:
+                                </Typography>
+                                <Switch
+                                    size="small"
+                                    checked={currentSettings.sms_notifications}
+                                    onChange={(e) => {
+                                        setCurrentSettings((prev) => {
+                                            const newSettings = { ...prev }
+                                            newSettings.sms_notifications = e.currentTarget.checked
+                                            return newSettings
+                                        })
+                                        setMobile(user?.mobile_number)
+                                        setSaveMobile(false)
+                                    }}
+                                    sx={{
+                                        transform: "scale(.6)",
+                                        ".Mui-checked": { color: colors.green },
+                                        ".Mui-checked+.MuiSwitch-track": {
+                                            backgroundColor: `${colors.green}50`,
+                                        },
+                                    }}
+                                />
+                                <Box ml="auto" />
+
+                                <TooltipHelper
+                                    placement="right-start"
+                                    text={
+                                        <>
+                                            Enabling notifications will add&nbsp;<strong>10%</strong> to the queue cost.
+                                            We will notify you via your chosen notification preference when your war
+                                            machine is within the top 10 in queue. The notification fee{" "}
+                                            <strong>will not</strong> be refunded if your war marchine exits the queue.
+                                        </>
+                                    }
+                                >
+                                    <Box>
+                                        <SvgInfoCircular
+                                            size="1.2rem"
+                                            sx={{
+                                                marginLeft: ".5rem",
+                                                paddingBottom: 0,
+                                                opacity: 0.4,
+                                                ":hover": { opacity: 1 },
+                                            }}
+                                        />
+                                    </Box>
+                                </TooltipHelper>
+                            </Stack>
+                            {currentSettings.sms_notifications && (
+                                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                                        <Typography sx={{ alignSelf: "flex-end" }}>Phone Number: </Typography>
+                                        <TextField
+                                            sx={{ flexGrow: "2", paddingLeft: "1rem" }}
+                                            inputProps={{ style: { padding: "2px" } }}
+                                            defaultValue={mobile}
+                                            value={mobile}
+                                            onChange={(e) => {
+                                                setMobile(e.target.value)
+                                                if (e.target.value === user?.mobile_number) {
+                                                    setSaveMobile(false)
+                                                }
+                                            }}
+                                        />
+                                    </Box>
+                                    <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
+                                        {user?.mobile_number != mobile && (
+                                            <>
+                                                <Typography sx={{ alignSelf: "center" }}>
+                                                    Save number to profile?
+                                                </Typography>
+                                                <Checkbox
+                                                    checked={saveMobile}
+                                                    onClick={() => {
+                                                        setSaveMobile((prev) => !prev)
+                                                    }}
+                                                    sx={{ margin: "0", color: user?.faction.theme.primary }}
+                                                    inputProps={{ "aria-label": "save to profile checkbox" }}
+                                                />
+                                            </>
+                                        )}
+                                    </Box>
+                                </Box>
+                            )}
+                            {!settingsMatch && (
+                                <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
+                                    <Typography sx={{ alignSelf: "center" }}>
+                                        Save notification settings as default?
+                                    </Typography>
+                                    <Checkbox
+                                        checked={saveSettings}
+                                        onClick={() => {
+                                            setSaveSettings((prev) => !prev)
+                                        }}
+                                        sx={{ margin: "0", color: user?.faction.theme.primary }}
+                                        inputProps={{ "aria-label": "save default settings" }}
+                                    />
+                                </Box>
+                            )}
+                        </Stack>
+
+                        <IconButton
+                            size="small"
+                            onClick={onClose}
+                            sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}
+                        >
+                            <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        </IconButton>
                     </Stack>
 
                     <IconButton

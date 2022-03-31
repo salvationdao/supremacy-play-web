@@ -41,6 +41,7 @@ export interface UserData {
     avatar_id: string
     faction_id: string
     faction: FactionGeneralData
+    mobile_number?: string
 }
 
 export interface UserStat {
