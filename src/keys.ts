@@ -64,9 +64,8 @@ export enum GameServerKeys {
 
     SubMultiplierMap = "MULTIPLIER:MAP:SUBSCRIBE",
 
-    SubPlayerPrefs = "PLAYER:PREFERENCES_SUBSCRIBE",
-    TogglePlayerBattleQueueNotifications = "PLAYER:TOGGLE_BATTLE_QUEUE_NOTIFICATIONS",
-    SubPlayerBattleQueueBrowser = "PLAYER:BROWSER_NOFTICATION_SUBSCRIBE",
+    UpdateSettings = "PLAYER:UPDATE_SETTINGS",
+    GetSettings = "PLAYER:GET_SETTINGS",
 
     // Ban system
     GetBanOptions = "PUNISH:OPTIONS",
@@ -102,4 +101,7 @@ export enum PassportServerKeys {
 
     // Misc
     GetFreeSups = "GAMEBAR:GET:SUPS",
+
+    //User
+    UserUpdate = "USER:UPDATE",
 }

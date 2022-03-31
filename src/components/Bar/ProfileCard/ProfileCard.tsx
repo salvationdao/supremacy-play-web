@@ -1,13 +1,12 @@
-import { useRef } from "react"
-import { Avatar, Stack, Typography, Popover } from "@mui/material"
-import { BarExpandable, ConnectButton, LogoutButton, NavButton, PreferencesModal } from "../.."
-import { useEffect } from "react"
-import { SvgAssets, SvgProfile, SvgShop, SvgSettings } from "../../../assets"
+import { Avatar, Popover, Stack, Typography } from "@mui/material"
+import { useEffect, useRef } from "react"
+import { BarExpandable, ConnectButton, LogoutButton, NavButton } from "../.."
+import { SvgAssets, SvgProfile, SvgShop } from "../../../assets"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_SERVER_HOST_IMAGES, PASSPORT_WEB } from "../../../constants"
 import { usePassportServerAuth } from "../../../containers"
+import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
-import { shadeColor } from "../../../helpers"
 
 export const ProfileCard = () => {
     const { user } = usePassportServerAuth()
@@ -15,7 +14,6 @@ export const ProfileCard = () => {
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
-    const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
 
     // Don't show the connect button for couple seconds as it tries to do the auto login
     useEffect(() => {
@@ -107,7 +105,6 @@ export const ProfileCard = () => {
                 anchorEl={popoverRef.current}
                 onClose={() => {
                     toggleIsPopoverOpen(false)
-                    togglePreferencesModalOpen(false)
                 }}
                 anchorOrigin={{
                     vertical: "bottom",
@@ -147,20 +144,9 @@ export const ProfileCard = () => {
                     >
                         Edit Profile
                     </NavButton>
-                    <NavButton
-                        onClick={() => {
-                            togglePreferencesModalOpen(true)
-                            toggleIsPopoverOpen(false)
-                        }}
-                        startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}
-                    >
-                        Preferences
-                    </NavButton>
                     <LogoutButton />
                 </Stack>
             </Popover>
-
-            <PreferencesModal open={preferencesModalOpen} toggle={togglePreferencesModalOpen} />
         </>
     )
 }
