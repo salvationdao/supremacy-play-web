@@ -56,7 +56,7 @@ export const BanProposal = () => {
     useEffect(() => {
         if (!banProposal) return
         toggleOutOfTime(banProposal.ended_at < new Date())
-        toggleRender(true)
+        toggleRender(banProposal.ended_at > new Date())
     }, [banProposal])
 
     // When out of time, give inner some time to animate, then stop render

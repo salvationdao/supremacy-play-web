@@ -264,8 +264,10 @@ export const ChatContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
             if (payload) {
-                const duration = payload.ended_at.getTime() - payload.started_at.getTime()
-                const endTime = new Date(new Date().getTime() + duration)
+                const startedAtTime = payload.started_at.getTime()
+                const nowTime = new Date().getTime()
+                const duration = payload.ended_at.getTime() - startedAtTime
+                const endTime = new Date(Math.min(startedAtTime, nowTime) + duration)
 
                 setBanProposal({
                     ...payload,
