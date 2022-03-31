@@ -1,10 +1,17 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
-import { SvgGoldBars, SvgRadar } from "../../assets"
+import { SvgGoldBars, SvgHistory, SvgRadar } from "../../assets"
 import { useOverlayToggles } from "../../containers"
 
 export const OverlayToggles = () => {
-    const { isMapOpen, toggleIsMapOpen, isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
+    const {
+        isMapOpen,
+        toggleIsMapOpen,
+        isLiveChartOpen,
+        toggleIsLiveChartOpen,
+        isBattleHistoryOpen,
+        toggleIsBattleHistoryOpen,
+    } = useOverlayToggles()
 
     return (
         <Stack direction="row" alignItems="center">
@@ -42,15 +49,15 @@ export const OverlayToggles = () => {
                         ":active": { filter: "grayscale(.6)" },
                     }}
                 >
-                    <SvgRadar size="1.7rem" />
+                    <SvgRadar size="1.6rem" />
                 </IconButton>
             </TooltipHelper>
 
             {/* Battle history */}
-            {/* <TooltipHelper text="Toggle the battle history page.">
+            <TooltipHelper text="Toggle the battle history page.">
                 <IconButton
                     size="small"
-                    onClick={toggleIsBattleHistoryOpen}
+                    onClick={() => toggleIsBattleHistoryOpen()}
                     sx={{
                         filter: isBattleHistoryOpen ? "grayscale(0)" : "grayscale(1)",
                         opacity: isBattleHistoryOpen ? 1 : 0.4,
@@ -59,9 +66,9 @@ export const OverlayToggles = () => {
                         ":active": { filter: "grayscale(.6)" },
                     }}
                 >
-                    <SvgHistory size="1.7rem" fill={colors.green} />
+                    <SvgHistory size="1.7rem" fill="#E8BB3F" />
                 </IconButton>
-            </TooltipHelper> */}
+            </TooltipHelper>
         </Stack>
     )
 }

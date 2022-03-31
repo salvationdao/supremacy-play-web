@@ -117,7 +117,7 @@ const TabbedLayout = () => {
                         background: "#FFFFFF50",
                     },
                 }}
-                onChange={(event, newValue) => {
+                onChange={(_event, newValue) => {
                     setTabValue(newValue)
                 }}
             >
@@ -126,7 +126,16 @@ const TabbedLayout = () => {
                         <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                             <Badge
                                 badgeContent={globalChatUnread}
-                                sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
+                                sx={{
+                                    ".MuiBadge-badge": {
+                                        fontSize: "1.2rem",
+                                        fontFamily: "Share Tech",
+                                        fontWeight: "fontWeightBold",
+                                        lineHeight: 0,
+                                        color: "#FFFFFF",
+                                        backgroundColor: colors.red,
+                                    },
+                                }}
                             >
                                 <SvgGlobal size="2rem" />
                             </Badge>
@@ -148,7 +157,16 @@ const TabbedLayout = () => {
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                                 <Badge
                                     badgeContent={factionChatUnread}
-                                    sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
+                                    sx={{
+                                        ".MuiBadge-badge": {
+                                            fontSize: "1.2rem",
+                                            fontFamily: "Share Tech",
+                                            fontWeight: "fontWeightBold",
+                                            lineHeight: 0,
+                                            color: "#FFFFFF",
+                                            backgroundColor: colors.red,
+                                        },
+                                    }}
                                 >
                                     <Box
                                         sx={{

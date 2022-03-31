@@ -336,15 +336,20 @@ export const AssetItem = ({
                 <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
             </Link>
 
-            <DeployConfirmation
-                open={deployModalOpen}
-                asset={asset}
-                queueLength={queueLength}
-                queueCost={queueCost}
-                contractReward={contractReward}
-                onClose={() => toggleDeployModalOpen(false)}
-            />
-            <LeaveConfirmation open={leaveModalOpen} asset={asset} onClose={() => toggleLeaveModalOpen(false)} />
+            {deployModalOpen && (
+                <DeployConfirmation
+                    open={deployModalOpen}
+                    asset={asset}
+                    queueLength={queueLength}
+                    queueCost={queueCost}
+                    contractReward={contractReward}
+                    onClose={() => toggleDeployModalOpen(false)}
+                />
+            )}
+
+            {leaveModalOpen && (
+                <LeaveConfirmation open={leaveModalOpen} asset={asset} onClose={() => toggleLeaveModalOpen(false)} />
+            )}
         </Stack>
     )
 }

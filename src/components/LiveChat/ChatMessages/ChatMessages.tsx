@@ -1,19 +1,18 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
-import { BanProposal, ChatMessage } from "../.."
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
+import { ChatMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
 import {
     FontSizeType,
     SplitOptionType,
     useChat,
-    useGameServerWebsocket,
     usePassportServerAuth,
     UserIDMap,
     UserMultiplierMap,
-    WebSocketProperties,
 } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { ChatData } from "../../../types/passport"
+import { BanProposal } from "../BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 
 interface ChatMessagesProps {
@@ -167,7 +166,6 @@ const ChatMessagesInner = ({
                         ))
                     ) : (
                         <Typography
-                            variant="body2"
                             sx={{
                                 color: colors.grey,
                                 textAlign: "center",
@@ -186,7 +184,7 @@ const ChatMessagesInner = ({
                     onClick={onClickScrollToBottom}
                     sx={{
                         position: "absolute",
-                        bottom: "7.8rem",
+                        bottom: "6.2rem",
                         right: "2.5rem",
                         backgroundColor: primaryColor,
                         boxShadow: 3,

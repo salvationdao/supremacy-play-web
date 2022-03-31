@@ -300,7 +300,6 @@ const DrawerContent = () => {
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                 <Typography
-                    variant="body2"
                     sx={{
                         px: "1.28rem",
                         pt: "1.28rem",
