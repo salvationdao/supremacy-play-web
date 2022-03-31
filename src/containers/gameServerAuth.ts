@@ -77,9 +77,8 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             GameServerKeys.UserSubscribe,
             (u) => {
                 if (u) {
-                    const betterU = buildUserStruct(u)
-                    setUser(betterU)
-                    if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)
+                    setUser(u)
+                    if (u?.faction?.theme) updateTheme(u.faction.theme)
                 }
             },
             { id: userID },
@@ -92,33 +91,14 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             GameServerKeys.RingCheck,
             (u) => {
                 if (u) {
-                    const betterU = buildUserStruct(u)
-                    setUser(betterU)
-                    if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)
+                    setUser(u)
+                    if (u?.faction?.theme) updateTheme(u.faction.theme)
                 }
             },
             null,
             true,
         )
     }, [state, subscribe])
-
-    // Temporary
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    const buildUserStruct = useCallback((u: any) => {
-        return {
-            ...u,
-            faction_id: u.faction_id !== "00000000-0000-0000-0000-000000000000" ? u.faction_id : null,
-            faction: u.faction
-                ? {
-                      theme: {
-                          primary: u.faction.theme.primary,
-                          secondary: u.faction.theme.secondary,
-                          background: u.faction.theme.background,
-                      },
-                  }
-                : null,
-        }
-    }, [])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || user || gameserverSessionID) return
