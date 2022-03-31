@@ -23,7 +23,7 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
         toggleOpen(false)
     }, [haveSups])
 
-    if (!user) return null
+    if (!user || !open) return null
 
     return (
         <Modal open={open} onClose={() => toggleOpen(false)}>
@@ -34,7 +34,7 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     maxWidth: "50rem",
-                    boxShadow: 24,
+                    boxShadow: 6,
                 }}
             >
                 <ClipThing

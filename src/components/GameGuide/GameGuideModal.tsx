@@ -98,7 +98,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     maxWidth: "82rem",
-                    boxShadow: 24,
+                    boxShadow: 6,
                 }}
             >
                 <ClipThing

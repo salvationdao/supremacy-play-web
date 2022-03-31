@@ -7,6 +7,8 @@ import { ClipThing } from ".."
 export const EarlyAccessWarning = () => {
     const [closed, toggleClosed] = useToggle()
 
+    if (closed) return null
+
     return (
         <Modal open={!closed}>
             <Box
@@ -16,7 +18,7 @@ export const EarlyAccessWarning = () => {
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "42rem",
-                    boxShadow: 24,
+                    boxShadow: 6,
                 }}
             >
                 <ClipThing

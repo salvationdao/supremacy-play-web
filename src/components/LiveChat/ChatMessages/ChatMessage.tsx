@@ -44,14 +44,15 @@ const UserDetailsPopover = ({
             anchorEl={popoverRef.current}
             onClose={onClose}
             anchorOrigin={{
-                vertical: "center",
+                vertical: "top",
                 horizontal: "left",
             }}
             transformOrigin={{
-                vertical: "center",
+                vertical: "top",
                 horizontal: "right",
             }}
             sx={{
+                mt: "-.3rem",
                 ml: "-1rem",
                 zIndex: 10000,
                 ".MuiPaper-root": {

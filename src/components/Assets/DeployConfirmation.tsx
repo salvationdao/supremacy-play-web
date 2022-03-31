@@ -119,6 +119,7 @@ export const DeployConfirmation = ({
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "46rem",
+                    boxShadow: 6,
                 }}
             >
                 <ClipThing
@@ -138,7 +139,6 @@ export const DeployConfirmation = ({
                             pl: "1.76rem",
                             pr: "2.56rem",
                             py: "2.4rem",
-
                             backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
                         }}
                     >
