@@ -32,16 +32,12 @@ const LineItem = ({ title, children, color }: { title: string; children: ReactNo
 }
 
 const Countdown = ({
-    startAt,
-    endAt,
+    endTime,
     toggleOutOfTime,
 }: {
-    startAt: Date
-    endAt: Date
+    endTime: Date
     toggleOutOfTime: (value?: boolean | undefined) => void
 }) => {
-    const duration = endAt.getTime() - startAt.getTime()
-    const endTime = new Date(new Date().getTime() + duration)
     const { totalSecRemain } = useTimer(endTime)
 
     useEffect(() => {
@@ -59,7 +55,7 @@ export const BanProposal = () => {
     // When new proposal comes in, reset the out of timer, and render it
     useEffect(() => {
         if (!banProposal) return
-        toggleOutOfTime(false)
+        toggleOutOfTime(banProposal.ended_at < new Date())
         toggleRender(true)
     }, [banProposal])
 
@@ -71,8 +67,6 @@ export const BanProposal = () => {
             }, 250)
         }
     }, [outOfTime])
-
-    console.log({ banProposal, render, outOfTime })
 
     if (!banProposal || !render) return null
 
@@ -196,12 +190,7 @@ const BanProposalInner = ({
                 >
                     <Typography sx={{ fontWeight: "fontWeightBold" }}>PUNISHMENT PROPOSAL</Typography>
                     <Typography sx={{ fontWeight: "fontWeightBold", px: "1rem", backgroundColor: "#00000090" }}>
-                        <Countdown
-                            startAt={banProposal.started_at}
-                            endAt={banProposal.ended_at}
-                            toggleOutOfTime={toggleOutOfTime}
-                        />
-                        s
+                        <Countdown endTime={banProposal.ended_at} toggleOutOfTime={toggleOutOfTime} />s
                     </Typography>
                 </Stack>
 
