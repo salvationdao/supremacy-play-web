@@ -38,6 +38,7 @@ export const AdditionalOptionsButton = () => {
                 }}
             >
                 <SvgFastRepair size="1.08rem" sx={{ mr: ".6rem" }} />
+                <Typography>MORE OPTIONS</Typography>
             </Button>
 
             <Popover

@@ -267,29 +267,29 @@ export const ChatContainer = createContainer(() => {
         })
     }, [user, state, subscribe])
 
-    useEffect(() => {
-        setTimeout(() => {
-            setbanProposal({
-                id: "123",
-                punish_option_id: "456",
-                reason: "string",
-                faction_id: "789",
-                issued_by_id: "123456",
-                issued_by_username: "jayli3n",
-                reported_player_id: "456789",
-                reported_player_username: "darren_hung",
-                status: "PENDING",
-                started_at: new Date(),
-                ended_at: new Date(new Date().getTime() + 300000),
-                punishOption: {
-                    id: "456",
-                    description: "Limits the user from using map target select for 24 hours.",
-                    key: "limit_location_select",
-                    punish_duration_hours: 24,
-                },
-            })
-        }, 1500)
-    }, [])
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setbanProposal({
+    //             id: "123",
+    //             punish_option_id: "456",
+    //             reason: "string",
+    //             faction_id: "789",
+    //             issued_by_id: "123456",
+    //             issued_by_username: "jayli3n",
+    //             reported_player_id: "456789",
+    //             reported_player_username: "darren_hung",
+    //             status: "PENDING",
+    //             started_at: new Date(),
+    //             ended_at: new Date(new Date().getTime() + 300000),
+    //             punishOption: {
+    //                 id: "456",
+    //                 description: "Limits the user from using map target select for 24 hours.",
+    //                 key: "limit_location_select",
+    //                 punish_duration_hours: 24,
+    //             },
+    //         })
+    //     }, 1500)
+    // }, [])
 
     return {
         tabValue,
