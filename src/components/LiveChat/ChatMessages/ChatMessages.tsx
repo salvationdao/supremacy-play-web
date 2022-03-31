@@ -3,9 +3,11 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { ChatMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
 import {
+    FactionsAll,
     FontSizeType,
     SplitOptionType,
     useChat,
+    useGame,
     useGameServerAuth,
     UserIDMap,
     UserMultiplierMap,
@@ -35,6 +37,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
         userStatMap,
         globalAnnouncement,
     } = useChat()
+    const { factionsAll } = useGame()
 
     return (
         <ChatMessagesInner
@@ -49,6 +52,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
             fontSize={fontSize}
             userStatMap={userStatMap}
             globalAnnouncement={globalAnnouncement}
+            factionsAll={factionsAll}
         />
     )
 }
@@ -63,6 +67,7 @@ interface ChatMessagesInnerProps extends ChatMessagesProps {
     fontSize: FontSizeType
     userStatMap: UserIDMap
     globalAnnouncement?: GlobalAnnouncementType
+    factionsAll: FactionsAll
 }
 
 const ChatMessagesInner = ({
@@ -79,6 +84,7 @@ const ChatMessagesInner = ({
     fontSize,
     userStatMap,
     globalAnnouncement,
+    factionsAll,
 }: ChatMessagesInnerProps) => {
     const { user } = useGameServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
@@ -162,6 +168,7 @@ const ChatMessagesInner = ({
                                 isCitizen={citizenPlayerIDs.some((cp) => cp === c.from_user_id)}
                                 fontSize={fontSize}
                                 userStat={userStatMap[c.from_user_id]}
+                                factionsAll={factionsAll}
                             />
                         ))
                     ) : (
