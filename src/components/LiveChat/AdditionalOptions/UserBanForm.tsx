@@ -67,6 +67,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
     const [reason, setReason] = useState("")
 
     const primaryColor = (user && user.faction.theme.primary) || colors.neonBlue
+    const secondaryColor = (user && user.faction.theme.secondary) || "#FFFFFF"
 
     // Load the ban options
     useEffect(() => {
@@ -403,7 +404,12 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
                             }}
                         >
                             <Typography
-                                sx={{ lineHeight: 1, fontWeight: "fontWeightBold", opacity: isDisabled ? 0.6 : 1 }}
+                                sx={{
+                                    color: secondaryColor,
+                                    lineHeight: 1,
+                                    fontWeight: "fontWeightBold",
+                                    opacity: isDisabled ? 0.6 : 1,
+                                }}
                             >
                                 SUBMIT
                             </Typography>

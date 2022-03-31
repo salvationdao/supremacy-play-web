@@ -3,6 +3,7 @@ import { useMemo, useRef } from "react"
 import { ClipThing } from "../.."
 import { SvgSkull2, SvgInfoCircular, SvgAbility, SvgDeath, SvgView } from "../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { FactionsAll } from "../../../containers"
 import { dateFormatter, truncate } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
@@ -135,6 +136,7 @@ export const ChatMessage = ({
     filterZeros,
     fontSize,
     userStat,
+    factionsAll,
 }: {
     chat: ChatData
     isSent?: boolean
@@ -144,9 +146,9 @@ export const ChatMessage = ({
     filterZeros?: boolean
     fontSize: number
     userStat: UserStat
+    factionsAll: FactionsAll
 }) => {
-    const { from_username, message_color, faction_colour, faction_logo_blob_id, avatar_id, message, sent_at, self } =
-        chat
+    const { from_username, message_color, from_user_faction_id, avatar_id, message, sent_at, self } = chat
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
@@ -157,6 +159,14 @@ export const ChatMessage = ({
         if (userStat.kill_count < 0) return colors.red
         return message_color
     }, [userStat, message_color])
+    const factionColor = useMemo(
+        () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.theme.primary : message_color),
+        [from_user_faction_id],
+    )
+    const factionLogoBlobID = useMemo(
+        () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.logo_blob_id : ""),
+        [from_user_faction_id],
+    )
 
     if (!self && filterZeros && multiplierInt <= 0) return null
 
@@ -178,26 +188,26 @@ export const ChatMessage = ({
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
-                                    backgroundColor: faction_colour,
+                                    backgroundColor: factionColor,
                                     borderRadius: 0.8,
-                                    border: `${faction_colour} 1px solid`,
+                                    border: `${factionColor} 1px solid`,
                                 }}
                             />
                         )}
-                        {faction_logo_blob_id && faction_logo_blob_id != NullUUID && (
+                        {factionLogoBlobID && factionLogoBlobID != NullUUID && (
                             <Box
                                 sx={{
                                     mt: "-0.1rem !important",
                                     width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
                                     height: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
                                     flexShrink: 0,
-                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction_logo_blob_id})`,
+                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
-                                    backgroundColor: faction_colour,
+                                    backgroundColor: factionColor,
                                     borderRadius: 0.8,
-                                    border: `${faction_colour} 1px solid`,
+                                    border: `${factionColor} 1px solid`,
                                 }}
                             />
                         )}
@@ -318,8 +328,8 @@ export const ChatMessage = ({
             </Stack>
 
             <UserDetailsPopover
-                factionLogoBlobID={faction_logo_blob_id}
-                factionColor={faction_colour}
+                factionLogoBlobID={factionLogoBlobID}
+                factionColor={factionColor}
                 username={from_username}
                 userStat={userStat}
                 popoverRef={popoverRef}

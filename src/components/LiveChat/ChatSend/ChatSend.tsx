@@ -86,10 +86,9 @@ const ChatSendInner = ({
         newMessageHandler(
             {
                 from_user_id: user.id,
+                from_user_faction_id: user.faction_id,
                 from_username: user.username,
                 message_color: messageColor,
-                faction_colour: user && user.faction ? user.faction.theme.primary : messageColor,
-                faction_logo_blob_id: user && user.faction ? user.faction.logo_blob_id : "",
                 avatar_id: user.avatar_id,
                 message,
                 sent_at: sentAt,
