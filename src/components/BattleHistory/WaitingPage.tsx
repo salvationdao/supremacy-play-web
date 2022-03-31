@@ -3,7 +3,7 @@ import React from "react"
 import { SupBackground } from "../../assets"
 import { colors } from "../../theme/theme"
 
-export const WaitingPage: React.FC = () => {
+export const WaitingPage = () => {
     return (
         <Box
             sx={{
@@ -13,7 +13,7 @@ export const WaitingPage: React.FC = () => {
                 left: 0,
                 right: 0,
                 background: `center url(${SupBackground})`,
-                backgroundSize: "contain",
+                backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 pointerEvents: "none",
                 display: "flex",
@@ -34,7 +34,6 @@ export const WaitingPage: React.FC = () => {
                 <Typography
                     variant="h1"
                     sx={{
-                        fontSize: "6rem",
                         fontFamily: "Nostromo Regular Heavy",
                         WebkitTextStrokeWidth: "2px",
                         "@media (max-width:1440px)": {
@@ -48,9 +47,9 @@ export const WaitingPage: React.FC = () => {
                     Battle Arena
                 </Typography>
                 <Typography
+                    variant="h3"
                     sx={{
                         fontFamily: "Nostromo Regular Black",
-                        fontSize: "3rem",
                         WebkitTextStrokeWidth: "1px",
                         "@media (max-width:1440px)": {
                             fontSize: "4vw",
