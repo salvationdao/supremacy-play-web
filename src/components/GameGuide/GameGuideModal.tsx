@@ -35,17 +35,17 @@ const LoadingSkeleton = () => (
                 ))}
             </Stack>
 
-            <Stack sx={{ width: "100%" }} spacing="0.5rem">
+            <Stack sx={{ width: "100%", mt: "1rem" }} spacing="0.5rem">
                 <Box>
                     <Skeleton variant="text" width="15rem" height="4rem" />
-                    {new Array(10).fill(0).map((_, index) => (
+                    {new Array(6).fill(0).map((_, index) => (
                         <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
                     ))}
                 </Box>
 
                 <Box>
                     <Skeleton variant="text" width="25rem" height="4rem" />
-                    {new Array(6).fill(0).map((_, index) => (
+                    {new Array(10).fill(0).map((_, index) => (
                         <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
                     ))}
                 </Box>
@@ -98,7 +98,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     maxWidth: "82rem",
-                    boxShadow: 24,
+                    boxShadow: 6,
                 }}
             >
                 <ClipThing
@@ -167,7 +167,8 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                         mt: "1rem",
                                         mb: "2rem",
                                         px: "3rem",
-                                        py: "1rem",
+                                        pt: "1.5rem",
+                                        pb: "1rem",
                                         "::-webkit-scrollbar": {
                                             width: ".4rem",
                                         },

@@ -5,15 +5,15 @@ import { SvgEmoji, SvgSend } from "../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../constants"
 import {
     useChat,
-    usePassportServerAuth,
-    usePassportServerWebsocket,
+    useGameServerAuth,
     useSnackbar,
     WebSocketProperties,
+    useGameServerWebsocket,
 } from "../../../containers"
 import { useToggle } from "../../../hooks"
-import { PassportServerKeys } from "../../../keys"
+import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { ChatData, UserData } from "../../../types/passport"
+import { ChatData, User } from "../../../types"
 
 interface ChatSendProps {
     primaryColor: string
@@ -21,8 +21,8 @@ interface ChatSendProps {
 }
 
 export const ChatSend = (props: ChatSendProps) => {
-    const { state, send } = usePassportServerWebsocket()
-    const { user } = usePassportServerAuth()
+    const { state, send } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
     const { onSentMessage, onFailedMessage, newMessageHandler, initialMessageColor } = useChat()
 
     return (
@@ -40,7 +40,7 @@ export const ChatSend = (props: ChatSendProps) => {
 }
 
 interface ChatSendInnerProps extends ChatSendProps, Partial<WebSocketProperties> {
-    user?: UserData
+    user?: User
     onSentMessage: (sentAt: Date) => void
     onFailedMessage: (sentAt: Date) => void
     newMessageHandler: (message: ChatData, faction_id: string | null) => void
@@ -100,7 +100,7 @@ const ChatSendInner = ({
 
         try {
             setMessage("")
-            const resp = await send<boolean>(PassportServerKeys.SendChatMessage, {
+            const resp = await send<boolean>(GameServerKeys.SendChatMessage, {
                 faction_id,
                 message,
                 message_color: messageColor,

@@ -1,19 +1,18 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
-import { BanProposal, ChatMessage } from "../.."
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
+import { ChatMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
 import {
     FontSizeType,
     SplitOptionType,
     useChat,
-    useGameServerWebsocket,
-    usePassportServerAuth,
+    useGameServerAuth,
     UserIDMap,
     UserMultiplierMap,
-    WebSocketProperties,
 } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { ChatData } from "../../../types/passport"
+import { ChatData } from "../../../types"
+import { BanProposal } from "../BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 
 interface ChatMessagesProps {
@@ -81,7 +80,7 @@ const ChatMessagesInner = ({
     userStatMap,
     globalAnnouncement,
 }: ChatMessagesInnerProps) => {
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
 
@@ -167,7 +166,6 @@ const ChatMessagesInner = ({
                         ))
                     ) : (
                         <Typography
-                            variant="body2"
                             sx={{
                                 color: colors.grey,
                                 textAlign: "center",
@@ -186,7 +184,7 @@ const ChatMessagesInner = ({
                     onClick={onClickScrollToBottom}
                     sx={{
                         position: "absolute",
-                        bottom: "7.8rem",
+                        bottom: "6.2rem",
                         right: "2.5rem",
                         backgroundColor: primaryColor,
                         boxShadow: 3,

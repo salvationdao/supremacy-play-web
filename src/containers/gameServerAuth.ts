@@ -3,8 +3,7 @@ import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
-import { UpdateTheme, User } from "../types"
-import { UserStat } from "../types/passport"
+import { UpdateTheme, User, UserStat } from "../types"
 
 export interface AuthContainerType {
     user: User | undefined

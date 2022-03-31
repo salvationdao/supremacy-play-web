@@ -167,9 +167,9 @@ export const LocationSelectAlert = ({
 
     return (
         <ClipThing
-            clipSize="8px"
+            clipSize="3px"
             border={{
-                borderColor: mainColor || "none",
+                borderColor: mainColor || colors.grey,
                 isFancy: true,
                 borderThickness: ".2rem",
             }}

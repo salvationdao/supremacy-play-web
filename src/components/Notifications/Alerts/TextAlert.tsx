@@ -5,9 +5,9 @@ import { colors } from "../../../theme/theme"
 export const TextAlert = ({ data }: { data: string }) => {
     return (
         <ClipThing
-            clipSize="8px"
+            clipSize="3px"
             border={{
-                borderColor: "none",
+                borderColor: colors.offWhite,
                 isFancy: true,
                 borderThickness: ".2rem",
             }}

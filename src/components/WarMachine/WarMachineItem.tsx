@@ -453,7 +453,7 @@ const WarMachineItemInner = ({
                 />
             )}
 
-            {!isAlive && (
+            {!isAlive && warMachineDestroyedRecord && isDestroyedInfoOpen && (
                 <WarMachineDestroyedInfo
                     open={isDestroyedInfoOpen}
                     toggleOpen={toggleIsDestroyedInfoOpen}

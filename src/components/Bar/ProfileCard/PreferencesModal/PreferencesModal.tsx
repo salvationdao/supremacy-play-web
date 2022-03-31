@@ -75,7 +75,7 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "40rem",
-                    boxShadow: 24,
+                    boxShadow: 6,
                 }}
             >
                 <ClipThing

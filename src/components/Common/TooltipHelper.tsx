@@ -6,6 +6,7 @@ export const TooltipHelper = ({
     children,
     isCentered,
     placement,
+    open,
 }: {
     text: string | React.ReactNode
     children: ReactElement
@@ -23,11 +24,13 @@ export const TooltipHelper = ({
         | "top-end"
         | "top-start"
         | "top"
+    open?: boolean
 }) => {
     if (!text) return <>{children}</>
 
     return (
         <Tooltip
+            open={open}
             arrow
             placement={placement || (isCentered ? "bottom" : "bottom-start")}
             sx={{

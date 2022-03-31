@@ -18,4 +18,5 @@ export REACT_APP_PASSPORT_WEB=[passport web url including protocol, string]
 export REACT_APP_GAME_SERVER_HOST=[game server address excluding protocol, string]
 export REACT_APP_PASSPORT_SERVER_HOST=[passport server address excluding protocol, string]
 export REACT_APP_LOG_API_CALLS=[whether to console log ws and rest api calls, true/false]
+export REACT_APP_PRISMIC_ACCESS_TOKEN=[prismic access token, string]
 ```

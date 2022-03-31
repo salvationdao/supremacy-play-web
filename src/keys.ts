@@ -46,6 +46,13 @@ export enum GameServerKeys {
     AssetQueueStatusList = "ASSET:QUEUE:STATUS:LIST",
     SubAssetQueueStatus = "ASSET:QUEUE:STATUS:SUBSCRIBE",
 
+    // Chat
+    SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
+    SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
+    SendChatMessage = "CHAT:MESSAGE",
+    ChatPastMessages = "CHAT:PAST_MESSAGES",
+    SubscribeChatUserStats = "PLAYER:USER:STAT:CHAT:SUBSCRIBE",
+
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubAISpawned = "AI:SPAWNED",
@@ -60,7 +67,6 @@ export enum GameServerKeys {
     SubPlayerPrefs = "PLAYER:PREFERENCES_SUBSCRIBE",
     TogglePlayerBattleQueueNotifications = "PLAYER:TOGGLE_BATTLE_QUEUE_NOTIFICATIONS",
     SubPlayerBattleQueueBrowser = "PLAYER:BROWSER_NOFTICATION_SUBSCRIBE",
-    SubscribeChatUserStats = "PLAYER:USER:STAT:CHAT:SUBSCRIBE",
 
     // Ban system
     GetBanOptions = "PUNISH:OPTIONS",
@@ -85,12 +91,6 @@ export enum PassportServerKeys {
     SubscribeWallet = "USER:SUPS:SUBSCRIBE",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
     SubscribeFactionStat = "FACTION:STAT:SUBSCRIBE",
-
-    // Chat
-    SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
-    SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
-    SendChatMessage = "CHAT:MESSAGE",
-    ChatPastMessages = "CHAT:PAST_MESSAGES",
 
     // Assets
     SubAssetList = "USER:ASSET:LIST",

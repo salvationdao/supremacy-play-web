@@ -8,10 +8,10 @@ import {
     RIGHT_DRAWER_WIDTH,
     PASSPORT_SERVER_HOST_IMAGES,
 } from "../../constants"
-import { useChat, useDrawer, usePassportServerAuth } from "../../containers"
+import { useChat, useDrawer, useGameServerAuth } from "../../containers"
 import { acronym, shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
-import { ChatData, UserData } from "../../types/passport"
+import { ChatData, User } from "../../types"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 
@@ -22,7 +22,7 @@ const Content = ({
     secondaryColor,
     chatMessages,
 }: {
-    user?: UserData
+    user?: User
     faction_id: string | null
     primaryColor: string
     secondaryColor: string
@@ -57,7 +57,7 @@ const Content = ({
 }
 
 const TabbedLayout = () => {
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
     const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread } =
         useChat()
 
@@ -117,7 +117,7 @@ const TabbedLayout = () => {
                         background: "#FFFFFF50",
                     },
                 }}
-                onChange={(event, newValue) => {
+                onChange={(_event, newValue) => {
                     setTabValue(newValue)
                 }}
             >
@@ -126,7 +126,16 @@ const TabbedLayout = () => {
                         <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                             <Badge
                                 badgeContent={globalChatUnread}
-                                sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
+                                sx={{
+                                    ".MuiBadge-badge": {
+                                        fontSize: "1.2rem",
+                                        fontFamily: "Share Tech",
+                                        fontWeight: "fontWeightBold",
+                                        lineHeight: 0,
+                                        color: "#FFFFFF",
+                                        backgroundColor: colors.red,
+                                    },
+                                }}
                             >
                                 <SvgGlobal size="2rem" />
                             </Badge>
@@ -148,7 +157,16 @@ const TabbedLayout = () => {
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                                 <Badge
                                     badgeContent={factionChatUnread}
-                                    sx={{ ".MuiBadge-badge": { color: "#FFFFFF", backgroundColor: colors.red } }}
+                                    sx={{
+                                        ".MuiBadge-badge": {
+                                            fontSize: "1.2rem",
+                                            fontFamily: "Share Tech",
+                                            fontWeight: "fontWeightBold",
+                                            lineHeight: 0,
+                                            color: "#FFFFFF",
+                                            backgroundColor: colors.red,
+                                        },
+                                    }}
                                 >
                                     <Box
                                         sx={{
@@ -190,7 +208,7 @@ const TabbedLayout = () => {
 }
 
 const SplitLayout = () => {
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
     const { globalChatMessages, factionChatMessages } = useChat()
 
     const isEnlisted = useMemo(() => user && user.faction_id && user.faction, [user])
