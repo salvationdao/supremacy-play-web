@@ -233,7 +233,7 @@ export interface BanProposalStruct {
     status: string
     started_at: Date
     ended_at: Date
-    punishOption: BanOption
+    punish_option: BanOption
 }
 
 export interface BanUser {
