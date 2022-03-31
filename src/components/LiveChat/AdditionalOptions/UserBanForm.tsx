@@ -21,8 +21,7 @@ import { snakeToTitle } from "../../../helpers"
 import { useDebounce, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { BanOption, BanUser } from "../../../types"
-import { UserData } from "../../../types/passport"
+import { BanOption, BanUser, User } from "../../../types"
 
 interface SubmitRequest {
     intend_to_punish_player_id: string
@@ -30,7 +29,7 @@ interface SubmitRequest {
     reason: string
 }
 
-const UserItem = ({ user, banUser, sx }: { user: UserData; banUser: BanUser; sx?: SxProps }) => (
+const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: SxProps }) => (
     <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
         <Box
             sx={{
@@ -51,7 +50,7 @@ const UserItem = ({ user, banUser, sx }: { user: UserData; banUser: BanUser; sx?
     </Stack>
 )
 
-export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: boolean; onClose: () => void }) => {
+export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolean; onClose: () => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     // Options and display only
@@ -300,7 +299,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: UserData; open: bo
                                         },
                                     }}
                                 >
-                                    {banOptions.map((x, i) => {
+                                    {banOptions.map((x) => {
                                         return (
                                             <MenuItem
                                                 key={`ban-reason-${x.id}`}

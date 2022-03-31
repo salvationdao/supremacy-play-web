@@ -6,12 +6,12 @@ import {
     FontSizeType,
     SplitOptionType,
     useChat,
-    usePassportServerAuth,
+    useGameServerAuth,
     UserIDMap,
     UserMultiplierMap,
 } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { ChatData } from "../../../types/passport"
+import { ChatData } from "../../../types"
 import { BanProposal } from "../BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 
@@ -80,7 +80,7 @@ const ChatMessagesInner = ({
     userStatMap,
     globalAnnouncement,
 }: ChatMessagesInnerProps) => {
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
 

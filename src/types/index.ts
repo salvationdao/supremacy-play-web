@@ -247,3 +247,23 @@ export interface BanOption {
     key: string
     punish_duration_hours: number
 }
+
+export interface UserStat {
+    id: string
+    view_battle_count: number
+    total_ability_triggered: number
+    kill_count: number
+    mech_kill_count: number
+}
+
+export interface ChatData {
+    from_user_id: string
+    from_username: string
+    message_color?: string
+    faction_colour?: string
+    faction_logo_blob_id?: string
+    avatar_id?: string
+    message: string
+    sent_at: Date
+    self?: boolean
+}

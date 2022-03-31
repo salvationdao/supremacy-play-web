@@ -6,7 +6,7 @@ import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { dateFormatter, truncate } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
-import { ChatData, UserStat } from "../../../types/passport"
+import { ChatData, UserStat } from "../../../types"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
 const getMultiplierColor = (multiplierInt: number): string => {
@@ -162,7 +162,7 @@ export const ChatMessage = ({
 
     return (
         <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
-            <Stack direction="row" spacing=".4rem">
+            <Stack ref={popoverRef} direction="row" spacing=".4rem">
                 <Stack direction="row" spacing=".4rem" alignItems="start">
                     <Box>
                         {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
@@ -186,7 +186,6 @@ export const ChatMessage = ({
                         )}
                         {faction_logo_blob_id && faction_logo_blob_id != NullUUID && (
                             <Box
-                                ref={popoverRef}
                                 sx={{
                                     mt: "-0.1rem !important",
                                     width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",

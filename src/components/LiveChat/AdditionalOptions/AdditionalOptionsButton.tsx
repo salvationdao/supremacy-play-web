@@ -3,12 +3,12 @@ import { useRef } from "react"
 import { UserBanForm } from "../.."
 import { SvgFastRepair } from "../../../assets"
 import { RIGHT_DRAWER_WIDTH, LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../../constants"
-import { usePassportServerAuth } from "../../../containers"
+import { useGameServerAuth } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 
 export const AdditionalOptionsButton = () => {
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 

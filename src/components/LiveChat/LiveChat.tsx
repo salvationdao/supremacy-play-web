@@ -8,10 +8,10 @@ import {
     RIGHT_DRAWER_WIDTH,
     PASSPORT_SERVER_HOST_IMAGES,
 } from "../../constants"
-import { useChat, useDrawer, usePassportServerAuth } from "../../containers"
+import { useChat, useDrawer, useGameServerAuth } from "../../containers"
 import { acronym, shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
-import { ChatData, UserData } from "../../types/passport"
+import { ChatData, User } from "../../types"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 
@@ -22,7 +22,7 @@ const Content = ({
     secondaryColor,
     chatMessages,
 }: {
-    user?: UserData
+    user?: User
     faction_id: string | null
     primaryColor: string
     secondaryColor: string
@@ -57,7 +57,7 @@ const Content = ({
 }
 
 const TabbedLayout = () => {
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
     const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread } =
         useChat()
 
@@ -208,7 +208,7 @@ const TabbedLayout = () => {
 }
 
 const SplitLayout = () => {
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
     const { globalChatMessages, factionChatMessages } = useChat()
 
     const isEnlisted = useMemo(() => user && user.faction_id && user.faction, [user])

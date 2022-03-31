@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "."
+import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { GlobalAnnouncementType } from "../components/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
-import { GameServerKeys, PassportServerKeys } from "../keys"
-import { BanProposalStruct } from "../types"
-import { ChatData, UserStat } from "../types/passport"
+import { GameServerKeys } from "../keys"
+import { BanProposalStruct, ChatData, UserStat } from "../types"
 
 export interface UserMultiplier {
     player_id: string
@@ -39,8 +38,7 @@ export type FontSizeType = 0.8 | 1 | 1.35
 export const ChatContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
     const { user } = usePassportServerAuth()
-    const { state, subscribe, send } = usePassportServerWebsocket()
-    const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
+    const { state, send, subscribe } = useGameServerWebsocket()
 
     // Tabs: 0 is global chat, 1 is faction chat
     const [tabValue, setTabValue] = useState(0)
@@ -148,7 +146,7 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
         try {
-            send<ChatData[]>(PassportServerKeys.ChatPastMessages).then((resp) => {
+            send<ChatData[]>(GameServerKeys.ChatPastMessages).then((resp) => {
                 setGlobalChatMessages(resp)
                 setInitialSentDate((prev) => ({
                     ...prev,
@@ -165,7 +163,7 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         try {
-            send<ChatData[]>(PassportServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
+            send<ChatData[]>(GameServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
                 setFactionChatMessages(resp)
                 setInitialSentDate((prev) => ({
                     ...prev,
@@ -200,8 +198,8 @@ export const ChatContainer = createContainer(() => {
 
     // Subscribe to multiplier map
     useEffect(() => {
-        if (gsState !== WebSocket.OPEN || !gsSubscribe) return
-        return gsSubscribe<UserMultiplierResponse>(GameServerKeys.SubMultiplierMap, (payload) => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<UserMultiplierResponse>(GameServerKeys.SubMultiplierMap, (payload) => {
             if (!payload) {
                 setUserMultiplierMap({})
                 setCitizenPlayerIDs([])
@@ -216,12 +214,12 @@ export const ChatContainer = createContainer(() => {
             setUserMultiplierMap(um)
             setCitizenPlayerIDs(payload.citizen_player_ids)
         })
-    }, [gsState, gsSubscribe])
+    }, [state, subscribe])
 
     // Subscribe to user stats
     useEffect(() => {
-        if (gsState !== WebSocket.OPEN || !gsSubscribe) return
-        return gsSubscribe<UserStat[]>(
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<UserStat[]>(
             GameServerKeys.SubscribeChatUserStats,
             (payload: UserStat[]) => {
                 if (!payload) {
@@ -239,12 +237,12 @@ export const ChatContainer = createContainer(() => {
             null,
             true,
         )
-    }, [gsState, gsSubscribe])
+    }, [state, subscribe])
 
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
-        return subscribe<ChatData>(PassportServerKeys.SubscribeGlobalChat, (m) => {
+        return subscribe<ChatData>(GameServerKeys.SubscribeGlobalChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, null)
             if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
@@ -254,7 +252,7 @@ export const ChatContainer = createContainer(() => {
     // Subscribe to faction chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
-        return subscribe<ChatData>(PassportServerKeys.SubscribeFactionChat, (m) => {
+        return subscribe<ChatData>(GameServerKeys.SubscribeFactionChat, (m) => {
             if (!m || m.from_user_id === user?.id) return
             newMessageHandler(m, m.from_user_id)
             if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
@@ -263,11 +261,11 @@ export const ChatContainer = createContainer(() => {
 
     // Subscribe to ban proposals
     useEffect(() => {
-        if (gsState !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
-        return gsSubscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
+        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
+        return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
             if (!payload) setbanProposal(payload)
         })
-    }, [user, gsState, gsSubscribe])
+    }, [user, state, subscribe])
 
     useEffect(() => {
         setTimeout(() => {
