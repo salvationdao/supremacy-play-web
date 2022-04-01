@@ -2,20 +2,19 @@ const USE_PROD = false
 
 // Envar stuff
 let VERSION = process.env.REACT_APP_COMMIT_REF || "development"
-let GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "localhost:8084"
-let TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://sale.supremacy.game/"
+let GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "192.168.121.85:8084"
+let TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/nosidebar/buy"
 let SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
-let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003/"
-let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
-let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "http://localhost:8086"
-let VIDEO_SERVER_WEBSOCKET =
-    process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
+let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://192.168.121.85:5003/"
+let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "192.168.121.85:8086"
+let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "http://192.168.121.85:8086"
+let VIDEO_SERVER_WEBSOCKET = process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
 let VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
 
 if (USE_PROD) {
     VERSION = "development"
     GAME_SERVER_HOSTNAME = "api.supremacy.game"
-    TOKEN_SALE_PAGE = "https://sale.supremacy.game/"
+    TOKEN_SALE_PAGE = "https://passport.xsyn.io/nosidebar/buy"
     SUPREMACY_PAGE = "https://supremacy.game/"
     PASSPORT_WEB = "https://passport.xsyn.io/"
     PASSPORT_SERVER_HOST = "api.xsyn.io"
@@ -74,7 +73,6 @@ export const TRAILER_VIDEO =
     "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"
 
 // Maintenance (ENVAR). The local stroage is a hack to let the team members in
-export const UNDER_MAINTENANCE =
-    process.env.REACT_APP_MAINTENANCE_PAGE == "true" && !localStorage.getItem("NinjaSecrets@!")
+export const UNDER_MAINTENANCE = process.env.REACT_APP_MAINTENANCE_PAGE == "true" && !localStorage.getItem("NinjaSecrets@!")
 
 export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
