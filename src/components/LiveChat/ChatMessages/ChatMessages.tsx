@@ -150,7 +150,7 @@ const ChatMessagesInner = ({
                                         sentAt={message.sent_at}
                                         fontSize={fontSize}
                                         filterZeros={filterZeros}
-                                        isSent={data.from_user_id != user?.id || sentMessages.includes(message.sent_at)}
+                                        isSent={data.from_user_id != user?.id ? true : sentMessages.includes(message.sent_at)}
                                         isFailed={data.from_user_id != user?.id ? false : failedMessages.includes(message.sent_at)}
                                         factionsAll={factionsAll}
                                     />

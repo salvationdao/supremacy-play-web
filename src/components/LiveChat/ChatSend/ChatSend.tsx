@@ -7,7 +7,7 @@ import { useChat, useGameServerAuth, useSnackbar, WebSocketProperties, useGameSe
 import { useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { User } from "../../../types"
+import { User, UserStat } from "../../../types"
 import { ChatMessageType } from "../../../types/chat"
 
 interface ChatSendProps {
@@ -18,7 +18,7 @@ interface ChatSendProps {
 export const ChatSend = (props: ChatSendProps) => {
     const { state, send } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
-    const { onSentMessage, onFailedMessage, newMessageHandler, initialMessageColor } = useChat()
+    const { onSentMessage, onFailedMessage, newMessageHandler, initialMessageColor, userStats } = useChat()
 
     return (
         <ChatSendInner
@@ -30,6 +30,7 @@ export const ChatSend = (props: ChatSendProps) => {
             onFailedMessage={onFailedMessage}
             newMessageHandler={newMessageHandler}
             initialMessageColor={initialMessageColor}
+            userStats={userStats.current}
         />
     )
 }
@@ -40,6 +41,11 @@ interface ChatSendInnerProps extends ChatSendProps, Partial<WebSocketProperties>
     onFailedMessage: (sentAt: Date) => void
     newMessageHandler: (message: ChatMessageType, faction_id: string | null) => void
     initialMessageColor?: string
+    userStats?: {
+        total_multiplier?: number
+        is_citizen?: boolean
+        from_user_stat?: UserStat
+    }
 }
 
 const ChatSendInner = ({
@@ -52,6 +58,7 @@ const ChatSendInner = ({
     onFailedMessage,
     newMessageHandler,
     initialMessageColor,
+    userStats,
 }: ChatSendInnerProps) => {
     const { newSnackbarMessage } = useSnackbar()
     // Message field
@@ -87,6 +94,7 @@ const ChatSendInner = ({
                     message_color: messageColor,
                     avatar_id: user.avatar_id,
                     message,
+                    ...userStats,
                     self: true,
                 },
                 type: "TEXT",

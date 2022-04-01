@@ -62,6 +62,11 @@ export const ChatContainer = createContainer(() => {
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
+    const userStats = useRef<{
+        total_multiplier?: number
+        is_citizen?: boolean
+        from_user_stat?: UserStat
+    }>()
 
     // Store list of messages that were successfully sent or failed
     const [sentMessages, setSentMessages] = useState<Date[]>([])
@@ -186,11 +191,23 @@ export const ChatContainer = createContainer(() => {
         }
     }, [tabValue, factionChatUnread, splitOption])
 
+    const saveUserStats = useCallback((data: TextMessageData) => {
+        userStats.current = {
+            total_multiplier: data.total_multiplier,
+            is_citizen: data.is_citizen,
+            from_user_stat: data.from_user_stat,
+        }
+    }, [])
+
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
             if (!m) return
+            if (m.type == "TEXT" && (m.data as TextMessageData).from_user_id === user?.id) {
+                saveUserStats(m.data as TextMessageData)
+                return
+            }
 
             newMessageHandler(m, null)
             if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
@@ -202,6 +219,7 @@ export const ChatContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
             if (!m) return
+            if (m.type == "TEXT" && (m.data as TextMessageData).from_user_id === user?.id) return
 
             newMessageHandler(m, "faction_id")
             if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
@@ -250,6 +268,7 @@ export const ChatContainer = createContainer(() => {
         setFontSize,
         globalAnnouncement,
         banProposal,
+        userStats,
     }
 })
 

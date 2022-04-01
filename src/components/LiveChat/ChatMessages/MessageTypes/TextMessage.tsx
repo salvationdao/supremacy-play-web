@@ -18,6 +18,7 @@ const getMultiplierColor = (multiplierInt: number): string => {
 const UserDetailsPopover = ({
     factionLogoBlobID,
     factionColor,
+    messageColor,
     username,
     userStat,
     popoverRef,
@@ -26,6 +27,7 @@ const UserDetailsPopover = ({
 }: {
     factionLogoBlobID?: string
     factionColor?: string
+    messageColor?: string
     username: string
     userStat?: UserStat
     popoverRef: React.MutableRefObject<null>
@@ -84,7 +86,7 @@ const UserDetailsPopover = ({
                                 }}
                             />
                         )}
-                        <Typography sx={{ color: factionColor, fontWeight: "fontWeightBold" }}>{username}</Typography>
+                        <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>{username}</Typography>
                     </Stack>
 
                     <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>
@@ -155,14 +157,11 @@ export const TextMessage = ({
     )
     const factionLogoBlobID = useMemo(() => (from_user_faction_id ? factionsAll[from_user_faction_id]?.logo_blob_id : ""), [from_user_faction_id, factionsAll])
 
-    // If it's our own message and it's sent successfully, hide it
-    if (isSent && self) return null
-
     // For the hide zero multi setting
     if (!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) return null
 
     return (
-        <Box sx={{ opacity: !self ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
+        <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
             <Stack ref={popoverRef} direction="row" spacing=".4rem">
                 <Stack direction="row" spacing=".4rem" alignItems="start">
                     <Box>
@@ -316,6 +315,7 @@ export const TextMessage = ({
             <UserDetailsPopover
                 factionLogoBlobID={factionLogoBlobID}
                 factionColor={factionColor}
+                messageColor={message_color}
                 username={from_username}
                 userStat={from_user_stat}
                 popoverRef={popoverRef}
