@@ -203,7 +203,7 @@ const BanProposalInner = ({
                 <Box sx={{ px: "1.2rem", py: ".9rem" }}>
                     <Stack spacing=".3rem">
                         <LineItem title="FROM" color={colors.green}>
-                            <Typography sx={{ lineHeight: 1 }}>{`${banProposal.issued_by_username}#${banProposal.issued_by_player_gid}`}</Typography>
+                            <Typography sx={{ lineHeight: 1 }}>{`${banProposal.issued_by_username}#${banProposal.issued_by_gid}`}</Typography>
                         </LineItem>
 
                         <LineItem title="AGAINST">
