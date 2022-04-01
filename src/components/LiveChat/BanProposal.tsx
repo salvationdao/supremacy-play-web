@@ -205,6 +205,10 @@ const BanProposalInner = ({
                                 <Typography sx={{ lineHeight: 1 }}>{banProposal.punish_option.punish_duration_hours} Hrs</Typography>
                             </Stack>
                         </LineItem>
+
+                        <LineItem title="REASON">
+                            <Typography sx={{ lineHeight: 1 }}>{banProposal.reason}</Typography>
+                        </LineItem>
                     </Stack>
 
                     <Divider sx={{ mt: "1.1rem", mb: ".7rem" }} />

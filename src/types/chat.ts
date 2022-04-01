@@ -57,4 +57,6 @@ export interface PunishMessageData {
     total_player_number: number
     agreed_player_number: number
     disagreed_player_number: number
+    punish_option: BanOption
+    punish_reason: string
 }

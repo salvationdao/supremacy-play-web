@@ -104,9 +104,7 @@ export const supFormatter = (num: string, fixedAmount: number | undefined = 0): 
     if (supTokens.isZero()) return supTokens.toFixed(fixedAmount)
 
     const a = !fixedAmount || fixedAmount == 0 ? 1 : fixedAmount * 10
-    return (Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber() * a) / a).toFixed(
-        fixedAmount,
-    )
+    return (Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber() * a) / a).toFixed(fixedAmount)
 }
 export const supFormatterNoFixed = (num: string, maxDecimals?: number): string => {
     const supTokens = new BigNumber(num).shiftedBy(-18)
@@ -141,9 +139,7 @@ export const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: numb
     const R = 6371 // Radius of the earth in km
     const dLat = deg2rad(lat2 - lat1) // deg2rad below
     const dLon = deg2rad(lon2 - lon1)
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     const d = R * c // Distance in km
     return d
@@ -423,4 +419,8 @@ export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
     return `${hours}:${minutes2} ${suffix}`
 }
 
-export const snakeToTitle = (str: string): string => Capitalize(str.split("_").join(" "))
+export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
+    const result = str.split("_").join(" ")
+    if (lowerCase) return result
+    return Capitalize(result)
+}

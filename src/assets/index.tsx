@@ -19,6 +19,7 @@ import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
+import Announcement from "!react-svg-loader!./svg/Announcement.svg"
 import Hourglass from "!react-svg-loader!./svg/Hourglass.svg"
 import Location from "!react-svg-loader!./svg/Location.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
@@ -657,5 +658,11 @@ export const SvgClose2: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgWarningIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <WarningIcon />
+    </SvgWrapper>
+)
+
+export const SvgAnnouncement: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Announcement />
     </SvgWrapper>
 )
