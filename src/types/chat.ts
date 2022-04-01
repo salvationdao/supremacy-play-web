@@ -7,7 +7,7 @@ export interface BanProposalStruct {
     faction_id: string
     issued_by_id: string
     issued_by_username: string
-    issued_by_gid: number
+    issued_by_player_gid: number
     reported_player_id: string
     reported_player_username: string
     reported_player_gid: number
