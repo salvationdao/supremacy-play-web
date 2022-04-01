@@ -3,7 +3,6 @@ import { useRef } from "react"
 import { UserBanForm } from "../.."
 import { RIGHT_DRAWER_WIDTH, LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../../constants"
 import { useGameServerAuth } from "../../../containers"
-import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 
@@ -22,7 +21,7 @@ export const AdditionalOptionsButton = () => {
                 ref={popoverRef}
                 onClick={() => toggleIsPopoverOpen()}
                 sx={{
-                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                    backgroundColor: colors.darkerNavy,
                     height: "2rem",
                     width: "100%",
                     borderRadius: 0,

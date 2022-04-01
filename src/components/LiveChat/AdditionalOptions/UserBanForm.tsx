@@ -159,7 +159,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
                                 zIndex: 99999,
                                 ".MuiPaper-root": {
                                     background: "none",
-                                    backgroundColor: colors.darkNavy,
+                                    backgroundColor: colors.darkerNeonBlue,
                                     zIndex: 99999,
                                 },
                             },
@@ -271,7 +271,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
                                         PaperProps: {
                                             sx: {
                                                 background: "none",
-                                                backgroundColor: colors.darkNavy,
+                                                backgroundColor: colors.darkerNeonBlue,
                                                 borderRadius: 0.5,
                                             },
                                         },

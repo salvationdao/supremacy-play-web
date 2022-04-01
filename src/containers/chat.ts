@@ -9,25 +9,7 @@ import { GameServerKeys } from "../keys"
 import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
 import { UserStat } from "../types"
 
-export interface UserMultiplier {
-    player_id: string
-    total_multiplier: string
-}
-
-export interface UserMultiplierMap {
-    [player_id: string]: string
-}
-
-export interface UserIDMap {
-    [player_id: string]: UserStat
-}
-
-export interface UserMultiplierResponse {
-    multipliers: UserMultiplier[]
-    citizen_player_ids: string[]
-}
-
-export interface SentChatMessageData {
+interface SentChatMessageData {
     global: Date[]
     faction: Date[]
 }
