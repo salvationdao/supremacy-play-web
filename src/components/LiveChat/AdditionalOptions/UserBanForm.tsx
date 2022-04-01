@@ -34,7 +34,7 @@ const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: Sx
                 border: `${user.faction.theme.primary} 1px solid`,
             }}
         />
-        <Typography>{banUser.username}</Typography>
+        <Typography>{`${banUser.username}#${banUser.gid}`}</Typography>
     </Stack>
 )
 

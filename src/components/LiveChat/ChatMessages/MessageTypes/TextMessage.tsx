@@ -23,6 +23,7 @@ const UserDetailsPopover = ({
     messageColor,
     userID,
     username,
+    gid,
     userStat,
     popoverRef,
     open,
@@ -36,6 +37,7 @@ const UserDetailsPopover = ({
     messageColor?: string
     userID: string
     username: string
+    gid: number
     userStat?: UserStat
     popoverRef: React.MutableRefObject<null>
     open: boolean
@@ -97,7 +99,7 @@ const UserDetailsPopover = ({
                                     }}
                                 />
                             )}
-                            <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>{username}</Typography>
+                            <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>{`${username}#${gid}`}</Typography>
                         </Stack>
 
                         <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>
@@ -170,7 +172,8 @@ const UserDetailsPopover = ({
                     onClose={() => toggleBanModalOpen(false)}
                     prefillUser={{
                         id: userID,
-                        username: username,
+                        username,
+                        gid,
                     }}
                 />
             )}
@@ -197,7 +200,19 @@ export const TextMessage = ({
     factionsAll: FactionsAll
     user?: User
 }) => {
-    const { from_user_id, from_username, message_color, from_user_faction_id, avatar_id, message, self, total_multiplier, is_citizen, from_user_stat } = data
+    const {
+        from_user_id,
+        from_username,
+        from_user_gid,
+        message_color,
+        from_user_faction_id,
+        avatar_id,
+        message,
+        self,
+        total_multiplier,
+        is_citizen,
+        from_user_stat,
+    } = data
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
@@ -280,7 +295,7 @@ export const TextMessage = ({
                                 },
                             }}
                         >
-                            {truncate(from_username, 24)}
+                            {`${truncate(from_username, 24)}#${from_user_gid}`}
                         </Typography>
 
                         {from_user_stat && (
@@ -383,6 +398,7 @@ export const TextMessage = ({
                 open={isPopoverOpen}
                 onClose={() => toggleIsPopoverOpen(false)}
                 user={user}
+                gid={from_user_gid}
             />
         </Box>
     )

@@ -31,6 +31,7 @@ const user1 = {
     faction_id: "123123",
     faction: faction1,
     sups: 0,
+    gid: 3871,
 }
 
 const user2 = {
@@ -40,6 +41,7 @@ const user2 = {
     faction_id: "123123",
     faction: faction2,
     sups: 0,
+    gid: 6519,
 }
 
 const ability1 = {

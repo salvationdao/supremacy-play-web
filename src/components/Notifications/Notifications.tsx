@@ -44,22 +44,11 @@ WARMACHINE_ABILITY: when a faction has initiated a war machine ability
 TEXT: generic notification with no styles, just text
 */
 
-type NotificationType =
-    | "TEXT"
-    | "LOCATION_SELECT"
-    | "BATTLE_ABILITY"
-    | "FACTION_ABILITY"
-    | "WAR_MACHINE_ABILITY"
-    | "WAR_MACHINE_DESTROYED"
+type NotificationType = "TEXT" | "LOCATION_SELECT" | "BATTLE_ABILITY" | "FACTION_ABILITY" | "WAR_MACHINE_ABILITY" | "WAR_MACHINE_DESTROYED"
 
 export interface NotificationResponse {
     type: NotificationType
-    data:
-        | BattleFactionAbilityAlertProps
-        | KillAlertProps
-        | LocationSelectAlertProps
-        | WarMachineAbilityAlertProps
-        | string
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | string
 }
 
 export const Notifications = () => {

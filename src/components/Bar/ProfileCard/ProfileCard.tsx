@@ -119,29 +119,19 @@ export const ProfileCard = () => {
                     zIndex: 10000,
                     ".MuiPaper-root": {
                         background: "none",
-                        backgroundColor:
-                            user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                        backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
                         border: "#FFFFFF50 1px solid",
                     },
                 }}
             >
                 <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
-                    <NavButton
-                        href={`${PASSPORT_WEB}collections/${user.username}`}
-                        startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}
-                    >
+                    <NavButton href={`${PASSPORT_WEB}collections/${user.username}`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}>
                         My Inventory
                     </NavButton>
-                    <NavButton
-                        href={`${PASSPORT_WEB}stores`}
-                        startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />}
-                    >
+                    <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />}>
                         Purchase Assets
                     </NavButton>
-                    <NavButton
-                        href={`${PASSPORT_WEB}profile/${user.username}/edit`}
-                        startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}
-                    >
+                    <NavButton href={`${PASSPORT_WEB}profile/${user.username}/edit`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}>
                         Edit Profile
                     </NavButton>
                     <LogoutButton />

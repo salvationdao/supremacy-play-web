@@ -12,6 +12,8 @@ export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessage
         issued_by_player_username,
         reported_player_username,
         is_passed,
+        issued_by_gid,
+        reported_player_gid,
         agreed_player_number,
         disagreed_player_number,
         punish_option,
@@ -59,11 +61,11 @@ export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessage
                     }}
                 >
                     <LineItem title="FROM" color={colors.green}>
-                        <Typography>{issued_by_player_username}</Typography>
+                        <Typography>{`${issued_by_player_username}#${issued_by_gid}`}</Typography>
                     </LineItem>
 
                     <LineItem title="AGAINST">
-                        <Typography>{reported_player_username}</Typography>
+                        <Typography>{`${reported_player_username}#${reported_player_gid}`}</Typography>
                     </LineItem>
 
                     <LineItem title="PUNISH">

@@ -7,8 +7,10 @@ export interface BanProposalStruct {
     faction_id: string
     issued_by_id: string
     issued_by_username: string
+    issued_by_gid: number
     reported_player_id: string
     reported_player_username: string
+    reported_player_gid: number
     status: string
     started_at: Date
     ended_at: Date
@@ -19,6 +21,7 @@ export interface BanProposalStruct {
 export interface BanUser {
     id: string
     username: string
+    gid: number
 }
 
 export interface BanOption {
@@ -38,6 +41,7 @@ export interface TextMessageData {
     from_user_id: string
     from_user_faction_id?: string
     from_username: string
+    from_user_gid: number
     message_color?: string
     avatar_id?: string
     message: string
@@ -52,6 +56,8 @@ export interface PunishMessageData {
     issued_by_player_username: string
     issued_by_player_faction_id: string
     reported_player_id: string
+    issued_by_gid: number
+    reported_player_gid: number
     reported_player_username: string
     reported_player_faction_id: string
     is_passed: boolean

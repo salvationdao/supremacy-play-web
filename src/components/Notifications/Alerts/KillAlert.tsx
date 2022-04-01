@@ -2,12 +2,13 @@ import { Box } from "@mui/material"
 import { ClipThing, StyledImageText } from "../.."
 import { SvgDeath, SvgSkull2 } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { WarMachineState } from "../../../types"
+import { User, WarMachineState } from "../../../types"
 
 export interface KillAlertProps {
     destroyed_war_machine: WarMachineState
     killed_by_war_machine?: WarMachineState
     killed_by?: string
+    killed_by_user?: User
 }
 
 export const KillAlert = ({ data }: { data: KillAlertProps }) => {
