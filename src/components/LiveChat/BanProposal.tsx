@@ -68,17 +68,17 @@ export const BanProposal = () => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !user || !user.faction_id || !user.faction) return
         return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
-            if (payload) {
-                const startedAtTime = payload.started_at.getTime()
-                const nowTime = new Date().getTime()
-                const duration = payload.ended_at.getTime() - startedAtTime
-                const endTime = new Date(Math.min(startedAtTime, nowTime) + duration)
+            if (!payload) toggleOutOfTime(true)
 
-                setBanProposal({
-                    ...payload,
-                    ended_at: endTime,
-                })
-            }
+            const startedAtTime = payload.started_at.getTime()
+            const nowTime = new Date().getTime()
+            const duration = payload.ended_at.getTime() - startedAtTime
+            const endTime = new Date(Math.min(startedAtTime, nowTime) + duration)
+
+            setBanProposal({
+                ...payload,
+                ended_at: endTime,
+            })
         })
     }, [user, state, subscribe])
 
