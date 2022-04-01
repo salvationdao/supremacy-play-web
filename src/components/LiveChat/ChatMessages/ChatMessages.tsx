@@ -104,7 +104,7 @@ const ChatMessagesInner = ({
                 sx={{
                     flex: 1,
                     position: "relative",
-                    my: ".8rem",
+                    my: ".6rem",
                     mr: ".64rem",
                     pl: "1.52rem",
                     pr: "1.6rem",
@@ -127,6 +127,13 @@ const ChatMessagesInner = ({
                 }}
             >
                 <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
+                    <PunishMessage
+                        // key={`${data.issued_by_player_id} - ${message.sent_at.toISOString()}`}
+                        // data={data}
+                        sentAt={new Date()}
+                        fontSize={fontSize}
+                    />
+
                     {chatMessages && chatMessages.length > 0 ? (
                         chatMessages.map((message) => {
                             if (message.type == "PUNISH_VOTE") {
@@ -153,6 +160,7 @@ const ChatMessagesInner = ({
                                         isSent={data.from_user_id != user?.id ? true : sentMessages.includes(message.sent_at)}
                                         isFailed={data.from_user_id != user?.id ? false : failedMessages.includes(message.sent_at)}
                                         factionsAll={factionsAll}
+                                        user={user}
                                     />
                                 )
                             }

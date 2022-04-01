@@ -1,6 +1,6 @@
-import { Box, Popover, Stack, Typography } from "@mui/material"
+import { Box, Button, Popover, Stack, Typography } from "@mui/material"
 import { useMemo, useRef } from "react"
-import { ClipThing } from "../../.."
+import { ClipThing, UserBanForm } from "../../.."
 import { SvgSkull2, SvgInfoCircular, SvgAbility, SvgDeath, SvgView } from "../../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 import { FactionsAll } from "../../../../containers"
@@ -8,7 +8,7 @@ import { dateFormatter, truncate } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors } from "../../../../theme/theme"
 import { TextMessageData } from "../../../../types/chat"
-import { UserStat } from "../../../../types"
+import { User, UserStat } from "../../../../types"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 
 const getMultiplierColor = (multiplierInt: number): string => {
@@ -18,109 +18,160 @@ const getMultiplierColor = (multiplierInt: number): string => {
 const UserDetailsPopover = ({
     factionLogoBlobID,
     factionColor,
+    factionSecondaryColor,
     messageColor,
+    userID,
     username,
     userStat,
     popoverRef,
     open,
     onClose,
+    user,
 }: {
     factionLogoBlobID?: string
     factionColor?: string
+    factionSecondaryColor?: string
     messageColor?: string
+    userID: string
     username: string
     userStat?: UserStat
     popoverRef: React.MutableRefObject<null>
     open: boolean
     onClose: () => void
+    user?: User
 }) => {
+    const [banModalOpen, toggleBanModalOpen] = useToggle()
+
     if (!userStat) return null
 
     return (
-        <Popover
-            open={open}
-            anchorEl={popoverRef.current}
-            onClose={onClose}
-            anchorOrigin={{
-                vertical: "top",
-                horizontal: "left",
-            }}
-            transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-            }}
-            sx={{
-                mt: "-.3rem",
-                ml: "-1rem",
-                zIndex: 10000,
-                ".MuiPaper-root": {
-                    background: "none",
-                },
-            }}
-        >
-            <ClipThing
-                clipSize="0"
-                border={{
-                    isFancy: true,
-                    borderColor: factionColor || colors.neonBlue,
-                    borderThickness: ".2rem",
+        <>
+            <Popover
+                open={open}
+                anchorEl={popoverRef.current}
+                onClose={onClose}
+                anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
                 }}
-                innerSx={{ position: "relative" }}
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                sx={{
+                    mt: "-.3rem",
+                    ml: "-1rem",
+                    zIndex: 10000,
+                    ".MuiPaper-root": {
+                        background: "none",
+                    },
+                }}
             >
-                <Stack sx={{ minWidth: "15rem", px: "1.2rem", py: ".8rem", backgroundColor: colors.darkNavy }}>
-                    <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
-                        {factionLogoBlobID && factionLogoBlobID != NullUUID && (
-                            <Box
+                <ClipThing
+                    clipSize="0"
+                    border={{
+                        isFancy: true,
+                        borderColor: factionColor || colors.neonBlue,
+                        borderThickness: ".2rem",
+                    }}
+                    innerSx={{ position: "relative" }}
+                >
+                    <Stack sx={{ minWidth: "15rem", px: "1.2rem", py: ".8rem", backgroundColor: colors.darkNavy }}>
+                        <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
+                            {factionLogoBlobID && factionLogoBlobID != NullUUID && (
+                                <Box
+                                    sx={{
+                                        mt: "-0.1rem !important",
+                                        width: "1.8rem",
+                                        height: "1.8rem",
+                                        flexShrink: 0,
+                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "contain",
+                                        backgroundColor: factionColor,
+                                        borderRadius: 0.8,
+                                        border: `${factionColor} 1px solid`,
+                                    }}
+                                />
+                            )}
+                            <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>{username}</Typography>
+                        </Stack>
+
+                        <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>
+                            <Stack direction="row" spacing=".5rem">
+                                <SvgAbility size="1.1rem" sx={{ pb: ".4rem" }} />
+                                <Typography variant="body2">
+                                    <strong>ABILITIES:</strong> {userStat.total_ability_triggered}
+                                </Typography>
+                            </Stack>
+
+                            <Stack direction="row" spacing=".5rem">
+                                <SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />
+                                <Typography variant="body2">
+                                    <strong>ABILITY KILLS:</strong> {userStat.kill_count}
+                                </Typography>
+                            </Stack>
+
+                            <Stack direction="row" spacing=".5rem">
+                                <SvgSkull2 size="1.1rem" sx={{ pb: ".4rem" }} />
+                                <Typography variant="body2">
+                                    <strong>MECH KILLS:</strong> {userStat.mech_kill_count}
+                                </Typography>
+                            </Stack>
+
+                            <Stack direction="row" spacing=".5rem">
+                                <SvgView size="1.1rem" />
+                                <Typography variant="body2">
+                                    <strong>SPECTATED:</strong> {userStat.view_battle_count}
+                                </Typography>
+                            </Stack>
+                        </Stack>
+
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => {
+                                toggleBanModalOpen()
+                                onClose()
+                            }}
+                            sx={{
+                                mt: ".4rem",
+                                px: ".8rem",
+                                pt: ".48rem",
+                                pb: ".3rem",
+                                backgroundColor: factionColor,
+                                border: `${factionColor} 1px solid`,
+                                borderRadius: 0.3,
+                                ":hover": { backgroundColor: `${factionColor}90` },
+                            }}
+                        >
+                            <Typography
+                                variant="body2"
                                 sx={{
-                                    mt: "-0.1rem !important",
-                                    width: "1.8rem",
-                                    height: "1.8rem",
-                                    flexShrink: 0,
-                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "contain",
-                                    backgroundColor: factionColor,
-                                    borderRadius: 0.8,
-                                    border: `${factionColor} 1px solid`,
+                                    lineHeight: 1,
+                                    fontWeight: "fontWeightBold",
+                                    color: factionSecondaryColor,
                                 }}
-                            />
-                        )}
-                        <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>{username}</Typography>
+                            >
+                                PUNISH
+                            </Typography>
+                        </Button>
                     </Stack>
-
-                    <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>
-                        <Stack direction="row" spacing=".5rem">
-                            <SvgAbility size="1.1rem" sx={{ pb: ".4rem" }} />
-                            <Typography variant="body2">
-                                <strong>ABILITIES:</strong> {userStat.total_ability_triggered}
-                            </Typography>
-                        </Stack>
-
-                        <Stack direction="row" spacing=".5rem">
-                            <SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />
-                            <Typography variant="body2">
-                                <strong>ABILITY KILLS:</strong> {userStat.kill_count}
-                            </Typography>
-                        </Stack>
-
-                        <Stack direction="row" spacing=".5rem">
-                            <SvgSkull2 size="1.1rem" sx={{ pb: ".4rem" }} />
-                            <Typography variant="body2">
-                                <strong>MECH KILLS:</strong> {userStat.mech_kill_count}
-                            </Typography>
-                        </Stack>
-
-                        <Stack direction="row" spacing=".5rem">
-                            <SvgView size="1.1rem" />
-                            <Typography variant="body2">
-                                <strong>SPECTATED:</strong> {userStat.view_battle_count}
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                </Stack>
-            </ClipThing>
-        </Popover>
+                </ClipThing>
+            </Popover>
+            {banModalOpen && user && (
+                <UserBanForm
+                    user={user}
+                    open={banModalOpen}
+                    onClose={() => toggleBanModalOpen(false)}
+                    prefillUser={{
+                        id: userID,
+                        username: username,
+                    }}
+                />
+            )}
+        </>
     )
 }
 
@@ -132,6 +183,7 @@ export const TextMessage = ({
     isFailed,
     filterZeros,
     factionsAll,
+    user,
 }: {
     data: TextMessageData
     sentAt: Date
@@ -140,8 +192,9 @@ export const TextMessage = ({
     isFailed?: boolean
     filterZeros?: boolean
     factionsAll: FactionsAll
+    user?: User
 }) => {
-    const { from_username, message_color, from_user_faction_id, avatar_id, message, self, total_multiplier, is_citizen, from_user_stat } = data
+    const { from_user_id, from_username, message_color, from_user_faction_id, avatar_id, message, self, total_multiplier, is_citizen, from_user_stat } = data
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
@@ -153,6 +206,10 @@ export const TextMessage = ({
     }, [from_user_stat, message_color])
     const factionColor = useMemo(
         () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.theme.primary : message_color),
+        [from_user_faction_id, factionsAll],
+    )
+    const factionSecondaryColor = useMemo(
+        () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.theme.secondary : "#FFFFFF"),
         [from_user_faction_id, factionsAll],
     )
     const factionLogoBlobID = useMemo(() => (from_user_faction_id ? factionsAll[from_user_faction_id]?.logo_blob_id : ""), [from_user_faction_id, factionsAll])
@@ -313,12 +370,15 @@ export const TextMessage = ({
             <UserDetailsPopover
                 factionLogoBlobID={factionLogoBlobID}
                 factionColor={factionColor}
+                factionSecondaryColor={factionSecondaryColor}
                 messageColor={message_color}
+                userID={from_user_id}
                 username={from_username}
                 userStat={from_user_stat}
                 popoverRef={popoverRef}
                 open={isPopoverOpen}
                 onClose={() => toggleIsPopoverOpen(false)}
+                user={user}
             />
         </Box>
     )

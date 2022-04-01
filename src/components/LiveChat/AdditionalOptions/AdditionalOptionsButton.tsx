@@ -10,7 +10,6 @@ export const AdditionalOptionsButton = () => {
     const { user } = useGameServerAuth()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
-
     const [banModalOpen, toggleBanModalOpen] = useToggle()
 
     if (!user) return null

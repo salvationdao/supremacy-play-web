@@ -38,7 +38,7 @@ const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: Sx
     </Stack>
 )
 
-export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolean; onClose: () => void }) => {
+export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User; open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     // Options and display only
@@ -50,7 +50,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
     const [fee, setFee] = useState("")
     const [error, setError] = useState("")
     // Inputs
-    const [selectedUser, setSelectedUser] = useState<BanUser | null>()
+    const [selectedUser, setSelectedUser] = useState<BanUser | null | undefined>(prefillUser)
     const [selectedBanOptionID, setSelectedBanOptionID] = useState("")
     const [reason, setReason] = useState("")
 

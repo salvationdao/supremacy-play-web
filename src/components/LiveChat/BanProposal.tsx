@@ -194,7 +194,7 @@ const BanProposalInner = ({
                             <Typography sx={{ lineHeight: 1 }}>{snakeToTitle(banProposal.punish_option.key)}</Typography>
                             <TooltipHelper placement="right-start" text={banProposal.punish_option.description}>
                                 <Box>
-                                    <SvgInfoCircular size="1.1rem" sx={{ pt: ".1rem", pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }} />
+                                    <SvgInfoCircular size="1.1rem" sx={{ pt: 0, pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }} />
                                 </Box>
                             </TooltipHelper>
                         </LineItem>

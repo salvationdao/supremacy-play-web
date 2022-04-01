@@ -24,20 +24,15 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     }}
                 >
                     The Winner
-                    <BattleEndTooltip
-                        text={`The syndicate that had won the battle #${battle_identifier}.`}
-                        color={colors.neonBlue}
-                    />
+                    <BattleEndTooltip text={`The syndicate that had won the battle #${battle_identifier}.`} color={colors.neonBlue} />
                 </Typography>
             </Box>
 
-            <Stack spacing="2.56rem" sx={{ px: ".96rem" }}>
+            <Stack spacing="1.5rem" sx={{ px: ".96rem" }}>
                 <StyledImageText
                     color={winning_faction.theme.primary}
                     text={winning_faction.label}
-                    imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
-                        factionsAll[winning_faction.id]?.logo_blob_id
-                    }`}
+                    imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[winning_faction.id]?.logo_blob_id}`}
                     variant="h6"
                     imageSize={3.6}
                     imageBorderThickness="0px"
@@ -47,7 +42,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 />
 
                 {winning_war_machines && winning_war_machines.length > 0 ? (
-                    <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
+                    <Stack spacing=".8rem" sx={{ pl: ".5rem" }}>
                         {winning_war_machines.map((wm) => (
                             <StyledImageText
                                 key={`${wm.hash}-${wm.participantID}`}
