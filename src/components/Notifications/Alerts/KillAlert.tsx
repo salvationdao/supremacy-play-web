@@ -6,16 +6,16 @@ import { WarMachineState } from "../../../types"
 
 export interface KillAlertProps {
     destroyed_war_machine: WarMachineState
-    killed_by_war_machine_id?: WarMachineState
+    killed_by_war_machine?: WarMachineState
     killed_by?: string
 }
 
 export const KillAlert = ({ data }: { data: KillAlertProps }) => {
-    const { destroyed_war_machine, killed_by_war_machine_id, killed_by } = data
+    const { destroyed_war_machine, killed_by_war_machine, killed_by } = data
 
     if (!destroyed_war_machine) return null
 
-    const mainColor = killed_by_war_machine_id?.faction.theme.primary
+    const mainColor = killed_by_war_machine?.faction.theme.primary
 
     return (
         <ClipThing
@@ -35,13 +35,9 @@ export const KillAlert = ({ data }: { data: KillAlertProps }) => {
                 }}
             >
                 <StyledImageText
-                    text={
-                        killed_by_war_machine_id
-                            ? killed_by_war_machine_id.name || killed_by_war_machine_id.hash
-                            : killed_by || "UNKNOWN"
-                    }
+                    text={killed_by_war_machine ? killed_by_war_machine.name || killed_by_war_machine.hash : killed_by || "UNKNOWN"}
                     color={mainColor || "grey !important"}
-                    imageUrl={killed_by_war_machine_id ? killed_by_war_machine_id.imageAvatar : ""}
+                    imageUrl={killed_by_war_machine ? killed_by_war_machine.imageAvatar : ""}
                     imageMb={-0.2}
                 />
                 <SvgDeath size="1.1rem" sx={{ display: "inline", mx: ".48rem" }} />

@@ -188,7 +188,7 @@ export const killNoti: NotificationResponse = {
     type: "WAR_MACHINE_DESTROYED",
     data: {
         destroyed_war_machine: wm2,
-        killed_by_war_machine_id: wm1,
+        killed_by_war_machine: wm1,
     },
 }
 

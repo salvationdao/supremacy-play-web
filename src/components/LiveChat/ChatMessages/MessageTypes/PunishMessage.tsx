@@ -1,7 +1,8 @@
 import { Stack, Typography } from "@mui/material"
+import { FactionsAll } from "../../../../containers"
 import { PunishMessageData } from "../../../../types/chat"
 
-export const PunishMessage = ({ sentAt, fontSize }: { data?: PunishMessageData; sentAt: Date; fontSize: number }) => {
+export const PunishMessage = ({ sentAt, fontSize, factionsAll }: { data?: PunishMessageData; sentAt: Date; fontSize: number; factionsAll: FactionsAll }) => {
     const data = {
         issued_by_player_username: "jayli3n",
         reported_player_username: "darren_hung",
