@@ -44,19 +44,11 @@ export const ChatContainer = createContainer(() => {
     const [tabValue, setTabValue] = useState(0)
 
     // Chat settings
-    const [splitOption, setSplitOption] = useState<SplitOptionType>(
-        (localStorage.getItem("chatSplitOption") as SplitOptionType) || "tabbed",
-    )
-    const [filterZerosGlobal, toggleFilterZerosGlobal] = useToggle(
-        localStorage.getItem("chatFilterZerosGlobal") == "true",
-    )
-    const [filterZerosFaction, toggleFilterZerosFaction] = useToggle(
-        localStorage.getItem("chatFilterZerosFaction") == "true",
-    )
+    const [splitOption, setSplitOption] = useState<SplitOptionType>((localStorage.getItem("chatSplitOption") as SplitOptionType) || "tabbed")
+    const [filterZerosGlobal, toggleFilterZerosGlobal] = useToggle(localStorage.getItem("chatFilterZerosGlobal") == "true")
+    const [filterZerosFaction, toggleFilterZerosFaction] = useToggle(localStorage.getItem("chatFilterZerosFaction") == "true")
 
-    const [fontSize, setFontSize] = useState<FontSizeType>(
-        parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType,
-    )
+    const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType)
 
     // Global announcement message
     const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()
@@ -206,13 +198,22 @@ export const ChatContainer = createContainer(() => {
                 return
             }
 
-            const um: UserMultiplierMap = {}
-            payload.multipliers.forEach((m) => {
-                um[m.player_id] = m.total_multiplier
-            })
+            if (!payload.multipliers) {
+                setUserMultiplierMap({})
+            } else {
+                const um: UserMultiplierMap = {}
+                payload.multipliers.forEach((m) => {
+                    um[m.player_id] = m.total_multiplier
+                })
 
-            setUserMultiplierMap(um)
-            setCitizenPlayerIDs(payload.citizen_player_ids)
+                setUserMultiplierMap(um)
+            }
+
+            if (!payload.citizen_player_ids) {
+                setCitizenPlayerIDs([])
+            } else {
+                setCitizenPlayerIDs(payload.citizen_player_ids)
+            }
         })
     }, [state, subscribe])
 

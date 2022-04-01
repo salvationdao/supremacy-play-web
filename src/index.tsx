@@ -20,13 +20,7 @@ import {
     BattleCloseAlert,
     GlobalSnackbar,
 } from "./components"
-import {
-    DRAWER_TRANSITION_DURATION,
-    GAME_BAR_HEIGHT,
-    PASSPORT_SERVER_HOST,
-    SENTRY_CONFIG,
-    UNDER_MAINTENANCE,
-} from "./constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
     GameServerAuthProvider,
     DimensionProvider,
@@ -142,8 +136,7 @@ const AppInner = () => {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    backgroundColor:
-                        user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                     zIndex: -1,
                 }}
             />
@@ -235,6 +228,11 @@ const testChromeWindow = (): boolean => {
     }
 }
 
+const testAppVersion = (): boolean => {
+    const appVersion = navigator.appVersion
+    return /headless/i.test(appVersion)
+}
+
 const testNotificationPermissions = (callback: (res: boolean) => void) => {
     navigator.permissions
         .query({
@@ -249,11 +247,6 @@ const testNotificationPermissions = (callback: (res: boolean) => void) => {
                 callback(false)
             }
         })
-}
-
-const testAppVersion = (): boolean => {
-    const appVersion = navigator.appVersion
-    return /headless/i.test(appVersion)
 }
 
 testNotificationPermissions((notResult) => {
