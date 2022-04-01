@@ -127,13 +127,13 @@ const ChatMessagesInner = ({
                 }}
             >
                 <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
-                    <PunishMessage
+                    {/* <PunishMessage
                         // key={`${data.issued_by_player_id} - ${message.sent_at.toISOString()}`}
                         // data={data}
                         sentAt={new Date()}
                         fontSize={fontSize}
                         factionsAll={factionsAll}
-                    />
+                    /> */}
 
                     {chatMessages && chatMessages.length > 0 ? (
                         chatMessages.map((message) => {
