@@ -56,7 +56,7 @@ export interface PunishMessageData {
     issued_by_player_username: string
     issued_by_player_faction_id: string
     reported_player_id: string
-    issued_by_gid: number
+    issued_by_player_gid: number
     reported_player_gid: number
     reported_player_username: string
     reported_player_faction_id: string
