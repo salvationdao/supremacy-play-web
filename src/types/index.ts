@@ -221,48 +221,10 @@ export interface Dimension {
     height: number
 }
 
-export interface BanProposalStruct {
-    id: string
-    punish_option_id: string
-    reason: string
-    faction_id: string
-    issued_by_id: string
-    issued_by_username: string
-    reported_player_id: string
-    reported_player_username: string
-    status: string
-    started_at: Date
-    ended_at: Date
-    punish_option: BanOption
-}
-
-export interface BanUser {
-    id: string
-    username: string
-}
-
-export interface BanOption {
-    id: string
-    description: string
-    key: string
-    punish_duration_hours: number
-}
-
 export interface UserStat {
     id: string
     view_battle_count: number
     total_ability_triggered: number
     kill_count: number
     mech_kill_count: number
-}
-
-export interface ChatData {
-    from_user_id: string
-    from_user_faction_id?: string
-    from_username: string
-    message_color?: string
-    avatar_id?: string
-    message: string
-    sent_at: Date
-    self?: boolean
 }

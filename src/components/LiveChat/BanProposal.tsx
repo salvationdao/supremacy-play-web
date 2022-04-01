@@ -7,7 +7,7 @@ import { snakeToTitle } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { BanProposalStruct } from "../../types"
+import { BanProposalStruct } from "../../types/chat"
 
 const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
     return (
@@ -31,13 +31,7 @@ const LineItem = ({ title, children, color }: { title: string; children: ReactNo
     )
 }
 
-const Countdown = ({
-    endTime,
-    toggleOutOfTime,
-}: {
-    endTime: Date
-    toggleOutOfTime: (value?: boolean | undefined) => void
-}) => {
+const Countdown = ({ endTime, toggleOutOfTime }: { endTime: Date; toggleOutOfTime: (value?: boolean | undefined) => void }) => {
     const { totalSecRemain } = useTimer(endTime)
 
     useEffect(() => {
@@ -92,13 +86,10 @@ const BanProposalInner = ({
         async (isAgree: boolean) => {
             if (state !== WebSocket.OPEN || !send) return
             try {
-                const resp = await send<boolean, { punish_vote_id: string; is_agreed: boolean }>(
-                    GameServerKeys.SubmitBanVote,
-                    {
-                        punish_vote_id: banProposal.id,
-                        is_agreed: isAgree,
-                    },
-                )
+                const resp = await send<boolean, { punish_vote_id: string; is_agreed: boolean }>(GameServerKeys.SubmitBanVote, {
+                    punish_vote_id: banProposal.id,
+                    is_agreed: isAgree,
+                })
 
                 if (resp) {
                     setSubmitted(true)
@@ -125,12 +116,7 @@ const BanProposalInner = ({
             return (
                 <Typography>
                     <i>
-                        You{" "}
-                        {submittedVote ? (
-                            <strong style={{ color: colors.green }}>agreed</strong>
-                        ) : (
-                            <strong style={{ color: colors.red }}>disagreed</strong>
-                        )}{" "}
+                        You {submittedVote ? <strong style={{ color: colors.green }}>agreed</strong> : <strong style={{ color: colors.red }}>disagreed</strong>}{" "}
                         with this proposal.
                     </i>
                 </Typography>
@@ -205,15 +191,10 @@ const BanProposalInner = ({
                         </LineItem>
 
                         <LineItem title="PUNISH">
-                            <Typography sx={{ lineHeight: 1 }}>
-                                {snakeToTitle(banProposal.punish_option.key)}
-                            </Typography>
+                            <Typography sx={{ lineHeight: 1 }}>{snakeToTitle(banProposal.punish_option.key)}</Typography>
                             <TooltipHelper placement="right-start" text={banProposal.punish_option.description}>
                                 <Box>
-                                    <SvgInfoCircular
-                                        size="1.1rem"
-                                        sx={{ pt: ".1rem", pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }}
-                                    />
+                                    <SvgInfoCircular size="1.1rem" sx={{ pt: ".1rem", pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }} />
                                 </Box>
                             </TooltipHelper>
                         </LineItem>
@@ -221,9 +202,7 @@ const BanProposalInner = ({
                         <LineItem title="DURATION">
                             <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
                                 <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
-                                <Typography sx={{ lineHeight: 1 }}>
-                                    {banProposal.punish_option.punish_duration_hours} Hrs
-                                </Typography>
+                                <Typography sx={{ lineHeight: 1 }}>{banProposal.punish_option.punish_duration_hours} Hrs</Typography>
                             </Stack>
                         </LineItem>
                     </Stack>

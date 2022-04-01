@@ -3,17 +3,12 @@ import { useState, useRef, useMemo, useCallback } from "react"
 import { ChatSettings, EmojiPopover } from "../.."
 import { SvgEmoji, SvgSend } from "../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../constants"
-import {
-    useChat,
-    useGameServerAuth,
-    useSnackbar,
-    WebSocketProperties,
-    useGameServerWebsocket,
-} from "../../../containers"
+import { useChat, useGameServerAuth, useSnackbar, WebSocketProperties, useGameServerWebsocket } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { ChatData, User } from "../../../types"
+import { User } from "../../../types"
+import { ChatMessageType } from "../../../types/chat"
 
 interface ChatSendProps {
     primaryColor: string
@@ -43,7 +38,7 @@ interface ChatSendInnerProps extends ChatSendProps, Partial<WebSocketProperties>
     user?: User
     onSentMessage: (sentAt: Date) => void
     onFailedMessage: (sentAt: Date) => void
-    newMessageHandler: (message: ChatData, faction_id: string | null) => void
+    newMessageHandler: (message: ChatMessageType, faction_id: string | null) => void
     initialMessageColor?: string
 }
 
@@ -85,14 +80,17 @@ const ChatSendInner = ({
 
         newMessageHandler(
             {
-                from_user_id: user.id,
-                from_user_faction_id: user.faction_id,
-                from_username: user.username,
-                message_color: messageColor,
-                avatar_id: user.avatar_id,
-                message,
+                data: {
+                    from_user_id: user.id,
+                    from_user_faction_id: user.faction_id,
+                    from_username: user.username,
+                    message_color: messageColor,
+                    avatar_id: user.avatar_id,
+                    message,
+                    self: true,
+                },
+                type: "TEXT",
                 sent_at: sentAt,
-                self: true,
             },
             faction_id,
         )
@@ -227,7 +225,6 @@ const ChatSendInner = ({
 // Returns a random chat color for non faction users
 const getRandomChatColor = () => {
     let color = "#"
-    for (let i = 0; i < 3; i++)
-        color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2)
+    for (let i = 0; i < 3; i++) color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2)
     return color
 }

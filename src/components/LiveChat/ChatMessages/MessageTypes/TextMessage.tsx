@@ -1,23 +1,18 @@
 import { Box, Popover, Stack, Typography } from "@mui/material"
 import { useMemo, useRef } from "react"
-import { ClipThing } from "../.."
-import { SvgSkull2, SvgInfoCircular, SvgAbility, SvgDeath, SvgView } from "../../../assets"
-import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { FactionsAll } from "../../../containers"
-import { dateFormatter, truncate } from "../../../helpers"
-import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
-import { ChatData, UserStat } from "../../../types"
-import { TooltipHelper } from "../../Common/TooltipHelper"
+import { ClipThing } from "../../.."
+import { SvgSkull2, SvgInfoCircular, SvgAbility, SvgDeath, SvgView } from "../../../../assets"
+import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
+import { FactionsAll } from "../../../../containers"
+import { dateFormatter, truncate } from "../../../../helpers"
+import { useToggle } from "../../../../hooks"
+import { colors } from "../../../../theme/theme"
+import { TextMessageData } from "../../../../types/chat"
+import { UserStat } from "../../../../types"
+import { TooltipHelper } from "../../../Common/TooltipHelper"
 
 const getMultiplierColor = (multiplierInt: number): string => {
-    return multiplierInt >= 149
-        ? colors.neonBlue
-        : multiplierInt >= 99
-        ? colors.yellow
-        : multiplierInt >= 49
-        ? colors.health
-        : colors.orange
+    return multiplierInt >= 149 ? colors.neonBlue : multiplierInt >= 99 ? colors.yellow : multiplierInt >= 49 ? colors.health : colors.orange
 }
 
 const UserDetailsPopover = ({
@@ -127,28 +122,30 @@ const UserDetailsPopover = ({
     )
 }
 
-export const ChatMessage = ({
-    chat,
+export const TextMessage = ({
+    data,
+    sentAt,
+    fontSize,
     isSent,
     isFailed,
     multiplierValue,
     isCitizen,
     filterZeros,
-    fontSize,
     userStat,
     factionsAll,
 }: {
-    chat: ChatData
+    data: TextMessageData
+    sentAt: Date
+    fontSize: number
     isSent?: boolean
     isFailed?: boolean
     multiplierValue?: string
     isCitizen: boolean
     filterZeros?: boolean
-    fontSize: number
     userStat: UserStat
     factionsAll: FactionsAll
 }) => {
-    const { from_username, message_color, from_user_faction_id, avatar_id, message, sent_at, self } = chat
+    const { from_username, message_color, from_user_faction_id, avatar_id, message, self } = data
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
@@ -163,10 +160,7 @@ export const ChatMessage = ({
         () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.theme.primary : message_color),
         [from_user_faction_id, factionsAll],
     )
-    const factionLogoBlobID = useMemo(
-        () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.logo_blob_id : ""),
-        [from_user_faction_id, factionsAll],
-    )
+    const factionLogoBlobID = useMemo(() => (from_user_faction_id ? factionsAll[from_user_faction_id]?.logo_blob_id : ""), [from_user_faction_id, factionsAll])
 
     if (!self && filterZeros && multiplierInt <= 0) return null
 
@@ -254,10 +248,7 @@ export const ChatMessage = ({
                                     >
                                         [
                                     </Typography>
-                                    <SvgSkull2
-                                        size={fontSize ? `${0.85 * fontSize}rem` : "0.85rem"}
-                                        fill={abilityKillColor}
-                                    />
+                                    <SvgSkull2 size={fontSize ? `${0.85 * fontSize}rem` : "0.85rem"} fill={abilityKillColor} />
                                     <Typography
                                         sx={{
                                             lineHeight: 1,
@@ -315,14 +306,12 @@ export const ChatMessage = ({
                                 fontSize: fontSize ? `${1 * fontSize}rem` : "1rem",
                             }}
                         >
-                            {dateFormatter(sent_at)}
+                            {dateFormatter(sentAt)}
                         </Typography>
                     </Stack>
 
                     <Box>
-                        <Typography sx={{ fontSize: fontSize ? `${1.35 * fontSize}rem` : "1.35rem" }}>
-                            {message}
-                        </Typography>
+                        <Typography sx={{ fontSize: fontSize ? `${1.35 * fontSize}rem` : "1.35rem" }}>{message}</Typography>
                     </Box>
                 </Box>
             </Stack>

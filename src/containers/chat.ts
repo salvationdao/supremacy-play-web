@@ -6,7 +6,8 @@ import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatData, UserStat } from "../types"
+import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
+import { UserStat } from "../types"
 
 export interface UserMultiplier {
     player_id: string
@@ -56,8 +57,8 @@ export const ChatContainer = createContainer(() => {
     // Chat states
     const [initialSentDate, setInitialSentDate] = useState<SentChatMessageData>({ global: [], faction: [] })
     const [initialMessageColor, setInitialMessageColor] = useState<string>()
-    const [globalChatMessages, setGlobalChatMessages] = useState<ChatData[]>([])
-    const [factionChatMessages, setFactionChatMessages] = useState<ChatData[]>([])
+    const [globalChatMessages, setGlobalChatMessages] = useState<ChatMessageType[]>([])
+    const [factionChatMessages, setFactionChatMessages] = useState<ChatMessageType[]>([])
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const [userMultiplierMap, setUserMultiplierMap] = useState<UserMultiplierMap>({})
@@ -100,7 +101,7 @@ export const ChatContainer = createContainer(() => {
     )
 
     const newMessageHandler = useCallback(
-        (message: ChatData, faction_id: string | null) => {
+        (message: ChatMessageType, faction_id: string | null) => {
             if (faction_id === null) {
                 setGlobalChatMessages((prev) => {
                     // Buffer the messages
@@ -138,7 +139,7 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
         try {
-            send<ChatData[]>(GameServerKeys.ChatPastMessages).then((resp) => {
+            send<ChatMessageType[]>(GameServerKeys.ChatPastMessages).then((resp) => {
                 setGlobalChatMessages(resp)
                 setInitialSentDate((prev) => ({
                     ...prev,
@@ -155,15 +156,15 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         try {
-            send<ChatData[]>(GameServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
+            send<ChatMessageType[]>(GameServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
                 setFactionChatMessages(resp)
                 setInitialSentDate((prev) => ({
                     ...prev,
                     faction: resp.map((m) => m.sent_at),
                 }))
-                const selfMessage = resp.find((m) => m.from_user_id === user.id)
+                const selfMessage = resp.filter((m) => m.type == "TEXT").find((m) => (m.data as TextMessageData).from_user_id === user.id)
                 if (selfMessage) {
-                    setInitialMessageColor(selfMessage.message_color)
+                    setInitialMessageColor((selfMessage.data as TextMessageData).message_color)
                 }
             })
         } catch (e) {
@@ -243,8 +244,8 @@ export const ChatContainer = createContainer(() => {
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
-        return subscribe<ChatData>(GameServerKeys.SubscribeGlobalChat, (m) => {
-            if (!m || m.from_user_id === user?.id) return
+        return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
+            if (!m || (m.type == "TEXT" && (m.data as TextMessageData).from_user_id === user?.id)) return
             newMessageHandler(m, null)
             if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
         })
@@ -253,9 +254,9 @@ export const ChatContainer = createContainer(() => {
     // Subscribe to faction chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
-        return subscribe<ChatData>(GameServerKeys.SubscribeFactionChat, (m) => {
-            if (!m || m.from_user_id === user?.id) return
-            newMessageHandler(m, m.from_user_id)
+        return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
+            if (!m || (m.type == "TEXT" && (m.data as TextMessageData).from_user_id === user?.id)) return
+            newMessageHandler(m, "faction_id")
             if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
         })
     }, [user, state, subscribe, tabValue, factionChatUnread])

@@ -1,26 +1,17 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useLayoutEffect, useRef, useState } from "react"
-import { ChatMessage } from "../.."
+import { PunishMessage, TextMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
-import {
-    FactionsAll,
-    FontSizeType,
-    SplitOptionType,
-    useChat,
-    useGame,
-    useGameServerAuth,
-    UserIDMap,
-    UserMultiplierMap,
-} from "../../../containers"
+import { FactionsAll, FontSizeType, SplitOptionType, useChat, useGame, useGameServerAuth, UserIDMap, UserMultiplierMap } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { ChatData } from "../../../types"
+import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../types/chat"
 import { BanProposal } from "../BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 
 interface ChatMessagesProps {
     primaryColor: string
     secondaryColor: string
-    chatMessages: ChatData[]
+    chatMessages: ChatMessageType[]
     faction_id: string | null
 }
 
@@ -157,20 +148,40 @@ const ChatMessagesInner = ({
             >
                 <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
                     {chatMessages && chatMessages.length > 0 ? (
-                        chatMessages.map((c) => (
-                            <ChatMessage
-                                key={`${c.from_username} - ${c.sent_at.toISOString()}`}
-                                chat={c}
-                                filterZeros={filterZeros}
-                                isSent={c.from_user_id != user?.id ? true : sentMessages.includes(c.sent_at)}
-                                isFailed={c.from_user_id != user?.id ? false : failedMessages.includes(c.sent_at)}
-                                multiplierValue={userMultiplierMap[c.from_user_id]}
-                                isCitizen={citizenPlayerIDs.some((cp) => cp === c.from_user_id)}
-                                fontSize={fontSize}
-                                userStat={userStatMap[c.from_user_id]}
-                                factionsAll={factionsAll}
-                            />
-                        ))
+                        chatMessages.map((message) => {
+                            if (message.type == "PUNISH_VOTE") {
+                                const data = message.data as PunishMessageData
+                                return (
+                                    <PunishMessage
+                                        key={`${data.issued_by_player_id} - ${message.sent_at.toISOString()}`}
+                                        data={data}
+                                        sentAt={message.sent_at}
+                                        fontSize={fontSize}
+                                    />
+                                )
+                            }
+
+                            if (message.type == "TEXT") {
+                                const data = message.data as TextMessageData
+                                return (
+                                    <TextMessage
+                                        key={`${data.from_user_id} - ${message.sent_at.toISOString()}`}
+                                        data={data}
+                                        sentAt={message.sent_at}
+                                        fontSize={fontSize}
+                                        filterZeros={filterZeros}
+                                        isSent={data.from_user_id != user?.id ? true : sentMessages.includes(message.sent_at)}
+                                        isFailed={data.from_user_id != user?.id ? false : failedMessages.includes(message.sent_at)}
+                                        multiplierValue={userMultiplierMap[data.from_user_id]}
+                                        isCitizen={citizenPlayerIDs.some((cp) => cp === data.from_user_id)}
+                                        userStat={userStatMap[data.from_user_id]}
+                                        factionsAll={factionsAll}
+                                    />
+                                )
+                            }
+
+                            return null
+                        })
                     ) : (
                         <Typography
                             sx={{
