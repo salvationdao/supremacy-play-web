@@ -1,13 +1,13 @@
-import { Box, Button, Drawer, Fade, Grid, Skeleton, Stack, Typography, CircularProgress } from "@mui/material"
+import { Box, Button, CircularProgress, Drawer, Fade, Grid, Skeleton, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { AssetItem, DrawerButtons } from ".."
+import { AssetItem, DeployConfirmation, DrawerButtons } from ".."
 import { SvgRobot } from "../../assets"
 import {
     DRAWER_TRANSITION_DURATION,
     GAME_BAR_HEIGHT,
-    RIGHT_DRAWER_WIDTH,
     NullUUID,
     PASSPORT_WEB,
+    RIGHT_DRAWER_WIDTH,
 } from "../../constants"
 import {
     useDrawer,
@@ -18,9 +18,12 @@ import {
     usePassportServerWebsocket,
     useSnackbar,
 } from "../../containers"
+import { useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset, AssetOnChainStatus, AssetQueueStat, AssetQueueStatusItem } from "../../types/assets"
+import { HistoryDrawer } from "./HistoryDrawer"
+import { LeaveConfirmation } from "./LeaveConfirmation"
 
 interface QueueFeed {
     queue_length: number
@@ -53,14 +56,19 @@ const DrawerContent = () => {
     const { faction_id } = usePassportServerAuth()
     const { battleEndDetail } = useGame()
     const { user } = useGameServerAuth()
+    const { state: gsState, subscribe: gsSubscribe, send: gsSend } = useGameServerWebsocket()
+
+    // Modals/drawers
+    const [currentAsset, setCurrentAsset] = useState<Asset>()
+    const [historyDrawerOpen, toggleHistoryDrawerOpen] = useToggle()
+    const [leaveModalOpen, toggleLeaveModalOpen] = useToggle()
+    const [deployModalOpen, toggleDeployModalOpen] = useToggle()
+
     const [queueLength, setQueueLength] = useState<number>(0)
     const [queueCost, setQueueCost] = useState<string>("")
     const [contractReward, setContractReward] = useState<string>("")
 
-    const { state: gsState, subscribe: gsSubscribe, send: gsSend } = useGameServerWebsocket()
-
     const [queuedAssets, setQueuedAssets] = useState<AssetQueueStatusItem[] | null>(null)
-
     const [assets, setAssets] = useState<Asset[]>()
     const [assetsNotInQueue, setAssetsNotInQueue] = useState<Map<string, Asset>>(new Map())
     const [assetsInQueue, setAssetsInQueue] = useState<
@@ -254,13 +262,22 @@ const DrawerContent = () => {
                         <AssetItem
                             key={`${hash}-${index}`}
                             asset={a}
+                            onDeploy={(asset) => {
+                                toggleDeployModalOpen(true)
+                                setCurrentAsset(asset)
+                            }}
+                            onLeave={(asset) => {
+                                toggleLeaveModalOpen(true)
+                                setCurrentAsset(asset)
+                            }}
+                            onHistory={(asset) => {
+                                toggleHistoryDrawerOpen(true)
+                                setCurrentAsset(asset)
+                            }}
                             assetQueueStatus={{
                                 queue_position: a.queue_position,
                                 contract_reward: a.contract_reward,
                             }}
-                            queueLength={queueLength}
-                            queueCost={queueCost}
-                            contractReward={contractReward}
                         />
                     ))}
 
@@ -269,9 +286,18 @@ const DrawerContent = () => {
                         <AssetItem
                             key={`${hash}-${index}`}
                             asset={a}
-                            queueLength={queueLength}
-                            queueCost={queueCost}
-                            contractReward={contractReward}
+                            onDeploy={(asset) => {
+                                toggleDeployModalOpen(true)
+                                setCurrentAsset(asset)
+                            }}
+                            onLeave={(asset) => {
+                                toggleLeaveModalOpen(true)
+                                setCurrentAsset(asset)
+                            }}
+                            onHistory={(asset) => {
+                                toggleHistoryDrawerOpen(true)
+                                setCurrentAsset(asset)
+                            }}
                         />
                     ))}
 
@@ -327,58 +353,84 @@ const DrawerContent = () => {
     }, [isLoading, assets, assetsNotInQueue, assetsInQueue, queueLength, queueCost, contractReward])
 
     return (
-        <Stack sx={{ flex: 1 }}>
-            <Stack
-                direction="row"
-                spacing=".96rem"
-                alignItems="center"
-                sx={{
-                    position: "relative",
-                    pl: "2rem",
-                    pr: "4.8rem",
-                    height: `${GAME_BAR_HEIGHT}rem`,
-                    background: `${colors.assetsBanner}65`,
-                    boxShadow: 1.5,
-                }}
-            >
-                <SvgRobot size="2.3rem" fill={colors.text} sx={{ pb: ".56rem" }} />
-                <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
-                    WAR MACHINES
-                </Typography>
-            </Stack>
+        <>
+            {/* Management modals/drawers */}
+            {assets && assets.length > 0 && (
+                <>
+                    <DeployConfirmation
+                        open={deployModalOpen}
+                        asset={currentAsset || assets[0]}
+                        queueLength={queueLength}
+                        queueCost={queueCost}
+                        contractReward={contractReward}
+                        onClose={() => toggleDeployModalOpen(false)}
+                    />
+                    <LeaveConfirmation
+                        open={leaveModalOpen}
+                        asset={currentAsset || assets[0]}
+                        onClose={() => toggleLeaveModalOpen(false)}
+                    />
+                    <HistoryDrawer
+                        open={historyDrawerOpen}
+                        asset={currentAsset || assets[0]}
+                        onClose={() => toggleHistoryDrawerOpen(false)}
+                    />
+                </>
+            )}
 
-            <Fade in={true}>
-                <Box
-                    onScroll={(e) => {
-                        const target = e.currentTarget
-                        if (target.scrollTop + target.offsetHeight >= target.scrollHeight) {
-                            loadMoreAssets()
-                        }
-                    }}
+            <Stack sx={{ flex: 1 }}>
+                <Stack
+                    direction="row"
+                    spacing=".96rem"
+                    alignItems="center"
                     sx={{
-                        m: ".4rem",
-                        flex: 1,
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        direction: "ltr",
-                        scrollbarWidth: "none",
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: colors.assetsBanner,
-                            borderRadius: 3,
-                        },
+                        position: "relative",
+                        pl: "2rem",
+                        pr: "4.8rem",
+                        height: `${GAME_BAR_HEIGHT}rem`,
+                        background: `${colors.assetsBanner}65`,
+                        boxShadow: 1.5,
                     }}
                 >
-                    <Stack spacing={0.6}>{content}</Stack>
-                </Box>
-            </Fade>
-        </Stack>
+                    <SvgRobot size="2.3rem" fill={colors.text} sx={{ pb: ".56rem" }} />
+                    <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
+                        WAR MACHINES
+                    </Typography>
+                </Stack>
+
+                <Fade in={true}>
+                    <Box
+                        onScroll={(e) => {
+                            const target = e.currentTarget
+                            if (target.scrollTop + target.offsetHeight >= target.scrollHeight) {
+                                loadMoreAssets()
+                            }
+                        }}
+                        sx={{
+                            m: ".4rem",
+                            flex: 1,
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            direction: "ltr",
+                            scrollbarWidth: "none",
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: colors.assetsBanner,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        <Stack spacing={0.6}>{content}</Stack>
+                    </Box>
+                </Fade>
+            </Stack>
+        </>
     )
 }
 

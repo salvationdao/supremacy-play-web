@@ -1,15 +1,14 @@
-import { Box, Button, Link, Stack, Typography } from "@mui/material"
+import HistoryIcon from "@mui/icons-material/History"
+import { Box, Button, IconButton, Link, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { DeployConfirmation, TooltipHelper } from ".."
-import { SvgExternalLink, SvgSupToken } from "../../assets"
+import { TooltipHelper } from ".."
+import { SvgExternalLink, SvgSupToken, SvgWrapper } from "../../assets"
 import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
-import { useToggle } from "../../hooks"
 import { PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset, AssetQueueStat } from "../../types/assets"
-import { LeaveConfirmation } from "./LeaveConfirmation"
 
 // const RepairCountdown = ({ endTime }: { endTime: Date }) => {
 //     const { hours, minutes, seconds } = useTimer(endTime)
@@ -25,21 +24,19 @@ import { LeaveConfirmation } from "./LeaveConfirmation"
 export const AssetItem = ({
     asset,
     assetQueueStatus,
-    queueLength,
-    queueCost,
-    contractReward,
+    onDeploy,
+    onLeave,
+    onHistory,
 }: {
     asset: Asset
     assetQueueStatus?: AssetQueueStat
-    queueLength: number
-    queueCost: string
-    contractReward: string
+    onDeploy: (asset: Asset) => void
+    onLeave: (asset: Asset) => void
+    onHistory: (asset: Asset) => void
 }) => {
     const { user } = usePassportServerAuth()
     const { state, subscribe } = usePassportServerWebsocket()
     const { state: gsState } = useGameServerWebsocket()
-    const [deployModalOpen, toggleDeployModalOpen] = useToggle()
-    const [leaveModalOpen, toggleLeaveModalOpen] = useToggle()
 
     const [mouseOver, setMouseOver] = useState<boolean>(false)
     const [assetData, setAssetData] = useState<Asset>(asset)
@@ -166,7 +163,7 @@ export const AssetItem = ({
                         onMouseLeave={() => setMouseOver(false)}
                         onFocus={() => setMouseOver(true)}
                         onBlur={() => setMouseOver(false)}
-                        onClick={() => toggleLeaveModalOpen(true)}
+                        onClick={() => onLeave(asset)}
                         variant="contained"
                         size="small"
                         sx={{
@@ -216,7 +213,7 @@ export const AssetItem = ({
             <Button
                 variant="contained"
                 size="small"
-                onClick={() => toggleDeployModalOpen(true)}
+                onClick={() => onDeploy(asset)}
                 sx={{
                     minWidth: 0,
                     px: ".8rem",
@@ -328,28 +325,37 @@ export const AssetItem = ({
                 </Stack>
             </Stack>
 
-            <Link
-                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                target="_blank"
-                sx={{ position: "absolute", top: ".6rem", right: ".4rem" }}
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                }}
             >
-                <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
-            </Link>
-
-            {deployModalOpen && (
-                <DeployConfirmation
-                    open={deployModalOpen}
-                    asset={asset}
-                    queueLength={queueLength}
-                    queueCost={queueCost}
-                    contractReward={contractReward}
-                    onClose={() => toggleDeployModalOpen(false)}
-                />
-            )}
-
-            {leaveModalOpen && (
-                <LeaveConfirmation open={leaveModalOpen} asset={asset} onClose={() => toggleLeaveModalOpen(false)} />
-            )}
+                <TooltipHelper text="View Asset">
+                    <Link
+                        sx={{
+                            display: "block",
+                            marginBottom: ".5rem",
+                        }}
+                        href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
+                        target="_blank"
+                    >
+                        <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                    </Link>
+                </TooltipHelper>
+                <TooltipHelper text="View History">
+                    <IconButton
+                        onClick={() => onHistory(asset)}
+                        sx={{
+                            padding: 0,
+                        }}
+                    >
+                        <SvgWrapper size="1.5rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}>
+                            <HistoryIcon />
+                        </SvgWrapper>
+                    </IconButton>
+                </TooltipHelper>
+            </Box>
         </Stack>
     )
 }
