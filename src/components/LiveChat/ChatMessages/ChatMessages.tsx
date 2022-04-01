@@ -132,7 +132,6 @@ const ChatMessagesInner = ({
                         // data={data}
                         sentAt={new Date()}
                         fontSize={fontSize}
-                        factionsAll={factionsAll}
                     /> */}
 
                     {chatMessages && chatMessages.length > 0 ? (
@@ -145,7 +144,6 @@ const ChatMessagesInner = ({
                                         data={data}
                                         sentAt={message.sent_at}
                                         fontSize={fontSize}
-                                        factionsAll={factionsAll}
                                     />
                                 )
                             }

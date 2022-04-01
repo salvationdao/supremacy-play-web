@@ -42,8 +42,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     // Options and display only
-    const [searchText, setSearchText] = useState("")
-    const [search, setSearch] = useDebounce<string>("", 300)
+    const [searchText, setSearchText] = useState(prefillUser?.username)
+    const [search, setSearch] = useDebounce(prefillUser?.username, 300)
     const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()
     const [userDropdown, setUserDropdown] = useState<BanUser[]>([])
     const [banOptions, setBanOptions] = useState<BanOption[]>([])
@@ -78,7 +78,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
             try {
                 if (state !== WebSocket.OPEN) return
                 const resp = await send<BanUser[], { search: string }>(GameServerKeys.GetPlayerList, {
-                    search,
+                    search: search || "",
                 })
 
                 if (resp) setUserDropdown(resp)

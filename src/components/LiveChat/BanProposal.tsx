@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { BanProposalStruct } from "../../types/chat"
 
-const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
+export const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
     return (
         <Stack direction="row" spacing=".7rem" alignItems="start">
             <Typography
