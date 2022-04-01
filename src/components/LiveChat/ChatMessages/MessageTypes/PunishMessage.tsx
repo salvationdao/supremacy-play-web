@@ -23,10 +23,9 @@ export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessage
         <Box>
             <Stack
                 sx={{
-                    mt: ".1rem",
-                    mb: ".2rem",
-                    pt: ".5rem",
-                    pb: ".7rem",
+                    mb: ".5rem",
+                    pt: ".8rem",
+                    pb: "1rem",
                     borderTop: `${colors.grey}20 2px solid`,
                     borderBottom: `${colors.grey}20 2px solid`,
                 }}

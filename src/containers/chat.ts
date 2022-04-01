@@ -6,7 +6,7 @@ import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
+import { ChatMessageType, TextMessageData } from "../types/chat"
 import { UserStat } from "../types"
 
 interface SentChatMessageData {
@@ -43,7 +43,6 @@ export const ChatContainer = createContainer(() => {
     const [factionChatMessages, setFactionChatMessages] = useState<ChatMessageType[]>([])
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
-    const [banProposal, setBanProposal] = useState<BanProposalStruct>()
     const userStats = useRef<{
         total_multiplier?: number
         is_citizen?: boolean
@@ -208,24 +207,6 @@ export const ChatContainer = createContainer(() => {
         })
     }, [user, state, subscribe, tabValue, factionChatUnread])
 
-    // Subscribe to ban proposals
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
-        return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
-            if (payload) {
-                const startedAtTime = payload.started_at.getTime()
-                const nowTime = new Date().getTime()
-                const duration = payload.ended_at.getTime() - startedAtTime
-                const endTime = new Date(Math.min(startedAtTime, nowTime) + duration)
-
-                setBanProposal({
-                    ...payload,
-                    ended_at: endTime,
-                })
-            }
-        })
-    }, [user, state, subscribe])
-
     return {
         tabValue,
         setTabValue,
@@ -249,7 +230,6 @@ export const ChatContainer = createContainer(() => {
         fontSize,
         setFontSize,
         globalAnnouncement,
-        banProposal,
         userStats,
     }
 })

@@ -13,6 +13,7 @@ export interface BanProposalStruct {
     started_at: Date
     ended_at: Date
     punish_option: BanOption
+    decision?: { is_agreed: boolean }
 }
 
 export interface BanUser {

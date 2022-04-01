@@ -2,11 +2,12 @@ import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
-import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { snakeToTitle } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
+import { User } from "../../types"
 import { BanProposalStruct } from "../../types/chat"
 
 export const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
@@ -40,9 +41,10 @@ const Countdown = ({ endTime, toggleOutOfTime }: { endTime: Date; toggleOutOfTim
 
     return <>{totalSecRemain}</>
 }
-
 export const BanProposal = () => {
-    const { banProposal } = useChat()
+    const { user } = useGameServerAuth()
+    const { state, subscribe } = useGameServerWebsocket()
+    const [banProposal, setBanProposal] = useState<BanProposalStruct>()
     const [render, toggleRender] = useToggle()
     const [outOfTime, toggleOutOfTime] = useToggle()
 
@@ -62,6 +64,24 @@ export const BanProposal = () => {
         }
     }, [outOfTime])
 
+    // Subscribe to ban proposals
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !user || !user.faction_id || !user.faction) return
+        return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
+            if (payload) {
+                const startedAtTime = payload.started_at.getTime()
+                const nowTime = new Date().getTime()
+                const duration = payload.ended_at.getTime() - startedAtTime
+                const endTime = new Date(Math.min(startedAtTime, nowTime) + duration)
+
+                setBanProposal({
+                    ...payload,
+                    ended_at: endTime,
+                })
+            }
+        })
+    }, [user, state, subscribe])
+
     if (!banProposal || !render) return null
 
     return <BanProposalInner banProposal={banProposal} outOfTime={outOfTime} toggleOutOfTime={toggleOutOfTime} />
@@ -78,8 +98,8 @@ const BanProposalInner = ({
 }) => {
     const { state, send } = useGameServerWebsocket()
     const { userStat } = useGameServerAuth()
-    const [submitted, setSubmitted] = useState(false)
-    const [submittedVote, setSubmittedVote] = useState(false)
+    const [submitted, setSubmitted] = useState(!!banProposal.decision)
+    const [submittedVote, setSubmittedVote] = useState(banProposal.decision?.is_agreed)
     const [error, setError] = useState("")
 
     const submitVote = useCallback(

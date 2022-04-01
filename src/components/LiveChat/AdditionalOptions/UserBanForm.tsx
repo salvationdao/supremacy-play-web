@@ -176,6 +176,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                 },
                             }}
                             disablePortal
+                            value={selectedUser}
                             onChange={(e, value) => setSelectedUser(value)}
                             renderOption={(props, u) => (
                                 <Box key={u.id} component="li" {...props}>
