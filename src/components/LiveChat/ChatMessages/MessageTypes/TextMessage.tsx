@@ -164,44 +164,42 @@ export const TextMessage = ({
         <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
             <Stack ref={popoverRef} direction="row" spacing=".4rem">
                 <Stack direction="row" spacing=".4rem" alignItems="start">
-                    <Box>
-                        {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
+                    {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
 
-                        {avatar_id && (
-                            <Box
-                                sx={{
-                                    mt: "-0.1rem !important",
-                                    width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
-                                    height: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
-                                    flexShrink: 0,
-                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "contain",
-                                    backgroundColor: factionColor,
-                                    borderRadius: 0.8,
-                                    border: `${factionColor} 1px solid`,
-                                }}
-                            />
-                        )}
-                        {factionLogoBlobID && factionLogoBlobID != NullUUID && (
-                            <Box
-                                sx={{
-                                    mt: "-0.1rem !important",
-                                    width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
-                                    height: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
-                                    flexShrink: 0,
-                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "contain",
-                                    backgroundColor: factionColor,
-                                    borderRadius: 0.8,
-                                    border: `${factionColor} 1px solid`,
-                                }}
-                            />
-                        )}
-                    </Box>
+                    {avatar_id && (
+                        <Box
+                            sx={{
+                                mt: "-0.1rem !important",
+                                width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
+                                height: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
+                                flexShrink: 0,
+                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "contain",
+                                backgroundColor: factionColor,
+                                borderRadius: 0.8,
+                                border: `${factionColor} 1px solid`,
+                            }}
+                        />
+                    )}
+                    {factionLogoBlobID && factionLogoBlobID != NullUUID && (
+                        <Box
+                            sx={{
+                                mt: "-0.1rem !important",
+                                width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
+                                height: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
+                                flexShrink: 0,
+                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "contain",
+                                backgroundColor: factionColor,
+                                borderRadius: 0.8,
+                                border: `${factionColor} 1px solid`,
+                            }}
+                        />
+                    )}
                 </Stack>
 
                 <Box>

@@ -116,7 +116,7 @@ const ChatSendInner = ({
             onFailedMessage(sentAt)
             console.debug(e)
         }
-    }, [message, user, state, send])
+    }, [message, user, state, send, newSnackbarMessage])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 
