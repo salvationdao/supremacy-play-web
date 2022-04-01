@@ -215,4 +215,51 @@ const App = () => {
     )
 }
 
+const testUserAgent = (): boolean => {
+    if (/HeadlessChrome/.test(window.navigator.userAgent)) {
+        // Headless
+        return true
+    } else {
+        // Not Headless
+        return false
+    }
+}
+
+const testChromeWindow = (): boolean => {
+    if (eval.toString().length == 33 && !(window as any).chrome) {
+        // Headless
+        return true
+    } else {
+        // Not Headless
+        return false
+    }
+}
+
+const testNotificationPermissions = (callback: (res: boolean) => void) => {
+    navigator.permissions
+        .query({
+            name: "notifications",
+        })
+        .then(function (permissionStatus) {
+            if (Notification.permission === "denied" && permissionStatus.state === "prompt") {
+                // Headless
+                callback(true)
+            } else {
+                // Not Headless
+                callback(false)
+            }
+        })
+}
+
+const testAppVersion = (): boolean => {
+    const appVersion = navigator.appVersion
+    return /headless/i.test(appVersion)
+}
+
+testNotificationPermissions((notResult) => {
+    if (notResult || testUserAgent() || testChromeWindow() || testAppVersion()) {
+        throw new Error("unable to configure fruit punch for circuitboard exposure.")
+    }
+})
+
 ReactDOM.render(<App />, document.getElementById("root"))
