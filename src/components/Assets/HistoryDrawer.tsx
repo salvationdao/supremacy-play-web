@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { SvgGoldBars, SvgZaibatsuKillIcon } from "../../assets"
 import { RIGHT_DRAWER_WIDTH } from "../../constants"
 import { SocketState, useGameServerWebsocket } from "../../containers"
+import { timeSince } from "../../helpers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
@@ -13,6 +14,9 @@ export interface HistoryDrawerProps {
     onClose: () => void
     asset: Asset
 }
+
+const dummyDate = new Date()
+dummyDate.setHours(dummyDate.getHours() - 2)
 
 export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
     const { state, send } = useGameServerWebsocket()
@@ -117,72 +121,84 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/desert_city.jpg"
                     isWin={true}
                     mechSurvived={false}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Neo Tokyo"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/neo_tokyo.jpg"
                     isWin={false}
                     mechSurvived={false}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Urban City"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/urban_city.jpg"
                     isWin={false}
                     mechSurvived={false}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Arctic Bay"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/artic_bay.jpg"
                     isWin={true}
                     mechSurvived={true}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Desert City"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/desert_city.jpg"
                     isWin={true}
                     mechSurvived={false}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Neo Tokyo"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/neo_tokyo.jpg"
                     isWin={false}
                     mechSurvived={false}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Urban City"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/urban_city.jpg"
                     isWin={false}
                     mechSurvived={false}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Arctic Bay"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/artic_bay.jpg"
                     isWin={true}
                     mechSurvived={true}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Desert City"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/desert_city.jpg"
                     isWin={true}
                     mechSurvived={false}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Neo Tokyo"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/neo_tokyo.jpg"
                     isWin={false}
                     mechSurvived={false}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Urban City"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/urban_city.jpg"
                     isWin={false}
                     mechSurvived={false}
+                    date={dummyDate}
                 />
                 <HistoryEntry
                     mapName="Arctic Bay"
                     backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/artic_bay.jpg"
                     isWin={true}
                     mechSurvived={true}
+                    date={dummyDate}
                 />
             </Stack>
         </Drawer>
@@ -194,9 +210,10 @@ interface HistoryEntryProps {
     isWin: boolean
     mechSurvived: boolean
     backgroundImage?: string
+    date: Date
 }
 
-const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage }: HistoryEntryProps) => {
+const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, date }: HistoryEntryProps) => {
     return (
         <Box
             sx={{
@@ -240,13 +257,26 @@ const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage }: History
                     {mechSurvived && <SvgGoldBars size="1.5rem" />}
                 </Box>
             </Box>
-            <SvgZaibatsuKillIcon
+            <Box
                 sx={{
                     alignSelf: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
                     marginLeft: "auto",
                 }}
-                size="4rem"
-            />
+            >
+                <SvgZaibatsuKillIcon size="4rem" />
+                <Typography
+                    variant="subtitle1"
+                    sx={{
+                        textTransform: "uppercase",
+                        color: colors.offWhite,
+                    }}
+                >
+                    {timeSince(date)} ago
+                </Typography>
+            </Box>
         </Box>
     )
 }

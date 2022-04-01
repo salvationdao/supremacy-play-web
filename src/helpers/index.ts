@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js"
-import { colors } from "../theme/theme"
 import {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
@@ -8,18 +7,19 @@ import {
     MultiplierContributor,
     MultiplierDestroyerOfWorlds,
     MultiplierFieldMechanic,
+    MultiplierFiend,
     MultiplierGreaseMonkey,
+    MultiplierJunkE,
     MultiplierMechCommander,
+    MultiplierMechHead,
     MultiplierNowIAmBecomeDeath,
+    MultiplierSniper,
     MultiplierSuperContributor,
     MultiplierSupporter,
-    MultiplierFiend,
-    MultiplierJunkE,
-    MultiplierMechHead,
-    MultiplierSniper,
     MultiplierWonBattle,
     MultiplierWonLastThreeBattles,
 } from "../assets"
+import { colors } from "../theme/theme"
 import { MultiplierGuide } from "../types"
 
 // Capitalize convert a string "example" to "Example"
@@ -421,6 +421,33 @@ export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
     if (showSeconds) return `${hours}:${minutes2}:${seconds2} ${suffix}`
 
     return `${hours}:${minutes2} ${suffix}`
+}
+
+export const timeSince = (date: Date) => {
+    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000)
+
+    let interval = seconds / 31536000
+
+    if (interval > 1) {
+        return Math.floor(interval) + " years"
+    }
+    interval = seconds / 2592000
+    if (interval > 1) {
+        return Math.floor(interval) + " months"
+    }
+    interval = seconds / 86400
+    if (interval > 1) {
+        return Math.floor(interval) + " days"
+    }
+    interval = seconds / 3600
+    if (interval > 1) {
+        return Math.floor(interval) + " hours"
+    }
+    interval = seconds / 60
+    if (interval > 1) {
+        return Math.floor(interval) + " minutes"
+    }
+    return Math.floor(seconds) + " seconds"
 }
 
 export const snakeToTitle = (str: string): string => Capitalize(str.split("_").join(" "))
