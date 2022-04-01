@@ -1,9 +1,9 @@
 import { Button, Popover, Stack, Typography } from "@mui/material"
 import { useRef } from "react"
 import { UserBanForm } from "../.."
-import { SvgFastRepair } from "../../../assets"
 import { RIGHT_DRAWER_WIDTH, LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../../constants"
 import { useGameServerAuth } from "../../../containers"
+import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 
@@ -22,7 +22,7 @@ export const AdditionalOptionsButton = () => {
                 ref={popoverRef}
                 onClick={() => toggleIsPopoverOpen()}
                 sx={{
-                    backgroundColor: colors.darkerNavy,
+                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                     height: "2rem",
                     width: "100%",
                     borderRadius: 0,
