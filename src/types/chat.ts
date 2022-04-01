@@ -1,3 +1,5 @@
+import { UserStat } from "."
+
 export interface BanProposalStruct {
     id: string
     punish_option_id: string
@@ -38,14 +40,9 @@ export interface TextMessageData {
     message_color?: string
     avatar_id?: string
     message: string
-    total_multiplier: number
-    from_user_stat: {
-        id: string
-        kill_count: number
-        mech_kill_count: number
-        total_ability_triggered: number
-        view_battle_count: number
-    }
+    total_multiplier?: number
+    is_citizen?: boolean
+    from_user_stat?: UserStat
     self?: boolean
 }
 

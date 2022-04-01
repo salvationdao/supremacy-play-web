@@ -1,17 +1,4 @@
-import {
-    Autocomplete,
-    Box,
-    Button,
-    CircularProgress,
-    IconButton,
-    MenuItem,
-    Modal,
-    Select,
-    Stack,
-    SxProps,
-    TextField,
-    Typography,
-} from "@mui/material"
+import { Autocomplete, Box, Button, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing } from "../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../assets"
@@ -21,7 +8,8 @@ import { snakeToTitle } from "../../../helpers"
 import { useDebounce, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { BanOption, BanUser, User } from "../../../types"
+import { BanOption, BanUser } from "../../../types/chat"
+import { User } from "../../../types"
 
 interface SubmitRequest {
     intend_to_punish_player_id: string
@@ -105,12 +93,9 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
         ;(async () => {
             try {
                 if (state !== WebSocket.OPEN || !selectedUser) return
-                const resp = await send<string, { intend_to_punish_player_id: string }>(
-                    GameServerKeys.GetBanPlayerCost,
-                    {
-                        intend_to_punish_player_id: selectedUser.id,
-                    },
-                )
+                const resp = await send<string, { intend_to_punish_player_id: string }>(GameServerKeys.GetBanPlayerCost, {
+                    intend_to_punish_player_id: selectedUser.id,
+                })
 
                 if (resp) setFee(resp)
             } catch (e) {
@@ -180,9 +165,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
                             },
                         }}
                     >
-                        <Typography sx={{ mb: ".9rem", fontFamily: "Nostromo Regular Black" }}>
-                            PROPOSE TO PUNISH A PLAYER
-                        </Typography>
+                        <Typography sx={{ mb: ".9rem", fontFamily: "Nostromo Regular Black" }}>PROPOSE TO PUNISH A PLAYER</Typography>
 
                         <Autocomplete
                             options={userDropdown}
@@ -237,9 +220,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
                                         ...params.InputProps,
                                         endAdornment: (
                                             <>
-                                                {isLoadingUsers ? (
-                                                    <CircularProgress color="inherit" size="1.2rem" />
-                                                ) : null}
+                                                {isLoadingUsers ? <CircularProgress color="inherit" size="1.2rem" /> : null}
                                                 {params.InputProps.endAdornment}
                                             </>
                                         ),
@@ -250,9 +231,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
 
                         <Stack spacing="1.5rem" sx={{ mt: "1.6rem" }}>
                             <Stack spacing=".1rem">
-                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                                    USER:
-                                </Typography>
+                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>USER:</Typography>
                                 {selectedUser ? (
                                     <UserItem user={user} banUser={selectedUser} sx={{ pl: ".2rem" }} />
                                 ) : (
@@ -271,9 +250,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
                                     },
                                 }}
                             >
-                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                                    BAN OPTION:
-                                </Typography>
+                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>BAN OPTION:</Typography>
                                 <Select
                                     displayEmpty
                                     sx={{
@@ -312,24 +289,10 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
                                                     },
                                                 }}
                                             >
-                                                <Stack
-                                                    direction="row"
-                                                    spacing="1rem"
-                                                    justifyContent="space-between"
-                                                    sx={{ flex: 1 }}
-                                                >
+                                                <Stack direction="row" spacing="1rem" justifyContent="space-between" sx={{ flex: 1 }}>
                                                     <Typography>{snakeToTitle(x.key)}</Typography>
-                                                    <Stack
-                                                        spacing=".24rem"
-                                                        direction="row"
-                                                        alignItems="center"
-                                                        justifyContent="center"
-                                                    >
-                                                        <SvgCooldown
-                                                            component="span"
-                                                            size="1.5rem"
-                                                            sx={{ pb: ".25rem" }}
-                                                        />
+                                                    <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
+                                                        <SvgCooldown component="span" size="1.5rem" sx={{ pb: ".25rem" }} />
                                                         <Typography>{x.punish_duration_hours} Hrs</Typography>
                                                     </Stack>
                                                 </Stack>
@@ -340,9 +303,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                                    REASON:
-                                </Typography>
+                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>REASON:</Typography>
                                 <TextField
                                     value={reason}
                                     placeholder="Type the reason to punish the user..."
@@ -422,11 +383,7 @@ export const UserBanForm = ({ user, open, onClose }: { user?: User; open: boolea
                         )}
                     </Stack>
 
-                    <IconButton
-                        size="small"
-                        onClick={onClose}
-                        sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}
-                    >
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
                         <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>

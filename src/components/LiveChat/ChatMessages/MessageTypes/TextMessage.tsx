@@ -27,7 +27,7 @@ const UserDetailsPopover = ({
     factionLogoBlobID?: string
     factionColor?: string
     username: string
-    userStat: UserStat
+    userStat?: UserStat
     popoverRef: React.MutableRefObject<null>
     open: boolean
     onClose: () => void
@@ -128,10 +128,7 @@ export const TextMessage = ({
     fontSize,
     isSent,
     isFailed,
-    multiplierValue,
-    isCitizen,
     filterZeros,
-    userStat,
     factionsAll,
 }: {
     data: TextMessageData
@@ -139,33 +136,33 @@ export const TextMessage = ({
     fontSize: number
     isSent?: boolean
     isFailed?: boolean
-    multiplierValue?: string
-    isCitizen: boolean
     filterZeros?: boolean
-    userStat: UserStat
     factionsAll: FactionsAll
 }) => {
-    const { from_username, message_color, from_user_faction_id, avatar_id, message, self } = data
+    const { from_username, message_color, from_user_faction_id, avatar_id, message, self, total_multiplier, is_citizen, from_user_stat } = data
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
-    const multiplierInt = useMemo(() => (multiplierValue ? parseInt(multiplierValue) : 0), [multiplierValue])
-    const multiplierColor = useMemo(() => getMultiplierColor(multiplierInt), [multiplierInt])
+    const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
     const abilityKillColor = useMemo(() => {
-        if (!userStat || userStat.kill_count == 0) return colors.grey
-        if (userStat.kill_count < 0) return colors.red
+        if (!from_user_stat || from_user_stat.kill_count == 0) return colors.grey
+        if (from_user_stat.kill_count < 0) return colors.red
         return message_color
-    }, [userStat, message_color])
+    }, [from_user_stat, message_color])
     const factionColor = useMemo(
         () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.theme.primary : message_color),
         [from_user_faction_id, factionsAll],
     )
     const factionLogoBlobID = useMemo(() => (from_user_faction_id ? factionsAll[from_user_faction_id]?.logo_blob_id : ""), [from_user_faction_id, factionsAll])
 
-    if (!self && filterZeros && multiplierInt <= 0) return null
+    // If it's our own message and it's sent successfully, hide it
+    if (isSent && self) return null
+
+    // For the hide zero multi setting
+    if (!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) return null
 
     return (
-        <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
+        <Box sx={{ opacity: !self ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
             <Stack ref={popoverRef} direction="row" spacing=".4rem">
                 <Stack direction="row" spacing=".4rem" alignItems="start">
                     <Box>
@@ -229,8 +226,8 @@ export const TextMessage = ({
                             {truncate(from_username, 24)}
                         </Typography>
 
-                        {userStat && (
-                            <TooltipHelper placement="top-end" text={`${userStat.kill_count} ABILITY KILLS`}>
+                        {from_user_stat && (
+                            <TooltipHelper placement="top-end" text={`${from_user_stat.kill_count} ABILITY KILLS`}>
                                 <Stack
                                     direction="row"
                                     alignItems="center"
@@ -257,7 +254,7 @@ export const TextMessage = ({
                                             color: abilityKillColor,
                                         }}
                                     >
-                                        {userStat.kill_count}]
+                                        {from_user_stat.kill_count}]
                                     </Typography>
                                 </Stack>
                             </TooltipHelper>
@@ -272,13 +269,13 @@ export const TextMessage = ({
                                 fontFamily: "Nostromo Regular Bold",
                                 fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
                                 verticalAlign: "top",
-                                opacity: multiplierValue ? 1 : 0.7,
+                                opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
                             }}
                         >
-                            {multiplierValue ? multiplierValue : "0"}x
+                            {total_multiplier || 0}x
                         </Typography>
 
-                        {isCitizen && (
+                        {is_citizen && (
                             <TooltipHelper placement="top-end" text={"CITIZEN"}>
                                 <Typography
                                     sx={{
@@ -320,7 +317,7 @@ export const TextMessage = ({
                 factionLogoBlobID={factionLogoBlobID}
                 factionColor={factionColor}
                 username={from_username}
-                userStat={userStat}
+                userStat={from_user_stat}
                 popoverRef={popoverRef}
                 open={isPopoverOpen}
                 onClose={() => toggleIsPopoverOpen(false)}

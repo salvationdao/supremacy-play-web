@@ -16,18 +16,7 @@ interface ChatMessagesProps {
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
-    const {
-        filterZerosGlobal,
-        filterZerosFaction,
-        sentMessages,
-        failedMessages,
-        userMultiplierMap,
-        citizenPlayerIDs,
-        splitOption,
-        fontSize,
-        userStatMap,
-        globalAnnouncement,
-    } = useChat()
+    const { filterZerosGlobal, filterZerosFaction, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
     const { factionsAll } = useGame()
 
     return (
@@ -36,12 +25,9 @@ export const ChatMessages = (props: ChatMessagesProps) => {
             filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
             sentMessages={sentMessages}
             failedMessages={failedMessages}
-            userMultiplierMap={userMultiplierMap}
-            citizenPlayerIDs={citizenPlayerIDs}
             faction_id={props.faction_id}
             splitOption={splitOption}
             fontSize={fontSize}
-            userStatMap={userStatMap}
             globalAnnouncement={globalAnnouncement}
             factionsAll={factionsAll}
         />
@@ -52,11 +38,8 @@ interface ChatMessagesInnerProps extends ChatMessagesProps {
     filterZeros?: boolean
     sentMessages: Date[]
     failedMessages: Date[]
-    userMultiplierMap: UserMultiplierMap
-    citizenPlayerIDs: string[]
     splitOption: SplitOptionType
     fontSize: FontSizeType
-    userStatMap: UserIDMap
     globalAnnouncement?: GlobalAnnouncementType
     factionsAll: FactionsAll
 }
@@ -68,12 +51,9 @@ const ChatMessagesInner = ({
     filterZeros,
     sentMessages,
     failedMessages,
-    userMultiplierMap,
-    citizenPlayerIDs,
     faction_id,
     splitOption,
     fontSize,
-    userStatMap,
     globalAnnouncement,
     factionsAll,
 }: ChatMessagesInnerProps) => {
@@ -170,11 +150,8 @@ const ChatMessagesInner = ({
                                         sentAt={message.sent_at}
                                         fontSize={fontSize}
                                         filterZeros={filterZeros}
-                                        isSent={data.from_user_id != user?.id ? true : sentMessages.includes(message.sent_at)}
+                                        isSent={data.from_user_id != user?.id || sentMessages.includes(message.sent_at)}
                                         isFailed={data.from_user_id != user?.id ? false : failedMessages.includes(message.sent_at)}
-                                        multiplierValue={userMultiplierMap[data.from_user_id]}
-                                        isCitizen={citizenPlayerIDs.some((cp) => cp === data.from_user_id)}
-                                        userStat={userStatMap[data.from_user_id]}
                                         factionsAll={factionsAll}
                                     />
                                 )

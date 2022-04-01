@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { GlobalAnnouncementType } from "../components/LiveChat/GlobalAnnouncement"
@@ -61,9 +61,6 @@ export const ChatContainer = createContainer(() => {
     const [factionChatMessages, setFactionChatMessages] = useState<ChatMessageType[]>([])
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
-    const [userMultiplierMap, setUserMultiplierMap] = useState<UserMultiplierMap>({})
-    const [citizenPlayerIDs, setCitizenPlayerIDs] = useState<string[]>([])
-    const [userStatMap, setUserStatMap] = useState<UserIDMap>({})
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
     // Store list of messages that were successfully sent or failed
@@ -189,63 +186,12 @@ export const ChatContainer = createContainer(() => {
         }
     }, [tabValue, factionChatUnread, splitOption])
 
-    // Subscribe to multiplier map
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<UserMultiplierResponse>(GameServerKeys.SubMultiplierMap, (payload) => {
-            if (!payload) {
-                setUserMultiplierMap({})
-                setCitizenPlayerIDs([])
-                return
-            }
-
-            if (!payload.multipliers) {
-                setUserMultiplierMap({})
-            } else {
-                const um: UserMultiplierMap = {}
-                payload.multipliers.forEach((m) => {
-                    um[m.player_id] = m.total_multiplier
-                })
-
-                setUserMultiplierMap(um)
-            }
-
-            if (!payload.citizen_player_ids) {
-                setCitizenPlayerIDs([])
-            } else {
-                setCitizenPlayerIDs(payload.citizen_player_ids)
-            }
-        })
-    }, [state, subscribe])
-
-    // Subscribe to user stats
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<UserStat[]>(
-            GameServerKeys.SubscribeChatUserStats,
-            (payload: UserStat[]) => {
-                if (!payload) {
-                    setUserStatMap({})
-                    return
-                }
-
-                const um: UserIDMap = {}
-                payload.forEach((m) => {
-                    um[m.id] = m
-                })
-
-                setUserStatMap(um)
-            },
-            null,
-            true,
-        )
-    }, [state, subscribe])
-
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
-            if (!m || (m.type == "TEXT" && (m.data as TextMessageData).from_user_id === user?.id)) return
+            if (!m) return
+
             newMessageHandler(m, null)
             if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
         })
@@ -255,7 +201,8 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
-            if (!m || (m.type == "TEXT" && (m.data as TextMessageData).from_user_id === user?.id)) return
+            if (!m) return
+
             newMessageHandler(m, "faction_id")
             if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
         })
@@ -295,15 +242,12 @@ export const ChatContainer = createContainer(() => {
         factionChatMessages,
         factionChatUnread,
         globalChatUnread,
-        userMultiplierMap,
-        citizenPlayerIDs,
         onSentMessage,
         sentMessages: sentMessages.concat(initialSentDate.global, initialSentDate.faction),
         failedMessages,
         onFailedMessage,
         fontSize,
         setFontSize,
-        userStatMap,
         globalAnnouncement,
         banProposal,
     }
