@@ -7,29 +7,41 @@ import { snakeToTitle } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
 import { PunishMessageData } from "../../../../types/chat"
 
-export const PunishMessage = ({ sentAt, fontSize, factionsAll }: { data?: PunishMessageData; sentAt: Date; fontSize: number; factionsAll: FactionsAll }) => {
-    const data = {
-        issued_by_player_username: "jayli3n",
-        reported_player_username: "darren_hung",
-        reported_player_faction_id: "98bf7bb3-1a7c-4f21-8843-458d62884060",
-        is_passed: true,
-        total_player_number: 16,
-        agreed_player_number: 12,
-        disagreed_player_number: 4,
-        punish_option: {
-            id: "string",
-            description: "Ban forever",
-            key: "limit_location_select",
-            punish_duration_hours: 24,
-        },
-        punish_reason: "He denied my love.",
-    }
+export const PunishMessage = ({
+    data,
+    sentAt,
+    fontSize,
+    factionsAll,
+}: {
+    data?: PunishMessageData
+    sentAt: Date
+    fontSize: number
+    factionsAll: FactionsAll
+}) => {
+    // const data = {
+    //     issued_by_player_username: "jayli3n",
+    //     reported_player_username: "darren_hung",
+    //     reported_player_faction_id: "98bf7bb3-1a7c-4f21-8843-458d62884060",
+    //     is_passed: true,
+    //     total_player_number: 16,
+    //     agreed_player_number: 12,
+    //     disagreed_player_number: 4,
+    //     punish_option: {
+    //         id: "string",
+    //         description: "Ban forever",
+    //         key: "limit_location_select",
+    //         punish_duration_hours: 24,
+    //     },
+    //     punish_reason: "He denied my love.",
+    // }
+
+    if (!data) return null
+
     const {
         issued_by_player_username,
         reported_player_username,
         reported_player_faction_id,
         is_passed,
-        total_player_number,
         agreed_player_number,
         disagreed_player_number,
         punish_option,
@@ -37,8 +49,6 @@ export const PunishMessage = ({ sentAt, fontSize, factionsAll }: { data?: Punish
     } = data
 
     const factionColor = factionsAll[reported_player_faction_id]?.theme.primary || ""
-
-    if (!data) return null
 
     return (
         <Stack
@@ -71,27 +81,27 @@ export const PunishMessage = ({ sentAt, fontSize, factionsAll }: { data?: Punish
                 <Typography>&nbsp;</Typography>
 
                 {is_passed ? (
-                    <Typography sx={{ px: ".2rem", backgroundColor: "#00000080", color: colors.red, fontWeight: "fontWeightBold" }}>was</Typography>
+                    <Typography sx={{ px: ".2rem", backgroundColor: "#00000050", color: colors.green, fontWeight: "fontWeightBold" }}>was</Typography>
                 ) : (
-                    <Typography sx={{ px: ".2rem", backgroundColor: "#00000080", color: colors.green, fontWeight: "fontWeightBold" }}>was not</Typography>
+                    <Typography sx={{ px: ".2rem", backgroundColor: "#00000050", color: colors.red, fontWeight: "fontWeightBold" }}>was not</Typography>
                 )}
                 <Typography>&nbsp;punished with&nbsp;</Typography>
 
                 <TooltipHelper placement="left" text={punish_option.description}>
-                    <Typography sx={{ px: ".2rem", backgroundColor: "#00000080", ":hover": { opacity: 0.8 } }}>
+                    <Typography sx={{ px: ".2rem", fontWeight: "fontWeightBold", backgroundColor: "#00000050", ":hover": { opacity: 0.8 } }}>
                         {snakeToTitle(punish_option.key, true)}
                     </Typography>
                 </TooltipHelper>
 
                 <Typography>&nbsp;for&nbsp;</Typography>
-                <Typography sx={{ px: ".2rem", backgroundColor: "#00000080" }}>{punish_option.punish_duration_hours}</Typography>
+                <Typography sx={{ px: ".2rem", fontWeight: "fontWeightBold", backgroundColor: "#00000050" }}>{punish_option.punish_duration_hours}</Typography>
                 <Typography>&nbsp;hours.</Typography>
             </Box>
 
             <Box>
-                <Typography sx={{ color: colors.red, fontWeight: "fontWeightBold" }}>{agreed_player_number} agreed</Typography>
+                <Typography sx={{ color: colors.green, fontWeight: "fontWeightBold" }}>{agreed_player_number} agreed</Typography>
                 <Typography>&nbsp;&nbsp;</Typography>
-                <Typography sx={{ color: colors.green, fontWeight: "fontWeightBold" }}>{disagreed_player_number} disagreed</Typography>
+                <Typography sx={{ color: colors.red, fontWeight: "fontWeightBold" }}>{disagreed_player_number} disagreed</Typography>
             </Box>
         </Stack>
     )

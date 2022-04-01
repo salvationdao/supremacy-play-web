@@ -19,6 +19,7 @@ const UserDetailsPopover = ({
     factionLogoBlobID,
     factionColor,
     factionSecondaryColor,
+    fromUserFactionID,
     messageColor,
     userID,
     username,
@@ -31,6 +32,7 @@ const UserDetailsPopover = ({
     factionLogoBlobID?: string
     factionColor?: string
     factionSecondaryColor?: string
+    fromUserFactionID?: string
     messageColor?: string
     userID: string
     username: string
@@ -160,7 +162,8 @@ const UserDetailsPopover = ({
                     </Stack>
                 </ClipThing>
             </Popover>
-            {banModalOpen && user && (
+
+            {banModalOpen && user && fromUserFactionID === user.faction_id && (
                 <UserBanForm
                     user={user}
                     open={banModalOpen}
@@ -372,6 +375,7 @@ export const TextMessage = ({
                 factionColor={factionColor}
                 factionSecondaryColor={factionSecondaryColor}
                 messageColor={message_color}
+                fromUserFactionID={from_user_faction_id}
                 userID={from_user_id}
                 username={from_username}
                 userStat={from_user_stat}
