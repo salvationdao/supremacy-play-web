@@ -32,7 +32,7 @@ export const KillAlert = ({ data }: { data: KillAlertProps }) => {
     } else if (killed_by_user) {
         killedBy = (
             <StyledImageText
-                text={`${killed_by_user.username}#${killed_by_user.gid}${killed_by ? ` (${killed_by})` : ""}`}
+                text={`${killed_by_user.username}#${killed_by_user.gid}${killed_by ? ` ${killed_by}` : ""}`}
                 color={killed_by_user.faction.theme.primary}
                 imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${killed_by_user.faction.logo_blob_id}`}
                 imageMb={-0.2}
