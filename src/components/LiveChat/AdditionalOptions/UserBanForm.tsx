@@ -189,6 +189,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                     <i>Start typing a username...</i>
                                 </Typography>
                             }
+                            filterOptions={(option) => option}
                             renderInput={(params) => (
                                 <TextField
                                     value={searchText}
