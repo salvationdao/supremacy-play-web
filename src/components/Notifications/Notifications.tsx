@@ -31,6 +31,7 @@ import {
     textNoti,
     killNoti,
     killNoti2,
+    killNoti3,
 } from "./testData"
 
 const SPAWN_TEST_NOTIFICATIONS = false
@@ -79,6 +80,7 @@ export const Notifications = () => {
         newNotification(textNoti)
         newNotification(killNoti)
         newNotification(killNoti2)
+        newNotification(killNoti3)
     }, [])
 
     // Notifications
@@ -104,7 +106,7 @@ export const Notifications = () => {
             if (!notification) return
 
             const notiID = makeid()
-            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 100 : NOTIFICATION_TIME
+            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
             addNotification({ notiID, ...notification, duration })
 
             // Linger is for the slide animation to play before clearing off the component
