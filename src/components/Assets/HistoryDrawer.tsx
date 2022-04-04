@@ -64,6 +64,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                 sx: {
                     width: `${RIGHT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
+                    backgroundImage: "none",
                     padding: "1rem",
                 },
             }}
@@ -104,39 +105,47 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                     <PercentageDisplay displayValue="80%" percentage={80} label="Kill Rate" color={colors.red} />
                 </Stack>
             </Box>
-            <Typography variant="h6">Recent Matches</Typography>
-            <Stack
-                spacing=".6rem"
+            <Box
                 sx={{
-                    overflowY: "auto",
-                    overflowX: "hidden",
-                    direction: "ltr",
-                    scrollbarWidth: "none",
-                    "::-webkit-scrollbar": {
-                        width: ".4rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                        borderRadius: 3,
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: colors.assetsBanner,
-                        borderRadius: 3,
-                    },
+                    flex: 1,
+                    padding: ".5rem",
+                    backgroundColor: `${colors.navy}80`,
                 }}
             >
-                {history.map((h, index) => (
-                    <HistoryEntry
-                        key={index}
-                        mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                        backgroundImage={h.battle?.game_map?.image_url}
-                        isWin={!!h.faction_won}
-                        mechSurvived={!!h.mech_survived}
-                        kills={h.kills}
-                        date={h.created_at}
-                    />
-                ))}
-            </Stack>
+                <Typography variant="h6">Recent Matches</Typography>
+                <Stack
+                    spacing=".6rem"
+                    sx={{
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        direction: "ltr",
+                        scrollbarWidth: "none",
+                        "::-webkit-scrollbar": {
+                            width: ".4rem",
+                        },
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
+                            borderRadius: 3,
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                            background: colors.assetsBanner,
+                            borderRadius: 3,
+                        },
+                    }}
+                >
+                    {history.map((h, index) => (
+                        <HistoryEntry
+                            key={index}
+                            mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
+                            backgroundImage={h.battle?.game_map?.image_url}
+                            isWin={!!h.faction_won}
+                            mechSurvived={!!h.mech_survived}
+                            kills={h.kills}
+                            date={h.created_at}
+                        />
+                    ))}
+                </Stack>
+            </Box>
         </Drawer>
     )
 }
@@ -213,7 +222,7 @@ const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, kills, da
                             color: kills > 0 ? colors.gold : colors.lightGrey,
                         }}
                     >
-                        {kills > 0 ? `${kills} kills` : "No Kills"}
+                        {kills > 0 ? `${kills} kill${kills > 1 ? "s" : ""}` : "No Kills"}
                     </Typography>
                     <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} />
                 </Stack>
