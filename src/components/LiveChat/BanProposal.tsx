@@ -2,12 +2,11 @@ import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
-import { useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { snakeToTitle } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { User } from "../../types"
 import { BanProposalStruct } from "../../types/chat"
 
 export const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {

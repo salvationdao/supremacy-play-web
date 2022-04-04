@@ -71,8 +71,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
-        if (!subscribe || state !== WebSocket.OPEN || !userID || !window.localStorage.getItem("ring_check_token"))
-            return
+        if (!subscribe || state !== WebSocket.OPEN || !userID || !window.localStorage.getItem("ring_check_token")) return
         return subscribe<User>(
             GameServerKeys.UserSubscribe,
             (u) => {
