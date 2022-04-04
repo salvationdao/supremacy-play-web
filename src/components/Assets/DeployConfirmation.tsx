@@ -4,12 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, TooltipHelper } from ".."
 import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
-import {
-    useGameServerWebsocket,
-    usePassportServerAuth,
-    usePassportServerWebsocket,
-    useSnackbar,
-} from "../../containers"
+import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
@@ -73,7 +68,7 @@ export const DeployConfirmation = ({
     const { state, send } = useGameServerWebsocket()
     const { send: psSend } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
-    const { hash, name, label, image_url, tier } = asset.data.mech
+    const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
     const [needInsured, toggleNeedInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
@@ -91,10 +86,7 @@ export const DeployConfirmation = ({
     const [saveSettings, setSaveSettings] = useState(false)
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
-    const notificationsOn =
-        currentSettings.push_notifications ||
-        currentSettings.sms_notifications ||
-        currentSettings.telegram_notifications
+    const notificationsOn = currentSettings.push_notifications || currentSettings.sms_notifications || currentSettings.telegram_notifications
     const settingsMatch =
         currentSettings.push_notifications === dbSettings?.push_notifications &&
         currentSettings.sms_notifications === dbSettings.sms_notifications &&
@@ -115,10 +107,7 @@ export const DeployConfirmation = ({
                 setDbSettings(resp)
                 setCurrentSettings(resp)
             } catch (err) {
-                newSnackbarMessage(
-                    typeof err === "string" ? err : "Issue getting settings, try again or contact support.",
-                    "error",
-                )
+                newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
             }
         })()
     }, [user, send])
@@ -144,9 +133,7 @@ export const DeployConfirmation = ({
                     id: user.id,
                     mobile_number: mobile,
                 })
-                saveMobileNum
-                    ? newSnackbarMessage("Updated mobile number", "success")
-                    : newSnackbarMessage("Issue updating mobile number.", "warning")
+                saveMobileNum ? newSnackbarMessage("Updated mobile number", "success") : newSnackbarMessage("Issue updating mobile number.", "warning")
             }
 
             //if saveSettings is true, send an updated settings
@@ -158,10 +145,7 @@ export const DeployConfirmation = ({
                         setDbSettings(resp)
                         setCurrentSettings(resp)
                     } catch (err) {
-                        newSnackbarMessage(
-                            typeof err === "string" ? err : "Issue getting settings, try again or contact support.",
-                            "error",
-                        )
+                        newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
                     }
                 })()
             }
@@ -194,7 +178,7 @@ export const DeployConfirmation = ({
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "70rem",
+                    width: "36rem",
                     boxShadow: 6,
                 }}
             >
@@ -208,34 +192,27 @@ export const DeployConfirmation = ({
                     innerSx={{ position: "relative" }}
                 >
                     <Stack
-                        direction="row"
                         spacing="1.6rem"
                         sx={{
                             position: "relative",
-                            pl: "1.76rem",
-                            pr: "2.56rem",
+                            px: "2.5rem",
                             py: "2.4rem",
-                            display: "flex",
                             backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
                         }}
                     >
                         <Box
                             sx={{
                                 position: "relative",
-                                flexShrink: 0,
-                                px: ".64rem",
-                                py: "1.2rem",
+                                px: ".6rem",
+                                py: "2rem",
                                 borderRadius: 0.6,
-                                boxShadow: "inset 0 0 12px 6px #00000055",
-                                maxHeight: "130px",
-                                alignSelf: "center",
+                                boxShadow: "inset 0 0 12px 6px #00000040",
                             }}
                         >
                             <Box
                                 sx={{
-                                    my: "auto",
-                                    width: "11rem",
-                                    height: "15rem",
+                                    width: "100%",
+                                    height: "12rem",
                                     backgroundImage: `url(${image_url})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "top center",
@@ -243,20 +220,29 @@ export const DeployConfirmation = ({
                                 }}
                             />
 
-                            <Stack
-                                spacing=".48rem"
-                                direction="row"
-                                alignItems="center"
+                            <Box
                                 sx={{
                                     position: "absolute",
-                                    bottom: "1.2rem",
-                                    left: "50%",
-                                    transform: "translateX(-50%)",
+                                    top: "1.8rem",
+                                    left: "1.6rem",
                                 }}
                             >
+                                <Box
+                                    sx={{
+                                        width: "5rem",
+                                        height: "5rem",
+                                        border: "#FFFFFF60 1px solid",
+                                        backgroundImage: `url(${avatar_url})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "top center",
+                                        backgroundSize: "contain",
+                                    }}
+                                />
+
                                 <Typography
                                     variant="caption"
                                     sx={{
+                                        mt: ".5rem",
                                         lineHeight: 1,
                                         color: rarityDeets.color,
                                         fontFamily: "Nostromo Regular Heavy",
@@ -265,70 +251,51 @@ export const DeployConfirmation = ({
                                 >
                                     {rarityDeets.label}
                                 </Typography>
-                            </Stack>
+                            </Box>
                         </Box>
 
-                        <Stack spacing=".8rem" sx={{ flex: 1 }}>
-                            <Box>
-                                <Typography
-                                    sx={{
-                                        fontFamily: "Nostromo Regular Bold",
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
-                                    }}
-                                >
-                                    {name || label}
+                        <Stack spacing=".8rem">
+                            <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                                {name || label}
 
-                                    {user && (
-                                        <span>
-                                            <Link
-                                                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                                                target="_blank"
-                                                sx={{ ml: ".48rem" }}
-                                            >
-                                                <SvgExternalLink
-                                                    size="1rem"
-                                                    sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}
-                                                />
-                                            </Link>
-                                        </span>
-                                    )}
-                                </Typography>
-                            </Box>
+                                {user && (
+                                    <span>
+                                        <Link href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`} target="_blank" sx={{ ml: ".48rem" }}>
+                                            <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                                        </Link>
+                                    </span>
+                                )}
+                            </Typography>
 
-                            <Box>
-                                <Stack spacing=".08rem">
-                                    {queueLength >= 0 && (
-                                        <AmountItem
-                                            key={`${queueLength}-queue_length`}
-                                            title={"Position: "}
-                                            color="#FFFFFF"
-                                            value={`${queueLength + 1}`}
-                                            tooltip="The queue position of your war machine if you deploy now."
-                                            disableIcon
-                                        />
-                                    )}
-
+                            <Stack spacing=".1rem">
+                                {queueLength >= 0 && (
                                     <AmountItem
-                                        key={`${contractReward}-contract_reward`}
-                                        title={"Contract reward: "}
-                                        color={colors.yellow}
-                                        value={supFormatter(contractReward, 2)}
-                                        tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
+                                        key={`${queueLength}-queue_length`}
+                                        title={"Position: "}
+                                        color="#FFFFFF"
+                                        value={`${queueLength + 1}`}
+                                        tooltip="The queue position of your war machine if you deploy now."
+                                        disableIcon
                                     />
+                                )}
 
-                                    <AmountItem
-                                        title={"Fee: "}
-                                        color={"#FF4136"}
-                                        value={actualQueueCost}
-                                        tooltip="The cost to place your war machine into the battle queue."
-                                    />
-                                </Stack>
+                                <AmountItem
+                                    key={`${contractReward}-contract_reward`}
+                                    title={"Contract reward: "}
+                                    color={colors.yellow}
+                                    value={supFormatter(contractReward, 2)}
+                                    tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
+                                />
 
+                                <AmountItem
+                                    title={"Fee: "}
+                                    color={"#FF4136"}
+                                    value={actualQueueCost}
+                                    tooltip="The cost to place your war machine into the battle queue."
+                                />
+                            </Stack>
+
+                            <Stack spacing=".1rem">
                                 <Stack direction="row" alignItems="center">
                                     <Typography
                                         sx={{
@@ -346,8 +313,10 @@ export const DeployConfirmation = ({
                                         onChange={() => toggleNeedInsured()}
                                         sx={{
                                             transform: "scale(.6)",
-                                            ".Mui-checked": { color: colors.green },
-                                            ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
+                                            ".Mui-checked": { color: `${colors.green} !important` },
+                                            ".Mui-checked+.MuiSwitch-track": {
+                                                backgroundColor: `${colors.green}50 !important`,
+                                            },
                                         }}
                                     />
                                     <TooltipHelper
@@ -355,21 +324,116 @@ export const DeployConfirmation = ({
                                         text={
                                             <>
                                                 Insurance costs&nbsp;
-                                                <span style={{ textDecoration: "line-through" }}>10%</span> of the
-                                                contract reward but allows your damaged war machine to be repair much
-                                                faster so it can be ready for the next battle much sooner.
+                                                <span style={{ textDecoration: "line-through" }}>10%</span> of the contract reward but allows your damaged war
+                                                machine to be repair much faster so it can be ready for the next battle much sooner.
                                             </>
                                         }
                                     >
                                         <Box sx={{ ml: "auto" }}>
-                                            <SvgInfoCircular
-                                                size="1.2rem"
-                                                sx={{ opacity: 0.4, ":hover": { opacity: 1 } }}
-                                            />
+                                            <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
                                         </Box>
                                     </TooltipHelper>
                                 </Stack>
-                            </Box>
+
+                                <Box>
+                                    <Stack direction="row" alignItems="center" sx={{ mt: "-0.55rem" }}>
+                                        <Typography
+                                            sx={{
+                                                pt: ".08rem",
+                                                lineHeight: 1,
+                                                color: colors.green,
+                                                fontWeight: "fontWeightBold",
+                                            }}
+                                        >
+                                            Enable SMS notifications:
+                                        </Typography>
+                                        <Switch
+                                            size="small"
+                                            checked={currentSettings.sms_notifications}
+                                            onChange={(e) => {
+                                                setCurrentSettings((prev) => {
+                                                    const newSettings = { ...prev }
+                                                    newSettings.sms_notifications = e.currentTarget.checked
+                                                    return newSettings
+                                                })
+                                                setMobile(user?.mobile_number)
+                                                setSaveMobile(false)
+                                            }}
+                                            sx={{
+                                                transform: "scale(.6)",
+                                                ".Mui-checked": { color: `${colors.green} !important` },
+                                                ".Mui-checked+.MuiSwitch-track": {
+                                                    backgroundColor: `${colors.green}50 !important`,
+                                                },
+                                            }}
+                                        />
+                                        <TooltipHelper
+                                            placement="right-start"
+                                            text={
+                                                <>
+                                                    Enabling notifications will add&nbsp;<strong>10%</strong> to the queue fee. We will notify you via your
+                                                    chosen notification preference when your war machine is within top 10 in queue. The notification fee{" "}
+                                                    <strong>will not</strong> be refunded if your war marchine exits the queue.
+                                                </>
+                                            }
+                                        >
+                                            <Box sx={{ ml: "auto" }}>
+                                                <SvgInfoCircular
+                                                    size="1.2rem"
+                                                    sx={{
+                                                        ml: ".5rem",
+                                                        pb: 0,
+                                                        opacity: 0.4,
+                                                        ":hover": { opacity: 1 },
+                                                    }}
+                                                />
+                                            </Box>
+                                        </TooltipHelper>
+                                    </Stack>
+
+                                    <Stack spacing=".3rem" sx={{ mt: ".2rem", mb: "1rem", ml: ".3rem", pl: "1rem", borderLeft: "#FFFFFF35 1px solid" }}>
+                                        {currentSettings.sms_notifications && (
+                                            <>
+                                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                                    <Typography>Phone number: </Typography>
+                                                    <TextField
+                                                        sx={{ flexGrow: "2", mt: "-1px", pl: "1rem", input: { px: ".5rem", py: "1px" } }}
+                                                        defaultValue={mobile}
+                                                        value={mobile}
+                                                        onChange={(e) => {
+                                                            setMobile(e.target.value)
+                                                            if (e.target.value === user?.mobile_number) {
+                                                                setSaveMobile(false)
+                                                            }
+                                                        }}
+                                                    />
+                                                </Box>
+                                                {user?.mobile_number != mobile && (
+                                                    <Stack direction="row" spacing=".5rem" alignItems="center">
+                                                        <Typography>Save number to profile?</Typography>
+                                                        <Checkbox
+                                                            checked={saveMobile}
+                                                            onClick={() => setSaveMobile((prev) => !prev)}
+                                                            sx={{ m: 0, p: 0, color: user?.faction.theme.primary }}
+                                                        />
+                                                    </Stack>
+                                                )}
+                                            </>
+                                        )}
+
+                                        {!settingsMatch && (
+                                            <Stack direction="row" spacing=".5rem" alignItems="center">
+                                                <Typography>Save notification settings as default?</Typography>
+                                                <Checkbox
+                                                    checked={saveSettings}
+                                                    onClick={() => setSaveSettings((prev) => !prev)}
+                                                    sx={{ m: 0, p: 0, color: user?.faction.theme.primary }}
+                                                />
+                                            </Stack>
+                                        )}
+                                    </Stack>
+                                </Box>
+                            </Stack>
 
                             <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
                                 <Button
@@ -381,7 +445,7 @@ export const DeployConfirmation = ({
                                         flex: 1,
                                         minWidth: 0,
                                         px: ".8rem",
-                                        py: ".48rem",
+                                        py: ".6rem",
                                         backgroundColor: colors.green,
                                         border: `${colors.green} 1px solid`,
                                         borderRadius: 0.3,
@@ -413,132 +477,9 @@ export const DeployConfirmation = ({
                                 </Typography>
                             )}
                         </Stack>
-                        <Stack>
-                            <Typography>Notifications</Typography>
-                            <Stack direction="row" alignItems="center" sx={{ mt: "-0.55rem" }}>
-                                <Typography
-                                    sx={{
-                                        pt: ".08rem",
-                                        lineHeight: 1,
-                                        color: colors.green,
-                                        fontWeight: "fontWeightBold",
-                                    }}
-                                >
-                                    Enable SMS notifications:
-                                </Typography>
-                                <Switch
-                                    size="small"
-                                    checked={currentSettings.sms_notifications}
-                                    onChange={(e) => {
-                                        setCurrentSettings((prev) => {
-                                            const newSettings = { ...prev }
-                                            newSettings.sms_notifications = e.currentTarget.checked
-                                            return newSettings
-                                        })
-                                        setMobile(user?.mobile_number)
-                                        setSaveMobile(false)
-                                    }}
-                                    sx={{
-                                        transform: "scale(.6)",
-                                        ".Mui-checked": { color: colors.green },
-                                        ".Mui-checked+.MuiSwitch-track": {
-                                            backgroundColor: `${colors.green}50`,
-                                        },
-                                    }}
-                                />
-                                <Box ml="auto" />
-
-                                <TooltipHelper
-                                    placement="right-start"
-                                    text={
-                                        <>
-                                            Enabling notifications will add&nbsp;<strong>10%</strong> to the queue cost.
-                                            We will notify you via your chosen notification preference when your war
-                                            machine is within the top 10 in queue. The notification fee{" "}
-                                            <strong>will not</strong> be refunded if your war marchine exits the queue.
-                                        </>
-                                    }
-                                >
-                                    <Box>
-                                        <SvgInfoCircular
-                                            size="1.2rem"
-                                            sx={{
-                                                marginLeft: ".5rem",
-                                                paddingBottom: 0,
-                                                opacity: 0.4,
-                                                ":hover": { opacity: 1 },
-                                            }}
-                                        />
-                                    </Box>
-                                </TooltipHelper>
-                            </Stack>
-                            {currentSettings.sms_notifications && (
-                                <Box sx={{ display: "flex", flexDirection: "column" }}>
-                                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                                        <Typography sx={{ alignSelf: "flex-end" }}>Phone Number: </Typography>
-                                        <TextField
-                                            sx={{ flexGrow: "2", paddingLeft: "1rem" }}
-                                            inputProps={{ style: { padding: "2px" } }}
-                                            defaultValue={mobile}
-                                            value={mobile}
-                                            onChange={(e) => {
-                                                setMobile(e.target.value)
-                                                if (e.target.value === user?.mobile_number) {
-                                                    setSaveMobile(false)
-                                                }
-                                            }}
-                                        />
-                                    </Box>
-                                    <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
-                                        {user?.mobile_number != mobile && (
-                                            <>
-                                                <Typography sx={{ alignSelf: "center" }}>
-                                                    Save number to profile?
-                                                </Typography>
-                                                <Checkbox
-                                                    checked={saveMobile}
-                                                    onClick={() => {
-                                                        setSaveMobile((prev) => !prev)
-                                                    }}
-                                                    sx={{ margin: "0", color: user?.faction.theme.primary }}
-                                                    inputProps={{ "aria-label": "save to profile checkbox" }}
-                                                />
-                                            </>
-                                        )}
-                                    </Box>
-                                </Box>
-                            )}
-                            {!settingsMatch && (
-                                <Box sx={{ display: "flex", alignSelf: "flex-end" }}>
-                                    <Typography sx={{ alignSelf: "center" }}>
-                                        Save notification settings as default?
-                                    </Typography>
-                                    <Checkbox
-                                        checked={saveSettings}
-                                        onClick={() => {
-                                            setSaveSettings((prev) => !prev)
-                                        }}
-                                        sx={{ margin: "0", color: user?.faction.theme.primary }}
-                                        inputProps={{ "aria-label": "save default settings" }}
-                                    />
-                                </Box>
-                            )}
-                        </Stack>
-
-                        <IconButton
-                            size="small"
-                            onClick={onClose}
-                            sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}
-                        >
-                            <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                        </IconButton>
                     </Stack>
 
-                    <IconButton
-                        size="small"
-                        onClick={onClose}
-                        sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}
-                    >
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
                         <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
