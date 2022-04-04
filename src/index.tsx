@@ -219,6 +219,7 @@ const testUserAgent = (): boolean => {
 }
 
 const testChromeWindow = (): boolean => {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     if (eval.toString().length == 33 && !(window as any).chrome) {
         // Headless
         return true

@@ -1,19 +1,10 @@
-import { Box, Button, CircularProgress, Divider, Popover, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { BarExpandable, SupsTooltipContent, TooltipHelper } from "../.."
+import { Box, CircularProgress, Divider, Popover, Stack, Typography } from "@mui/material"
+import { useEffect, useRef, useState } from "react"
+import { BarExpandable, BuySupsButton, SupsTooltipContent } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
-import { NullUUID, TOKEN_SALE_PAGE } from "../../../constants"
-import {
-    SocketState,
-    useGame,
-    useGameServerAuth,
-    useGameServerWebsocket,
-    usePassportServerAuth,
-    usePassportServerWebsocket,
-    useSnackbar,
-    useWallet,
-} from "../../../containers"
-import { dateFormatter, shadeColor, supFormatterNoFixed } from "../../../helpers"
+import { NullUUID } from "../../../constants"
+import { useGame, useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, useWallet } from "../../../containers"
+import { shadeColor, supFormatterNoFixed } from "../../../helpers"
 import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -21,7 +12,6 @@ import { MultipliersAll } from "../../../types"
 import { Transaction } from "../../../types/passport"
 
 export const WalletDetails = () => {
-    const { newSnackbarMessage } = useSnackbar()
     const { state, subscribe } = useGameServerWebsocket()
     const { battleEndDetail } = useGame()
     const { user, userID } = usePassportServerAuth()
@@ -29,41 +19,11 @@ export const WalletDetails = () => {
     const { onWorldSupsRaw } = useWallet()
     const [multipliers, setMultipliers] = useState<MultipliersAll>()
     const [transactions, setTransactions] = useState<Transaction[]>([])
-    const { payload: transactionsPayload } = usePassportServerSecureSubscription<Transaction[]>(
-        PassportServerKeys.SubscribeUserTransactions,
-    )
-    const { payload: latestTransactionPayload } = usePassportServerSecureSubscription<Transaction[]>(
-        PassportServerKeys.SubscribeUserLatestTransactions,
-    )
+    const { payload: transactionsPayload } = usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserTransactions)
+    const { payload: latestTransactionPayload } = usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions)
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
-
-    // Free sups button
-    const isFreeSupsEnabled = useMemo(
-        () =>
-            process.env.REACT_APP_SENTRY_ENVIRONMENT === "staging" ||
-            process.env.REACT_APP_SENTRY_ENVIRONMENT === "development",
-        [],
-    )
-
-    const { send: psSend, state: psState } = usePassportServerWebsocket()
-    const [timeTilNextClaim, setTimeTilNextClaim] = useState<Date>()
-
-    const getFreeSups = useCallback(async () => {
-        if (psState !== SocketState.OPEN || !psSend || !user) return
-
-        try {
-            const resp = await psSend<Date | boolean>(PassportServerKeys.GetFreeSups)
-            if (resp instanceof Date) {
-                setTimeTilNextClaim(resp)
-                newSnackbarMessage("Successfully claimed free sups.", "success")
-            }
-        } catch (e) {
-            newSnackbarMessage(typeof e === "string" ? e : "Failed to claim free sups.", "error")
-            console.debug(e)
-        }
-    }, [psState, psSend, user])
 
     useEffect(() => {
         if (battleEndDetail && battleEndDetail.multipliers.length > 0) {
@@ -199,37 +159,7 @@ export const WalletDetails = () => {
                             )}
                         </Stack>
 
-                        <TooltipHelper
-                            placement="bottom"
-                            text={
-                                timeTilNextClaim
-                                    ? timeTilNextClaim < new Date()
-                                        ? "Claim free SUPs!"
-                                        : `Time until next claim: ${dateFormatter(timeTilNextClaim)}`
-                                    : ""
-                            }
-                        >
-                            <Button
-                                sx={{
-                                    px: "1.2rem",
-                                    pt: ".32rem",
-                                    pb: ".16rem",
-                                    flexShrink: 0,
-                                    justifyContent: "flex-start",
-                                    color: isFreeSupsEnabled ? colors.gold : colors.neonBlue,
-                                    whiteSpace: "nowrap",
-                                    borderRadius: 0.2,
-                                    border: `1px solid ${isFreeSupsEnabled ? colors.gold : colors.neonBlue}`,
-                                    overflow: "hidden",
-                                    fontFamily: "Nostromo Regular Bold",
-                                }}
-                                href={isFreeSupsEnabled ? undefined : TOKEN_SALE_PAGE}
-                                onClick={isFreeSupsEnabled ? () => getFreeSups() : undefined}
-                                disabled={timeTilNextClaim && timeTilNextClaim < new Date()}
-                            >
-                                {isFreeSupsEnabled ? "GET FREE SUPS" : "GET SUPS"}
-                            </Button>
-                        </TooltipHelper>
+                        <BuySupsButton user={user} />
                     </Stack>
 
                     <Divider
@@ -264,8 +194,7 @@ export const WalletDetails = () => {
                     ".MuiPaper-root": {
                         mt: ".8rem",
                         background: "none",
-                        backgroundColor:
-                            user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                        backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
                         border: "#FFFFFF50 1px solid",
                     },
                 }}
