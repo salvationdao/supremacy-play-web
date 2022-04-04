@@ -120,7 +120,7 @@ export const PunishMessage = ({
                         ":hover": { opacity: 1 },
                     }}
                 >
-                    <SvgFastRepair size=".8rem" sx={{ transform: `scaleY(${isExpanded ? -1 : 1})` }} />
+                    <SvgFastRepair size=".8rem" sx={{ transform: `scaleY(${isExpanded ? 1 : -1})` }} />
                 </Box>
 
                 {isExpanded && (

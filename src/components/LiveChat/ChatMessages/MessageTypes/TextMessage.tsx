@@ -86,8 +86,8 @@ const UserDetailsPopover = ({
                                 <Box
                                     sx={{
                                         mt: "-0.1rem !important",
-                                        width: "1.8rem",
-                                        height: "1.8rem",
+                                        width: "1.7rem",
+                                        height: "1.7rem",
                                         flexShrink: 0,
                                         backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
                                         backgroundRepeat: "no-repeat",
@@ -245,8 +245,8 @@ export const TextMessage = ({
                         <Box
                             sx={{
                                 mt: "-0.1rem !important",
-                                width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
-                                height: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
+                                width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
                                 flexShrink: 0,
                                 backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
                                 backgroundRepeat: "no-repeat",
@@ -262,8 +262,8 @@ export const TextMessage = ({
                         <Box
                             sx={{
                                 mt: "-0.1rem !important",
-                                width: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
-                                height: fontSize ? `${1.8 * fontSize}rem` : "1.8rem",
+                                width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
                                 flexShrink: 0,
                                 backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
                                 backgroundRepeat: "no-repeat",
