@@ -17,7 +17,7 @@ export const KillAlert = ({ data }: { data: KillAlertProps }) => {
 
     if (!destroyed_war_machine) return null
 
-    const mainColor = killed_by_war_machine?.faction.theme.primary
+    const mainColor = killed_by_war_machine?.faction.theme.primary || killed_by_user?.faction.theme.primary
 
     let killedBy = null
     if (killed_by_war_machine) {
@@ -63,6 +63,7 @@ export const KillAlert = ({ data }: { data: KillAlertProps }) => {
                 <SvgDeath size="1.1rem" sx={{ display: "inline", mx: ".48rem" }} />
                 <SvgSkull2 size="1.1rem" sx={{ display: "inline", mr: ".64rem" }} />
                 <StyledImageText
+                    textSx={{ textDecoration: "line-through" }}
                     text={destroyed_war_machine.name || destroyed_war_machine.hash}
                     color={destroyed_war_machine.faction.theme.primary}
                     imageUrl={destroyed_war_machine.imageAvatar}
