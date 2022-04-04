@@ -1,6 +1,6 @@
 import { Box, Drawer, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgGoldBars, SvgZaibatsuKillIcon } from "../../assets"
+import { SvgDeath, SvgGoldBars } from "../../assets"
 import { RIGHT_DRAWER_WIDTH } from "../../constants"
 import { SocketState, useGameServerWebsocket } from "../../containers"
 import { camelToTitle, timeSince } from "../../helpers"
@@ -132,6 +132,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                         backgroundImage={h.battle?.game_map?.image_url}
                         isWin={!!h.faction_won}
                         mechSurvived={!!h.mech_survived}
+                        kills={h.kills}
                         date={h.created_at}
                     />
                 ))}
@@ -145,10 +146,11 @@ interface HistoryEntryProps {
     isWin: boolean
     mechSurvived: boolean
     backgroundImage?: string
+    kills: number
     date: Date
 }
 
-const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, date }: HistoryEntryProps) => {
+const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
     return (
         <Box
             sx={{
@@ -201,7 +203,20 @@ const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, date }: H
                     marginLeft: "auto",
                 }}
             >
-                <SvgZaibatsuKillIcon size="4rem" />
+                <Stack direction="row" spacing=".5rem">
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontFamily: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(
+                                ",",
+                            ),
+                            color: kills > 0 ? colors.gold : colors.lightGrey,
+                        }}
+                    >
+                        {kills > 0 ? `${kills} kills` : "No Kills"}
+                    </Typography>
+                    <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} />
+                </Stack>
                 <Typography
                     variant="subtitle1"
                     sx={{
