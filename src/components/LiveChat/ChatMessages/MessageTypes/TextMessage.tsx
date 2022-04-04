@@ -278,112 +278,108 @@ export const TextMessage = ({
                 </Stack>
 
                 <Box>
-                    <Box>
-                        <Typography
-                            onClick={() => toggleIsPopoverOpen()}
-                            sx={{
-                                display: "inline-block",
-                                color: message_color,
-                                fontWeight: 700,
-                                fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
-                                ":hover": {
-                                    cursor: "pointer",
-                                    textDecoration: "underline",
-                                },
-                                ":active": {
-                                    opacity: 0.7,
-                                },
-                            }}
-                        >
-                            {`${truncate(from_username, 24)}#${from_user_gid}`}
-                        </Typography>
+                    <Typography
+                        onClick={() => toggleIsPopoverOpen()}
+                        sx={{
+                            display: "inline-block",
+                            color: message_color,
+                            fontWeight: 700,
+                            fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
+                            ":hover": {
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                            },
+                            ":active": {
+                                opacity: 0.7,
+                            },
+                        }}
+                    >
+                        {`${truncate(from_username, 24)}#${from_user_gid}`}
+                    </Typography>
 
-                        {from_user_stat && (
-                            <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".3rem", cursor: "default", verticalAlign: "top" }}>
-                                <Typography
-                                    sx={{
-                                        display: "inline-block",
-                                        lineHeight: 1,
-                                        fontFamily: "Nostromo Regular Bold",
-                                        fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                                        color: abilityKillColor,
-                                    }}
-                                >
-                                    [
-                                </Typography>
-                                <SvgSkull2
-                                    size={fontSize ? `${0.85 * fontSize}rem` : "0.85rem"}
-                                    fill={abilityKillColor}
-                                    sx={{
-                                        display: "inline-block",
-                                    }}
-                                />
-                                <Typography
-                                    sx={{
-                                        display: "inline-block",
-                                        lineHeight: 1,
-                                        fontFamily: "Nostromo Regular Bold",
-                                        fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                                        color: abilityKillColor,
-                                    }}
-                                >
-                                    {from_user_stat.kill_count}]
-                                </Typography>
-                            </Box>
-                        )}
+                    {from_user_stat && (
+                        <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default", verticalAlign: "top" }}>
+                            <Typography
+                                sx={{
+                                    display: "inline-block",
+                                    lineHeight: 1,
+                                    fontFamily: "Nostromo Regular Bold",
+                                    fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
+                                    color: abilityKillColor,
+                                }}
+                            >
+                                [
+                            </Typography>
+                            <SvgSkull2
+                                size={fontSize ? `${0.85 * fontSize}rem` : "0.85rem"}
+                                fill={abilityKillColor}
+                                sx={{
+                                    display: "inline-block",
+                                }}
+                            />
+                            <Typography
+                                sx={{
+                                    display: "inline-block",
+                                    lineHeight: 1,
+                                    fontFamily: "Nostromo Regular Bold",
+                                    fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
+                                    color: abilityKillColor,
+                                }}
+                            >
+                                {from_user_stat.kill_count}]
+                            </Typography>
+                        </Box>
+                    )}
 
-                        <Typography
-                            sx={{
-                                display: "inline-block",
-                                ml: ".3rem",
-                                color: multiplierColor,
-                                textAlign: "center",
-                                fontFamily: "Nostromo Regular Bold",
-                                fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                                verticalAlign: "top",
-                                opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
-                            }}
-                        >
-                            {total_multiplier || 0}x
-                        </Typography>
+                    <Typography
+                        sx={{
+                            display: "inline-block",
+                            ml: ".4rem",
+                            color: multiplierColor,
+                            textAlign: "center",
+                            fontFamily: "Nostromo Regular Bold",
+                            fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
+                            verticalAlign: "top",
+                            opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
+                        }}
+                    >
+                        {total_multiplier || 0}x
+                    </Typography>
 
-                        {is_citizen && (
-                            <TooltipHelper placement="top-end" text={"CITIZEN"}>
-                                <Typography
-                                    sx={{
-                                        display: "inline-block",
-                                        cursor: "default",
-                                        ml: ".3rem",
-                                        textAlign: "center",
-                                        fontFamily: "Nostromo Regular Bold",
-                                        fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                                        verticalAlign: "top",
-                                    }}
-                                >
-                                    🦾
-                                </Typography>
-                            </TooltipHelper>
-                        )}
+                    {is_citizen && (
+                        <TooltipHelper placement="top-end" text={"CITIZEN"}>
+                            <Typography
+                                sx={{
+                                    display: "inline-block",
+                                    cursor: "default",
+                                    ml: ".4rem",
+                                    textAlign: "center",
+                                    fontFamily: "Nostromo Regular Bold",
+                                    fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
+                                    verticalAlign: "top",
+                                }}
+                            >
+                                🦾
+                            </Typography>
+                        </TooltipHelper>
+                    )}
 
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                display: "inline-block",
-                                ml: ".3rem",
-                                color: "grey",
-                                opacity: 0.5,
-                                fontSize: fontSize ? `${1 * fontSize}rem` : "1rem",
-                            }}
-                        >
-                            {dateFormatter(sentAt)}
-                        </Typography>
-                    </Box>
-
-                    <Box>
-                        <Typography sx={{ fontSize: fontSize ? `${1.35 * fontSize}rem` : "1.35rem" }}>{message}</Typography>
-                    </Box>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            display: "inline-block",
+                            ml: ".4rem",
+                            color: "grey",
+                            opacity: 0.5,
+                            fontSize: fontSize ? `${1 * fontSize}rem` : "1rem",
+                        }}
+                    >
+                        {dateFormatter(sentAt)}
+                    </Typography>
                 </Box>
             </Stack>
+
+            <Typography sx={{ ml: ".3rem", fontSize: fontSize ? `${1.35 * fontSize}rem` : "1.35rem" }}>{message}</Typography>
 
             <UserDetailsPopover
                 factionLogoBlobID={factionLogoBlobID}
