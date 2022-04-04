@@ -25,10 +25,8 @@ export const TopIconSettings = ({
     return (
         <Box
             sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
+                position: "relative",
+                width: "100%",
                 height: "2.4rem",
                 backgroundColor: shadeColor(mainColor, -86),
                 boxShadow: 2,
