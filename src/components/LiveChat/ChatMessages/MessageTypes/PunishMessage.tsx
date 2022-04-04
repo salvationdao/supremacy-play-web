@@ -44,7 +44,7 @@ export const PunishMessage = ({
 
     return (
         <Box>
-            <Box sx={{ mb: ".5rem", backgroundColor: "#00000030" }}>
+            <Box sx={{ ml: "-.4rem", mb: ".5rem", backgroundColor: "#00000030" }}>
                 <Stack
                     sx={{
                         pt: "1rem",
@@ -111,7 +111,7 @@ export const PunishMessage = ({
                     onClick={() => toggleIsExpanded()}
                     sx={{
                         p: 0,
-                        py: ".08rem",
+                        py: ".2rem",
                         width: "100%",
                         cursor: "pointer",
                         backgroundColor: "#00000020",

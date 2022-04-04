@@ -4,7 +4,7 @@ import { ClipThing, UserBanForm } from "../../.."
 import { SvgSkull2, SvgInfoCircular, SvgAbility, SvgDeath, SvgView } from "../../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 import { FactionsAll } from "../../../../containers"
-import { dateFormatter, truncate } from "../../../../helpers"
+import { dateFormatter, shadeColor, truncate } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors } from "../../../../theme/theme"
 import { TextMessageData } from "../../../../types/chat"
@@ -218,9 +218,9 @@ export const TextMessage = ({
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
     const abilityKillColor = useMemo(() => {
-        if (!from_user_stat || from_user_stat.kill_count == 0) return colors.grey
+        if (!from_user_stat || from_user_stat.kill_count == 0 || !message_color) return colors.grey
         if (from_user_stat.kill_count < 0) return colors.red
-        return message_color
+        return shadeColor(message_color, 30)
     }, [from_user_stat, message_color])
     const factionColor = useMemo(
         () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.theme.primary : message_color),
@@ -278,11 +278,11 @@ export const TextMessage = ({
                 </Stack>
 
                 <Box>
-                    <Stack direction="row" spacing=".4rem">
+                    <Box>
                         <Typography
                             onClick={() => toggleIsPopoverOpen()}
                             sx={{
-                                display: "inline",
+                                display: "inline-block",
                                 color: message_color,
                                 fontWeight: 700,
                                 fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
@@ -299,43 +299,43 @@ export const TextMessage = ({
                         </Typography>
 
                         {from_user_stat && (
-                            <TooltipHelper placement="top-end" text={`${from_user_stat.kill_count} ABILITY KILLS`}>
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    alignSelf="flex-start"
-                                    spacing=".2rem"
-                                    sx={{ flexShrink: 0, pt: ".1rem", cursor: "default" }}
+                            <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".3rem", cursor: "default", verticalAlign: "top" }}>
+                                <Typography
+                                    sx={{
+                                        display: "inline-block",
+                                        lineHeight: 1,
+                                        fontFamily: "Nostromo Regular Bold",
+                                        fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
+                                        color: abilityKillColor,
+                                    }}
                                 >
-                                    <Typography
-                                        sx={{
-                                            lineHeight: 1,
-                                            fontFamily: "Nostromo Regular Bold",
-                                            fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                                            color: abilityKillColor,
-                                        }}
-                                    >
-                                        [
-                                    </Typography>
-                                    <SvgSkull2 size={fontSize ? `${0.85 * fontSize}rem` : "0.85rem"} fill={abilityKillColor} />
-                                    <Typography
-                                        sx={{
-                                            lineHeight: 1,
-                                            fontFamily: "Nostromo Regular Bold",
-                                            fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                                            color: abilityKillColor,
-                                        }}
-                                    >
-                                        {from_user_stat.kill_count}]
-                                    </Typography>
-                                </Stack>
-                            </TooltipHelper>
+                                    [
+                                </Typography>
+                                <SvgSkull2
+                                    size={fontSize ? `${0.85 * fontSize}rem` : "0.85rem"}
+                                    fill={abilityKillColor}
+                                    sx={{
+                                        display: "inline-block",
+                                    }}
+                                />
+                                <Typography
+                                    sx={{
+                                        display: "inline-block",
+                                        lineHeight: 1,
+                                        fontFamily: "Nostromo Regular Bold",
+                                        fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
+                                        color: abilityKillColor,
+                                    }}
+                                >
+                                    {from_user_stat.kill_count}]
+                                </Typography>
+                            </Box>
                         )}
 
                         <Typography
                             sx={{
-                                display: "inline",
-                                ml: ".4rem",
+                                display: "inline-block",
+                                ml: ".3rem",
                                 color: multiplierColor,
                                 textAlign: "center",
                                 fontFamily: "Nostromo Regular Bold",
@@ -351,9 +351,9 @@ export const TextMessage = ({
                             <TooltipHelper placement="top-end" text={"CITIZEN"}>
                                 <Typography
                                     sx={{
-                                        display: "inline",
+                                        display: "inline-block",
                                         cursor: "default",
-                                        ml: ".4rem",
+                                        ml: ".3rem",
                                         textAlign: "center",
                                         fontFamily: "Nostromo Regular Bold",
                                         fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
@@ -368,8 +368,8 @@ export const TextMessage = ({
                         <Typography
                             variant="caption"
                             sx={{
-                                display: "inline",
-                                ml: ".4rem",
+                                display: "inline-block",
+                                ml: ".3rem",
                                 color: "grey",
                                 opacity: 0.5,
                                 fontSize: fontSize ? `${1 * fontSize}rem` : "1rem",
@@ -377,7 +377,7 @@ export const TextMessage = ({
                         >
                             {dateFormatter(sentAt)}
                         </Typography>
-                    </Stack>
+                    </Box>
 
                     <Box>
                         <Typography sx={{ fontSize: fontSize ? `${1.35 * fontSize}rem` : "1.35rem" }}>{message}</Typography>
