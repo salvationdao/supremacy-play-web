@@ -64,6 +64,31 @@ export interface BattleAbilityProgress {
     current_sups: string
 }
 
+export interface Battle {
+    id: string
+    game_map_id: string
+    started_at: Date
+    ended_at?: Date
+    battle_number: number
+    game_map?: Map
+}
+
+export interface BattleMechHistory {
+    battle_id: string
+    mech_id: string
+    owner_id: string
+    faction_id: string
+    killed?: Date
+    killed_by_id?: string
+    kills: number
+    damage_taken: number
+    updated_at: Date
+    created_at: Date
+    faction_won?: boolean
+    mech_survived?: boolean
+    battle?: Battle
+}
+
 export interface Vector2i {
     x: number
     y: number

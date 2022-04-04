@@ -3,9 +3,10 @@ import { useEffect, useState } from "react"
 import { SvgGoldBars, SvgZaibatsuKillIcon } from "../../assets"
 import { RIGHT_DRAWER_WIDTH } from "../../constants"
 import { SocketState, useGameServerWebsocket } from "../../containers"
-import { timeSince } from "../../helpers"
+import { camelToTitle, timeSince } from "../../helpers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
+import { BattleMechHistory } from "../../types"
 import { Asset } from "../../types/assets"
 import { PercentageDisplay } from "./PercentageDisplay"
 
@@ -21,15 +22,23 @@ dummyDate.setHours(dummyDate.getHours() - 2)
 export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
     const { state, send } = useGameServerWebsocket()
     const [shouldRender, setShouldRender] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [history, setHistory] = useState<BattleMechHistory[]>([])
 
     useEffect(() => {
         if (state !== SocketState.OPEN || !send) return
         ;(async () => {
-            const resp = await send(GameServerKeys.BattleMechHistoryList, {
+            setLoading(true)
+            const resp = await send<{
+                total: number
+                battle_history: BattleMechHistory[]
+            }>(GameServerKeys.BattleMechHistoryList, {
                 mech_id: asset.id,
             })
+            setHistory(resp.battle_history)
 
             console.log(resp)
+            setLoading(false)
         })()
     }, [])
 
@@ -116,90 +125,16 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                     },
                 }}
             >
-                <HistoryEntry
-                    mapName="Desert City"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/desert_city.jpg"
-                    isWin={true}
-                    mechSurvived={false}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Neo Tokyo"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/neo_tokyo.jpg"
-                    isWin={false}
-                    mechSurvived={false}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Urban City"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/urban_city.jpg"
-                    isWin={false}
-                    mechSurvived={false}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Arctic Bay"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/artic_bay.jpg"
-                    isWin={true}
-                    mechSurvived={true}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Desert City"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/desert_city.jpg"
-                    isWin={true}
-                    mechSurvived={false}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Neo Tokyo"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/neo_tokyo.jpg"
-                    isWin={false}
-                    mechSurvived={false}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Urban City"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/urban_city.jpg"
-                    isWin={false}
-                    mechSurvived={false}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Arctic Bay"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/artic_bay.jpg"
-                    isWin={true}
-                    mechSurvived={true}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Desert City"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/desert_city.jpg"
-                    isWin={true}
-                    mechSurvived={false}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Neo Tokyo"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/neo_tokyo.jpg"
-                    isWin={false}
-                    mechSurvived={false}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Urban City"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/urban_city.jpg"
-                    isWin={false}
-                    mechSurvived={false}
-                    date={dummyDate}
-                />
-                <HistoryEntry
-                    mapName="Arctic Bay"
-                    backgroundImage="https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/artic_bay.jpg"
-                    isWin={true}
-                    mechSurvived={true}
-                    date={dummyDate}
-                />
+                {history.map((h, index) => (
+                    <HistoryEntry
+                        key={index}
+                        mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
+                        backgroundImage={h.battle?.game_map?.image_url}
+                        isWin={!!h.faction_won}
+                        mechSurvived={!!h.mech_survived}
+                        date={h.created_at}
+                    />
+                ))}
             </Stack>
         </Drawer>
     )

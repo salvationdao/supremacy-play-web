@@ -17,7 +17,7 @@ import {
     MultiplierSuperContributor,
     MultiplierSupporter,
     MultiplierWonBattle,
-    MultiplierWonLastThreeBattles,
+    MultiplierWonLastThreeBattles
 } from "../assets"
 import { colors } from "../theme/theme"
 import { MultiplierGuide } from "../types"
@@ -451,3 +451,8 @@ export const timeSince = (date: Date) => {
 }
 
 export const snakeToTitle = (str: string): string => Capitalize(str.split("_").join(" "))
+
+export const camelToTitle = (str: string) => {
+    const result = str.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+}
