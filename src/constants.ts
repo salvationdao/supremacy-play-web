@@ -3,7 +3,7 @@ const USE_PROD = false
 // Envar stuff
 let VERSION = process.env.REACT_APP_COMMIT_REF || "development"
 let GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "localhost:8084"
-let TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://sale.supremacy.game/"
+let TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/nosidebar/buy"
 let SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
 let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003/"
 let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
@@ -15,7 +15,7 @@ let VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "5242
 if (USE_PROD) {
     VERSION = "development"
     GAME_SERVER_HOSTNAME = "api.supremacy.game"
-    TOKEN_SALE_PAGE = "https://sale.supremacy.game/"
+    TOKEN_SALE_PAGE = "https://passport.xsyn.io/nosidebar/buy"
     SUPREMACY_PAGE = "https://supremacy.game/"
     PASSPORT_WEB = "https://passport.xsyn.io/"
     PASSPORT_SERVER_HOST = "api.xsyn.io"
