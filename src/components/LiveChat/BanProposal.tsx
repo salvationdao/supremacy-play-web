@@ -202,7 +202,7 @@ const BanProposalInner = ({
 
                 <Box sx={{ px: "1.2rem", py: ".9rem" }}>
                     <Stack spacing=".3rem">
-                        <LineItem title="FROM" color={colors.green}>
+                        <LineItem title="INITIATOR" color={colors.green}>
                             <Typography sx={{ lineHeight: 1 }}>{`${banProposal.issued_by_username}#${banProposal.issued_by_gid}`}</Typography>
                         </LineItem>
 
@@ -212,7 +212,7 @@ const BanProposalInner = ({
 
                         <LineItem title="PUNISH">
                             <Typography sx={{ lineHeight: 1 }}>{snakeToTitle(banProposal.punish_option.key)}</Typography>
-                            <TooltipHelper placement="right-start" text={banProposal.punish_option.description}>
+                            <TooltipHelper placement="bottom" text={banProposal.punish_option.description}>
                                 <Box>
                                     <SvgInfoCircular size="1.1rem" sx={{ pt: 0, pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }} />
                                 </Box>

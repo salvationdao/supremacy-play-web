@@ -86,7 +86,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                 toggleIsLoadingUsers(false)
             }
         })()
-    }, [search])
+    }, [search, state])
 
     // When a player is selected, get the ban fee for that player
     useEffect(() => {
