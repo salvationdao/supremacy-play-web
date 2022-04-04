@@ -80,7 +80,7 @@ const UserDetailsPopover = ({
                     }}
                     innerSx={{ position: "relative" }}
                 >
-                    <Stack sx={{ minWidth: "15rem", px: "1.2rem", py: ".8rem", backgroundColor: colors.darkNavy }}>
+                    <Stack sx={{ minWidth: "16rem", px: "1.2rem", py: ".8rem", backgroundColor: colors.darkNavy }}>
                         <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
                             {factionLogoBlobID && factionLogoBlobID != NullUUID && (
                                 <Box
