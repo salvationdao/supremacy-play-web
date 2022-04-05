@@ -67,14 +67,8 @@ export const AssetItem = ({
 
     const isGameServerUp = useMemo(() => gsState == WebSocket.OPEN && !UNDER_MAINTENANCE, [gsState])
     const isRepairing = false // To be implemented on gameserver
-    const isInBattle = useMemo(
-        () => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1,
-        [assetQueueStatus],
-    )
-    const isInQueue = useMemo(
-        () => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1,
-        [assetQueueStatus],
-    )
+    const isInBattle = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1, [assetQueueStatus])
+    const isInQueue = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1, [assetQueueStatus])
 
     if (!assetData || !user) return null
 
@@ -198,11 +192,7 @@ export const AssetItem = ({
                             },
                         }}
                     >
-                        <Typography
-                            variant="body2"
-                            lineHeight={1}
-                            sx={{ color: mouseOver ? colors.red : colors.yellow }}
-                        >
+                        <Typography variant="body2" lineHeight={1} sx={{ color: mouseOver ? colors.red : colors.yellow }}>
                             {mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
                         </Typography>
                     </Button>
@@ -279,9 +269,7 @@ export const AssetItem = ({
 
                 {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
                     <Box sx={{ position: "absolute", top: 0, left: 0 }}>
-                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>
-                            {assetQueueStatus.queue_position}
-                        </Typography>
+                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
                     </Box>
                 )}
 
@@ -335,13 +323,8 @@ export const AssetItem = ({
                 </Stack>
             </Stack>
 
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                }}
-            >
-                <TooltipHelper text="View Asset">
+            <Stack>
+                <TooltipHelper placement="left" text="View Asset">
                     <Link
                         sx={{
                             display: "block",
@@ -353,19 +336,15 @@ export const AssetItem = ({
                         <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
                     </Link>
                 </TooltipHelper>
-                <TooltipHelper text="View History">
-                    <IconButton
-                        onClick={() => toggleHistoryDrawerOpen(true)}
-                        sx={{
-                            padding: 0,
-                        }}
-                    >
+
+                <TooltipHelper placement="left" text="View History">
+                    <IconButton onClick={() => toggleHistoryDrawerOpen(true)} sx={{ p: 0 }}>
                         <SvgWrapper size="1.5rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}>
                             <HistoryIcon />
                         </SvgWrapper>
                     </IconButton>
                 </TooltipHelper>
-            </Box>
+            </Stack>
 
             {deployModalOpen && (
                 <DeployConfirmation
@@ -379,13 +358,9 @@ export const AssetItem = ({
                 />
             )}
 
-            {leaveModalOpen && (
-                <LeaveConfirmation open={leaveModalOpen} asset={asset} onClose={() => toggleLeaveModalOpen(false)} />
-            )}
+            {leaveModalOpen && <LeaveConfirmation open={leaveModalOpen} asset={asset} onClose={() => toggleLeaveModalOpen(false)} />}
 
-            {historyDrawerOpen && (
-                <HistoryDrawer open={historyDrawerOpen} asset={asset} onClose={() => toggleHistoryDrawerOpen(false)} />
-            )}
+            {historyDrawerOpen && <HistoryDrawer open={historyDrawerOpen} asset={asset} onClose={() => toggleHistoryDrawerOpen(false)} />}
         </Stack>
     )
 }

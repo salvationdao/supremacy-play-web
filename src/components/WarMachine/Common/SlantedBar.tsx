@@ -2,28 +2,17 @@ import { Box, Stack } from "@mui/material"
 import { colors } from "../../../theme/theme"
 import { BoxSlanted } from "./BoxSlanted"
 
-export const SlantedBar = ({
-    backgroundColor,
-    progressPercent,
-    costPercent,
-}: {
-    backgroundColor: string
-    progressPercent: number
-    costPercent?: number
-}) => {
+export const SlantedBar = ({ backgroundColor, progressPercent, costPercent }: { backgroundColor: string; progressPercent: number; costPercent?: number }) => {
     return (
         <BoxSlanted
             clipSlantSize="20px"
-            sx={{
+            style={{
                 height: "100%",
                 width: "100%",
                 pointerEvents: "none",
             }}
         >
-            <Stack
-                justifyContent="flex-end"
-                sx={{ position: "relative", height: "100%", width: "100%", backgroundColor: "#00000060" }}
-            >
+            <Stack justifyContent="flex-end" style={{ position: "relative", height: "100%", width: "100%", backgroundColor: "#00000060" }}>
                 <Box
                     style={{
                         height: `${progressPercent}%`,
