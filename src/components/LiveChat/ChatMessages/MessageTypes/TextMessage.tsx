@@ -200,19 +200,8 @@ export const TextMessage = ({
     factionsAll: FactionsAll
     user?: User
 }) => {
-    const {
-        from_user_id,
-        from_username,
-        from_user_gid,
-        message_color,
-        from_user_faction_id,
-        avatar_id,
-        message,
-        self,
-        total_multiplier,
-        is_citizen,
-        from_user_stat,
-    } = data
+    const { from_user, message_color, avatar_id, message, self, total_multiplier, is_citizen, from_user_stat } = data
+    const { id, username, gid, faction_id } = from_user
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
@@ -222,15 +211,9 @@ export const TextMessage = ({
         if (from_user_stat.kill_count < 0) return colors.red
         return shadeColor(message_color, 30)
     }, [from_user_stat, message_color])
-    const factionColor = useMemo(
-        () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.theme.primary : message_color),
-        [from_user_faction_id, factionsAll],
-    )
-    const factionSecondaryColor = useMemo(
-        () => (from_user_faction_id ? factionsAll[from_user_faction_id]?.theme.secondary : "#FFFFFF"),
-        [from_user_faction_id, factionsAll],
-    )
-    const factionLogoBlobID = useMemo(() => (from_user_faction_id ? factionsAll[from_user_faction_id]?.logo_blob_id : ""), [from_user_faction_id, factionsAll])
+    const factionColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.primary : message_color), [faction_id, factionsAll])
+    const factionSecondaryColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.secondary : "#FFFFFF"), [faction_id, factionsAll])
+    const factionLogoBlobID = useMemo(() => (faction_id ? factionsAll[faction_id]?.logo_blob_id : ""), [faction_id, factionsAll])
 
     // For the hide zero multi setting
     if (!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) return null
@@ -294,7 +277,7 @@ export const TextMessage = ({
                             },
                         }}
                     >
-                        {`${truncate(from_username, 24)}#${from_user_gid}`}
+                        {`${truncate(username, 24)}#${gid}`}
                     </Typography>
 
                     {from_user_stat && (
@@ -386,15 +369,15 @@ export const TextMessage = ({
                 factionColor={factionColor}
                 factionSecondaryColor={factionSecondaryColor}
                 messageColor={message_color}
-                fromUserFactionID={from_user_faction_id}
-                userID={from_user_id}
-                username={from_username}
+                fromUserFactionID={faction_id}
+                userID={id}
+                username={username}
                 userStat={from_user_stat}
                 popoverRef={popoverRef}
                 open={isPopoverOpen}
                 onClose={() => toggleIsPopoverOpen(false)}
                 user={user}
-                gid={from_user_gid}
+                gid={gid}
             />
         </Box>
     )

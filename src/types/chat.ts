@@ -1,4 +1,4 @@
-import { UserStat } from "."
+import { User, UserStat } from "."
 
 export interface BanProposalStruct {
     id: string
@@ -38,10 +38,7 @@ export interface ChatMessageType {
 }
 
 export interface TextMessageData {
-    from_user_id: string
-    from_user_faction_id?: string
-    from_username: string
-    from_user_gid: number
+    from_user: User
     message_color?: string
     avatar_id?: string
     message: string

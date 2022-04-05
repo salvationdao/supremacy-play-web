@@ -146,13 +146,13 @@ const ChatMessagesInner = ({
                                 const data = message.data as TextMessageData
                                 return (
                                     <TextMessage
-                                        key={`${data.from_user_id} - ${message.sent_at.toISOString()}`}
+                                        key={`${data.from_user.id} - ${message.sent_at.toISOString()}`}
                                         data={data}
                                         sentAt={message.sent_at}
                                         fontSize={fontSize}
                                         filterZeros={filterZeros}
-                                        isSent={data.from_user_id != user?.id ? true : sentMessages.includes(message.sent_at)}
-                                        isFailed={data.from_user_id != user?.id ? false : failedMessages.includes(message.sent_at)}
+                                        isSent={data.from_user.id != user?.id ? true : sentMessages.includes(message.sent_at)}
+                                        isFailed={data.from_user.id != user?.id ? false : failedMessages.includes(message.sent_at)}
                                         factionsAll={factionsAll}
                                         user={user}
                                     />

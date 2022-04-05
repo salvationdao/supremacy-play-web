@@ -88,10 +88,7 @@ const ChatSendInner = ({
         newMessageHandler(
             {
                 data: {
-                    from_user_id: user.id,
-                    from_user_faction_id: user.faction_id,
-                    from_username: user.username,
-                    from_user_gid: user.gid,
+                    from_user: user,
                     message_color: messageColor,
                     avatar_id: user.avatar_id,
                     message,

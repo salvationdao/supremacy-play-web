@@ -145,7 +145,7 @@ export const ChatContainer = createContainer(() => {
                     ...prev,
                     faction: resp.map((m) => m.sent_at),
                 }))
-                const selfMessage = resp.filter((m) => m.type == "TEXT").find((m) => (m.data as TextMessageData).from_user_id === user.id)
+                const selfMessage = resp.filter((m) => m.type == "TEXT").find((m) => (m.data as TextMessageData).from_user.id === user.id)
                 if (selfMessage) {
                     setInitialMessageColor((selfMessage.data as TextMessageData).message_color)
                 }
@@ -185,7 +185,7 @@ export const ChatContainer = createContainer(() => {
         if (state !== WebSocket.OPEN) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
             if (!m) return
-            if (m.type == "TEXT" && (m.data as TextMessageData).from_user_id === user?.id) {
+            if (m.type == "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
                 saveUserStats(m.data as TextMessageData)
                 return
             }
@@ -200,7 +200,7 @@ export const ChatContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
             if (!m) return
-            if (m.type == "TEXT" && (m.data as TextMessageData).from_user_id === user?.id) return
+            if (m.type == "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) return
 
             newMessageHandler(m, "faction_id")
             if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
