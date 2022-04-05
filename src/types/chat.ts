@@ -1,4 +1,4 @@
-import { User, UserStat } from "."
+import { UserRank, User, UserStat } from "."
 
 export interface BanProposalStruct {
     id: string
@@ -39,6 +39,7 @@ export interface ChatMessageType {
 
 export interface TextMessageData {
     from_user: User
+    user_rank?: UserRank
     message_color?: string
     avatar_id?: string
     message: string
@@ -49,14 +50,8 @@ export interface TextMessageData {
 }
 
 export interface PunishMessageData {
-    issued_by_player_id: string
-    issued_by_player_username: string
-    issued_by_player_faction_id: string
-    reported_player_id: string
-    issued_by_player_gid: number
-    reported_player_gid: number
-    reported_player_username: string
-    reported_player_faction_id: string
+    issued_by_user: User
+    reported_user: User
     is_passed: boolean
     total_player_number: number
     agreed_player_number: number

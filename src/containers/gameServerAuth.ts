@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
-import { UpdateTheme, User, UserStat } from "../types"
+import { UpdateTheme, User, UserRank, UserStat } from "../types"
 
 export interface AuthContainerType {
     user: User | undefined
@@ -12,6 +12,7 @@ export interface AuthContainerType {
     authSessionIDGetLoading: boolean
     authSessionIDGetError: undefined
     userStat: UserStat
+    userRank?: UserRank
 }
 
 /**
@@ -24,6 +25,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useGameServerWebsocket()
     const [user, setUser] = useState<User>()
+    const [userRank, setUserRank] = useState<UserRank>()
     const userID = user?.id
     const activeInterval = useRef<NodeJS.Timer>()
 
@@ -128,8 +130,34 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         setUser(undefined)
     }, [state])
 
+    // Listen on user ranking
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (state !== WebSocket.OPEN || !subscribe || !user) return
+                const resp = await send<UserRank, null>(GameServerKeys.PlayerRank)
+
+                if (resp) {
+                    setUserRank(resp)
+                    return subscribe<UserRank>(
+                        GameServerKeys.PlayerRank,
+                        (payload) => {
+                            if (!payload) return
+                            setUserRank(payload)
+                        },
+                        null,
+                        true,
+                    )
+                }
+            } catch (e) {
+                console.log("aaa")
+            }
+        })()
+    }, [state, subscribe, user])
+
     return {
         user,
+        userRank,
         userID: user?.id,
         faction_id: user?.faction_id,
         authSessionIDGetLoading,

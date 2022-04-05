@@ -13,9 +13,9 @@ export interface User {
     faction: Faction
     sups: number
     gid: number
-    // rank: "NEW_RECRUIT" | "PRIVATE" | "CORPORAL" | "GENERAL"
-    // sent_message_count: number
 }
+
+export type UserRank = "NEW_RECRUIT" | "PRIVATE" | "CORPORAL" | "GENERAL"
 
 export interface FactionThemeColor {
     primary: string

@@ -7,7 +7,7 @@ import { useChat, useGameServerAuth, useSnackbar, WebSocketProperties, useGameSe
 import { useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { User, UserStat } from "../../../types"
+import { User, UserRank, UserStat } from "../../../types"
 import { ChatMessageType } from "../../../types/chat"
 
 interface ChatSendProps {
@@ -17,7 +17,7 @@ interface ChatSendProps {
 
 export const ChatSend = (props: ChatSendProps) => {
     const { state, send } = useGameServerWebsocket()
-    const { user } = useGameServerAuth()
+    const { user, userRank } = useGameServerAuth()
     const { onSentMessage, onFailedMessage, newMessageHandler, initialMessageColor, userStats } = useChat()
 
     return (
@@ -26,6 +26,7 @@ export const ChatSend = (props: ChatSendProps) => {
             state={state}
             send={send}
             user={user}
+            userRank={userRank}
             onSentMessage={onSentMessage}
             onFailedMessage={onFailedMessage}
             newMessageHandler={newMessageHandler}
@@ -37,6 +38,7 @@ export const ChatSend = (props: ChatSendProps) => {
 
 interface ChatSendInnerProps extends ChatSendProps, Partial<WebSocketProperties> {
     user?: User
+    userRank?: UserRank
     onSentMessage: (sentAt: Date) => void
     onFailedMessage: (sentAt: Date) => void
     newMessageHandler: (message: ChatMessageType, faction_id: string | null) => void
@@ -54,6 +56,7 @@ const ChatSendInner = ({
     state,
     send,
     user,
+    userRank,
     onSentMessage,
     onFailedMessage,
     newMessageHandler,
@@ -89,6 +92,7 @@ const ChatSendInner = ({
             {
                 data: {
                     from_user: user,
+                    user_rank: userRank,
                     message_color: messageColor,
                     avatar_id: user.avatar_id,
                     message,

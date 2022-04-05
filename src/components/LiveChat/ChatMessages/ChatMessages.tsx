@@ -133,7 +133,7 @@ const ChatMessagesInner = ({
                                 const data = message.data as PunishMessageData
                                 return (
                                     <PunishMessage
-                                        key={`${data.issued_by_player_id} - ${message.sent_at.toISOString()}`}
+                                        key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
                                         data={data}
                                         sentAt={message.sent_at}
                                         fontSize={fontSize}

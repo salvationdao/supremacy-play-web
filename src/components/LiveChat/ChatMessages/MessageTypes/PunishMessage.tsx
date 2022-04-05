@@ -22,25 +22,13 @@ export const PunishMessage = ({
 }) => {
     const [isExpanded, toggleIsExpanded] = useToggle()
     const factionColor = useMemo(
-        () => (data?.issued_by_player_faction_id ? factionsAll[data?.issued_by_player_faction_id]?.theme.primary : "#FFFFFF"),
-        [data?.issued_by_player_faction_id, factionsAll],
+        () => (data?.issued_by_user.faction_id ? factionsAll[data?.issued_by_user.faction_id]?.theme.primary : "#FFFFFF"),
+        [data?.issued_by_user.faction_id, factionsAll],
     )
 
     if (!data) return null
 
-    const {
-        issued_by_player_username,
-        reported_player_username,
-        is_passed,
-        issued_by_player_gid,
-        reported_player_gid,
-        agreed_player_number,
-        disagreed_player_number,
-        punish_option,
-        punish_reason,
-        total_player_number,
-        issued_by_player_faction_id,
-    } = data
+    const { issued_by_user, reported_user, is_passed, agreed_player_number, disagreed_player_number, punish_option, punish_reason, total_player_number } = data
 
     return (
         <Box>
@@ -79,11 +67,11 @@ export const PunishMessage = ({
                         }}
                     >
                         <StyledImageText
-                            text={`${reported_player_username}#${reported_player_gid}`}
+                            text={`${reported_user.username}#${reported_user.gid}`}
                             color={factionColor || "#FFFFFF"}
                             imageUrl={
-                                factionsAll[issued_by_player_faction_id]
-                                    ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[issued_by_player_faction_id].logo_blob_id}`
+                                factionsAll[issued_by_user.faction_id]
+                                    ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[issued_by_user.faction_id].logo_blob_id}`
                                     : undefined
                             }
                             imageMb={-0.2}
@@ -138,11 +126,11 @@ export const PunishMessage = ({
                         }}
                     >
                         <LineItem title="INITIATOR" color={colors.green}>
-                            <Typography>{`${issued_by_player_username}#${issued_by_player_gid}`}</Typography>
+                            <Typography>{`${issued_by_user.username}#${issued_by_user.gid}`}</Typography>
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <Typography>{`${reported_player_username}#${reported_player_gid}`}</Typography>
+                            <Typography>{`${reported_user.username}#${reported_user.gid}`}</Typography>
                         </LineItem>
 
                         <LineItem title="PUNISH">
