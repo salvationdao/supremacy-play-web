@@ -100,7 +100,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
         const ratio = map ? map.height / map.width : 1
         const defaultRes = {
             width: MINI_MAP_DEFAULT_SIZE * adjustment,
-            height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment,
+            height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment + 2.4 * pxToRemRatio,
         }
         const res = { width: dimensions.width, height: dimensions.width * ratio }
         setDefaultDimensions(defaultRes)
@@ -214,7 +214,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     position: "relative",
                                     boxShadow: 1,
                                     width: dimensions.width,
-                                    height: dimensions.height + 2.4 * pxToRemRatio,
+                                    height: dimensions.height,
                                     transition: "all .2s",
                                     overflow: "hidden",
                                     backgroundColor: colors.darkNavy,
@@ -231,14 +231,18 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                 {isTargeting && winner ? (
                                     <MiniMapInside
                                         gameAbility={winner.game_ability}
-                                        containerDimensions={dimensions}
+                                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * pxToRemRatio }}
                                         targeting
                                         setSubmitted={setSubmitted}
                                         enlarged={enlarged}
                                         newSnackbarMessage={newSnackbarMessage}
                                     />
                                 ) : (
-                                    <MiniMapInside containerDimensions={dimensions} enlarged={enlarged} newSnackbarMessage={newSnackbarMessage} />
+                                    <MiniMapInside
+                                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * pxToRemRatio }}
+                                        enlarged={enlarged}
+                                        newSnackbarMessage={newSnackbarMessage}
+                                    />
                                 )}
 
                                 {isTargeting && winner && (
