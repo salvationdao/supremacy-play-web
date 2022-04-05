@@ -132,35 +132,37 @@ const UserDetailsPopover = ({
                             </Stack>
                         </Stack>
 
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => {
-                                toggleBanModalOpen()
-                                onClose()
-                            }}
-                            sx={{
-                                mt: ".4rem",
-                                px: ".8rem",
-                                pt: ".48rem",
-                                pb: ".3rem",
-                                backgroundColor: factionColor,
-                                border: `${factionColor} 1px solid`,
-                                borderRadius: 0.3,
-                                ":hover": { backgroundColor: `${factionColor}90` },
-                            }}
-                        >
-                            <Typography
-                                variant="body2"
+                        {user && fromUserFactionID === user.faction_id && (
+                            <Button
+                                variant="contained"
+                                size="small"
+                                onClick={() => {
+                                    toggleBanModalOpen()
+                                    onClose()
+                                }}
                                 sx={{
-                                    lineHeight: 1,
-                                    fontWeight: "fontWeightBold",
-                                    color: factionSecondaryColor,
+                                    mt: ".4rem",
+                                    px: ".8rem",
+                                    pt: ".48rem",
+                                    pb: ".3rem",
+                                    backgroundColor: factionColor,
+                                    border: `${factionColor} 1px solid`,
+                                    borderRadius: 0.3,
+                                    ":hover": { backgroundColor: `${factionColor}90` },
                                 }}
                             >
-                                PUNISH
-                            </Typography>
-                        </Button>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        lineHeight: 1,
+                                        fontWeight: "fontWeightBold",
+                                        color: factionSecondaryColor,
+                                    }}
+                                >
+                                    PUNISH
+                                </Typography>
+                            </Button>
+                        )}
                     </Stack>
                 </ClipThing>
             </Popover>
