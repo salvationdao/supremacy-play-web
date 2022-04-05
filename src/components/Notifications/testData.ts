@@ -31,6 +31,7 @@ const user1 = {
     faction_id: "123123",
     faction: faction1,
     sups: 0,
+    gid: 3871,
 }
 
 const user2 = {
@@ -40,6 +41,7 @@ const user2 = {
     faction_id: "123123",
     faction: faction2,
     sups: 0,
+    gid: 6519,
 }
 
 const ability1 = {
@@ -188,7 +190,7 @@ export const killNoti: NotificationResponse = {
     type: "WAR_MACHINE_DESTROYED",
     data: {
         destroyed_war_machine: wm2,
-        killed_by_war_machine_id: wm1,
+        killed_by_war_machine: wm1,
     },
 }
 
@@ -196,6 +198,15 @@ export const killNoti2: NotificationResponse = {
     type: "WAR_MACHINE_DESTROYED",
     data: {
         destroyed_war_machine: wm2,
-        killed_by: "HEAVY DUTY MACHINE GUN",
+        killed_by: "NUKE",
+    },
+}
+
+export const killNoti3: NotificationResponse = {
+    type: "WAR_MACHINE_DESTROYED",
+    data: {
+        destroyed_war_machine: wm2,
+        killed_by: "NUKE",
+        killed_by_user: user1,
     },
 }

@@ -13,6 +13,7 @@ export interface ActiveBars {
 export const BarContainer = createContainer(() => {
     const gameBarRef = useRef<HTMLDivElement>()
     const windowDimensions = useWindowDimensions()
+
     const { isAnyPanelOpen } = useDrawer()
     const [activeBars, setActiveBars] = useState<ActiveBars>({
         enlist: true,
@@ -20,11 +21,11 @@ export const BarContainer = createContainer(() => {
         profile: true,
     })
 
-    const getBarWidth = useCallback(() => {
+    const getBarWidth = () => {
         const el = gameBarRef.current
         if (!el) return
         return el.offsetWidth
-    }, [])
+    }
 
     useEffect(() => {
         const width = getBarWidth()
@@ -38,19 +39,19 @@ export const BarContainer = createContainer(() => {
                     wallet: false,
                     profile: false,
                 })
-            } else if (width < 660) {
+            } else if (width < 757) {
                 setActiveBars({
                     enlist: false,
                     wallet: false,
                     profile: true,
                 })
-            } else if (width < 1045) {
+            } else if (width < 1345) {
                 setActiveBars({
                     enlist: false,
                     wallet: true,
-                    profile: false,
+                    profile: true,
                 })
-            } else if (width < 1195) {
+            } else if (width < 1665) {
                 setActiveBars({
                     enlist: true,
                     wallet: true,
@@ -76,14 +77,14 @@ export const BarContainer = createContainer(() => {
                 const width = getBarWidth()
                 if (!width) return
 
-                if (width < 1045) {
+                if (width < 1345) {
                     setActiveBars({
                         enlist: false,
                         wallet: false,
                         profile: false,
                         [barName]: newStatus,
                     })
-                } else if (width < 1195 && count > 2) {
+                } else if (width < 1665 && count > 2) {
                     setActiveBars({
                         enlist: barName !== "profile",
                         wallet: true,

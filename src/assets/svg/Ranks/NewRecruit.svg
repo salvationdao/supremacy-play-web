@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   enable-background="new 0 0 32 32"
+   viewBox="0 0 16 11.333"
+   version="1.1"
+   id="svg14"
+   sodipodi:docname="NewRecruit.svg"
+   inkscape:version="1.1 (1:1.1+202106031931+af4d65493e)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs18" />
+  <sodipodi:namedview
+     id="namedview16"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="6.8203125"
+     inkscape:cx="-28.077892"
+     inkscape:cy="-23.679267"
+     inkscape:window-width="2560"
+     inkscape:window-height="1314"
+     inkscape:window-x="1920"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <g
+     id="bold"
+     transform="translate(-8,-10.032)">
+    <path
+       d="m 23.841,17.167 -7.5,-7 c -0.192,-0.18 -0.49,-0.18 -0.682,0 l -7.5,7 C 8.058,17.261 8,17.393 8,17.532 v 3.333 c 0,0.199 0.118,0.379 0.3,0.458 0.183,0.079 0.394,0.044 0.54,-0.092 l 7.16,-6.647 7.16,6.648 c 0.094,0.087 0.216,0.133 0.34,0.133 0.068,0 0.136,-0.014 0.2,-0.042 0.182,-0.079 0.3,-0.26 0.3,-0.458 v -3.333 c 0,-0.139 -0.058,-0.271 -0.159,-0.365 z"
+       fill="#BEE6E6"
+       id="path5" />
+  </g>
+</svg>

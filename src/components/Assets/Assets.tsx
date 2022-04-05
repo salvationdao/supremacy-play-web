@@ -1,23 +1,9 @@
-import { Box, Button, Drawer, Fade, Grid, Skeleton, Stack, Typography, CircularProgress } from "@mui/material"
+import { Box, Button, Drawer, Fade, Skeleton, Stack, Typography, CircularProgress } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { AssetItem, DrawerButtons } from ".."
 import { SvgRobot } from "../../assets"
-import {
-    DRAWER_TRANSITION_DURATION,
-    GAME_BAR_HEIGHT,
-    RIGHT_DRAWER_WIDTH,
-    NullUUID,
-    PASSPORT_WEB,
-} from "../../constants"
-import {
-    useDrawer,
-    useGame,
-    useGameServerAuth,
-    useGameServerWebsocket,
-    usePassportServerAuth,
-    usePassportServerWebsocket,
-    useSnackbar,
-} from "../../containers"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, NullUUID, PASSPORT_WEB } from "../../constants"
+import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset, AssetOnChainStatus, AssetQueueStat, AssetQueueStatusItem } from "../../types/assets"
@@ -30,25 +16,21 @@ interface QueueFeed {
 }
 
 const LoadingSkeleton = ({ num }: { num?: number }) => (
-    <Box>
-        <Grid container spacing={2} sx={{ p: "1rem" }}>
-            {new Array(num || 6).fill(0).map((_, index) => (
-                <Grid item xs={12} key={`loading-skeleton-${index}`}>
-                    <Stack direction="row" spacing="1.3rem">
-                        <Skeleton variant="rectangular" width="7.2rem" height="7.2rem" />
-                        <Stack sx={{ flex: 1 }}>
-                            <Skeleton variant="text" width="95%" height="2rem" />
-                            <Skeleton variant="text" width="60%" height="2rem" />
-                            <Skeleton variant="rectangular" width="8rem" height="2.3rem" sx={{ mt: ".6rem" }} />
-                        </Stack>
-                    </Stack>
-                </Grid>
-            ))}
-        </Grid>
-    </Box>
+    <Stack spacing={2} sx={{ p: "1rem" }}>
+        {new Array(num || 6).fill(0).map((_, index) => (
+            <Stack key={`loading-skeleton-${index}`} direction="row" spacing="1.3rem">
+                <Skeleton variant="rectangular" width="7.2rem" height="7.2rem" />
+                <Stack sx={{ flex: 1 }}>
+                    <Skeleton variant="text" width="95%" height="2rem" />
+                    <Skeleton variant="text" width="60%" height="2rem" />
+                    <Skeleton variant="rectangular" width="8rem" height="2.3rem" sx={{ mt: ".6rem" }} />
+                </Stack>
+            </Stack>
+        ))}
+    </Stack>
 )
 
-const DrawerContent = () => {
+const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramShortcode?: string; setTelegramShortcode?: (s: string) => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
@@ -57,7 +39,6 @@ const DrawerContent = () => {
     const [queueLength, setQueueLength] = useState<number>(0)
     const [queueCost, setQueueCost] = useState<string>("")
     const [contractReward, setContractReward] = useState<string>("")
-    const { telegramShortcode, setTelegramShortcode } = useDrawer()
 
     const { state: gsState, subscribe: gsSubscribe, send: gsSend } = useGameServerWebsocket()
 
@@ -65,44 +46,26 @@ const DrawerContent = () => {
 
     const [assets, setAssets] = useState<Asset[]>()
     const [assetsNotInQueue, setAssetsNotInQueue] = useState<Map<string, Asset>>(new Map())
-    const [assetsInQueue, setAssetsInQueue] = useState<
-        Map<string, Asset & { queue_position: number; contract_reward?: string }>
-    >(new Map())
+    const [assetsInQueue, setAssetsInQueue] = useState<Map<string, Asset & { queue_position: number; contract_reward?: string }>>(new Map())
 
     const [isLoading, setIsLoading] = useState(true)
     const [isLoaded, setIsLoaded] = useState(false)
 
     const loadMoreAssets = useCallback(async () => {
-        if (
-            state !== WebSocket.OPEN ||
-            !send ||
-            !queuedAssets ||
-            isLoaded ||
-            (isLoading && assets) ||
-            !faction_id ||
-            faction_id === NullUUID
-        )
-            return
+        if (state !== WebSocket.OPEN || !send || !queuedAssets || isLoaded || (isLoading && assets) || !faction_id || faction_id === NullUUID) return
         try {
             setIsLoading(true)
-            const includeAssetIDs = queuedAssets
-                .filter((q) => !assets || !assets.some((a) => a.id === q.mech_id))
-                .map((q) => q.mech_id)
-            const excludeAssetIDs = queuedAssets
-                .filter((q) => assets && assets.some((a) => a.id === q.mech_id))
-                .map((q) => q.mech_id)
+            const includeAssetIDs = queuedAssets.filter((q) => !assets || !assets.some((a) => a.id === q.mech_id)).map((q) => q.mech_id)
+            const excludeAssetIDs = queuedAssets.filter((q) => assets && assets.some((a) => a.id === q.mech_id)).map((q) => q.mech_id)
 
             let resp = await send<Asset[]>(PassportServerKeys.SubAssetList, {
                 limit: 20,
                 include_asset_ids: includeAssetIDs,
                 exclude_asset_ids: excludeAssetIDs,
-                after_external_token_id:
-                    assets && assets.length > 0 ? assets[assets.length - 1].data.mech.external_token_id : undefined,
+                after_external_token_id: assets && assets.length > 0 ? assets[assets.length - 1].data.mech.external_token_id : undefined,
             })
             resp = resp.filter((asset) => {
-                return (
-                    asset.on_chain_status !== AssetOnChainStatus.STAKABLE && asset.unlocked_at <= new Date(Date.now())
-                )
+                return asset.on_chain_status !== AssetOnChainStatus.STAKABLE && asset.unlocked_at <= new Date(Date.now())
             })
             setAssets((prev) => (prev ? prev.concat(resp) : resp))
             setIsLoading(false)
@@ -143,9 +106,7 @@ const DrawerContent = () => {
                         contract_reward: status.contract_reward,
                     }
                     prev.set(a.hash, tempAss)
-                    const tempMap = new Map(
-                        Array.from(prev.entries()).sort(([, a], [, b]) => a.queue_position - b.queue_position),
-                    )
+                    const tempMap = new Map(Array.from(prev.entries()).sort(([, a], [, b]) => a.queue_position - b.queue_position))
 
                     return tempMap
                 })
@@ -207,7 +168,7 @@ const DrawerContent = () => {
         return () => callbacks.forEach((c) => c())
     }, [gsState, gsSubscribe, assets])
 
-    // Every time the battle queue has been updated (i.e. a mech leaves the queue), refetch all mech's queue positions once
+    // DO NOT REMOVE THIS! Every time the battle queue has been updated (i.e. a mech leaves the queue), refetch all mech's queue positions once
     useEffect(() => {
         if (gsState !== WebSocket.OPEN || !gsSubscribe || !gsSend || !assets || assets.length === 0) return
 
@@ -387,7 +348,8 @@ const DrawerContent = () => {
 }
 
 export const Assets = () => {
-    const { isAssetOpen, telegramShortcode, setTelegramShortcode } = useDrawer()
+    const { isAssetOpen } = useDrawer()
+    const [telegramShortcode, setTelegramShortcode] = useState("")
 
     return (
         <Drawer
@@ -414,14 +376,10 @@ export const Assets = () => {
                 }}
             >
                 <DrawerButtons isFixed={false} />
-                {isAssetOpen && <DrawerContent />}
+                {isAssetOpen && <DrawerContent telegramShortcode={telegramShortcode} setTelegramShortcode={setTelegramShortcode} />}
             </Stack>
 
-            <TelegramShortcodeModal
-                code={telegramShortcode}
-                onClose={() => setTelegramShortcode("")}
-                open={!!telegramShortcode}
-            />
+            <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
         </Drawer>
     )
 }

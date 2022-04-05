@@ -12,13 +12,7 @@ export interface BattleFactionAbilityAlertProps {
     ability: BattleAbility
 }
 
-export const BattleAbilityAlert = ({
-    data,
-    factionsAll,
-}: {
-    data: BattleFactionAbilityAlertProps
-    factionsAll: FactionsAll
-}) => {
+export const BattleAbilityAlert = ({ data, factionsAll }: { data: BattleFactionAbilityAlertProps; factionsAll: FactionsAll }) => {
     const { user, ability } = data
     const { label, colour, image_url } = ability
 
@@ -46,22 +40,11 @@ export const BattleAbilityAlert = ({
                     <StyledImageText
                         text={user ? acronym(user.faction.label) : "GABS"}
                         color={mainColor || "grey !important"}
-                        imageUrl={
-                            user && user.faction
-                                ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
-                                      factionsAll[user.faction.id]?.logo_blob_id
-                                  }`
-                                : undefined
-                        }
+                        imageUrl={user && user.faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction.id]?.logo_blob_id}` : undefined}
                         imageMb={-0.2}
                     />
                     <SvgEmergency fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
-                    <StyledImageText
-                        text={label}
-                        color={colour}
-                        imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`}
-                        imageMb={-0.2}
-                    />
+                    <StyledImageText text={label} color={colour} imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`} imageMb={-0.2} />
                 </Box>
                 <Box>
                     <StyledNormalText text="Syndicate ability has been initiated." />

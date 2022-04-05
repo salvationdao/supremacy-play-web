@@ -9,6 +9,7 @@ export const StyledImageText = ({
     variant = "body1",
     color,
     truncateLine,
+    textSx,
 
     fontFamily,
     fontWeight = "fontWeightBold",
@@ -25,6 +26,7 @@ export const StyledImageText = ({
     variant?: OverridableStringUnion<Variant | "inherit", TypographyPropsVariantOverrides>
     color: string
     truncateLine?: boolean
+    textSx?: SxProps
 
     fontWeight?: string
     fontFamily?: string
@@ -62,9 +64,7 @@ export const StyledImageText = ({
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: imageBackgroundSize,
-                        backgroundColor: noImageBackgroundColor
-                            ? "unset"
-                            : imageBackgroundColor || imageBorderColor || color,
+                        backgroundColor: noImageBackgroundColor ? "unset" : imageBackgroundColor || imageBorderColor || color,
                         borderRadius: 0.5,
                         border: `${imageBorderColor || color} solid ${imageBorderThickness}`,
                     }}
@@ -80,6 +80,7 @@ export const StyledImageText = ({
                     color,
                     wordBreak: "break-word",
                     ...truncateStyle,
+                    ...textSx,
                 }}
             >
                 {text}

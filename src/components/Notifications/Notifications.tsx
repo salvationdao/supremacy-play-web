@@ -31,6 +31,7 @@ import {
     textNoti,
     killNoti,
     killNoti2,
+    killNoti3,
 } from "./testData"
 
 const SPAWN_TEST_NOTIFICATIONS = false
@@ -44,22 +45,11 @@ WARMACHINE_ABILITY: when a faction has initiated a war machine ability
 TEXT: generic notification with no styles, just text
 */
 
-type NotificationType =
-    | "TEXT"
-    | "LOCATION_SELECT"
-    | "BATTLE_ABILITY"
-    | "FACTION_ABILITY"
-    | "WAR_MACHINE_ABILITY"
-    | "WAR_MACHINE_DESTROYED"
+type NotificationType = "TEXT" | "LOCATION_SELECT" | "BATTLE_ABILITY" | "FACTION_ABILITY" | "WAR_MACHINE_ABILITY" | "WAR_MACHINE_DESTROYED"
 
 export interface NotificationResponse {
     type: NotificationType
-    data:
-        | BattleFactionAbilityAlertProps
-        | KillAlertProps
-        | LocationSelectAlertProps
-        | WarMachineAbilityAlertProps
-        | string
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | string
 }
 
 export const Notifications = () => {
@@ -90,6 +80,7 @@ export const Notifications = () => {
         newNotification(textNoti)
         newNotification(killNoti)
         newNotification(killNoti2)
+        newNotification(killNoti3)
     }, [])
 
     // Notifications
@@ -115,7 +106,7 @@ export const Notifications = () => {
             if (!notification) return
 
             const notiID = makeid()
-            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 100 : NOTIFICATION_TIME
+            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
             addNotification({ notiID, ...notification, duration })
 
             // Linger is for the slide animation to play before clearing off the component
@@ -231,7 +222,7 @@ export const Notifications = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        maxHeight: `calc(${height}px - ${MINI_MAP_DEFAULT_SIZE + 40}px)`,
+                        maxHeight: `calc(${height}px - ${MINI_MAP_DEFAULT_SIZE + 40 + 30}px)`,
                         overflowY: "auto",
                         overflowX: "hidden",
                         pr: ".8rem",

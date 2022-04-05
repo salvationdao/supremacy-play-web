@@ -17,14 +17,8 @@ export const ChatFontSize = () => {
             justifyContent="space-between"
             sx={{ px: "1.2rem", py: ".6rem", backgroundColor: "#FFFFFF05", borderRadius: 1 }}
         >
-            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Font Size:</Typography>
-            <ToggleButtonGroup
-                size="small"
-                value={fontSize}
-                exclusive
-                onChange={onChange}
-                sx={{ ".MuiToggleButton-root": { p: ".5rem" } }}
-            >
+            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Font size:</Typography>
+            <ToggleButtonGroup size="small" value={fontSize} exclusive onChange={onChange} sx={{ ".MuiToggleButton-root": { p: ".5rem" } }}>
                 <ToggleButton value={0.8}>
                     <SvgFontCase size="1rem" sx={{ minWidth: "2rem" }} />
                 </ToggleButton>

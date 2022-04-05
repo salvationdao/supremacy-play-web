@@ -133,15 +133,8 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
 
                                     {user && (
                                         <span>
-                                            <Link
-                                                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                                                target="_blank"
-                                                sx={{ ml: ".48rem" }}
-                                            >
-                                                <SvgExternalLink
-                                                    size="1rem"
-                                                    sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}
-                                                />
+                                            <Link href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`} target="_blank" sx={{ ml: ".48rem" }}>
+                                                <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
                                             </Link>
                                         </span>
                                     )}
@@ -149,8 +142,8 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                             </Box>
 
                             <Typography sx={{ strong: { color: colors.neonBlue } }}>
-                                Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle
-                                queue? Your will be refunded the initial queuing fee.
+                                Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle queue? Your will be refunded the initial
+                                queuing fee.
                             </Typography>
 
                             <Button
@@ -183,7 +176,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
 
                             {error && (
                                 <Typography
-                                    variant="caption"
+                                    variant="body2"
                                     sx={{
                                         mt: ".3rem",
                                         color: "red",
@@ -195,11 +188,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                         </Stack>
                     </Stack>
 
-                    <IconButton
-                        size="small"
-                        onClick={onClose}
-                        sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}
-                    >
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
                         <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>

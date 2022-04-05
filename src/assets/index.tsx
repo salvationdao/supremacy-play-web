@@ -19,12 +19,17 @@ import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
+import Announcement from "!react-svg-loader!./svg/Announcement.svg"
 import Hourglass from "!react-svg-loader!./svg/Hourglass.svg"
 import Location from "!react-svg-loader!./svg/Location.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Success from "!react-svg-loader!./svg/Success.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
+import General from "!react-svg-loader!./svg/Ranks/General.svg"
+import Corporal from "!react-svg-loader!./svg/Ranks/Corporal.svg"
+import Private from "!react-svg-loader!./svg/Ranks/Private.svg"
+import NewRecruit from "!react-svg-loader!./svg/Ranks/NewRecruit.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import History from "!react-svg-loader!./svg/History.svg"
 import QuestionMark from "!react-svg-loader!./svg/QuestionMark.svg"
@@ -657,5 +662,35 @@ export const SvgClose2: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgWarningIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <WarningIcon />
+    </SvgWrapper>
+)
+
+export const SvgAnnouncement: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Announcement />
+    </SvgWrapper>
+)
+
+export const SvgGeneral: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <General />
+    </SvgWrapper>
+)
+
+export const SvgCorporal: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Corporal />
+    </SvgWrapper>
+)
+
+export const SvgPrivate: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Private />
+    </SvgWrapper>
+)
+
+export const SvgNewRecruit: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <NewRecruit />
     </SvgWrapper>
 )

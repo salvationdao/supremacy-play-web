@@ -3,13 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { BarExpandable, BuySupsButton, SupsTooltipContent } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
 import { NullUUID } from "../../../constants"
-import {
-    useGame,
-    useGameServerAuth,
-    useGameServerWebsocket,
-    usePassportServerAuth,
-    useWallet,
-} from "../../../containers"
+import { useGame, useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, useWallet } from "../../../containers"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
 import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
@@ -25,12 +19,8 @@ export const WalletDetails = () => {
     const { onWorldSupsRaw } = useWallet()
     const [multipliers, setMultipliers] = useState<MultipliersAll>()
     const [transactions, setTransactions] = useState<Transaction[]>([])
-    const { payload: transactionsPayload } = usePassportServerSecureSubscription<Transaction[]>(
-        PassportServerKeys.SubscribeUserTransactions,
-    )
-    const { payload: latestTransactionPayload } = usePassportServerSecureSubscription<Transaction[]>(
-        PassportServerKeys.SubscribeUserLatestTransactions,
-    )
+    const { payload: transactionsPayload } = usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserTransactions)
+    const { payload: latestTransactionPayload } = usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions)
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
@@ -204,8 +194,7 @@ export const WalletDetails = () => {
                     ".MuiPaper-root": {
                         mt: ".8rem",
                         background: "none",
-                        backgroundColor:
-                            user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                        backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
                         border: "#FFFFFF50 1px solid",
                     },
                 }}

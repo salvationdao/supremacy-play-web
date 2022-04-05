@@ -1,39 +1,23 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useLayoutEffect, useRef, useState } from "react"
-import { ChatMessage } from "../.."
+import { PunishMessage, TextMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
-import {
-    FontSizeType,
-    SplitOptionType,
-    useChat,
-    usePassportServerAuth,
-    UserIDMap,
-    UserMultiplierMap,
-} from "../../../containers"
+import { FactionsAll, FontSizeType, SplitOptionType, useChat, useGame, useGameServerAuth } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { ChatData } from "../../../types/passport"
+import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../types/chat"
+import { BanProposal } from "../BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 
 interface ChatMessagesProps {
     primaryColor: string
     secondaryColor: string
-    chatMessages: ChatData[]
+    chatMessages: ChatMessageType[]
     faction_id: string | null
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
-    const {
-        filterZerosGlobal,
-        filterZerosFaction,
-        sentMessages,
-        failedMessages,
-        userMultiplierMap,
-        citizenPlayerIDs,
-        splitOption,
-        fontSize,
-        userStatMap,
-        globalAnnouncement,
-    } = useChat()
+    const { filterZerosGlobal, filterZerosFaction, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
+    const { factionsAll } = useGame()
 
     return (
         <ChatMessagesInner
@@ -41,13 +25,11 @@ export const ChatMessages = (props: ChatMessagesProps) => {
             filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
             sentMessages={sentMessages}
             failedMessages={failedMessages}
-            userMultiplierMap={userMultiplierMap}
-            citizenPlayerIDs={citizenPlayerIDs}
             faction_id={props.faction_id}
             splitOption={splitOption}
             fontSize={fontSize}
-            userStatMap={userStatMap}
             globalAnnouncement={globalAnnouncement}
+            factionsAll={factionsAll}
         />
     )
 }
@@ -56,12 +38,10 @@ interface ChatMessagesInnerProps extends ChatMessagesProps {
     filterZeros?: boolean
     sentMessages: Date[]
     failedMessages: Date[]
-    userMultiplierMap: UserMultiplierMap
-    citizenPlayerIDs: string[]
     splitOption: SplitOptionType
     fontSize: FontSizeType
-    userStatMap: UserIDMap
     globalAnnouncement?: GlobalAnnouncementType
+    factionsAll: FactionsAll
 }
 
 const ChatMessagesInner = ({
@@ -71,15 +51,13 @@ const ChatMessagesInner = ({
     filterZeros,
     sentMessages,
     failedMessages,
-    userMultiplierMap,
-    citizenPlayerIDs,
     faction_id,
     splitOption,
     fontSize,
-    userStatMap,
     globalAnnouncement,
+    factionsAll,
 }: ChatMessagesInnerProps) => {
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
     const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
 
@@ -117,6 +95,8 @@ const ChatMessagesInner = ({
                 <GlobalAnnouncement globalAnnouncement={globalAnnouncement} />
             )}
 
+            {faction_id != null && <BanProposal />}
+
             <Box
                 id="chat-container"
                 ref={scrollableRef}
@@ -124,7 +104,7 @@ const ChatMessagesInner = ({
                 sx={{
                     flex: 1,
                     position: "relative",
-                    my: ".8rem",
+                    my: ".6rem",
                     mr: ".64rem",
                     pl: "1.52rem",
                     pr: "1.6rem",
@@ -148,19 +128,39 @@ const ChatMessagesInner = ({
             >
                 <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
                     {chatMessages && chatMessages.length > 0 ? (
-                        chatMessages.map((c) => (
-                            <ChatMessage
-                                key={`${c.from_username} - ${c.sent_at.toISOString()}`}
-                                chat={c}
-                                filterZeros={filterZeros}
-                                isSent={c.from_user_id != user?.id ? true : sentMessages.includes(c.sent_at)}
-                                isFailed={c.from_user_id != user?.id ? false : failedMessages.includes(c.sent_at)}
-                                multiplierValue={userMultiplierMap[c.from_user_id]}
-                                isCitizen={citizenPlayerIDs.some((cp) => cp === c.from_user_id)}
-                                fontSize={fontSize}
-                                userStat={userStatMap[c.from_user_id]}
-                            />
-                        ))
+                        chatMessages.map((message) => {
+                            if (message.type == "PUNISH_VOTE") {
+                                const data = message.data as PunishMessageData
+                                return (
+                                    <PunishMessage
+                                        key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
+                                        data={data}
+                                        sentAt={message.sent_at}
+                                        fontSize={fontSize}
+                                        factionsAll={factionsAll}
+                                    />
+                                )
+                            }
+
+                            if (message.type == "TEXT") {
+                                const data = message.data as TextMessageData
+                                return (
+                                    <TextMessage
+                                        key={`${data.from_user.id} - ${message.sent_at.toISOString()}`}
+                                        data={data}
+                                        sentAt={message.sent_at}
+                                        fontSize={fontSize}
+                                        filterZeros={filterZeros}
+                                        isSent={data.from_user.id != user?.id ? true : sentMessages.includes(message.sent_at)}
+                                        isFailed={data.from_user.id != user?.id ? false : failedMessages.includes(message.sent_at)}
+                                        factionsAll={factionsAll}
+                                        user={user}
+                                    />
+                                )
+                            }
+
+                            return null
+                        })
                     ) : (
                         <Typography
                             sx={{

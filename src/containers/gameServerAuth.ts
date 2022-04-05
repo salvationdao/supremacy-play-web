@@ -3,8 +3,8 @@ import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
-import { UpdateTheme, User } from "../types"
-import { UserStat } from "../types/passport"
+import { UpdateTheme, User, UserRank, UserStat } from "../types"
+import { PunishListItem } from "../types/chat"
 
 export interface AuthContainerType {
     user: User | undefined
@@ -13,6 +13,8 @@ export interface AuthContainerType {
     authSessionIDGetLoading: boolean
     authSessionIDGetError: undefined
     userStat: UserStat
+    userRank?: UserRank
+    punishments?: PunishListItem[]
 }
 
 /**
@@ -25,6 +27,8 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useGameServerWebsocket()
     const [user, setUser] = useState<User>()
+    const [userRank, setUserRank] = useState<UserRank>()
+    const [punishments, setPunishments] = useState<PunishListItem[]>()
     const userID = user?.id
     const activeInterval = useRef<NodeJS.Timer>()
 
@@ -72,15 +76,13 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
-        if (!subscribe || state !== WebSocket.OPEN || !userID || !window.localStorage.getItem("ring_check_token"))
-            return
+        if (!subscribe || state !== WebSocket.OPEN || !userID || !window.localStorage.getItem("ring_check_token")) return
         return subscribe<User>(
             GameServerKeys.UserSubscribe,
             (u) => {
                 if (u) {
-                    const betterU = buildUserStruct(u)
-                    setUser(betterU)
-                    if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)
+                    setUser(u)
+                    if (u?.faction?.theme) updateTheme(u.faction.theme)
                 }
             },
             { id: userID },
@@ -93,9 +95,8 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             GameServerKeys.RingCheck,
             (u) => {
                 if (u) {
-                    const betterU = buildUserStruct(u)
-                    setUser(betterU)
-                    if (betterU?.faction?.theme) updateTheme(betterU.faction.theme)
+                    setUser(u)
+                    if (u?.faction?.theme) updateTheme(u.faction.theme)
                 }
             },
             null,
@@ -103,26 +104,8 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         )
     }, [state, subscribe])
 
-    // Temporary
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    const buildUserStruct = useCallback((u: any) => {
-        return {
-            ...u,
-            faction_id: u.faction_id !== "00000000-0000-0000-0000-000000000000" ? u.faction_id : null,
-            faction: u.faction
-                ? {
-                      theme: {
-                          primary: u.faction.theme.primary,
-                          secondary: u.faction.theme.secondary,
-                          background: u.faction.theme.background,
-                      },
-                  }
-                : null,
-        }
-    }, [])
-
     useEffect(() => {
-        if (state !== WebSocket.OPEN || user || gameserverSessionID) return
+        if (state !== WebSocket.OPEN || !send || user || gameserverSessionID) return
         ;(async () => {
             try {
                 setAuthSessionIDGetLoading(true)
@@ -150,13 +133,65 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         setUser(undefined)
     }, [state])
 
+    // Listen on user ranking
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (state !== WebSocket.OPEN || !subscribe || !user) return
+                const resp = await send<UserRank, null>(GameServerKeys.PlayerRank)
+
+                if (resp) {
+                    setUserRank(resp)
+                    return subscribe<UserRank>(
+                        GameServerKeys.PlayerRank,
+                        (payload) => {
+                            if (!payload) return
+                            setUserRank(payload)
+                        },
+                        null,
+                        true,
+                    )
+                }
+            } catch (e) {
+                console.log("aaa")
+            }
+        })()
+    }, [state, subscribe, user])
+
+    // Listen on user punishments
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (state !== WebSocket.OPEN || !subscribe || !user) return
+                const resp = await send<PunishListItem[], null>(GameServerKeys.ListPunishments)
+
+                if (resp) {
+                    setPunishments(resp)
+                    return subscribe<PunishListItem[]>(
+                        GameServerKeys.ListPunishments,
+                        (payload) => {
+                            if (!payload) return
+                            setPunishments(payload)
+                        },
+                        null,
+                        true,
+                    )
+                }
+            } catch (e) {
+                console.log("aaa")
+            }
+        })()
+    }, [state, subscribe, user])
+
     return {
         user,
+        userRank,
         userID: user?.id,
         faction_id: user?.faction_id,
         authSessionIDGetLoading,
         authSessionIDGetError,
         userStat,
+        punishments,
     }
 })
 

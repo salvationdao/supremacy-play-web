@@ -6,6 +6,8 @@ export enum GameServerKeys {
     AuthJWTCheck = "AUTH:JWT:CHECK",
     RingCheck = "RING:CHECK",
     ToggleGojiBerryTea = "GOJI:BERRY:TEA",
+    PlayerRank = "PLAYER:RANK:GET",
+    ListPunishments = "PLAYER:PUNISHMENT:LIST",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
@@ -46,6 +48,13 @@ export enum GameServerKeys {
     AssetQueueStatusList = "ASSET:QUEUE:STATUS:LIST",
     SubAssetQueueStatus = "ASSET:QUEUE:STATUS:SUBSCRIBE",
 
+    // Chat
+    SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
+    SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
+    SendChatMessage = "CHAT:MESSAGE",
+    ChatPastMessages = "CHAT:PAST_MESSAGES",
+    SubscribeChatUserStats = "PLAYER:USER:STAT:CHAT:SUBSCRIBE",
+
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
     BattleMechStats = "BATTLE:MECH:STATS",
 
@@ -62,7 +71,14 @@ export enum GameServerKeys {
 
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
     GetSettings = "PLAYER:GET_SETTINGS",
-    SubscribeChatUserStats = "PLAYER:USER:STAT:CHAT:SUBSCRIBE",
+
+    // Ban system
+    GetBanOptions = "PUNISH:OPTIONS",
+    GetPlayerList = "FACTION:PLAYER:SEARCH",
+    GetBanPlayerCost = "PUNISH:VOTE:PRICE:QUOTE",
+    SubmitBanProposal = "ISSUE:PUNISH:VOTE",
+    SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
+    SubmitBanVote = "PUNISH:VOTE",
 
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
@@ -82,12 +98,6 @@ export enum PassportServerKeys {
     SubscribeWallet = "USER:SUPS:SUBSCRIBE",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
     SubscribeFactionStat = "FACTION:STAT:SUBSCRIBE",
-
-    // Chat
-    SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
-    SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
-    SendChatMessage = "CHAT:MESSAGE",
-    ChatPastMessages = "CHAT:PAST_MESSAGES",
 
     // Assets
     SubAssetList = "USER:ASSET:LIST",

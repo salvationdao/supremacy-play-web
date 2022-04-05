@@ -25,10 +25,8 @@ export const TopIconSettings = ({
     return (
         <Box
             sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
+                position: "relative",
+                width: "100%",
                 height: "2.4rem",
                 backgroundColor: shadeColor(mainColor, -86),
                 boxShadow: 2,
@@ -71,7 +69,7 @@ export const TopIconSettings = ({
                     left: enlarged ? "5.6rem" : "7.6rem",
                     top: 7.2,
                     fontSize: "1rem",
-                    fontFamily: "Nostromo Regular Bold",
+                    fontFamily: "Nostromo Regular Black",
                     lineHeight: 1,
                     opacity: 0.8,
                 }}

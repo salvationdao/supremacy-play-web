@@ -18,9 +18,14 @@ import {
     MultiplierSupporter,
     MultiplierWonBattle,
     MultiplierWonLastThreeBattles,
+    SvgGeneral,
+    SvgPrivate,
+    SvgCorporal,
+    SvgNewRecruit,
+    SvgWrapperProps,
 } from "../assets"
+import { MultiplierGuide, UserRank } from "../types"
 import { colors } from "../theme/theme"
-import { MultiplierGuide } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -104,9 +109,7 @@ export const supFormatter = (num: string, fixedAmount: number | undefined = 0): 
     if (supTokens.isZero()) return supTokens.toFixed(fixedAmount)
 
     const a = !fixedAmount || fixedAmount == 0 ? 1 : fixedAmount * 10
-    return (Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber() * a) / a).toFixed(
-        fixedAmount,
-    )
+    return (Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber() * a) / a).toFixed(fixedAmount)
 }
 export const supFormatterNoFixed = (num: string, maxDecimals?: number): string => {
     const supTokens = new BigNumber(num).shiftedBy(-18)
@@ -141,9 +144,7 @@ export const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: numb
     const R = 6371 // Radius of the earth in km
     const dLat = deg2rad(lat2 - lat1) // deg2rad below
     const dLon = deg2rad(lon2 - lon1)
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     const d = R * c // Distance in km
     return d
@@ -423,6 +424,44 @@ export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
     return `${hours}:${minutes2} ${suffix}`
 }
 
+export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
+    const result = str.split("_").join(" ")
+    if (lowerCase) return result
+    return Capitalize(result)
+}
+
+export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: SvgWrapperProps; title: string; desc: string } => {
+    let icon = null
+    let title = ""
+    let desc = ""
+
+    switch (rank.toUpperCase()) {
+        case "PRIVATE":
+            icon = <SvgPrivate width={width} height={height} />
+            title = "PRIVATE"
+            desc = "User has joined Supremacy for more than 24 hours and has sent at least 1 chat message."
+            break
+        case "CORPORAL":
+            icon = <SvgCorporal width={width} height={height} />
+            title = "CORPORAL"
+            desc = 'User has achieved "Private" and has least at 1 ability kill.'
+            break
+        case "GENERAL":
+            icon = <SvgGeneral width={width} height={height} />
+            title = "GENERAL"
+            desc = 'User has achieved "Corporal" and contributed top 20% of ability kills for their Syndicate.'
+            break
+        case "NEW_RECRUIT":
+        default:
+            icon = <SvgNewRecruit width={width} height={height} />
+            title = "NEW RECRUIT"
+            desc = "User has joined Supremacy less than 24 hours ago."
+            break
+    }
+
+    return { icon, title, desc }
+}
+
 export const timeSince = (date: Date) => {
     const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
 
@@ -449,8 +488,6 @@ export const timeSince = (date: Date) => {
     }
     return Math.floor(seconds) + " seconds"
 }
-
-export const snakeToTitle = (str: string): string => Capitalize(str.split("_").join(" "))
 
 export const camelToTitle = (str: string) => {
     const result = str.replace(/([A-Z])/g, " $1")

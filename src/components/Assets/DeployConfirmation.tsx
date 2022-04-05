@@ -5,12 +5,7 @@ import QRCode from "react-qr-code"
 import { ClipThing, TooltipHelper } from ".."
 import { SvgClose, SvgContentCopyIcon, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB, TELEGRAM_BOT_URL } from "../../constants"
-import {
-    useGameServerWebsocket,
-    usePassportServerAuth,
-    usePassportServerWebsocket,
-    useSnackbar,
-} from "../../containers"
+import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
@@ -94,10 +89,7 @@ export const DeployConfirmation = ({
     const [saveSettings, setSaveSettings] = useState(false)
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
-    const notificationsOn =
-        currentSettings.push_notifications ||
-        currentSettings.sms_notifications ||
-        currentSettings.telegram_notifications
+    const notificationsOn = currentSettings.push_notifications || currentSettings.sms_notifications || currentSettings.telegram_notifications
     const settingsMatch =
         currentSettings.push_notifications === dbSettings?.push_notifications &&
         currentSettings.sms_notifications === dbSettings.sms_notifications &&
@@ -118,10 +110,7 @@ export const DeployConfirmation = ({
                 setDbSettings(resp)
                 setCurrentSettings(resp)
             } catch (err) {
-                newSnackbarMessage(
-                    typeof err === "string" ? err : "Issue getting settings, try again or contact support.",
-                    "error",
-                )
+                newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
             }
         })()
     }, [user, send])
@@ -148,9 +137,7 @@ export const DeployConfirmation = ({
                     id: user.id,
                     mobile_number: mobile,
                 })
-                saveMobileNum
-                    ? newSnackbarMessage("Updated mobile number", "success")
-                    : newSnackbarMessage("Issue updating mobile number.", "warning")
+                saveMobileNum ? newSnackbarMessage("Updated mobile number", "success") : newSnackbarMessage("Issue updating mobile number.", "warning")
             }
 
             // if saveSettings is true, send an updated settings
@@ -162,10 +149,7 @@ export const DeployConfirmation = ({
                         setDbSettings(resp)
                         setCurrentSettings(resp)
                     } catch (err) {
-                        newSnackbarMessage(
-                            typeof err === "string" ? err : "Issue getting settings, try again or contact support.",
-                            "error",
-                        )
+                        newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
                     }
                 })()
             }
@@ -284,21 +268,14 @@ export const DeployConfirmation = ({
 
                                 {user && (
                                     <span>
-                                        <Link
-                                            href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                                            target="_blank"
-                                            sx={{ ml: ".48rem" }}
-                                        >
-                                            <SvgExternalLink
-                                                size="1rem"
-                                                sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}
-                                            />
+                                        <Link href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`} target="_blank" sx={{ ml: ".48rem" }}>
+                                            <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
                                         </Link>
                                     </span>
                                 )}
                             </Typography>
 
-                            <Stack spacing=".1rem">
+                            <Stack spacing=".2rem">
                                 {queueLength >= 0 && (
                                     <AmountItem
                                         key={`${queueLength}-queue_length`}
@@ -326,7 +303,7 @@ export const DeployConfirmation = ({
                                 />
                             </Stack>
 
-                            <Stack spacing=".1rem">
+                            <Stack>
                                 <Stack direction="row" alignItems="center">
                                     <Typography
                                         sx={{
@@ -355,22 +332,18 @@ export const DeployConfirmation = ({
                                         text={
                                             <>
                                                 Insurance costs&nbsp;
-                                                <span style={{ textDecoration: "line-through" }}>10%</span> of the
-                                                contract reward but allows your damaged war machine to be repair much
-                                                faster so it can be ready for the next battle much sooner.
+                                                <span style={{ textDecoration: "line-through" }}>10%</span> of the contract reward but allows your damaged war
+                                                machine to be repair much faster so it can be ready for the next battle much sooner.
                                             </>
                                         }
                                     >
                                         <Box sx={{ ml: "auto" }}>
-                                            <SvgInfoCircular
-                                                size="1.2rem"
-                                                sx={{ opacity: 0.4, ":hover": { opacity: 1 } }}
-                                            />
+                                            <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
                                         </Box>
                                     </TooltipHelper>
                                 </Stack>
 
-                                <Stack direction="row" alignItems="center" sx={{}}>
+                                <Stack direction="row" alignItems="center">
                                     <Typography
                                         sx={{
                                             pt: ".08rem",
@@ -405,11 +378,9 @@ export const DeployConfirmation = ({
                                         placement="right-start"
                                         text={
                                             <>
-                                                Enabling notifications will add&nbsp;<strong>10%</strong> to the queue
-                                                cost. We will notify you via your chosen notification preference when
-                                                your war machine is within the top 10 in queue. The notification fee{" "}
-                                                <strong>will not</strong> be refunded if your war marchine exits the
-                                                queue.
+                                                Enabling notifications will add&nbsp;<strong>10%</strong> to the queue cost. We will notify you via your chosen
+                                                notification preference when your war machine is within the top 10 in queue. The notification fee{" "}
+                                                <strong>will not</strong> be refunded if your war marchine exits the queue.
                                             </>
                                         }
                                     >
@@ -426,8 +397,9 @@ export const DeployConfirmation = ({
                                         </Box>
                                     </TooltipHelper>
                                 </Stack>
+
                                 <Box>
-                                    <Stack direction="row" alignItems="center" sx={{ mt: "-0.55rem" }}>
+                                    <Stack direction="row" alignItems="center">
                                         <Typography
                                             sx={{
                                                 pt: ".08rem",
@@ -462,11 +434,9 @@ export const DeployConfirmation = ({
                                             placement="right-start"
                                             text={
                                                 <>
-                                                    Enabling notifications will add&nbsp;<strong>10%</strong> to the
-                                                    queue fee. We will notify you via your chosen notification
-                                                    preference when your war machine is within top 10 in queue. The
-                                                    notification fee <strong>will not</strong> be refunded if your war
-                                                    marchine exits the queue.
+                                                    Enabling notifications will add&nbsp;<strong>10%</strong> to the queue fee. We will notify you via your
+                                                    chosen notification preference when your war machine is within top 10 in queue. The notification fee{" "}
+                                                    <strong>will not</strong> be refunded if your war marchine exits the queue.
                                                 </>
                                             }
                                         >
@@ -586,11 +556,7 @@ export const DeployConfirmation = ({
                         </Stack>
                     </Stack>
 
-                    <IconButton
-                        size="small"
-                        onClick={onClose}
-                        sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}
-                    >
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
                         <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
@@ -598,20 +564,11 @@ export const DeployConfirmation = ({
         </Modal>
     )
 }
-export const TelegramShortcodeModal = ({
-    open,
-    onClose,
-    code,
-}: {
-    open: boolean
-    onClose: () => void
-    code: string
-}) => {
+
+export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean; onClose: () => void; code: string }) => {
     const { state, subscribe } = useGameServerWebsocket()
     const [copySuccess, toggleCopySuccess] = useToggle()
-    const [userTelegramShortcodeRegistered, setUserTelegramShortcodeRegistered] = useState<boolean | undefined>(
-        undefined,
-    )
+    const [userTelegramShortcodeRegistered, setUserTelegramShortcodeRegistered] = useState<boolean | undefined>(undefined)
 
     // copy shortcode
     useEffect(() => {
@@ -834,9 +791,7 @@ export const TelegramShortcodeModal = ({
                                         </a>
                                     </Box>
                                     <Box>
-                                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>
-                                            Or Scan QR code:
-                                        </Typography>
+                                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Or Scan QR code:</Typography>
                                     </Box>
 
                                     <Box style={{ textAlign: "center", marginBottom: "1rem" }}>
@@ -885,12 +840,7 @@ export const TelegramShortcodeModal = ({
                                             }}
                                         >
                                             4) Enter Shortcode:{" "}
-                                            <Typography
-                                                marginLeft={".5rem"}
-                                                marginRight={".5rem"}
-                                                marginTop={"-.5rem"}
-                                                fontSize={"2rem"}
-                                            >
+                                            <Typography marginLeft={".5rem"} marginRight={".5rem"} marginTop={"-.5rem"} fontSize={"2rem"}>
                                                 {code}
                                             </Typography>
                                         </Typography>

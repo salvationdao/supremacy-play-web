@@ -4,14 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import { SvgSupToken } from "../../assets"
 import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
-import {
-    BribeStageResponse,
-    httpProtocol,
-    useGame,
-    useGameServerAuth,
-    useGameServerWebsocket,
-    WebSocketProperties
-} from "../../containers"
+import { BribeStageResponse, httpProtocol, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
@@ -38,9 +31,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const { label, colour, text_colour, image_url, identity, description } = gameAbility
 
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
-    const [currentSups, setCurrentSups] = useState(
-        new BigNumber(gameAbility.current_sups).dividedBy("1000000000000000000"),
-    )
+    const [currentSups, setCurrentSups] = useState(new BigNumber(gameAbility.current_sups).dividedBy("1000000000000000000"))
     const [supsCost, setSupsCost] = useState(new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"))
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
         abilityMaxPrice || new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"),
@@ -48,7 +39,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
 
     const progressPayload = useRef<GameAbilityProgress>()
 
-    // Triggered faction ability or war machine ability price ticking
+    // DO NOT REMOVE THIS! Triggered faction ability or war machine ability price ticking
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe(GameServerKeys.TriggerFactionAbilityPriceUpdated, () => null, { ability_identity: identity })
@@ -170,19 +161,8 @@ export const FactionAbilityItemInner = ({
                                 pb: "1.28rem",
                             }}
                         >
-                            <Stack
-                                spacing="2.4rem"
-                                direction="row"
-                                alignItems="center"
-                                justifyContent="space-between"
-                                alignSelf="stretch"
-                            >
-                                <TopText
-                                    description={description}
-                                    image_url={image_url}
-                                    colour={colour}
-                                    label={label}
-                                />
+                            <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
+                                <TopText description={description} image_url={image_url} colour={colour} label={label} />
 
                                 <SupsStackBar currentSups={currentSups} colour={colour} supsCost={supsCost} />
                             </Stack>
@@ -205,12 +185,7 @@ export const FactionAbilityItemInner = ({
                                 />
                             </Box>
 
-                            <VotingButtons
-                                colour={colour}
-                                isVoting={isVoting}
-                                text_colour={text_colour}
-                                onContribute={onContribute}
-                            />
+                            <VotingButtons colour={colour} isVoting={isVoting} text_colour={text_colour} onContribute={onContribute} />
                         </Stack>
                     </ClipThing>
                 </Box>
@@ -340,6 +315,4 @@ const VotingButtons = ({ colour, text_colour, isVoting, onContribute }: VotingBu
     </Stack>
 )
 
-const SupsToken = ({ text_colour }: { text_colour: string }) => (
-    <SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />
-)
+const SupsToken = ({ text_colour }: { text_colour: string }) => <SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />

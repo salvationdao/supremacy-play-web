@@ -12,7 +12,10 @@ export interface User {
     faction_id: string
     faction: Faction
     sups: number
+    gid: number
 }
+
+export type UserRank = "NEW_RECRUIT" | "PRIVATE" | "CORPORAL" | "GENERAL"
 
 export interface FactionThemeColor {
     primary: string
@@ -256,4 +259,12 @@ export interface MultiplierGuide {
 export interface Dimension {
     width: number
     height: number
+}
+
+export interface UserStat {
+    id: string
+    view_battle_count: number
+    total_ability_triggered: number
+    kill_count: number
+    mech_kill_count: number
 }

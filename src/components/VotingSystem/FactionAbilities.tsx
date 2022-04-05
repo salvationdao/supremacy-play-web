@@ -19,11 +19,7 @@ export const FactionAbilities = () => {
     // Subscribe to faction ability updates
     useEffect(() => {
         if (state !== WebSocket.OPEN || !faction_id || faction_id === NullUUID) return
-        return subscribe<GameAbility[] | undefined>(
-            GameServerKeys.SubFactionUniqueAbilities,
-            (payload) => setGameAbilities(payload),
-            null,
-        )
+        return subscribe<GameAbility[] | undefined>(GameServerKeys.SubFactionUniqueAbilities, (payload) => setGameAbilities(payload), null)
     }, [subscribe, state, faction_id])
 
     if (!gameAbilities || gameAbilities.length <= 0) return null
@@ -39,9 +35,9 @@ export const FactionAbilities = () => {
                                 sx={{
                                     width: "1.9rem",
                                     height: "1.9rem",
-                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
-                                        factionsAll[user.faction_id].logo_blob_id
-                                    })`,
+                                    backgroundImage: factionsAll[user.faction_id]
+                                        ? `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction_id].logo_blob_id})`
+                                        : "",
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
@@ -49,9 +45,7 @@ export const FactionAbilities = () => {
                                 }}
                             />
                         )}
-                        <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>
-                            SYNDICATE UNIQUE SKILLS
-                        </Typography>
+                        <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>SYNDICATE UNIQUE SKILLS</Typography>
                     </Stack>
 
                     <Stack spacing="1.04rem">

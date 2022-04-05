@@ -26,8 +26,6 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
     const [sessionIDError, setSessionIDError] = useState()
 
     const [authRingCheckError, setAuthRingCheckError] = useState()
-    const [authRingCheckLoading, setAuthRingCheckLoading] = useState(true)
-    const [authRingCheckSuccess, setAuthRingCheckSuccess] = useState(false)
 
     useEffect(() => {
         if (user && initialState && initialState.setLogin) initialState.setLogin(user)
@@ -43,10 +41,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
                 setSessionID(resp)
                 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             } catch (e: any) {
-                newSnackbarMessage(
-                    typeof e === "string" ? e : "Failed to get session ID from passport server.",
-                    "error",
-                )
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to get session ID from passport server.", "error")
                 console.debug(e)
                 setSessionIDError(e)
             } finally {
@@ -67,30 +62,9 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
         )
     }, [state, sessionID, subscribe])
 
-    // upgrade user if gamebar is embedded in twitch ui
-    useEffect(() => {
-        if (!gameserverSessionID || state !== WebSocket.OPEN || !userID) return
-        ;(async () => {
-            try {
-                setAuthRingCheckLoading(true)
-                await send(PassportServerKeys.AuthRingCheck, { gameserver_session_id: gameserverSessionID })
-                setAuthRingCheckSuccess(true)
-                // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-            } catch (e: any) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to complete passport ring check.", "error")
-                console.debug(e)
-                setAuthRingCheckError(e)
-                setAuthRingCheckSuccess(false)
-                setUser(undefined)
-            } finally {
-                setAuthRingCheckLoading(false)
-            }
-        })()
-    }, [userID, send, state, gameserverSessionID])
-
     // start to subscribe user update
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID || !authRingCheckSuccess) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<UserData>(
             PassportServerKeys.SubscribeUser,
             (u) => {
@@ -98,7 +72,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
             },
             { id: userID },
         )
-    }, [userID, subscribe, state, authRingCheckSuccess])
+    }, [userID, subscribe, state])
 
     return {
         user,
@@ -109,8 +83,6 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
         sessionID,
         sessionIDLoading,
         sessionIDError,
-        authRingCheckSuccess,
-        authRingCheckLoading,
         authRingCheckError,
         setAuthRingCheckError,
     }

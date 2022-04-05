@@ -1,32 +1,15 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "."
+import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { GlobalAnnouncementType } from "../components/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
-import { GameServerKeys, PassportServerKeys } from "../keys"
-import { ChatData, UserStat } from "../types/passport"
+import { GameServerKeys } from "../keys"
+import { ChatMessageType, TextMessageData } from "../types/chat"
+import { UserStat } from "../types"
 
-export interface UserMultiplier {
-    player_id: string
-    total_multiplier: string
-}
-
-export interface UserMultiplierMap {
-    [player_id: string]: string
-}
-
-export interface UserIDMap {
-    [player_id: string]: UserStat
-}
-
-export interface UserMultiplierResponse {
-    multipliers: UserMultiplier[]
-    citizen_player_ids: string[]
-}
-
-export interface SentChatMessageData {
+interface SentChatMessageData {
     global: Date[]
     faction: Date[]
 }
@@ -38,26 +21,17 @@ export type FontSizeType = 0.8 | 1 | 1.35
 export const ChatContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
     const { user } = usePassportServerAuth()
-    const { state, subscribe, send } = usePassportServerWebsocket()
-    const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
+    const { state, send, subscribe } = useGameServerWebsocket()
 
     // Tabs: 0 is global chat, 1 is faction chat
     const [tabValue, setTabValue] = useState(0)
 
     // Chat settings
-    const [splitOption, setSplitOption] = useState<SplitOptionType>(
-        (localStorage.getItem("chatSplitOption") as SplitOptionType) || "tabbed",
-    )
-    const [filterZerosGlobal, toggleFilterZerosGlobal] = useToggle(
-        localStorage.getItem("chatFilterZerosGlobal") == "true",
-    )
-    const [filterZerosFaction, toggleFilterZerosFaction] = useToggle(
-        localStorage.getItem("chatFilterZerosFaction") == "true",
-    )
+    const [splitOption, setSplitOption] = useState<SplitOptionType>((localStorage.getItem("chatSplitOption") as SplitOptionType) || "tabbed")
+    const [filterZerosGlobal, toggleFilterZerosGlobal] = useToggle(localStorage.getItem("chatFilterZerosGlobal") == "true")
+    const [filterZerosFaction, toggleFilterZerosFaction] = useToggle(localStorage.getItem("chatFilterZerosFaction") == "true")
 
-    const [fontSize, setFontSize] = useState<FontSizeType>(
-        parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType,
-    )
+    const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType)
 
     // Global announcement message
     const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()
@@ -65,13 +39,15 @@ export const ChatContainer = createContainer(() => {
     // Chat states
     const [initialSentDate, setInitialSentDate] = useState<SentChatMessageData>({ global: [], faction: [] })
     const [initialMessageColor, setInitialMessageColor] = useState<string>()
-    const [globalChatMessages, setGlobalChatMessages] = useState<ChatData[]>([])
-    const [factionChatMessages, setFactionChatMessages] = useState<ChatData[]>([])
+    const [globalChatMessages, setGlobalChatMessages] = useState<ChatMessageType[]>([])
+    const [factionChatMessages, setFactionChatMessages] = useState<ChatMessageType[]>([])
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
-    const [userMultiplierMap, setUserMultiplierMap] = useState<UserMultiplierMap>({})
-    const [citizenPlayerIDs, setCitizenPlayerIDs] = useState<string[]>([])
-    const [userStatMap, setUserStatMap] = useState<UserIDMap>({})
+    const userStats = useRef<{
+        total_multiplier?: number
+        is_citizen?: boolean
+        from_user_stat?: UserStat
+    }>()
 
     // Store list of messages that were successfully sent or failed
     const [sentMessages, setSentMessages] = useState<Date[]>([])
@@ -108,7 +84,7 @@ export const ChatContainer = createContainer(() => {
     )
 
     const newMessageHandler = useCallback(
-        (message: ChatData, faction_id: string | null) => {
+        (message: ChatMessageType, faction_id: string | null) => {
             if (faction_id === null) {
                 setGlobalChatMessages((prev) => {
                     // Buffer the messages
@@ -146,7 +122,7 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
         try {
-            send<ChatData[]>(PassportServerKeys.ChatPastMessages).then((resp) => {
+            send<ChatMessageType[]>(GameServerKeys.ChatPastMessages).then((resp) => {
                 setGlobalChatMessages(resp)
                 setInitialSentDate((prev) => ({
                     ...prev,
@@ -163,15 +139,15 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         try {
-            send<ChatData[]>(PassportServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
+            send<ChatMessageType[]>(GameServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
                 setFactionChatMessages(resp)
                 setInitialSentDate((prev) => ({
                     ...prev,
                     faction: resp.map((m) => m.sent_at),
                 }))
-                const selfMessage = resp.find((m) => m.from_user_id === user.id)
+                const selfMessage = resp.filter((m) => m.type == "TEXT").find((m) => (m.data as TextMessageData).from_user.id === user.id)
                 if (selfMessage) {
-                    setInitialMessageColor(selfMessage.message_color)
+                    setInitialMessageColor((selfMessage.data as TextMessageData).message_color)
                 }
             })
         } catch (e) {
@@ -196,54 +172,24 @@ export const ChatContainer = createContainer(() => {
         }
     }, [tabValue, factionChatUnread, splitOption])
 
-    // Subscribe to multiplier map
-    useEffect(() => {
-        if (gsState !== WebSocket.OPEN || !gsSubscribe) return
-        return gsSubscribe<UserMultiplierResponse>(GameServerKeys.SubMultiplierMap, (payload) => {
-            if (!payload) {
-                setUserMultiplierMap({})
-                setCitizenPlayerIDs([])
-                return
-            }
-
-            const um: UserMultiplierMap = {}
-            payload.multipliers.forEach((m) => {
-                um[m.player_id] = m.total_multiplier
-            })
-
-            setUserMultiplierMap(um)
-            setCitizenPlayerIDs(payload.citizen_player_ids)
-        })
-    }, [gsState, gsSubscribe])
-
-    // Subscribe to user stats
-    useEffect(() => {
-        if (gsState !== WebSocket.OPEN || !gsSubscribe) return
-        return gsSubscribe<UserStat[]>(
-            GameServerKeys.SubscribeChatUserStats,
-            (payload: UserStat[]) => {
-                if (!payload) {
-                    setUserStatMap({})
-                    return
-                }
-
-                const um: UserIDMap = {}
-                payload.forEach((m) => {
-                    um[m.id] = m
-                })
-
-                setUserStatMap(um)
-            },
-            null,
-            true,
-        )
-    }, [gsState, gsSubscribe])
+    const saveUserStats = useCallback((data: TextMessageData) => {
+        userStats.current = {
+            total_multiplier: data.total_multiplier,
+            is_citizen: data.is_citizen,
+            from_user_stat: data.from_user_stat,
+        }
+    }, [])
 
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
-        return subscribe<ChatData>(PassportServerKeys.SubscribeGlobalChat, (m) => {
-            if (!m || m.from_user_id === user?.id) return
+        return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
+            if (!m) return
+            if (m.type == "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
+                saveUserStats(m.data as TextMessageData)
+                return
+            }
+
             newMessageHandler(m, null)
             if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
         })
@@ -252,9 +198,14 @@ export const ChatContainer = createContainer(() => {
     // Subscribe to faction chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
-        return subscribe<ChatData>(PassportServerKeys.SubscribeFactionChat, (m) => {
-            if (!m || m.from_user_id === user?.id) return
-            newMessageHandler(m, m.from_user_id)
+        return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
+            if (!m) return
+            if (m.type == "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
+                saveUserStats(m.data as TextMessageData)
+                return
+            }
+
+            newMessageHandler(m, "faction_id")
             if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
         })
     }, [user, state, subscribe, tabValue, factionChatUnread])
@@ -275,16 +226,14 @@ export const ChatContainer = createContainer(() => {
         factionChatMessages,
         factionChatUnread,
         globalChatUnread,
-        userMultiplierMap,
-        citizenPlayerIDs,
         onSentMessage,
         sentMessages: sentMessages.concat(initialSentDate.global, initialSentDate.faction),
         failedMessages,
         onFailedMessage,
         fontSize,
         setFontSize,
-        userStatMap,
         globalAnnouncement,
+        userStats,
     }
 })
 

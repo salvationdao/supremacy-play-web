@@ -327,8 +327,8 @@ const MiniMapInsideInner = ({
             <Stack
                 sx={{
                     position: "relative",
-                    width: "100%",
-                    height: "100%",
+                    width: containerDimensions.width,
+                    height: containerDimensions.height,
                     overflow: "hidden",
                 }}
             >

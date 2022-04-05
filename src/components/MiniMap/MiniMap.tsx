@@ -65,16 +65,7 @@ export const MiniMap = () => {
     )
 }
 
-export const MiniMapInner = ({
-    map,
-    winner,
-    setWinner,
-    bribeStage,
-    isMapOpen,
-    toggleIsMapOpen,
-    factionColor,
-    newSnackbarMessage,
-}: MiniMapProps) => {
+export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: MiniMapProps) => {
     const {
         pxToRemRatio,
         streamDimensions: { width, height },
@@ -109,7 +100,7 @@ export const MiniMapInner = ({
         const ratio = map ? map.height / map.width : 1
         const defaultRes = {
             width: MINI_MAP_DEFAULT_SIZE * adjustment,
-            height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment,
+            height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment + 2.4 * pxToRemRatio,
         }
         const res = { width: dimensions.width, height: dimensions.width * ratio }
         setDefaultDimensions(defaultRes)
@@ -162,10 +153,7 @@ export const MiniMapInner = ({
         }
     }, [timeReachZero, submitted])
 
-    const mainColor = useMemo(
-        () => (isTargeting && winner ? winner.game_ability.colour : factionColor),
-        [isTargeting, winner, theme, factionColor],
-    )
+    const mainColor = useMemo(() => (isTargeting && winner ? winner.game_ability.colour : factionColor), [isTargeting, winner, theme, factionColor])
 
     if (!map) return null
 
@@ -232,23 +220,6 @@ export const MiniMapInner = ({
                                     backgroundColor: colors.darkNavy,
                                 }}
                             >
-                                {isTargeting && winner ? (
-                                    <MiniMapInside
-                                        gameAbility={winner.game_ability}
-                                        containerDimensions={dimensions}
-                                        targeting
-                                        setSubmitted={setSubmitted}
-                                        enlarged={enlarged}
-                                        newSnackbarMessage={newSnackbarMessage}
-                                    />
-                                ) : (
-                                    <MiniMapInside
-                                        containerDimensions={dimensions}
-                                        enlarged={enlarged}
-                                        newSnackbarMessage={newSnackbarMessage}
-                                    />
-                                )}
-
                                 <TopIconSettings
                                     map={map}
                                     enlarged={enlarged}
@@ -257,12 +228,25 @@ export const MiniMapInner = ({
                                     toggleIsMapOpen={toggleIsMapOpen}
                                 />
 
-                                {isTargeting && winner && (
-                                    <TargetTimerCountdown
+                                {isTargeting && winner ? (
+                                    <MiniMapInside
                                         gameAbility={winner.game_ability}
-                                        setTimeReachZero={setTimeReachZero}
-                                        endTime={winner.end_time}
+                                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * pxToRemRatio }}
+                                        targeting
+                                        setSubmitted={setSubmitted}
+                                        enlarged={enlarged}
+                                        newSnackbarMessage={newSnackbarMessage}
                                     />
+                                ) : (
+                                    <MiniMapInside
+                                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * pxToRemRatio }}
+                                        enlarged={enlarged}
+                                        newSnackbarMessage={newSnackbarMessage}
+                                    />
+                                )}
+
+                                {isTargeting && winner && (
+                                    <TargetTimerCountdown gameAbility={winner.game_ability} setTimeReachZero={setTimeReachZero} endTime={winner.end_time} />
                                 )}
                             </Box>
                         </ClipThing>

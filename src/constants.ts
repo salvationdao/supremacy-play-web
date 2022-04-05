@@ -8,8 +8,7 @@ let SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.
 let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003/"
 let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
 let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "http://localhost:8086"
-let VIDEO_SERVER_WEBSOCKET =
-    process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
+let VIDEO_SERVER_WEBSOCKET = process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
 let VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
 
 if (USE_PROD) {
@@ -66,6 +65,7 @@ export const GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS = 2000
 export const NOTIFICATION_TIME = 30000
 export const NOTIFICATION_LINGER = 400
 export const STREAM_ASPECT_RATIO_W_H = 16 / 9
+export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
 
 // Other stuff
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
@@ -74,7 +74,6 @@ export const TRAILER_VIDEO =
 export const TELEGRAM_BOT_URL = "https://t.me/SupremacyNotifyBot"
 
 // Maintenance (ENVAR). The local stroage is a hack to let the team members in
-export const UNDER_MAINTENANCE =
-    process.env.REACT_APP_MAINTENANCE_PAGE == "true" && !localStorage.getItem("NinjaSecrets@!")
+export const UNDER_MAINTENANCE = process.env.REACT_APP_MAINTENANCE_PAGE == "true" && !localStorage.getItem("NinjaSecrets@!")
 
 export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN

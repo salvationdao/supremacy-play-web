@@ -1,19 +1,21 @@
-import { Avatar, Popover, Stack, Typography } from "@mui/material"
+import { Avatar, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { useEffect, useRef } from "react"
-import { BarExpandable, ConnectButton, LogoutButton, NavButton } from "../.."
-import { SvgAssets, SvgProfile, SvgShop } from "../../../assets"
+import { BarExpandable, ConnectButton, LogoutButton, NavButton, PunishmentList } from "../.."
+import { SvgAssets, SvgInfoCircular, SvgProfile, SvgShop } from "../../../assets"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_SERVER_HOST_IMAGES, PASSPORT_WEB } from "../../../constants"
-import { usePassportServerAuth } from "../../../containers"
+import { useGameServerAuth, usePassportServerAuth } from "../../../containers"
 import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 
 export const ProfileCard = () => {
     const { user } = usePassportServerAuth()
+    const { punishments } = useGameServerAuth()
     const [renderConnectButton, toggleRenderConnectButton] = useToggle()
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
+    const [isPunishmentsOpen, toggleIsPunishmentsOpen] = useToggle()
 
     // Don't show the connect button for couple seconds as it tries to do the auto login
     useEffect(() => {
@@ -26,7 +28,7 @@ export const ProfileCard = () => {
         return <ConnectButton renderButton={renderConnectButton} />
     }
 
-    const { username, avatar_id, faction } = user
+    const { username, faction } = user
 
     return (
         <>
@@ -35,13 +37,14 @@ export const ProfileCard = () => {
                 barName={"profile"}
                 iconComponent={
                     <Avatar
-                        src={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : ""}
+                        src={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction.logo_blob_id}` : ""}
                         alt={`${username}'s Avatar`}
                         sx={{
                             height: "2.9rem",
                             width: "2.9rem",
                             borderRadius: 1,
                             border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
+                            backgroundColor: faction ? faction.theme.primary : "transparent",
                         }}
                         variant="square"
                     />
@@ -75,13 +78,14 @@ export const ProfileCard = () => {
                     }}
                 >
                     <Avatar
-                        src={avatar_id ? `${PASSPORT_WEB}api/files/${avatar_id}` : ""}
+                        src={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction.logo_blob_id}` : ""}
                         alt={`${username}'s Avatar`}
                         sx={{
                             height: "2.6rem",
                             width: "2.6rem",
                             borderRadius: 0.8,
                             border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
+                            backgroundColor: faction ? faction.theme.primary : "transparent",
                         }}
                         variant="square"
                     />
@@ -99,6 +103,14 @@ export const ProfileCard = () => {
                     </Typography>
                 </Stack>
             </BarExpandable>
+
+            {punishments && punishments.length > 0 && (
+                <IconButton size="small" onClick={() => toggleIsPunishmentsOpen()}>
+                    <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ pb: ".2rem" }} />
+                </IconButton>
+            )}
+
+            {isPunishmentsOpen && <PunishmentList open={isPunishmentsOpen} onClose={() => toggleIsPunishmentsOpen(false)} punishments={punishments} />}
 
             <Popover
                 open={isPopoverOpen}
@@ -119,29 +131,19 @@ export const ProfileCard = () => {
                     zIndex: 10000,
                     ".MuiPaper-root": {
                         background: "none",
-                        backgroundColor:
-                            user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                        backgroundColor: faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
                         border: "#FFFFFF50 1px solid",
                     },
                 }}
             >
                 <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
-                    <NavButton
-                        href={`${PASSPORT_WEB}collections/${user.username}`}
-                        startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}
-                    >
+                    <NavButton href={`${PASSPORT_WEB}collections/${user.username}`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}>
                         My Inventory
                     </NavButton>
-                    <NavButton
-                        href={`${PASSPORT_WEB}stores`}
-                        startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />}
-                    >
+                    <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />}>
                         Purchase Assets
                     </NavButton>
-                    <NavButton
-                        href={`${PASSPORT_WEB}profile/${user.username}/edit`}
-                        startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}
-                    >
+                    <NavButton href={`${PASSPORT_WEB}profile/${user.username}/edit`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}>
                         Edit Profile
                     </NavButton>
                     <LogoutButton />

@@ -28,13 +28,7 @@ Some examples:
 */
 
 export interface LocationSelectAlertProps {
-    type:
-        | "CANCELLED_NO_PLAYER"
-        | "CANCELLED_DISCONNECT"
-        | "FAILED_TIMEOUT"
-        | "FAILED_DISCONNECTED"
-        | "TRIGGER"
-        | "ASSIGNED"
+    type: "CANCELLED_NO_PLAYER" | "CANCELLED_DISCONNECT" | "FAILED_TIMEOUT" | "FAILED_DISCONNECTED" | "TRIGGER" | "ASSIGNED"
     currentUser?: User
     nextUser?: User
     ability: BattleAbility
@@ -59,18 +53,13 @@ export const FallbackUser: User = {
             background: "#0D0404",
         },
     },
+    gid: 9999,
 }
 
-export const LocationSelectAlert = ({
-    data,
-    factionsAll,
-}: {
-    data: LocationSelectAlertProps
-    factionsAll: FactionsAll
-}) => {
+export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelectAlertProps; factionsAll: FactionsAll }) => {
     const { type, currentUser, ability } = data
     const { label, colour, image_url } = ability
-    const { username, faction } = currentUser || FallbackUser
+    const { username, faction, gid } = currentUser || FallbackUser
 
     const abilityImageUrl = useMemo(() => `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`, [image_url])
     const mainColor = faction.theme.primary
@@ -112,13 +101,9 @@ export const LocationSelectAlert = ({
             return (
                 <Box>
                     <StyledImageText
-                        text={username}
+                        text={`${username}#${gid}`}
                         color={faction.theme.primary}
-                        imageUrl={
-                            faction
-                                ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}`
-                                : undefined
-                        }
+                        imageUrl={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}` : undefined}
                         imageMb={-0.2}
                     />
                     <StyledNormalText text=" failed to choose a target." />
@@ -130,13 +115,9 @@ export const LocationSelectAlert = ({
             return (
                 <Box>
                     <StyledImageText
-                        text={username}
+                        text={`${username}#${gid}`}
                         color={faction.theme.primary}
-                        imageUrl={
-                            faction
-                                ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}`
-                                : undefined
-                        }
+                        imageUrl={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}` : undefined}
                         imageMb={-0.2}
                     />
                     <StyledNormalText text=" has confirmed target." />
@@ -148,13 +129,9 @@ export const LocationSelectAlert = ({
             return (
                 <Box>
                     <StyledImageText
-                        text={username}
+                        text={`${username}#${gid}`}
                         color={faction.theme.primary}
-                        imageUrl={
-                            faction
-                                ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}`
-                                : undefined
-                        }
+                        imageUrl={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}` : undefined}
                         imageMb={-0.2}
                     />
                     <StyledNormalText text=" is assigned to choose a target." />

@@ -32,12 +32,9 @@ export const SkillBar = ({
         () => (initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100),
         [initialTargetCost, currentSups],
     )
-    const costPercent = useMemo(
-        () => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100),
-        [initialTargetCost, supsCost],
-    )
+    const costPercent = useMemo(() => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100), [initialTargetCost, supsCost])
 
-    // Triggered faction ability or war machine ability price ticking
+    // DO NOT REMOVE THIS! Triggered faction ability or war machine ability price ticking
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe(GameServerKeys.TriggerFactionAbilityPriceUpdated, () => null, { ability_identity: identity })
@@ -81,11 +78,7 @@ export const SkillBar = ({
                 pointerEvents: "none",
             }}
         >
-            <SlantedBar
-                backgroundColor={shadeColor(colors.warMachineSkillBar, 100 - index * 28)}
-                progressPercent={progressPercent}
-                costPercent={costPercent}
-            />
+            <SlantedBar backgroundColor={shadeColor(colors.warMachineSkillBar, 100 - index * 28)} progressPercent={progressPercent} costPercent={costPercent} />
         </Box>
     )
 }
