@@ -83,7 +83,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, userStat, userRank }: Props
     } = user.faction
 
     const { total_ability_triggered, kill_count, view_battle_count, mech_kill_count } = userStat
-    const rankDeets = useMemo(() => (userRank ? getUserRankDeets(userRank, ".9rem", "1.7rem") : undefined), [userRank])
+    const rankDeets = useMemo(() => (userRank ? getUserRankDeets(userRank, ".9rem", "1.1rem") : undefined), [userRank])
 
     return (
         <BarExpandable
