@@ -73,7 +73,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
             })
 
         fetchHistory()
-    }, [])
+    }, [state, send])
 
     useEffect(() => {
         const t = setTimeout(() => {

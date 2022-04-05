@@ -17,7 +17,7 @@ import {
     MultiplierSuperContributor,
     MultiplierSupporter,
     MultiplierWonBattle,
-    MultiplierWonLastThreeBattles
+    MultiplierWonLastThreeBattles,
 } from "../assets"
 import { colors } from "../theme/theme"
 import { MultiplierGuide } from "../types"
@@ -424,7 +424,7 @@ export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
 }
 
 export const timeSince = (date: Date) => {
-    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000)
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
 
     let interval = seconds / 31536000
 
@@ -453,6 +453,6 @@ export const timeSince = (date: Date) => {
 export const snakeToTitle = (str: string): string => Capitalize(str.split("_").join(" "))
 
 export const camelToTitle = (str: string) => {
-    const result = str.replace(/([A-Z])/g, " $1");
-    return result.charAt(0).toUpperCase() + result.slice(1);
+    const result = str.replace(/([A-Z])/g, " $1")
+    return result.charAt(0).toUpperCase() + result.slice(1)
 }
