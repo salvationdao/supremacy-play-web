@@ -42,8 +42,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     // Options and display only
-    const [searchText, setSearchText] = useState(prefillUser?.username)
-    const [search, setSearch] = useDebounce(prefillUser?.username, 300)
+    const [searchText, setSearchText] = useState(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "")
+    const [search, setSearch] = useDebounce(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "", 300)
     const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()
     const [userDropdown, setUserDropdown] = useState<BanUser[]>([])
     const [banOptions, setBanOptions] = useState<BanOption[]>([])
