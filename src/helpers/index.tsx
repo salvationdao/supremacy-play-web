@@ -430,24 +430,34 @@ export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
     return Capitalize(result)
 }
 
-export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: ReactNode } => {
+export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: ReactNode; title: string; desc: string } => {
     let icon = null
+    let title = ""
+    let desc = ""
 
     switch (rank.toUpperCase()) {
         case "PRIVATE":
             icon = <SvgPrivate width={width} height={height} />
+            title = "PRIVATE"
+            desc = "User has joined Supremacy for more than 24 hours and has sent at least 1 chat message."
             break
         case "CORPORAL":
             icon = <SvgCorporal width={width} height={height} />
+            title = "CORPORAL"
+            desc = 'User has achieved "Private" and has least at 1 ability kill.'
             break
         case "GENERAL":
             icon = <SvgGeneral width={width} height={height} />
+            title = "GENERAL"
+            desc = 'User has achieved "Corporal" and contributed top 20% of ability kills for their Syndicate.'
             break
         case "NEW_RECRUIT":
         default:
             icon = <SvgNewRecruit width={width} height={height} />
+            title = "NEW RECRUIT"
+            desc = "User has joined Supremacy less than 24 hours ago."
             break
     }
 
-    return { icon }
+    return { icon, title, desc }
 }

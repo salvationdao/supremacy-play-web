@@ -214,6 +214,7 @@ export const TextMessage = ({
     const factionColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.primary : message_color), [faction_id, factionsAll])
     const factionSecondaryColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.secondary : "#FFFFFF"), [faction_id, factionsAll])
     const factionLogoBlobID = useMemo(() => (faction_id ? factionsAll[faction_id]?.logo_blob_id : ""), [faction_id, factionsAll])
+    const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".9rem", "1.7rem") : undefined), [user_rank])
 
     // For the hide zero multi setting
     if (!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) return null
@@ -258,7 +259,21 @@ export const TextMessage = ({
                             }}
                         />
                     )}
-                    {user_rank && <Box>{getUserRankDeets(user_rank, ".9rem", "1.7rem").icon}</Box>}
+                    {user_rank && rankDeets && (
+                        <TooltipHelper
+                            placement="top"
+                            text={
+                                <>
+                                    <strong>RANK: </strong>
+                                    {rankDeets.title}
+                                    <br />
+                                    {rankDeets.desc}
+                                </>
+                            }
+                        >
+                            <Box>{rankDeets.icon}</Box>
+                        </TooltipHelper>
+                    )}
                 </Stack>
 
                 <Box>
@@ -331,7 +346,7 @@ export const TextMessage = ({
                     </Typography>
 
                     {is_citizen && (
-                        <TooltipHelper placement="top-end" text={"CITIZEN"}>
+                        <TooltipHelper placement="top" text={"CITIZEN"}>
                             <Typography
                                 sx={{
                                     display: "inline-block",
