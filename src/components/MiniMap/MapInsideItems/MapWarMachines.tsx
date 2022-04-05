@@ -128,7 +128,7 @@ const MapWarMachineInner = ({
             alignItems="center"
             justifyContent="center"
             onClick={handleClick}
-            sx={{
+            style={{
                 position: "absolute",
                 pointerEvents: targeting ? "none" : "all",
                 cursor: "pointer",
@@ -141,7 +141,7 @@ const MapWarMachineInner = ({
             }}
         >
             <Box
-                sx={
+                style={
                     enlarged
                         ? {
                               position: "relative",
@@ -184,7 +184,7 @@ const MapWarMachineInner = ({
                     <Stack
                         alignItems="center"
                         justifyContent="center"
-                        sx={{
+                        style={{
                             width: "100%",
                             height: "100%",
                             background: "linear-gradient(#00000040, #00000090)",
@@ -194,7 +194,7 @@ const MapWarMachineInner = ({
                         <SvgMapSkull
                             fill="#000000"
                             size={enlarged ? `${0.8 * SIZE}px` : isSpawnedAI ? `${1 * SIZE}px` : `${1.3 * SIZE}px`}
-                            sx={{
+                            style={{
                                 position: "absolute",
                                 top: "52%",
                                 left: "50%",
@@ -206,7 +206,7 @@ const MapWarMachineInner = ({
 
                 {isAlive && enlarged && (
                     <Box
-                        sx={{
+                        style={{
                             position: "absolute",
                             left: "50%",
                             top: "50%",
@@ -215,11 +215,11 @@ const MapWarMachineInner = ({
                             zIndex: 3,
                         }}
                     >
-                        <Box sx={{ position: "relative", height: ARROW_LENGTH }}>
+                        <Box style={{ position: "relative", height: ARROW_LENGTH }}>
                             <SvgMapWarMachine
                                 fill={primaryColor}
                                 size={`${0.45 * SIZE}px`}
-                                sx={{
+                                style={{
                                     position: "absolute",
                                     top: -6,
                                     left: "50%",
@@ -227,14 +227,14 @@ const MapWarMachineInner = ({
                                 }}
                             />
                         </Box>
-                        <Box sx={{ height: ARROW_LENGTH }} />
+                        <Box style={{ height: ARROW_LENGTH }} />
                     </Box>
                 )}
 
                 {isAlive && (
                     <Stack
                         spacing=".24rem"
-                        sx={{
+                        style={{
                             position: "absolute",
                             bottom: enlarged ? "-.1rem" : "-.5rem",
                             left: "50%",
@@ -245,7 +245,7 @@ const MapWarMachineInner = ({
                     >
                         {warMachine.maxShield > 0 && (
                             <Box
-                                sx={{
+                                style={{
                                     width: "100%",
                                     height: `${0.3 * SIZE}px`,
                                     border: "1px solid #00000080",
@@ -253,7 +253,7 @@ const MapWarMachineInner = ({
                                 }}
                             >
                                 <Box
-                                    sx={{
+                                    style={{
                                         width: `${(shield / maxShield) * 100}%`,
                                         height: "100%",
                                         backgroundColor: colors.shield,
@@ -262,7 +262,7 @@ const MapWarMachineInner = ({
                             </Box>
                         )}
                         <Box
-                            sx={{
+                            style={{
                                 width: "100%",
                                 height: `${0.3 * SIZE}px`,
                                 border: "1px solid #00000080",
@@ -270,7 +270,7 @@ const MapWarMachineInner = ({
                             }}
                         >
                             <Box
-                                sx={{
+                                style={{
                                     width: `${(health / maxHealth) * 100}%`,
                                     height: "100%",
                                     backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,

@@ -25,7 +25,7 @@ export const SlantedBar = ({
                 sx={{ position: "relative", height: "100%", width: "100%", backgroundColor: "#00000060" }}
             >
                 <Box
-                    sx={{
+                    style={{
                         height: `${progressPercent}%`,
                         width: "100%",
                         backgroundColor,
@@ -35,7 +35,7 @@ export const SlantedBar = ({
 
                 {!!costPercent && (
                     <Box
-                        sx={{
+                        style={{
                             position: "absolute",
                             bottom: `${costPercent - 2.5}%`,
                             height: 2,
