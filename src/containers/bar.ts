@@ -13,7 +13,6 @@ export interface ActiveBars {
 export const BarContainer = createContainer(() => {
     const gameBarRef = useRef<HTMLDivElement>()
     const windowDimensions = useWindowDimensions()
-    const { pxToRemRatio } = useDimension()
 
     const { isAnyPanelOpen } = useDrawer()
     const [activeBars, setActiveBars] = useState<ActiveBars>({
