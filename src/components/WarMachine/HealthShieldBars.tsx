@@ -5,13 +5,7 @@ import { BoxSlanted, SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_AC
 import { colors } from "../../theme/theme"
 import { useGameServerWebsocket } from "../../containers"
 
-export const HealthShieldBars = ({
-    type = "horizontal",
-    warMachine,
-}: {
-    type?: "vertical" | "horizontal"
-    warMachine: WarMachineState
-}) => {
+export const HealthShieldBars = ({ type = "horizontal", warMachine }: { type?: "vertical" | "horizontal"; warMachine: WarMachineState }) => {
     const { participantID, maxHealth, maxShield } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
     const [health, setHealth] = useState<number>(warMachine.health)
@@ -34,9 +28,9 @@ export const HealthShieldBars = ({
 
     if (type == "vertical") {
         return (
-            <Box sx={{ position: "relative", opacity: 0.8, width: "100%", height: "100%" }}>
+            <Box style={{ position: "relative", opacity: 0.8, width: "100%", height: "100%" }}>
                 <Box
-                    sx={{
+                    style={{
                         position: "absolute",
                         bottom: 0,
                         right: `${WIDTH_PER_SLANTED_BAR - 0.1}rem`,
@@ -49,7 +43,7 @@ export const HealthShieldBars = ({
                 </Box>
 
                 <Box
-                    sx={{
+                    style={{
                         position: "absolute",
                         bottom: 0,
                         right: 0,
@@ -58,22 +52,19 @@ export const HealthShieldBars = ({
                         pointerEvents: "none",
                     }}
                 >
-                    <SlantedBar
-                        backgroundColor={health / maxHealth <= 0.45 ? colors.red : colors.health}
-                        progressPercent={healthPercent}
-                    />
+                    <SlantedBar backgroundColor={health / maxHealth <= 0.45 ? colors.red : colors.health} progressPercent={healthPercent} />
                 </Box>
             </Box>
         )
     }
 
     return (
-        <Stack justifyContent="center" spacing=".4rem" sx={{ flex: 1, height: "100%" }}>
+        <Stack justifyContent="center" spacing=".4rem" style={{ flex: 1, height: "100%" }}>
             <Box>
-                <BoxSlanted clipSlantSize="3px" sx={{ width: "100%", height: "1.2rem", backgroundColor: "#FFFFFF30" }}>
+                <BoxSlanted clipSlantSize="3px" style={{ width: "100%", height: "1.2rem", backgroundColor: "#FFFFFF30" }}>
                     <BoxSlanted
                         clipSlantSize="3px"
-                        sx={{
+                        style={{
                             width: `${shieldPercent}%`,
                             height: "100%",
                             backgroundColor: colors.shield,
@@ -83,13 +74,10 @@ export const HealthShieldBars = ({
             </Box>
 
             <Box>
-                <BoxSlanted
-                    clipSlantSize="3px"
-                    sx={{ ml: "-0.4rem", width: "100%", height: "1.2rem", backgroundColor: "#FFFFFF30" }}
-                >
+                <BoxSlanted clipSlantSize="3px" style={{ marginLeft: "-0.4rem", width: "100%", height: "1.2rem", backgroundColor: "#FFFFFF30" }}>
                     <BoxSlanted
                         clipSlantSize="3px"
-                        sx={{
+                        style={{
                             width: `${healthPercent}%`,
                             height: "100%",
                             backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
