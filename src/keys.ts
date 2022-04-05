@@ -47,6 +47,7 @@ export enum GameServerKeys {
     SubAssetQueueStatus = "ASSET:QUEUE:STATUS:SUBSCRIBE",
 
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
+    BattleMechStats = "BATTLE:MECH:STATS",
 
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",

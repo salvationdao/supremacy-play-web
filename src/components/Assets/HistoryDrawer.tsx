@@ -1,14 +1,14 @@
 import { Box, Drawer, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgDeath, SvgGoldBars } from "../../assets"
+import { SvgDeath, SvgGoldBars, SvgHistory } from "../../assets"
 import { RIGHT_DRAWER_WIDTH } from "../../constants"
 import { SocketState, useGameServerWebsocket } from "../../containers"
 import { camelToTitle, timeSince } from "../../helpers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { BattleMechHistory } from "../../types"
+import { BattleMechHistory, BattleMechStats } from "../../types"
 import { Asset } from "../../types/assets"
-import { PercentageDisplay } from "./PercentageDisplay"
+import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
 
 export interface HistoryDrawerProps {
     open: boolean
@@ -22,13 +22,28 @@ dummyDate.setHours(dummyDate.getHours() - 2)
 export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
     const { state, send } = useGameServerWebsocket()
     const [shouldRender, setShouldRender] = useState(false)
-    const [loading, setLoading] = useState(false)
+
+    // Mech stats
+    const [statsLoading, setStatsLoading] = useState(false)
+    const [stats, setStats] = useState<BattleMechStats>()
+    // Battle history
+    const [historyLoading, setHistoryLoading] = useState(false)
     const [history, setHistory] = useState<BattleMechHistory[]>([])
 
     useEffect(() => {
         if (state !== SocketState.OPEN || !send) return
         ;(async () => {
-            setLoading(true)
+            setStatsLoading(true)
+            const resp = await send<BattleMechStats | undefined>(GameServerKeys.BattleMechStats, {
+                mech_id: asset.id,
+            })
+            setStats(resp)
+
+            console.log(resp)
+            setStatsLoading(false)
+        })()
+        ;(async () => {
+            setHistoryLoading(true)
             const resp = await send<{
                 total: number
                 battle_history: BattleMechHistory[]
@@ -38,7 +53,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
             setHistory(resp.battle_history)
 
             console.log(resp)
-            setLoading(false)
+            setHistoryLoading(false)
         })()
     }, [])
 
@@ -62,7 +77,9 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
             }}
             PaperProps={{
                 sx: {
+                    overflow: "hidden",
                     width: `${RIGHT_DRAWER_WIDTH}rem`,
+                    maxHeight: "100vh",
                     backgroundColor: colors.darkNavy,
                     backgroundImage: "none",
                     padding: "1rem",
@@ -100,24 +117,68 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                         marginBottom: "1rem",
                     }}
                 >
-                    <PercentageDisplay displayValue="70%" percentage={70} label="Win Rate" />
-                    <PercentageDisplay displayValue="50%" percentage={50} label="Survival Rate" color={colors.gold} />
-                    <PercentageDisplay displayValue="80%" percentage={80} label="Kill Rate" color={colors.red} />
+                    {stats ? (
+                        <>
+                            <PercentageDisplay
+                                displayValue={`${stats.extra_stats.win_rate * 100}%`}
+                                percentage={stats.extra_stats.win_rate * 100}
+                                label="Win Rate"
+                            />
+
+                            <PercentageDisplay
+                                displayValue={`${stats.total_kills}`}
+                                percentage={100}
+                                label="Total Kills"
+                                color={colors.gold}
+                            />
+                            <PercentageDisplay
+                                displayValue={`${stats.total_deaths}`}
+                                percentage={100}
+                                label="Total Deaths"
+                                color={colors.red}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <PercentageDisplaySkeleton />
+                            <PercentageDisplaySkeleton />
+                            <PercentageDisplaySkeleton />
+                        </>
+                    )}
                 </Stack>
             </Box>
             <Box
                 sx={{
-                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    minHeight: 0,
                     padding: ".5rem",
                     backgroundColor: `${colors.navy}80`,
                 }}
             >
-                <Typography variant="h6">Recent Matches</Typography>
+                <Stack
+                    direction="row"
+                    spacing=".5rem"
+                    alignItems="end"
+                    sx={{
+                        padding: "0.8rem 1.04rem",
+                    }}
+                >
+                    <SvgHistory />
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            textTransform: "uppercase",
+                        }}
+                    >
+                        Recent Matches
+                    </Typography>
+                </Stack>
                 <Stack
                     spacing=".6rem"
                     sx={{
                         overflowY: "auto",
-                        overflowX: "hidden",
                         direction: "ltr",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
@@ -133,6 +194,17 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                         },
                     }}
                 >
+                    {history.map((h, index) => (
+                        <HistoryEntry
+                            key={index}
+                            mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
+                            backgroundImage={h.battle?.game_map?.image_url}
+                            isWin={!!h.faction_won}
+                            mechSurvived={!!h.mech_survived}
+                            kills={h.kills}
+                            date={h.created_at}
+                        />
+                    ))}
                     {history.map((h, index) => (
                         <HistoryEntry
                             key={index}

@@ -1,5 +1,6 @@
 import { keyframes } from "@emotion/react"
-import { Box, styled, Typography } from "@mui/material"
+import { Box, Skeleton, styled, Typography } from "@mui/material"
+import React from "react"
 import { colors } from "../../theme/theme"
 
 interface PercentageDisplayProps {
@@ -10,13 +11,7 @@ interface PercentageDisplayProps {
     color?: string
 }
 
-export const PercentageDisplay: React.VoidFunctionComponent<PercentageDisplayProps> = ({
-    displayValue,
-    percentage,
-    label,
-    size,
-    color,
-}) => {
+export const PercentageDisplay = ({ displayValue, percentage, label, size, color }: PercentageDisplayProps) => {
     const radius = size ? size / (2 * 1.11) : 20
     const circumference = Math.PI * 2 * radius
     return (
@@ -97,4 +92,14 @@ const generateStrokeKeyframes = (percentage: number, circumference: number) => {
 		stroke-dasharray: ${(circumference * percentage) / 100} ${circumference};
 	}
   `
+}
+
+export interface PercentageDisplaySkeletonProps {
+    size?: number
+}
+
+export const PercentageDisplaySkeleton = ({ size }: PercentageDisplaySkeletonProps) => {
+    const radius = size ? size / (2 * 1.11) : 20
+
+    return <Skeleton variant="circular" width={1.11 * radius * 2} height={1.11 * radius * 2} />
 }

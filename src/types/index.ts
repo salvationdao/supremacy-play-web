@@ -89,6 +89,18 @@ export interface BattleMechHistory {
     battle?: Battle
 }
 
+export interface BattleMechStats {
+    mech_id: string
+    total_wins: number
+    total_deaths: number
+    total_kills: number
+    extra_stats: {
+        win_rate: number
+        kill_percentile: number
+        survival_percentile: number
+    }
+}
+
 export interface Vector2i {
     x: number
     y: number
