@@ -7,6 +7,7 @@ import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, usePassp
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset, AssetOnChainStatus, AssetQueueStat, AssetQueueStatusItem } from "../../types/assets"
+import { TelegramShortcodeModal } from "./DeployConfirmation"
 
 interface QueueFeed {
     queue_length: number
@@ -38,6 +39,7 @@ const DrawerContent = () => {
     const [queueLength, setQueueLength] = useState<number>(0)
     const [queueCost, setQueueCost] = useState<string>("")
     const [contractReward, setContractReward] = useState<string>("")
+    const { telegramShortcode, setTelegramShortcode } = useDrawer()
 
     const { state: gsState, subscribe: gsSubscribe, send: gsSend } = useGameServerWebsocket()
 
@@ -228,7 +230,15 @@ const DrawerContent = () => {
 
                     {/* Assets outside of the queue and not battling */}
                     {Array.from(assetsNotInQueue).map(([hash, a], index) => (
-                        <AssetItem key={`${hash}-${index}`} asset={a} queueLength={queueLength} queueCost={queueCost} contractReward={contractReward} />
+                        <AssetItem
+                            telegramShortcode={telegramShortcode}
+                            setTelegramShortcode={setTelegramShortcode}
+                            key={`${hash}-${index}`}
+                            asset={a}
+                            queueLength={queueLength}
+                            queueCost={queueCost}
+                            contractReward={contractReward}
+                        />
                     ))}
 
                     {/* Add Scroll Pagination */}
@@ -339,7 +349,7 @@ const DrawerContent = () => {
 }
 
 export const Assets = () => {
-    const { isAssetOpen } = useDrawer()
+    const { isAssetOpen, telegramShortcode, setTelegramShortcode } = useDrawer()
 
     return (
         <Drawer
@@ -368,6 +378,8 @@ export const Assets = () => {
                 <DrawerButtons isFixed={false} />
                 {isAssetOpen && <DrawerContent />}
             </Stack>
+
+            <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
         </Drawer>
     )
 }

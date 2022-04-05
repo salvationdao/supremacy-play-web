@@ -9,6 +9,7 @@ enum DrawerPanels {
 
 export const DrawerContainer = createContainer(() => {
     const [activePanel, setActivePanel] = useState<DrawerPanels>(DrawerPanels.LiveChat)
+    const [telegramShortcode, setTelegramShortcode] = useState("")
 
     const togglePanel = useCallback(
         (newPanel: DrawerPanels, value?: boolean) => {
@@ -26,6 +27,8 @@ export const DrawerContainer = createContainer(() => {
         isAssetOpen: activePanel == DrawerPanels.Assets,
         toggleIsLiveChatOpen: (value?: boolean) => togglePanel(DrawerPanels.LiveChat, value),
         toggleIsAssetOpen: (value?: boolean) => togglePanel(DrawerPanels.Assets, value),
+        telegramShortcode,
+        setTelegramShortcode,
     }
 })
 

@@ -76,6 +76,9 @@ export enum GameServerKeys {
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
     SubmitBanVote = "PUNISH:VOTE",
+
+    // Telegram
+    UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
 }
 
 export enum PassportServerKeys {
