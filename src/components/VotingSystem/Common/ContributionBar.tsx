@@ -69,7 +69,7 @@ const SupsProgress = ({
     forceHundredPercent: boolean
 }) => (
     <Box
-        sx={{
+        style={{
             width: `${forceHundredPercent ? "100" : `${progressPercent}`}%`,
             height: "100%",
             transition: "all .15s",

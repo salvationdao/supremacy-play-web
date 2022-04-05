@@ -55,6 +55,9 @@ export enum GameServerKeys {
     ChatPastMessages = "CHAT:PAST_MESSAGES",
     SubscribeChatUserStats = "PLAYER:USER:STAT:CHAT:SUBSCRIBE",
 
+    BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
+    BattleMechStats = "BATTLE:MECH:STATS",
+
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubAISpawned = "AI:SPAWNED",

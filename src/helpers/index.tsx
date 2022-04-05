@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js"
-import { colors } from "../theme/theme"
 import {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
@@ -8,15 +7,15 @@ import {
     MultiplierContributor,
     MultiplierDestroyerOfWorlds,
     MultiplierFieldMechanic,
+    MultiplierFiend,
     MultiplierGreaseMonkey,
+    MultiplierJunkE,
     MultiplierMechCommander,
+    MultiplierMechHead,
     MultiplierNowIAmBecomeDeath,
+    MultiplierSniper,
     MultiplierSuperContributor,
     MultiplierSupporter,
-    MultiplierFiend,
-    MultiplierJunkE,
-    MultiplierMechHead,
-    MultiplierSniper,
     MultiplierWonBattle,
     MultiplierWonLastThreeBattles,
     SvgGeneral,
@@ -26,6 +25,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { MultiplierGuide, UserRank } from "../types"
+import { colors } from "../theme/theme"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -460,4 +460,36 @@ export const getUserRankDeets = (rank: UserRank, width: string, height: string):
     }
 
     return { icon, title, desc }
+}
+
+export const timeSince = (date: Date) => {
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
+
+    let interval = seconds / 31536000
+
+    if (interval > 1) {
+        return Math.floor(interval) + " years"
+    }
+    interval = seconds / 2592000
+    if (interval > 1) {
+        return Math.floor(interval) + " months"
+    }
+    interval = seconds / 86400
+    if (interval > 1) {
+        return Math.floor(interval) + " days"
+    }
+    interval = seconds / 3600
+    if (interval > 1) {
+        return Math.floor(interval) + " hours"
+    }
+    interval = seconds / 60
+    if (interval > 1) {
+        return Math.floor(interval) + " minutes"
+    }
+    return Math.floor(seconds) + " seconds"
+}
+
+export const camelToTitle = (str: string) => {
+    const result = str.replace(/([A-Z])/g, " $1")
+    return result.charAt(0).toUpperCase() + result.slice(1)
 }
