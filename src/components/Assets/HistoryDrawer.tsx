@@ -17,9 +17,6 @@ export interface HistoryDrawerProps {
     asset: Asset
 }
 
-const dummyDate = new Date()
-dummyDate.setHours(dummyDate.getHours() - 2)
-
 export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
     const { state, send } = useGameServerWebsocket()
     const [shouldRender, setShouldRender] = useState(false)
