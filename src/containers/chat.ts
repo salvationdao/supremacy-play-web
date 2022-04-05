@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
+import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "."
 import { GlobalAnnouncementType } from "../components/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
