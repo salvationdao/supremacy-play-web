@@ -22,7 +22,7 @@ export interface PunishListItem {
     id: string
     player_id: string
     punish_option_id: string
-    punish_until: Date //needed
+    punish_until: Date
     related_punish_vote_id: string
     created_at: Date
     updated_at: Date
@@ -30,15 +30,15 @@ export interface PunishListItem {
     related_punish_vote: {
         id: string
         punish_option_id: string
-        reason: string //needed
+        reason: string
         faction_id: string
         issued_by_id: string
-        issued_by_username: string //needed
-        issued_by_gid: number //needed
+        issued_by_username: string
+        issued_by_gid: number
         reported_player_id: string
-        reported_player_username: string //needed
-        reported_player_gid: number //needed
-        status: "PASSED" | "FAILED" | "PENDING" //needed
+        reported_player_username: string
+        reported_player_gid: number
+        status: "PASSED" | "FAILED" | "PENDING"
         started_at: Date
         ended_at: Date
         created_at: Date
@@ -47,9 +47,9 @@ export interface PunishListItem {
     }
     punish_option: {
         id: string
-        description: string //needed
-        key: string //needed
-        punish_duration_hours: 24 //needed
+        description: string
+        key: string
+        punish_duration_hours: 24
         created_at: Date
         updated_at: Date
         deleted_at: Date
