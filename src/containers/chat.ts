@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
+import { useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { GlobalAnnouncementType } from "../components/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
@@ -20,7 +20,7 @@ export type FontSizeType = 0.8 | 1 | 1.35
 
 export const ChatContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
 
     // Tabs: 0 is global chat, 1 is faction chat

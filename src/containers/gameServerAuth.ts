@@ -23,7 +23,7 @@ export interface AuthContainerType {
 const AuthContainer = createContainer((initialState?: { setLogin(user: User): void }): AuthContainerType => {
     const isActive = useInactivity(120000)
     const { newSnackbarMessage } = useSnackbar()
-    const { gameserverSessionID, setGameserverSessionID } = usePassportServerAuth()
+    const { hasToken } = usePassportServerAuth()
     const { updateTheme } = React.useContext(UpdateTheme)
     const { state, send, subscribe } = useGameServerWebsocket()
     const [user, setUser] = useState<User>()
@@ -105,7 +105,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     }, [state, subscribe])
 
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !send || user || gameserverSessionID) return
+        if (state !== WebSocket.OPEN || !send || user || !hasToken) return
         ;(async () => {
             try {
                 setAuthSessionIDGetLoading(true)
@@ -115,8 +115,6 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                         token: jwtToken,
                     })
                 }
-                const resp = await send<string, null>(GameServerKeys.AuthSessionIDGet)
-                setGameserverSessionID(resp)
                 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             } catch (e: any) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get session ID from game server.", "error")
@@ -126,7 +124,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                 setAuthSessionIDGetLoading(false)
             }
         })()
-    }, [gameserverSessionID, send, state, user])
+    }, [hasToken, send, state, user])
 
     useEffect(() => {
         if (state !== WebSocket.CLOSED) return
@@ -153,7 +151,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                     )
                 }
             } catch (e) {
-                console.log("aaa")
+                console.error(e)
             }
         })()
     }, [state, subscribe, user])
@@ -178,7 +176,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                     )
                 }
             } catch (e) {
-                console.log("aaa")
+                console.error(e)
             }
         })()
     }, [state, subscribe, user])
