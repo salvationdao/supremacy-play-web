@@ -1,4 +1,5 @@
-import { Box, Drawer, Stack, Typography } from "@mui/material"
+import RefreshIcon from "@mui/icons-material/Refresh"
+import { Box, CircularProgress, Drawer, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgDeath, SvgGoldBars, SvgHistory } from "../../assets"
 import { RIGHT_DRAWER_WIDTH } from "../../constants"
@@ -30,6 +31,17 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
     const [historyLoading, setHistoryLoading] = useState(false)
     const [history, setHistory] = useState<BattleMechHistory[]>([])
 
+    const fetchHistory = async () => {
+        const resp = await send<{
+            total: number
+            battle_history: BattleMechHistory[]
+        }>(GameServerKeys.BattleMechHistoryList, {
+            mech_id: asset.id,
+        })
+        setHistory(resp.battle_history)
+        setHistoryLoading(false)
+    }
+
     useEffect(() => {
         if (state !== SocketState.OPEN || !send) return
         ;(async () => {
@@ -38,23 +50,9 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                 mech_id: asset.id,
             })
             setStats(resp)
-
-            console.log(resp)
             setStatsLoading(false)
         })()
-        ;(async () => {
-            setHistoryLoading(true)
-            const resp = await send<{
-                total: number
-                battle_history: BattleMechHistory[]
-            }>(GameServerKeys.BattleMechHistoryList, {
-                mech_id: asset.id,
-            })
-            setHistory(resp.battle_history)
-
-            console.log(resp)
-            setHistoryLoading(false)
-        })()
+        fetchHistory()
     }, [])
 
     useEffect(() => {
@@ -90,6 +88,8 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                 variant="h5"
                 sx={{
                     marginBottom: "1rem",
+                    textAlign: "center",
+                    fontFamily: ["Nostromo Regular Black", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
                 }}
             >
                 {asset.data.mech.name || asset.data.mech.label}
@@ -98,7 +98,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                 sx={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    justifyContent: "space-around",
                     margin: "1rem 0",
                 }}
             >
@@ -107,7 +107,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                     src={asset.data.mech.image_url}
                     alt={`Image for ${asset.data.mech.name} || ${asset.data.mech.label}`}
                     sx={{
-                        maxHeight: "180px",
+                        width: "100%",
                     }}
                 />
                 <Stack
@@ -117,7 +117,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                         marginBottom: "1rem",
                     }}
                 >
-                    {stats ? (
+                    {stats && !statsLoading ? (
                         <>
                             <PercentageDisplay
                                 displayValue={`${stats.extra_stats.win_rate * 100}%`}
@@ -174,49 +174,82 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                     >
                         Recent Matches
                     </Typography>
+                    <Box
+                        sx={{
+                            flex: 1,
+                            display: "flex",
+                            alignItems: "end",
+                        }}
+                    >
+                        <IconButton
+                            sx={{
+                                marginLeft: "auto",
+                            }}
+                            onClick={() => fetchHistory()}
+                            size="small"
+                        >
+                            <RefreshIcon />
+                        </IconButton>
+                    </Box>
                 </Stack>
-                <Stack
-                    spacing=".6rem"
-                    sx={{
-                        overflowY: "auto",
-                        direction: "ltr",
-                        scrollbarWidth: "none",
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: colors.assetsBanner,
-                            borderRadius: 3,
-                        },
-                    }}
-                >
-                    {history.map((h, index) => (
-                        <HistoryEntry
-                            key={index}
-                            mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                            backgroundImage={h.battle?.game_map?.image_url}
-                            isWin={!!h.faction_won}
-                            mechSurvived={!!h.mech_survived}
-                            kills={h.kills}
-                            date={h.created_at}
-                        />
-                    ))}
-                    {history.map((h, index) => (
-                        <HistoryEntry
-                            key={index}
-                            mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                            backgroundImage={h.battle?.game_map?.image_url}
-                            isWin={!!h.faction_won}
-                            mechSurvived={!!h.mech_survived}
-                            kills={h.kills}
-                            date={h.created_at}
-                        />
-                    ))}
-                </Stack>
+                {history.length > 0 ? (
+                    <Stack
+                        spacing=".6rem"
+                        sx={{
+                            overflowY: "auto",
+                            direction: "ltr",
+                            scrollbarWidth: "none",
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: colors.assetsBanner,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        {history.map((h, index) => (
+                            <HistoryEntry
+                                key={index}
+                                mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
+                                backgroundImage={h.battle?.game_map?.image_url}
+                                isWin={!!h.faction_won}
+                                mechSurvived={!!h.mech_survived}
+                                kills={h.kills}
+                                date={h.created_at}
+                            />
+                        ))}
+                    </Stack>
+                ) : (
+                    <Box
+                        sx={{
+                            flex: 1,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        {historyLoading ? (
+                            <CircularProgress />
+                        ) : (
+                            <Box>
+                                <SvgHistory size="8rem" fill={colors.grey} />
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        color: colors.grey,
+                                    }}
+                                >
+                                    No Recent Match History
+                                </Typography>
+                            </Box>
+                        )}
+                    </Box>
+                )}
             </Box>
         </Drawer>
     )
