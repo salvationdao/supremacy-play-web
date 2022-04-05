@@ -42,7 +42,7 @@ export const PunishMessage = ({
                 >
                     <Stack direction="row" spacing=".6rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
                         <SvgAnnouncement size="1.1rem" sx={{ pb: ".35rem" }} />
-                        <Typography sx={{ fontWeight: "fontWeightBold" }}>SYSTEM ANNOUCEMENT</Typography>
+                        <Typography sx={{ fontWeight: "fontWeightBold" }}>SYSTEM</Typography>
 
                         <Typography
                             variant="caption"
