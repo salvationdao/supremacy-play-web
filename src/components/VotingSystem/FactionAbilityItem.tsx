@@ -2,20 +2,20 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
+import { SvgSupToken } from "../../assets"
+import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
 import {
     BribeStageResponse,
     httpProtocol,
     useGame,
     useGameServerAuth,
     useGameServerWebsocket,
-    WebSocketProperties,
+    WebSocketProperties
 } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityProgress } from "../../types"
-import { GAME_SERVER_HOSTNAME, NullUUID } from "../../constants"
-import { SvgSupToken } from "../../assets"
 
 interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
