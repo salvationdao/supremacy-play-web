@@ -4,7 +4,7 @@ import { ClipThing, UserBanForm } from "../../.."
 import { SvgSkull2, SvgInfoCircular, SvgAbility, SvgDeath, SvgView } from "../../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
 import { FactionsAll } from "../../../../containers"
-import { dateFormatter, shadeColor, truncate } from "../../../../helpers"
+import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors } from "../../../../theme/theme"
 import { TextMessageData } from "../../../../types/chat"
@@ -200,7 +200,7 @@ export const TextMessage = ({
     factionsAll: FactionsAll
     user?: User
 }) => {
-    const { from_user, message_color, avatar_id, message, self, total_multiplier, is_citizen, from_user_stat } = data
+    const { from_user, user_rank, message_color, avatar_id, message, self, total_multiplier, is_citizen, from_user_stat } = data
     const { id, username, gid, faction_id } = from_user
 
     const popoverRef = useRef(null)
@@ -220,8 +220,8 @@ export const TextMessage = ({
 
     return (
         <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
-            <Stack ref={popoverRef} direction="row" spacing=".4rem">
-                <Stack direction="row" spacing=".4rem" alignItems="start">
+            <Stack ref={popoverRef} direction="row" spacing=".3rem">
+                <Stack direction="row" spacing=".4rem" alignItems="flex-start">
                     {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
 
                     {avatar_id && (
@@ -258,6 +258,7 @@ export const TextMessage = ({
                             }}
                         />
                     )}
+                    {user_rank && <Box>{getUserRankDeets(user_rank, ".9rem", "1.7rem").icon}</Box>}
                 </Stack>
 
                 <Box>

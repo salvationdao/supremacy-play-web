@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Link, Modal, Stack, Typography } from "@mui/material"
 import { colors } from "../../theme/theme"
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { useToggle } from "../../hooks/useToggle"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
@@ -10,15 +10,8 @@ import { ClipThing } from ".."
 export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
     const { user } = usePassportServerAuth()
     const [open, toggleOpen] = useToggle(false)
-    // Skip first iternation as haveSups is false by default but don't wanna show it
-    const skip = useRef(true)
 
     useEffect(() => {
-        if (skip.current) {
-            skip.current = false
-            return
-        }
-
         if (!haveSups) return toggleOpen(true)
         toggleOpen(false)
     }, [haveSups])
@@ -62,9 +55,8 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
                             </Box>
 
                             <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
-                                In order to experience the Battle Arena to its&apos; maximum potential, including voting
-                                on in game abilities, viewing the minimap and individual mech health bars, your wallet
-                                must contain $SUPS.
+                                In order to experience the Battle Arena to its&apos; maximum potential, including voting on in game abilities, viewing the
+                                minimap and individual mech health bars, your wallet must contain $SUPS.
                             </Typography>
 
                             <Divider />
@@ -81,9 +73,8 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
                                 or click the &quot;Get SUPS&quot; button in the top right-hand corner of the stream.
                                 <br />
                                 <br />
-                                2. From PancakeSwap, the tokens will reside in your off-world wallet. To use them
-                                on-world, and in game, you will have to deposit your $SUPS into your connected account.
-                                You can{" "}
+                                2. From PancakeSwap, the tokens will reside in your off-world wallet. To use them on-world, and in game, you will have to
+                                deposit your $SUPS into your connected account. You can{" "}
                                 <Link target="_blank" href={PASSPORT_WEB + "deposit"} color={colors.neonBlue}>
                                     deposit your tokens here
                                 </Link>

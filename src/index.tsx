@@ -65,7 +65,7 @@ const AppInner = () => {
     const { state, isServerUp } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
     const { mainDivDimensions, streamDimensions } = useDimension()
-    const [haveSups, toggleHaveSups] = useToggle()
+    const [haveSups, toggleHaveSups] = useToggle(true)
 
     return (
         <>

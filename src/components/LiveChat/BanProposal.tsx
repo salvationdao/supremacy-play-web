@@ -126,7 +126,7 @@ const BanProposalInner = ({
         if (!userStat || userStat.kill_count <= 0) {
             return (
                 <Typography sx={{ opacity: 0.6 }}>
-                    <i>You need ability kills to be eligible to vote.</i>
+                    <i>You need to have ability kills in the past 7 days to be eligible to vote. Current ability kill count: 0</i>
                 </Typography>
             )
         }

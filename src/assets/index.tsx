@@ -26,6 +26,10 @@ import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Success from "!react-svg-loader!./svg/Success.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
+import General from "!react-svg-loader!./svg/Ranks/General.svg"
+import Corporal from "!react-svg-loader!./svg/Ranks/Corporal.svg"
+import Private from "!react-svg-loader!./svg/Ranks/Private.svg"
+import NewRecruit from "!react-svg-loader!./svg/Ranks/NewRecruit.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import History from "!react-svg-loader!./svg/History.svg"
 import QuestionMark from "!react-svg-loader!./svg/QuestionMark.svg"
@@ -664,5 +668,29 @@ export const SvgWarningIcon: React.VoidFunctionComponent<SvgWrapperProps> = (pro
 export const SvgAnnouncement: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Announcement />
+    </SvgWrapper>
+)
+
+export const SvgGeneral: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <General />
+    </SvgWrapper>
+)
+
+export const SvgCorporal: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Corporal />
+    </SvgWrapper>
+)
+
+export const SvgPrivate: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Private />
+    </SvgWrapper>
+)
+
+export const SvgNewRecruit: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <NewRecruit />
     </SvgWrapper>
 )

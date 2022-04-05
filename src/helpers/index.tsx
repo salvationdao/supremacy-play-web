@@ -19,8 +19,13 @@ import {
     MultiplierSniper,
     MultiplierWonBattle,
     MultiplierWonLastThreeBattles,
+    SvgGeneral,
+    SvgPrivate,
+    SvgCorporal,
+    SvgNewRecruit,
 } from "../assets"
-import { MultiplierGuide } from "../types"
+import { MultiplierGuide, UserRank } from "../types"
+import { ReactNode } from "react"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -423,4 +428,26 @@ export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
     const result = str.split("_").join(" ")
     if (lowerCase) return result
     return Capitalize(result)
+}
+
+export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: ReactNode } => {
+    let icon = null
+
+    switch (rank.toUpperCase()) {
+        case "PRIVATE":
+            icon = <SvgPrivate width={width} height={height} />
+            break
+        case "CORPORAL":
+            icon = <SvgCorporal width={width} height={height} />
+            break
+        case "GENERAL":
+            icon = <SvgGeneral width={width} height={height} />
+            break
+        case "NEW_RECRUIT":
+        default:
+            icon = <SvgNewRecruit width={width} height={height} />
+            break
+    }
+
+    return { icon }
 }

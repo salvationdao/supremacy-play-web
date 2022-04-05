@@ -102,7 +102,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     }, [state, subscribe])
 
     useEffect(() => {
-        if (state !== WebSocket.OPEN || user || gameserverSessionID) return
+        if (state !== WebSocket.OPEN || !send || user || gameserverSessionID) return
         ;(async () => {
             try {
                 setAuthSessionIDGetLoading(true)
