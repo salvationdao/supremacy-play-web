@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from "react"
+import { useDebounce } from "."
 
 const getWindowDimensions = () => {
     const { innerWidth: width, innerHeight: height } = window
@@ -9,15 +10,15 @@ const getWindowDimensions = () => {
 }
 
 export const useWindowDimensions = () => {
-    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+    const [windowDimensions, setWindowDimensions] = useDebounce(getWindowDimensions(), 350)
 
     useEffect(() => {
         const handleResize = () => {
             setWindowDimensions(getWindowDimensions())
         }
 
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
     }, [])
 
     return windowDimensions

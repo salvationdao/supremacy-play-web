@@ -69,7 +69,7 @@ export const TopIconSettings = ({
                     left: enlarged ? "5.6rem" : "7.6rem",
                     top: 7.2,
                     fontSize: "1rem",
-                    fontFamily: "Nostromo Regular Bold",
+                    fontFamily: "Nostromo Regular Black",
                     lineHeight: 1,
                     opacity: 0.8,
                 }}
