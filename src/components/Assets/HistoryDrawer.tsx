@@ -188,7 +188,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                             onClick={() => fetchHistory()}
                             size="small"
                         >
-                            <RefreshIcon />
+                            <RefreshIcon fontSize="large" />
                         </IconButton>
                     </Box>
                 </Stack>
