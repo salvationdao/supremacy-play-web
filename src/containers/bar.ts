@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useDimension, useDrawer } from "."
+import { useDrawer } from "."
 import { DRAWER_TRANSITION_DURATION } from "../constants"
 import { useWindowDimensions } from "../hooks"
 
