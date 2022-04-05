@@ -30,7 +30,7 @@ const LoadingSkeleton = ({ num }: { num?: number }) => (
     </Stack>
 )
 
-const DrawerContent = () => {
+const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramShortcode?: string; setTelegramShortcode?: (s: string) => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
@@ -39,7 +39,6 @@ const DrawerContent = () => {
     const [queueLength, setQueueLength] = useState<number>(0)
     const [queueCost, setQueueCost] = useState<string>("")
     const [contractReward, setContractReward] = useState<string>("")
-    const { telegramShortcode, setTelegramShortcode } = useDrawer()
 
     const { state: gsState, subscribe: gsSubscribe, send: gsSend } = useGameServerWebsocket()
 
@@ -349,7 +348,8 @@ const DrawerContent = () => {
 }
 
 export const Assets = () => {
-    const { isAssetOpen, telegramShortcode, setTelegramShortcode } = useDrawer()
+    const { isAssetOpen } = useDrawer()
+    const [telegramShortcode, setTelegramShortcode] = useState("")
 
     return (
         <Drawer
@@ -376,7 +376,7 @@ export const Assets = () => {
                 }}
             >
                 <DrawerButtons isFixed={false} />
-                {isAssetOpen && <DrawerContent />}
+                {isAssetOpen && <DrawerContent telegramShortcode={telegramShortcode} setTelegramShortcode={setTelegramShortcode} />}
             </Stack>
 
             <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />

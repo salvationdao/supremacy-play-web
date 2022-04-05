@@ -2,13 +2,7 @@ import { useMediaQuery } from "@mui/material"
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDrawer } from "."
-import {
-    CONTROLS_HEIGHT,
-    GAME_BAR_HEIGHT,
-    LIVE_CHAT_DRAWER_BUTTON_WIDTH,
-    RIGHT_DRAWER_WIDTH,
-    STREAM_ASPECT_RATIO_W_H,
-} from "../constants"
+import { CONTROLS_HEIGHT, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH, STREAM_ASPECT_RATIO_W_H } from "../constants"
 import { useWindowDimensions } from "../hooks"
 import { Dimension } from "../types"
 
@@ -37,17 +31,15 @@ export const DimensionContainer = createContainer(() => {
 
     // Refer to `src/theme/global.css`
     useEffect(() => {
-        if (below900) return setPxToRemRatio(6.9)
-        if (below1500) return setPxToRemRatio(7.9)
-        if (below1920) return setPxToRemRatio(8.6)
-        setPxToRemRatio(10)
+        if (below900) return setPxToRemRatio(0.46 * 16)
+        if (below1500) return setPxToRemRatio(0.51 * 16)
+        if (below1920) return setPxToRemRatio(0.558 * 16)
+        setPxToRemRatio(0.625 * 16)
     }, [below1920, below1500, below900])
 
     useEffect(() => {
         // Main div dimensions
-        const mainDivWidth = isAnyPanelOpen
-            ? windowWidth - RIGHT_DRAWER_WIDTH * pxToRemRatio
-            : windowWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH * pxToRemRatio
+        const mainDivWidth = isAnyPanelOpen ? windowWidth - RIGHT_DRAWER_WIDTH * pxToRemRatio : windowWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH * pxToRemRatio
         const mainDivHeight = windowHeight - GAME_BAR_HEIGHT * pxToRemRatio
 
         // Stream div dimensions
