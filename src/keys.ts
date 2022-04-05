@@ -60,6 +60,9 @@ export enum GameServerKeys {
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
     GetSettings = "PLAYER:GET_SETTINGS",
     SubscribeChatUserStats = "PLAYER:USER:STAT:CHAT:SUBSCRIBE",
+
+    // Telegram
+    UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
 }
 
 export enum PassportServerKeys {

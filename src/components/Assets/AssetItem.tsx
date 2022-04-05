@@ -28,17 +28,21 @@ export const AssetItem = ({
     queueLength,
     queueCost,
     contractReward,
+    setTelegramShortcode,
 }: {
     asset: Asset
     assetQueueStatus?: AssetQueueStat
     queueLength: number
     queueCost: string
     contractReward: string
+    telegramShortcode?: string
+    setTelegramShortcode?: (s: string) => void
 }) => {
     const { user } = usePassportServerAuth()
     const { state, subscribe } = usePassportServerWebsocket()
     const { state: gsState } = useGameServerWebsocket()
     const [deployModalOpen, toggleDeployModalOpen] = useToggle()
+
     const [leaveModalOpen, toggleLeaveModalOpen] = useToggle()
 
     const [mouseOver, setMouseOver] = useState<boolean>(false)
@@ -344,6 +348,7 @@ export const AssetItem = ({
                     queueCost={queueCost}
                     contractReward={contractReward}
                     onClose={() => toggleDeployModalOpen(false)}
+                    setTelegramShortcode={setTelegramShortcode}
                 />
             )}
 
