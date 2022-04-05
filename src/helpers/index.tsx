@@ -26,7 +26,6 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { MultiplierGuide, UserRank } from "../types"
-import { ReactNode } from "react"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()

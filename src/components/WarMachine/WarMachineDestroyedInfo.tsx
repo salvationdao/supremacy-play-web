@@ -4,17 +4,7 @@ import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkul
 import { colors } from "../../theme/theme"
 import { DamageRecord, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
-const WarMachineIcon = ({
-    color,
-    imageUrl,
-    isDead,
-    size,
-}: {
-    color: string
-    imageUrl?: string
-    isDead?: boolean
-    size: number
-}) => {
+const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imageUrl?: string; isDead?: boolean; size: number }) => {
     return (
         <Box sx={{ width: "fit-content" }}>
             <ClipThing
@@ -50,9 +40,7 @@ const WarMachineIcon = ({
                                 transition: "all .2s",
                             }}
                         >
-                            {isDead && (
-                                <SvgDamageCross fill="#FF1919" size={`${size * 1.3}rem`} sx={{ opacity: 0.6 }} />
-                            )}
+                            {isDead && <SvgDamageCross fill="#FF1919" size={`${size * 1.3}rem`} sx={{ opacity: 0.6 }} />}
                         </Stack>
 
                         {!imageUrl && (
@@ -74,25 +62,12 @@ const WarMachineIcon = ({
     )
 }
 
-const WarMachineBig = ({
-    warMachine,
-    name,
-    isDead,
-}: {
-    warMachine?: WarMachineState
-    name?: string
-    isDead?: boolean
-}) => {
+const WarMachineBig = ({ warMachine, name, isDead }: { warMachine?: WarMachineState; name?: string; isDead?: boolean }) => {
     const color = warMachine ? warMachine.faction.theme.primary : colors.text
     return (
         <Stack alignItems="center" spacing=".8rem" sx={{ width: "15rem" }}>
             {warMachine ? (
-                <WarMachineIcon
-                    color={color}
-                    size={7.5}
-                    imageUrl={warMachine.imageAvatar || GenericWarMachinePNG}
-                    isDead={isDead}
-                />
+                <WarMachineIcon color={color} size={7.5} imageUrl={warMachine.imageAvatar || GenericWarMachinePNG} isDead={isDead} />
             ) : (
                 <WarMachineIcon color={"#444444"} size={7.5} />
             )}
@@ -116,15 +91,7 @@ const WarMachineBig = ({
     )
 }
 
-const WarMachineSmall = ({
-    warMachine,
-    name,
-    damagePercent,
-}: {
-    warMachine?: WarMachineState
-    name?: string
-    damagePercent: number
-}) => {
+const WarMachineSmall = ({ warMachine, name, damagePercent }: { warMachine?: WarMachineState; name?: string; damagePercent: number }) => {
     const color = warMachine ? warMachine.faction.theme.primary : colors.text
     return (
         <Stack direction="row" alignItems="center" spacing=".96rem">
@@ -158,15 +125,7 @@ const WarMachineSmall = ({
     )
 }
 
-const DamageList = ({
-    title,
-    damageRecords,
-    top = 2,
-}: {
-    title: string
-    damageRecords: DamageRecord[]
-    top?: number
-}) => {
+const DamageList = ({ title, damageRecords, top = 2 }: { title: string; damageRecords: DamageRecord[]; top?: number }) => {
     return (
         <Box sx={{ flex: 1 }}>
             <Box
@@ -198,11 +157,7 @@ const DamageList = ({
                             <WarMachineSmall
                                 key={`${dr.source_name}-${index}`}
                                 warMachine={dr.caused_by_war_machine}
-                                name={
-                                    dr.caused_by_war_machine
-                                        ? dr.caused_by_war_machine.name || dr.caused_by_war_machine.hash
-                                        : dr.source_name
-                                }
+                                name={dr.caused_by_war_machine ? dr.caused_by_war_machine.name || dr.caused_by_war_machine.hash : dr.source_name}
                                 damagePercent={dr.amount / 100}
                             />
                         ))
@@ -218,11 +173,11 @@ const DamageList = ({
 
 export const WarMachineDestroyedInfo = ({
     open,
-    toggleOpen,
+    onClose,
     warMachineDestroyedRecord,
 }: {
     open: boolean
-    toggleOpen: (value?: boolean) => void
+    onClose: () => void
     warMachineDestroyedRecord: WarMachineDestroyedRecord
 }) => {
     const theme = useTheme<Theme>()
@@ -232,25 +187,18 @@ export const WarMachineDestroyedInfo = ({
         damage_records
             .filter(
                 (dr) =>
-                    (dr.caused_by_war_machine &&
-                        dr.caused_by_war_machine.participantID === killed_by_war_machine?.participantID) ||
+                    (dr.caused_by_war_machine && dr.caused_by_war_machine.participantID === killed_by_war_machine?.participantID) ||
                     dr.source_name == killed_by,
             )
             .reduce((acc, dr) => acc + dr.amount, 0) / 100
 
     const assistDamageMechs = damage_records
-        .filter(
-            (dr) =>
-                dr.caused_by_war_machine &&
-                dr.caused_by_war_machine.participantID !== killed_by_war_machine?.participantID,
-        )
+        .filter((dr) => dr.caused_by_war_machine && dr.caused_by_war_machine.participantID !== killed_by_war_machine?.participantID)
         .sort((a, b) => (b.amount > a.amount ? 1 : -1))
-    const assistDamageOthers = damage_records
-        .filter((dr) => !dr.caused_by_war_machine)
-        .sort((a, b) => (b.amount > a.amount ? 1 : -1))
+    const assistDamageOthers = damage_records.filter((dr) => !dr.caused_by_war_machine).sort((a, b) => (b.amount > a.amount ? 1 : -1))
 
     return (
-        <Modal open={open} onClose={() => toggleOpen(false)} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
+        <Modal open={open} onClose={onClose} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
             <Box
                 sx={{
                     position: "absolute",
@@ -299,11 +247,7 @@ export const WarMachineDestroyedInfo = ({
                                 <Stack direction="row" alignItems="center">
                                     <WarMachineBig
                                         warMachine={killed_by_war_machine}
-                                        name={
-                                            killed_by_war_machine
-                                                ? killed_by_war_machine.name || killed_by_war_machine.hash
-                                                : killed_by
-                                        }
+                                        name={killed_by_war_machine ? killed_by_war_machine.name || killed_by_war_machine.hash : killed_by}
                                     />
 
                                     <Stack alignItems="center" sx={{ flex: 1 }}>
@@ -311,18 +255,12 @@ export const WarMachineDestroyedInfo = ({
                                         <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Heavy" }}>
                                             DESTROYED
                                         </Typography>
-                                        <Typography
-                                            sx={{ fontFamily: "Nostromo Regular Bold", color: colors.neonBlue }}
-                                        >
+                                        <Typography sx={{ fontFamily: "Nostromo Regular Bold", color: colors.neonBlue }}>
                                             {killDamagePercent}% DAMAGE
                                         </Typography>
                                     </Stack>
 
-                                    <WarMachineBig
-                                        warMachine={destroyed_war_machine}
-                                        name={destroyed_war_machine.name || destroyed_war_machine.hash}
-                                        isDead
-                                    />
+                                    <WarMachineBig warMachine={destroyed_war_machine} name={destroyed_war_machine.name || destroyed_war_machine.hash} isDead />
                                 </Stack>
 
                                 <Stack direction="row">

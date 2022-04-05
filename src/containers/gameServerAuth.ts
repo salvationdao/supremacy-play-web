@@ -4,7 +4,7 @@ import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User, UserRank, UserStat } from "../types"
-import { BanProposalStruct } from "../types/chat"
+import { PunishListItem } from "../types/chat"
 
 export interface AuthContainerType {
     user: User | undefined
@@ -14,7 +14,7 @@ export interface AuthContainerType {
     authSessionIDGetError: undefined
     userStat: UserStat
     userRank?: UserRank
-    punishments?: BanProposalStruct[]
+    punishments?: PunishListItem[]
 }
 
 /**
@@ -28,7 +28,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const { state, send, subscribe } = useGameServerWebsocket()
     const [user, setUser] = useState<User>()
     const [userRank, setUserRank] = useState<UserRank>()
-    const [punishments, setPunishments] = useState<BanProposalStruct[]>()
+    const [punishments, setPunishments] = useState<PunishListItem[]>()
     const userID = user?.id
     const activeInterval = useRef<NodeJS.Timer>()
 
@@ -163,11 +163,11 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         ;(async () => {
             try {
                 if (state !== WebSocket.OPEN || !subscribe || !user) return
-                const resp = await send<BanProposalStruct[], null>(GameServerKeys.ListPunishments)
+                const resp = await send<PunishListItem[], null>(GameServerKeys.ListPunishments)
 
                 if (resp) {
                     setPunishments(resp)
-                    return subscribe<BanProposalStruct[]>(
+                    return subscribe<PunishListItem[]>(
                         GameServerKeys.ListPunishments,
                         (payload) => {
                             if (!payload) return

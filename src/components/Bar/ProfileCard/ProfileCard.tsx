@@ -1,19 +1,21 @@
-import { Avatar, Popover, Stack, Typography } from "@mui/material"
+import { Avatar, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { useEffect, useRef } from "react"
-import { BarExpandable, ConnectButton, LogoutButton, NavButton } from "../.."
-import { SvgAssets, SvgProfile, SvgShop } from "../../../assets"
+import { BarExpandable, ConnectButton, LogoutButton, NavButton, PunishmentList } from "../.."
+import { SvgAssets, SvgInfoCircular, SvgProfile, SvgShop } from "../../../assets"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_SERVER_HOST_IMAGES, PASSPORT_WEB } from "../../../constants"
-import { usePassportServerAuth } from "../../../containers"
+import { useGameServerAuth, usePassportServerAuth } from "../../../containers"
 import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 
 export const ProfileCard = () => {
     const { user } = usePassportServerAuth()
+    const { punishments } = useGameServerAuth()
     const [renderConnectButton, toggleRenderConnectButton] = useToggle()
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
+    const [isPunishmentsOpen, toggleIsPunishmentsOpen] = useToggle()
 
     // Don't show the connect button for couple seconds as it tries to do the auto login
     useEffect(() => {
@@ -101,6 +103,14 @@ export const ProfileCard = () => {
                     </Typography>
                 </Stack>
             </BarExpandable>
+
+            {punishments && punishments.length > 0 && (
+                <IconButton size="small" onClick={() => toggleIsPunishmentsOpen()}>
+                    <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ pb: ".2rem" }} />
+                </IconButton>
+            )}
+
+            {isPunishmentsOpen && <PunishmentList open={isPunishmentsOpen} onClose={() => toggleIsPunishmentsOpen(false)} punishments={punishments} />}
 
             <Popover
                 open={isPopoverOpen}

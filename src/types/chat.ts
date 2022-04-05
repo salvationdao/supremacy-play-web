@@ -18,6 +18,44 @@ export interface BanProposalStruct {
     decision?: { is_agreed: boolean }
 }
 
+export interface PunishListItem {
+    id: string
+    player_id: string
+    punish_option_id: string
+    punish_until: Date //needed
+    related_punish_vote_id: string
+    created_at: Date
+    updated_at: Date
+    deleted_at: Date
+    related_punish_vote: {
+        id: string
+        punish_option_id: string
+        reason: string //needed
+        faction_id: string
+        issued_by_id: string
+        issued_by_username: string //needed
+        issued_by_gid: number //needed
+        reported_player_id: string
+        reported_player_username: string //needed
+        reported_player_gid: number //needed
+        status: "PASSED" | "FAILED" | "PENDING" //needed
+        started_at: Date
+        ended_at: Date
+        created_at: Date
+        updated_at: Date
+        deleted_at: Date
+    }
+    punish_option: {
+        id: string
+        description: string //needed
+        key: string //needed
+        punish_duration_hours: 24 //needed
+        created_at: Date
+        updated_at: Date
+        deleted_at: Date
+    }
+}
+
 export interface BanUser {
     id: string
     username: string

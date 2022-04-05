@@ -1,15 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import {
-    BoxSlanted,
-    ClipThing,
-    HealthShieldBars,
-    SkillBar,
-    TooltipHelper,
-    WarMachineAbilitiesPopover,
-    WarMachineDestroyedInfo,
-} from ".."
+import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from ".."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
@@ -127,14 +119,7 @@ const WarMachineItemInner = ({
 
     // Subscribe to war machine ability updates
     useEffect(() => {
-        if (
-            state !== WebSocket.OPEN ||
-            !faction_id ||
-            faction_id === NullUUID ||
-            faction_id !== warMachinefaction_id ||
-            !subscribe
-        )
-            return
+        if (state !== WebSocket.OPEN || !faction_id || faction_id === NullUUID || faction_id !== warMachinefaction_id || !subscribe) return
         return subscribe<GameAbility[] | undefined>(
             GameServerKeys.SubWarMachineAbilitiesUpdated,
             (payload) => {
@@ -171,15 +156,10 @@ const WarMachineItemInner = ({
                     width: `${
                         isOwnFaction
                             ? isExpanded
-                                ? WIDTH_WM_IMAGE +
-                                  WIDTH_CENTER +
-                                  WIDTH_SKILL_BUTTON +
-                                  numSkillBars * WIDTH_PER_SLANTED_BAR
+                                ? WIDTH_WM_IMAGE + WIDTH_CENTER + WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR
                                 : WIDTH_WM_IMAGE +
                                   (2 * WIDTH_PER_SLANTED_BAR + 0.8) +
-                                  (numSkillBars > 0
-                                      ? WIDTH_SKILL_BUTTON + (numSkillBars - 1) * WIDTH_PER_SLANTED_BAR - 0.7
-                                      : 0)
+                                  (numSkillBars > 0 ? WIDTH_SKILL_BUTTON + (numSkillBars - 1) * WIDTH_PER_SLANTED_BAR - 0.7 : 0)
                             : isExpanded
                             ? WIDTH_WM_IMAGE + WIDTH_CENTER
                             : WIDTH_WM_IMAGE + 2 * WIDTH_PER_SLANTED_BAR + 0.8
@@ -313,11 +293,7 @@ const WarMachineItemInner = ({
                             alignSelf: "stretch",
                             ml: "-2rem",
 
-                            backgroundColor: !isExpanded
-                                ? "transparent"
-                                : highlightedMechHash === warMachine.hash
-                                ? `${primary}60`
-                                : "#00000056",
+                            backgroundColor: !isExpanded ? "transparent" : highlightedMechHash === warMachine.hash ? `${primary}60` : "#00000056",
                             opacity: isAlive ? 1 : DEAD_OPACITY,
                             zIndex: 1,
                         }}
@@ -430,12 +406,7 @@ const WarMachineItemInner = ({
                                 .slice()
                                 .reverse()
                                 .map((ga, index) => (
-                                    <SkillBar
-                                        key={ga.identity}
-                                        index={index}
-                                        gameAbility={ga}
-                                        maxAbilityPriceMap={maxAbilityPriceMap}
-                                    />
+                                    <SkillBar key={ga.identity} index={index} gameAbility={ga} maxAbilityPriceMap={maxAbilityPriceMap} />
                                 ))}
                         </>
                     )}
@@ -456,7 +427,7 @@ const WarMachineItemInner = ({
             {!isAlive && warMachineDestroyedRecord && isDestroyedInfoOpen && (
                 <WarMachineDestroyedInfo
                     open={isDestroyedInfoOpen}
-                    toggleOpen={toggleIsDestroyedInfoOpen}
+                    onClose={() => toggleIsDestroyedInfoOpen(false)}
                     warMachineDestroyedRecord={warMachineDestroyedRecord}
                 />
             )}
