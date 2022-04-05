@@ -20,7 +20,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
     const userID = user?.id
     const faction_id = user?.faction_id
 
-    const [gameserverSessionID, setGameserverSessionID] = useState("")
+    const [hasToken, setHasToken] = useState(false)
     const [sessionID, setSessionID] = useState("")
     const [sessionIDLoading, setSessionIDLoading] = useState(true)
     const [sessionIDError, setSessionIDError] = useState()
@@ -57,6 +57,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
             (u) => {
                 setUser(u.user)
                 localStorage.setItem("ring_check_token", u.jwt_token)
+                setHasToken(true)
             },
             { session_id: sessionID },
         )
@@ -78,8 +79,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
         user,
         userID,
         faction_id,
-        gameserverSessionID,
-        setGameserverSessionID,
+        hasToken,
         sessionID,
         sessionIDLoading,
         sessionIDError,
