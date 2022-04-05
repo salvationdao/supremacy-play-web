@@ -1,32 +1,15 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import { ReactNode, useMemo } from "react"
 import { BarExpandable, TooltipHelper } from "../.."
-import {
-    SvgAbility,
-    SvgBostonKillIcon,
-    SvgDeath,
-    SvgRedMoutainKillIcon,
-    SvgView,
-    SvgWrapperProps,
-    SvgZaibatsuKillIcon,
-} from "../../../assets"
+import { SvgAbility, SvgBostonKillIcon, SvgDeath, SvgRedMoutainKillIcon, SvgView, SvgWrapperProps, SvgZaibatsuKillIcon } from "../../../assets"
 import { colors } from "../../../theme/theme"
 import { useGame, useGameServerAuth, usePassportServerAuth } from "../../../containers"
 import { UserData } from "../../../types/passport"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { UserStat } from "../../../types"
+import { UserRank, UserStat } from "../../../types"
+import { getUserRankDeets } from "../../../helpers"
 
-const BannerInfo = ({
-    title,
-    tooltip,
-    content,
-    PrefixSvg,
-}: {
-    title: string
-    tooltip: string
-    content: string
-    PrefixSvg?: SvgWrapperProps
-}) => {
+const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: ReactNode; content: string; PrefixSvg?: SvgWrapperProps }) => {
     return (
         <TooltipHelper text={tooltip}>
             <Box>
@@ -45,10 +28,7 @@ const BannerInfo = ({
 
                 <Stack direction="row" alignItems="center" spacing=".64rem">
                     {PrefixSvg}
-                    <Typography
-                        variant="subtitle2"
-                        sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}
-                    >
+                    <Typography variant="subtitle2" sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}>
                         {content}
                     </Typography>
                 </Stack>
@@ -59,10 +39,10 @@ const BannerInfo = ({
 
 export const EnlistBanner = () => {
     const { user, userID } = usePassportServerAuth()
-    const { userStat } = useGameServerAuth()
+    const { userStat, userRank } = useGameServerAuth()
     const { battleIdentifier } = useGame()
 
-    return <EnlistBannerInner user={user} userID={userID} battleIdentifier={battleIdentifier} userStat={userStat} />
+    return <EnlistBannerInner user={user} userID={userID} userRank={userRank} battleIdentifier={battleIdentifier} userStat={userStat} />
 }
 
 interface PropsInner {
@@ -70,9 +50,10 @@ interface PropsInner {
     userID?: string
     battleIdentifier?: number
     userStat: UserStat
+    userRank?: UserRank
 }
 
-const EnlistBannerInner = ({ user, battleIdentifier, userStat }: PropsInner) => {
+const EnlistBannerInner = ({ user, battleIdentifier, userStat, userRank }: PropsInner) => {
     const killIcon = useMemo(() => {
         if (!user) return <SvgDeath size="1.1rem" />
 
@@ -102,6 +83,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, userStat }: PropsInner) => 
     } = user.faction
 
     const { total_ability_triggered, kill_count, view_battle_count, mech_kill_count } = userStat
+    const rankDeets = useMemo(() => (userRank ? getUserRankDeets(userRank, ".9rem", "1.7rem") : undefined), [userRank])
 
     return (
         <BarExpandable
@@ -165,13 +147,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, userStat }: PropsInner) => 
                         }}
                     />
 
-                    {battleIdentifier != undefined && (
-                        <BannerInfo
-                            title={`BATTLE ID`}
-                            tooltip="The current battle."
-                            content={`#${battleIdentifier}`}
-                        />
-                    )}
+                    {battleIdentifier != undefined && <BannerInfo title={`BATTLE ID`} tooltip="The current battle." content={`#${battleIdentifier}`} />}
 
                     <BannerInfo
                         title={`ABILITIES`}
@@ -198,6 +174,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, userStat }: PropsInner) => 
                         content={`${view_battle_count || 0}`}
                         PrefixSvg={<SvgView size="1.1rem" />}
                     />
+                    {userRank && rankDeets && <BannerInfo title={`RANK`} tooltip={rankDeets.desc} content={rankDeets.title} PrefixSvg={rankDeets.icon} />}
                 </Stack>
             </Box>
         </BarExpandable>

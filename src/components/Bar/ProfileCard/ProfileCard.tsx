@@ -26,7 +26,7 @@ export const ProfileCard = () => {
         return <ConnectButton renderButton={renderConnectButton} />
     }
 
-    const { username, avatar_id, faction } = user
+    const { username, faction } = user
 
     return (
         <>
@@ -35,13 +35,14 @@ export const ProfileCard = () => {
                 barName={"profile"}
                 iconComponent={
                     <Avatar
-                        src={avatar_id ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id}` : ""}
+                        src={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction.logo_blob_id}` : ""}
                         alt={`${username}'s Avatar`}
                         sx={{
                             height: "2.9rem",
                             width: "2.9rem",
                             borderRadius: 1,
                             border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
+                            backgroundColor: faction ? faction.theme.primary : "transparent",
                         }}
                         variant="square"
                     />
@@ -75,13 +76,14 @@ export const ProfileCard = () => {
                     }}
                 >
                     <Avatar
-                        src={avatar_id ? `${PASSPORT_WEB}api/files/${avatar_id}` : ""}
+                        src={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction.logo_blob_id}` : ""}
                         alt={`${username}'s Avatar`}
                         sx={{
                             height: "2.6rem",
                             width: "2.6rem",
                             borderRadius: 0.8,
                             border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
+                            backgroundColor: faction ? faction.theme.primary : "transparent",
                         }}
                         variant="square"
                     />
@@ -119,7 +121,7 @@ export const ProfileCard = () => {
                     zIndex: 10000,
                     ".MuiPaper-root": {
                         background: "none",
-                        backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                        backgroundColor: faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
                         border: "#FFFFFF50 1px solid",
                     },
                 }}

@@ -23,6 +23,7 @@ import {
     SvgPrivate,
     SvgCorporal,
     SvgNewRecruit,
+    SvgWrapperProps,
 } from "../assets"
 import { MultiplierGuide, UserRank } from "../types"
 import { ReactNode } from "react"
@@ -430,7 +431,7 @@ export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
     return Capitalize(result)
 }
 
-export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: ReactNode; title: string; desc: string } => {
+export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: SvgWrapperProps; title: string; desc: string } => {
     let icon = null
     let title = ""
     let desc = ""
