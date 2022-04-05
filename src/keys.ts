@@ -7,6 +7,7 @@ export enum GameServerKeys {
     RingCheck = "RING:CHECK",
     ToggleGojiBerryTea = "GOJI:BERRY:TEA",
     PlayerRank = "PLAYER:RANK:GET",
+    ListPunishments = "PLAYER:PUNISHMENT:LIST",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",

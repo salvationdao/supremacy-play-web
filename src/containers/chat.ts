@@ -200,7 +200,10 @@ export const ChatContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
             if (!m) return
-            if (m.type == "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) return
+            if (m.type == "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
+                saveUserStats(m.data as TextMessageData)
+                return
+            }
 
             newMessageHandler(m, "faction_id")
             if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)

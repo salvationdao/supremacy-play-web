@@ -4,6 +4,7 @@ import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User, UserRank, UserStat } from "../types"
+import { BanProposalStruct } from "../types/chat"
 
 export interface AuthContainerType {
     user: User | undefined
@@ -13,6 +14,7 @@ export interface AuthContainerType {
     authSessionIDGetError: undefined
     userStat: UserStat
     userRank?: UserRank
+    punishments?: BanProposalStruct[]
 }
 
 /**
@@ -26,6 +28,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const { state, send, subscribe } = useGameServerWebsocket()
     const [user, setUser] = useState<User>()
     const [userRank, setUserRank] = useState<UserRank>()
+    const [punishments, setPunishments] = useState<BanProposalStruct[]>()
     const userID = user?.id
     const activeInterval = useRef<NodeJS.Timer>()
 
@@ -155,6 +158,31 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         })()
     }, [state, subscribe, user])
 
+    // Listen on user punishments
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (state !== WebSocket.OPEN || !subscribe || !user) return
+                const resp = await send<BanProposalStruct[], null>(GameServerKeys.ListPunishments)
+
+                if (resp) {
+                    setPunishments(resp)
+                    return subscribe<BanProposalStruct[]>(
+                        GameServerKeys.ListPunishments,
+                        (payload) => {
+                            if (!payload) return
+                            setPunishments(payload)
+                        },
+                        null,
+                        true,
+                    )
+                }
+            } catch (e) {
+                console.log("aaa")
+            }
+        })()
+    }, [state, subscribe, user])
+
     return {
         user,
         userRank,
@@ -163,6 +191,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         authSessionIDGetLoading,
         authSessionIDGetError,
         userStat,
+        punishments,
     }
 })
 

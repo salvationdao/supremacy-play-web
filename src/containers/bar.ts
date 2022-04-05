@@ -25,7 +25,6 @@ export const BarContainer = createContainer(() => {
     const getBarWidth = () => {
         const el = gameBarRef.current
         if (!el) return
-        console.log(el.offsetWidth)
         return el.offsetWidth
     }
 
