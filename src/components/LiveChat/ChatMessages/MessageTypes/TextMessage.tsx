@@ -380,7 +380,7 @@ export const TextMessage = ({
                 </Box>
             </Stack>
 
-            <Typography sx={{ ml: ".3rem", fontSize: fontSize ? `${1.35 * fontSize}rem` : "1.35rem" }}>{message}</Typography>
+            <Typography sx={{ ml: "2.1rem", fontSize: fontSize ? `${1.35 * fontSize}rem` : "1.35rem" }}>{message}</Typography>
 
             <UserDetailsPopover
                 factionLogoBlobID={factionLogoBlobID}
