@@ -22,33 +22,56 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
     const [shouldRender, setShouldRender] = useState(false)
 
     // Mech stats
+    const [statsError, setStatsError] = useState<string>()
     const [statsLoading, setStatsLoading] = useState(false)
     const [stats, setStats] = useState<BattleMechStats>()
     // Battle history
+    const [historyError, setHistoryError] = useState<string>()
     const [historyLoading, setHistoryLoading] = useState(false)
     const [history, setHistory] = useState<BattleMechHistory[]>([])
 
     const fetchHistory = async () => {
-        const resp = await send<{
-            total: number
-            battle_history: BattleMechHistory[]
-        }>(GameServerKeys.BattleMechHistoryList, {
-            mech_id: asset.id,
-        })
-        setHistory(resp.battle_history)
-        setHistoryLoading(false)
+        setHistoryLoading(true)
+        try {
+            const resp = await send<{
+                total: number
+                battle_history: BattleMechHistory[]
+            }>(GameServerKeys.BattleMechHistoryList, {
+                mech_id: asset.id,
+            })
+            setHistory(resp.battle_history)
+        } catch (e) {
+            if (typeof e === "string") {
+                setHistoryError(e)
+            } else if (e instanceof Error) {
+                setHistoryError(e.message)
+            }
+        } finally {
+            setHistoryLoading(false)
+        }
     }
 
     useEffect(() => {
         if (state !== SocketState.OPEN || !send) return
-        ;(async () => {
-            setStatsLoading(true)
-            const resp = await send<BattleMechStats | undefined>(GameServerKeys.BattleMechStats, {
-                mech_id: asset.id,
+
+        setStatsLoading(true)
+        send<BattleMechStats | undefined>(GameServerKeys.BattleMechStats, {
+            mech_id: asset.id,
+        })
+            .then((resp) => {
+                setStats(resp)
             })
-            setStats(resp)
-            setStatsLoading(false)
-        })()
+            .catch((e) => {
+                if (typeof e === "string") {
+                    setStatsError(e)
+                } else if (e instanceof Error) {
+                    setStatsError(e.message)
+                }
+            })
+            .finally(() => {
+                setStatsLoading(false)
+            })
+
         fetchHistory()
     }, [])
 
@@ -59,6 +82,32 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
 
         return () => clearTimeout(t)
     }, [open])
+
+    const renderEmptyHistory = () => {
+        if (historyLoading) {
+            return <CircularProgress />
+        }
+        if (historyError) {
+            return (
+                <Typography variant="subtitle1" color={colors.red}>
+                    {historyError}
+                </Typography>
+            )
+        }
+        return (
+            <Box>
+                <SvgHistory size="8rem" fill={colors.grey} />
+                <Typography
+                    variant="h6"
+                    sx={{
+                        color: colors.grey,
+                    }}
+                >
+                    No Recent Match History
+                </Typography>
+            </Box>
+        )
+    }
 
     return (
         <Drawer
@@ -91,6 +140,11 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
             >
                 {asset.data.mech.name || asset.data.mech.label}
             </Typography>
+            {statsError && (
+                <Typography variant="subtitle1" color={colors.red}>
+                    {statsError}
+                </Typography>
+            )}
             <Box
                 sx={{
                     display: "flex",
@@ -230,21 +284,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                             alignItems: "center",
                         }}
                     >
-                        {historyLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <Box>
-                                <SvgHistory size="8rem" fill={colors.grey} />
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        color: colors.grey,
-                                    }}
-                                >
-                                    No Recent Match History
-                                </Typography>
-                            </Box>
-                        )}
+                        {renderEmptyHistory()}
                     </Box>
                 )}
             </Box>
@@ -273,7 +313,6 @@ const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, kills, da
                     isWin ? colors.green : colors.red
                 }80), url(${backgroundImage})`,
                 backgroundSize: "cover",
-                // filter: "grayscale(1)",
             }}
         >
             <Box>
