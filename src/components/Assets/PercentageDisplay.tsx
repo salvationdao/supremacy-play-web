@@ -1,5 +1,5 @@
 import { keyframes } from "@emotion/react"
-import { Box, Skeleton, styled, Typography } from "@mui/material"
+import { Box, Skeleton, Stack, styled, Typography } from "@mui/material"
 import React from "react"
 import { colors } from "../../theme/theme"
 
@@ -15,13 +15,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
     const radius = size ? size / (2 * 1.11) : 20
     const circumference = Math.PI * 2 * radius
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-            }}
-        >
+        <Stack alignItems="center">
             <Box
                 sx={{
                     position: "relative",
@@ -75,7 +69,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
             <Typography variant="caption" textAlign="center">
                 {label}
             </Typography>
-        </Box>
+        </Stack>
     )
 }
 

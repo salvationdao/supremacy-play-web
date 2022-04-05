@@ -22,17 +22,14 @@ export const ContributionBar = ({
         () => (initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100),
         [initialTargetCost, currentSups],
     )
-    const costPercent = useMemo(
-        () => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100),
-        [initialTargetCost, supsCost],
-    )
+    const costPercent = useMemo(() => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100), [initialTargetCost, supsCost])
 
     return (
         <Stack
             direction="row"
             alignItems="center"
             justifyContent="flex-start"
-            sx={{
+            style={{
                 flex: 1,
                 position: "relative",
                 height: ".7rem",
@@ -45,7 +42,7 @@ export const ContributionBar = ({
 
             {!hideRedBar && (
                 <Box
-                    sx={{
+                    style={{
                         position: "absolute",
                         left: `${costPercent}%`,
                         backgroundColor: colors.red,
@@ -59,15 +56,7 @@ export const ContributionBar = ({
     )
 }
 
-const SupsProgress = ({
-    forceHundredPercent,
-    color,
-    progressPercent,
-}: {
-    progressPercent: number
-    color: string
-    forceHundredPercent: boolean
-}) => (
+const SupsProgress = ({ forceHundredPercent, color, progressPercent }: { progressPercent: number; color: string; forceHundredPercent: boolean }) => (
     <Box
         style={{
             width: `${forceHundredPercent ? "100" : `${progressPercent}`}%`,
