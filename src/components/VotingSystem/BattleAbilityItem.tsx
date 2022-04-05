@@ -49,7 +49,7 @@ export const BattleAbilityItem = () => {
         )
     }, [state, subscribe, faction_id])
 
-    // Trigger the subscribe to the progress bars net message
+    // DO NOT REMOVE THIS! Trigger the subscribe to the progress bars net message
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
         return subscribe(GameServerKeys.TriggerBattleAbilityProgressUpdated, () => null, null)
@@ -58,48 +58,37 @@ export const BattleAbilityItem = () => {
     // Listen on the progress of the votes
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<BattleAbilityProgress[] | undefined>(
-            NetMessageType.BattleAbilityProgressTick,
-            (payload) => {
-                if (!payload) return
-                // Put own faction progress first, then convert string to big number and set state
-                let unchanged = true
-                const pp: { [key: string]: BattleAbilityProgress } = {}
-                for (let i = 0; i < payload.length; i++) {
-                    const fid = payload[i].faction_id
-                    pp[fid] = payload[i]
-                    if (!progressPayload.current) {
-                        unchanged = false
-                    } else if (
-                        progressPayload.current &&
-                        progressPayload.current[fid] &&
-                        payload[i].current_sups !== progressPayload.current[fid].current_sups
-                    ) {
-                        unchanged = false
-                    } else if (
-                        progressPayload.current &&
-                        progressPayload.current[fid] &&
-                        payload[i].sups_cost !== progressPayload.current[fid].sups_cost
-                    ) {
-                        unchanged = false
-                    }
+        return subscribeNetMessage<BattleAbilityProgress[] | undefined>(NetMessageType.BattleAbilityProgressTick, (payload) => {
+            if (!payload) return
+            // Put own faction progress first, then convert string to big number and set state
+            let unchanged = true
+            const pp: { [key: string]: BattleAbilityProgress } = {}
+            for (let i = 0; i < payload.length; i++) {
+                const fid = payload[i].faction_id
+                pp[fid] = payload[i]
+                if (!progressPayload.current) {
+                    unchanged = false
+                } else if (progressPayload.current && progressPayload.current[fid] && payload[i].current_sups !== progressPayload.current[fid].current_sups) {
+                    unchanged = false
+                } else if (progressPayload.current && progressPayload.current[fid] && payload[i].sups_cost !== progressPayload.current[fid].sups_cost) {
+                    unchanged = false
                 }
+            }
 
-                if (!unchanged) {
-                    progressPayload.current = pp
+            if (!unchanged) {
+                progressPayload.current = pp
 
-                    setBattleAbilityProgress(
-                        payload
-                            .sort((a, b) => a.faction_id.localeCompare(b.faction_id))
-                            .map((a) => ({
-                                faction_id: a.faction_id,
-                                sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
-                                current_sups: new BigNumber(a.current_sups).dividedBy("1000000000000000000"),
-                            })),
-                    )
-                }
-            },
-        )
+                setBattleAbilityProgress(
+                    payload
+                        .sort((a, b) => a.faction_id.localeCompare(b.faction_id))
+                        .map((a) => ({
+                            faction_id: a.faction_id,
+                            sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
+                            current_sups: new BigNumber(a.current_sups).dividedBy("1000000000000000000"),
+                        })),
+                )
+            }
+        })
     }, [state, subscribeNetMessage])
 
     const onBribe = useCallback(
@@ -118,14 +107,10 @@ export const BattleAbilityItem = () => {
         [battleAbilityProgress, bribeStage],
     )
 
-    const buttonColor = useMemo(
-        () =>
-            user && user.faction ? user.faction.theme.primary : battleAbility ? battleAbility.colour : colors.neonBlue,
-        [user],
-    )
+    const buttonColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : battleAbility ? battleAbility.colour : colors.neonBlue), [user])
     const buttonTextColor = useMemo(() => (user && user.faction ? user.faction.theme.secondary : "#FFFFFF"), [user])
 
-    if (!battleAbility || !battleAbilityProgress || battleAbilityProgress.length <= 0) {
+    if (!battleAbility) {
         return (
             <Typography
                 sx={{
@@ -193,9 +178,6 @@ const BattleAbilityItemInner = ({
     battleAbilityProgress,
     onBribe,
 }: InnerProps) => {
-
-
-
     return (
         <Fade in={true}>
             <Stack spacing=".56rem">
@@ -232,12 +214,7 @@ const BattleAbilityItemInner = ({
                                         forceDisplay100Percentage={forceDisplay100Percentage}
                                     />
 
-                                    <VotingButtons
-                                        buttonColor={buttonColor}
-                                        buttonTextColor={buttonTextColor}
-                                        isVoting={isVoting}
-                                        onBribe={onBribe}
-                                    />
+                                    <VotingButtons buttonColor={buttonColor} buttonTextColor={buttonTextColor} isVoting={isVoting} onBribe={onBribe} />
                                 </Stack>
                             </ClipThing>
                         </Box>
@@ -255,13 +232,7 @@ interface BattleAbilityTextTopProps {
     colour: string
     cooldown_duration_second: number
 }
-const BattleAbilityTextTop = ({
-    label,
-    description,
-    image_url,
-    colour,
-    cooldown_duration_second,
-}: BattleAbilityTextTopProps) => (
+const BattleAbilityTextTop = ({ label, description, image_url, colour, cooldown_duration_second }: BattleAbilityTextTopProps) => (
     <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
         <TooltipHelper placement="right" text={description}>
             <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">

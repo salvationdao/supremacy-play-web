@@ -48,7 +48,7 @@ export const WarMachineStats = () => {
 
     const adjustment = useMemo(() => Math.min(pxToRemRatio, 10) / 10, [pxToRemRatio])
 
-    // Subscribe to the result of the vote
+    // DO NOT REMOVE THIS! Subscribe to the result of the vote
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe(GameServerKeys.TriggerWarMachineLocationUpdated, () => null, null)
@@ -60,13 +60,11 @@ export const WarMachineStats = () => {
     }
 
     const factionMechs = useMemo(
-        () =>
-            warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == faction_id) : [],
+        () => (warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == faction_id) : []),
         [warMachines, faction_id],
     )
     const otherMechs = useMemo(
-        () =>
-            warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != faction_id) : [],
+        () => (warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != faction_id) : []),
         [warMachines, faction_id],
     )
     const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
@@ -132,10 +130,7 @@ export const WarMachineStats = () => {
                                 {otherMechs
                                     .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                     .map((wm) => (
-                                        <Box
-                                            key={`${wm.participantID} - ${wm.hash}`}
-                                            sx={{ ":not(:last-child)": { pr: "1.6rem" } }}
-                                        >
+                                        <Box key={`${wm.participantID} - ${wm.hash}`} sx={{ ":not(:last-child)": { pr: "1.6rem" } }}>
                                             <WarMachineItem
                                                 warMachine={wm}
                                                 scale={haveFactionMechs ? 0.7 : 0.7}

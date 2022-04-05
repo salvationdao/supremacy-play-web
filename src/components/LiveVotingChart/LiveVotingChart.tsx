@@ -87,12 +87,13 @@ const Content = () => {
         parseString(localStorage.getItem("liveVotingDataMax"), DefaultMaxLiveVotingDataLength),
     )
 
-    // Triggered spoil of war update
+    // DO NOT REMOVE THIS! Triggered spoil of war update
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe(GameServerKeys.TriggerSpoilOfWarUpdated, () => null, null)
     }, [state, subscribe])
 
+    // DO NOT REMOVE THIS!
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe(GameServerKeys.TriggerLiveVoteCountUpdated, () => null, null)
@@ -194,11 +195,7 @@ const Content = () => {
                                 </Typography>
                             </Stack>
 
-                            <LiveGraph
-                                maxWidthPx={curWidth}
-                                maxHeightPx={curHeight}
-                                maxLiveVotingDataLength={maxLiveVotingDataLength}
-                            />
+                            <LiveGraph maxWidthPx={curWidth} maxHeightPx={curHeight} maxLiveVotingDataLength={maxLiveVotingDataLength} />
                         </Box>
                     </Box>
                 </MoveableResizable>

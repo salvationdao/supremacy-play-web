@@ -167,7 +167,7 @@ const DrawerContent = () => {
         return () => callbacks.forEach((c) => c())
     }, [gsState, gsSubscribe, assets])
 
-    // Every time the battle queue has been updated (i.e. a mech leaves the queue), refetch all mech's queue positions once
+    // DO NOT REMOVE THIS! Every time the battle queue has been updated (i.e. a mech leaves the queue), refetch all mech's queue positions once
     useEffect(() => {
         if (gsState !== WebSocket.OPEN || !gsSubscribe || !gsSend || !assets || assets.length === 0) return
 
