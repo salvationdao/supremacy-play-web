@@ -13,14 +13,7 @@ interface WarMachineAbilitiesPopoverProps {
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
 }
 
-export const WarMachineAbilitiesPopover = ({
-    popoverRef,
-    open,
-    onClose,
-    warMachine,
-    gameAbilities,
-    maxAbilityPriceMap,
-}: WarMachineAbilitiesPopoverProps) => {
+export const WarMachineAbilitiesPopover = ({ popoverRef, open, onClose, warMachine, gameAbilities, maxAbilityPriceMap }: WarMachineAbilitiesPopoverProps) => {
     const factionTheme = warMachine.faction.theme
 
     return (
@@ -70,14 +63,12 @@ export const WarMachineAbilitiesPopover = ({
                                         borderRadius: 0.5,
                                     }}
                                 />
-                                <Typography
-                                    sx={{ lineHeight: 1, color: factionTheme.primary, fontWeight: "fontWeightBold" }}
-                                >
+                                <Typography sx={{ lineHeight: 1, color: factionTheme.primary, fontWeight: "fontWeightBold" }}>
                                     WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
                                 </Typography>
                             </Stack>
 
-                            <Stack spacing=".72rem">
+                            <Stack spacing=".9rem">
                                 {gameAbilities.map((ga, i) => (
                                     <Box key={ga.identity} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
                                         <FactionAbilityItem

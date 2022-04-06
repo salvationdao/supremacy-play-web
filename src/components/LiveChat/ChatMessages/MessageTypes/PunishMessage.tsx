@@ -28,11 +28,11 @@ export const PunishMessage = ({
 
     if (!data) return null
 
-    const { issued_by_user, reported_user, is_passed, agreed_player_number, disagreed_player_number, punish_option, punish_reason, total_player_number } = data
+    const { issued_by_user, reported_user, is_passed, agreed_player_number, punish_option, punish_reason, total_player_number } = data
 
     return (
         <Box>
-            <Box sx={{ ml: "-.4rem", mb: ".5rem", backgroundColor: "#00000040" }}>
+            <Box sx={{ mx: "-0.6rem", mb: ".5rem", backgroundColor: "#00000040" }}>
                 <Stack
                     sx={{
                         pt: "1rem",
@@ -166,12 +166,8 @@ export const PunishMessage = ({
 
                         <LineItem title="VOTES">
                             <Box>
-                                <Typography sx={{ color: colors.green }}>
+                                <Typography sx={{ color: is_passed ? colors.green : colors.red }}>
                                     {agreed_player_number}/{total_player_number} AGREED
-                                </Typography>
-                                <Typography>&nbsp;</Typography>
-                                <Typography sx={{ color: colors.red }}>
-                                    {disagreed_player_number}/{total_player_number} DISAGREED
                                 </Typography>
                             </Box>
                         </LineItem>

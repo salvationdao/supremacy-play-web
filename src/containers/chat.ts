@@ -216,7 +216,7 @@ export const ChatContainer = createContainer(() => {
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !user || !user.faction_id || !user.faction) return
         return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
-            if (!payload) setBanProposal(undefined)
+            if (!payload) return setBanProposal(undefined)
 
             const startedAtTime = payload.started_at.getTime()
             const nowTime = new Date().getTime()

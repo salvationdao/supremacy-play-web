@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react"
 import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
 import { NullUUID } from "../../constants"
 import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
-import { shadeColor } from "../../helpers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityProgress } from "../../types"
@@ -71,14 +70,14 @@ export const SkillBar = ({
             sx={{
                 position: "absolute",
                 bottom: 0,
-                right: index * WIDTH_PER_SLANTED_BAR - index * 1,
+                right: `${index * WIDTH_PER_SLANTED_BAR - index * 0.2}rem`,
                 width: `${WIDTH_PER_SLANTED_BAR_ACTUAL}rem`,
                 height: "100%",
-                zIndex: 4,
+                zIndex: 6,
                 pointerEvents: "none",
             }}
         >
-            <SlantedBar backgroundColor={shadeColor(colors.warMachineSkillBar, 100 - index * 28)} progressPercent={progressPercent} costPercent={costPercent} />
+            <SlantedBar backgroundColor={colors.warMachineSkillBar} progressPercent={progressPercent} costPercent={costPercent} />
         </Box>
     )
 }

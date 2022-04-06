@@ -66,7 +66,9 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     {displayValue}
                 </Typography>
             </Box>
-            <Typography textAlign="center">{label}</Typography>
+            <Typography textAlign="center" sx={{ lineHeight: 1.2 }}>
+                {label}
+            </Typography>
         </Stack>
     )
 }

@@ -332,7 +332,7 @@ const WarMachineItemInner = ({
                                 }}
                             >
                                 <Typography
-                                    variant="caption"
+                                    variant="body2"
                                     sx={{
                                         lineHeight: 1,
                                         fontWeight: "fontWeightBold",
@@ -385,6 +385,7 @@ const WarMachineItemInner = ({
                                         left: "2.2rem",
                                         top: "50%",
                                         transform: `translate(-50%, -50%) rotate(-${SKILL_BUTTON_TEXT_ROTATION}deg)`,
+                                        zIndex: 2,
                                     }}
                                 >
                                     <Typography

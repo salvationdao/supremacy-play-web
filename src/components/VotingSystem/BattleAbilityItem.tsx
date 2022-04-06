@@ -408,7 +408,7 @@ interface VotingButtonsProps {
 }
 
 const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, onBribe }: VotingButtonsProps) => (
-    <Stack direction="row" spacing={0.4} sx={{ mt: ".48rem", width: "100%" }}>
+    <Stack direction="row" spacing=".4rem" sx={{ mt: ".48rem", width: "100%" }}>
         <VotingButton
             color={buttonColor}
             textColor={buttonTextColor}
