@@ -1,5 +1,5 @@
 import { Box } from "@mui/material"
-import { Bar, DrawerButtons, LiveChat, Assets } from ".."
+import { Bar, DrawerButtons, LiveChat, Assets, PlayerList } from ".."
 import { BarProvider, ChatProvider } from "../../containers"
 
 export const GameBar: React.FC = () => {
@@ -16,6 +16,8 @@ export const GameBar: React.FC = () => {
             </ChatProvider>
 
             <Assets />
+
+            <PlayerList />
         </Box>
     )
 }

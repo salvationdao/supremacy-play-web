@@ -1,8 +1,8 @@
 import { Box, Stack, SxProps, Typography } from "@mui/material"
-import { ReactElement } from "react"
+import { ReactNode } from "react"
 import { SvgChat, SvgRobot } from "../../assets"
 import { GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../constants"
-import { useDrawer, usePassportServerAuth } from "../../containers"
+import { useDrawer, useGameServerAuth } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 
@@ -19,9 +19,9 @@ const SideButton = ({
     isOpen: boolean
     toggleIsOpen: (value?: boolean) => void
     text: string
-    Svg?: ReactElement
+    Svg?: ReactNode
 }) => {
-    const { user } = usePassportServerAuth()
+    const { user } = useGameServerAuth()
 
     return (
         <Stack
@@ -65,10 +65,10 @@ const SideButton = ({
 }
 
 export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
-    const { user } = usePassportServerAuth()
-    const { isLiveChatOpen, toggleIsLiveChatOpen, isAssetOpen, toggleIsAssetOpen } = useDrawer()
+    const { user } = useGameServerAuth()
+    const { isLiveChatOpen, toggleIsLiveChatOpen, isPlayerListOpen, toggleIsPlayerListOpen, isAssetOpen, toggleIsAssetOpen } = useDrawer()
 
-    const numberOfButtons = user ? 2 : 1
+    const numberOfButtons = user ? 3 : 1
 
     const styles: SxProps = isFixed
         ? {
@@ -88,8 +88,7 @@ export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
                 ...styles,
                 overflow: "hidden",
                 width: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
-                backgroundColor:
-                    user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                 zIndex: 1,
             }}
         >
@@ -108,13 +107,26 @@ export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
                 }}
             >
                 {user && user.faction && (
-                    <SideButton
-                        isEnabled={true}
-                        isOpen={isAssetOpen}
-                        toggleIsOpen={toggleIsAssetOpen}
-                        text="WAR MACHINES"
-                        Svg={<SvgRobot size="1.2rem" sx={{ pt: ".08rem" }} />}
-                    />
+                    <>
+                        <SideButton
+                            isEnabled={true}
+                            isOpen={isAssetOpen}
+                            toggleIsOpen={toggleIsAssetOpen}
+                            text="WAR MACHINES"
+                            Svg={<SvgRobot size="1.2rem" sx={{ pt: ".08rem" }} />}
+                        />
+                        <SideButton
+                            isEnabled={true}
+                            isOpen={isPlayerListOpen}
+                            toggleIsOpen={toggleIsPlayerListOpen}
+                            text="ACTIVE PLAYERS"
+                            Svg={
+                                <Box sx={{ pb: ".2rem" }}>
+                                    <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: user.faction.theme.primary }} />
+                                </Box>
+                            }
+                        />
+                    </>
                 )}
 
                 <SideButton
