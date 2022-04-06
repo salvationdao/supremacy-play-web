@@ -158,10 +158,6 @@ export const PunishMessage = ({
                                 <Typography sx={{ color: colors.green }}>
                                     {agreed_player_number}/{total_player_number} AGREED
                                 </Typography>
-                                <Typography>&nbsp;</Typography>
-                                <Typography sx={{ color: colors.red }}>
-                                    {disagreed_player_number}/{total_player_number} DISAGREED
-                                </Typography>
                             </Box>
                         </LineItem>
                     </Stack>

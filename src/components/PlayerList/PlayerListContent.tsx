@@ -1,5 +1,6 @@
-import { Stack, Typography } from "@mui/material"
+import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
+import { PlayerItem } from ".."
 import { useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { User } from "../../types"
@@ -21,7 +22,7 @@ export const PlayerListContent = () => {
     return (
         <Stack spacing={0.6}>
             {players.map((p) => (
-                <Typography key={`active-player-${p.id}`}>{p.username}</Typography>
+                <PlayerItem key={`active-player-${p.id}`} player={p} />
             ))}
         </Stack>
     )
