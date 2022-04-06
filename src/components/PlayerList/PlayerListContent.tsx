@@ -43,7 +43,7 @@ export const PlayerListContent = ({ user }: { user: User }) => {
     if (!players || players.length <= 0) return null
 
     return (
-        <Stack spacing=".5rem">
+        <Stack spacing=".6rem">
             {players.map((p) => (
                 <PlayerItem key={`active-player-${p.id}`} player={p} faction={faction} user={user} />
             ))}
