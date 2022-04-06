@@ -10,6 +10,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { User, UserRank, UserStat } from "../../../types"
 import { ChatMessageType } from "../../../types/chat"
+import { TooltipHelper } from "../../Common/TooltipHelper"
 
 interface ChatSendProps {
     primaryColor: string
@@ -398,20 +399,22 @@ const ChatSendInner = ({
                         endAdornment: (
                             <InputAdornment position="end">
                                 <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
-                                <IconButton
-                                    ref={popoverRef}
-                                    onClick={() => toggleIsEmojiOpen()}
-                                    edge="end"
-                                    size="small"
-                                    sx={{
-                                        mr: 0,
-                                        opacity: isEmojiOpen ? 1 : 0.5,
-                                        ":hover": { opacity: 1 },
-                                        transition: "all .1s",
-                                    }}
-                                >
-                                    <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                                </IconButton>
+                                <TooltipHelper placement="top" text="Use keyboard shortcut ' : '">
+                                    <IconButton
+                                        ref={popoverRef}
+                                        onClick={() => toggleIsEmojiOpen()}
+                                        edge="end"
+                                        size="small"
+                                        sx={{
+                                            mr: 0,
+                                            opacity: isEmojiOpen ? 1 : 0.5,
+                                            ":hover": { opacity: 1 },
+                                            transition: "all .1s",
+                                        }}
+                                    >
+                                        <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                    </IconButton>
+                                </TooltipHelper>
                                 <IconButton
                                     onClick={sendMessage}
                                     edge="end"
