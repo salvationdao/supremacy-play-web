@@ -118,7 +118,6 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                 const resp = await fetch(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/check`)
                 const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
                 if (ok) {
-                    if (webSocket.current) webSocket.current.close()
                     webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
                     webSocket.current.binaryType = "arraybuffer"
                     setupWS(webSocket.current)
