@@ -143,7 +143,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                                     width: "calc(100% - 6rem)",
                                     height: "26rem",
                                     objectFit: "contain",
-                                    objectPosition: "center",
+                                    objectPosition: "left",
                                 }}
                             />
                             <Stack

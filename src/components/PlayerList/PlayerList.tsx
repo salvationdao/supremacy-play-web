@@ -49,7 +49,7 @@ const DrawerContent = ({ user }: { user?: User }) => {
 
             <Box
                 sx={{
-                    m: ".4rem",
+                    m: ".6rem",
                     flex: 1,
                     overflowY: "auto",
                     overflowX: "hidden",
@@ -68,7 +68,7 @@ const DrawerContent = ({ user }: { user?: User }) => {
                     },
                 }}
             >
-                <PlayerListContent />
+                <PlayerListContent user={user} />
             </Box>
         </Stack>
     )

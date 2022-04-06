@@ -340,7 +340,7 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
                         },
                     }}
                 >
-                    <Stack spacing={0.6}>{content}</Stack>
+                    <Stack spacing=".6rem">{content}</Stack>
                 </Box>
             </Fade>
         </Stack>
