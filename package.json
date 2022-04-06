@@ -18,6 +18,7 @@
         "@use-gesture/react": "^10.2.6",
         "bignumber.js": "^9.0.2",
         "core-js": "^3.5.0",
+        "emoji-regex": "^10.1.0",
         "jsonwebtoken": "^8.5.1",
         "jwt-decode": "^3.1.2",
         "moment": "^2.29.1",
