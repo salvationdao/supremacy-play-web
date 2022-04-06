@@ -286,7 +286,7 @@ interface SupsBarProps {
 }
 
 const SupsBar = ({ forceDisplay100Percentage, factionsAll, faction_id, sups_cost, current_sups }: SupsBarProps) => {
-    const primaryColor = factionsAll[faction_id].theme.primary
+    const primaryColor = factionsAll[faction_id]?.theme.primary
 
     return (
         <Stack key={faction_id} spacing=".96rem" direction="row" alignItems="center">
@@ -294,7 +294,7 @@ const SupsBar = ({ forceDisplay100Percentage, factionsAll, faction_id, sups_cost
                 sx={{
                     height: "1.6rem",
                     width: "1.6rem",
-                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction_id].logo_blob_id})`,
+                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction_id]?.logo_blob_id})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",

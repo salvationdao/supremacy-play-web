@@ -22,7 +22,7 @@ export const ChatFontSize = () => {
                 <ToggleButton value={0.8}>
                     <SvgFontCase size="1rem" sx={{ minWidth: "2rem" }} />
                 </ToggleButton>
-                <ToggleButton value={1}>
+                <ToggleButton value={1.1}>
                     <SvgFontCase size="1.5rem" sx={{ minWidth: "2rem" }} />
                 </ToggleButton>
 

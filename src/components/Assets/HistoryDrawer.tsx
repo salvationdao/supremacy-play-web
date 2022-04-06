@@ -1,8 +1,7 @@
-import RefreshIcon from "@mui/icons-material/Refresh"
-import { Box, CircularProgress, Drawer, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Drawer, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgDeath, SvgGoldBars, SvgHistory } from "../../assets"
-import { RIGHT_DRAWER_WIDTH } from "../../constants"
+import { SvgBack, SvgDeath, SvgGoldBars, SvgHistory, SvgRefresh } from "../../assets"
+import { GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { SocketState, useGameServerWebsocket } from "../../containers"
 import { camelToTitle, timeSince } from "../../helpers"
 import { GameServerKeys } from "../../keys"
@@ -19,16 +18,14 @@ export interface HistoryDrawerProps {
 
 export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
     const { state, send } = useGameServerWebsocket()
-    const [shouldRender, setShouldRender] = useState(false)
-
     // Mech stats
-    const [statsError, setStatsError] = useState<string>()
-    const [statsLoading, setStatsLoading] = useState(false)
     const [stats, setStats] = useState<BattleMechStats>()
+    const [statsLoading, setStatsLoading] = useState(false)
+    const [statsError, setStatsError] = useState<string>()
     // Battle history
-    const [historyError, setHistoryError] = useState<string>()
-    const [historyLoading, setHistoryLoading] = useState(false)
     const [history, setHistory] = useState<BattleMechHistory[]>([])
+    const [historyLoading, setHistoryLoading] = useState(false)
+    const [historyError, setHistoryError] = useState<string>()
 
     const fetchHistory = async () => {
         setHistoryLoading(true)
@@ -75,219 +72,177 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
         fetchHistory()
     }, [state, send])
 
-    useEffect(() => {
-        const t = setTimeout(() => {
-            setShouldRender(open)
-        }, 50)
-
-        return () => clearTimeout(t)
-    }, [open])
-
     const renderEmptyHistory = () => {
         if (historyLoading) {
-            return <CircularProgress />
+            return <CircularProgress size="4rem" />
         }
         if (historyError) {
             return (
-                <Typography variant="subtitle1" color={colors.red}>
+                <Typography color={colors.red} sx={{ textAlign: "center" }}>
                     {historyError}
                 </Typography>
             )
         }
         return (
-            <Box>
-                <SvgHistory size="8rem" fill={colors.grey} />
-                <Typography
-                    variant="h6"
-                    sx={{
-                        color: colors.grey,
-                    }}
-                >
-                    No Recent Match History
-                </Typography>
-            </Box>
+            <Typography variant="h6" sx={{ color: colors.grey }}>
+                No recent match history...
+            </Typography>
         )
     }
 
     return (
         <Drawer
-            open={shouldRender}
+            open={open}
             onClose={onClose}
             anchor="right"
             sx={{
-                width: `${RIGHT_DRAWER_WIDTH}rem`,
+                width: `${RIGHT_DRAWER_WIDTH - LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
                 flexShrink: 0,
                 zIndex: 9999,
             }}
             PaperProps={{
                 sx: {
-                    overflow: "hidden",
-                    width: `${RIGHT_DRAWER_WIDTH}rem`,
-                    maxHeight: "100vh",
+                    width: `${RIGHT_DRAWER_WIDTH - LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
                     backgroundImage: "none",
-                    padding: "1rem",
                 },
             }}
         >
-            <Typography
-                variant="h5"
-                sx={{
-                    marginBottom: "1rem",
-                    textAlign: "center",
-                    fontFamily: ["Nostromo Regular Black", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-                }}
-            >
-                {asset.data.mech.name || asset.data.mech.label}
-            </Typography>
-            {statsError && (
-                <Typography variant="subtitle1" color={colors.red}>
-                    {statsError}
-                </Typography>
-            )}
-            <Box
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-around",
-                    margin: "1rem 0",
-                }}
-            >
-                <Box
-                    component="img"
-                    src={asset.data.mech.image_url}
-                    alt={`Image for ${asset.data.mech.name} || ${asset.data.mech.label}`}
-                    sx={{
-                        width: "100%",
-                    }}
-                />
+            <Stack sx={{ height: "100%" }}>
                 <Stack
-                    spacing="1rem"
+                    alignItems="flex-start"
                     justifyContent="center"
                     sx={{
-                        marginBottom: "1rem",
+                        flexShrink: 0,
+                        pl: "2rem",
+                        pr: "4.8rem",
+                        height: `${GAME_BAR_HEIGHT}rem`,
+                        background: `${colors.assetsBanner}65`,
+                        boxShadow: 1.5,
                     }}
                 >
-                    {stats && !statsLoading ? (
-                        <>
-                            <PercentageDisplay
-                                displayValue={`${stats.extra_stats.win_rate * 100}%`}
-                                percentage={stats.extra_stats.win_rate * 100}
-                                label="Win Rate"
-                            />
+                    <Button size="small" onClick={onClose} sx={{ px: "1rem" }}>
+                        <SvgBack size="1.3rem" sx={{ pb: ".1rem" }} />
+                        <Typography sx={{ ml: ".5rem" }}>Go Back</Typography>
+                    </Button>
+                </Stack>
 
-                            <PercentageDisplay
-                                displayValue={`${stats.total_kills}`}
-                                percentage={100}
-                                label="Total Kills"
-                                color={colors.gold}
+                <Stack sx={{ p: ".8rem", flex: 1, overflow: "hidden" }}>
+                    <Stack spacing="1rem" sx={{ px: "1.2rem", py: "1rem" }}>
+                        <Box>
+                            <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{asset.data.mech.name || asset.data.mech.label}</Typography>
+                            {statsError && <Typography color={colors.red}>{statsError}</Typography>}
+                        </Box>
+
+                        <Stack direction="row" alignItems="center" justifyContent="space-between">
+                            <Box
+                                component="img"
+                                src={asset.data.mech.image_url}
+                                alt={`Image for ${asset.data.mech.name} || ${asset.data.mech.label}`}
+                                sx={{
+                                    width: "calc(100% - 6rem)",
+                                    height: "26rem",
+                                    objectFit: "contain",
+                                    objectPosition: "center",
+                                }}
                             />
-                            <PercentageDisplay
-                                displayValue={`${stats.total_deaths}`}
-                                percentage={100}
-                                label="Total Deaths"
-                                color={colors.red}
-                            />
-                        </>
-                    ) : (
-                        <>
-                            <PercentageDisplaySkeleton />
-                            <PercentageDisplaySkeleton />
-                            <PercentageDisplaySkeleton />
-                        </>
-                    )}
-                </Stack>
-            </Box>
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
-                    minHeight: 0,
-                    padding: ".5rem",
-                    backgroundColor: `${colors.navy}80`,
-                }}
-            >
-                <Stack
-                    direction="row"
-                    spacing=".5rem"
-                    alignItems="end"
-                    sx={{
-                        padding: "0.8rem 1.04rem",
-                    }}
-                >
-                    <SvgHistory />
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            textTransform: "uppercase",
-                        }}
-                    >
-                        Recent Matches
-                    </Typography>
-                    <Box
-                        sx={{
-                            flex: 1,
-                            display: "flex",
-                            alignItems: "end",
-                        }}
-                    >
-                        <IconButton
-                            sx={{
-                                marginLeft: "auto",
-                            }}
-                            onClick={() => fetchHistory()}
-                            size="small"
-                        >
-                            <RefreshIcon fontSize="large" />
-                        </IconButton>
-                    </Box>
-                </Stack>
-                {history.length > 0 ? (
-                    <Stack
-                        spacing=".6rem"
-                        sx={{
-                            overflowY: "auto",
-                            direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: colors.assetsBanner,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        {history.map((h, index) => (
-                            <HistoryEntry
-                                key={index}
-                                mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                                backgroundImage={h.battle?.game_map?.image_url}
-                                isWin={!!h.faction_won}
-                                mechSurvived={!!h.mech_survived}
-                                kills={h.kills}
-                                date={h.created_at}
-                            />
-                        ))}
+                            <Stack
+                                spacing="1rem"
+                                alignItems="center"
+                                justifyContent="center"
+                                sx={{
+                                    flexShrink: 0,
+                                    width: "6rem",
+                                }}
+                            >
+                                {statsLoading ? (
+                                    <>
+                                        <PercentageDisplaySkeleton />
+                                        <PercentageDisplaySkeleton />
+                                        <PercentageDisplaySkeleton />
+                                    </>
+                                ) : stats ? (
+                                    <>
+                                        <PercentageDisplay
+                                            displayValue={`${(stats.extra_stats.win_rate * 100).toFixed(0)}%`}
+                                            percentage={stats.extra_stats.win_rate * 100}
+                                            label="Win Rate"
+                                        />
+                                        <PercentageDisplay displayValue={`${stats.total_kills}`} percentage={100} label="Total Kills" color={colors.gold} />
+                                        <PercentageDisplay displayValue={`${stats.total_deaths}`} percentage={100} label="Total Deaths" color={colors.red} />
+                                    </>
+                                ) : (
+                                    <>
+                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Win Rate" />
+                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Total Kills" color={colors.gold} />
+                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Total Deaths" color={colors.red} />
+                                    </>
+                                )}
+                            </Stack>
+                        </Stack>
                     </Stack>
-                ) : (
-                    <Box
+
+                    <Stack
                         sx={{
                             flex: 1,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            minHeight: 0,
+                            px: ".5rem",
+                            py: ".9rem",
+                            backgroundColor: `${colors.navy}80`,
                         }}
                     >
-                        {renderEmptyHistory()}
-                    </Box>
-                )}
-            </Box>
+                        <Stack direction="row" alignItems="center" sx={{ pb: ".8rem", px: "1.2rem" }}>
+                            <SvgHistory size="1.8rem" />
+                            <Typography variant="h6" sx={{ ml: ".8rem", fontWeight: "fontWeightBold" }}>
+                                RECENT MATCHES
+                            </Typography>
+                            <IconButton size="small" sx={{ ml: "auto" }} onClick={() => fetchHistory()}>
+                                <SvgRefresh size="1.3rem" />
+                            </IconButton>
+                        </Stack>
+
+                        {history.length > 0 ? (
+                            <Stack
+                                spacing=".5rem"
+                                sx={{
+                                    pl: ".4rem",
+                                    pr: ".4rem",
+                                    overflowY: "auto",
+                                    direction: "ltr",
+                                    scrollbarWidth: "none",
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: "#FFFFFF80",
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                {history.map((h, index) => (
+                                    <HistoryEntry
+                                        key={index}
+                                        mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
+                                        backgroundImage={h.battle?.game_map?.image_url}
+                                        isWin={!!h.faction_won}
+                                        mechSurvived={!!h.mech_survived}
+                                        kills={h.kills}
+                                        date={h.created_at}
+                                    />
+                                ))}
+                            </Stack>
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
+                                {renderEmptyHistory()}
+                            </Stack>
+                        )}
+                    </Stack>
+                </Stack>
+            </Stack>
         </Drawer>
     )
 }
@@ -303,80 +258,63 @@ interface HistoryEntryProps {
 
 const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
     return (
-        <Box
+        <Stack
+            direction="row"
             sx={{
-                display: "flex",
+                flexShrink: 0,
                 minHeight: "70px",
-                padding: "0.8rem 1.04rem",
+                p: "0.8rem 1.1rem",
                 background: `center center`,
-                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${
-                    isWin ? colors.green : colors.red
-                }80), url(${backgroundImage})`,
+                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${isWin ? colors.green : colors.red}80), url(${backgroundImage})`,
                 backgroundSize: "cover",
             }}
         >
             <Box>
-                <Typography>{mapName}</Typography>
+                <Typography variant="subtitle2" sx={{ textTransform: "uppercase" }}>
+                    {mapName}
+                </Typography>
                 <Typography
                     variant="h5"
                     sx={{
-                        fontFamily: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+                        fontFamily: "Nostromo Regular Bold",
                     }}
                 >
-                    {isWin ? "Victory" : "Defeat"}
+                    {isWin ? "VICTORY" : "DEFEAT"}
                 </Typography>
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
+                <Stack direction="row" alignItems="center" spacing=".5rem">
                     <Typography
                         variant="subtitle2"
                         sx={{
-                            marginRight: ".5rem",
                             textTransform: "uppercase",
                             color: mechSurvived ? colors.neonBlue : colors.grey,
                         }}
                     >
-                        {mechSurvived ? "Mech Survived" : "Mech Destroyed"}
+                        {mechSurvived ? "MECH SURVIVED" : "MECH DESTROYED"}
                     </Typography>
                     {mechSurvived && <SvgGoldBars size="1.5rem" />}
-                </Box>
+                </Stack>
             </Box>
-            <Box
-                sx={{
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-end",
-                    marginLeft: "auto",
-                }}
-            >
-                <Stack direction="row" spacing=".5rem">
+            <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
+                <Stack direction="row" spacing=".5rem" alignItems="center">
                     <Typography
                         variant="h6"
                         sx={{
-                            fontFamily: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(
-                                ",",
-                            ),
+                            fontFamily: "Nostromo Regular Bold",
                             color: kills > 0 ? colors.gold : colors.lightGrey,
                         }}
                     >
-                        {kills > 0 ? `${kills} kill${kills > 1 ? "s" : ""}` : "No Kills"}
+                        {kills > 0 ? `${kills} KILL${kills > 1 ? "S" : ""}` : "NO KILLS"}
                     </Typography>
-                    <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} />
+                    <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
                 </Stack>
                 <Typography
-                    variant="subtitle1"
                     sx={{
-                        textTransform: "uppercase",
                         color: colors.offWhite,
                     }}
                 >
-                    {timeSince(date)} ago
+                    {timeSince(date)} AGO
                 </Typography>
-            </Box>
-        </Box>
+            </Stack>
+        </Stack>
     )
 }

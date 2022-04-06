@@ -449,7 +449,7 @@ export const getUserRankDeets = (rank: UserRank, width: string, height: string):
         case "GENERAL":
             icon = <SvgGeneral width={width} height={height} />
             title = "GENERAL"
-            desc = 'User has achieved "Corporal" and contributed top 20% of ability kills for their Syndicate.'
+            desc = 'User has achieved "Corporal" and contributed top 20% of ability kills for their Syndicate in the past 7 days.'
             break
         case "NEW_RECRUIT":
         default:

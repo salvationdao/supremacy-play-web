@@ -32,7 +32,7 @@ export const PunishMessage = ({
 
     return (
         <Box>
-            <Box sx={{ ml: "-.4rem", mb: ".5rem", backgroundColor: "#00000030" }}>
+            <Box sx={{ ml: "-.4rem", mb: ".5rem", backgroundColor: "#00000040" }}>
                 <Stack
                     sx={{
                         pt: "1rem",
@@ -67,7 +67,12 @@ export const PunishMessage = ({
                         }}
                     >
                         <StyledImageText
-                            text={`${reported_user.username}#${reported_user.gid}`}
+                            text={
+                                <>
+                                    {`${reported_user.username}`}
+                                    <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${reported_user.gid}`}</span>
+                                </>
+                            }
                             color={factionColor || "#FFFFFF"}
                             imageUrl={
                                 factionsAll[issued_by_user.faction_id]
@@ -126,11 +131,17 @@ export const PunishMessage = ({
                         }}
                     >
                         <LineItem title="INITIATOR" color={colors.green}>
-                            <Typography>{`${issued_by_user.username}#${issued_by_user.gid}`}</Typography>
+                            <Typography>
+                                {`${issued_by_user.username}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${issued_by_user.gid}`}</span>
+                            </Typography>
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <Typography>{`${reported_user.username}#${reported_user.gid}`}</Typography>
+                            <Typography>
+                                {`${reported_user.username}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${reported_user.gid}`}</span>
+                            </Typography>
                         </LineItem>
 
                         <LineItem title="PUNISH">

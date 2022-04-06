@@ -36,6 +36,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         id: "",
         total_ability_triggered: 0,
         kill_count: 0,
+        last_seven_days_kills: 0,
         view_battle_count: 0,
         mech_kill_count: 0,
     })

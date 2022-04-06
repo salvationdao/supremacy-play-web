@@ -5,6 +5,7 @@ import { SvgGlobal } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { useChat, useDrawer, useGameServerAuth } from "../../containers"
 import { acronym, shadeColor } from "../../helpers"
+import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { User } from "../../types"
 import { ChatMessageType } from "../../types/chat"
@@ -49,7 +50,7 @@ const Content = ({
 
 const TabbedLayout = () => {
     const { user } = useGameServerAuth()
-    const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread } = useChat()
+    const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread, banProposal } = useChat()
 
     const chatMessages = tabValue == 0 ? globalChatMessages : factionChatMessages
     const isEnlisted = user && user.faction_id && user.faction
@@ -131,6 +132,7 @@ const TabbedLayout = () => {
                                 sx={{
                                     lineHeight: 1,
                                     fontFamily: "Nostromo Regular Black",
+                                    textAlign: "start",
                                 }}
                             >
                                 GLOBAL CHAT
@@ -141,7 +143,13 @@ const TabbedLayout = () => {
                 {isEnlisted && (
                     <Tab
                         label={
-                            <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="center"
+                                spacing=".96rem"
+                                sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
+                            >
                                 <Badge
                                     badgeContent={factionChatUnread}
                                     sx={{
@@ -171,7 +179,7 @@ const TabbedLayout = () => {
                                         }}
                                     />
                                 </Badge>
-                                <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black" }}>
+                                <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", textAlign: "start" }}>
                                     {factionTabLabel}
                                 </Typography>
                             </Stack>
@@ -187,7 +195,7 @@ const TabbedLayout = () => {
 
 const SplitLayout = () => {
     const { user } = useGameServerAuth()
-    const { globalChatMessages, factionChatMessages } = useChat()
+    const { globalChatMessages, factionChatMessages, banProposal } = useChat()
 
     const isEnlisted = useMemo(() => user && user.faction_id && user.faction, [user])
     const factionTabLabel = useMemo(() => {
@@ -227,6 +235,7 @@ const SplitLayout = () => {
                         sx={{
                             lineHeight: 1,
                             fontFamily: "Nostromo Regular Black",
+                            textAlign: "start",
                         }}
                     >
                         GLOBAL CHAT
@@ -239,9 +248,7 @@ const SplitLayout = () => {
             {isEnlisted && user && (
                 <Stack sx={{ position: "relative", height: "50%", backgroundColor: `${user?.faction.theme.primary}06` }}>
                     <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing=".96rem"
+                        justifyContent="center"
                         sx={{
                             height: `${GAME_BAR_HEIGHT}rem`,
                             px: "1.8rem",
@@ -250,24 +257,31 @@ const SplitLayout = () => {
                             zIndex: 99,
                         }}
                     >
-                        <Box
-                            sx={{
-                                width: "2.1rem",
-                                height: "2.1rem",
-                                flexShrink: 0,
-                                mb: ".16rem",
-                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "contain",
-                                backgroundColor: user.faction.theme.primary,
-                                borderRadius: 0.5,
-                                border: `${user.faction.theme.primary} solid 1px`,
-                            }}
-                        />
-                        <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black" }}>
-                            {factionTabLabel}
-                        </Typography>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing=".96rem"
+                            sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
+                        >
+                            <Box
+                                sx={{
+                                    width: "2.1rem",
+                                    height: "2.1rem",
+                                    flexShrink: 0,
+                                    mb: ".16rem",
+                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "contain",
+                                    backgroundColor: user.faction.theme.primary,
+                                    borderRadius: 0.5,
+                                    border: `${user.faction.theme.primary} solid 1px`,
+                                }}
+                            />
+                            <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", textAlign: "start" }}>
+                                {factionTabLabel}
+                            </Typography>
+                        </Stack>
                     </Stack>
 
                     <Content

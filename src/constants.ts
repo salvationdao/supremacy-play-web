@@ -36,7 +36,7 @@ export {
 }
 
 export const SENTRY_CONFIG = {
-    DSN: process.env.REACT_APP_SENTRY_DSN_FRONTEND,
+    DSN: process.env._SENTRY_DSN_FRONTEND,
     RELEASE: process.env.REACT_APP_SENTRY_CURRENT_RELEASE_NAME,
     ENVIRONMENT: process.env.REACT_APP_SENTRY_ENVIRONMENT,
     get SAMPLERATE(): number {
@@ -52,7 +52,7 @@ export const SENTRY_CONFIG = {
 
 // UI related stuff
 export const GAME_BAR_HEIGHT = 5.9 // rem
-export const RIGHT_DRAWER_WIDTH = 34.0 // rem
+export const RIGHT_DRAWER_WIDTH = 39 // rem
 export const LIVE_CHAT_DRAWER_BUTTON_WIDTH = 2.0 // rem
 export const CONTROLS_HEIGHT = 3.0 // rem
 export const MINI_MAP_DEFAULT_SIZE = 240 //px
@@ -71,9 +71,11 @@ export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const TRAILER_VIDEO =
     "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"
-export const TELEGRAM_BOT_URL = "https://t.me/SupremacyNotifyBot"
 
 // Maintenance (ENVAR). The local stroage is a hack to let the team members in
 export const UNDER_MAINTENANCE = process.env.REACT_APP_MAINTENANCE_PAGE == "true" && !localStorage.getItem("NinjaSecrets@!")
 
 export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
+
+// note: telegram notifications does not work on develop
+export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https://t.me/SupremacyNotifyBot"

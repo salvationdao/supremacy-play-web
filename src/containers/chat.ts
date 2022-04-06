@@ -6,7 +6,7 @@ import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys } from "../keys"
-import { ChatMessageType, TextMessageData } from "../types/chat"
+import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
 import { UserStat } from "../types"
 
 interface SentChatMessageData {
@@ -16,7 +16,7 @@ interface SentChatMessageData {
 
 export type SplitOptionType = "tabbed" | "split" | null
 
-export type FontSizeType = 0.8 | 1 | 1.35
+export type FontSizeType = 0.8 | 1.1 | 1.35
 
 export const ChatContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
@@ -31,7 +31,7 @@ export const ChatContainer = createContainer(() => {
     const [filterZerosGlobal, toggleFilterZerosGlobal] = useToggle(localStorage.getItem("chatFilterZerosGlobal") == "true")
     const [filterZerosFaction, toggleFilterZerosFaction] = useToggle(localStorage.getItem("chatFilterZerosFaction") == "true")
 
-    const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize"), 1) as FontSizeType)
+    const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize2"), 1.1) as FontSizeType)
 
     // Global announcement message
     const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()
@@ -49,6 +49,8 @@ export const ChatContainer = createContainer(() => {
         from_user_stat?: UserStat
     }>()
 
+    const [banProposal, setBanProposal] = useState<BanProposalStruct>()
+
     // Store list of messages that were successfully sent or failed
     const [sentMessages, setSentMessages] = useState<Date[]>([])
     const [failedMessages, setFailedMessages] = useState<Date[]>([])
@@ -58,7 +60,7 @@ export const ChatContainer = createContainer(() => {
         localStorage.setItem("chatSplitOption", splitOption || "tabbed")
         localStorage.setItem("chatFilterZerosGlobal", filterZerosGlobal ? "true" : "false")
         localStorage.setItem("chatFilterZerosFaction", filterZerosFaction ? "true" : "false")
-        localStorage.setItem("chatFontSize", fontSize ? fontSize.toString() : "1")
+        localStorage.setItem("chatFontSize2", fontSize ? fontSize.toString() : "1")
     }, [splitOption, filterZerosGlobal, filterZerosFaction, fontSize])
 
     const onSentMessage = useCallback(
@@ -210,6 +212,24 @@ export const ChatContainer = createContainer(() => {
         })
     }, [user, state, subscribe, tabValue, factionChatUnread])
 
+    // Subscribe to ban proposals
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe || !user || !user.faction_id || !user.faction) return
+        return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
+            if (!payload) setBanProposal(undefined)
+
+            const startedAtTime = payload.started_at.getTime()
+            const nowTime = new Date().getTime()
+            const duration = payload.ended_at.getTime() - startedAtTime
+            const endTime = new Date(Math.min(startedAtTime, nowTime) + duration)
+
+            setBanProposal({
+                ...payload,
+                ended_at: endTime,
+            })
+        })
+    }, [user, state, subscribe])
+
     return {
         tabValue,
         setTabValue,
@@ -234,6 +254,7 @@ export const ChatContainer = createContainer(() => {
         setFontSize,
         globalAnnouncement,
         userStats,
+        banProposal,
     }
 })
 

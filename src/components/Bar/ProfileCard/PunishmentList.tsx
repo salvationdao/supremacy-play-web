@@ -58,7 +58,8 @@ export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; 
                                             <strong>DESCRIPTION:</strong> {p.punish_option.description}
                                         </Typography>
                                         <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                            <strong>INITIATED BY:</strong> {p.related_punish_vote.issued_by_username}#{p.related_punish_vote.issued_by_gid}
+                                            <strong>INITIATED BY:</strong> {p.related_punish_vote.issued_by_username}
+                                            <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>#{p.related_punish_vote.issued_by_gid}</span>
                                         </Typography>
                                         <Typography sx={{ strong: { color: colors.offWhite } }}>
                                             <strong>REASON:</strong> {p.related_punish_vote.reason}

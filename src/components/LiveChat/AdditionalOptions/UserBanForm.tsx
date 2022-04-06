@@ -34,7 +34,10 @@ const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: Sx
                 border: `${user.faction.theme.primary} 1px solid`,
             }}
         />
-        <Typography>{`${banUser.username}#${banUser.gid}`}</Typography>
+        <Typography>
+            {`${banUser.username}`}
+            <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banUser.gid}`}</span>
+        </Typography>
     </Stack>
 )
 
@@ -183,7 +186,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                     <UserItem user={user} banUser={u} />
                                 </Box>
                             )}
-                            getOptionLabel={(u) => u.username}
+                            getOptionLabel={(u) => `${u.username}#${u.gid}`}
                             noOptionsText={
                                 <Typography sx={{ opacity: 0.6 }}>
                                     <i>Start typing a username...</i>

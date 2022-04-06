@@ -1,8 +1,7 @@
-import HistoryIcon from "@mui/icons-material/History"
 import { Box, Button, IconButton, Link, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
-import { SvgExternalLink, SvgSupToken, SvgWrapper } from "../../assets"
+import { SvgExternalLink, SvgHistoryClock, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
@@ -305,8 +304,7 @@ export const AssetItem = ({
                     </Stack>
                 </TooltipHelper>
             </Box>
-
-            <Stack spacing=".4rem">
+            <Stack spacing=".4rem" justifyContent="space-between" sx={{ flex: 1, pb: ".2rem" }}>
                 <Typography
                     variant="caption"
                     sx={{
@@ -323,8 +321,8 @@ export const AssetItem = ({
                 </Stack>
             </Stack>
 
-            <Stack>
-                <TooltipHelper placement="left" text="View Asset">
+            <Stack spacing=".3rem" sx={{ pt: ".2rem" }}>
+                <TooltipHelper placement="left" text="View asset in Passport">
                     <Link
                         sx={{
                             display: "block",
@@ -333,15 +331,13 @@ export const AssetItem = ({
                         href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
                         target="_blank"
                     >
-                        <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                        <SvgExternalLink size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 0.9 } }} />
                     </Link>
                 </TooltipHelper>
 
-                <TooltipHelper placement="left" text="View History">
+                <TooltipHelper placement="left" text="View battle history">
                     <IconButton onClick={() => toggleHistoryDrawerOpen(true)} sx={{ p: 0 }}>
-                        <SvgWrapper size="1.5rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}>
-                            <HistoryIcon />
-                        </SvgWrapper>
+                        <SvgHistoryClock size="1.3rem" sx={{ opacity: 0.4, ":hover": { opacity: 0.9 } }} />
                     </IconButton>
                 </TooltipHelper>
             </Stack>

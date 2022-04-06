@@ -80,7 +80,7 @@ const UserDetailsPopover = ({
                     }}
                     innerSx={{ position: "relative" }}
                 >
-                    <Stack sx={{ minWidth: "16rem", px: "1.2rem", py: ".8rem", backgroundColor: colors.darkNavy }}>
+                    <Stack sx={{ minWidth: "20rem", px: "1.2rem", py: ".8rem", backgroundColor: colors.darkNavy }}>
                         <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
                             {factionLogoBlobID && factionLogoBlobID != NullUUID && (
                                 <Box
@@ -99,7 +99,10 @@ const UserDetailsPopover = ({
                                     }}
                                 />
                             )}
-                            <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>{`${username}#${gid}`}</Typography>
+                            <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>
+                                {`${username}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
+                            </Typography>
                         </Stack>
 
                         <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>
@@ -111,6 +114,13 @@ const UserDetailsPopover = ({
                             </Stack>
 
                             <Stack direction="row" spacing=".5rem">
+                                <SvgSkull2 size="1.1rem" sx={{ pb: ".4rem" }} />
+                                <Typography variant="body2">
+                                    <strong>MECH KILLS:</strong> {userStat.mech_kill_count}
+                                </Typography>
+                            </Stack>
+
+                            <Stack direction="row" spacing=".5rem">
                                 <SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />
                                 <Typography variant="body2">
                                     <strong>ABILITY KILLS:</strong> {userStat.kill_count}
@@ -118,9 +128,9 @@ const UserDetailsPopover = ({
                             </Stack>
 
                             <Stack direction="row" spacing=".5rem">
-                                <SvgSkull2 size="1.1rem" sx={{ pb: ".4rem" }} />
+                                <SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />
                                 <Typography variant="body2">
-                                    <strong>MECH KILLS:</strong> {userStat.mech_kill_count}
+                                    <strong>ABILITY KILLS (7 DAYS):</strong> {userStat.last_seven_days_kills}
                                 </Typography>
                             </Stack>
 
@@ -218,28 +228,20 @@ export const TextMessage = ({
     const factionColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.primary : message_color), [faction_id, factionsAll])
     const factionSecondaryColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.secondary : "#FFFFFF"), [faction_id, factionsAll])
     const factionLogoBlobID = useMemo(() => (faction_id ? factionsAll[faction_id]?.logo_blob_id : ""), [faction_id, factionsAll])
-    const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.7rem") : undefined), [user_rank])
-
-    // For the hide zero multi setting
-    if (!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) return null
+    const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
 
     const renderFontSize = useCallback(() => {
-        if (isEmoji && fontSize) {
-            return fontSize * 3
-        }
-        if (isEmoji) {
-            return 1.35 * 3
-        }
-        if (fontSize) {
-            return fontSize * 1.35
-        }
-        return 1.35
+        if (isEmoji) return (fontSize || 1.1) * 3
+        return (fontSize || 1.1) * 1.35
     }, [isEmoji, fontSize])
 
     const chatMessage = useMemo(() => {
         const messageFontSize = renderFontSize()
         return <Typography sx={{ fontSize: `${messageFontSize}rem` }}>{message}</Typography>
     }, [message, renderFontSize])
+
+    // For the hide zero multi setting
+    if (!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) return null
 
     return (
         <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
@@ -315,7 +317,8 @@ export const TextMessage = ({
                             },
                         }}
                     >
-                        {`${truncate(username, 24)}#${gid}`}
+                        {`${truncate(username, 20)}`}
+                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
                     </Typography>
 
                     {from_user_stat && (
