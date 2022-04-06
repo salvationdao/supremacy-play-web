@@ -2,8 +2,8 @@ import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { ClipThing, StyledImageText, StyledNormalText } from "../.."
 import { GenericWarMachinePNG, SvgEmergency } from "../../../assets"
-import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { FactionsAll, httpProtocol } from "../../../containers"
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { FactionsAll } from "../../../containers"
 import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { BattleAbility, User, WarMachineState } from "../../../types"
@@ -14,13 +14,7 @@ export interface WarMachineAbilityAlertProps {
     warMachine: WarMachineState
 }
 
-export const WarMachineAbilityAlert = ({
-    data,
-    factionsAll,
-}: {
-    data: WarMachineAbilityAlertProps
-    factionsAll: FactionsAll
-}) => {
+export const WarMachineAbilityAlert = ({ data, factionsAll }: { data: WarMachineAbilityAlertProps; factionsAll: FactionsAll }) => {
     const { ability, warMachine } = data
     const { label, colour, image_url } = ability
     const { hash, name, imageAvatar: warMachineImageUrl, faction } = warMachine
@@ -54,12 +48,7 @@ export const WarMachineAbilityAlert = ({
                         imageMb={-0.2}
                     />
                     <SvgEmergency fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
-                    <StyledImageText
-                        text={label}
-                        color={colour}
-                        imageUrl={`${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`}
-                        imageMb={-0.2}
-                    />
+                    <StyledImageText text={label} color={colour} imageUrl={`${image_url}`} imageMb={-0.2} />
                 </Box>
                 <Box>
                     <StyledNormalText text="Mech ability has been initiated by " />

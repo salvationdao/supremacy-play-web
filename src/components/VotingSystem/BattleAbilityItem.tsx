@@ -3,8 +3,8 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgSupToken } from "../../assets"
-import { GAME_SERVER_HOSTNAME, NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { FactionsAll, httpProtocol, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
+import { FactionsAll, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
@@ -240,7 +240,7 @@ const BattleAbilityTextTop = ({ label, description, image_url, colour, cooldown_
                     sx={{
                         height: "1.9rem",
                         width: "1.9rem",
-                        backgroundImage: `url(${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url})`,
+                        backgroundImage: `url(${image_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
