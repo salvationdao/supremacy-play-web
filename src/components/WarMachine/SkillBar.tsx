@@ -5,7 +5,6 @@ import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from 
 import { NullUUID } from "../../constants"
 import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
-import { colors } from "../../theme/theme"
 import { GameAbility, GameAbilityProgress } from "../../types"
 
 export const SkillBar = ({
@@ -20,7 +19,7 @@ export const SkillBar = ({
     const { faction_id } = useGameServerAuth()
     const { state, subscribe, subscribeAbilityNetMessage } = useGameServerWebsocket()
 
-    const { identity } = gameAbility
+    const { identity, colour } = gameAbility
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
     const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber("0"))
@@ -77,7 +76,7 @@ export const SkillBar = ({
                 pointerEvents: "none",
             }}
         >
-            <SlantedBar backgroundColor={colors.warMachineSkillBar} progressPercent={progressPercent} costPercent={costPercent} />
+            <SlantedBar backgroundColor={colour} progressPercent={progressPercent} costPercent={costPercent} />
         </Box>
     )
 }

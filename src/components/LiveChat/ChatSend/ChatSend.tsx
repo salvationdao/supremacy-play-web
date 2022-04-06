@@ -399,7 +399,7 @@ const ChatSendInner = ({
                         endAdornment: (
                             <InputAdornment position="end">
                                 <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
-                                <TooltipHelper placement="top" text="Use keyboard shortcut ' : '">
+                                <TooltipHelper placement="top-end" text="Use keyboard shortcut ' : '">
                                     <IconButton
                                         ref={popoverRef}
                                         onClick={() => toggleIsEmojiOpen()}

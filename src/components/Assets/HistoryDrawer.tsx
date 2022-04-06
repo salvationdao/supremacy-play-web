@@ -76,12 +76,12 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
 
     // This allows the drawer transition to happen before we unmount it
     useEffect(() => {
-        if (!open) {
+        if (!localOpen) {
             setTimeout(() => {
                 onClose()
             }, DRAWER_TRANSITION_DURATION + 50)
         }
-    }, [open])
+    }, [localOpen])
 
     const renderEmptyHistory = () => {
         if (historyLoading) {
