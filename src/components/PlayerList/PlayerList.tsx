@@ -83,8 +83,6 @@ export const PlayerList = () => {
         if (!user) toggleIsPlayerListOpen(false)
     }, [user])
 
-    if (!isPlayerListOpen) return null
-
     return (
         <Drawer
             transitionDuration={DRAWER_TRANSITION_DURATION}
@@ -103,7 +101,7 @@ export const PlayerList = () => {
         >
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
                 <DrawerButtons isFixed={false} />
-                <DrawerContent user={user} />
+                {isPlayerListOpen && <DrawerContent user={user} />}
             </Stack>
         </Drawer>
     )

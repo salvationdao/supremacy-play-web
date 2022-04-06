@@ -351,8 +351,6 @@ export const Assets = () => {
     const { isAssetOpen } = useDrawer()
     const [telegramShortcode, setTelegramShortcode] = useState("")
 
-    if (!isAssetOpen) return null
-
     return (
         <Drawer
             transitionDuration={DRAWER_TRANSITION_DURATION}
@@ -378,7 +376,7 @@ export const Assets = () => {
                 }}
             >
                 <DrawerButtons isFixed={false} />
-                <DrawerContent telegramShortcode={telegramShortcode} setTelegramShortcode={setTelegramShortcode} />
+                {isAssetOpen && <DrawerContent telegramShortcode={telegramShortcode} setTelegramShortcode={setTelegramShortcode} />}
             </Stack>
 
             <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
