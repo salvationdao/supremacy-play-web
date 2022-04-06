@@ -28,7 +28,7 @@ export const PunishMessage = ({
 
     if (!data) return null
 
-    const { issued_by_user, reported_user, is_passed, agreed_player_number, disagreed_player_number, punish_option, punish_reason, total_player_number } = data
+    const { issued_by_user, reported_user, is_passed, agreed_player_number, punish_option, punish_reason, total_player_number } = data
 
     return (
         <Box>

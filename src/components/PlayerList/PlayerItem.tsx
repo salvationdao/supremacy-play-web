@@ -16,9 +16,10 @@ export const PlayerItem = ({ player, faction }: { player: UserActive; faction: F
                 px: "1.3rem",
                 py: "1rem",
                 backgroundColor: `${theme.factionTheme.primary}10`,
+                opacity: player.is_active ? 1 : 0.6,
             }}
         >
-            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: player.is_active ? colors.green : colors.grey }} />
+            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: player.is_active ? colors.green : colors.yellow }} />
 
             <Box sx={{ pt: ".3rem" }}>
                 <StyledImageText

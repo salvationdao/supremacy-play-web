@@ -21,8 +21,7 @@ export interface AuthContainerType {
  * A Container that handles Authorisation
  */
 const AuthContainer = createContainer((initialState?: { setLogin(user: User): void }): AuthContainerType => {
-    // const isActive = useInactivity(120000)
-    const isActive = useInactivity(10000)
+    const isActive = useInactivity(120000)
     const { newSnackbarMessage } = useSnackbar()
     const { hasToken } = usePassportServerAuth()
     const { updateTheme } = React.useContext(UpdateTheme)

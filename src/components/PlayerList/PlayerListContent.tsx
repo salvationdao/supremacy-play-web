@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { PlayerItem } from ".."
 import { useGame, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
@@ -13,6 +13,7 @@ export const PlayerListContent = ({ user }: { user: User }) => {
     const { state, subscribe } = useGameServerWebsocket()
     const { factionsAll } = useGame()
     const [players, setPlayers] = useState<UserActive[]>([])
+    const [activePlayers, setActivePlayer] = useState<User[]>([])
 
     const faction = useMemo(() => factionsAll[user.faction_id], [])
 
@@ -21,23 +22,30 @@ export const PlayerListContent = ({ user }: { user: User }) => {
         return subscribe<User[]>(GameServerKeys.SubPlayerList, (payload) => {
             if (!payload) return
 
-            // get a copy of current list
-            const list = [...players]
-
-            // add new players that is not in the list
-            payload.forEach((u) => {
-                if (list.some((user) => user.id === u.id)) {
-                    return
-                }
-
-                // otherwise add them into the list
-                list.push({ ...u, is_active: true })
-            })
-
-            // update player active list
-            setPlayers(list.map((u) => ({ ...u, is_active: payload.some((user) => user.id === u.id) })))
+            setActivePlayer(payload)
         })
     }, [state, subscribe])
+
+    useEffect(() => {
+        // get a copy of current list
+        const list = [...players]
+
+        // add new players that is not in the list
+        activePlayers.forEach((u, i) => {
+            console.log("get in the loop", i)
+            if (list.some((user) => user.id === u.id)) {
+                return
+            }
+
+            // otherwise add them into the list
+            list.push({ ...u, is_active: true })
+        })
+
+        console.log(list)
+
+        // update player active list
+        setPlayers(list.map((u) => ({ ...u, is_active: activePlayers.some((user) => user.id === u.id) })).sort((a, b) => (a.is_active ? -1 : 1)))
+    }, [activePlayers, setPlayers])
 
     if (!players || players.length <= 0) return null
 
