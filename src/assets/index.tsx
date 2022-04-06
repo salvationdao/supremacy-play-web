@@ -96,6 +96,7 @@ import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
 import WarningIcon from "@mui/icons-material/Warning"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
 import RedMoutainMechKillIcon from "!@svgr/webpack!./svg/RedMountainKillIcon.svg"
+import EmojiSelector from "!@svgr/webpack!./svg/emojiSelector.svg"
 
 // Multiplier images (no spaces in file names, won't work!)
 import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
@@ -157,9 +158,11 @@ export interface SvgWrapperProps extends BoxProps {
     fill?: string
     height?: string
     width?: string
+    stroke?: string
+    strokeWidth?: string
 }
 
-export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, width, height, ...props }: SvgWrapperProps) => {
+export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, stroke, strokeWidth, sx, size, width, height, ...props }: SvgWrapperProps) => {
     return (
         <Box
             sx={{
@@ -171,6 +174,8 @@ export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, sx, size, width, h
                     width: width || size || "2rem",
                     height: height || size || "2rem",
                     fill: fill || colors.text,
+                    stroke: stroke || "unset",
+                    strokeWidth: strokeWidth || "1",
                 },
                 ...sx,
             }}
@@ -662,6 +667,12 @@ export const SvgClose2: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgWarningIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <WarningIcon />
+    </SvgWrapper>
+)
+
+export const SvgEmojiSelector: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <EmojiSelector />
     </SvgWrapper>
 )
 

@@ -1,5 +1,6 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useCallback, useLayoutEffect, useRef, useState } from "react"
+import emojiRegex from "emoji-regex"
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../.."
 import { SvgScrolldown } from "../../../assets"
 import { FactionsAll, FontSizeType, SplitOptionType, useChat, useGame, useGameServerAuth } from "../../../containers"
@@ -89,6 +90,33 @@ const ChatMessagesInner = ({
         [autoScroll],
     )
 
+    const regex = useMemo(() => emojiRegex(), [emojiRegex])
+
+    //checks if the message contains all emojis and is less than the specified amount on characters
+    const checkIfIsEmoji = useCallback((message: string) => {
+        if (!message) return false
+        const isCharEmojiArray: boolean[] = []
+        const trimmedMsg = message.trim()
+        // //spreading string for proper emoji seperation-ignoring spaces that can appear between emojis and mess everything up
+        const messageArray = [...trimmedMsg.replaceAll(" ", "")]
+
+        messageArray.map((c) => {
+            //checking if char === invisible U+fe0f unicode- a specific code for emojis
+            if (c === "️") {
+                isCharEmojiArray.push(true)
+                return
+            }
+            //checks to see if each character matches the emoji regex from the library or a "regional indicator symbol letter" (apart of a flag emoji)
+            isCharEmojiArray.push(!!c.match(regex) || !!c.match(/[\uD83C][\uDDE6-\uDDFF]/))
+        })
+
+        // //checks if the whole message is less than 8 character-some emojis can be 2+ characters and if all of them are emojis
+        if (trimmedMsg.length <= 8 && !isCharEmojiArray.includes(false)) {
+            return true
+        }
+        return false
+    }, [])
+
     return (
         <>
             {globalAnnouncement && (splitOption == "tabbed" || (splitOption == "split" && faction_id == null)) && (
@@ -144,6 +172,7 @@ const ChatMessagesInner = ({
 
                             if (message.type == "TEXT") {
                                 const data = message.data as TextMessageData
+                                const isEmoji: boolean = checkIfIsEmoji(data.message)
                                 return (
                                     <TextMessage
                                         key={`${data.from_user.id} - ${message.sent_at.toISOString()}`}
@@ -155,6 +184,7 @@ const ChatMessagesInner = ({
                                         isFailed={data.from_user.id != user?.id ? false : failedMessages.includes(message.sent_at)}
                                         factionsAll={factionsAll}
                                         user={user}
+                                        isEmoji={isEmoji}
                                     />
                                 )
                             }

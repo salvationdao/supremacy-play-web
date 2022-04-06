@@ -19,7 +19,8 @@
         "noUnusedLocals": false,
         "noUnusedParameters": false,
         "incremental": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+        "downlevelIteration": true
     },
     "include": ["src/**/*", "src/global.d.ts"],
     "exclude": ["node_modules", "build"]

@@ -1,5 +1,5 @@
 import { Box, Button, Popover, Stack, Typography } from "@mui/material"
-import { useMemo, useRef } from "react"
+import { useCallback, useMemo, useRef } from "react"
 import { ClipThing, UserBanForm } from "../../.."
 import { SvgSkull2, SvgInfoCircular, SvgAbility, SvgDeath, SvgView } from "../../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
@@ -192,6 +192,7 @@ export const TextMessage = ({
     filterZeros,
     factionsAll,
     user,
+    isEmoji,
 }: {
     data: TextMessageData
     sentAt: Date
@@ -201,6 +202,7 @@ export const TextMessage = ({
     filterZeros?: boolean
     factionsAll: FactionsAll
     user?: User
+    isEmoji: boolean
 }) => {
     const { from_user, user_rank, message_color, avatar_id, message, self, total_multiplier, is_citizen, from_user_stat } = data
     const { id, username, gid, faction_id } = from_user
@@ -220,6 +222,24 @@ export const TextMessage = ({
 
     // For the hide zero multi setting
     if (!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) return null
+
+    const renderFontSize = useCallback(() => {
+        if (isEmoji && fontSize) {
+            return fontSize * 3
+        }
+        if (isEmoji) {
+            return 1.35 * 3
+        }
+        if (fontSize) {
+            return fontSize * 1.35
+        }
+        return 1.35
+    }, [isEmoji, fontSize])
+
+    const chatMessage = useMemo(() => {
+        const messageFontSize = renderFontSize()
+        return <Typography sx={{ fontSize: `${messageFontSize}rem` }}>{message}</Typography>
+    }, [message, renderFontSize])
 
     return (
         <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
@@ -380,7 +400,7 @@ export const TextMessage = ({
                 </Box>
             </Stack>
 
-            <Typography sx={{ ml: "2.1rem", fontSize: fontSize ? `${1.35 * fontSize}rem` : "1.35rem" }}>{message}</Typography>
+            <Box sx={{ ml: "2.1rem" }}>{chatMessage}</Box>
 
             <UserDetailsPopover
                 factionLogoBlobID={factionLogoBlobID}
