@@ -129,7 +129,7 @@ const WarMachineItemInner = ({
                 hash,
             },
         )
-    }, [subscribe, state, faction_id, participantID, warMachinefaction_id])
+    }, [subscribe, state, hash, faction_id, warMachinefaction_id])
 
     // Subscribe to whether the war machine has been destroyed
     useEffect(() => {
@@ -142,7 +142,7 @@ const WarMachineItemInner = ({
             },
             { participantID },
         )
-    }, [state, subscribe, participantID])
+    }, [state, subscribe, participantID, hash])
 
     return (
         <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
