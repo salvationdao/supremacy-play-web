@@ -100,7 +100,7 @@ const UserDetailsPopover = ({
                                 />
                             )}
                             <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>
-                                {`${username}`}
+                                {`${truncate(username, 20)}`}
                                 <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
                             </Typography>
                         </Stack>
