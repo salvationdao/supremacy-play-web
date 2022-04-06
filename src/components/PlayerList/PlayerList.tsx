@@ -1,12 +1,13 @@
 import { Box, Drawer, Stack, Theme, Typography, useTheme } from "@mui/material"
+import { useEffect } from "react"
 import { DrawerButtons, PlayerListContent } from ".."
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST_IMAGES, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useDrawer, useGameServerAuth } from "../../containers"
 import { acronym } from "../../helpers"
 import { colors } from "../../theme/theme"
+import { User } from "../../types"
 
-const DrawerContent = () => {
-    const { user } = useGameServerAuth()
+const DrawerContent = ({ user }: { user?: User }) => {
     const theme = useTheme<Theme>()
 
     if (!user || !user.faction) return null
@@ -74,8 +75,13 @@ const DrawerContent = () => {
 }
 
 export const PlayerList = () => {
-    const { isPlayerListOpen } = useDrawer()
+    const { user } = useGameServerAuth()
+    const { isPlayerListOpen, toggleIsPlayerListOpen } = useDrawer()
     const theme = useTheme<Theme>()
+
+    useEffect(() => {
+        if (!user) toggleIsPlayerListOpen(false)
+    }, [user])
 
     if (!isPlayerListOpen) return null
 
@@ -97,7 +103,7 @@ export const PlayerList = () => {
         >
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
                 <DrawerButtons isFixed={false} />
-                <DrawerContent />
+                <DrawerContent user={user} />
             </Stack>
         </Drawer>
     )
