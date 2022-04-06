@@ -321,7 +321,11 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
                         }
                     }}
                     sx={{
-                        m: ".4rem",
+                        my: ".8rem",
+                        ml: ".3rem",
+                        pl: ".5rem",
+                        mr: ".3rem",
+                        pr: ".5rem",
                         flex: 1,
                         overflowY: "auto",
                         overflowX: "hidden",

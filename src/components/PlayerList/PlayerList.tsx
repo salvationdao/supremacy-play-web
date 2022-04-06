@@ -49,7 +49,11 @@ const DrawerContent = ({ user }: { user?: User }) => {
 
             <Box
                 sx={{
-                    m: ".6rem",
+                    my: ".8rem",
+                    ml: ".3rem",
+                    pl: ".5rem",
+                    mr: ".3rem",
+                    pr: ".5rem",
                     flex: 1,
                     overflowY: "auto",
                     overflowX: "hidden",
@@ -63,7 +67,7 @@ const DrawerContent = ({ user }: { user?: User }) => {
                         borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
-                        background: colors.assetsBanner,
+                        background: theme.factionTheme.primary,
                         borderRadius: 3,
                     },
                 }}
