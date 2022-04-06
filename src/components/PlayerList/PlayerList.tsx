@@ -4,7 +4,6 @@ import { DrawerButtons, PlayerListContent } from ".."
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST_IMAGES, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useDrawer, useGameServerAuth } from "../../containers"
 import { acronym } from "../../helpers"
-import { colors } from "../../theme/theme"
 import { User } from "../../types"
 
 const DrawerContent = ({ user }: { user?: User }) => {
