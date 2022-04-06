@@ -590,6 +590,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
         )
     }, [state, subscribe])
 
+    if (!TELEGRAM_BOT_URL) return <></>
     return (
         <Modal open={open}>
             <>
@@ -793,7 +794,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     </Box>
 
                                     <Box style={{ textAlign: "center", marginBottom: "1rem" }}>
-                                        <QRCode size={228} value={TELEGRAM_BOT_URL} />
+                                        <QRCode size={228} value={TELEGRAM_BOT_URL || ""} />
                                     </Box>
 
                                     <Box>
@@ -856,6 +857,32 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                             </Typography>
                                         )}
                                     </Box>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => {
+                                            setUserTelegramShortcodeRegistered(false)
+                                            onClose()
+                                        }}
+                                        sx={{
+                                            justifySelf: "flex-end",
+                                            mt: "auto",
+                                            ml: 3,
+                                            pt: ".7rem",
+                                            pb: ".4rem",
+                                            width: "9rem",
+                                            color: colors.neonBlue,
+                                            backgroundColor: colors.darkNavy,
+                                            borderRadius: 0.7,
+                                            fontFamily: "Nostromo Regular Bold",
+                                            border: `${colors.neonBlue} 1px solid`,
+                                            ":hover": {
+                                                opacity: 0.8,
+                                                border: `${colors.neonBlue} 1px solid`,
+                                            },
+                                        }}
+                                    >
+                                        Close
+                                    </Button>
                                 </Stack>
                             </Stack>
                         </ClipThing>
