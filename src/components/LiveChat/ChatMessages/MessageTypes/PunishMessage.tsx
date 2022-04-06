@@ -166,7 +166,7 @@ export const PunishMessage = ({
 
                         <LineItem title="VOTES">
                             <Box>
-                                <Typography sx={{ color: colors.green }}>
+                                <Typography sx={{ color: is_passed ? colors.green : colors.red }}>
                                     {agreed_player_number}/{total_player_number} AGREED
                                 </Typography>
                             </Box>
