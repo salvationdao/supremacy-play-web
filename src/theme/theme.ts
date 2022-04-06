@@ -110,48 +110,48 @@ export const theme = createTheme({
         htmlFontSize: 16,
         h1: {
             fontFamily: ["Nostromo Regular Black", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "8.2rem",
+            fontSize: "8.18rem",
         },
         h2: {
             fontFamily: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "5.17rem",
+            fontSize: "5.15rem",
         },
         h3: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "4.15rem",
+            fontSize: "4.13rem",
         },
         h4: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "2.98rem",
+            fontSize: "2.96rem",
         },
         h5: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "2.15rem",
+            fontSize: "2.13rem",
         },
         h6: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.8rem",
+            fontSize: "1.78rem",
         },
         body1: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.45rem",
+            fontSize: "1.43rem",
         },
         body2: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.3rem",
+            fontSize: "1.28rem",
         },
         subtitle1: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.13rem",
+            fontSize: "1.11rem",
             textAlign: "center",
         },
         subtitle2: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.13rem",
+            fontSize: "1.11rem",
         },
         caption: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.13rem",
+            fontSize: "1.11rem",
         },
     },
     components: {
