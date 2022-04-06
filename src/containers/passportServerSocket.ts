@@ -108,7 +108,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
         setTimeout(async () => {
             try {
                 const resp = await fetch(`${window.location.protocol}//${host}/api/check`)
-                const ok = resp.status >= 200 && resp.status < 299
+                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
                 if (ok) {
                     window.location.reload()
                 }
@@ -274,8 +274,9 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
         ;(async () => {
             try {
                 const resp = await fetch(`${window.location.protocol}//${host}/api/check`)
-                const ok = resp.status >= 200 && resp.status < 299
+                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
                 if (ok) {
+                    if (webSocket.current) webSocket.current.close()
                     webSocket.current = new WebSocket(`${protocol()}://${host}/api/ws`)
                     setupWS(webSocket.current)
 
