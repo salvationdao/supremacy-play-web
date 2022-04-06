@@ -1,9 +1,9 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { ClipThing, StyledImageText, StyledNormalText } from "../.."
-import { SvgCancelled, SvgDisconnected, SvgHourglass, SvgLocation, SvgDeath } from "../../../assets"
-import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { FactionsAll, httpProtocol } from "../../../containers"
+import { SvgCancelled, SvgDeath, SvgDisconnected, SvgHourglass, SvgLocation } from "../../../assets"
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { FactionsAll } from "../../../containers"
 import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { BattleAbility, User } from "../../../types"
@@ -61,7 +61,7 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
     const { label, colour, image_url } = ability
     const { username, faction, gid } = currentUser || FallbackUser
 
-    const abilityImageUrl = useMemo(() => `${httpProtocol()}://${GAME_SERVER_HOSTNAME}${image_url}`, [image_url])
+    const abilityImageUrl = useMemo(() => `${image_url}`, [image_url])
     const mainColor = faction.theme.primary
 
     const Icon = () => {
