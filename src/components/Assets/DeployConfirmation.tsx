@@ -72,7 +72,7 @@ export const DeployConfirmation = ({
     const { send: psSend } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
-    const [needInsured, toggleNeedInsured] = useToggle()
+    const [needInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
     const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueCost, 2))
@@ -212,7 +212,7 @@ export const DeployConfirmation = ({
                             sx={{
                                 position: "relative",
                                 px: ".6rem",
-                                py: "2rem",
+                                py: "1rem",
                                 borderRadius: 0.6,
                                 boxShadow: "inset 0 0 12px 6px #00000040",
                             }}
@@ -220,7 +220,7 @@ export const DeployConfirmation = ({
                             <Box
                                 sx={{
                                     width: "100%",
-                                    height: "12rem",
+                                    height: "13.8rem",
                                     backgroundImage: `url(${image_url})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "top center",
@@ -304,7 +304,7 @@ export const DeployConfirmation = ({
                             </Stack>
 
                             <Stack>
-                                <Stack direction="row" alignItems="center">
+                                {/* <Stack direction="row" alignItems="center">
                                     <Typography
                                         sx={{
                                             pt: ".08rem",
@@ -341,7 +341,7 @@ export const DeployConfirmation = ({
                                             <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
                                         </Box>
                                     </TooltipHelper>
-                                </Stack>
+                                </Stack> */}
 
                                 <Stack direction="row" alignItems="center">
                                     <Typography
@@ -366,9 +366,9 @@ export const DeployConfirmation = ({
                                         }}
                                         sx={{
                                             transform: "scale(.6)",
-                                            ".Mui-checked": { color: colors.green },
+                                            ".Mui-checked": { color: `${colors.green} !important` },
                                             ".Mui-checked+.MuiSwitch-track": {
-                                                backgroundColor: `${colors.green}50`,
+                                                backgroundColor: `${colors.green}50 !important`,
                                             },
                                         }}
                                     />
@@ -619,7 +619,6 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     pl: "1.76rem",
                                     pr: "2.56rem",
                                     py: "2.4rem",
-
                                     backgroundColor: colors.darkNavyBlue,
                                 }}
                             >
@@ -715,7 +714,6 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     pl: "1.76rem",
                                     pr: "2.56rem",
                                     py: "2.4rem",
-
                                     backgroundColor: colors.darkNavyBlue,
                                 }}
                             >

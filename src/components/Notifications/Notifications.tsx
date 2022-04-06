@@ -199,7 +199,7 @@ export const Notifications = () => {
                         case "WAR_MACHINE_DESTROYED":
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <KillAlert data={n.data} />
+                                    <KillAlert data={n.data} factionsAll={factionsAll} />
                                 </NotificationItem>
                             )
                     }

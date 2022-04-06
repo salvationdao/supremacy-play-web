@@ -101,7 +101,12 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
             return (
                 <Box>
                     <StyledImageText
-                        text={`${username}#${gid}`}
+                        text={
+                            <>
+                                {`${username}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
+                            </>
+                        }
                         color={faction.theme.primary}
                         imageUrl={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}` : undefined}
                         imageMb={-0.2}
@@ -115,7 +120,12 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
             return (
                 <Box>
                     <StyledImageText
-                        text={`${username}#${gid}`}
+                        text={
+                            <>
+                                {`${username}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
+                            </>
+                        }
                         color={faction.theme.primary}
                         imageUrl={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}` : undefined}
                         imageMb={-0.2}
@@ -129,7 +139,12 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
             return (
                 <Box>
                     <StyledImageText
-                        text={`${username}#${gid}`}
+                        text={
+                            <>
+                                {`${username}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
+                            </>
+                        }
                         color={faction.theme.primary}
                         imageUrl={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}` : undefined}
                         imageMb={-0.2}

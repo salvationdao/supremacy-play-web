@@ -22,7 +22,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     width: "100%",
                     maxWidth: 1.11 * radius * 2,
                     minHeight: 1.11 * radius * 2,
-                    marginBottom: ".5rem",
+                    mb: ".5rem",
                 }}
             >
                 <StyledSVG
@@ -55,20 +55,18 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     />
                 </StyledSVG>
                 <Typography
-                    variant="h6"
                     sx={{
                         position: "absolute",
                         top: "50%",
                         left: "50%",
+                        fontFamily: "Nostromo Regular Bold",
                         transform: "translate(-50%, -50%)",
                     }}
                 >
                     {displayValue}
                 </Typography>
             </Box>
-            <Typography variant="body1" textAlign="center">
-                {label}
-            </Typography>
+            <Typography textAlign="center">{label}</Typography>
         </Stack>
     )
 }
@@ -94,6 +92,5 @@ export interface PercentageDisplaySkeletonProps {
 
 export const PercentageDisplaySkeleton = ({ size }: PercentageDisplaySkeletonProps) => {
     const radius = size ? size / (2 * 1.11) : 20
-
     return <Skeleton variant="circular" width={1.11 * radius * 2} height={1.11 * radius * 2} />
 }

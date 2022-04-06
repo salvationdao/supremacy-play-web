@@ -264,6 +264,7 @@ export interface Dimension {
 export interface UserStat {
     id: string
     view_battle_count: number
+    last_seven_days_kills: number
     total_ability_triggered: number
     kill_count: number
     mech_kill_count: number
