@@ -2,6 +2,7 @@ import { Box } from "@mui/material"
 import { ClipThing, StyledImageText, StyledNormalText } from "../.."
 import { SvgDeath, SvgSkull2 } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { FactionsAll } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { User, WarMachineState } from "../../../types"
 
@@ -12,7 +13,7 @@ export interface KillAlertProps {
     killed_by_user?: User
 }
 
-export const KillAlert = ({ data }: { data: KillAlertProps }) => {
+export const KillAlert = ({ data, factionsAll }: { data: KillAlertProps; factionsAll: FactionsAll }) => {
     const { destroyed_war_machine, killed_by_war_machine, killed_by, killed_by_user } = data
 
     if (!destroyed_war_machine) return null
@@ -32,9 +33,15 @@ export const KillAlert = ({ data }: { data: KillAlertProps }) => {
     } else if (killed_by_user) {
         killedBy = (
             <StyledImageText
-                text={`${killed_by_user.username}#${killed_by_user.gid}${killed_by ? ` ${killed_by}` : ""}`}
+                text={
+                    <>
+                        {`${killed_by_user.username}`}
+                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${killed_by_user.gid}`}</span>
+                        {`${killed_by ? ` ${killed_by}` : ""}`}
+                    </>
+                }
                 color={killed_by_user.faction.theme.primary}
-                imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${killed_by_user.faction.logo_blob_id}`}
+                imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[killed_by_user.faction.id]?.logo_blob_id}`}
                 imageMb={-0.2}
             />
         )

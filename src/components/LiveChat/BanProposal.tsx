@@ -2,7 +2,7 @@ import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from ".."
 import { SvgCooldown, SvgInfoCircular } from "../../assets"
-import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { snakeToTitle } from "../../helpers"
 import { useTimer, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -41,9 +41,7 @@ const Countdown = ({ endTime, toggleOutOfTime }: { endTime: Date; toggleOutOfTim
     return <>{totalSecRemain}</>
 }
 export const BanProposal = () => {
-    const { user } = useGameServerAuth()
-    const { state, subscribe } = useGameServerWebsocket()
-    const [banProposal, setBanProposal] = useState<BanProposalStruct>()
+    const { banProposal } = useChat()
     const [render, toggleRender] = useToggle()
     const [outOfTime, toggleOutOfTime] = useToggle()
 
@@ -52,7 +50,11 @@ export const BanProposal = () => {
         if (!banProposal) return
         toggleOutOfTime(banProposal.ended_at < new Date())
         toggleRender(banProposal.ended_at > new Date())
-    }, [banProposal])
+    }, [banProposal, toggleOutOfTime, toggleRender])
+
+    useEffect(() => {
+        if (!banProposal) toggleOutOfTime(true)
+    }, [banProposal, toggleOutOfTime])
 
     // When out of time, give inner some time to animate, then stop render
     useEffect(() => {
@@ -62,24 +64,6 @@ export const BanProposal = () => {
             }, 250)
         }
     }, [outOfTime])
-
-    // Subscribe to ban proposals
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !user || !user.faction_id || !user.faction) return
-        return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
-            if (!payload) toggleOutOfTime(true)
-
-            const startedAtTime = payload.started_at.getTime()
-            const nowTime = new Date().getTime()
-            const duration = payload.ended_at.getTime() - startedAtTime
-            const endTime = new Date(Math.min(startedAtTime, nowTime) + duration)
-
-            setBanProposal({
-                ...payload,
-                ended_at: endTime,
-            })
-        })
-    }, [user, state, subscribe])
 
     if (!banProposal || !render) return null
 
@@ -123,10 +107,10 @@ const BanProposalInner = ({
     )
 
     const bottomSection = useMemo(() => {
-        if (!userStat || userStat.kill_count <= 0) {
+        if (!userStat || userStat.last_seven_days_kills <= 0) {
             return (
                 <Typography sx={{ opacity: 0.6 }}>
-                    <i>You need to have ability kills in the past 7 days to be eligible to vote. Current ability kill count: 0</i>
+                    <i>You need to have ability kills in the past 7 days (updated hourly) to be eligible to vote.</i>
                 </Typography>
             )
         }
@@ -202,11 +186,17 @@ const BanProposalInner = ({
                 <Box sx={{ px: "1.2rem", py: ".9rem" }}>
                     <Stack spacing=".3rem">
                         <LineItem title="INITIATOR" color={colors.green}>
-                            <Typography sx={{ lineHeight: 1 }}>{`${banProposal.issued_by_username}#${banProposal.issued_by_gid}`}</Typography>
+                            <Typography sx={{ lineHeight: 1 }}>
+                                {`${banProposal.issued_by_username}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banProposal.issued_by_gid}`}</span>
+                            </Typography>
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <Typography sx={{ lineHeight: 1 }}>{`${banProposal.reported_player_username}#${banProposal.reported_player_gid}`}</Typography>
+                            <Typography sx={{ lineHeight: 1 }}>
+                                {`${banProposal.reported_player_username}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banProposal.reported_player_gid}`}</span>
+                            </Typography>
                         </LineItem>
 
                         <LineItem title="PUNISH">

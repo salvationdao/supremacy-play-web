@@ -82,7 +82,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, userStat, userRank }: Props
         logo_blob_id,
     } = user.faction
 
-    const { total_ability_triggered, kill_count, view_battle_count, mech_kill_count } = userStat
+    const { total_ability_triggered, kill_count, last_seven_days_kills, view_battle_count, mech_kill_count } = userStat
     const rankDeets = useMemo(() => (userRank ? getUserRankDeets(userRank, ".9rem", "1.1rem") : undefined), [userRank])
 
     return (
@@ -155,18 +155,17 @@ const EnlistBannerInner = ({ user, battleIdentifier, userStat, userRank }: Props
                         content={`${total_ability_triggered || 0}`}
                         PrefixSvg={<SvgAbility size="1.1rem" />}
                     />
-
-                    <BannerInfo
-                        title={`ABILITY KILLS`}
-                        tooltip="The number of times your triggered ability destroyed another war machine. Destroying your own syndicate's war machine will bring your kill count down"
-                        content={`${kill_count || 0}`}
-                        PrefixSvg={<SvgDeath size="1.1rem" />}
-                    />
                     <BannerInfo
                         title={`MECH KILLS`}
                         tooltip="The number of times your queued mech gets a kill."
                         content={`${mech_kill_count || 0}`}
                         PrefixSvg={killIcon}
+                    />
+                    <BannerInfo
+                        title={`ABILITY KILLS`}
+                        tooltip="The number of times your triggered ability destroyed another war machine. Destroying your own syndicate's war machine will bring down your kill count. The count shows the lifetime total and the total from the past 7 days."
+                        content={`${kill_count || 0} | ${last_seven_days_kills || 0}`}
+                        PrefixSvg={<SvgDeath size="1.1rem" />}
                     />
                     <BannerInfo
                         title={`SPECTATED`}

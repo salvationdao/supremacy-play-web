@@ -20,6 +20,8 @@ import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
+import HistoryClock from "!react-svg-loader!./svg/HistoryClock.svg"
+import Back from "!react-svg-loader!./svg/Back.svg"
 import Hourglass from "!react-svg-loader!./svg/Hourglass.svg"
 import Location from "!react-svg-loader!./svg/Location.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
@@ -703,5 +705,17 @@ export const SvgPrivate: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
 export const SvgNewRecruit: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <NewRecruit />
+    </SvgWrapper>
+)
+
+export const SvgHistoryClock: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <HistoryClock />
+    </SvgWrapper>
+)
+
+export const SvgBack: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Back />
     </SvgWrapper>
 )

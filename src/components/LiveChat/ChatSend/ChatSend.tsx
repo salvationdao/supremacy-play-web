@@ -228,7 +228,9 @@ const ChatSendInner = ({
                             background: "#49494933",
                             width: "100%",
                             display: "flex",
-                            padding: ".5rem",
+                            mb: ".6rem",
+                            p: ".5rem",
+                            boxShadow: 4,
                             borderRadius: 1,
                             overflowX: "scroll",
                             scrollBehavior: "smooth",
@@ -365,16 +367,15 @@ const ChatSendInner = ({
                                 const emoji = emojis[0]
                                 handleOnEmojiSelect(emoji)
 
-                                setTimeout(() => {
-                                    if (caretPosition) {
-                                        textfieldRef.current?.setSelectionRange(caretPosition, caretPosition)
-                                    }
-                                }, 0)
+                                if (caretPosition) {
+                                    textfieldRef.current?.setSelectionRange(caretPosition, caretPosition)
+                                }
                             }
                         }
                     }}
                     sx={{
                         borderRadius: 1,
+                        boxShadow: 1,
                         "& .MuiInputBase-root": {
                             backgroundColor: "#49494970",
                             fontFamily: "Share Tech",

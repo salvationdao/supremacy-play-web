@@ -1,7 +1,7 @@
 import { Box, SxProps, Typography, TypographyPropsVariantOverrides } from "@mui/material"
 import { Variant } from "@mui/material/styles/createTypography"
 import { OverridableStringUnion } from "@mui/types"
-import { useMemo } from "react"
+import { ReactNode, useMemo } from "react"
 
 export const StyledImageText = ({
     imageUrl,
@@ -22,7 +22,7 @@ export const StyledImageText = ({
     imageMb,
 }: {
     imageUrl?: string
-    text: string
+    text: string | ReactNode
     variant?: OverridableStringUnion<Variant | "inherit", TypographyPropsVariantOverrides>
     color: string
     truncateLine?: boolean
