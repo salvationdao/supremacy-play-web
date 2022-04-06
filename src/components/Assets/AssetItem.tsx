@@ -238,88 +238,94 @@ export const AssetItem = ({
             spacing="1.44rem"
             sx={{
                 position: "relative",
-                px: "1.04rem",
-                py: ".8rem",
                 backgroundColor: `${colors.navy}80`,
             }}
         >
-            <Box
+            <Stack
+                direction="row"
+                spacing="1.44rem"
                 sx={{
-                    position: "relative",
-                    flexShrink: 0,
-                    px: ".48rem",
+                    px: "1.04rem",
                     py: ".8rem",
-                    boxShadow: "inset 0 0 8px 6px #00000055",
-                    overflow: "hidden",
-                    borderRadius: 0.5,
                 }}
             >
                 <Box
                     sx={{
-                        width: "5.5rem",
-                        height: "5.5rem",
+                        position: "relative",
                         flexShrink: 0,
+                        px: ".48rem",
+                        py: ".8rem",
+                        boxShadow: "inset 0 0 8px 6px #00000055",
                         overflow: "hidden",
-                        backgroundImage: `url(${image_url})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "contain",
-                    }}
-                />
-
-                {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
-                    <Box sx={{ position: "absolute", top: 0, left: 0 }}>
-                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
-                    </Box>
-                )}
-
-                <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
-                    <Stack
-                        direction="row"
-                        spacing=".08rem"
-                        sx={{
-                            position: "absolute",
-                            bottom: "-1.4rem",
-                            left: ".1rem",
-                            height: "4.2rem",
-                            transform: "rotate(-40deg)",
-                            zIndex: 3,
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                width: 3,
-                                height: "100%",
-                                backgroundColor: rarityDeets.color,
-                                border: "#00000090 1.5px solid",
-                            }}
-                        />
-                        <Box
-                            sx={{
-                                width: 3,
-                                height: "100%",
-                                backgroundColor: rarityDeets.color,
-                                border: "#00000090 1.5px solid",
-                            }}
-                        />
-                    </Stack>
-                </TooltipHelper>
-            </Box>
-
-            <Stack spacing=".4rem">
-                <Typography
-                    variant="caption"
-                    sx={{
-                        fontFamily: "Nostromo Regular Bold",
-                        fontWeight: "fontWeightBold",
-                        wordBreak: "break-word",
+                        borderRadius: 0.5,
                     }}
                 >
-                    {name || label}
-                </Typography>
+                    <Box
+                        sx={{
+                            width: "5.5rem",
+                            height: "5.5rem",
+                            flexShrink: 0,
+                            overflow: "hidden",
+                            backgroundImage: `url(${image_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "contain",
+                        }}
+                    />
 
-                <Stack alignItems="center" direction="row" spacing=".96rem">
-                    {statusArea}
+                    {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
+                        <Box sx={{ position: "absolute", top: 0, left: 0 }}>
+                            <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
+                        </Box>
+                    )}
+
+                    <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
+                        <Stack
+                            direction="row"
+                            spacing=".08rem"
+                            sx={{
+                                position: "absolute",
+                                bottom: "-1.4rem",
+                                left: ".1rem",
+                                height: "4.2rem",
+                                transform: "rotate(-40deg)",
+                                zIndex: 3,
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    width: 3,
+                                    height: "100%",
+                                    backgroundColor: rarityDeets.color,
+                                    border: "#00000090 1.5px solid",
+                                }}
+                            />
+                            <Box
+                                sx={{
+                                    width: 3,
+                                    height: "100%",
+                                    backgroundColor: rarityDeets.color,
+                                    border: "#00000090 1.5px solid",
+                                }}
+                            />
+                        </Stack>
+                    </TooltipHelper>
+                </Box>
+                <Stack spacing=".4rem">
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontFamily: "Nostromo Regular Bold",
+                            fontWeight: "fontWeightBold",
+                            wordBreak: "break-word",
+                        }}
+                    >
+                        {name || label}
+                    </Typography>
+
+                    <Stack alignItems="center" direction="row" spacing=".96rem">
+                        {statusArea}
+                    </Stack>
                 </Stack>
             </Stack>
 
@@ -327,8 +333,11 @@ export const AssetItem = ({
                 <TooltipHelper placement="left" text="View Asset">
                     <Link
                         sx={{
-                            display: "block",
-                            marginBottom: ".5rem",
+                            flex: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: colors.darkestNeonBlue,
                         }}
                         href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
                         target="_blank"
@@ -338,7 +347,21 @@ export const AssetItem = ({
                 </TooltipHelper>
 
                 <TooltipHelper placement="left" text="View History">
-                    <IconButton onClick={() => toggleHistoryDrawerOpen(true)} sx={{ p: 0 }}>
+                    <IconButton
+                        sx={{
+                            flex: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            p: 0,
+                            borderRadius: 0,
+                            backgroundColor: colors.darkNeonBlue,
+                            "& .MuiBox-root": {
+                                opacity: 0.6,
+                            },
+                        }}
+                        onClick={() => toggleHistoryDrawerOpen(true)}
+                    >
                         <SvgWrapper size="1.5rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }}>
                             <HistoryIcon />
                         </SvgWrapper>

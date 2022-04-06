@@ -55,7 +55,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     />
                 </StyledSVG>
                 <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{
                         position: "absolute",
                         top: "50%",
@@ -66,7 +66,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     {displayValue}
                 </Typography>
             </Box>
-            <Typography variant="caption" textAlign="center">
+            <Typography variant="body1" textAlign="center">
                 {label}
             </Typography>
         </Stack>

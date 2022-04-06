@@ -1,8 +1,9 @@
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 import RefreshIcon from "@mui/icons-material/Refresh"
-import { Box, CircularProgress, Drawer, IconButton, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Drawer, IconButton, Link, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgDeath, SvgGoldBars, SvgHistory } from "../../assets"
-import { RIGHT_DRAWER_WIDTH } from "../../constants"
+import { GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { SocketState, useGameServerWebsocket } from "../../containers"
 import { camelToTitle, timeSince } from "../../helpers"
 import { GameServerKeys } from "../../keys"
@@ -121,172 +122,194 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
             }}
             PaperProps={{
                 sx: {
-                    overflow: "hidden",
-                    width: `${RIGHT_DRAWER_WIDTH}rem`,
-                    maxHeight: "100vh",
                     backgroundColor: colors.darkNavy,
                     backgroundImage: "none",
-                    padding: "1rem",
                 },
             }}
         >
-            <Typography
-                variant="h5"
+            <Stack
+                direction="row"
+                spacing=".96rem"
+                alignItems="center"
                 sx={{
-                    marginBottom: "1rem",
-                    textAlign: "center",
-                    fontFamily: ["Nostromo Regular Black", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+                    position: "relative",
+                    pl: "2rem",
+                    pr: "4.8rem",
+                    height: `${GAME_BAR_HEIGHT}rem`,
+                    background: `${colors.assetsBanner}65`,
+                    boxShadow: 1.5,
                 }}
             >
-                {asset.data.mech.name || asset.data.mech.label}
-            </Typography>
-            {statsError && (
-                <Typography variant="subtitle1" color={colors.red}>
-                    {statsError}
-                </Typography>
-            )}
+                <Link component="button" onClick={() => onClose()}>
+                    <ArrowBackIcon />
+                    <Typography variant="h6">Go Back</Typography>
+                </Link>
+            </Stack>
             <Box
                 sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-around",
-                    margin: "1rem 0",
-                }}
-            >
-                <Box
-                    component="img"
-                    src={asset.data.mech.image_url}
-                    alt={`Image for ${asset.data.mech.name} || ${asset.data.mech.label}`}
-                    sx={{
-                        width: "100%",
-                    }}
-                />
-                <Stack
-                    spacing="1rem"
-                    justifyContent="center"
-                    sx={{
-                        marginBottom: "1rem",
-                    }}
-                >
-                    {stats && !statsLoading ? (
-                        <>
-                            <PercentageDisplay
-                                displayValue={`${stats.extra_stats.win_rate * 100}%`}
-                                percentage={stats.extra_stats.win_rate * 100}
-                                label="Win Rate"
-                            />
-
-                            <PercentageDisplay
-                                displayValue={`${stats.total_kills}`}
-                                percentage={100}
-                                label="Total Kills"
-                                color={colors.gold}
-                            />
-                            <PercentageDisplay
-                                displayValue={`${stats.total_deaths}`}
-                                percentage={100}
-                                label="Total Deaths"
-                                color={colors.red}
-                            />
-                        </>
-                    ) : (
-                        <>
-                            <PercentageDisplaySkeleton />
-                            <PercentageDisplaySkeleton />
-                            <PercentageDisplaySkeleton />
-                        </>
-                    )}
-                </Stack>
-            </Box>
-            <Box
-                sx={{
+                    flex: 1,
                     display: "flex",
                     flexDirection: "column",
-                    height: "100%",
-                    minHeight: 0,
-                    padding: ".5rem",
-                    backgroundColor: `${colors.navy}80`,
+                    overflow: "hidden",
+                    width: `${RIGHT_DRAWER_WIDTH}rem`,
+                    maxHeight: "100vh",
+                    padding: "1rem",
                 }}
             >
-                <Stack
-                    direction="row"
-                    spacing=".5rem"
-                    alignItems="end"
+                <Typography
+                    variant="h5"
                     sx={{
-                        padding: "0.8rem 1.04rem",
+                        marginBottom: "1rem",
+                        textAlign: "center",
+                        fontFamily: ["Nostromo Regular Black", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
                     }}
                 >
-                    <SvgHistory />
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            textTransform: "uppercase",
-                        }}
-                    >
-                        Recent Matches
+                    {asset.data.mech.name || asset.data.mech.label}
+                </Typography>
+                {statsError && (
+                    <Typography variant="subtitle1" color={colors.red}>
+                        {statsError}
                     </Typography>
-                    <Box
-                        sx={{
-                            flex: 1,
-                            display: "flex",
-                            alignItems: "end",
-                        }}
-                    >
-                        <IconButton
-                            sx={{
-                                marginLeft: "auto",
-                            }}
-                            onClick={() => fetchHistory()}
-                            size="small"
-                        >
-                            <RefreshIcon fontSize="large" />
-                        </IconButton>
-                    </Box>
-                </Stack>
-                {history.length > 0 ? (
-                    <Stack
-                        spacing=".6rem"
-                        sx={{
-                            overflowY: "auto",
-                            direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: colors.assetsBanner,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        {history.map((h, index) => (
-                            <HistoryEntry
-                                key={index}
-                                mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                                backgroundImage={h.battle?.game_map?.image_url}
-                                isWin={!!h.faction_won}
-                                mechSurvived={!!h.mech_survived}
-                                kills={h.kills}
-                                date={h.created_at}
-                            />
-                        ))}
-                    </Stack>
-                ) : (
-                    <Box
-                        sx={{
-                            flex: 1,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                    >
-                        {renderEmptyHistory()}
-                    </Box>
                 )}
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-around",
+                        margin: "1rem 0",
+                    }}
+                >
+                    <Box
+                        component="img"
+                        src={asset.data.mech.image_url}
+                        alt={`Image for ${asset.data.mech.name} || ${asset.data.mech.label}`}
+                        sx={{
+                            width: "100%",
+                            maxWidth: "180px",
+                        }}
+                    />
+                    <Stack
+                        spacing="1rem"
+                        justifyContent="center"
+                        sx={{
+                            marginBottom: "1rem",
+                        }}
+                    >
+                        {statsLoading ? (
+                            <>
+                                <PercentageDisplaySkeleton />
+                                <PercentageDisplaySkeleton />
+                                <PercentageDisplaySkeleton />
+                            </>
+                        ) : stats ? (
+                            <>
+                                <PercentageDisplay
+                                    displayValue={`${(stats.extra_stats.win_rate * 100).toFixed(0)}%`}
+                                    percentage={stats.extra_stats.win_rate * 100}
+                                    label="Win Rate"
+                                />
+                                <PercentageDisplay displayValue={`${stats.total_kills}`} percentage={100} label="Total Kills" color={colors.gold} />
+                                <PercentageDisplay displayValue={`${stats.total_deaths}`} percentage={100} label="Total Deaths" color={colors.red} />
+                            </>
+                        ) : (
+                            <>
+                                <PercentageDisplay displayValue={`?`} percentage={0} label="Win Rate" />
+                                <PercentageDisplay displayValue={`?`} percentage={0} label="Total Kills" color={colors.gold} />
+                                <PercentageDisplay displayValue={`?`} percentage={0} label="Total Deaths" color={colors.red} />
+                            </>
+                        )}
+                    </Stack>
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%",
+                        minHeight: 0,
+                        padding: ".5rem",
+                        backgroundColor: `${colors.navy}80`,
+                    }}
+                >
+                    <Stack
+                        direction="row"
+                        spacing=".5rem"
+                        alignItems="end"
+                        sx={{
+                            padding: "0.8rem 1.04rem",
+                        }}
+                    >
+                        <SvgHistory />
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                textTransform: "uppercase",
+                            }}
+                        >
+                            Recent Matches
+                        </Typography>
+                        <Box
+                            sx={{
+                                flex: 1,
+                                display: "flex",
+                                alignItems: "end",
+                            }}
+                        >
+                            <IconButton
+                                sx={{
+                                    marginLeft: "auto",
+                                }}
+                                onClick={() => fetchHistory()}
+                                size="small"
+                            >
+                                <RefreshIcon fontSize="large" />
+                            </IconButton>
+                        </Box>
+                    </Stack>
+                    {history.length > 0 ? (
+                        <Stack
+                            spacing=".6rem"
+                            sx={{
+                                overflowY: "auto",
+                                direction: "ltr",
+                                scrollbarWidth: "none",
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: colors.assetsBanner,
+                                    borderRadius: 3,
+                                },
+                            }}
+                        >
+                            {history.map((h, index) => (
+                                <HistoryEntry
+                                    key={index}
+                                    mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
+                                    backgroundImage={h.battle?.game_map?.image_url}
+                                    isWin={!!h.faction_won}
+                                    mechSurvived={!!h.mech_survived}
+                                    kills={h.kills}
+                                    date={h.created_at}
+                                />
+                            ))}
+                        </Stack>
+                    ) : (
+                        <Box
+                            sx={{
+                                flex: 1,
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            {renderEmptyHistory()}
+                        </Box>
+                    )}
+                </Box>
             </Box>
         </Drawer>
     )
@@ -309,9 +332,7 @@ const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, kills, da
                 minHeight: "70px",
                 padding: "0.8rem 1.04rem",
                 background: `center center`,
-                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${
-                    isWin ? colors.green : colors.red
-                }80), url(${backgroundImage})`,
+                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${isWin ? colors.green : colors.red}80), url(${backgroundImage})`,
                 backgroundSize: "cover",
             }}
         >
@@ -357,9 +378,7 @@ const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, kills, da
                     <Typography
                         variant="h6"
                         sx={{
-                            fontFamily: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(
-                                ",",
-                            ),
+                            fontFamily: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
                             color: kills > 0 ? colors.gold : colors.lightGrey,
                         }}
                     >
