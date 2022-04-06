@@ -321,7 +321,11 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
                         }
                     }}
                     sx={{
-                        m: ".4rem",
+                        my: ".8rem",
+                        ml: ".3rem",
+                        pl: ".5rem",
+                        mr: ".3rem",
+                        pr: ".5rem",
                         flex: 1,
                         overflowY: "auto",
                         overflowX: "hidden",
@@ -340,7 +344,7 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
                         },
                     }}
                 >
-                    <Stack spacing={0.6}>{content}</Stack>
+                    <Stack spacing=".7rem">{content}</Stack>
                 </Box>
             </Fade>
         </Stack>

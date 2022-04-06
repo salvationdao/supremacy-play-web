@@ -1,9 +1,10 @@
 import { Box, Button, CircularProgress, Drawer, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgBack, SvgDeath, SvgGoldBars, SvgHistory, SvgRefresh } from "../../assets"
-import { GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { SocketState, useGameServerWebsocket } from "../../containers"
 import { camelToTitle, timeSince } from "../../helpers"
+import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../types"
@@ -18,6 +19,7 @@ export interface HistoryDrawerProps {
 
 export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
     const { state, send } = useGameServerWebsocket()
+    const [localOpen, toggleLocalOpen] = useToggle(open)
     // Mech stats
     const [stats, setStats] = useState<BattleMechStats>()
     const [statsLoading, setStatsLoading] = useState(false)
@@ -72,6 +74,15 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
         fetchHistory()
     }, [state, send])
 
+    // This allows the drawer transition to happen before we unmount it
+    useEffect(() => {
+        if (!open) {
+            setTimeout(() => {
+                onClose()
+            }, DRAWER_TRANSITION_DURATION + 50)
+        }
+    }, [open])
+
     const renderEmptyHistory = () => {
         if (historyLoading) {
             return <CircularProgress size="4rem" />
@@ -92,9 +103,10 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
 
     return (
         <Drawer
-            open={open}
-            onClose={onClose}
+            open={localOpen}
+            onClose={() => toggleLocalOpen(false)}
             anchor="right"
+            transitionDuration={DRAWER_TRANSITION_DURATION}
             sx={{
                 width: `${RIGHT_DRAWER_WIDTH - LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
                 flexShrink: 0,
@@ -121,7 +133,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                         boxShadow: 1.5,
                     }}
                 >
-                    <Button size="small" onClick={onClose} sx={{ px: "1rem" }}>
+                    <Button size="small" onClick={() => toggleLocalOpen(false)} sx={{ px: "1rem" }}>
                         <SvgBack size="1.3rem" sx={{ pb: ".1rem" }} />
                         <Typography sx={{ ml: ".5rem" }}>Go Back</Typography>
                     </Button>
@@ -143,7 +155,7 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
                                     width: "calc(100% - 6rem)",
                                     height: "26rem",
                                     objectFit: "contain",
-                                    objectPosition: "center",
+                                    objectPosition: "left",
                                 }}
                             />
                             <Stack

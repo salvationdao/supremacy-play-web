@@ -114,7 +114,7 @@ export const AssetItem = ({
             //         >
             //             REPAIRING
             //         </Typography>
-            //         <Stack direction="row" alignItems="center" spacing={".32rem"} sx={{ pt: '.24rem' }}>
+            //         <Stack direction="row" alignItems="center" spacing=".32rem" sx={{ pt: '.24rem' }}>
             //             {isFastMode && <SvgFastRepair size="1rem" fill={colors.neonBlue} />}
             //             <SvgCooldown size="1.2rem" fill={colors.neonBlue} />
             //             <Typography

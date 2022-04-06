@@ -286,10 +286,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
             } catch (e) {
                 console.debug(e)
                 setIsReconnect(true)
-                newSnackbarMessage(
-                    typeof e === "string" ? e : "Failed to connect to passport server, retrying...",
-                    "error",
-                )
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to connect to passport server, retrying...", "error")
             }
         })()
     }, [host, setupWS])

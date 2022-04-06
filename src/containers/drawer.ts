@@ -4,6 +4,7 @@ import { createContainer } from "unstated-next"
 enum DrawerPanels {
     None = "NONE",
     LiveChat = "LIVE_CHAT",
+    PlayerList = "PLAYER_LIST",
     Assets = "ASSETS",
 }
 
@@ -23,8 +24,10 @@ export const DrawerContainer = createContainer(() => {
     return {
         isAnyPanelOpen: activePanel != DrawerPanels.None,
         isLiveChatOpen: activePanel == DrawerPanels.LiveChat,
+        isPlayerListOpen: activePanel == DrawerPanels.PlayerList,
         isAssetOpen: activePanel == DrawerPanels.Assets,
         toggleIsLiveChatOpen: (value?: boolean) => togglePanel(DrawerPanels.LiveChat, value),
+        toggleIsPlayerListOpen: (value?: boolean) => togglePanel(DrawerPanels.PlayerList, value),
         toggleIsAssetOpen: (value?: boolean) => togglePanel(DrawerPanels.Assets, value),
     }
 })

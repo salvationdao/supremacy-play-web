@@ -79,6 +79,9 @@ export enum GameServerKeys {
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
     SubmitBanVote = "PUNISH:VOTE",
 
+    // Player list
+    SubPlayerList = "FACTION:ACTIVE:PLAYER:SUBSCRIBE",
+
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
 }
