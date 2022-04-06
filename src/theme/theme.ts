@@ -46,7 +46,7 @@ export const colors = {
 
     health: "#BFF600",
     shield: "#00F7F7",
-    warMachineSkillBar: "#3F3A99",
+    warMachineSkillBar: "#9669FF",
 
     lightGrey: "#aeaeb3",
     grey: "#89898d",
