@@ -32,7 +32,7 @@ export const PunishMessage = ({
 
     return (
         <Box>
-            <Box sx={{ ml: "-.4rem", mb: ".5rem", backgroundColor: "#00000040" }}>
+            <Box sx={{ mx: "-0.6rem", mb: ".5rem", backgroundColor: "#00000040" }}>
                 <Stack
                     sx={{
                         pt: "1rem",

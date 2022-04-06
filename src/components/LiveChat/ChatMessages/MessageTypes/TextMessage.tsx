@@ -151,7 +151,7 @@ const UserDetailsPopover = ({
                                     onClose()
                                 }}
                                 sx={{
-                                    mt: ".4rem",
+                                    mt: ".7rem",
                                     px: ".8rem",
                                     pt: ".48rem",
                                     pb: ".3rem",
