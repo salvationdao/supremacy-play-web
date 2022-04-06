@@ -101,7 +101,7 @@ export const PlayerList = () => {
         >
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
                 <DrawerButtons isFixed={false} />
-                {isPlayerListOpen && <DrawerContent user={user} />}
+                <DrawerContent user={user} />
             </Stack>
         </Drawer>
     )

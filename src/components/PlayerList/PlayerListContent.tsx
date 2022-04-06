@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { PlayerItem } from ".."
 import { useGame, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
@@ -21,7 +21,6 @@ export const PlayerListContent = ({ user }: { user: User }) => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<User[]>(GameServerKeys.SubPlayerList, (payload) => {
             if (!payload) return
-
             setActivePlayer(payload)
         })
     }, [state, subscribe])
@@ -31,20 +30,14 @@ export const PlayerListContent = ({ user }: { user: User }) => {
         const list = [...players]
 
         // add new players that is not in the list
-        activePlayers.forEach((u, i) => {
-            console.log("get in the loop", i)
-            if (list.some((user) => user.id === u.id)) {
-                return
-            }
-
+        activePlayers.forEach((u) => {
+            if (list.some((user) => user.id === u.id)) return
             // otherwise add them into the list
             list.push({ ...u, is_active: true })
         })
 
-        console.log(list)
-
         // update player active list
-        setPlayers(list.map((u) => ({ ...u, is_active: activePlayers.some((user) => user.id === u.id) })).sort((a, b) => (a.is_active ? -1 : 1)))
+        setPlayers(list.map((u) => ({ ...u, is_active: activePlayers.some((user) => user.id === u.id) })).sort((a) => (a.is_active ? -1 : 1)))
     }, [activePlayers, setPlayers])
 
     if (!players || players.length <= 0) return null
@@ -52,7 +45,7 @@ export const PlayerListContent = ({ user }: { user: User }) => {
     return (
         <Stack spacing=".5rem">
             {players.map((p) => (
-                <PlayerItem key={`active-player-${p.id}`} player={p} faction={faction} />
+                <PlayerItem key={`active-player-${p.id}`} player={p} faction={faction} user={user} />
             ))}
         </Stack>
     )
