@@ -104,6 +104,7 @@ export enum PassportServerKeys {
     // Assets
     SubAssetList = "USER:ASSET:LIST",
     SubAssetData = "ASSET:SUBSCRIBE",
+    UpdateAssetName = "ASSET:UPDATE:NAME",
 
     // Transactions
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
