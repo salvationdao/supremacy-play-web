@@ -1,8 +1,9 @@
-import { Box, Button, CircularProgress, IconButton, Link, Stack, TextField, Typography } from "@mui/material"
-import { useEffect, useMemo, useState, useRef, useCallback } from "react"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import { Box, Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
-import { SvgExternalLink, SvgHistoryClock, SvgSupToken } from "../../assets"
-import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
+import { SvgSupToken } from "../../assets"
+import { UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
@@ -198,7 +199,10 @@ export const AssetItem = ({
                         onMouseLeave={() => setMouseOver(false)}
                         onFocus={() => setMouseOver(true)}
                         onBlur={() => setMouseOver(false)}
-                        onClick={() => toggleLeaveModalOpen(true)}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            toggleLeaveModalOpen(true)
+                        }}
                         variant="contained"
                         size="small"
                         sx={{
@@ -244,8 +248,13 @@ export const AssetItem = ({
             <Button
                 variant="contained"
                 size="small"
-                onClick={() => toggleDeployModalOpen(true)}
+                onClick={(e) => {
+                    toggleDeployModalOpen(true)
+                    e.stopPropagation()
+                }}
                 sx={{
+                    zIndex: 2,
+                    position: "relative",
                     minWidth: 0,
                     px: ".8rem",
                     pt: ".48rem",
@@ -264,173 +273,191 @@ export const AssetItem = ({
     }, [isGameServerUp, isRepairing, isInQueue, mouseOver, assetQueueStatus])
 
     return (
-        <Stack
-            direction="row"
-            spacing="1.44rem"
-            sx={{
-                position: "relative",
-                px: "1.04rem",
-                py: ".8rem",
-                backgroundColor: `${colors.navy}80`,
-            }}
-        >
+        <>
             <Box
+                role="button"
+                tabIndex={0}
                 sx={{
                     position: "relative",
-                    flexShrink: 0,
-                    px: ".48rem",
-                    py: ".8rem",
-                    boxShadow: "inset 0 0 8px 6px #00000055",
-                    overflow: "hidden",
-                    borderRadius: 0.5,
+                    cursor: "pointer",
+                    "::after": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        opacity: 0,
+                        transition: "opacity .2s ease-out",
+                    },
+                    ":hover::after, :focus::after": {
+                        opacity: 1,
+                    },
+                }}
+                onClick={() => {
+                    toggleHistoryDrawerOpen(true)
                 }}
             >
-                <Box
+                <Stack
+                    direction="row"
+                    spacing="1.44rem"
                     sx={{
-                        width: "5.5rem",
-                        height: "5.5rem",
-                        flexShrink: 0,
-                        overflow: "hidden",
-                        backgroundImage: `url(${image_url})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "contain",
+                        position: "relative",
+                        px: "1.04rem",
+                        py: ".8rem",
+                        backgroundColor: `${colors.navy}80`,
                     }}
-                />
+                >
+                    <Box
+                        sx={{
+                            position: "relative",
+                            flexShrink: 0,
+                            px: ".48rem",
+                            py: ".8rem",
+                            boxShadow: "inset 0 0 8px 6px #00000055",
+                            overflow: "hidden",
+                            borderRadius: 0.5,
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                width: "5.5rem",
+                                height: "5.5rem",
+                                flexShrink: 0,
+                                overflow: "hidden",
+                                backgroundImage: `url(${image_url})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "contain",
+                            }}
+                        />
 
-                {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
-                    <Box sx={{ position: "absolute", top: 0, left: 0 }}>
-                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
+                        {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
+                            <Box sx={{ position: "absolute", top: 0, left: 0 }}>
+                                <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
+                            </Box>
+                        )}
+
+                        <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
+                            <Stack
+                                direction="row"
+                                spacing=".08rem"
+                                sx={{
+                                    position: "absolute",
+                                    bottom: "-1.4rem",
+                                    left: ".1rem",
+                                    height: "4.2rem",
+                                    transform: "rotate(-40deg)",
+                                    zIndex: 3,
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        width: 3,
+                                        height: "100%",
+                                        backgroundColor: rarityDeets.color,
+                                        border: "#00000090 1.5px solid",
+                                    }}
+                                />
+                                <Box
+                                    sx={{
+                                        width: 3,
+                                        height: "100%",
+                                        backgroundColor: rarityDeets.color,
+                                        border: "#00000090 1.5px solid",
+                                    }}
+                                />
+                            </Stack>
+                        </TooltipHelper>
                     </Box>
-                )}
+                    <Stack spacing=".4rem" justifyContent="space-between" sx={{ flex: 1, pb: ".2rem" }}>
+                        <TextField
+                            inputRef={renamingRef}
+                            variant={"standard"}
+                            multiline
+                            sx={{
+                                "& .MuiInputBase-root": {
+                                    padding: 0,
+                                },
+                            }}
+                            spellCheck={false}
+                            InputProps={{
+                                disableUnderline: true,
+                                style: {
+                                    fontFamily: "Nostromo Regular Bold",
+                                    fontWeight: "fontWeightBold",
+                                    wordBreak: "break-word",
+                                    fontSize: "1.1rem",
+                                    backgroundColor: renaming ? colors.navy : "unset",
+                                    borderRadius: ".3rem",
+                                    border: renaming ? `.5px solid ${colors.lightGrey}` : "unset",
+                                },
+                            }}
+                            value={renamedValue}
+                            defaultValue={name || label}
+                            onChange={(e) => {
+                                setRenamedValue(e.target.value)
+                            }}
+                            onFocus={() => {
+                                setRenaming(true)
+                            }}
+                            onBlur={() => {
+                                setRenaming(false)
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault()
+                                    handleRename()
+                                    renamingRef.current?.blur()
+                                }
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                        />
 
-                <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
-                    <Stack
-                        direction="row"
-                        spacing=".08rem"
+                        <Stack alignItems="center" direction="row" spacing=".96rem">
+                            {statusArea}
+                            {renamedValue !== name && renamedValue !== label && (
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    onClick={(e) => {
+                                        handleRename()
+                                        e.stopPropagation()
+                                    }}
+                                    sx={{
+                                        minWidth: "6rem",
+                                        minHeight: "100%",
+                                        px: ".8rem",
+                                        pt: ".48rem",
+                                        pb: 0.4,
+                                        boxShadow: 0,
+                                        backgroundColor: colors.blue,
+                                        borderRadius: 0.3,
+                                        ":hover": { backgroundColor: `${colors.blue}90` },
+                                    }}
+                                >
+                                    {renameLoading ? (
+                                        <CircularProgress size={"1.1rem"} sx={{ color: colors.lightNeonBlue }} />
+                                    ) : (
+                                        <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                            Rename
+                                        </Typography>
+                                    )}
+                                </Button>
+                            )}
+                        </Stack>
+                    </Stack>
+                    <VisibilityIcon
                         sx={{
                             position: "absolute",
-                            bottom: "-1.4rem",
-                            left: ".1rem",
-                            height: "4.2rem",
-                            transform: "rotate(-40deg)",
-                            zIndex: 3,
+                            top: ".5rem",
+                            right: ".5rem",
+                            opacity: 0.3,
                         }}
-                    >
-                        <Box
-                            sx={{
-                                width: 3,
-                                height: "100%",
-                                backgroundColor: rarityDeets.color,
-                                border: "#00000090 1.5px solid",
-                            }}
-                        />
-                        <Box
-                            sx={{
-                                width: 3,
-                                height: "100%",
-                                backgroundColor: rarityDeets.color,
-                                border: "#00000090 1.5px solid",
-                            }}
-                        />
-                    </Stack>
-                </TooltipHelper>
-            </Box>
-            <Stack spacing=".4rem" justifyContent="space-between" sx={{ flex: 1, pb: ".2rem" }}>
-                <TextField
-                    inputRef={renamingRef}
-                    variant={"standard"}
-                    multiline
-                    sx={{
-                        "& .MuiInputBase-root": {
-                            padding: 0,
-                        },
-                    }}
-                    spellCheck={false}
-                    InputProps={{
-                        disableUnderline: true,
-                        style: {
-                            fontFamily: "Nostromo Regular Bold",
-                            fontWeight: "fontWeightBold",
-                            wordBreak: "break-word",
-                            fontSize: "1.1rem",
-                            backgroundColor: renaming ? colors.navy : "unset",
-                            borderRadius: ".3rem",
-                            border: renaming ? `.5px solid ${colors.lightGrey}` : "unset",
-                        },
-                    }}
-                    value={renamedValue}
-                    defaultValue={name || label}
-                    onChange={(e) => {
-                        setRenamedValue(e.target.value)
-                    }}
-                    onFocus={() => {
-                        setRenaming(true)
-                    }}
-                    onBlur={() => {
-                        setRenaming(false)
-                    }}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault()
-                            handleRename()
-                            renamingRef.current?.blur()
-                        }
-                    }}
-                />
-
-                <Stack alignItems="center" direction="row" spacing=".96rem">
-                    {statusArea}
-                    {renamedValue !== name && renamedValue !== label && (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => handleRename()}
-                            sx={{
-                                minWidth: "6rem",
-                                minHeight: "100%",
-                                px: ".8rem",
-                                pt: ".48rem",
-                                pb: 0.4,
-                                boxShadow: 0,
-                                backgroundColor: colors.blue,
-                                borderRadius: 0.3,
-                                ":hover": { backgroundColor: `${colors.blue}90` },
-                            }}
-                        >
-                            {renameLoading ? (
-                                <CircularProgress size={"1.1rem"} sx={{ color: colors.lightNeonBlue }} />
-                            ) : (
-                                <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                    Rename
-                                </Typography>
-                            )}
-                        </Button>
-                    )}
+                    />
                 </Stack>
-            </Stack>
-
-            <Stack spacing=".3rem" sx={{ pt: ".2rem" }}>
-                <TooltipHelper placement="left" text="View asset in Passport">
-                    <Link
-                        sx={{
-                            display: "block",
-                            marginBottom: ".5rem",
-                        }}
-                        href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                        target="_blank"
-                    >
-                        <SvgExternalLink size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 0.9 } }} />
-                    </Link>
-                </TooltipHelper>
-
-                <TooltipHelper placement="left" text="View battle history">
-                    <IconButton onClick={() => toggleHistoryDrawerOpen(true)} sx={{ p: 0 }}>
-                        <SvgHistoryClock size="1.3rem" sx={{ opacity: 0.4, ":hover": { opacity: 0.9 } }} />
-                    </IconButton>
-                </TooltipHelper>
-            </Stack>
-
+            </Box>
             {deployModalOpen && (
                 <DeployConfirmation
                     open={deployModalOpen}
@@ -445,7 +472,7 @@ export const AssetItem = ({
 
             {leaveModalOpen && <LeaveConfirmation open={leaveModalOpen} asset={asset} onClose={() => toggleLeaveModalOpen(false)} />}
 
-            {historyDrawerOpen && <HistoryDrawer open={historyDrawerOpen} asset={asset} onClose={() => toggleHistoryDrawerOpen(false)} />}
-        </Stack>
+            {historyDrawerOpen && <HistoryDrawer user={user} open={historyDrawerOpen} asset={asset} onClose={() => toggleHistoryDrawerOpen(false)} />}
+        </>
     )
 }

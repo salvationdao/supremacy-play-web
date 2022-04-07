@@ -1,7 +1,7 @@
-import { Box, Button, CircularProgress, Drawer, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Drawer, IconButton, Link, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgBack, SvgDeath, SvgGoldBars, SvgHistory, SvgRefresh } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH } from "../../constants"
+import { SvgBack, SvgDeath, SvgExternalLink, SvgGoldBars, SvgHistory, SvgRefresh } from "../../assets"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, PASSPORT_WEB, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { SocketState, useGameServerWebsocket } from "../../containers"
 import { camelToTitle, timeSince } from "../../helpers"
 import { useToggle } from "../../hooks"
@@ -9,15 +9,18 @@ import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../types"
 import { Asset } from "../../types/assets"
+import { UserData } from "../../types/passport"
+import { TooltipHelper } from "../Common/TooltipHelper"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
 
 export interface HistoryDrawerProps {
+    user: UserData
     open: boolean
     onClose: () => void
     asset: Asset
 }
 
-export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
+export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps) => {
     const { state, send } = useGameServerWebsocket()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     // Mech stats
@@ -141,10 +144,22 @@ export const HistoryDrawer = ({ open, onClose, asset }: HistoryDrawerProps) => {
 
                 <Stack sx={{ p: ".8rem", flex: 1, overflow: "hidden" }}>
                     <Stack spacing="1rem" sx={{ px: "1.2rem", py: "1rem" }}>
-                        <Box>
+                        <Stack direction="row" alignItems="center">
                             <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{asset.data.mech.name || asset.data.mech.label}</Typography>
-                            {statsError && <Typography color={colors.red}>{statsError}</Typography>}
-                        </Box>
+                            <TooltipHelper placement="left" text="View asset in Passport">
+                                <Link
+                                    sx={{
+                                        display: "block",
+                                        marginBottom: ".5rem",
+                                    }}
+                                    href={`${PASSPORT_WEB}profile/${user.username}/asset/${asset.hash}`}
+                                    target="_blank"
+                                >
+                                    <SvgExternalLink size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 0.9 } }} />
+                                </Link>
+                            </TooltipHelper>
+                        </Stack>
+                        {statsError && <Typography color={colors.red}>{statsError}</Typography>}
 
                         <Stack direction="row" alignItems="center" justifyContent="space-between">
                             <Box
