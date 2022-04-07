@@ -173,6 +173,7 @@ const App = () => {
         }
     }, [passLogin])
 
+
     useEffect(() => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
