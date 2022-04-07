@@ -6,6 +6,7 @@ import { useToggle } from "../../../hooks"
 import { Transaction } from "../../../types/passport"
 import { TooltipHelper } from "../.."
 import { dateFormatter, supFormatterNoFixed } from "../../../helpers"
+import { colors } from "../../../theme/theme"
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const [copySuccess, toggleCopySuccess] = useToggle()
@@ -19,23 +20,16 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
     }, [copySuccess])
 
     const isCredit = useMemo(() => userID === transaction.credit, [userID, transaction])
-    const color = useMemo(() => (isCredit ? "#01FF70" : "#FF4136"), [isCredit])
-    const tooltipText = useMemo(
-        () => transaction.description || transaction.sub_group || transaction.group,
-        [transaction],
-    )
+    const color = useMemo(() => (isCredit ? colors.supsCredit : colors.supsDebit), [isCredit])
+    const tooltipText = useMemo(() => transaction.description || transaction.sub_group || transaction.group, [transaction])
 
     return (
         <TooltipHelper placement="left" text={tooltipText ? `  ${tooltipText.toUpperCase()}` : ""}>
-            <Stack
-                direction="row"
-                alignItems="center"
-                sx={{ px: ".64rem", py: ".12rem", backgroundColor: "#00000030", borderRadius: 1 }}
-            >
+            <Stack direction="row" alignItems="center" sx={{ px: ".64rem", py: ".12rem", backgroundColor: "#00000030", borderRadius: 1 }}>
                 <Stack direction="row" alignItems="center">
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>
                     <SvgSupToken size="1.3rem" fill={color} />
-                    <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount, 18)}</Typography>
+                    <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount)}</Typography>
                 </Stack>
 
                 <Typography

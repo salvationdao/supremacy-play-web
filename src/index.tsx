@@ -1,10 +1,10 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { GameBar } from "./components/GameBar/GameBar"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
 import {
+    GameBar,
     MiniMap,
     BattleEndScreen,
     BattleHistory,
@@ -19,6 +19,8 @@ import {
     Maintenance,
     BattleCloseAlert,
     GlobalSnackbar,
+    EarlyAccessWarning,
+    WaitingPage,
 } from "./components"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
@@ -42,7 +44,6 @@ import { useToggle } from "./hooks"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme, User } from "./types"
 import { UserData } from "./types/passport"
-import { EarlyAccessWarning } from "./components/EarlyAccessWarning/EarlyAccessWarning"
 
 if (SENTRY_CONFIG) {
     // import { Integrations } from '@sentry/tracing'
@@ -108,7 +109,7 @@ const AppInner = () => {
                                 <BattleCloseAlert />
                                 <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
-                                {user && haveSups && state === WebSocket.OPEN && (
+                                {user && haveSups && state === WebSocket.OPEN ? (
                                     <Box>
                                         <EarlyAccessWarning />
                                         <VotingSystem />
@@ -119,6 +120,8 @@ const AppInner = () => {
                                         <BattleEndScreen />
                                         <BattleHistory />
                                     </Box>
+                                ) : (
+                                    <WaitingPage />
                                 )}
                             </>
                         )}

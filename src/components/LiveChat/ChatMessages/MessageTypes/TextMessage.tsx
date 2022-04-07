@@ -1,5 +1,5 @@
 import { Box, Button, Popover, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { ClipThing, UserBanForm } from "../../.."
 import { SvgSkull2, SvgInfoCircular, SvgAbility, SvgDeath, SvgView } from "../../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
@@ -21,7 +21,6 @@ const UserDetailsPopover = ({
     factionSecondaryColor,
     fromUserFactionID,
     messageColor,
-    userID,
     username,
     gid,
     userStat,
@@ -29,13 +28,13 @@ const UserDetailsPopover = ({
     open,
     onClose,
     user,
+    toggleBanModalOpen,
 }: {
     factionLogoBlobID?: string
     factionColor?: string
     factionSecondaryColor?: string
     fromUserFactionID?: string
     messageColor?: string
-    userID: string
     username: string
     gid: number
     userStat?: UserStat
@@ -43,17 +42,26 @@ const UserDetailsPopover = ({
     open: boolean
     onClose: () => void
     user?: User
+    toggleBanModalOpen: (value?: boolean | undefined) => void
 }) => {
-    const [banModalOpen, toggleBanModalOpen] = useToggle()
+    const [localOpen, toggleLocalOpen] = useToggle(open)
+
+    useEffect(() => {
+        if (!localOpen) {
+            setTimeout(() => {
+                onClose()
+            }, 300)
+        }
+    }, [localOpen])
 
     if (!userStat) return null
 
     return (
         <>
             <Popover
-                open={open}
+                open={localOpen}
                 anchorEl={popoverRef.current}
-                onClose={onClose}
+                onClose={() => toggleLocalOpen(false)}
                 anchorOrigin={{
                     vertical: "top",
                     horizontal: "left",
@@ -148,7 +156,7 @@ const UserDetailsPopover = ({
                                 size="small"
                                 onClick={() => {
                                     toggleBanModalOpen()
-                                    onClose()
+                                    toggleLocalOpen(false)
                                 }}
                                 sx={{
                                     mt: ".7rem",
@@ -176,19 +184,6 @@ const UserDetailsPopover = ({
                     </Stack>
                 </ClipThing>
             </Popover>
-
-            {banModalOpen && user && fromUserFactionID === user.faction_id && (
-                <UserBanForm
-                    user={user}
-                    open={banModalOpen}
-                    onClose={() => toggleBanModalOpen(false)}
-                    prefillUser={{
-                        id: userID,
-                        username,
-                        gid,
-                    }}
-                />
-            )}
         </>
     )
 }
@@ -200,6 +195,7 @@ export const TextMessage = ({
     isSent,
     isFailed,
     filterZeros,
+    filterSystemMessages,
     factionsAll,
     user,
     isEmoji,
@@ -210,6 +206,7 @@ export const TextMessage = ({
     isSent?: boolean
     isFailed?: boolean
     filterZeros?: boolean
+    filterSystemMessages?: boolean
     factionsAll: FactionsAll
     user?: User
     isEmoji: boolean
@@ -219,6 +216,7 @@ export const TextMessage = ({
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
+    const [banModalOpen, toggleBanModalOpen] = useToggle()
     const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
     const abilityKillColor = useMemo(() => {
         if (!from_user_stat || from_user_stat.kill_count == 0 || !message_color) return colors.grey
@@ -241,7 +239,7 @@ export const TextMessage = ({
     }, [message, renderFontSize])
 
     // For the hide zero multi setting
-    if (!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) return null
+    if ((!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) || filterSystemMessages) return null
 
     return (
         <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
@@ -405,21 +403,36 @@ export const TextMessage = ({
 
             <Box sx={{ ml: "2.1rem" }}>{chatMessage}</Box>
 
-            <UserDetailsPopover
-                factionLogoBlobID={factionLogoBlobID}
-                factionColor={factionColor}
-                factionSecondaryColor={factionSecondaryColor}
-                messageColor={message_color}
-                fromUserFactionID={faction_id}
-                userID={id}
-                username={username}
-                userStat={from_user_stat}
-                popoverRef={popoverRef}
-                open={isPopoverOpen}
-                onClose={() => toggleIsPopoverOpen(false)}
-                user={user}
-                gid={gid}
-            />
+            {isPopoverOpen && (
+                <UserDetailsPopover
+                    factionLogoBlobID={factionLogoBlobID}
+                    factionColor={factionColor}
+                    factionSecondaryColor={factionSecondaryColor}
+                    messageColor={message_color}
+                    fromUserFactionID={faction_id}
+                    username={username}
+                    userStat={from_user_stat}
+                    popoverRef={popoverRef}
+                    open={isPopoverOpen}
+                    onClose={() => toggleIsPopoverOpen(false)}
+                    toggleBanModalOpen={toggleBanModalOpen}
+                    user={user}
+                    gid={gid}
+                />
+            )}
+
+            {banModalOpen && user && faction_id === user.faction_id && (
+                <UserBanForm
+                    user={user}
+                    open={banModalOpen}
+                    onClose={() => toggleBanModalOpen(false)}
+                    prefillUser={{
+                        id,
+                        username,
+                        gid,
+                    }}
+                />
+            )}
         </Box>
     )
 }

@@ -45,6 +45,7 @@ export interface UserData {
 }
 
 export interface Transaction {
+    id: string
     amount: string
     transaction_reference: string
     created_at: Date

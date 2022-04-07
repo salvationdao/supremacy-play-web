@@ -5,15 +5,7 @@ import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../..
 import { useDimension, useStream, useWallet } from "../../containers"
 import { useToggle } from "../../hooks"
 
-const Message = ({
-    render,
-    haveSups,
-    toggleHaveSups,
-}: {
-    render: boolean
-    haveSups: boolean
-    toggleHaveSups: (value?: boolean) => void
-}) => {
+const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: (value?: boolean) => void }) => {
     const { onWorldSups } = useWallet()
 
     // Doing it here prevents index.tsx from re-rendering continuously from sup ticks
@@ -30,13 +22,7 @@ const Message = ({
     return null
 }
 
-export const Stream = ({
-    haveSups,
-    toggleHaveSups,
-}: {
-    haveSups: boolean
-    toggleHaveSups: (value?: boolean) => void
-}) => {
+export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: (value?: boolean) => void }) => {
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
@@ -70,6 +56,7 @@ export const Stream = ({
                     aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
                     width: iframeDimensions.width,
                     height: iframeDimensions.height,
+                    zIndex: 1,
                 }}
             />
             <Message render={renderTopMessage} haveSups={haveSups} toggleHaveSups={toggleHaveSups} />

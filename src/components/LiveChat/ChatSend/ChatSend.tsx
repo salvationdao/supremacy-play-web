@@ -444,13 +444,15 @@ const ChatSendInner = ({
                 )}
             </Stack>
 
-            <EmojiPopover
-                primaryColor={primaryColor}
-                setMessage={setMessageWithCheck}
-                popoverRef={popoverRef}
-                isEmojiOpen={isEmojiOpen}
-                toggleIsEmojiOpen={toggleIsEmojiOpen}
-            />
+            {isEmojiOpen && (
+                <EmojiPopover
+                    primaryColor={primaryColor}
+                    setMessage={setMessageWithCheck}
+                    popoverRef={popoverRef}
+                    isEmojiOpen={isEmojiOpen}
+                    toggleIsEmojiOpen={toggleIsEmojiOpen}
+                />
+            )}
         </form>
     )
 }

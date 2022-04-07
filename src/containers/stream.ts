@@ -148,16 +148,14 @@ export const StreamContainer = createContainer(() => {
 
         // Filter for servers that have capacity and is onlnine
         const availStreams = streams.filter((x) => {
-            return x.users_now < x.user_max && x.status === "online"
+            return x.users_now < x.user_max && x.status === "online" && x.active
         })
 
         if (availStreams.length <= 0) return
 
         // Reduce the list of options so it's not too many for the user
         // By default its sorted by quietest servers first
-        const quietestStreams = availStreams.sort((a, b) =>
-            a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1,
-        )
+        const quietestStreams = availStreams.sort((a, b) => (a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1))
 
         // If the local storage stream is in the list, set as current stream
         const localStream = localStorage.getItem("new_stream_props")

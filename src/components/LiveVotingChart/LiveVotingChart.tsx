@@ -32,14 +32,14 @@ const SpoilOfWarAmount = () => {
     }, [state, subscribeNetMessage])
 
     return (
-        <Stack direction="row" alignItems="center" justifyContent="center" spacing="1.6rem">
+        <Stack direction="row" alignItems="center" justifyContent="center" spacing="1.6rem" sx={{ pl: ".6rem" }}>
             <TooltipHelper text="This is the spoils of war accumulated in the current battle.">
                 <Stack direction="row" alignItems="center" justifyContent="center">
-                    <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
+                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
                         SPOILS OF WAR:&nbsp;
                     </Typography>
                     <SvgSupToken size="1.4rem" fill={colors.yellow} />
-                    <Typography variant="body1" sx={{ color: colors.yellow }}>
+                    <Typography variant="body2" sx={{ color: colors.yellow }}>
                         {nextSpoilOfWarAmount == "0" ? "---" : nextSpoilOfWarAmount}
                     </Typography>
                 </Stack>
@@ -47,11 +47,11 @@ const SpoilOfWarAmount = () => {
 
             <TooltipHelper text="This is the spoils of war from the previous battle, it is distributed to players with multipliers.">
                 <Stack direction="row" alignItems="center" justifyContent="center">
-                    <Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
+                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
                         PREV:&nbsp;
                     </Typography>
                     <SvgSupToken size="1.4rem" fill={colors.yellow} />
-                    <Typography variant="body1" sx={{ color: colors.yellow }}>
+                    <Typography variant="body2" sx={{ color: colors.yellow }}>
                         {spoilOfWarAmount == "0" ? "---" : spoilOfWarAmount}
                     </Typography>
                 </Stack>
@@ -146,7 +146,7 @@ const Content = () => {
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    bottom: "-1.8rem",
+                                    bottom: "-1.6rem",
                                     right: "7.5rem",
                                     opacity: 0.4,
                                     zIndex: 99,
