@@ -45,7 +45,7 @@ export const ContributionBar = ({
                     style={{
                         position: "absolute",
                         left: `${costPercent}%`,
-                        backgroundColor: colors.red,
+                        backgroundColor: colors.lightRed,
                         height: "1rem",
                         width: 2,
                         zIndex: 6,

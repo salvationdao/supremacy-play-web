@@ -1,5 +1,4 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React from "react"
 import { SupBackground } from "../../assets"
 import { colors } from "../../theme/theme"
 
@@ -19,6 +18,7 @@ export const WaitingPage = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                zIndex: 0,
             }}
         >
             <Stack

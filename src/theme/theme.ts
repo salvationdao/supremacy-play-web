@@ -29,6 +29,7 @@ export const colors = {
     text: "#FFFFFF",
     offWhite: "#D4FFFF",
     red: "#C24242",
+    lightRed: "#E83200",
     green: "#2BA172",
     yellow: "#FFE200",
     orange: "#E04F00",
@@ -55,6 +56,9 @@ export const colors = {
 
     globalChat: "#1A6044",
     assetsBanner: "#4E1A61",
+
+    supsCredit: "#01FF70",
+    supsDebit: "#FF4136",
 
     rarity: {
         MEGA: "#e84234",

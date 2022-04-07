@@ -130,6 +130,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to connect to game server, retrying...", "error")
                 console.error(e)
                 setIsReconnect(true)
+                setIsServerUp(false)
             }
         })()
     }, [])
@@ -308,6 +309,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                 // Use network sub menu to see payloads traveling between client and server
                 // https://stackoverflow.com/a/5757171
                 // console.info("WebSocket open.")
+                setIsServerUp(true)
             }
             ws.onerror = () => {
                 // Use network sub menu to see payloads traveling between client and server

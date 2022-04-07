@@ -118,27 +118,18 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
 
                         <Stack spacing=".8rem">
                             <Box>
-                                <Typography
-                                    sx={{
-                                        fontFamily: "Nostromo Regular Bold",
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
-                                    }}
-                                >
-                                    {name || label}
-
-                                    {user && (
-                                        <span>
-                                            <Link href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`} target="_blank" sx={{ ml: ".48rem" }}>
-                                                <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
-                                            </Link>
-                                        </span>
-                                    )}
-                                </Typography>
+                                <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Bold" }}>{name || label}</Typography>
+                                {user && (
+                                    <span>
+                                        <Link
+                                            href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
+                                            target="_blank"
+                                            sx={{ display: "inline", ml: ".7rem" }}
+                                        >
+                                            <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                                        </Link>
+                                    </span>
+                                )}
                             </Box>
 
                             <Typography sx={{ strong: { color: colors.neonBlue } }}>

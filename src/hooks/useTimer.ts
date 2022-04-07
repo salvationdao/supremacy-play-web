@@ -31,11 +31,17 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000) => {
         setSeconds(Math.max(seconds, 0))
     }, delay)
 
+    const pause = () => setDelay(null)
+
+    const resume = () => setDelay(speed)
+
     return {
         setEndTimeState,
         totalSecRemain,
         hours,
         minutes,
         seconds,
+        pause,
+        resume,
     }
 }

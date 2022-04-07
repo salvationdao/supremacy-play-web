@@ -228,7 +228,9 @@ export const DeployConfirmation = ({
                                 }}
                             />
 
-                            <Box
+                            <Stack
+                                alignItems="center"
+                                justifyContent="center"
                                 sx={{
                                     position: "absolute",
                                     top: "1.8rem",
@@ -259,21 +261,24 @@ export const DeployConfirmation = ({
                                 >
                                     {rarityDeets.label}
                                 </Typography>
-                            </Box>
+                            </Stack>
                         </Box>
 
                         <Stack spacing=".8rem">
-                            <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>
-                                {name || label}
-
+                            <Box>
+                                <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Bold" }}>{name || label}</Typography>
                                 {user && (
                                     <span>
-                                        <Link href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`} target="_blank" sx={{ ml: ".48rem" }}>
-                                            <SvgExternalLink size="1rem" sx={{ opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                                        <Link
+                                            href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
+                                            target="_blank"
+                                            sx={{ display: "inline", ml: ".7rem" }}
+                                        >
+                                            <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
                                         </Link>
                                     </span>
                                 )}
-                            </Typography>
+                            </Box>
 
                             <Stack spacing=".2rem">
                                 {queueLength >= 0 && (

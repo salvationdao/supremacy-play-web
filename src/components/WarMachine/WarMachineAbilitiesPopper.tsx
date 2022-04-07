@@ -59,7 +59,8 @@ export const WarMachineAbilitiesPopover = ({ popoverRef, open, onClose, warMachi
                                         backgroundPosition: "center",
                                         backgroundSize: "cover",
                                         backgroundColor: factionTheme.primary,
-                                        mb: ".24rem",
+                                        mb: ".12rem",
+                                        border: `${factionTheme.primary} 1px solid`,
                                         borderRadius: 0.5,
                                     }}
                                 />

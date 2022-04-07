@@ -163,7 +163,6 @@ export const FactionAbilityItemInner = ({
                         >
                             <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
                                 <TopText description={description} image_url={image_url} colour={colour} label={label} />
-
                                 <SupsStackBar currentSups={currentSups} colour={colour} supsCost={supsCost} />
                             </Stack>
 
