@@ -206,6 +206,8 @@ export const AssetItem = ({
                         variant="contained"
                         size="small"
                         sx={{
+                            zIndex: 2,
+                            position: "relative",
                             display: "inline",
                             padding: 0,
                             px: ".8rem",
@@ -377,6 +379,8 @@ export const AssetItem = ({
                             variant={"standard"}
                             multiline
                             sx={{
+                                zIndex: 2,
+                                position: "relative",
                                 "& .MuiInputBase-root": {
                                     padding: 0,
                                 },
@@ -426,6 +430,8 @@ export const AssetItem = ({
                                         e.stopPropagation()
                                     }}
                                     sx={{
+                                        zIndex: 2,
+                                        position: "relative",
                                         minWidth: "6rem",
                                         minHeight: "100%",
                                         px: ".8rem",
