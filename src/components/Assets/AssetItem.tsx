@@ -1,9 +1,9 @@
-import { Box, Button, IconButton, Link, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { Box, Button, CircularProgress, IconButton, Link, Stack, TextField, Typography } from "@mui/material"
+import { useEffect, useMemo, useState, useRef, useCallback } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
 import { SvgExternalLink, SvgHistoryClock, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB, UNDER_MAINTENANCE } from "../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
+import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { PassportServerKeys } from "../../keys"
@@ -40,7 +40,7 @@ export const AssetItem = ({
     setTelegramShortcode?: (s: string) => void
 }) => {
     const { user } = usePassportServerAuth()
-    const { state, subscribe } = usePassportServerWebsocket()
+    const { state, subscribe, send } = usePassportServerWebsocket()
     const { state: gsState } = useGameServerWebsocket()
     const [deployModalOpen, toggleDeployModalOpen] = useToggle()
 
@@ -49,6 +49,12 @@ export const AssetItem = ({
 
     const [mouseOver, setMouseOver] = useState<boolean>(false)
     const [assetData, setAssetData] = useState<Asset>(asset)
+    const [renaming, setRenaming] = useState<boolean>(false)
+    const [renamedValue, setRenamedValue] = useState<string>("")
+    const [renameLoading, setRenameLoading] = useState<boolean>(false)
+    const renamingRef = useRef<HTMLInputElement>()
+    const { newSnackbarMessage } = useSnackbar()
+
     const rarityDeets = useMemo(() => getRarityDeets(assetData.tier), [assetData])
 
     // Subscribe on asset data
@@ -59,6 +65,12 @@ export const AssetItem = ({
             (payload) => {
                 if (!payload || !payload.purchased_item) return
                 setAssetData(payload.purchased_item)
+                const mech = payload.purchased_item.data.mech
+                if (mech.name) {
+                    setRenamedValue(mech.name)
+                    return
+                }
+                setRenamedValue(mech.label)
             },
             { asset_hash: asset.hash },
         )
@@ -72,6 +84,26 @@ export const AssetItem = ({
     if (!assetData || !user) return null
 
     const { hash, name, label, image_url } = assetData.data.mech
+
+    const handleRename = useCallback(async () => {
+        setRenameLoading(true)
+        try {
+            if (state !== WebSocket.OPEN || !send) return
+            if (renamedValue === label || renamedValue === name) return
+            await send<{ asset: string; user_id: string; name: string }>(PassportServerKeys.UpdateAssetName, {
+                asset_hash: hash,
+                user_id: user.id,
+                name: renamedValue,
+            })
+
+            newSnackbarMessage("Successfully renamed asset.", "success")
+        } catch (e) {
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to rename asset, try again or contact support.", "error")
+            setRenamedValue(name || label)
+        } finally {
+            setRenameLoading(false)
+        }
+    }, [state, send, renamedValue, hash, user.id, newSnackbarMessage])
 
     const statusArea = useMemo(() => {
         // If game server is down, don't show deploy button
@@ -305,19 +337,76 @@ export const AssetItem = ({
                 </TooltipHelper>
             </Box>
             <Stack spacing=".4rem" justifyContent="space-between" sx={{ flex: 1, pb: ".2rem" }}>
-                <Typography
-                    variant="caption"
+                <TextField
+                    inputRef={renamingRef}
+                    variant={"standard"}
+                    multiline
                     sx={{
-                        fontFamily: "Nostromo Regular Bold",
-                        fontWeight: "fontWeightBold",
-                        wordBreak: "break-word",
+                        "& .MuiInputBase-root": {
+                            padding: 0,
+                        },
                     }}
-                >
-                    {name || label}
-                </Typography>
+                    spellCheck={false}
+                    InputProps={{
+                        disableUnderline: true,
+                        style: {
+                            fontFamily: "Nostromo Regular Bold",
+                            fontWeight: "fontWeightBold",
+                            wordBreak: "break-word",
+                            fontSize: "1.1rem",
+                            backgroundColor: renaming ? colors.navy : "unset",
+                            borderRadius: ".3rem",
+                            border: renaming ? `.5px solid ${colors.lightGrey}` : "unset",
+                        },
+                    }}
+                    value={renamedValue}
+                    defaultValue={name || label}
+                    onChange={(e) => {
+                        setRenamedValue(e.target.value)
+                    }}
+                    onFocus={() => {
+                        setRenaming(true)
+                    }}
+                    onBlur={() => {
+                        setRenaming(false)
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault()
+                            handleRename()
+                            renamingRef.current?.blur()
+                        }
+                    }}
+                />
 
                 <Stack alignItems="center" direction="row" spacing=".96rem">
                     {statusArea}
+                    {renamedValue !== name && renamedValue !== label && (
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleRename()}
+                            sx={{
+                                minWidth: "6rem",
+                                minHeight: "100%",
+                                px: ".8rem",
+                                pt: ".48rem",
+                                pb: 0.4,
+                                boxShadow: 0,
+                                backgroundColor: colors.blue,
+                                borderRadius: 0.3,
+                                ":hover": { backgroundColor: `${colors.blue}90` },
+                            }}
+                        >
+                            {renameLoading ? (
+                                <CircularProgress size={"1.1rem"} sx={{ color: colors.lightNeonBlue }} />
+                            ) : (
+                                <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                    Rename
+                                </Typography>
+                            )}
+                        </Button>
+                    )}
                 </Stack>
             </Stack>
 
