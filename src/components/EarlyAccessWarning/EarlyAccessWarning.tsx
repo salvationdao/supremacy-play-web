@@ -84,7 +84,10 @@ export const EarlyAccessWarning = () => {
                                     border: `${colors.neonBlue} 1px solid`,
                                 },
                             }}
-                            onClick={() => toggleClosed(true)}
+                            onClick={() => {
+                                toggleClosed(true)
+                                Notification.requestPermission()
+                            }}
                         >
                             I AGREE, LET ME IN!
                         </Button>
