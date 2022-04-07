@@ -240,6 +240,7 @@ export interface Multiplier {
     value: string
     description: string
     is_multiplicative: boolean
+    expires_in_seconds: number
 }
 
 export interface MultipliersAll {

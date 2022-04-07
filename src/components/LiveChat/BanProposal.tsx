@@ -107,10 +107,10 @@ const BanProposalInner = ({
     )
 
     const bottomSection = useMemo(() => {
-        if (!userStat || !userStat.last_seven_days_kills || userStat.last_seven_days_kills <= 0) {
+        if (!userStat || !userStat.last_seven_days_kills || userStat.last_seven_days_kills < 5) {
             return (
                 <Typography sx={{ opacity: 0.6 }}>
-                    <i>You need to have ability kills in the past 7 days (updated hourly) to be eligible to vote.</i>
+                    <i>You must have at least 5 ability kills in the past 7 days (updated hourly) to be eligible to vote.</i>
                 </Typography>
             )
         }

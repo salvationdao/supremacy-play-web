@@ -25,11 +25,11 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
 
     return (
         <TooltipHelper placement="left" text={tooltipText ? `  ${tooltipText.toUpperCase()}` : ""}>
-            <Stack direction="row" alignItems="center" sx={{ px: ".64rem", py: ".12rem", backgroundColor: "#00000030", borderRadius: 1 }}>
-                <Stack direction="row" alignItems="center">
+            <Stack direction="row" alignItems="center" sx={{ px: ".64rem", py: ".06rem", backgroundColor: "#00000030", borderRadius: 1 }}>
+                <Stack direction="row" alignItems="center" sx={{ mr: ".6rem" }}>
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>
                     <SvgSupToken size="1.3rem" fill={color} />
-                    <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount)}</Typography>
+                    <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount, 18)}</Typography>
                 </Stack>
 
                 <Typography

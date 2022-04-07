@@ -1,16 +1,15 @@
 import { Box, Button, CircularProgress, Drawer, IconButton, Link, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SvgBack, SvgDeath, SvgExternalLink, SvgGoldBars, SvgHistory, SvgRefresh } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, PASSPORT_WEB, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { SocketState, useGameServerWebsocket } from "../../containers"
-import { camelToTitle, timeSince } from "../../helpers"
+import { camelToTitle, getRarityDeets, timeSince } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../types"
 import { Asset } from "../../types/assets"
 import { UserData } from "../../types/passport"
-import { TooltipHelper } from "../Common/TooltipHelper"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
 
 export interface HistoryDrawerProps {
@@ -31,6 +30,8 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
     const [history, setHistory] = useState<BattleMechHistory[]>([])
     const [historyLoading, setHistoryLoading] = useState(false)
     const [historyError, setHistoryError] = useState<string>()
+
+    const rarityDeets = useMemo(() => getRarityDeets(asset.tier), [asset])
 
     const fetchHistory = async () => {
         setHistoryLoading(true)
@@ -144,35 +145,48 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
 
                 <Stack sx={{ p: ".8rem", flex: 1, overflow: "hidden" }}>
                     <Stack spacing="1rem" sx={{ px: "1.2rem", py: "1rem" }}>
-                        <Stack direction="row" alignItems="center">
-                            <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{asset.data.mech.name || asset.data.mech.label}</Typography>
-                            <TooltipHelper placement="left" text="View asset in Passport">
-                                <Link
-                                    sx={{
-                                        display: "block",
-                                        marginBottom: ".5rem",
-                                    }}
-                                    href={`${PASSPORT_WEB}profile/${user.username}/asset/${asset.hash}`}
-                                    target="_blank"
-                                >
-                                    <SvgExternalLink size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 0.9 } }} />
-                                </Link>
-                            </TooltipHelper>
-                        </Stack>
+                        <Box>
+                            <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Black" }}>
+                                {asset.data.mech.name || asset.data.mech.label}
+                            </Typography>
+                            {user && (
+                                <span>
+                                    <Link
+                                        href={`${PASSPORT_WEB}profile/${user.username}/asset/${asset.hash}`}
+                                        target="_blank"
+                                        sx={{ display: "inline", ml: ".7rem" }}
+                                    >
+                                        <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                                    </Link>
+                                </span>
+                            )}
+                        </Box>
                         {statsError && <Typography color={colors.red}>{statsError}</Typography>}
 
                         <Stack direction="row" alignItems="center" justifyContent="space-between">
-                            <Box
-                                component="img"
-                                src={asset.data.mech.image_url}
-                                alt={`Image for ${asset.data.mech.name} || ${asset.data.mech.label}`}
-                                sx={{
-                                    width: "calc(100% - 6rem)",
-                                    height: "26rem",
-                                    objectFit: "contain",
-                                    objectPosition: "left",
-                                }}
-                            />
+                            <Box sx={{ width: "calc(100% - 6rem)" }}>
+                                <Box
+                                    component="img"
+                                    src={asset.data.mech.image_url}
+                                    alt={`Image for ${asset.data.mech.name} || ${asset.data.mech.label}`}
+                                    sx={{
+                                        width: "100%",
+                                        height: "26rem",
+                                        objectFit: "contain",
+                                        objectPosition: "center",
+                                    }}
+                                />
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: rarityDeets.color,
+                                        fontFamily: "Nostromo Regular Heavy",
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    {rarityDeets.label}
+                                </Typography>
+                            </Box>
                             <Stack
                                 spacing="1rem"
                                 alignItems="center"
@@ -216,6 +230,7 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                             px: ".5rem",
                             py: ".9rem",
                             backgroundColor: `${colors.navy}80`,
+                            borderRadius: 0.3,
                         }}
                     >
                         <Stack direction="row" alignItems="center" sx={{ pb: ".8rem", px: "1.2rem" }}>

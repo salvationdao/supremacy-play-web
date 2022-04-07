@@ -1,8 +1,7 @@
-import VisibilityIcon from "@mui/icons-material/Visibility"
 import { Box, Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
-import { SvgSupToken } from "../../assets"
+import { SvgSupToken, SvgView } from "../../assets"
 import { UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
@@ -454,16 +453,19 @@ export const AssetItem = ({
                             )}
                         </Stack>
                     </Stack>
-                    <VisibilityIcon
+
+                    <SvgView
+                        size="1.3rem"
                         sx={{
                             position: "absolute",
-                            top: ".5rem",
-                            right: ".5rem",
-                            opacity: 0.3,
+                            bottom: ".5rem",
+                            right: ".7rem",
+                            opacity: 0.5,
                         }}
                     />
                 </Stack>
             </Box>
+
             {deployModalOpen && (
                 <DeployConfirmation
                     open={deployModalOpen}

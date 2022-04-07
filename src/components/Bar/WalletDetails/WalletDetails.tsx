@@ -13,14 +13,16 @@ import { MultipliersAll } from "../../../types"
 import { Transaction } from "../../../types/passport"
 
 export const WalletDetails = () => {
-    const { state, subscribe } = useGameServerWebsocket()
+    const { state, send, subscribe } = useGameServerWebsocket()
+    const { user: gsUser } = useGameServerAuth()
     const { state: psState, subscribe: psSubscribe } = usePassportServerWebsocket()
-    const { battleEndDetail } = useGame()
+    const { map, battleEndDetail } = useGame()
     const { user, userID } = usePassportServerAuth()
-    const { userID: gameserverUserID } = useGameServerAuth()
     const { onWorldSupsRaw } = useWallet()
     const startTime = useRef(new Date())
     // Multipliers
+    const [battleEndTime, setBattleEndTime] = useState<Date | undefined>(new Date())
+    const [multipliersStartTime, setMultipliersStartTime] = useState<Date>(new Date())
     const [multipliers, setMultipliers] = useState<MultipliersAll>()
     // Transactions
     const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -32,25 +34,40 @@ export const WalletDetails = () => {
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
+    // Fetch multipliers when new game starts
     useEffect(() => {
-        if (battleEndDetail && battleEndDetail.multipliers.length > 0) {
-            setMultipliers({
-                total_multipliers: battleEndDetail.total_multipliers,
-                multipliers: battleEndDetail.multipliers,
-            })
-        } else {
-            setMultipliers(undefined)
-        }
+        ;(async () => {
+            try {
+                if (state !== WebSocket.OPEN || !send || !gsUser || !map) return
+                const resp = await send<MultipliersAll, null>(GameServerKeys.GetSupsMultiplier, null)
+                if (resp) {
+                    setMultipliers(resp)
+                    setMultipliersStartTime(new Date())
+                }
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [state, send, gsUser, map])
+
+    // When battle end detail comes up, pause the timer of the multipliers
+    useEffect(() => {
+        if (!battleEndDetail) return
+        setBattleEndTime(new Date())
     }, [battleEndDetail])
 
-    // Subscribe to multipliers
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !gameserverUserID || gameserverUserID === NullUUID) return
-        return subscribe<MultipliersAll>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
-            if (!payload || payload.multipliers.length <= 0) return
-            setMultipliers(payload)
-        })
-    }, [state, subscribe, gameserverUserID])
+        if (state !== WebSocket.OPEN || !subscribe || !gsUser) return
+        return subscribe<boolean>(
+            GameServerKeys.SubSupsMultiplierSignal,
+            () => {
+                setBattleEndTime(undefined)
+                setMultipliersStartTime(new Date())
+            },
+            null,
+            true,
+        )
+    }, [state, subscribe])
 
     // Get initial 5 transactions
     useEffect(() => {
@@ -89,7 +106,7 @@ export const WalletDetails = () => {
         })
 
         // Append the latest transaction into list
-        setTransactions([...latestTransaction, ...transactions].slice(0, 5))
+        setTransactions([...latestTransaction, ...transactions].slice(0, 30))
     }, [latestTransaction, userID])
 
     if (!onWorldSupsRaw) {
@@ -218,6 +235,8 @@ export const WalletDetails = () => {
                     onClose={() => toggleIsPopoverOpen(false)}
                     popoverRef={popoverRef}
                     startTime={startTime.current}
+                    battleEndTime={battleEndTime}
+                    multipliersStartTime={multipliersStartTime}
                 />
             )}
         </>

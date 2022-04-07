@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react"
 import { ClipThing } from "../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGameServerWebsocket, useSnackbar } from "../../../containers"
+import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../../containers"
 import { snakeToTitle } from "../../../helpers"
 import { useDebounce, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
@@ -44,6 +44,7 @@ const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: Sx
 export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User; open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
+    const { userStat } = useGameServerAuth()
     // Options and display only
     const [searchText, setSearchText] = useState(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "")
     const [search, setSearch] = useDebounce(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "", 300)
@@ -127,7 +128,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
         }
     }, [selectedUser, selectedBanOptionID, reason])
 
-    const isDisabled = !selectedUser || !selectedBanOptionID || !reason
+    const isDisabled = !selectedUser || !selectedBanOptionID || !reason || userStat.last_seven_days_kills < 5
 
     if (!user) return null
 
@@ -380,6 +381,12 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                 SUBMIT
                             </Typography>
                         </Button>
+
+                        {userStat.last_seven_days_kills < 5 && (
+                            <Typography variant="body2" sx={{ mt: "1rem", opacity: 0.6, lineHeight: 1.2 }}>
+                                <i>You must have at least 5 ability kills in the past 7 days (updated hourly) to be issue a punish proposal.</i>
+                            </Typography>
+                        )}
 
                         {error && (
                             <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
