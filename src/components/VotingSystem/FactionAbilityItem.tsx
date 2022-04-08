@@ -103,7 +103,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
                         setIgnore(false)
                     }, 150)
                 }
-                return cs.plus(amount)
+                return cs.plus(new BigNumber(amount, 18))
             })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
