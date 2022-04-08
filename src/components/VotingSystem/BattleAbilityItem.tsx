@@ -98,7 +98,7 @@ export const BattleAbilityItem = () => {
                     console.log("baps")
                     if (bap.faction_id === faction_id) {
                         console.log("bap")
-                        const nbm = new BigNumber(parseInt(voteAmount))
+                        const nbm = new BigNumber(parseInt(voteAmount), 18)
                         return { ...bap, amount: nbm.plus(bap.current_sups) }
                     }
                     return bap

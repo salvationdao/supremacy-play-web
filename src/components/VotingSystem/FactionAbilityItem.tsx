@@ -95,7 +95,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
             })
             setCurrentSups((cs) => {
                 console.log(cs.toString())
-                const c = new BigNumber(parseInt(amount)).plus(cs)
+                const c = new BigNumber(parseInt(amount), 18).plus(cs)
                 console.log("set cs", c.toString())
                 return c
             })
