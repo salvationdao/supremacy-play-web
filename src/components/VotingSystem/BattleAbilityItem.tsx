@@ -95,7 +95,9 @@ export const BattleAbilityItem = () => {
         (voteAmount: string) => {
             setBattleAbilityProgress((baps) => {
                 return baps.map((bap) => {
+                    console.log("baps")
                     if (bap.faction_id === faction_id) {
+                        console.log("bap")
                         const nbm = new BigNumber(parseInt(voteAmount))
                         return { ...bap, amount: nbm.plus(bap.current_sups) }
                     }
