@@ -91,6 +91,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
             if (!send) return
             setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
                 if (!gap) return gap
+                console.log(gap.current_sups, amount, "asfasf")
                 const current_sups = new BigNumber(parseInt(gap.current_sups)).plus(new BigNumber(amount, 18)).toString()
                 return { ...gap, current_sups }
             })
