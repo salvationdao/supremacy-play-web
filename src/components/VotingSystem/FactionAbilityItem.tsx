@@ -89,11 +89,12 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
             if (!send) return
             setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
                 if (!gap) return gap
-                console.log("gap")
+                console.log("gap", gap)
                 const current_sups = new BigNumber(parseInt(gap.current_sups)).plus(new BigNumber(amount, 18)).toString()
                 return { ...gap, current_sups }
             })
             setCurrentSups((cs) => {
+                console.log(cs.toString(), amount, cs.plus(amount))
                 return cs.plus(amount)
             })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
@@ -104,7 +105,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         [send, identity],
     )
 
-    console.log(currentSups.toString())
+    console.log("current", currentSups.toString())
 
     const isVoting = useMemo(
         () => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThanOrEqualTo(currentSups),
