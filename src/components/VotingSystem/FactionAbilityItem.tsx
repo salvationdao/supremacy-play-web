@@ -105,7 +105,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         [send, identity],
     )
 
-    console.log(current_sups)
+    console.log(currentSups)
 
     const isVoting = useMemo(
         () => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThanOrEqualTo(currentSups),
