@@ -12,7 +12,16 @@ import { User, UserStat } from "../../../../types"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 
 const getMultiplierColor = (multiplierInt: number): string => {
-    return multiplierInt >= 149 ? colors.neonBlue : multiplierInt >= 99 ? colors.yellow : multiplierInt >= 49 ? colors.health : colors.orange
+    if (multiplierInt >= 2800) return "#3BFFDE"
+    if (multiplierInt >= 2000) return "#8BFF33"
+    if (multiplierInt >= 1400) return "#EEFF36"
+    if (multiplierInt >= 800) return "#FFC830"
+    if (multiplierInt >= 400) return "#FF6924"
+    if (multiplierInt >= 220) return "#B669FF"
+    if (multiplierInt >= 120) return "#FA5EFF"
+    if (multiplierInt >= 80) return "#FF547F"
+    if (multiplierInt >= 50) return "#FF4242"
+    return "#9791FF"
 }
 
 const UserDetailsPopover = ({

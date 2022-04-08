@@ -4,13 +4,22 @@ import { DrawerButtons, PlayerListContent } from ".."
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST_IMAGES, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useDrawer, useGameServerAuth } from "../../containers"
 import { acronym } from "../../helpers"
+import { colors } from "../../theme/theme"
 import { User } from "../../types"
 
-export interface UserActive extends User {
-    is_active: boolean
-}
-
-const DrawerContent = ({ user, players, setPlayers }: { user?: User; players: UserActive[]; setPlayers: Dispatch<React.SetStateAction<UserActive[]>> }) => {
+const DrawerContent = ({
+    user,
+    activePlayers,
+    setActivePlayers,
+    inactivePlayers,
+    setInactivePlayers,
+}: {
+    user?: User
+    activePlayers: User[]
+    setActivePlayers: Dispatch<React.SetStateAction<User[]>>
+    inactivePlayers: User[]
+    setInactivePlayers: Dispatch<React.SetStateAction<User[]>>
+}) => {
     const theme = useTheme<Theme>()
 
     return (
@@ -21,7 +30,7 @@ const DrawerContent = ({ user, players, setPlayers }: { user?: User; players: Us
                 alignItems="center"
                 sx={{
                     position: "relative",
-                    pl: "2rem",
+                    pl: "2.2rem",
                     pr: "4.8rem",
                     height: `${GAME_BAR_HEIGHT}rem`,
                     background: `${theme.factionTheme.primary}40`,
@@ -31,8 +40,8 @@ const DrawerContent = ({ user, players, setPlayers }: { user?: User; players: Us
                 {user && user.faction && (
                     <Box
                         sx={{
-                            width: "2.1rem",
-                            height: "2.1rem",
+                            width: "3rem",
+                            height: "3rem",
                             flexShrink: 0,
                             mb: ".16rem",
                             backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
@@ -45,9 +54,27 @@ const DrawerContent = ({ user, players, setPlayers }: { user?: User; players: Us
                         }}
                     />
                 )}
-                <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
-                    {user && user.faction ? `${acronym(user.faction.label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
-                </Typography>
+                <Stack spacing=".1rem">
+                    <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
+                        {user && user.faction ? `${acronym(user.faction.label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
+                    </Typography>
+                    <Stack direction="row" alignItems="center" spacing="1.3rem">
+                        <Stack direction="row" alignItems="center" spacing=".4rem">
+                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
+                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                <strong>Active: </strong>
+                                {activePlayers.length}
+                            </Typography>
+                        </Stack>
+                        <Stack direction="row" alignItems="center" spacing=".4rem">
+                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.yellow }} />
+                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                <strong>Inactive: </strong>
+                                {inactivePlayers.length}
+                            </Typography>
+                        </Stack>
+                    </Stack>
+                </Stack>
             </Stack>
 
             <Box
@@ -75,7 +102,15 @@ const DrawerContent = ({ user, players, setPlayers }: { user?: User; players: Us
                     },
                 }}
             >
-                {user && <PlayerListContent user={user} players={players} setPlayers={setPlayers} />}
+                {user && (
+                    <PlayerListContent
+                        user={user}
+                        activePlayers={activePlayers}
+                        inactivePlayers={inactivePlayers}
+                        setActivePlayers={setActivePlayers}
+                        setInactivePlayers={setInactivePlayers}
+                    />
+                )}
             </Box>
         </Stack>
     )
@@ -85,7 +120,8 @@ export const PlayerList = () => {
     const { user } = useGameServerAuth()
     const { isPlayerListOpen } = useDrawer()
     const theme = useTheme<Theme>()
-    const [players, setPlayers] = useState<UserActive[]>([])
+    const [activePlayers, setActivePlayers] = useState<User[]>([])
+    const [inactivePlayers, setInactivePlayers] = useState<User[]>([])
 
     return (
         <Drawer
@@ -105,7 +141,15 @@ export const PlayerList = () => {
         >
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
                 <DrawerButtons isFixed={false} />
-                {isPlayerListOpen && <DrawerContent user={user} players={players} setPlayers={setPlayers} />}
+                {isPlayerListOpen && (
+                    <DrawerContent
+                        user={user}
+                        activePlayers={activePlayers}
+                        inactivePlayers={inactivePlayers}
+                        setActivePlayers={setActivePlayers}
+                        setInactivePlayers={setInactivePlayers}
+                    />
+                )}
             </Stack>
         </Drawer>
     )

@@ -384,7 +384,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
 
                         {userStat.last_seven_days_kills < 5 && (
                             <Typography variant="body2" sx={{ mt: "1rem", opacity: 0.6, lineHeight: 1.2 }}>
-                                <i>You must have at least 5 ability kills in the past 7 days (updated hourly) to be issue a punish proposal.</i>
+                                <i>You need at least 5 ability kills in the past 7 days (updated hourly) to issue a punish proposal.</i>
                             </Typography>
                         )}
 

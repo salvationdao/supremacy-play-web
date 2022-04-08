@@ -70,8 +70,8 @@ export const SupsTooltipContent = ({
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [multiplicative, setMultiplicative] = useState<Multiplier[]>([])
     const [multiplierList, setMultiplierList] = useState<Multiplier[]>([])
-    const [totalMultiplierValue, setTotalMultiplierValue] = useState(0)
-    const [totalMultiplicativeValue, setTotalMultiplicativeValue] = useState(0)
+    const [, setTotalMultiplierValue] = useState(0)
+    const [, setTotalMultiplicativeValue] = useState(0)
     const [totalMultipliers, setTotalMultipliers] = useState(0)
     const [hideBattleTxs, toggleHideBattleTxs] = useToggle()
 
@@ -178,8 +178,7 @@ export const SupsTooltipContent = ({
 
                         <Box
                             sx={{
-                                my: ".8rem",
-                                pl: ".5rem",
+                                pl: ".2rem",
                                 pr: ".5rem",
                                 maxHeight: "15rem",
                                 overflowY: "auto",

@@ -7,7 +7,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys } from "../keys"
 import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
-import { UserStat } from "../types"
+import { UserRank, UserStat } from "../types"
 
 interface SentChatMessageData {
     global: Date[]
@@ -44,6 +44,7 @@ export const ChatContainer = createContainer(() => {
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const userStats = useRef<{
+        user_rank?: UserRank
         total_multiplier?: number
         is_citizen?: boolean
         from_user_stat?: UserStat
@@ -148,7 +149,7 @@ export const ChatContainer = createContainer(() => {
                     ...prev,
                     faction: resp.map((m) => m.sent_at),
                 }))
-                const selfMessage = resp.filter((m) => m.type == "TEXT").find((m) => (m.data as TextMessageData).from_user.id === user.id)
+                const selfMessage = resp.filter((m) => m.type === "TEXT").find((m) => (m.data as TextMessageData).from_user.id === user.id)
                 if (selfMessage) {
                     setInitialMessageColor((selfMessage.data as TextMessageData).message_color)
                 }
@@ -175,20 +176,45 @@ export const ChatContainer = createContainer(() => {
         }
     }, [tabValue, factionChatUnread, splitOption])
 
-    const saveUserStats = useCallback((data: TextMessageData) => {
-        userStats.current = {
-            total_multiplier: data.total_multiplier,
-            is_citizen: data.is_citizen,
-            from_user_stat: data.from_user_stat,
-        }
-    }, [])
+    const saveUserStats = useCallback(
+        (data: TextMessageData) => {
+            const newStats = {
+                total_multiplier: data.total_multiplier,
+                is_citizen: data.is_citizen,
+                from_user_stat: data.from_user_stat,
+            }
+
+            // If we never had userStats set, then go back and update all messages with the user stats
+            if (!userStats.current) {
+                setGlobalChatMessages((prev) =>
+                    prev.map((m) => {
+                        if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
+                            return { ...m, data: { ...m.data, ...newStats } }
+                        }
+                        return m
+                    }),
+                )
+                setFactionChatMessages((prev) =>
+                    prev.map((m) => {
+                        if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
+                            return { ...m, data: { ...m.data, ...newStats } }
+                        }
+                        return m
+                    }),
+                )
+            }
+
+            userStats.current = newStats
+        },
+        [user, setGlobalChatMessages, setFactionChatMessages],
+    )
 
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
             if (!m) return
-            if (m.type == "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
+            if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
                 saveUserStats(m.data as TextMessageData)
                 return
             }
@@ -203,7 +229,7 @@ export const ChatContainer = createContainer(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
             if (!m) return
-            if (m.type == "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
+            if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
                 saveUserStats(m.data as TextMessageData)
                 return
             }

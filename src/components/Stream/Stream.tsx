@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { NoSupsModal, Trailer } from ".."
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream, useWallet } from "../../containers"
@@ -7,6 +7,7 @@ import { useToggle } from "../../hooks"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: (value?: boolean) => void }) => {
     const { onWorldSups } = useWallet()
+    const firstIteration = useRef(true)
 
     // Doing it here prevents index.tsx from re-rendering continuously from sup ticks
     useEffect(() => {
@@ -14,8 +15,12 @@ const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSu
 
         const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
 
-        if (supsAboveZero && !haveSups) toggleHaveSups(true)
-        if (!supsAboveZero && haveSups) toggleHaveSups(false)
+        if (supsAboveZero && !haveSups) return toggleHaveSups(true)
+        if (!supsAboveZero && haveSups) return toggleHaveSups(false)
+        if (firstIteration.current) {
+            toggleHaveSups(supsAboveZero)
+            firstIteration.current = false
+        }
     }, [onWorldSups, haveSups])
 
     if (!render) return null

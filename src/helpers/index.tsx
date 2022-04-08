@@ -444,7 +444,7 @@ export const getUserRankDeets = (rank: UserRank, width: string, height: string):
         case "CORPORAL":
             icon = <SvgCorporal width={width} height={height} />
             title = "CORPORAL"
-            desc = 'User has achieved "Private" and has least at 1 ability kill.'
+            desc = 'User has achieved "Private" and has at least 1 ability kill.'
             break
         case "GENERAL":
             icon = <SvgGeneral width={width} height={height} />
