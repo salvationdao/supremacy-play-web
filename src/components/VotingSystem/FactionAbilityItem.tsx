@@ -87,13 +87,16 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const onContribute = useCallback(
         (amount: string) => {
             if (!send) return
+            setGameAbilityProgress((cs: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
+                if (!cs) return cs
+                return { ...cs, current_sups: `${parseInt(cs.current_sups) + amount}` }
+            })
+            setCurrentSups((cs) => {
+                return new BigNumber(parseInt(amount)).plus(cs)
+            })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
                 amount,
-            })
-            setCurrentSups((cs) => {
-                const nbm = new BigNumber(parseInt(amount))
-                return cs.plus(nbm)
             })
         },
         [send, identity],
