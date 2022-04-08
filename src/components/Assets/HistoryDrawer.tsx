@@ -1,11 +1,11 @@
-import { Box, Button, CircularProgress, Drawer, IconButton, Link, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
-import { SvgBack, SvgDeath, SvgExternalLink, SvgGoldBars, SvgHistory, SvgRefresh } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, PASSPORT_WEB, RIGHT_DRAWER_WIDTH } from "../../constants"
-import { SocketState, useGameServerWebsocket } from "../../containers"
+import { Box, Button, CircularProgress, Drawer, IconButton, Stack, TextField, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { SvgBack, SvgDeath, SvgEdit, SvgGoldBars, SvgHistory, SvgRefresh, SvgSave } from "../../assets"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH } from "../../constants"
+import { SocketState, useGameServerWebsocket, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { camelToTitle, getRarityDeets, timeSince } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { GameServerKeys } from "../../keys"
+import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../types"
 import { Asset } from "../../types/assets"
@@ -20,7 +20,10 @@ export interface HistoryDrawerProps {
 }
 
 export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps) => {
+    const { name, label, hash } = asset.data.mech
+
     const { state, send } = useGameServerWebsocket()
+    const { state: psState, send: psSend } = usePassportServerWebsocket()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     // Mech stats
     const [stats, setStats] = useState<BattleMechStats>()
@@ -30,6 +33,12 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
     const [history, setHistory] = useState<BattleMechHistory[]>([])
     const [historyLoading, setHistoryLoading] = useState(false)
     const [historyError, setHistoryError] = useState<string>()
+    // Rename
+    const renamingRef = useRef<HTMLInputElement>()
+    const [renamedValue, setRenamedValue] = useState(name || label)
+    const [renameLoading, setRenameLoading] = useState<boolean>(false)
+
+    const { newSnackbarMessage } = useSnackbar()
 
     const rarityDeets = useMemo(() => getRarityDeets(asset.tier), [asset])
 
@@ -105,6 +114,34 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
         )
     }
 
+    useEffect(() => {
+        if (name) {
+            setRenamedValue(name)
+            return
+        }
+        setRenamedValue(label)
+    }, [name, label, asset])
+
+    const handleRename = useCallback(async () => {
+        try {
+            setRenameLoading(true)
+            if (psState !== WebSocket.OPEN || !psSend) return
+            if (renamedValue === label || renamedValue === name) return
+            await psSend<{ asset: string; user_id: string; name: string }>(PassportServerKeys.UpdateAssetName, {
+                asset_hash: hash,
+                user_id: user.id,
+                name: renamedValue,
+            })
+
+            newSnackbarMessage("Successfully renamed asset.", "success")
+        } catch (e) {
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to rename asset, try again or contact support.", "error")
+            setRenamedValue(name || label)
+        } finally {
+            setRenameLoading(false)
+        }
+    }, [psState, psSend, renamedValue, name, label, hash, user.id, newSnackbarMessage])
+
     return (
         <Drawer
             open={localOpen}
@@ -126,12 +163,13 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
         >
             <Stack sx={{ height: "100%" }}>
                 <Stack
-                    alignItems="flex-start"
-                    justifyContent="center"
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
                     sx={{
                         flexShrink: 0,
                         pl: "2rem",
-                        pr: "4.8rem",
+                        pr: "2.5rem",
                         height: `${GAME_BAR_HEIGHT}rem`,
                         background: `${colors.assetsBanner}65`,
                         boxShadow: 1.5,
@@ -139,17 +177,79 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                 >
                     <Button size="small" onClick={() => toggleLocalOpen(false)} sx={{ px: "1rem" }}>
                         <SvgBack size="1.3rem" sx={{ pb: ".1rem" }} />
-                        <Typography sx={{ ml: ".5rem" }}>Go Back</Typography>
+                        <Typography sx={{ ml: ".5rem" }}>GO BACK</Typography>
                     </Button>
                 </Stack>
 
                 <Stack sx={{ p: ".8rem", flex: 1, overflow: "hidden" }}>
-                    <Stack spacing="1rem" sx={{ px: "1.2rem", py: "1rem" }}>
+                    <Stack spacing="1.3rem" sx={{ px: "1.2rem", pt: "1rem", pb: "1.5rem" }}>
                         <Box>
-                            <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Black" }}>
-                                {asset.data.mech.name || asset.data.mech.label}
-                            </Typography>
-                            {user && (
+                            <Stack direction="row" spacing="1rem" alignItems="flex-start">
+                                <TextField
+                                    inputRef={renamingRef}
+                                    variant={"standard"}
+                                    multiline
+                                    sx={{
+                                        position: "relative",
+                                        flex: 1,
+                                        m: 0,
+                                        "& .MuiInput-root": {
+                                            p: 0,
+                                        },
+                                        "& .MuiInputBase-input": {
+                                            p: 0,
+                                            display: "inline",
+                                            fontFamily: "Nostromo Regular Black",
+                                            wordBreak: "break-word",
+                                        },
+                                        ".MuiInputBase-input:focus": {
+                                            px: ".7rem",
+                                            py: ".2rem",
+                                            borderRadius: 0.5,
+                                            cursor: "auto !important",
+                                            color: colors.offWhite,
+                                            border: `1.5px dashed ${colors.lightGrey}`,
+                                            backgroundColor: "#FFFFFF09",
+                                        },
+                                    }}
+                                    spellCheck={false}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                    value={renamedValue}
+                                    onChange={(e) => setRenamedValue(e.target.value)}
+                                    onFocus={() => {
+                                        renamingRef.current?.setSelectionRange(renamedValue.length, renamedValue.length)
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault()
+                                            handleRename()
+                                            renamingRef.current?.blur()
+                                        }
+                                    }}
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+
+                                {renameLoading ? (
+                                    <Box sx={{ mr: "1rem", pt: ".3rem" }}>
+                                        <CircularProgress size="1.3rem" sx={{ color: colors.neonBlue }} />
+                                    </Box>
+                                ) : renamedValue !== name && renamedValue !== label ? (
+                                    <IconButton size="small" onClick={() => handleRename()} sx={{ mr: "1rem", pt: ".2rem", cursor: "pointer" }}>
+                                        <SvgSave size="1.5rem" fill="#FFFFFF" />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => renamingRef.current?.focus()}
+                                        sx={{ mr: "1rem", opacity: 0.4, pt: ".3rem", "&:hover": { cursor: "pointer", opacity: 0.8 } }}
+                                    >
+                                        <SvgEdit size="1.3rem" fill="#FFFFFF" />
+                                    </IconButton>
+                                )}
+
+                                {/* {user && (
                                 <span>
                                     <Link
                                         href={`${PASSPORT_WEB}profile/${user.username}/asset/${asset.hash}`}
@@ -159,12 +259,22 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                                         <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
                                     </Link>
                                 </span>
-                            )}
+                            )} */}
+                            </Stack>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    mt: ".3rem",
+                                    color: rarityDeets.color,
+                                    fontFamily: "Nostromo Regular Heavy",
+                                }}
+                            >
+                                {rarityDeets.label}
+                            </Typography>
                         </Box>
-                        {statsError && <Typography color={colors.red}>{statsError}</Typography>}
 
-                        <Stack direction="row" alignItems="center" justifyContent="space-between">
-                            <Box sx={{ width: "calc(100% - 6rem)" }}>
+                        <Stack alignItems="center" spacing="1rem">
+                            <Box sx={{ width: "100%" }}>
                                 <Box
                                     component="img"
                                     src={asset.data.mech.image_url}
@@ -176,26 +286,8 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                                         objectPosition: "center",
                                     }}
                                 />
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        color: rarityDeets.color,
-                                        fontFamily: "Nostromo Regular Heavy",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {rarityDeets.label}
-                                </Typography>
                             </Box>
-                            <Stack
-                                spacing="1rem"
-                                alignItems="center"
-                                justifyContent="center"
-                                sx={{
-                                    flexShrink: 0,
-                                    width: "6rem",
-                                }}
-                            >
+                            <Stack spacing="1rem" direction="row" justifyContent="center" sx={{ width: "100%", px: "3rem" }}>
                                 {statsLoading ? (
                                     <>
                                         <PercentageDisplaySkeleton />
@@ -209,19 +301,25 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                                             percentage={stats.extra_stats.win_rate * 100}
                                             label="Win Rate"
                                         />
-                                        <PercentageDisplay displayValue={`${stats.total_kills}`} percentage={100} label="Total Kills" color={colors.gold} />
-                                        <PercentageDisplay displayValue={`${stats.total_deaths}`} percentage={100} label="Total Deaths" color={colors.red} />
+                                        <PercentageDisplay displayValue={`${stats.total_kills}`} percentage={100} label="Kills" color={colors.gold} />
+                                        <PercentageDisplay displayValue={`${stats.total_deaths}`} percentage={100} label="Deaths" color={colors.red} />
                                     </>
                                 ) : (
                                     <>
                                         <PercentageDisplay displayValue={`?`} percentage={0} label="Win Rate" />
-                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Total Kills" color={colors.gold} />
-                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Total Deaths" color={colors.red} />
+                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Kills" color={colors.gold} />
+                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Deaths" color={colors.red} />
                                     </>
                                 )}
                             </Stack>
                         </Stack>
                     </Stack>
+
+                    {statsError && (
+                        <Typography color={colors.red} sx={{ fontWeight: "fontWeightBold" }}>
+                            {statsError}
+                        </Typography>
+                    )}
 
                     <Stack
                         sx={{
@@ -238,7 +336,11 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                             <Typography variant="h6" sx={{ ml: ".8rem", fontWeight: "fontWeightBold" }}>
                                 RECENT MATCHES
                             </Typography>
-                            <IconButton size="small" sx={{ ml: "auto" }} onClick={() => fetchHistory()}>
+                            <IconButton
+                                size="small"
+                                sx={{ ml: "auto", opacity: 0.4, "&:hover": { cursor: "pointer", opacity: 1 } }}
+                                onClick={() => fetchHistory()}
+                            >
                                 <SvgRefresh size="1.3rem" />
                             </IconButton>
                         </Stack>

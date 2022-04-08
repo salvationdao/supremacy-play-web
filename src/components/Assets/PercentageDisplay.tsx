@@ -15,7 +15,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
     const radius = size ? size / (2 * 1.11) : 20
     const circumference = Math.PI * 2 * radius
     return (
-        <Stack alignItems="center">
+        <Stack alignItems="center" sx={{ flex: 1 }}>
             <Box
                 sx={{
                     position: "relative",
@@ -45,7 +45,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                         cx={1.11 * radius}
                         cy={1.11 * radius}
                         sx={{
-                            fill: colors.darkerNavy,
+                            fill: colors.darkNavy,
                             stroke: color || colors.neonBlue,
                             strokeDasharray: `${(circumference * percentage) / 100} ${circumference}`,
                             strokeWidth: 0.22 * radius,
@@ -66,7 +66,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     {displayValue}
                 </Typography>
             </Box>
-            <Typography textAlign="center" sx={{ lineHeight: 1.2 }}>
+            <Typography variant="body2" textAlign="center" sx={{ lineHeight: 1.2 }}>
                 {label}
             </Typography>
         </Stack>
@@ -94,5 +94,5 @@ export interface PercentageDisplaySkeletonProps {
 
 export const PercentageDisplaySkeleton = ({ size }: PercentageDisplaySkeletonProps) => {
     const radius = size ? size / (2 * 1.11) : 20
-    return <Skeleton variant="circular" width={1.11 * radius * 2} height={1.11 * radius * 2} />
+    return <Skeleton variant="circular" width={1.11 * radius * 2} height={1.11 * radius * 2} sx={{ flex: 1 }} />
 }
