@@ -277,7 +277,7 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                                         key={index}
                                         mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
                                         backgroundImage={h.battle?.game_map?.image_url}
-                                        isWin={!!h.faction_won}
+                                        status={!h.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
                                         mechSurvived={!!h.mech_survived}
                                         kills={h.kills}
                                         date={h.created_at}
@@ -298,14 +298,29 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
 
 interface HistoryEntryProps {
     mapName: string
-    isWin: boolean
+    status: "won" | "lost" | "pending"
     mechSurvived: boolean
     backgroundImage?: string
     kills: number
     date: Date
 }
 
-const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
+const HistoryEntry = ({ mapName, status, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
+    let statusColor = colors.grey
+    let statusText = "PENDING"
+    switch (status) {
+        case "won":
+            statusColor = colors.green
+            statusText = "VICTORY"
+            break
+        case "lost":
+            statusColor = colors.red
+            statusText = "DEFEAT"
+            break
+        case "pending":
+        default:
+    }
+
     return (
         <Stack
             direction="row"
@@ -314,7 +329,7 @@ const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, kills, da
                 minHeight: "70px",
                 p: "0.8rem 1.1rem",
                 background: `center center`,
-                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${isWin ? colors.green : colors.red}80), url(${backgroundImage})`,
+                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${statusColor}80), url(${backgroundImage})`,
                 backgroundSize: "cover",
             }}
         >
@@ -328,20 +343,22 @@ const HistoryEntry = ({ mapName, isWin, mechSurvived, backgroundImage, kills, da
                         fontFamily: "Nostromo Regular Bold",
                     }}
                 >
-                    {isWin ? "VICTORY" : "DEFEAT"}
+                    {statusText}
                 </Typography>
-                <Stack direction="row" alignItems="center" spacing=".5rem">
-                    <Typography
-                        variant="subtitle2"
-                        sx={{
-                            textTransform: "uppercase",
-                            color: mechSurvived ? colors.neonBlue : colors.grey,
-                        }}
-                    >
-                        {mechSurvived ? "MECH SURVIVED" : "MECH DESTROYED"}
-                    </Typography>
-                    {mechSurvived && <SvgGoldBars size="1.5rem" />}
-                </Stack>
+                {status !== "pending" && (
+                    <Stack direction="row" alignItems="center" spacing=".5rem">
+                        <Typography
+                            variant="subtitle2"
+                            sx={{
+                                textTransform: "uppercase",
+                                color: mechSurvived ? colors.neonBlue : colors.grey,
+                            }}
+                        >
+                            {mechSurvived ? "MECH SURVIVED" : "MECH DESTROYED"}
+                        </Typography>
+                        {mechSurvived && <SvgGoldBars size="1.5rem" />}
+                    </Stack>
+                )}
             </Box>
             <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
                 <Stack direction="row" spacing=".5rem" alignItems="center">
