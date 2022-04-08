@@ -94,6 +94,16 @@ export const BattleAbilityItem = () => {
     const onBribe = useCallback(
         (voteAmount: string) => {
             if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount })
+
+            setBattleAbilityProgress((baps) => {
+                return baps.map((bap) => {
+                    if (bap.faction_id === faction_id) {
+                        const nbm = new BigNumber(parseInt(voteAmount))
+                        return { ...bap, amount: nbm.plus(bap.current_sups) }
+                    }
+                    return bap
+                })
+            })
         },
         [send],
     )
