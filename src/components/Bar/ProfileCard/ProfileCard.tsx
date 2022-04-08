@@ -1,5 +1,5 @@
 import { Avatar, IconButton, Popover, Stack, Typography } from "@mui/material"
-import { useEffect, useRef } from "react"
+import { MutableRefObject, useEffect, useRef } from "react"
 import { BarExpandable, ConnectButton, LogoutButton, NavButton, PunishmentList } from "../.."
 import { SvgAssets, SvgInfoCircular, SvgProfile, SvgShop } from "../../../assets"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_SERVER_HOST_IMAGES, PASSPORT_WEB } from "../../../constants"
@@ -7,6 +7,7 @@ import { useGameServerAuth, usePassportServerAuth } from "../../../containers"
 import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
+import { UserData } from "../../../types/passport"
 
 export const ProfileCard = () => {
     const { user } = usePassportServerAuth()
@@ -112,43 +113,57 @@ export const ProfileCard = () => {
 
             {isPunishmentsOpen && <PunishmentList open={isPunishmentsOpen} onClose={() => toggleIsPunishmentsOpen(false)} punishments={punishments} />}
 
-            <Popover
-                open={isPopoverOpen}
-                anchorEl={popoverRef.current}
-                onClose={() => {
-                    toggleIsPopoverOpen(false)
-                }}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                }}
-                transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                }}
-                sx={{
-                    mt: ".8rem",
-                    zIndex: 10000,
-                    ".MuiPaper-root": {
-                        background: "none",
-                        backgroundColor: faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
-                        border: "#FFFFFF50 1px solid",
-                    },
-                }}
-            >
-                <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
-                    <NavButton href={`${PASSPORT_WEB}collections/${user.username}`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                        My Inventory
-                    </NavButton>
-                    <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                        Purchase Assets
-                    </NavButton>
-                    <NavButton href={`${PASSPORT_WEB}profile/${user.username}/edit`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                        Edit Profile
-                    </NavButton>
-                    <LogoutButton />
-                </Stack>
-            </Popover>
+            {isPopoverOpen && <ProfilePopover open={isPopoverOpen} popoverRef={popoverRef} onClose={() => toggleIsPopoverOpen(false)} user={user} />}
         </>
+    )
+}
+
+const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: UserData }) => {
+    const [localOpen, toggleLocalOpen] = useToggle(open)
+
+    useEffect(() => {
+        if (!localOpen) {
+            setTimeout(() => {
+                onClose()
+            }, 300)
+        }
+    }, [localOpen])
+
+    return (
+        <Popover
+            open={localOpen}
+            anchorEl={popoverRef.current}
+            onClose={() => toggleLocalOpen(false)}
+            anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+            }}
+            transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+            }}
+            sx={{
+                mt: ".8rem",
+                zIndex: 10000,
+                ".MuiPaper-root": {
+                    background: "none",
+                    backgroundColor: user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                    border: "#FFFFFF50 1px solid",
+                },
+            }}
+        >
+            <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
+                <NavButton href={`${PASSPORT_WEB}collections/${user.username}`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}>
+                    My Inventory
+                </NavButton>
+                <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />}>
+                    Purchase Assets
+                </NavButton>
+                <NavButton href={`${PASSPORT_WEB}profile/${user.username}/edit`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}>
+                    Edit Profile
+                </NavButton>
+                <LogoutButton />
+            </Stack>
+        </Popover>
     )
 }

@@ -1,15 +1,17 @@
 import { Box, Drawer, Stack, Theme, Typography, useTheme } from "@mui/material"
-import { useEffect } from "react"
+import { Dispatch, useState } from "react"
 import { DrawerButtons, PlayerListContent } from ".."
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST_IMAGES, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useDrawer, useGameServerAuth } from "../../containers"
 import { acronym } from "../../helpers"
 import { User } from "../../types"
 
-const DrawerContent = ({ user }: { user?: User }) => {
-    const theme = useTheme<Theme>()
+export interface UserActive extends User {
+    is_active: boolean
+}
 
-    if (!user || !user.faction) return null
+const DrawerContent = ({ user, players, setPlayers }: { user?: User; players: UserActive[]; setPlayers: Dispatch<React.SetStateAction<UserActive[]>> }) => {
+    const theme = useTheme<Theme>()
 
     return (
         <Stack sx={{ flex: 1 }}>
@@ -26,23 +28,25 @@ const DrawerContent = ({ user }: { user?: User }) => {
                     boxShadow: 1.5,
                 }}
             >
-                <Box
-                    sx={{
-                        width: "2.1rem",
-                        height: "2.1rem",
-                        flexShrink: 0,
-                        mb: ".16rem",
-                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "contain",
-                        backgroundColor: theme.factionTheme.primary,
-                        borderRadius: 0.5,
-                        border: `${theme.factionTheme.primary} solid 1px`,
-                    }}
-                />
+                {user && user.faction && (
+                    <Box
+                        sx={{
+                            width: "2.1rem",
+                            height: "2.1rem",
+                            flexShrink: 0,
+                            mb: ".16rem",
+                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "contain",
+                            backgroundColor: theme.factionTheme.primary,
+                            borderRadius: 0.5,
+                            border: `${theme.factionTheme.primary} solid 1px`,
+                        }}
+                    />
+                )}
                 <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
-                    {acronym(user.faction.label)} ACTIVE PLAYERS
+                    {user && user.faction ? `${acronym(user.faction.label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
                 </Typography>
             </Stack>
 
@@ -71,7 +75,7 @@ const DrawerContent = ({ user }: { user?: User }) => {
                     },
                 }}
             >
-                <PlayerListContent user={user} />
+                {user && <PlayerListContent user={user} players={players} setPlayers={setPlayers} />}
             </Box>
         </Stack>
     )
@@ -79,12 +83,9 @@ const DrawerContent = ({ user }: { user?: User }) => {
 
 export const PlayerList = () => {
     const { user } = useGameServerAuth()
-    const { isPlayerListOpen, toggleIsPlayerListOpen } = useDrawer()
+    const { isPlayerListOpen } = useDrawer()
     const theme = useTheme<Theme>()
-
-    useEffect(() => {
-        if (!user) toggleIsPlayerListOpen(false)
-    }, [user])
+    const [players, setPlayers] = useState<UserActive[]>([])
 
     return (
         <Drawer
@@ -104,7 +105,7 @@ export const PlayerList = () => {
         >
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
                 <DrawerButtons isFixed={false} />
-                <DrawerContent user={user} />
+                {isPlayerListOpen && <DrawerContent user={user} players={players} setPlayers={setPlayers} />}
             </Stack>
         </Drawer>
     )

@@ -32,26 +32,26 @@ const SpoilOfWarAmount = () => {
     }, [state, subscribeNetMessage])
 
     return (
-        <Stack direction="row" alignItems="center" justifyContent="center" spacing="1.6rem">
+        <Stack direction="row" alignItems="center" justifyContent="center" spacing="1.6rem" sx={{ pl: ".6rem" }}>
             <TooltipHelper text="This is the spoils of war accumulated in the current battle.">
                 <Stack direction="row" alignItems="center" justifyContent="center">
-                    <Typography variant="body1" sx={{ fontWeight: "fontWeightBold" }}>
-                        SPOILS OF WAR:&nbsp;
+                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
+                        CURRENT:&nbsp;
                     </Typography>
                     <SvgSupToken size="1.4rem" fill={colors.yellow} />
-                    <Typography variant="body1" sx={{ color: colors.yellow }}>
+                    <Typography variant="body2" sx={{ color: colors.yellow }}>
                         {nextSpoilOfWarAmount == "0" ? "---" : nextSpoilOfWarAmount}
                     </Typography>
                 </Stack>
             </TooltipHelper>
 
-            <TooltipHelper text="This is the spoils of war from the previous battle, it is distributed to players with multipliers.">
+            <TooltipHelper text="This is the spoils of war from previous battles, it is distributed to players with multipliers.">
                 <Stack direction="row" alignItems="center" justifyContent="center">
-                    <Typography variant="body1" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
-                        PREV:&nbsp;
+                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
+                        SPOILS:&nbsp;
                     </Typography>
                     <SvgSupToken size="1.4rem" fill={colors.yellow} />
-                    <Typography variant="body1" sx={{ color: colors.yellow }}>
+                    <Typography variant="body2" sx={{ color: colors.yellow }}>
                         {spoilOfWarAmount == "0" ? "---" : spoilOfWarAmount}
                     </Typography>
                 </Stack>
@@ -142,11 +142,11 @@ const Content = () => {
                             width: "100%",
                         }}
                     >
-                        <TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in the next battle based on the multipliers that have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.">
+                        <TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.">
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    bottom: "-1.8rem",
+                                    bottom: "-1.6rem",
                                     right: "7.5rem",
                                     opacity: 0.4,
                                     zIndex: 99,

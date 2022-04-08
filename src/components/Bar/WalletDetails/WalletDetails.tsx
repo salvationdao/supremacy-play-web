@@ -1,67 +1,113 @@
-import { Box, CircularProgress, Divider, Popover, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Divider, Stack, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
 import { useEffect, useRef, useState } from "react"
 import { BarExpandable, BuySupsButton, SupsTooltipContent } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
 import { NullUUID } from "../../../constants"
-import { useGame, useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, useWallet } from "../../../containers"
-import { shadeColor, supFormatterNoFixed } from "../../../helpers"
-import { usePassportServerSecureSubscription, useToggle } from "../../../hooks"
+import { useGame, useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useWallet } from "../../../containers"
+import { supFormatterNoFixed } from "../../../helpers"
+import { useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { MultipliersAll } from "../../../types"
 import { Transaction } from "../../../types/passport"
 
 export const WalletDetails = () => {
-    const { state, subscribe } = useGameServerWebsocket()
-    const { battleEndDetail } = useGame()
+    const { state, send, subscribe } = useGameServerWebsocket()
+    const { user: gsUser } = useGameServerAuth()
+    const { state: psState, subscribe: psSubscribe } = usePassportServerWebsocket()
+    const { map, battleEndDetail } = useGame()
     const { user, userID } = usePassportServerAuth()
-    const { userID: gameserverUserID } = useGameServerAuth()
     const { onWorldSupsRaw } = useWallet()
+    const startTime = useRef(new Date())
+    // Multipliers
+    const [battleEndTime, setBattleEndTime] = useState<Date | undefined>(new Date())
+    const [multipliersStartTime, setMultipliersStartTime] = useState<Date>(new Date())
     const [multipliers, setMultipliers] = useState<MultipliersAll>()
+    // Transactions
     const [transactions, setTransactions] = useState<Transaction[]>([])
-    const { payload: transactionsPayload } = usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserTransactions)
-    const { payload: latestTransactionPayload } = usePassportServerSecureSubscription<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions)
+    const [latestTransaction, setLatestTransaction] = useState<Transaction[]>([])
+    // Accruing transaction spend / ticks
+    const supsSpent = useRef<BigNumber>(new BigNumber(0))
+    const supsEarned = useRef<BigNumber>(new BigNumber(0))
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
+    // Fetch multipliers when new game starts
     useEffect(() => {
-        if (battleEndDetail && battleEndDetail.multipliers.length > 0) {
-            setMultipliers({
-                total_multipliers: battleEndDetail.total_multipliers,
-                multipliers: battleEndDetail.multipliers,
-            })
-        } else {
-            setMultipliers(undefined)
-        }
+        ;(async () => {
+            try {
+                if (state !== WebSocket.OPEN || !send || !gsUser || !map) return
+                const resp = await send<MultipliersAll, null>(GameServerKeys.GetSupsMultiplier, null)
+                if (resp) {
+                    setMultipliers(resp)
+                    setMultipliersStartTime(new Date())
+                }
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [state, send, gsUser, map])
+
+    // When battle end detail comes up, pause the timer of the multipliers
+    useEffect(() => {
+        if (!battleEndDetail) return
+        setBattleEndTime(new Date())
     }, [battleEndDetail])
 
-    // Subscribe to multipliers
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !gameserverUserID || gameserverUserID === NullUUID) return
-        return subscribe<MultipliersAll>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
-            if (!payload || payload.multipliers.length <= 0) return
-            setMultipliers(payload)
+        if (state !== WebSocket.OPEN || !subscribe || !gsUser) return
+        return subscribe<boolean>(
+            GameServerKeys.SubSupsMultiplierSignal,
+            () => {
+                setBattleEndTime(undefined)
+                setMultipliersStartTime(new Date())
+            },
+            null,
+            true,
+        )
+    }, [state, subscribe])
+
+    // Get initial 5 transactions
+    useEffect(() => {
+        if (psState !== WebSocket.OPEN || !psSubscribe || !user) return
+        return psSubscribe<Transaction[]>(PassportServerKeys.SubscribeUserTransactions, (payload) => {
+            if (!payload) return
+            setTransactions(payload)
         })
-    }, [state, subscribe, gameserverUserID])
+    }, [psState, psSubscribe, user])
 
-    // get initial 5 transactions
+    // Subscribe to latest transactions
     useEffect(() => {
-        if (!transactionsPayload) return
-        setTransactions(transactionsPayload)
-    }, [transactionsPayload])
+        if (psState !== WebSocket.OPEN || !psSubscribe || !user) return
+        return psSubscribe<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions, (payload) => {
+            if (!payload) return
+            setLatestTransaction(payload)
+        })
+    }, [psState, psSubscribe, user])
 
-    // get latest transaction, append to transactions list
+    // Append to latest transaction to list
     useEffect(() => {
-        if (!latestTransactionPayload) return
-        if (transactions.length < 5) {
-            setTransactions([...latestTransactionPayload, ...transactions])
-            return
-        }
+        if (!transactions || transactions.length <= 0 || !latestTransaction || latestTransaction.length <= 0 || !userID || userID === NullUUID) return
 
-        transactions.pop()
-        setTransactions([...latestTransactionPayload, ...transactions])
-    }, [latestTransactionPayload])
+        // Accrue stuff
+        latestTransaction.forEach((tx) => {
+            const isCredit = userID === tx.credit
+
+            // For inflow of spoil ticks
+            if (isCredit) {
+                supsEarned.current = supsEarned.current.plus(new BigNumber(tx.amount))
+            }
+
+            if (!isCredit && !transactions.some((t) => t.id === tx.id)) {
+                supsSpent.current = supsSpent.current.plus(new BigNumber(tx.amount))
+            }
+        })
+
+        // Append the latest transaction into list
+        setTransactions([...latestTransaction, ...transactions].slice(0, 30))
+    }, [latestTransaction, userID])
 
     if (!onWorldSupsRaw) {
         return (
@@ -176,37 +222,23 @@ export const WalletDetails = () => {
                 </Stack>
             </BarExpandable>
 
-            <Popover
-                open={isPopoverOpen}
-                anchorEl={popoverRef.current}
-                onClose={() => toggleIsPopoverOpen(false)}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                }}
-                transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                }}
-                sx={{
-                    mt: ".8rem",
-                    zIndex: 10000,
-                    ".MuiPaper-root": {
-                        mt: ".8rem",
-                        background: "none",
-                        backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
-                        border: "#FFFFFF50 1px solid",
-                    },
-                }}
-            >
+            {isPopoverOpen && user && (
                 <SupsTooltipContent
+                    user={user}
+                    open={isPopoverOpen}
                     sups={onWorldSupsRaw}
                     multipliers={multipliers}
                     userID={userID || ""}
                     transactions={transactions}
+                    supsSpent={supsSpent}
+                    supsEarned={supsEarned}
                     onClose={() => toggleIsPopoverOpen(false)}
+                    popoverRef={popoverRef}
+                    startTime={startTime.current}
+                    battleEndTime={battleEndTime}
+                    multipliersStartTime={multipliersStartTime}
                 />
-            </Popover>
+            )}
         </>
     )
 }

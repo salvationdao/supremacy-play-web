@@ -2,6 +2,8 @@ import { Box, Popover } from "@mui/material"
 import "emoji-mart/css/emoji-mart.css"
 import { BaseEmoji, Picker } from "emoji-mart"
 import { colors } from "../../../theme/theme"
+import { useToggle } from "../../../hooks"
+import { useEffect } from "react"
 
 interface EnlistDetailsProps {
     primaryColor: string
@@ -11,19 +13,23 @@ interface EnlistDetailsProps {
     toggleIsEmojiOpen: (_state: boolean) => void
 }
 
-export const EmojiPopover = ({
-    primaryColor,
-    setMessage,
-    popoverRef,
-    isEmojiOpen,
-    toggleIsEmojiOpen,
-}: EnlistDetailsProps) => {
+export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen, toggleIsEmojiOpen }: EnlistDetailsProps) => {
+    const [localOpen, toggleLocalOpen] = useToggle(isEmojiOpen)
+
+    useEffect(() => {
+        if (!localOpen) {
+            setTimeout(() => {
+                toggleIsEmojiOpen(false)
+            }, 300)
+        }
+    }, [localOpen])
+
     return (
         <Popover
-            open={isEmojiOpen}
+            open={localOpen}
             transitionDuration={180}
             anchorEl={popoverRef.current}
-            onClose={() => toggleIsEmojiOpen(false)}
+            onClose={() => toggleLocalOpen(false)}
             anchorOrigin={{
                 vertical: "top",
                 horizontal: "center",

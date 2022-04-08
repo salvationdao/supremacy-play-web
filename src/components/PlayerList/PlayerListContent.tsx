@@ -1,18 +1,21 @@
 import { Stack } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
-import { PlayerItem } from ".."
+import { useEffect, useMemo, useState, Dispatch } from "react"
+import { PlayerItem, UserActive } from ".."
 import { useGame, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { User } from "../../types"
 
-export interface UserActive extends User {
-    is_active: boolean
-}
-
-export const PlayerListContent = ({ user }: { user: User }) => {
+export const PlayerListContent = ({
+    user,
+    players,
+    setPlayers,
+}: {
+    user: User
+    players: UserActive[]
+    setPlayers: Dispatch<React.SetStateAction<UserActive[]>>
+}) => {
     const { state, subscribe } = useGameServerWebsocket()
     const { factionsAll } = useGame()
-    const [players, setPlayers] = useState<UserActive[]>([])
     const [activePlayers, setActivePlayer] = useState<User[]>([])
 
     const faction = useMemo(() => factionsAll[user.faction_id], [])

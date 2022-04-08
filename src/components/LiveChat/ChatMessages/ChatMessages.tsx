@@ -19,13 +19,14 @@ interface ChatMessagesProps {
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
-    const { filterZerosGlobal, filterZerosFaction, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
+    const { filterZerosGlobal, filterZerosFaction, filterSystemMessages, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
     const { factionsAll } = useGame()
 
     return (
         <ChatMessagesInner
             {...props}
             filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
+            filterSystemMessages={filterSystemMessages}
             sentMessages={sentMessages}
             failedMessages={failedMessages}
             faction_id={props.faction_id}
@@ -39,6 +40,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
 
 interface ChatMessagesInnerProps extends ChatMessagesProps {
     filterZeros?: boolean
+    filterSystemMessages?: boolean
     sentMessages: Date[]
     failedMessages: Date[]
     splitOption: SplitOptionType
@@ -52,6 +54,7 @@ const ChatMessagesInner = ({
     secondaryColor,
     chatMessages,
     filterZeros,
+    filterSystemMessages,
     sentMessages,
     failedMessages,
     faction_id,
@@ -184,6 +187,7 @@ const ChatMessagesInner = ({
                                         sentAt={message.sent_at}
                                         fontSize={fontSize}
                                         filterZeros={filterZeros}
+                                        filterSystemMessages={filterSystemMessages}
                                         isSent={data.from_user.id != user?.id ? true : sentMessages.includes(message.sent_at)}
                                         isFailed={data.from_user.id != user?.id ? false : failedMessages.includes(message.sent_at)}
                                         factionsAll={factionsAll}

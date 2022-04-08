@@ -1,14 +1,7 @@
 import { Slide, Stack } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useMemo } from "react"
-import {
-    SectionBottom,
-    SectionMostFrequentAbilityExecutor,
-    SectionMultipliers,
-    SectionTopSups,
-    SectionTopSupsFaction,
-    SectionWinner,
-} from ".."
+import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionMultipliers, SectionTopSups, SectionTopSupsFaction, SectionWinner } from ".."
 import { useGame, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
@@ -32,18 +25,12 @@ export const BattleEndScreen = () => {
     }, [map])
 
     const primaryColor = useMemo(
-        () =>
-            battleEndDetail && battleEndDetail.winning_faction
-                ? battleEndDetail.winning_faction.theme.primary
-                : colors.neonBlue,
+        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail.winning_faction.theme.primary : colors.neonBlue),
         [battleEndDetail],
     )
 
     const backgroundColor = useMemo(
-        () =>
-            battleEndDetail && battleEndDetail.winning_faction
-                ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96)
-                : colors.darkNavyBlue,
+        () => (battleEndDetail && battleEndDetail.winning_faction ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96) : colors.darkNavyBlue),
         [battleEndDetail],
     )
 
@@ -66,7 +53,7 @@ export const BattleEndScreen = () => {
                     left: 0,
                     boxShadow: 20,
                     zIndex: 999,
-                    maxWidth: "45rem",
+                    maxWidth: "46rem",
                     ...backgroundColorGradient,
                 }}
             >

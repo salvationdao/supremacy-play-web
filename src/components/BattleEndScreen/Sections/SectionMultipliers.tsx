@@ -38,18 +38,15 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                         color: colors.yellow,
                     }}
                 >
-                    NEXT ROUND ({total_multipliers == "0.0x" ? "---" : total_multipliers})
+                    NEXT REWARDS ({total_multipliers == "0.0x" ? "---" : total_multipliers})
                     <BattleEndTooltip
-                        text={`These are the multipliers that you have earned based on your participation in the battle.`}
+                        text={`These are the multipliers that you have earned based on your participation in this battle.`}
                         color={colors.yellow}
                     />
                 </Typography>
             </Box>
 
-            <Stack
-                spacing="2.56rem"
-                sx={{ pl: "1.44rem", pr: "1.84rem", pt: "2rem", pb: "1.6rem", backgroundColor: "#FFFFFF05" }}
-            >
+            <Stack spacing="2.56rem" sx={{ pl: "1.44rem", pr: "1.84rem", pt: "2rem", pb: "1.6rem", backgroundColor: "#FFFFFF05" }}>
                 {multiplierList && multiplierList.length > 0 ? (
                     <Stack spacing="3.5rem" sx={{ pl: ".8rem" }}>
                         <Stack spacing="1.2rem">
@@ -67,12 +64,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                 const deets = getMutiplierDeets(m.key)
                                 return (
                                     <TooltipHelper key={m.key} placement="right" text={m.description}>
-                                        <Stack
-                                            direction="row"
-                                            alignItems="center"
-                                            justifyContent="space-between"
-                                            sx={{ px: ".8rem" }}
-                                        >
+                                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: ".8rem" }}>
                                             <StyledImageText
                                                 color={colors.text}
                                                 imageBorderColor="#FFFFFF60"
@@ -120,12 +112,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                     const deets = getMutiplierDeets(m.key)
                                     return (
                                         <TooltipHelper key={m.key} placement="right" text={m.description}>
-                                            <Stack
-                                                direction="row"
-                                                alignItems="center"
-                                                justifyContent="space-between"
-                                                sx={{ px: ".8rem" }}
-                                            >
+                                            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: ".8rem" }}>
                                                 <StyledImageText
                                                     color={colors.text}
                                                     imageBorderColor="#FFFFFF60"
@@ -151,10 +138,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                     <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                                         SUBTOTAL:{" "}
                                     </Typography>
-                                    <Typography
-                                        variant="h6"
-                                        sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}
-                                    >
+                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}>
                                         {totalMultiplicativeValue * 100}%
                                     </Typography>
                                 </Stack>
@@ -172,15 +156,10 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                 TOTAL MULTIPLIERS
                             </Typography>
 
-                            <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}
-                            >
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}>
                                 {multiplicative && multiplicative.length > 0 ? (
                                     <>
-                                        <span>{totalMultiplierValue}x</span> x{" "}
-                                        <span>{totalMultiplicativeValue * 100}%</span> ={" "}
-                                        <span>{total_multipliers}</span>
+                                        <span>{totalMultiplierValue}x</span> x <span>{totalMultiplicativeValue * 100}%</span> = <span>{total_multipliers}</span>
                                     </>
                                 ) : (
                                     <span>{total_multipliers}</span>
@@ -190,8 +169,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                     </Stack>
                 ) : (
                     <Typography variant="h6" sx={{ pl: ".8rem", opacity: 0.8 }}>
-                        {"You didn't get any multipliers."} Multipliers are awarded to players who participate in the
-                        battle.
+                        {"You didn't get any multipliers."} Multipliers are awarded to players who participate in the battle.
                     </Typography>
                 )}
             </Stack>

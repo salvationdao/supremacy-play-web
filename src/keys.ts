@@ -62,7 +62,8 @@ export enum GameServerKeys {
     SubAISpawned = "AI:SPAWNED",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
-    SubscribeSupsMultiplier = "USER:SUPS:MULTIPLIER:SUBSCRIBE",
+    GetSupsMultiplier = "USER:MULTIPLIERS:GET",
+    SubSupsMultiplierSignal = "USER:MULTIPLIER:SIGNAL:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
 
