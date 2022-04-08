@@ -94,7 +94,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
                 return { ...gap, current_sups }
             })
             setCurrentSups((cs) => {
-                console.log(cs.toString(), amount, cs.plus(amount))
+                console.log(cs.toString(), amount, cs.plus(amount), "logging")
                 return cs.plus(amount)
             })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
