@@ -209,12 +209,19 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                                             percentage={stats.extra_stats.win_rate * 100}
                                             label="Win Rate"
                                         />
+                                        <PercentageDisplay
+                                            displayValue={`${(stats.extra_stats.survival_rate * 100).toFixed(0)}%`}
+                                            percentage={stats.extra_stats.survival_rate * 100}
+                                            label="Survival Rate"
+                                            color={colors.green}
+                                        />
                                         <PercentageDisplay displayValue={`${stats.total_kills}`} percentage={100} label="Total Kills" color={colors.gold} />
                                         <PercentageDisplay displayValue={`${stats.total_deaths}`} percentage={100} label="Total Deaths" color={colors.red} />
                                     </>
                                 ) : (
                                     <>
                                         <PercentageDisplay displayValue={`?`} percentage={0} label="Win Rate" />
+                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Survival Rate" color={colors.green} />
                                         <PercentageDisplay displayValue={`?`} percentage={0} label="Total Kills" color={colors.gold} />
                                         <PercentageDisplay displayValue={`?`} percentage={0} label="Total Deaths" color={colors.red} />
                                     </>
