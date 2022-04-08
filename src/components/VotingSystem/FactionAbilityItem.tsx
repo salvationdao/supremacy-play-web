@@ -90,13 +90,15 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
             setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
                 if (!gap) return gap
                 console.log("gap")
-                const current_sups = new BigNumber(parseInt(gap.current_sups)).plus(new BigNumber(amount)).toString()
+                const current_sups = new BigNumber(parseInt(gap.current_sups)).plus(new BigNumber(amount, 18)).toString()
                 return { ...gap, current_sups }
             })
             setCurrentSups((cs) => {
                 console.log(cs.toString())
-                const c = new BigNumber(parseInt(amount), 18).plus(cs)
-                console.log("set cs", c.toString())
+                let c = new BigNumber(parseInt(amount), 18)
+                console.log(amount)
+                console.log(c.toString())
+                c = c.plus(cs)
                 return c
             })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
