@@ -87,9 +87,11 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const onContribute = useCallback(
         (amount: string) => {
             if (!send) return
-            setGameAbilityProgress((cs: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
-                if (!cs) return cs
-                return { ...cs, current_sups: `${parseInt(cs.current_sups) + amount}` }
+            setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
+                if (!gap) return gap
+
+                const current_sups = new BigNumber(parseInt(gap.current_sups)).plus(new BigNumber(amount)).toString()
+                return { ...gap, current_sups }
             })
             setCurrentSups((cs) => {
                 return new BigNumber(parseInt(amount)).plus(cs)
