@@ -59,7 +59,7 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
             const excludeAssetIDs = queuedAssets.filter((q) => assets && assets.some((a) => a.id === q.mech_id)).map((q) => q.mech_id)
 
             let resp = await send<Asset[]>(PassportServerKeys.SubAssetList, {
-                limit: 20,
+                limit: 50,
                 include_asset_ids: includeAssetIDs,
                 exclude_asset_ids: excludeAssetIDs,
                 after_external_token_id: assets && assets.length > 0 ? assets[assets.length - 1].data.mech.external_token_id : undefined,
