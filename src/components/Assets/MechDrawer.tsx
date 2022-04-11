@@ -52,7 +52,6 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
     const [renamedValue, setRenamedValue] = useState(name || label)
     const [renameLoading, setRenameLoading] = useState<boolean>(false)
     // Status
-    const [mouseOver, setMouseOver] = useState<boolean>(false)
     const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
     const isRepairing = false // To be implemented on gameserver
     const isInBattle = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1, [assetQueueStatus])
@@ -218,10 +217,6 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
             return (
                 <>
                     <Button
-                        onMouseEnter={() => setMouseOver(true)}
-                        onMouseLeave={() => setMouseOver(false)}
-                        onFocus={() => setMouseOver(true)}
-                        onBlur={() => setMouseOver(false)}
                         onClick={() => openLeaveModal()}
                         variant="contained"
                         size="small"
@@ -236,21 +231,33 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
                             cursor: "pointer",
                             textAlign: "center",
                             backgroundColor: "transparent",
-                            color: mouseOver ? colors.red : colors.yellow,
+                            color: colors.yellow,
                             lineHeight: 1,
-                            border: `${mouseOver ? colors.red : colors.yellow} 1px solid`,
+                            border: `${colors.yellow} 1px solid`,
                             borderRadius: 0.3,
                             whiteSpace: "nowrap",
+                            transition: "all 0s",
+                            "& > p": {
+                                "::after": {
+                                    content: '"IN QUEUE"',
+                                },
+                            },
                             ":hover": {
+                                color: colors.red,
                                 backgroundColor: "transparent",
                                 boxShadow: "none",
                                 opacity: 1,
+                                border: `${colors.red} 1px solid`,
+                                "& > p": {
+                                    color: `${colors.red} !important`,
+                                    "::after": {
+                                        content: '"LEAVE QUEUE"',
+                                    },
+                                },
                             },
                         }}
                     >
-                        <Typography variant="body2" lineHeight={1} sx={{ color: mouseOver ? colors.red : colors.yellow }}>
-                            {mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
-                        </Typography>
+                        <Typography variant="body2" lineHeight={1} sx={{ color: colors.yellow }}></Typography>
                     </Button>
                     {assetQueueStatus.queue_position && (
                         <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
@@ -295,7 +302,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
                 </Typography>
             </Button>
         )
-    }, [isGameServerUp, isRepairing, isInQueue, mouseOver, assetQueueStatus])
+    }, [isGameServerUp, isRepairing, isInQueue, assetQueueStatus])
 
     return (
         <Drawer
@@ -523,7 +530,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
                         <Stack direction="row" alignItems="center" sx={{ pb: ".8rem", pl: "1.2rem", pr: ".3rem" }}>
                             <SvgHistory size="1.8rem" />
                             <Typography variant="h6" sx={{ ml: ".8rem", fontWeight: "fontWeightBold" }}>
-                                RECENT MATCHES
+                                RECENT 10 MATCHES
                             </Typography>
                             <IconButton
                                 size="small"
