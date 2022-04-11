@@ -307,15 +307,15 @@ interface HistoryEntryProps {
 
 const HistoryEntry = ({ mapName, status, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
     let statusColor = colors.grey
-    let statusText = "PENDING"
+    let statusText = "In Progress"
     switch (status) {
         case "won":
             statusColor = colors.green
-            statusText = "VICTORY"
+            statusText = "Victory"
             break
         case "lost":
             statusColor = colors.red
-            statusText = "DEFEAT"
+            statusText = "Defeat"
             break
         case "pending":
         default:
@@ -341,6 +341,7 @@ const HistoryEntry = ({ mapName, status, mechSurvived, backgroundImage, kills, d
                     variant="h5"
                     sx={{
                         fontFamily: "Nostromo Regular Bold",
+                        textTransform: "uppercase",
                     }}
                 >
                     {statusText}
@@ -351,7 +352,7 @@ const HistoryEntry = ({ mapName, status, mechSurvived, backgroundImage, kills, d
                             variant="subtitle2"
                             sx={{
                                 textTransform: "uppercase",
-                                color: mechSurvived ? colors.neonBlue : colors.grey,
+                                color: mechSurvived ? colors.neonBlue : colors.lightRed,
                             }}
                         >
                             {mechSurvived ? "MECH SURVIVED" : "MECH DESTROYED"}
