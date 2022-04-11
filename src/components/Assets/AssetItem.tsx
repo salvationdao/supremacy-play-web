@@ -1,9 +1,9 @@
-import { Box, Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Box, Button, Stack, Typography } from "@mui/material"
+import { useEffect, useMemo, useState } from "react"
 import { DeployConfirmation, TooltipHelper } from ".."
 import { SvgSupToken, SvgView } from "../../assets"
 import { UNDER_MAINTENANCE } from "../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
+import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { PassportServerKeys } from "../../keys"
@@ -40,20 +40,15 @@ export const AssetItem = ({
     setTelegramShortcode?: (s: string) => void
 }) => {
     const { user } = usePassportServerAuth()
-    const { state, subscribe, send } = usePassportServerWebsocket()
+    const { state, subscribe } = usePassportServerWebsocket()
     const { state: gsState } = useGameServerWebsocket()
-    const [deployModalOpen, toggleDeployModalOpen] = useToggle()
 
+    const [deployModalOpen, toggleDeployModalOpen] = useToggle()
     const [leaveModalOpen, toggleLeaveModalOpen] = useToggle()
     const [historyDrawerOpen, toggleHistoryDrawerOpen] = useToggle()
 
     const [mouseOver, setMouseOver] = useState<boolean>(false)
     const [assetData, setAssetData] = useState<Asset>(asset)
-    const [renaming, setRenaming] = useState<boolean>(false)
-    const [renamedValue, setRenamedValue] = useState<string>("")
-    const [renameLoading, setRenameLoading] = useState<boolean>(false)
-    const renamingRef = useRef<HTMLInputElement>()
-    const { newSnackbarMessage } = useSnackbar()
 
     const rarityDeets = useMemo(() => getRarityDeets(assetData.tier), [assetData])
 
@@ -65,16 +60,10 @@ export const AssetItem = ({
             (payload) => {
                 if (!payload || !payload.purchased_item) return
                 setAssetData(payload.purchased_item)
-                const mech = payload.purchased_item.data.mech
-                if (mech.name) {
-                    setRenamedValue(mech.name)
-                    return
-                }
-                setRenamedValue(mech.label)
             },
             { asset_hash: asset.hash },
         )
-    }, [state, subscribe])
+    }, [state, subscribe, asset])
 
     const isGameServerUp = useMemo(() => gsState == WebSocket.OPEN && !UNDER_MAINTENANCE, [gsState])
     const isRepairing = false // To be implemented on gameserver
@@ -83,27 +72,7 @@ export const AssetItem = ({
 
     if (!assetData || !user) return null
 
-    const { hash, name, label, image_url } = assetData.data.mech
-
-    const handleRename = useCallback(async () => {
-        setRenameLoading(true)
-        try {
-            if (state !== WebSocket.OPEN || !send) return
-            if (renamedValue === label || renamedValue === name) return
-            await send<{ asset: string; user_id: string; name: string }>(PassportServerKeys.UpdateAssetName, {
-                asset_hash: hash,
-                user_id: user.id,
-                name: renamedValue,
-            })
-
-            newSnackbarMessage("Successfully renamed asset.", "success")
-        } catch (e) {
-            newSnackbarMessage(typeof e === "string" ? e : "Failed to rename asset, try again or contact support.", "error")
-            setRenamedValue(name || label)
-        } finally {
-            setRenameLoading(false)
-        }
-    }, [state, send, renamedValue, hash, user.id, newSnackbarMessage])
+    const { name, label, image_url } = assetData.data.mech
 
     const statusArea = useMemo(() => {
         // If game server is down, don't show deploy button
@@ -373,84 +342,17 @@ export const AssetItem = ({
                         </TooltipHelper>
                     </Box>
                     <Stack spacing=".4rem" justifyContent="space-between" sx={{ flex: 1, pb: ".2rem" }}>
-                        <TextField
-                            inputRef={renamingRef}
-                            variant={"standard"}
-                            multiline
+                        <Typography
+                            variant="caption"
                             sx={{
-                                zIndex: 2,
-                                position: "relative",
-                                "& .MuiInputBase-root": {
-                                    padding: 0,
-                                },
+                                fontFamily: "Nostromo Regular Bold",
+                                fontWeight: "fontWeightBold",
                             }}
-                            spellCheck={false}
-                            InputProps={{
-                                disableUnderline: true,
-                                style: {
-                                    fontFamily: "Nostromo Regular Bold",
-                                    fontWeight: "fontWeightBold",
-                                    wordBreak: "break-word",
-                                    fontSize: "1.1rem",
-                                    backgroundColor: renaming ? colors.navy : "unset",
-                                    borderRadius: ".3rem",
-                                    border: renaming ? `.5px solid ${colors.lightGrey}` : "unset",
-                                },
-                            }}
-                            value={renamedValue}
-                            defaultValue={name || label}
-                            onChange={(e) => {
-                                setRenamedValue(e.target.value)
-                            }}
-                            onFocus={() => {
-                                setRenaming(true)
-                            }}
-                            onBlur={() => {
-                                setRenaming(false)
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    e.preventDefault()
-                                    handleRename()
-                                    renamingRef.current?.blur()
-                                }
-                            }}
-                            onClick={(e) => e.stopPropagation()}
-                        />
-
+                        >
+                            {name || label}
+                        </Typography>
                         <Stack alignItems="center" direction="row" spacing=".96rem">
                             {statusArea}
-                            {renamedValue !== name && renamedValue !== label && (
-                                <Button
-                                    variant="contained"
-                                    size="small"
-                                    onClick={(e) => {
-                                        handleRename()
-                                        e.stopPropagation()
-                                    }}
-                                    sx={{
-                                        zIndex: 2,
-                                        position: "relative",
-                                        minWidth: "6rem",
-                                        minHeight: "100%",
-                                        px: ".8rem",
-                                        pt: ".48rem",
-                                        pb: 0.4,
-                                        boxShadow: 0,
-                                        backgroundColor: colors.blue,
-                                        borderRadius: 0.3,
-                                        ":hover": { backgroundColor: `${colors.blue}90` },
-                                    }}
-                                >
-                                    {renameLoading ? (
-                                        <CircularProgress size={"1.1rem"} sx={{ color: colors.lightNeonBlue }} />
-                                    ) : (
-                                        <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                            Rename
-                                        </Typography>
-                                    )}
-                                </Button>
-                            )}
                         </Stack>
                     </Stack>
 
@@ -480,7 +382,7 @@ export const AssetItem = ({
 
             {leaveModalOpen && <LeaveConfirmation open={leaveModalOpen} asset={asset} onClose={() => toggleLeaveModalOpen(false)} />}
 
-            {historyDrawerOpen && <HistoryDrawer user={user} open={historyDrawerOpen} asset={asset} onClose={() => toggleHistoryDrawerOpen(false)} />}
+            {historyDrawerOpen && <HistoryDrawer user={user} open={historyDrawerOpen} asset={assetData} onClose={() => toggleHistoryDrawerOpen(false)} />}
         </>
     )
 }

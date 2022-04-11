@@ -9,6 +9,8 @@ import { useToggle } from "../hooks"
 import { GameServerKeys } from "../keys"
 import { UserRank, UserStat } from "../types"
 import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
+import { UserRank, UserStat } from "../types"
+import { SupremacyPNG } from "../assets"
 
 interface SentChatMessageData {
     global: Date[]
@@ -260,13 +262,12 @@ export const ChatContainer = createContainer(() => {
                 return
             }
 
-            const notification =  new Notification("Ban Proposal Initialised",
-                {
-                    body: `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
-                    badge: SupremacyPNG,
-                    icon: SupremacyPNG,
-                    image: SupremacyPNG,
-                });
+            const notification = new Notification("Ban Proposal Initialised", {
+                body: `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
+                badge: SupremacyPNG,
+                icon: SupremacyPNG,
+                image: SupremacyPNG,
+            })
 
             setTimeout(() => notification.close(), 10000)
         })
