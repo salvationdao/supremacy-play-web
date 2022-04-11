@@ -162,6 +162,7 @@ export const Notifications = () => {
             notifications
                 .filter((n) => !!n)
                 .reverse()
+                .slice(0, 5)
                 .map((n) => {
                     if (!n) return null
 

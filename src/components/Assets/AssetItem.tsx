@@ -1,27 +1,16 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Button, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { DeployConfirmation, TooltipHelper } from ".."
-import { SvgSupToken, SvgView } from "../../assets"
+import { DeployConfirmation } from ".."
 import { UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
-import { getRarityDeets, supFormatter } from "../../helpers"
+import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset, AssetQueueStat } from "../../types/assets"
-import { HistoryDrawer } from "./HistoryDrawer"
+import { MechDrawer } from "./MechDrawer"
 import { LeaveConfirmation } from "./LeaveConfirmation"
-
-// const RepairCountdown = ({ endTime }: { endTime: Date }) => {
-//     const { hours, minutes, seconds } = useTimer(endTime)
-
-//     return (
-//         <>
-//             {hours && hours > 0 ? `${hours}h` : ""} {minutes && minutes > 0 ? `${minutes}h` : ""}{" "}
-//             {seconds && seconds > 0 ? `${seconds}h` : ""}
-//         </>
-//     )
-// }
+import { PassportServerKeys } from "../../keys"
+import { SvgNext } from "../../assets"
 
 export const AssetItem = ({
     asset,
@@ -30,6 +19,7 @@ export const AssetItem = ({
     queueCost,
     contractReward,
     setTelegramShortcode,
+    isGridView,
 }: {
     asset: Asset
     assetQueueStatus?: AssetQueueStat
@@ -38,24 +28,30 @@ export const AssetItem = ({
     contractReward: string
     telegramShortcode?: string
     setTelegramShortcode?: (s: string) => void
+    isGridView: boolean
 }) => {
     const { user } = usePassportServerAuth()
-    const { state, subscribe } = usePassportServerWebsocket()
-    const { state: gsState } = useGameServerWebsocket()
+    const { state } = useGameServerWebsocket()
+    const { state: psState, subscribe: psSubscribe } = usePassportServerWebsocket()
+    const [assetData, setAssetData] = useState<Asset>(asset)
 
+    const [mechDrawerOpen, toggleMechDrawerOpen] = useToggle()
     const [deployModalOpen, toggleDeployModalOpen] = useToggle()
     const [leaveModalOpen, toggleLeaveModalOpen] = useToggle()
-    const [historyDrawerOpen, toggleHistoryDrawerOpen] = useToggle()
-
-    const [mouseOver, setMouseOver] = useState<boolean>(false)
-    const [assetData, setAssetData] = useState<Asset>(asset)
 
     const rarityDeets = useMemo(() => getRarityDeets(assetData.tier), [assetData])
 
+    // Status
+    const [mouseOver, setMouseOver] = useState<boolean>(false)
+    const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
+    const isRepairing = false // To be implemented on gameserver
+    const isInBattle = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1, [assetQueueStatus])
+    const isInQueue = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1, [assetQueueStatus])
+
     // Subscribe on asset data
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !asset) return
-        return subscribe<{ purchased_item: Asset }>(
+        if (psState !== WebSocket.OPEN || !psSubscribe || !asset) return
+        return psSubscribe<{ purchased_item: Asset }>(
             PassportServerKeys.SubAssetData,
             (payload) => {
                 if (!payload || !payload.purchased_item) return
@@ -63,27 +59,23 @@ export const AssetItem = ({
             },
             { asset_hash: asset.hash },
         )
-    }, [state, subscribe, asset])
-
-    const isGameServerUp = useMemo(() => gsState == WebSocket.OPEN && !UNDER_MAINTENANCE, [gsState])
-    const isRepairing = false // To be implemented on gameserver
-    const isInBattle = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1, [assetQueueStatus])
-    const isInQueue = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1, [assetQueueStatus])
+    }, [psState, psSubscribe, asset])
 
     if (!assetData || !user) return null
 
     const { name, label, image_url } = assetData.data.mech
 
     const statusArea = useMemo(() => {
-        // If game server is down, don't show deploy button
         if (!isGameServerUp) {
             return (
                 <Typography
                     variant="body2"
                     sx={{
+                        width: isGridView ? "unset" : "8.5rem",
+                        alignSelf: isGridView ? "stretch" : "unset",
                         px: ".8rem",
-                        pt: ".48rem",
-                        pb: ".24rem",
+                        pt: ".3rem",
+                        pb: ".2rem",
                         color: "grey",
                         lineHeight: 1,
                         border: `${"grey"} 1px solid`,
@@ -96,66 +88,24 @@ export const AssetItem = ({
             )
         }
 
-        if (isRepairing) {
-            // const { started_at, expect_completed_at } = durability
-            // const isFastMode = durability.repair_type == "FAST"
-            // return (
-            //     <>
-            //         <Typography
-            //             variant="body2"
-            //             sx={{
-            //                 px: '.8rem',
-            //                 pt: '.48rem',
-            //                 pb: '.24rem',
-            //                 color: colors.neonBlue,
-            //                 lineHeight: 1,
-            //                 border: `${colors.neonBlue} 1px solid`,
-            //                 borderRadius: 0.3,
-            //             }}
-            //         >
-            //             REPAIRING
-            //         </Typography>
-            //         <Stack direction="row" alignItems="center" spacing=".32rem" sx={{ pt: '.24rem' }}>
-            //             {isFastMode && <SvgFastRepair size="1rem" fill={colors.neonBlue} />}
-            //             <SvgCooldown size="1.2rem" fill={colors.neonBlue} />
-            //             <Typography
-            //                 variant="caption"
-            //                 sx={{ lineHeight: 1, color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}
-            //             >
-            //                 <RepairCountdown endTime={expect_completed_at} />
-            //             </Typography>
-            //         </Stack>
-            //     </>
-            // )
-        }
-
         if (isInBattle && assetQueueStatus) {
             return (
-                <>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            px: ".8rem",
-                            pt: ".48rem",
-                            pb: ".24rem",
-                            color: colors.orange,
-                            lineHeight: 1,
-                            border: `${colors.orange} 1px solid`,
-                            borderRadius: 0.3,
-                        }}
-                    >
-                        IN BATTLE
-                    </Typography>
-                    {assetQueueStatus.contract_reward && (
-                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
-                            <Typography variant="caption">REWARD:&nbsp;</Typography>
-                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
-                            <Typography variant="caption" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueueStatus.contract_reward, 2)}
-                            </Typography>
-                        </Stack>
-                    )}
-                </>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        width: isGridView ? "unset" : "8.5rem",
+                        alignSelf: isGridView ? "stretch" : "unset",
+                        px: ".8rem",
+                        pt: ".3rem",
+                        pb: ".2rem",
+                        color: colors.orange,
+                        lineHeight: 1,
+                        border: `${colors.orange} 1px solid`,
+                        borderRadius: 0.3,
+                    }}
+                >
+                    IN BATTLE
+                </Typography>
             )
         }
 
@@ -167,22 +117,19 @@ export const AssetItem = ({
                         onMouseLeave={() => setMouseOver(false)}
                         onFocus={() => setMouseOver(true)}
                         onBlur={() => setMouseOver(false)}
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            toggleLeaveModalOpen(true)
-                        }}
+                        onClick={() => toggleLeaveModalOpen(true)}
                         variant="contained"
                         size="small"
                         sx={{
-                            zIndex: 2,
                             position: "relative",
                             display: "inline",
                             padding: 0,
+                            width: isGridView ? "unset" : "8.5rem",
+                            alignSelf: isGridView ? "stretch" : "unset",
                             px: ".8rem",
-                            pt: ".48rem",
-                            pb: ".24rem",
+                            pt: ".3rem",
+                            pb: ".2rem",
                             cursor: "pointer",
-                            width: "8.2rem",
                             textAlign: "center",
                             backgroundColor: "transparent",
                             color: mouseOver ? colors.red : colors.yellow,
@@ -201,15 +148,6 @@ export const AssetItem = ({
                             {mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
                         </Typography>
                     </Button>
-                    {assetQueueStatus.contract_reward && (
-                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
-                            <Typography variant="caption">REWARD:&nbsp;</Typography>
-                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
-                            <Typography variant="caption" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueueStatus.contract_reward, 2)}
-                            </Typography>
-                        </Stack>
-                    )}
                 </>
             )
         }
@@ -218,17 +156,14 @@ export const AssetItem = ({
             <Button
                 variant="contained"
                 size="small"
-                onClick={(e) => {
-                    toggleDeployModalOpen(true)
-                    e.stopPropagation()
-                }}
+                onClick={() => toggleDeployModalOpen(true)}
                 sx={{
-                    zIndex: 2,
                     position: "relative",
-                    minWidth: 0,
+                    width: isGridView ? "unset" : "8.5rem",
+                    alignSelf: isGridView ? "stretch" : "unset",
                     px: ".8rem",
-                    pt: ".48rem",
-                    pb: 0.4,
+                    pt: ".3rem",
+                    pb: ".2rem",
                     boxShadow: 0,
                     backgroundColor: colors.green,
                     borderRadius: 0.3,
@@ -240,138 +175,181 @@ export const AssetItem = ({
                 </Typography>
             </Button>
         )
-    }, [isGameServerUp, isRepairing, isInQueue, mouseOver, assetQueueStatus])
+    }, [isGameServerUp, isRepairing, isInQueue, mouseOver, assetQueueStatus, isGridView])
 
-    return (
-        <>
-            <Box
-                role="button"
-                tabIndex={0}
+    const mechItem = useMemo(() => {
+        if (isGridView) {
+            return (
+                <Box sx={{ p: ".4rem", width: "33.33%" }}>
+                    <Box sx={{ px: ".7rem", py: ".6rem", backgroundColor: `${colors.navy}80`, borderRadius: 0.2 }}>
+                        <Box
+                            sx={{
+                                position: "relative",
+                                flexShrink: 0,
+                                alignSelf: "stretch",
+                                px: ".48rem",
+                                py: ".8rem",
+                                boxShadow: "inset 0 0 8px 6px #00000055",
+                                overflow: "hidden",
+                                borderRadius: 0.5,
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    height: "5.5rem",
+                                    flexShrink: 0,
+                                    overflow: "hidden",
+                                    backgroundImage: `url(${image_url})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "contain",
+                                }}
+                            />
+
+                            {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
+                                <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
+                                    <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
+                                </Box>
+                            )}
+                        </Box>
+
+                        <Stack spacing=".3rem" alignItems="center" sx={{ mt: ".7rem" }}>
+                            {statusArea}
+
+                            <Button
+                                variant="contained"
+                                size="small"
+                                onClick={() => toggleMechDrawerOpen()}
+                                sx={{
+                                    mt: ".2rem",
+                                    position: "relative",
+                                    width: isGridView ? "unset" : "8.5rem",
+                                    alignSelf: isGridView ? "stretch" : "unset",
+                                    px: ".8rem",
+                                    pt: ".3rem",
+                                    pb: ".2rem",
+                                    boxShadow: 0,
+                                    backgroundColor: user.faction.theme.primary,
+                                    borderRadius: 0.3,
+                                    ":hover": { backgroundColor: `${user.faction.theme.primary}90` },
+                                }}
+                            >
+                                <Typography variant="body2" sx={{ lineHeight: 1, color: user.faction.theme.secondary }}>
+                                    VIEW MECH
+                                </Typography>
+                            </Button>
+                        </Stack>
+                    </Box>
+                </Box>
+            )
+        }
+
+        return (
+            <Stack
+                direction="row"
+                alignItems="center"
+                spacing="1.44rem"
                 sx={{
                     position: "relative",
-                    cursor: "pointer",
-                    "::after": {
-                        content: '""',
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                        opacity: 0,
-                        transition: "opacity .2s ease-out",
-                    },
-                    ":hover::after, :focus::after": {
-                        opacity: 1,
-                    },
-                }}
-                onClick={() => {
-                    toggleHistoryDrawerOpen(true)
+                    px: "1.3rem",
+                    py: "1rem",
+                    backgroundColor: `${colors.navy}80`,
                 }}
             >
-                <Stack
-                    direction="row"
-                    spacing="1.44rem"
+                <Box
                     sx={{
                         position: "relative",
-                        px: "1.04rem",
+                        flexShrink: 0,
+                        px: ".48rem",
                         py: ".8rem",
-                        backgroundColor: `${colors.navy}80`,
+                        boxShadow: "inset 0 0 8px 6px #00000055",
+                        overflow: "hidden",
+                        borderRadius: 0.5,
                     }}
                 >
                     <Box
                         sx={{
-                            position: "relative",
+                            width: "5.5rem",
+                            height: "5.5rem",
                             flexShrink: 0,
-                            px: ".48rem",
-                            py: ".8rem",
-                            boxShadow: "inset 0 0 8px 6px #00000055",
                             overflow: "hidden",
-                            borderRadius: 0.5,
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                width: "5.5rem",
-                                height: "5.5rem",
-                                flexShrink: 0,
-                                overflow: "hidden",
-                                backgroundImage: `url(${image_url})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "contain",
-                            }}
-                        />
-
-                        {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
-                            <Box sx={{ position: "absolute", top: 0, left: 0 }}>
-                                <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
-                            </Box>
-                        )}
-
-                        <TooltipHelper text={`Rarity: ${rarityDeets.label}`} placement="right">
-                            <Stack
-                                direction="row"
-                                spacing=".08rem"
-                                sx={{
-                                    position: "absolute",
-                                    bottom: "-1.4rem",
-                                    left: ".1rem",
-                                    height: "4.2rem",
-                                    transform: "rotate(-40deg)",
-                                    zIndex: 3,
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        width: 3,
-                                        height: "100%",
-                                        backgroundColor: rarityDeets.color,
-                                        border: "#00000090 1.5px solid",
-                                    }}
-                                />
-                                <Box
-                                    sx={{
-                                        width: 3,
-                                        height: "100%",
-                                        backgroundColor: rarityDeets.color,
-                                        border: "#00000090 1.5px solid",
-                                    }}
-                                />
-                            </Stack>
-                        </TooltipHelper>
-                    </Box>
-                    <Stack spacing=".4rem" justifyContent="space-between" sx={{ flex: 1, pb: ".2rem" }}>
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                fontFamily: "Nostromo Regular Bold",
-                                fontWeight: "fontWeightBold",
-                            }}
-                        >
-                            {name || label}
-                        </Typography>
-                        <Stack alignItems="center" direction="row" spacing=".96rem">
-                            {statusArea}
-                        </Stack>
-                    </Stack>
-
-                    <SvgView
-                        size="1.3rem"
-                        sx={{
-                            position: "absolute",
-                            bottom: ".5rem",
-                            right: ".7rem",
-                            opacity: 0.5,
+                            backgroundImage: `url(${image_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "contain",
                         }}
                     />
+
+                    {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
+                        <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
+                            <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
+                        </Box>
+                    )}
+                </Box>
+
+                <Stack sx={{ flex: 1 }}>
+                    <Typography variant="caption" sx={{ lineHeight: 1, color: rarityDeets.color, fontFamily: "Nostromo Regular Black" }}>
+                        {rarityDeets.label}
+                    </Typography>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            my: ".2rem",
+                            fontFamily: "Nostromo Regular Bold",
+                            fontWeight: "fontWeightBold",
+                            letterSpacing: ".1rem",
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {name || label}
+                    </Typography>
+
+                    <Stack alignItems="center" direction="row" spacing=".6rem" sx={{ mt: ".1rem" }}>
+                        {statusArea}
+
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => toggleMechDrawerOpen()}
+                            sx={{
+                                mt: ".2rem",
+                                position: "relative",
+                                width: "8.5rem",
+                                px: ".8rem",
+                                pt: ".3rem",
+                                pb: ".2rem",
+                                boxShadow: 0,
+                                backgroundColor: user.faction.theme.primary,
+                                borderRadius: 0.3,
+                                ":hover": { backgroundColor: `${user.faction.theme.primary}90` },
+                            }}
+                        >
+                            <Typography variant="body2" sx={{ lineHeight: 1, color: user.faction.theme.secondary }}>
+                                VIEW MECH
+                            </Typography>
+                            <SvgNext size="1rem" fill={user.faction.theme.secondary} sx={{ ml: ".4rem", pb: ".2rem" }} />
+                        </Button>
+                    </Stack>
                 </Stack>
-            </Box>
+            </Stack>
+        )
+    }, [isGridView])
+
+    return (
+        <>
+            <Fade key={`${isGridView}`} in={true}>
+                {mechItem}
+            </Fade>
 
             {deployModalOpen && (
                 <DeployConfirmation
                     open={deployModalOpen}
-                    asset={asset}
+                    asset={assetData}
                     queueLength={queueLength}
                     queueCost={queueCost}
                     contractReward={contractReward}
@@ -380,9 +358,19 @@ export const AssetItem = ({
                 />
             )}
 
-            {leaveModalOpen && <LeaveConfirmation open={leaveModalOpen} asset={asset} onClose={() => toggleLeaveModalOpen(false)} />}
+            {leaveModalOpen && <LeaveConfirmation open={leaveModalOpen} asset={assetData} onClose={() => toggleLeaveModalOpen(false)} />}
 
-            {historyDrawerOpen && <HistoryDrawer user={user} open={historyDrawerOpen} asset={assetData} onClose={() => toggleHistoryDrawerOpen(false)} />}
+            {mechDrawerOpen && (
+                <MechDrawer
+                    user={user}
+                    open={mechDrawerOpen}
+                    asset={assetData}
+                    assetQueueStatus={assetQueueStatus}
+                    onClose={() => toggleMechDrawerOpen(false)}
+                    openDeployModal={() => toggleDeployModalOpen(true)}
+                    openLeaveModal={() => toggleLeaveModalOpen(true)}
+                />
+            )}
         </>
     )
 }

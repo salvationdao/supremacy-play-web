@@ -1,9 +1,10 @@
-import { Box, Button, Drawer, Fade, Skeleton, Stack, Typography, CircularProgress } from "@mui/material"
+import { Box, Button, Drawer, Skeleton, Stack, Typography, CircularProgress, IconButton } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { AssetItem, DrawerButtons } from ".."
-import { SvgRobot } from "../../assets"
+import { SvgGridView, SvgListView, SvgRobot } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, NullUUID, PASSPORT_WEB } from "../../constants"
 import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
+import { useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset, AssetOnChainStatus, AssetQueueStat, AssetQueueStatusItem } from "../../types/assets"
@@ -16,14 +17,14 @@ interface QueueFeed {
 }
 
 const LoadingSkeleton = ({ num }: { num?: number }) => (
-    <Stack spacing={2} sx={{ p: "1rem" }}>
+    <Stack spacing=".8rem" sx={{ px: ".6rem", py: ".3rem" }}>
         {new Array(num || 6).fill(0).map((_, index) => (
             <Stack key={`loading-skeleton-${index}`} direction="row" spacing="1.3rem">
-                <Skeleton variant="rectangular" width="7.2rem" height="7.2rem" />
+                <Skeleton variant="rectangular" width="6.8rem" height="6.8rem" />
                 <Stack sx={{ flex: 1 }}>
                     <Skeleton variant="text" width="95%" height="2rem" />
                     <Skeleton variant="text" width="60%" height="2rem" />
-                    <Skeleton variant="rectangular" width="8rem" height="2.3rem" sx={{ mt: ".6rem" }} />
+                    <Skeleton variant="rectangular" width="8rem" height="2rem" sx={{ mt: ".6rem" }} />
                 </Stack>
             </Stack>
         ))}
@@ -32,16 +33,13 @@ const LoadingSkeleton = ({ num }: { num?: number }) => (
 
 const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramShortcode?: string; setTelegramShortcode?: (s: string) => void }) => {
     const { newSnackbarMessage } = useSnackbar()
+    const { user } = useGameServerAuth()
     const { state, send } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
-    const { battleEndDetail } = useGame()
-    const { user } = useGameServerAuth()
-    const [queueLength, setQueueLength] = useState<number>(0)
-    const [queueCost, setQueueCost] = useState<string>("")
-    const [contractReward, setContractReward] = useState<string>("")
-
     const { state: gsState, subscribe: gsSubscribe, send: gsSend } = useGameServerWebsocket()
-
+    const { battleEndDetail } = useGame()
+    // Queue
+    const [queueFeed, setQueueFeed] = useState<QueueFeed>()
     const [queuedAssets, setQueuedAssets] = useState<AssetQueueStatusItem[] | null>(null)
 
     const [assets, setAssets] = useState<Asset[]>()
@@ -51,49 +49,30 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
     const [isLoading, setIsLoading] = useState(true)
     const [isLoaded, setIsLoaded] = useState(false)
 
+    // Display option
+    const [isGridView, toggleIsGridView] = useToggle()
+
     const loadMoreAssets = useCallback(async () => {
         if (state !== WebSocket.OPEN || !send || !queuedAssets || isLoaded || (isLoading && assets) || !faction_id || faction_id === NullUUID) return
         try {
             setIsLoading(true)
-            const includeAssetIDs = queuedAssets.filter((q) => !assets || !assets.some((a) => a.id === q.mech_id)).map((q) => q.mech_id)
-            const excludeAssetIDs = queuedAssets.filter((q) => assets && assets.some((a) => a.id === q.mech_id)).map((q) => q.mech_id)
-
             let resp = await send<Asset[]>(PassportServerKeys.SubAssetList, {
-                limit: 50,
-                include_asset_ids: includeAssetIDs,
-                exclude_asset_ids: excludeAssetIDs,
+                limit: 28,
+                include_asset_ids: [],
+                exclude_asset_ids: [],
                 after_external_token_id: assets && assets.length > 0 ? assets[assets.length - 1].data.mech.external_token_id : undefined,
             })
+            if (resp.length < 28) setIsLoaded(true)
             resp = resp.filter((asset) => {
                 return asset.on_chain_status !== AssetOnChainStatus.STAKABLE && asset.unlocked_at <= new Date(Date.now())
             })
             setAssets((prev) => (prev ? prev.concat(resp) : resp))
-            setIsLoading(false)
-            if (resp.length < 20) {
-                setIsLoaded(true)
-            }
         } catch (err) {
             console.error(err)
+        } finally {
+            setIsLoading(false)
         }
     }, [send, state, isLoaded, isLoading, queuedAssets, assets, faction_id, assets])
-
-    // Load initial assets
-    useEffect(() => {
-        if (!gsSend || queuedAssets !== null) return
-        ;(async () => {
-            try {
-                const resp = await gsSend<AssetQueueStatusItem[]>(GameServerKeys.AssetQueueStatusList)
-                setQueuedAssets(resp)
-            } catch (err) {
-                console.error(err)
-            }
-        })()
-    }, [gsSend, queuedAssets])
-
-    useEffect(() => {
-        if (!queuedAssets || (assets && assets.length > 0)) return
-        loadMoreAssets()
-    }, [loadMoreAssets, queuedAssets, assets])
 
     const updateAssetQueueStatus = useCallback(
         (a: Asset, status: AssetQueueStat) => {
@@ -138,14 +117,30 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
         [setAssetsInQueue, setAssetsNotInQueue],
     )
 
-    // Subscribe to queue status
+    // Load initial queued assets
+    useEffect(() => {
+        if (!gsSend || queuedAssets !== null) return
+        ;(async () => {
+            try {
+                const resp = await gsSend<AssetQueueStatusItem[]>(GameServerKeys.AssetQueueStatusList)
+                setQueuedAssets(resp)
+            } catch (err) {
+                console.error(err)
+            }
+        })()
+    }, [gsSend, queuedAssets])
+
+    // Load initial assets
+    useEffect(() => {
+        if (!queuedAssets || (assets && assets.length > 0)) return
+        loadMoreAssets()
+    }, [loadMoreAssets, queuedAssets, assets])
+
+    // Subscribe to queue feed
     useEffect(() => {
         if (gsState !== WebSocket.OPEN || !gsSubscribe || !user) return
         return gsSubscribe<QueueFeed>(GameServerKeys.SubQueueStatus, (payload) => {
-            if (!payload) return
-            setQueueLength(payload.queue_length)
-            setQueueCost(payload.queue_cost)
-            setContractReward(payload.contract_reward)
+            if (payload) setQueueFeed(payload)
         })
     }, [gsState, gsSubscribe, user])
 
@@ -159,14 +154,30 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
             gsSubscribe<AssetQueueStat>(
                 GameServerKeys.SubAssetQueueStatus,
                 (payload) => {
-                    if (!payload) return
-                    updateAssetQueueStatus(a, payload)
+                    if (payload) updateAssetQueueStatus(a, payload)
                 },
                 { asset_hash: a.hash },
             ),
         )
         return () => callbacks.forEach((c) => c())
     }, [gsState, gsSubscribe, assets])
+
+    // Every time the game ends, refetch all mech's queue positions once
+    useEffect(() => {
+        if (gsState !== WebSocket.OPEN || !gsSend || !assets || assets.length === 0) return
+
+        assets.forEach(async (a) => {
+            try {
+                const resp = await gsSend<AssetQueueStat>(GameServerKeys.AssetQueueStatus, {
+                    asset_hash: a.hash,
+                })
+                if (resp) updateAssetQueueStatus(a, resp)
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to get syndicate queue details.", "error")
+                console.debug(e)
+            }
+        })
+    }, [gsSend, gsSubscribe, assets, battleEndDetail?.battle_id])
 
     // DO NOT REMOVE THIS! Every time the battle queue has been updated (i.e. a mech leaves the queue), refetch all mech's queue positions once
     useEffect(() => {
@@ -178,8 +189,7 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
                     const resp = await gsSend<AssetQueueStat>(GameServerKeys.AssetQueueStatus, {
                         asset_hash: a.hash,
                     })
-                    if (!resp) return
-                    updateAssetQueueStatus(a, resp)
+                    if (resp) updateAssetQueueStatus(a, resp)
                 } catch (e) {
                     newSnackbarMessage(typeof e === "string" ? e : "Failed to get syndicate queue details.", "error")
                     console.debug(e)
@@ -188,77 +198,42 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
         })
     }, [gsState, gsSubscribe, gsSend, assets])
 
-    // Every time the game ends, refetch all mech's queue positions once
-    useEffect(() => {
-        if (gsState !== WebSocket.OPEN || !gsSend || !assets || assets.length === 0) return
-
-        assets.forEach(async (a) => {
-            try {
-                const resp = await gsSend<AssetQueueStat>(GameServerKeys.AssetQueueStatus, {
-                    asset_hash: a.hash,
-                })
-                if (!resp) return
-                updateAssetQueueStatus(a, resp)
-            } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to get syndicate queue details.", "error")
-                console.debug(e)
-            }
-        })
-    }, [gsSend, gsSubscribe, assets, battleEndDetail?.battle_id])
-
     const content = useMemo(() => {
         if (isLoading && !assets) return <LoadingSkeleton />
 
-        if (assets && assets.length > 0 && (assetsNotInQueue.size > 0 || assetsInQueue.size > 0)) {
+        if (assets && assets.length > 0) {
             return (
-                <>
+                <Stack spacing={isGridView ? 0 : ".6rem"} direction={isGridView ? "row" : "column"} flexWrap={isGridView ? "wrap" : "unset"}>
                     {/* Assets in the queue/battle */}
-                    {Array.from(assetsInQueue).map(([hash, a], index) => (
+                    {Array.from(assetsInQueue).map(([hash, a]) => (
                         <AssetItem
-                            key={`${hash}-${index}`}
+                            key={hash}
                             asset={a}
                             assetQueueStatus={{
                                 queue_position: a.queue_position,
                                 contract_reward: a.contract_reward,
                             }}
-                            queueLength={queueLength}
-                            queueCost={queueCost}
-                            contractReward={contractReward}
+                            queueLength={queueFeed?.queue_length || 0}
+                            queueCost={queueFeed?.queue_cost || ""}
+                            contractReward={queueFeed?.contract_reward || ""}
+                            isGridView={isGridView}
                         />
                     ))}
 
                     {/* Assets outside of the queue and not battling */}
-                    {Array.from(assetsNotInQueue).map(([hash, a], index) => (
+                    {Array.from(assetsNotInQueue).map(([hash, a]) => (
                         <AssetItem
                             telegramShortcode={telegramShortcode}
                             setTelegramShortcode={setTelegramShortcode}
-                            key={`${hash}-${index}`}
+                            key={hash}
                             asset={a}
-                            queueLength={queueLength}
-                            queueCost={queueCost}
-                            contractReward={contractReward}
+                            queueLength={queueFeed?.queue_length || 0}
+                            queueCost={queueFeed?.queue_cost || ""}
+                            contractReward={queueFeed?.contract_reward || ""}
+                            isGridView={isGridView}
                         />
                     ))}
-
-                    {/* Add Scroll Pagination */}
-                    {isLoading && assets && assets.length > 0 && (
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            <CircularProgress
-                                sx={{
-                                    px: ".8rem",
-                                    pt: ".48rem",
-                                    pb: ".24rem",
-                                }}
-                            />
-                        </Box>
-                    )}
-                </>
+                </Stack>
             )
         }
 
@@ -289,7 +264,7 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
                 </Button>
             </Stack>
         )
-    }, [isLoading, assets, assetsNotInQueue, assetsInQueue, queueLength, queueCost, contractReward])
+    }, [isLoading, assets, assetsNotInQueue, assetsInQueue, queueFeed, isGridView])
 
     return (
         <Stack sx={{ flex: 1 }}>
@@ -312,41 +287,81 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
                 </Typography>
             </Stack>
 
-            <Fade in={true}>
-                <Box
-                    onScroll={(e) => {
-                        const target = e.currentTarget
-                        if (target.scrollTop + target.offsetHeight >= target.scrollHeight) {
-                            loadMoreAssets()
-                        }
-                    }}
-                    sx={{
-                        my: ".8rem",
-                        ml: ".3rem",
-                        pl: ".5rem",
-                        mr: ".3rem",
-                        pr: ".5rem",
-                        flex: 1,
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        direction: "ltr",
-                        scrollbarWidth: "none",
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: colors.assetsBanner,
-                            borderRadius: 3,
-                        },
-                    }}
-                >
-                    <Stack spacing=".7rem">{content}</Stack>
-                </Box>
-            </Fade>
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ pl: "1.2rem", pr: ".6rem", py: ".3rem", backgroundColor: "#00000030" }}
+            >
+                <Typography variant="body2">
+                    <strong>DISPLAYING:</strong> {assets?.length || 0}
+                </Typography>
+                <Stack direction="row">
+                    <IconButton onClick={() => toggleIsGridView(false)}>
+                        <SvgListView size="1.2rem" sx={{ opacity: isGridView ? 0.5 : 1 }} />
+                    </IconButton>
+                    <IconButton onClick={() => toggleIsGridView(true)}>
+                        <SvgGridView size="1.2rem" sx={{ opacity: isGridView ? 1 : 0.5 }} />
+                    </IconButton>
+                </Stack>
+            </Stack>
+
+            <Box
+                onScroll={(e) => {
+                    const target = e.currentTarget
+                    if (target.scrollTop + target.offsetHeight >= target.scrollHeight) {
+                        loadMoreAssets()
+                    }
+                }}
+                sx={{
+                    my: ".8rem",
+                    ml: ".3rem",
+                    pl: ".5rem",
+                    mr: ".3rem",
+                    pr: ".5rem",
+                    flex: 1,
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    direction: "ltr",
+                    scrollbarWidth: "none",
+                    "::-webkit-scrollbar": {
+                        width: ".4rem",
+                    },
+                    "::-webkit-scrollbar-track": {
+                        background: "#FFFFFF15",
+                        borderRadius: 3,
+                    },
+                    "::-webkit-scrollbar-thumb": {
+                        background: colors.assetsBanner,
+                        borderRadius: 3,
+                    },
+                }}
+            >
+                {content}
+
+                {/* Add Scroll Pagination */}
+                {isLoading && assets && assets.length > 0 && (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            py: "2rem",
+                        }}
+                    >
+                        <CircularProgress size="1.9rem" sx={{ color: colors.neonBlue }} />
+                    </Box>
+                )}
+
+                {!isLoaded && !isLoading && (
+                    <Typography
+                        onClick={() => loadMoreAssets()}
+                        sx={{ cursor: "pointer", textAlign: "center", mt: "1rem", opacity: 0.5, ":hover": { opacity: 1 } }}
+                    >
+                        LOAD MORE
+                    </Typography>
+                )}
+            </Box>
         </Stack>
     )
 }

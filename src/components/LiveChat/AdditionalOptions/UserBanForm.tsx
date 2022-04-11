@@ -226,7 +226,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                         ...params.InputProps,
                                         endAdornment: (
                                             <>
-                                                {isLoadingUsers ? <CircularProgress color="inherit" size="1.2rem" /> : null}
+                                                {isLoadingUsers ? <CircularProgress size="1.2rem" sx={{ color: colors.neonBlue }} /> : null}
                                                 {params.InputProps.endAdornment}
                                             </>
                                         ),

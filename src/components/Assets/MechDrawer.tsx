@@ -1,26 +1,40 @@
 import { Box, Button, CircularProgress, Drawer, IconButton, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgBack, SvgDeath, SvgEdit, SvgGoldBars, SvgHistory, SvgRefresh, SvgSave } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH } from "../../constants"
+import { SvgBack, SvgDeath, SvgEdit, SvgGoldBars, SvgHistory, SvgRefresh, SvgSave, SvgSupToken } from "../../assets"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH, UNDER_MAINTENANCE } from "../../constants"
 import { SocketState, useGameServerWebsocket, usePassportServerWebsocket, useSnackbar } from "../../containers"
-import { camelToTitle, getRarityDeets, timeSince } from "../../helpers"
+import { camelToTitle, getRarityDeets, supFormatter, timeSince } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../types"
-import { Asset } from "../../types/assets"
+import { Asset, AssetQueueStat } from "../../types/assets"
 import { UserData } from "../../types/passport"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
 
-export interface HistoryDrawerProps {
+// const RepairCountdown = ({ endTime }: { endTime: Date }) => {
+//     const { hours, minutes, seconds } = useTimer(endTime)
+
+//     return (
+//         <>
+//             {hours && hours > 0 ? `${hours}h` : ""} {minutes && minutes > 0 ? `${minutes}h` : ""}{" "}
+//             {seconds && seconds > 0 ? `${seconds}h` : ""}
+//         </>
+//     )
+// }
+
+export interface MechDrawerProps {
     user: UserData
     open: boolean
     onClose: () => void
     asset: Asset
+    assetQueueStatus?: AssetQueueStat
+    openDeployModal: () => void
+    openLeaveModal: () => void
 }
 
-export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps) => {
-    const { name, label, hash } = asset.data.mech
+export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openDeployModal, openLeaveModal }: MechDrawerProps) => {
+    const { name, label, hash, image_url, avatar_url } = asset.data.mech
 
     const { state, send } = useGameServerWebsocket()
     const { state: psState, send: psSend } = usePassportServerWebsocket()
@@ -37,6 +51,12 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
     const renamingRef = useRef<HTMLInputElement>()
     const [renamedValue, setRenamedValue] = useState(name || label)
     const [renameLoading, setRenameLoading] = useState<boolean>(false)
+    // Status
+    const [mouseOver, setMouseOver] = useState<boolean>(false)
+    const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
+    const isRepairing = false // To be implemented on gameserver
+    const isInBattle = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1, [assetQueueStatus])
+    const isInQueue = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1, [assetQueueStatus])
 
     const { newSnackbarMessage } = useSnackbar()
 
@@ -141,6 +161,141 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
             setRenameLoading(false)
         }
     }, [psState, psSend, renamedValue, name, label, hash, user.id, newSnackbarMessage])
+
+    const statusArea = useMemo(() => {
+        if (!isGameServerUp) {
+            return (
+                <Typography
+                    variant="body2"
+                    sx={{
+                        px: ".8rem",
+                        pt: ".3rem",
+                        pb: ".2rem",
+                        color: "grey",
+                        lineHeight: 1,
+                        border: `${"grey"} 1px solid`,
+                        borderRadius: 0.3,
+                        opacity: 0.6,
+                    }}
+                >
+                    GAME OFFLINE
+                </Typography>
+            )
+        }
+
+        if (isInBattle && assetQueueStatus) {
+            return (
+                <>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            width: "10rem",
+                            px: ".8rem",
+                            pt: ".5rem",
+                            pb: ".4rem",
+                            color: colors.orange,
+                            lineHeight: 1,
+                            border: `${colors.orange} 1px solid`,
+                            borderRadius: 0.3,
+                        }}
+                    >
+                        IN BATTLE
+                    </Typography>
+                    {assetQueueStatus.contract_reward && (
+                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
+                            <Typography variant="body2">REWARD:&nbsp;</Typography>
+                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
+                            <Typography variant="body2" sx={{ color: colors.yellow }}>
+                                {supFormatter(assetQueueStatus.contract_reward, 2)}
+                            </Typography>
+                        </Stack>
+                    )}
+                </>
+            )
+        }
+
+        if (isInQueue && assetQueueStatus) {
+            return (
+                <>
+                    <Button
+                        onMouseEnter={() => setMouseOver(true)}
+                        onMouseLeave={() => setMouseOver(false)}
+                        onFocus={() => setMouseOver(true)}
+                        onBlur={() => setMouseOver(false)}
+                        onClick={() => openLeaveModal()}
+                        variant="contained"
+                        size="small"
+                        sx={{
+                            position: "relative",
+                            display: "inline",
+                            padding: 0,
+                            width: "10rem",
+                            px: ".8rem",
+                            pt: ".5rem",
+                            pb: ".4rem",
+                            cursor: "pointer",
+                            textAlign: "center",
+                            backgroundColor: "transparent",
+                            color: mouseOver ? colors.red : colors.yellow,
+                            lineHeight: 1,
+                            border: `${mouseOver ? colors.red : colors.yellow} 1px solid`,
+                            borderRadius: 0.3,
+                            whiteSpace: "nowrap",
+                            ":hover": {
+                                backgroundColor: "transparent",
+                                boxShadow: "none",
+                                opacity: 1,
+                            },
+                        }}
+                    >
+                        <Typography variant="body2" lineHeight={1} sx={{ color: mouseOver ? colors.red : colors.yellow }}>
+                            {mouseOver ? "LEAVE QUEUE" : "IN QUEUE"}
+                        </Typography>
+                    </Button>
+                    {assetQueueStatus.queue_position && (
+                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
+                            <Typography variant="body2">POSITION:&nbsp;</Typography>
+                            <Typography variant="body2" sx={{ color: colors.neonBlue }}>
+                                {assetQueueStatus.queue_position}
+                            </Typography>
+                        </Stack>
+                    )}
+                    {assetQueueStatus.contract_reward && (
+                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
+                            <Typography variant="body2">REWARD:&nbsp;</Typography>
+                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
+                            <Typography variant="body2" sx={{ color: colors.yellow }}>
+                                {supFormatter(assetQueueStatus.contract_reward, 2)}
+                            </Typography>
+                        </Stack>
+                    )}
+                </>
+            )
+        }
+
+        return (
+            <Button
+                variant="contained"
+                size="small"
+                onClick={() => openDeployModal()}
+                sx={{
+                    position: "relative",
+                    width: "10rem",
+                    px: ".8rem",
+                    pt: ".5rem",
+                    pb: ".4rem",
+                    boxShadow: 0,
+                    backgroundColor: colors.green,
+                    borderRadius: 0.3,
+                    ":hover": { backgroundColor: `${colors.green}90` },
+                }}
+            >
+                <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                    DEPLOY
+                </Typography>
+            </Button>
+        )
+    }, [isGameServerUp, isRepairing, isInQueue, mouseOver, assetQueueStatus])
 
     return (
         <Drawer
@@ -273,12 +428,12 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                             </Typography>
                         </Box>
 
-                        <Stack alignItems="center" spacing="1rem">
-                            <Box sx={{ width: "100%" }}>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between">
+                            <Box sx={{ position: "relative", width: "calc(100% - 6rem)" }}>
                                 <Box
                                     component="img"
-                                    src={asset.data.mech.image_url}
-                                    alt={`Image for ${asset.data.mech.name} || ${asset.data.mech.label}`}
+                                    src={image_url}
+                                    alt={`Image for ${name} || ${label}`}
                                     sx={{
                                         width: "100%",
                                         height: "26rem",
@@ -286,8 +441,23 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                                         objectPosition: "center",
                                     }}
                                 />
+
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        left: ".4rem",
+                                        bottom: "1rem",
+                                        width: "4.5rem",
+                                        height: "4.5rem",
+                                        border: "#FFFFFF60 1px solid",
+                                        backgroundImage: `url(${avatar_url})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "top center",
+                                        backgroundSize: "contain",
+                                    }}
+                                />
                             </Box>
-                            <Stack spacing="1rem" direction="row" justifyContent="center" sx={{ width: "100%", px: "3rem" }}>
+                            <Stack spacing="1rem" alignItems="center" justifyContent="center" sx={{ flexShrink: 0, width: "6rem" }}>
                                 {statsLoading ? (
                                     <>
                                         <PercentageDisplaySkeleton />
@@ -299,26 +469,38 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                                         <PercentageDisplay
                                             displayValue={`${(stats.extra_stats.win_rate * 100).toFixed(0)}%`}
                                             percentage={stats.extra_stats.win_rate * 100}
+                                            size={38}
                                             label="Win Rate"
                                         />
+                                        <PercentageDisplay displayValue={`${stats.total_kills}`} percentage={100} size={38} label="Kills" color={colors.gold} />
                                         <PercentageDisplay
                                             displayValue={`${(stats.extra_stats.survival_rate * 100).toFixed(0)}%`}
                                             percentage={stats.extra_stats.survival_rate * 100}
+                                            size={38}
                                             label="Survival Rate"
                                             color={colors.green}
                                         />
-                                        <PercentageDisplay displayValue={`${stats.total_kills}`} percentage={100} label="Total Kills" color={colors.gold} />
-                                        <PercentageDisplay displayValue={`${stats.total_deaths}`} percentage={100} label="Total Deaths" color={colors.red} />
+                                        <PercentageDisplay
+                                            displayValue={`${stats.total_deaths}`}
+                                            percentage={100}
+                                            size={38}
+                                            label="Deaths"
+                                            color={colors.red}
+                                        />
                                     </>
                                 ) : (
                                     <>
-                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Win Rate" />
-                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Survival Rate" color={colors.green} />
-                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Total Kills" color={colors.gold} />
-                                        <PercentageDisplay displayValue={`?`} percentage={0} label="Total Deaths" color={colors.red} />
+                                        <PercentageDisplay displayValue={`?`} percentage={0} size={38} label="Win Rate" />
+                                        <PercentageDisplay displayValue={`?`} percentage={0} size={38} label="Survival Rate" color={colors.green} />
+                                        <PercentageDisplay displayValue={`?`} percentage={0} size={38} label="Kills" color={colors.gold} />
+                                        <PercentageDisplay displayValue={`?`} percentage={0} size={38} label="Deaths" color={colors.red} />
                                     </>
                                 )}
                             </Stack>
+                        </Stack>
+
+                        <Stack alignItems="center" direction="row" spacing=".96rem">
+                            {statusArea}
                         </Stack>
                     </Stack>
 
@@ -338,7 +520,7 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                             borderRadius: 0.3,
                         }}
                     >
-                        <Stack direction="row" alignItems="center" sx={{ pb: ".8rem", px: "1.2rem" }}>
+                        <Stack direction="row" alignItems="center" sx={{ pb: ".8rem", pl: "1.2rem", pr: ".3rem" }}>
                             <SvgHistory size="1.8rem" />
                             <Typography variant="h6" sx={{ ml: ".8rem", fontWeight: "fontWeightBold" }}>
                                 RECENT MATCHES
@@ -379,8 +561,8 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
                                         key={index}
                                         mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
                                         backgroundImage={h.battle?.game_map?.image_url}
-                                        status={!h.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
                                         mechSurvived={!!h.mech_survived}
+                                        status={!h.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
                                         kills={h.kills}
                                         date={h.created_at}
                                     />
@@ -400,14 +582,14 @@ export const HistoryDrawer = ({ user, open, onClose, asset }: HistoryDrawerProps
 
 interface HistoryEntryProps {
     mapName: string
-    status: "won" | "lost" | "pending"
     mechSurvived: boolean
     backgroundImage?: string
+    status: "won" | "lost" | "pending"
     kills: number
     date: Date
 }
 
-const HistoryEntry = ({ mapName, status, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
+const HistoryEntry = ({ mapName, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
     let statusColor = colors.grey
     let statusText = "In Progress"
     switch (status) {
@@ -439,13 +621,7 @@ const HistoryEntry = ({ mapName, status, mechSurvived, backgroundImage, kills, d
                 <Typography variant="subtitle2" sx={{ textTransform: "uppercase" }}>
                     {mapName}
                 </Typography>
-                <Typography
-                    variant="h5"
-                    sx={{
-                        fontFamily: "Nostromo Regular Bold",
-                        textTransform: "uppercase",
-                    }}
-                >
+                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
                     {statusText}
                 </Typography>
                 {status !== "pending" && (

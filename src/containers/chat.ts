@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "."
-import { SupremacyPNG } from '../assets'
+import { SupremacyPNG } from "../assets"
 import { GlobalAnnouncementType } from "../components/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
@@ -9,8 +9,6 @@ import { useToggle } from "../hooks"
 import { GameServerKeys } from "../keys"
 import { UserRank, UserStat } from "../types"
 import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
-import { UserRank, UserStat } from "../types"
-import { SupremacyPNG } from "../assets"
 
 interface SentChatMessageData {
     global: Date[]

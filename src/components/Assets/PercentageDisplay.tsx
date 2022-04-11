@@ -15,7 +15,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
     const radius = size ? size / (2 * 1.11) : 20
     const circumference = Math.PI * 2 * radius
     return (
-        <Stack alignItems="center" sx={{ flex: 1 }}>
+        <Stack alignItems="center">
             <Box
                 sx={{
                     position: "relative",
@@ -55,6 +55,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     />
                 </StyledSVG>
                 <Typography
+                    variant="body2"
                     sx={{
                         position: "absolute",
                         top: "50%",
@@ -94,5 +95,5 @@ export interface PercentageDisplaySkeletonProps {
 
 export const PercentageDisplaySkeleton = ({ size }: PercentageDisplaySkeletonProps) => {
     const radius = size ? size / (2 * 1.11) : 20
-    return <Skeleton variant="circular" width={1.11 * radius * 2} height={1.11 * radius * 2} sx={{ flex: 1 }} />
+    return <Skeleton variant="circular" width={1.11 * radius * 2} height={1.11 * radius * 2} />
 }

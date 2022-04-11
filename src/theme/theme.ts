@@ -148,16 +148,16 @@ export const theme = createTheme({
         },
         subtitle1: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.11rem",
+            fontSize: "1.19rem",
             textAlign: "center",
         },
         subtitle2: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.11rem",
+            fontSize: "1.19rem",
         },
         caption: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.11rem",
+            fontSize: "1.19rem",
         },
     },
     components: {

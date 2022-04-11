@@ -51,7 +51,7 @@ export const PlayerListContent = ({
     }, [newPlayerList, setActivePlayers, setInactivePlayers])
 
     return (
-        <Stack spacing=".6rem">
+        <Stack spacing=".5rem">
             {activePlayers.map((p) => (
                 <PlayerItem key={`active-player-${p.id}`} player={p} faction={faction} user={user} isActive />
             ))}
