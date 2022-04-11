@@ -31,7 +31,17 @@ const LoadingSkeleton = ({ num }: { num?: number }) => (
     </Stack>
 )
 
-const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramShortcode?: string; setTelegramShortcode?: (s: string) => void }) => {
+const DrawerContent = ({
+    telegramShortcode,
+    setTelegramShortcode,
+    isGridView,
+    toggleIsGridView,
+}: {
+    telegramShortcode?: string
+    setTelegramShortcode?: (s: string) => void
+    isGridView: boolean
+    toggleIsGridView: (value?: boolean | undefined) => void
+}) => {
     const { newSnackbarMessage } = useSnackbar()
     const { user } = useGameServerAuth()
     const { state, send } = usePassportServerWebsocket()
@@ -48,9 +58,6 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
 
     const [isLoading, setIsLoading] = useState(true)
     const [isLoaded, setIsLoaded] = useState(false)
-
-    // Display option
-    const [isGridView, toggleIsGridView] = useToggle()
 
     const loadMoreAssets = useCallback(async () => {
         if (state !== WebSocket.OPEN || !send || !queuedAssets || isLoaded || (isLoading && assets) || !faction_id || faction_id === NullUUID) return
@@ -207,7 +214,7 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
                     {/* Assets in the queue/battle */}
                     {Array.from(assetsInQueue).map(([hash, a]) => (
                         <AssetItem
-                            key={hash}
+                            key={`${hash}-${a.queue_position}`}
                             asset={a}
                             assetQueueStatus={{
                                 queue_position: a.queue_position,
@@ -369,6 +376,8 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
 export const Assets = () => {
     const { isAssetOpen } = useDrawer()
     const [telegramShortcode, setTelegramShortcode] = useState("")
+    // Display option
+    const [isGridView, toggleIsGridView] = useToggle()
 
     return (
         <Drawer
@@ -395,7 +404,14 @@ export const Assets = () => {
                 }}
             >
                 <DrawerButtons isFixed={false} />
-                {isAssetOpen && <DrawerContent telegramShortcode={telegramShortcode} setTelegramShortcode={setTelegramShortcode} />}
+                {isAssetOpen && (
+                    <DrawerContent
+                        telegramShortcode={telegramShortcode}
+                        setTelegramShortcode={setTelegramShortcode}
+                        isGridView={isGridView}
+                        toggleIsGridView={toggleIsGridView}
+                    />
+                )}
             </Stack>
 
             <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
