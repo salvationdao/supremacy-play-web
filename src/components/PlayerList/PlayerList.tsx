@@ -66,13 +66,13 @@ const DrawerContent = ({
                                 {activePlayers.length}
                             </Typography>
                         </Stack>
-                        <Stack direction="row" alignItems="center" spacing=".4rem">
+                        {/* <Stack direction="row" alignItems="center" spacing=".4rem">
                             <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.yellow }} />
                             <Typography variant="body2" sx={{ lineHeight: 1 }}>
                                 <strong>Inactive: </strong>
                                 {inactivePlayers.length}
                             </Typography>
-                        </Stack>
+                        </Stack> */}
                     </Stack>
                 </Stack>
             </Stack>
