@@ -214,7 +214,7 @@ const DrawerContent = ({
                     {/* Assets in the queue/battle */}
                     {Array.from(assetsInQueue).map(([hash, a]) => (
                         <AssetItem
-                            key={hash}
+                            key={`${hash}-${a.queue_position}`}
                             asset={a}
                             assetQueueStatus={{
                                 queue_position: a.queue_position,
