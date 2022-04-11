@@ -65,6 +65,8 @@ export const BanProposal = () => {
         }
     }, [outOfTime])
 
+
+
     if (!banProposal || !render) return null
 
     return <BanProposalInner banProposal={banProposal} outOfTime={outOfTime} toggleOutOfTime={toggleOutOfTime} />
