@@ -1,4 +1,4 @@
-import { Button, Typography, useMediaQuery } from "@mui/material"
+import { Button, Typography } from "@mui/material"
 import { PrismicProvider } from "@prismicio/react"
 import { SvgQuestionMark } from "../../assets"
 import { prismicClient } from "../../helpers/prismicClient"
