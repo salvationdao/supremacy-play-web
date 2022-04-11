@@ -154,17 +154,11 @@ export const DeployConfirmation = ({
                 })()
             }
 
-            let mobileNumberSend: string | undefined
-
-            if (currentSettings.sms_notifications) {
-                mobileNumberSend = mobile
-            }
-
             const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
                 asset_hash: hash,
                 need_insured: needInsured,
                 enable_push_notifications: currentSettings.push_notifications,
-                mobile_number: mobileNumberSend,
+                mobile_number: currentSettings.sms_notifications ? mobile : undefined,
                 enable_telegram_notifications: currentSettings.telegram_notifications,
             })
             if (resp && resp.success) {
