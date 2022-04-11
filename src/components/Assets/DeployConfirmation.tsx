@@ -158,7 +158,7 @@ export const DeployConfirmation = ({
                 asset_hash: hash,
                 need_insured: needInsured,
                 enable_push_notifications: currentSettings.push_notifications,
-                mobile_number: mobile,
+                mobile_number: currentSettings.sms_notifications ? mobile : undefined,
                 enable_telegram_notifications: currentSettings.telegram_notifications,
             })
             if (resp && resp.success) {
