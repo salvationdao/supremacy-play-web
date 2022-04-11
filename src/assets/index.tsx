@@ -86,6 +86,7 @@ import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 import { Box, BoxProps } from "@mui/system"
 import { colors } from "../theme/theme"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
+import SupremacyPNG from "./images/Supremacy.png"
 import FlamesPNG from "./images/Flames.png"
 import MaintenancePNG from "./images/Maintenance.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
@@ -142,6 +143,7 @@ export {
 // End multiplier images
 
 export {
+    SupremacyPNG,
     GenericWarMachinePNG,
     FlamesPNG,
     MaintenancePNG,

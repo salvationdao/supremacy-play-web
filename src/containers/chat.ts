@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "."
+import { SupremacyPNG } from '../assets'
 import { GlobalAnnouncementType } from "../components/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
 import { UserRank, UserStat } from "../types"
+import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
 
 interface SentChatMessageData {
     global: Date[]
@@ -254,6 +255,20 @@ export const ChatContainer = createContainer(() => {
                 ...payload,
                 ended_at: endTime,
             })
+
+            if (!("Notification" in window)) {
+                return
+            }
+
+            const notification =  new Notification("Ban Proposal Initialised",
+                {
+                    body: `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
+                    badge: SupremacyPNG,
+                    icon: SupremacyPNG,
+                    image: SupremacyPNG,
+                });
+
+            setTimeout(() => notification.close(), 10000)
         })
     }, [user, state, subscribe])
 
