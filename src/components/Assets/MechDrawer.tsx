@@ -589,7 +589,7 @@ interface HistoryEntryProps {
     date: Date
 }
 
-const HistoryEntry = ({ mapName, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
+const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
     let statusColor = colors.grey
     let statusText = "In Progress"
     switch (status) {
