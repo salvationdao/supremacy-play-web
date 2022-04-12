@@ -85,6 +85,10 @@ export enum GameServerKeys {
 
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
+
+    // Player Profile
+    GetPlayerProfile = "PLAYER:PROFILE_GET",
+    UpdatePlayerProfile = "PLAYER:PROFILE_UPDATE",
 }
 
 export enum PassportServerKeys {

@@ -660,7 +660,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                                 fontSize: "2rem",
                                             }}
                                         >
-                                            Shortcode Registered Successfully
+                                            Registered Successfully!
                                         </Typography>
                                     </Box>
 
