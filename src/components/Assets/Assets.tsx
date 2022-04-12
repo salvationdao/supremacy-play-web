@@ -214,7 +214,7 @@ const DrawerContent = ({
                     {/* Assets in the queue/battle */}
                     {Array.from(assetsInQueue).map(([hash, a]) => (
                         <AssetItem
-                            key={`${hash}-${a.queue_position}`}
+                            key={`${hash}-${a.data.mech.name}-${a.queue_position}`}
                             asset={a}
                             assetQueueStatus={{
                                 queue_position: a.queue_position,
@@ -230,9 +230,9 @@ const DrawerContent = ({
                     {/* Assets outside of the queue and not battling */}
                     {Array.from(assetsNotInQueue).map(([hash, a]) => (
                         <AssetItem
+                            key={`${hash}-${a.data.mech.name}`}
                             telegramShortcode={telegramShortcode}
                             setTelegramShortcode={setTelegramShortcode}
-                            key={hash}
                             asset={a}
                             queueLength={queueFeed?.queue_length || 0}
                             queueCost={queueFeed?.queue_cost || ""}
