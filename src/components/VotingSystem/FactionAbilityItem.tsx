@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import { SvgSupToken } from "../../assets"
-import { NullUUID } from "../../constants"
+import { NullUUID, VOTING_OPTION_COSTS } from "../../constants"
 import { BribeStageResponse, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
@@ -12,7 +12,7 @@ import { GameAbility, GameAbilityProgress } from "../../types"
 
 interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
-    amount: string
+    percentage: number
 }
 
 interface FactionAbilityItemProps extends Partial<WebSocketProperties> {
@@ -85,11 +85,11 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     }, [gameAbilityProgress])
 
     const onContribute = useCallback(
-        (amount: string) => {
+        (percentage: number) => {
             if (!send) return
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
-                amount,
+                percentage,
             })
         },
         [send, identity],
@@ -128,7 +128,7 @@ interface InnerProps {
     currentSups: BigNumber
     supsCost: BigNumber
     isVoting: boolean
-    onContribute: (c: string) => void
+    onContribute: (c: number) => void
 }
 
 export const FactionAbilityItemInner = ({
@@ -184,7 +184,7 @@ export const FactionAbilityItemInner = ({
                                 />
                             </Box>
 
-                            <VotingButtons colour={colour} isVoting={isVoting} text_colour={text_colour} onContribute={onContribute} />
+                            <VotingButtons colour={colour} isVoting={isVoting} supsCost={supsCost} text_colour={text_colour} onContribute={onContribute} />
                         </Stack>
                     </ClipThing>
                 </Box>
@@ -279,39 +279,34 @@ interface VotingButtonsProps {
     colour: string
     text_colour: string
     isVoting: boolean
-    onContribute: (c: string) => void
+    supsCost: BigNumber
+    onContribute: (c: number) => void
 }
 
-const VotingButtons = ({ colour, text_colour, isVoting, onContribute }: VotingButtonsProps) => (
-    <Stack direction="row" spacing=".32rem" sx={{ mt: ".48rem", width: "100%" }}>
-        <VotingButton
-            color={colour}
-            textColor={text_colour || "#FFFFFF"}
-            amount={"0.1"}
-            cost={"0.1"}
-            isVoting={isVoting}
-            onClick={() => onContribute("0.1")}
-            Prefix={<SupsToken text_colour={text_colour} />}
-        />
-        <VotingButton
-            color={colour}
-            textColor={text_colour || "#FFFFFF"}
-            amount={"1"}
-            cost={"1"}
-            isVoting={isVoting}
-            onClick={() => onContribute("1")}
-            Prefix={<SupsToken text_colour={text_colour} />}
-        />
-        <VotingButton
-            color={colour}
-            textColor={text_colour || "#FFFFFF"}
-            amount={"10"}
-            cost={"10"}
-            isVoting={isVoting}
-            onClick={() => onContribute("10")}
-            Prefix={<SupsToken text_colour={text_colour} />}
-        />
-    </Stack>
-)
+const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }: VotingButtonsProps) => {
+    const voteCosts = VOTING_OPTION_COSTS.map((voteCost) => {
+        const cost = supsCost.multipliedBy(voteCost.percentage)
+        return {
+            cost: cost.comparedTo(voteCost.minCost) === -1 ? voteCost.minCost : cost,
+            percentage: voteCost.percentage,
+        }
+    })
+    return (
+        <Stack direction="row" spacing=".32rem" sx={{ mt: ".48rem", width: "100%" }}>
+            {voteCosts.map((c) => (
+                <VotingButton
+                    key={`faction-ability-vote-cost-button-${c.cost.toFixed(2)}`}
+                    color={colour}
+                    textColor={text_colour || "#FFFFFF"}
+                    amount={c.cost.toFixed(2)}
+                    cost={c.cost.toFixed(2)}
+                    isVoting={isVoting}
+                    onClick={() => onContribute(c.percentage)}
+                    Prefix={<SupsToken text_colour={text_colour} />}
+                />
+            ))}
+        </Stack>
+    )
+}
 
 const SupsToken = ({ text_colour }: { text_colour: string }) => <SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />
