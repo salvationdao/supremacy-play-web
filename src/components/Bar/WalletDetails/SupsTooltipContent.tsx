@@ -178,8 +178,7 @@ export const SupsTooltipContent = ({
 
                         <Box
                             sx={{
-                                my: ".8rem",
-                                pl: ".5rem",
+                                pl: ".2rem",
                                 pr: ".5rem",
                                 maxHeight: "15rem",
                                 overflowY: "auto",

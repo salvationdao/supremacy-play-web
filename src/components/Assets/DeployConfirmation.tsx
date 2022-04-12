@@ -158,7 +158,7 @@ export const DeployConfirmation = ({
                 asset_hash: hash,
                 need_insured: needInsured,
                 enable_push_notifications: currentSettings.push_notifications,
-                mobile_number: mobile,
+                mobile_number: currentSettings.sms_notifications ? mobile : undefined,
                 enable_telegram_notifications: currentSettings.telegram_notifications,
             })
             if (resp && resp.success) {
@@ -179,7 +179,7 @@ export const DeployConfirmation = ({
     }, [state, hash, needInsured, currentSettings, saveMobile, mobile, saveSettings])
 
     return (
-        <Modal open={open} onClose={onClose}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: 999999 }}>
             <Box
                 sx={{
                     position: "absolute",
@@ -227,57 +227,50 @@ export const DeployConfirmation = ({
                                     backgroundSize: "contain",
                                 }}
                             />
-
-                            <Stack
-                                alignItems="center"
-                                justifyContent="center"
+                            <Box
                                 sx={{
                                     position: "absolute",
-                                    top: "1.8rem",
-                                    left: "1.6rem",
+                                    left: "2rem",
+                                    bottom: "1.3rem",
+                                    width: "5rem",
+                                    height: "5rem",
+                                    border: "#FFFFFF60 1px solid",
+                                    backgroundImage: `url(${avatar_url})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "top center",
+                                    backgroundSize: "contain",
                                 }}
-                            >
-                                <Box
-                                    sx={{
-                                        width: "5rem",
-                                        height: "5rem",
-                                        border: "#FFFFFF60 1px solid",
-                                        backgroundImage: `url(${avatar_url})`,
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "top center",
-                                        backgroundSize: "contain",
-                                    }}
-                                />
-
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        mt: ".5rem",
-                                        lineHeight: 1,
-                                        color: rarityDeets.color,
-                                        fontFamily: "Nostromo Regular Heavy",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {rarityDeets.label}
-                                </Typography>
-                            </Stack>
+                            />
                         </Box>
 
                         <Stack spacing=".8rem">
                             <Box>
-                                <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Bold" }}>{name || label}</Typography>
-                                {user && (
-                                    <span>
-                                        <Link
-                                            href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                                            target="_blank"
-                                            sx={{ display: "inline", ml: ".7rem" }}
-                                        >
-                                            <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
-                                        </Link>
-                                    </span>
-                                )}
+                                <Box>
+                                    <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Bold" }}>{name || label}</Typography>
+                                    {user && (
+                                        <span>
+                                            <Link
+                                                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
+                                                target="_blank"
+                                                sx={{ display: "inline", ml: ".7rem" }}
+                                            >
+                                                <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                                            </Link>
+                                        </span>
+                                    )}
+                                </Box>
+
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        mt: ".4rem",
+                                        lineHeight: 1,
+                                        color: rarityDeets.color,
+                                        fontFamily: "Nostromo Regular Heavy",
+                                    }}
+                                >
+                                    {rarityDeets.label}
+                                </Typography>
                             </Box>
 
                             <Stack spacing=".2rem">

@@ -65,8 +65,6 @@ export const BanProposal = () => {
         }
     }, [outOfTime])
 
-
-
     if (!banProposal || !render) return null
 
     return <BanProposalInner banProposal={banProposal} outOfTime={outOfTime} toggleOutOfTime={toggleOutOfTime} />
@@ -109,10 +107,10 @@ const BanProposalInner = ({
     )
 
     const bottomSection = useMemo(() => {
-        if (!userStat || !userStat.last_seven_days_kills || userStat.last_seven_days_kills < 5) {
+        if (!userStat || !userStat.last_seven_days_kills || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100)) {
             return (
                 <Typography sx={{ opacity: 0.6 }}>
-                    <i>You must have at least 5 ability kills in the past 7 days (updated hourly) to be eligible to vote.</i>
+                    <i>You need at least 100 ability kills OR 5 ability kills in the past 7 days to be eligible to vote.</i>
                 </Typography>
             )
         }

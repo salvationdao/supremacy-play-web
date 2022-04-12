@@ -1,4 +1,4 @@
-import { Button, Typography, useMediaQuery } from "@mui/material"
+import { Button, Typography } from "@mui/material"
 import { PrismicProvider } from "@prismicio/react"
 import { SvgQuestionMark } from "../../assets"
 import { prismicClient } from "../../helpers/prismicClient"
@@ -8,7 +8,6 @@ import { GameGuideModal } from "./GameGuideModal"
 
 const GameGuide = () => {
     const [closed, toggleClosed] = useToggle(true)
-    const below1440 = useMediaQuery("(max-width:1440px)")
 
     return (
         <>
@@ -25,9 +24,7 @@ const GameGuide = () => {
                 onClick={() => toggleClosed()}
             >
                 <SvgQuestionMark size="1.5rem" fill={colors.neonBlue} />
-                {below1440 ? null : (
-                    <Typography sx={{ ml: ".6rem", lineHeight: 1, color: colors.neonBlue }}>How To Play</Typography>
-                )}
+                <Typography sx={{ ml: ".6rem", lineHeight: 1, color: colors.neonBlue }}>How To Play</Typography>
             </Button>
             <PrismicProvider
                 client={prismicClient}
