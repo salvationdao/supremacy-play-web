@@ -1,7 +1,7 @@
 import { Badge, Box, Drawer, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { AdditionalOptionsButton, DrawerButtons } from ".."
-import { SvgGlobal } from "../../assets"
+import { AdditionalOptionsButton, DrawerButtons, TooltipHelper } from ".."
+import { SvgGlobal, SvgInfoCircular } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { useChat, useDrawer, useGameServerAuth } from "../../containers"
 import { acronym, shadeColor } from "../../helpers"
@@ -111,7 +111,7 @@ const TabbedLayout = () => {
             >
                 <Tab
                     label={
-                        <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
+                        <Stack direction="row" alignItems="center" justifyContent="center" spacing=".8rem">
                             <Badge
                                 badgeContent={globalChatUnread}
                                 sx={{
@@ -143,13 +143,7 @@ const TabbedLayout = () => {
                 {isEnlisted && (
                     <Tab
                         label={
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-                                justifyContent="center"
-                                spacing=".96rem"
-                                sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
-                            >
+                            <Stack direction="row" alignItems="center" justifyContent="center">
                                 <Badge
                                     badgeContent={factionChatUnread}
                                     sx={{
@@ -169,6 +163,7 @@ const TabbedLayout = () => {
                                             height: "2.1rem",
                                             flexShrink: 0,
                                             mb: ".16rem",
+                                            mr: ".8rem",
                                             backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
@@ -179,6 +174,13 @@ const TabbedLayout = () => {
                                         }}
                                     />
                                 </Badge>
+                                {banProposal && (
+                                    <TooltipHelper placement="bottom" text="Punish proposal ongoing">
+                                        <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
+                                            <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
+                                        </Box>
+                                    </TooltipHelper>
+                                )}
                                 <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", textAlign: "start" }}>
                                     {factionTabLabel}
                                 </Typography>
@@ -220,7 +222,7 @@ const SplitLayout = () => {
                 <Stack
                     direction="row"
                     alignItems="center"
-                    spacing=".96rem"
+                    spacing=".8rem"
                     sx={{
                         height: `${GAME_BAR_HEIGHT}rem`,
                         px: "1.8rem",
@@ -257,18 +259,14 @@ const SplitLayout = () => {
                             zIndex: 99,
                         }}
                     >
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing=".96rem"
-                            sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
-                        >
+                        <Stack direction="row" alignItems="center">
                             <Box
                                 sx={{
                                     width: "2.1rem",
                                     height: "2.1rem",
                                     flexShrink: 0,
                                     mb: ".16rem",
+                                    mr: ".8rem",
                                     backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
@@ -278,6 +276,13 @@ const SplitLayout = () => {
                                     border: `${user.faction.theme.primary} solid 1px`,
                                 }}
                             />
+                            {banProposal && (
+                                <TooltipHelper placement="bottom" text="Punish proposal ongoing">
+                                    <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
+                                        <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
+                                    </Box>
+                                </TooltipHelper>
+                            )}
                             <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", textAlign: "start" }}>
                                 {factionTabLabel}
                             </Typography>

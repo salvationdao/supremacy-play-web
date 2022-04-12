@@ -77,10 +77,10 @@ export interface ChatMessageType {
 
 export interface TextMessageData {
     from_user: User
-    user_rank?: UserRank
     message_color?: string
     avatar_id?: string
     message: string
+    user_rank?: UserRank
     total_multiplier?: number
     is_citizen?: boolean
     from_user_stat?: UserStat

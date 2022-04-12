@@ -35,6 +35,8 @@ export const colors = {
     orange: "#E04F00",
     gold: "#FFC400",
     blue: "#0074D9",
+    blue2: "#309FFF",
+    purple: "#A985FF",
 
     lightNeonBlue: "#8DE9FF",
     neonBlue: "#00FFFF",
@@ -146,16 +148,16 @@ export const theme = createTheme({
         },
         subtitle1: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.11rem",
+            fontSize: "1.19rem",
             textAlign: "center",
         },
         subtitle2: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.11rem",
+            fontSize: "1.19rem",
         },
         caption: {
             fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-            fontSize: "1.11rem",
+            fontSize: "1.19rem",
         },
     },
     components: {

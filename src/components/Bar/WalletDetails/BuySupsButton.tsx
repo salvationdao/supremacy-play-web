@@ -14,9 +14,7 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
 
     // Free sups button
     const isFreeSupsEnabled = useMemo(
-        () =>
-            process.env.REACT_APP_SENTRY_ENVIRONMENT === "staging" ||
-            process.env.REACT_APP_SENTRY_ENVIRONMENT === "development",
+        () => process.env.REACT_APP_SENTRY_ENVIRONMENT === "staging" || process.env.REACT_APP_SENTRY_ENVIRONMENT === "development",
         [],
     )
 
@@ -44,14 +42,10 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
 
     const openBuySupsPage = () => {
         const width = 520
-        const height = 730
+        const height = 690
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
-        window.open(
-            TOKEN_SALE_PAGE,
-            "SUPS Token Sale",
-            `width=${width},height=${height},left=${left},top=${top},popup=1`,
-        )
+        window.open(TOKEN_SALE_PAGE, "SUPS Token Sale", `width=${width},height=${height},left=${left},top=${top},popup=1`)
     }
 
     return (

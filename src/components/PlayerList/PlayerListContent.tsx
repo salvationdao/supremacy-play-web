@@ -1,22 +1,26 @@
 import { Stack } from "@mui/material"
 import { useEffect, useMemo, useState, Dispatch } from "react"
-import { PlayerItem, UserActive } from ".."
+import { PlayerItem } from ".."
 import { useGame, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { User } from "../../types"
 
 export const PlayerListContent = ({
     user,
-    players,
-    setPlayers,
+    activePlayers,
+    setActivePlayers,
+    inactivePlayers,
+    setInactivePlayers,
 }: {
     user: User
-    players: UserActive[]
-    setPlayers: Dispatch<React.SetStateAction<UserActive[]>>
+    activePlayers: User[]
+    setActivePlayers: Dispatch<React.SetStateAction<User[]>>
+    inactivePlayers: User[]
+    setInactivePlayers: Dispatch<React.SetStateAction<User[]>>
 }) => {
     const { state, subscribe } = useGameServerWebsocket()
     const { factionsAll } = useGame()
-    const [activePlayers, setActivePlayer] = useState<User[]>([])
+    const [newPlayerList, setNewPlayerList] = useState<User[]>()
 
     const faction = useMemo(() => factionsAll[user.faction_id], [])
 
@@ -24,31 +28,32 @@ export const PlayerListContent = ({
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<User[]>(GameServerKeys.SubPlayerList, (payload) => {
             if (!payload) return
-            setActivePlayer(payload)
+            setNewPlayerList(payload)
         })
     }, [state, subscribe])
 
     useEffect(() => {
-        // get a copy of current list
-        const list = [...players]
+        if (!newPlayerList) return
 
-        // add new players that is not in the list
-        activePlayers.forEach((u) => {
-            if (list.some((user) => user.id === u.id)) return
-            // otherwise add them into the list
-            list.push({ ...u, is_active: true })
+        // For each player in current active list that's not in the new list, put into inactive list
+        const newInactiveList: User[] = []
+        activePlayers.forEach((p) => {
+            if (newPlayerList.some((u) => u.id === p.id)) return
+            newInactiveList.push(p)
+        })
+        inactivePlayers.forEach((p) => {
+            if (newInactiveList.some((u) => u.id === p.id) || newPlayerList.some((u) => u.id === p.id)) return
+            newInactiveList.push(p)
         })
 
-        // update player active list
-        setPlayers(list.map((u) => ({ ...u, is_active: activePlayers.some((user) => user.id === u.id) })).sort((a) => (a.is_active ? -1 : 1)))
-    }, [activePlayers, setPlayers])
-
-    if (!players || players.length <= 0) return null
+        setActivePlayers(newPlayerList.sort((a, b) => a.username.localeCompare(b.username)))
+        setInactivePlayers(newInactiveList.sort((a, b) => a.username.localeCompare(b.username)))
+    }, [newPlayerList, setActivePlayers, setInactivePlayers])
 
     return (
-        <Stack spacing=".6rem">
-            {players.map((p) => (
-                <PlayerItem key={`active-player-${p.id}`} player={p} faction={faction} user={user} />
+        <Stack spacing=".5rem">
+            {activePlayers.map((p) => (
+                <PlayerItem key={`active-player-${p.id}`} player={p} faction={faction} user={user} isActive />
             ))}
         </Stack>
     )

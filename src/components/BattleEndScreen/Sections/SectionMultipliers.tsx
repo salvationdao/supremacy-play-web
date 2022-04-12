@@ -38,7 +38,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                         color: colors.yellow,
                     }}
                 >
-                    NEXT REWARDS ({total_multipliers == "0.0x" ? "---" : total_multipliers})
+                    NEW REWARDS{total_multipliers == "0.0x" ? "" : ` (${total_multipliers})`}
                     <BattleEndTooltip
                         text={`These are the multipliers that you have earned based on your participation in this battle.`}
                         color={colors.yellow}

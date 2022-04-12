@@ -266,11 +266,11 @@ const ChatSendInner = ({
                                         />
                                     )}
                                     <IconButton
-                                        id={`emoji-index-${i}`}
+                                        id={`emoji-index-${faction_id}-${i}`}
                                         disableRipple
                                         onClick={() => {
                                             handleOnEmojiSelect(e)
-                                            document.getElementById("message-textfield")?.focus()
+                                            document.getElementById(`message-textfield-${faction_id}`)?.focus()
                                         }}
                                         //handling keyboard navigation
                                         onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -283,7 +283,7 @@ const ChatSendInner = ({
                                                     if (prev <= -1) {
                                                         prev = emojis.length - 1
                                                     }
-                                                    document.getElementById(`emoji-index-${prev}`)?.focus()
+                                                    document.getElementById(`emoji-index-${faction_id}-${prev}`)?.focus()
                                                     break
                                                 }
                                                 case "ArrowRight": {
@@ -293,19 +293,19 @@ const ChatSendInner = ({
                                                     if (next >= emojis.length) {
                                                         next = 0
                                                     }
-                                                    document.getElementById(`emoji-index-${next}`)?.focus()
+                                                    document.getElementById(`emoji-index-${faction_id}-${next}`)?.focus()
                                                     break
                                                 }
                                                 case "ArrowDown": {
                                                     e.preventDefault()
                                                     setEmojiSelect(undefined)
-                                                    document.getElementById("message-textfield")?.focus()
+                                                    document.getElementById(`message-textfield-${faction_id}`)?.focus()
                                                     break
                                                 }
                                                 case "Escape": {
                                                     setEmojis([])
                                                     setEmojiSelect(undefined)
-                                                    document.getElementById("message-textfield")?.focus()
+                                                    document.getElementById(`message-textfield-${faction_id}`)?.focus()
                                                     break
                                                 }
                                             }
@@ -326,7 +326,7 @@ const ChatSendInner = ({
                 )}
 
                 <TextField
-                    id="message-textfield"
+                    id={`message-textfield-${faction_id}`}
                     value={message}
                     placeholder="Send a message..."
                     inputRef={textfieldRef}
@@ -359,7 +359,7 @@ const ChatSendInner = ({
                             case "ArrowUp": {
                                 e.preventDefault()
                                 if (emojis.length < 1) return
-                                document.getElementById("emoji-index-0")?.focus()
+                                document.getElementById(`emoji-index-${faction_id}-0`)?.focus()
                                 break
                             }
                             case "Tab": {
