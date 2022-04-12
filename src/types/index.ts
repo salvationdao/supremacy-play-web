@@ -97,8 +97,11 @@ export interface BattleMechStats {
     total_wins: number
     total_deaths: number
     total_kills: number
+    battles_survived: number
+    total_losses: number
     extra_stats: {
         win_rate: number
+        survival_rate: number
         kill_percentile: number
         survival_percentile: number
     }

@@ -25,7 +25,10 @@ import HistoryClock from "!react-svg-loader!./svg/HistoryClock.svg"
 import Back from "!react-svg-loader!./svg/Back.svg"
 import Hourglass from "!react-svg-loader!./svg/Hourglass.svg"
 import Location from "!react-svg-loader!./svg/Location.svg"
+import ListView from "!react-svg-loader!./svg/ListView.svg"
+import GridView from "!react-svg-loader!./svg/GridView.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
+import Next from "!react-svg-loader!./svg/Next.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Success from "!react-svg-loader!./svg/Success.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
@@ -733,5 +736,23 @@ export const SvgEdit: React.VoidFunctionComponent<SvgWrapperProps> = (props) => 
 export const SvgSave: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Save />
+    </SvgWrapper>
+)
+
+export const SvgNext: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Next />
+    </SvgWrapper>
+)
+
+export const SvgListView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ListView />
+    </SvgWrapper>
+)
+
+export const SvgGridView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <GridView />
     </SvgWrapper>
 )

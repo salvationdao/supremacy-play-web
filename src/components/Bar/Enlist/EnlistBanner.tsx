@@ -72,7 +72,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, userStat, userRank }: Props
     if (!user || !user.faction || !userStat) {
         return (
             <Stack alignItems="center" sx={{ width: "13rem" }}>
-                <CircularProgress size="2rem" />
+                <CircularProgress size="1.8rem" sx={{ color: colors.neonBlue }} />
             </Stack>
         )
     }
