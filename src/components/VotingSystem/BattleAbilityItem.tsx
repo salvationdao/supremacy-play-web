@@ -92,8 +92,8 @@ export const BattleAbilityItem = () => {
     }, [state, subscribeNetMessage])
 
     const onBribe = useCallback(
-        (voteAmount: string) => {
-            if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount })
+        (votePercentage: number) => {
+            if (send) send<boolean, { percentage: number }>(GameServerKeys.BribeBattleAbility, { percentage: votePercentage })
         },
         [send],
     )
@@ -162,7 +162,7 @@ interface InnerProps {
     battleAbilityProgress: BattleAbilityProgressBigNum[]
     buttonColor: string
     buttonTextColor: string
-    onBribe: (ob: string) => void
+    onBribe: (ob: number) => void
 }
 
 const BattleAbilityItemInner = ({
@@ -418,26 +418,29 @@ interface VotingButtonsProps {
     buttonTextColor: string
     isVoting: boolean
     battleAbilityProcess: BattleAbilityProgressBigNum
-    onBribe: (b: string) => void
+    onBribe: (b: number) => void
 }
 
 const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityProcess, onBribe }: VotingButtonsProps) => {
     const voteCosts = VOTING_OPTION_COSTS.map((voteCost) => {
         const cost = battleAbilityProcess.current_sups.multipliedBy(voteCost.percentage)
-        return cost.comparedTo(voteCost.minCost) === -1 ? voteCost.minCost : cost
+        return {
+            cost: cost.comparedTo(voteCost.minCost) === -1 ? voteCost.minCost : cost,
+            percentage: voteCost.percentage,
+        }
     })
 
     return (
         <Stack direction="row" spacing=".4rem" sx={{ mt: ".48rem", width: "100%" }}>
             {voteCosts.map((c) => (
                 <VotingButton
-                    key={`vote-cost-button-${c.toFixed(2)}`}
+                    key={`vote-cost-button-${c.cost.toFixed(2)}`}
                     color={buttonColor}
                     textColor={buttonTextColor}
-                    amount={c.toFixed(2)}
-                    cost={c.toFixed(2)}
+                    amount={c.cost.toFixed(2)}
+                    cost={c.cost.toFixed(2)}
                     isVoting={isVoting}
-                    onClick={() => onBribe(c.toFixed(2))}
+                    onClick={() => onBribe(c.percentage)}
                     Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
                 />
             ))}
