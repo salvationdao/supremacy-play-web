@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Stack, Switch, Typography } from "@mui/material"
+import { Box, Button, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar, WebSocketProperties } from "../../../containers"
 import { GameServerKeys } from "../../../keys"
@@ -22,6 +22,7 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
     const { user } = usePassportServerAuth()
     const { subscribe, send } = useGameServerWebsocket()
     const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>()
+    const { newSnackbarMessage } = useSnackbar()
 
     // get player profile
     useEffect(() => {
@@ -32,7 +33,7 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
 
                 setPlayerProfile(resp)
             } catch (err) {
-                // newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
+                newSnackbarMessage(typeof err === "string" ? err : "Issue getting player preferences", "error")
             }
         })()
     }, [user, send])
@@ -82,10 +83,12 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
                         </Typography>
                         {playerProfile ? (
                             <BattleQueueNotifications
+                                borderColour={primaryColor}
                                 setTelegramShortcode={setTelegramShortcode}
                                 playerProfile={playerProfile}
                                 send={send}
                                 subscribe={subscribe}
+                                toggle={toggle}
                             />
                         ) : (
                             <Typography sx={{ opacity: 0.6 }}>Loading...</Typography>
@@ -100,9 +103,11 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
 interface BattleQueueNotifcationsProps extends Partial<WebSocketProperties> {
     playerProfile: PlayerProfile
     setTelegramShortcode: (code: string) => void
+    borderColour: string
+    toggle: (value: boolean) => void
 }
 
-export const BattleQueueNotifications = ({ playerProfile, send, setTelegramShortcode }: BattleQueueNotifcationsProps) => {
+export const BattleQueueNotifications = ({ playerProfile, send, setTelegramShortcode, toggle, borderColour }: BattleQueueNotifcationsProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const [newPlayerProfile, setNewPlayerProfile] = useState<PlayerProfile>(playerProfile)
 
@@ -118,6 +123,10 @@ export const BattleQueueNotifications = ({ playerProfile, send, setTelegramShort
                 enable_push_notifications: newPlayerProfile.enable_push_notifications,
                 mobile_number: newPlayerProfile.mobile_number,
             })
+
+            console.log("resp", resp)
+
+            if (!resp) return
 
             if (resp.shortcode && !resp.telegram_id) {
                 setTelegramShortcode(resp.shortcode)
@@ -142,13 +151,83 @@ export const BattleQueueNotifications = ({ playerProfile, send, setTelegramShort
                 onChangeFunction={(e) => setNewPlayerProfile({ ...newPlayerProfile, enable_sms_notifications: e.currentTarget.checked })}
             />
 
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography>Phone number: </Typography>
+                <TextField
+                    sx={{
+                        flexGrow: "2",
+                        mt: "-1px",
+                        pl: "1rem",
+                        input: { px: ".5rem", py: "1px" },
+                    }}
+                    defaultValue={newPlayerProfile.mobile_number}
+                    value={newPlayerProfile.mobile_number}
+                    onChange={(e) => {
+                        setNewPlayerProfile({ ...newPlayerProfile, mobile_number: e.currentTarget.value })
+                    }}
+                />
+            </Box>
+
             <PreferenceToggle
                 title="Enable battle queue Telegram notifications:"
                 checked={!!newPlayerProfile?.enable_telegram_notifications}
                 onChangeFunction={(e) => setNewPlayerProfile({ ...newPlayerProfile, enable_telegram_notifications: e.currentTarget.checked })}
             />
 
-            <Button onClick={updatePlayerProfile}>Save</Button>
+            <Box>
+                <Button
+                    variant="outlined"
+                    onClick={() => {
+                        updatePlayerProfile()
+                        setTelegramShortcode("")
+                    }}
+                    sx={{
+                        justifySelf: "flex-end",
+                        mr: 1,
+                        mt: 1,
+                        pt: ".7rem",
+                        pb: ".4rem",
+                        width: "9rem",
+                        color: borderColour,
+                        backgroundColor: colors.darkNavy,
+                        borderRadius: 0.7,
+                        fontFamily: "Nostromo Regular Bold",
+                        border: `${borderColour} 1px solid`,
+                        ":hover": {
+                            opacity: 0.8,
+                            border: `${borderColour} 1px solid`,
+                        },
+                    }}
+                >
+                    Save
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={() => {
+                        setTelegramShortcode("")
+                        toggle(false)
+                    }}
+                    sx={{
+                        justifySelf: "flex-end",
+                        mt: 1,
+                        pt: ".7rem",
+                        pb: ".4rem",
+                        width: "9rem",
+                        color: borderColour,
+                        backgroundColor: colors.darkNavy,
+                        borderRadius: 0.7,
+                        fontFamily: "Nostromo Regular Bold",
+                        border: `${borderColour} 1px solid`,
+                        ":hover": {
+                            opacity: 0.8,
+                            border: `${borderColour} 1px solid`,
+                        },
+                    }}
+                >
+                    Close
+                </Button>
+            </Box>
+
             {error && (
                 <Typography variant="body2" sx={{ color: colors.red }}>
                     {error}
