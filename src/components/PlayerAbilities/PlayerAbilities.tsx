@@ -1,12 +1,27 @@
 import ApiIcon from "@mui/icons-material/Api"
 import { Box, Drawer, Stack, Typography } from "@mui/material"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../constants"
+import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useDrawer } from "../../containers/drawer"
+import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { DrawerButtons } from "../SideBars/DrawerButtons"
+import { SaleAbilityCard } from "./SaleAbilityCard"
 
 const DrawerContent = () => {
+    const { user } = useGameServerAuth()
+    const { state, send } = useGameServerWebsocket()
+    const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
+
+    useEffect(() => {
+        if (state !== SocketState.OPEN || !state || !user) return
+        ;(async () => {
+            const resp = await send<{ totaL: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList, {})
+            setSaleAbilityIDs(resp.ability_ids)
+        })()
+    }, [state, send, user])
+
     return (
         <Stack sx={{ flex: 1 }}>
             <Stack
@@ -77,6 +92,11 @@ const DrawerContent = () => {
                         }}
                     />
                 </Stack>
+                <Box>
+                    {saleAbilityIDs.map((s, index) => (
+                        <SaleAbilityCard key={index} abilityID={s} />
+                    ))}
+                </Box>
             </Box>
         </Stack>
     )

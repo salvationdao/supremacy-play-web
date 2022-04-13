@@ -54,6 +54,25 @@ export interface GameAbility {
     current_sups: string
 }
 
+export interface PlayerAbility {
+    id: string
+    owner_id: string
+    blueprint_id: string
+    game_client_ability_id: string
+    label: string
+    colour: string
+    image_url: string
+    description: string
+    text_colour: string
+    type: string
+    purchased_at: string
+}
+
+export interface SaleAbility extends PlayerAbility {
+    current_price: string
+    available_until?: Date
+}
+
 export interface GameAbilityProgress {
     id: string
     sups_cost: string

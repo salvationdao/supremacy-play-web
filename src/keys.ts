@@ -46,6 +46,11 @@ export enum GameServerKeys {
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
 
+    // Player Abilities
+    PlayerAbilitiesList = "PLAYER:ABILITIES:LIST",
+    SaleAbilitiesList = "SALE:ABILITIES:LIST",
+    SaleAbilitiesPurchase = "SALE:ABILITIES:PURCHASE",
+
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
