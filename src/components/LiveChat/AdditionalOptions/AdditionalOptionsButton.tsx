@@ -110,8 +110,6 @@ const OptionsPopover = ({
                         PROPOSE TO PUNISH A PLAYER
                     </Typography>
                 </Button>
-            </Stack>
-            <Stack spacing=".32rem" sx={{ px: ".8rem", py: "1.1rem" }}>
                 <Button
                     onClick={() => {
                         window.open("https://supremacyhelp.zendesk.com/")
