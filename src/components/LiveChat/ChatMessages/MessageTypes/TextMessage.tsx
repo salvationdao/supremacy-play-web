@@ -12,7 +12,16 @@ import { User, UserStat } from "../../../../types"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 
 const getMultiplierColor = (multiplierInt: number): string => {
-    return multiplierInt >= 149 ? colors.neonBlue : multiplierInt >= 99 ? colors.yellow : multiplierInt >= 49 ? colors.health : colors.orange
+    if (multiplierInt >= 2800) return "#3BFFDE"
+    if (multiplierInt >= 2000) return "#8BFF33"
+    if (multiplierInt >= 1400) return "#EEFF36"
+    if (multiplierInt >= 800) return "#FFC830"
+    if (multiplierInt >= 400) return "#FF6924"
+    if (multiplierInt >= 220) return "#B669FF"
+    if (multiplierInt >= 120) return "#FA5EFF"
+    if (multiplierInt >= 80) return "#FF547F"
+    if (multiplierInt >= 50) return "#FF4242"
+    return "#9791FF"
 }
 
 const UserDetailsPopover = ({
@@ -131,7 +140,7 @@ const UserDetailsPopover = ({
                             <Stack direction="row" spacing=".5rem">
                                 <SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />
                                 <Typography variant="body2">
-                                    <strong>ABILITY KILLS:</strong> {userStat.kill_count}
+                                    <strong>ABILITY KILLS:</strong> {userStat.ability_kill_count}
                                 </Typography>
                             </Stack>
 
@@ -219,14 +228,15 @@ export const TextMessage = ({
     const [banModalOpen, toggleBanModalOpen] = useToggle()
     const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
     const abilityKillColor = useMemo(() => {
-        if (!from_user_stat || from_user_stat.kill_count == 0 || !message_color) return colors.grey
-        if (from_user_stat.kill_count < 0) return colors.red
+        if (!from_user_stat || from_user_stat.ability_kill_count == 0 || !message_color) return colors.grey
+        if (from_user_stat.ability_kill_count < 0) return colors.red
         return shadeColor(message_color, 30)
     }, [from_user_stat, message_color])
     const factionColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.primary : message_color), [faction_id, factionsAll])
     const factionSecondaryColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.secondary : "#FFFFFF"), [faction_id, factionsAll])
     const factionLogoBlobID = useMemo(() => (faction_id ? factionsAll[faction_id]?.logo_blob_id : ""), [faction_id, factionsAll])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
+    const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
 
     const renderFontSize = useCallback(() => {
         if (isEmoji) return (fontSize || 1.1) * 3
@@ -242,166 +252,168 @@ export const TextMessage = ({
     if ((!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) || filterSystemMessages) return null
 
     return (
-        <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
-            <Stack ref={popoverRef} direction="row" spacing=".3rem">
-                <Stack direction="row" spacing=".4rem" alignItems="flex-start">
-                    {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
+        <>
+            <Box sx={{ opacity: isSent ? 1 : 0.45 }}>
+                <Stack direction="row" justifyContent="space-between" sx={{ wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
+                    <Stack ref={popoverRef} direction="row" spacing=".3rem">
+                        <Stack direction="row" spacing=".4rem" alignItems="flex-start">
+                            {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
 
-                    {avatar_id && (
-                        <Box
-                            sx={{
-                                mt: "-0.1rem !important",
-                                width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                flexShrink: 0,
-                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "contain",
-                                backgroundColor: factionColor,
-                                borderRadius: 0.8,
-                                border: `${factionColor} 1px solid`,
-                            }}
-                        />
-                    )}
-                    {factionLogoBlobID && factionLogoBlobID != NullUUID && (
-                        <Box
-                            sx={{
-                                mt: "-0.1rem !important",
-                                width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                flexShrink: 0,
-                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "contain",
-                                backgroundColor: factionColor,
-                                borderRadius: 0.8,
-                                border: `${factionColor} 1px solid`,
-                            }}
-                        />
-                    )}
-                    {user_rank && rankDeets && (
-                        <TooltipHelper
-                            placement="top"
-                            text={
-                                <>
-                                    <strong>RANK: </strong>
-                                    {rankDeets.title}
-                                    <br />
-                                    {rankDeets.desc}
-                                </>
-                            }
-                        >
-                            <Box>{rankDeets.icon}</Box>
-                        </TooltipHelper>
-                    )}
-                </Stack>
+                            {avatar_id && (
+                                <Box
+                                    sx={{
+                                        mt: "-0.1rem !important",
+                                        width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                        height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                        flexShrink: 0,
+                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "contain",
+                                        backgroundColor: factionColor,
+                                        borderRadius: 0.8,
+                                        border: `${factionColor} 1px solid`,
+                                    }}
+                                />
+                            )}
+                            {factionLogoBlobID && factionLogoBlobID != NullUUID && (
+                                <Box
+                                    sx={{
+                                        mt: "-0.1rem !important",
+                                        width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                        height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                        flexShrink: 0,
+                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "contain",
+                                        backgroundColor: factionColor,
+                                        borderRadius: 0.8,
+                                        border: `${factionColor} 1px solid`,
+                                    }}
+                                />
+                            )}
+                            {user_rank && rankDeets && (
+                                <TooltipHelper
+                                    placement="top"
+                                    text={
+                                        <>
+                                            <strong>RANK: </strong>
+                                            {rankDeets.title}
+                                            <br />
+                                            {rankDeets.desc}
+                                        </>
+                                    }
+                                >
+                                    <Box>{rankDeets.icon}</Box>
+                                </TooltipHelper>
+                            )}
+                        </Stack>
 
-                <Box>
-                    <Typography
-                        onClick={() => toggleIsPopoverOpen()}
-                        sx={{
-                            display: "inline-block",
-                            color: message_color,
-                            fontWeight: 700,
-                            fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
-                            ":hover": {
-                                cursor: "pointer",
-                                textDecoration: "underline",
-                            },
-                            ":active": {
-                                opacity: 0.7,
-                            },
-                        }}
-                    >
-                        {`${truncate(username, 20)}`}
-                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
-                    </Typography>
-
-                    {from_user_stat && (
-                        <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default", verticalAlign: "top" }}>
+                        <Box>
                             <Typography
+                                onClick={() => toggleIsPopoverOpen()}
                                 sx={{
-                                    display: "inline-block",
-                                    lineHeight: 1,
-                                    fontFamily: "Nostromo Regular Bold",
-                                    fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                                    color: abilityKillColor,
+                                    display: "inline",
+                                    color: message_color,
+                                    fontWeight: 700,
+                                    fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
+                                    verticalAlign: "middle",
+                                    ":hover": {
+                                        cursor: "pointer",
+                                        textDecoration: "underline",
+                                    },
+                                    ":active": {
+                                        opacity: 0.7,
+                                    },
                                 }}
                             >
-                                [
+                                {`${truncate(username, 20)}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.7, fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem" }}>{`#${gid}`}</span>
                             </Typography>
-                            <SvgSkull2
-                                size={fontSize ? `${0.85 * fontSize}rem` : "0.85rem"}
-                                fill={abilityKillColor}
-                                sx={{
-                                    display: "inline-block",
-                                }}
-                            />
+
+                            {from_user_stat && (
+                                <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
+                                    <Typography
+                                        sx={{
+                                            display: "inline-block",
+                                            lineHeight: 1,
+                                            fontFamily: "Nostromo Regular Bold",
+                                            fontSize: smallFontSize,
+                                            color: abilityKillColor,
+                                        }}
+                                    >
+                                        [
+                                    </Typography>
+                                    <SvgSkull2 size={smallFontSize} fill={abilityKillColor} sx={{ display: "inline-block" }} />
+                                    <Typography
+                                        sx={{
+                                            display: "inline-block",
+                                            ml: ".1rem",
+                                            lineHeight: 1,
+                                            fontFamily: "Nostromo Regular Bold",
+                                            fontSize: smallFontSize,
+                                            color: abilityKillColor,
+                                        }}
+                                    >
+                                        {from_user_stat.ability_kill_count}]
+                                    </Typography>
+                                </Box>
+                            )}
+
                             <Typography
                                 sx={{
                                     display: "inline-block",
-                                    lineHeight: 1,
-                                    fontFamily: "Nostromo Regular Bold",
-                                    fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                                    color: abilityKillColor,
-                                }}
-                            >
-                                {from_user_stat.kill_count}]
-                            </Typography>
-                        </Box>
-                    )}
-
-                    <Typography
-                        sx={{
-                            display: "inline-block",
-                            ml: ".4rem",
-                            color: multiplierColor,
-                            textAlign: "center",
-                            fontFamily: "Nostromo Regular Bold",
-                            fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                            verticalAlign: "top",
-                            opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
-                        }}
-                    >
-                        {total_multiplier || 0}x
-                    </Typography>
-
-                    {is_citizen && (
-                        <TooltipHelper placement="top" text={"CITIZEN"}>
-                            <Typography
-                                sx={{
-                                    display: "inline-block",
-                                    cursor: "default",
                                     ml: ".4rem",
+                                    color: multiplierColor,
                                     textAlign: "center",
                                     fontFamily: "Nostromo Regular Bold",
-                                    fontSize: fontSize ? `${0.9 * fontSize}rem` : "0.9rem",
-                                    verticalAlign: "top",
+                                    fontSize: smallFontSize,
+                                    opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
                                 }}
                             >
-                                🦾
+                                {total_multiplier || 0}x
                             </Typography>
-                        </TooltipHelper>
-                    )}
+
+                            {is_citizen && (
+                                <TooltipHelper placement="top" text={"CITIZEN"}>
+                                    <Typography
+                                        sx={{
+                                            display: "inline-block",
+                                            cursor: "default",
+                                            ml: ".4rem",
+                                            pb: ".3rem",
+                                            textAlign: "center",
+                                            fontFamily: "Nostromo Regular Bold",
+                                            fontSize: smallFontSize,
+                                        }}
+                                    >
+                                        🦾
+                                    </Typography>
+                                </TooltipHelper>
+                            )}
+                        </Box>
+                    </Stack>
 
                     <Typography
-                        variant="caption"
                         sx={{
                             display: "inline-block",
-                            ml: ".4rem",
+                            alignSelf: "flex-start",
+                            flexShrink: 0,
+                            ml: "auto",
+                            pt: ".2rem",
                             color: "grey",
-                            opacity: 0.5,
-                            fontSize: fontSize ? `${1 * fontSize}rem` : "1rem",
+                            opacity: 0.4,
+                            ":hover": { opacity: 1 },
+                            fontSize: fontSize ? `${0.98 * fontSize}rem` : "0.98rem",
                         }}
                     >
                         {dateFormatter(sentAt)}
                     </Typography>
-                </Box>
-            </Stack>
+                </Stack>
 
-            <Box sx={{ ml: "2.1rem" }}>{chatMessage}</Box>
+                <Box sx={{ ml: "2.1rem" }}>{chatMessage}</Box>
+            </Box>
 
             {isPopoverOpen && (
                 <UserDetailsPopover
@@ -433,6 +445,6 @@ export const TextMessage = ({
                     }}
                 />
             )}
-        </Box>
+        </>
     )
 }

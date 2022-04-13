@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Theme, Typography, useTheme } from "@mui/material"
-import { StyledImageText, UserActive, UserBanForm } from ".."
+import { StyledImageText, UserBanForm } from ".."
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
 import { truncate } from "../../helpers"
 import { useToggle } from "../../hooks"
@@ -7,7 +7,7 @@ import { colors } from "../../theme/theme"
 import { User } from "../../types"
 import { FactionGeneralData } from "../../types/passport"
 
-export const PlayerItem = ({ player, faction, user }: { player: UserActive; faction: FactionGeneralData; user: User }) => {
+export const PlayerItem = ({ player, faction, user, isActive }: { player: User; faction: FactionGeneralData; user: User; isActive?: boolean }) => {
     const theme = useTheme<Theme>()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
 
@@ -18,12 +18,13 @@ export const PlayerItem = ({ player, faction, user }: { player: UserActive; fact
                 alignItems="center"
                 sx={{
                     px: "1.3rem",
-                    py: "1rem",
+                    pt: ".2rem",
+                    pb: ".3rem",
                     backgroundColor: `${theme.factionTheme.primary}10`,
-                    opacity: player.is_active ? 1 : 0.6,
+                    opacity: isActive ? 1 : 0.6,
                 }}
             >
-                <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: player.is_active ? colors.green : colors.yellow }} />
+                <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: isActive ? colors.green : colors.yellow }} />
 
                 <Box sx={{ pt: ".3rem", ml: "1.1rem" }}>
                     <StyledImageText

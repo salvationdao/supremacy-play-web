@@ -30,6 +30,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
 
     const { label, colour, text_colour, image_url, identity, description } = gameAbility
 
+    const [shouldIgnore, setIgnore] = useState<boolean>(false)
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
     const [currentSups, setCurrentSups] = useState(new BigNumber(gameAbility.current_sups).dividedBy("1000000000000000000"))
     const [supsCost, setSupsCost] = useState(new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"))
@@ -52,7 +53,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !faction_id || faction_id === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
-            if (!payload) return
+            if (!payload || shouldIgnore) return
 
             let unchanged = true
             if (!progressPayload.current) {
@@ -84,9 +85,26 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         }
     }, [gameAbilityProgress])
 
+    let ignoreTimeout: boolean
     const onContribute = useCallback(
         (percentage: number) => {
             if (!send) return
+            // setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
+            //     if (!gap) return gap
+            //     const current_sups = new BigNumber(parseInt(gap.current_sups)).plus(new BigNumber(amount, 18)).toString()
+            //     return { ...gap, current_sups }
+            // })
+            // setCurrentSups((cs) => {
+            //     if (!ignoreTimeout) {
+            //         setIgnore(true)
+            //         ignoreTimeout = true
+            //         setTimeout(() => {
+            //             ignoreTimeout = false
+            //             setIgnore(false)
+            //         }, 150)
+            //     }
+            //     return cs.plus(new BigNumber(amount, 18))
+            // })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
                 percentage,

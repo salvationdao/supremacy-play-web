@@ -55,7 +55,7 @@ export const CONTROLS_HEIGHT = 3.0 // rem
 export const MINI_MAP_DEFAULT_SIZE = 240 //px
 
 export const DRAWER_TRANSITION_DURATION = 250
-export const MESSAGES_BUFFER_SIZE = 300
+export const MESSAGES_BUFFER_SIZE = 500
 export const MAX_CHAT_MESSAGE_LENGTH = 280
 export const UI_OPACITY = 0.96
 export const GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS = 2000
