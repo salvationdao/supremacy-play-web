@@ -1,5 +1,6 @@
 import { Box, Button, CircularProgress, Drawer, IconButton, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { AssetQueue } from ".."
 import { SvgBack, SvgDeath, SvgEdit, SvgGoldBars, SvgHistory, SvgRefresh, SvgSave, SvgSupToken } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH, UNDER_MAINTENANCE } from "../../constants"
 import { SocketState, useGameServerWebsocket, usePassportServerWebsocket, useSnackbar } from "../../containers"
@@ -8,7 +9,7 @@ import { useToggle } from "../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../types"
-import { Asset, AssetQueueStat } from "../../types/assets"
+import { Asset } from "../../types/assets"
 import { UserData } from "../../types/passport"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
 
@@ -28,12 +29,12 @@ export interface MechDrawerProps {
     open: boolean
     onClose: () => void
     asset: Asset
-    assetQueueStatus?: AssetQueueStat
+    assetQueue: AssetQueue
     openDeployModal: () => void
     openLeaveModal: () => void
 }
 
-export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openDeployModal, openLeaveModal }: MechDrawerProps) => {
+export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployModal, openLeaveModal }: MechDrawerProps) => {
     const { name, label, hash, image_url, avatar_url } = asset.data.mech
 
     const { state, send } = useGameServerWebsocket()
@@ -53,9 +54,8 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
     const [renameLoading, setRenameLoading] = useState<boolean>(false)
     // Status
     const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
-    const isRepairing = false // To be implemented on gameserver
-    const isInBattle = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1, [assetQueueStatus])
-    const isInQueue = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1, [assetQueueStatus])
+    const isRepairing = false // To be implemented on gameserver.
+    const isInQueue = useMemo(() => assetQueue && assetQueue.position && assetQueue.position >= 1, [assetQueue])
 
     const { newSnackbarMessage } = useSnackbar()
 
@@ -167,11 +167,13 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
                 <Typography
                     variant="body2"
                     sx={{
+                        width: "10rem",
                         px: ".8rem",
                         pt: ".3rem",
                         pb: ".2rem",
                         color: "grey",
                         lineHeight: 1,
+                        textAlign: "center",
                         border: `${"grey"} 1px solid`,
                         borderRadius: 0.3,
                         opacity: 0.6,
@@ -182,7 +184,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
             )
         }
 
-        if (isInBattle && assetQueueStatus) {
+        if (assetQueue && assetQueue.in_battle) {
             return (
                 <>
                     <Typography
@@ -194,18 +196,19 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
                             pb: ".4rem",
                             color: colors.orange,
                             lineHeight: 1,
+                            textAlign: "center",
                             border: `${colors.orange} 1px solid`,
                             borderRadius: 0.3,
                         }}
                     >
                         IN BATTLE
                     </Typography>
-                    {assetQueueStatus.contract_reward && (
+                    {assetQueue.contract_reward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
                             <Typography variant="body2">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="body2" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueueStatus.contract_reward, 2)}
+                                {supFormatter(assetQueue.contract_reward, 2)}
                             </Typography>
                         </Stack>
                     )}
@@ -213,7 +216,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
             )
         }
 
-        if (isInQueue && assetQueueStatus) {
+        if (isInQueue && assetQueue) {
             return (
                 <>
                     <Button
@@ -259,20 +262,20 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
                     >
                         <Typography variant="body2" lineHeight={1} sx={{ color: colors.yellow }}></Typography>
                     </Button>
-                    {assetQueueStatus.queue_position && (
+                    {assetQueue.position && (
                         <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
                             <Typography variant="body2">POSITION:&nbsp;</Typography>
                             <Typography variant="body2" sx={{ color: colors.neonBlue }}>
-                                {assetQueueStatus.queue_position}
+                                {assetQueue.position}
                             </Typography>
                         </Stack>
                     )}
-                    {assetQueueStatus.contract_reward && (
+                    {assetQueue.contract_reward && (
                         <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
                             <Typography variant="body2">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="body2" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueueStatus.contract_reward, 2)}
+                                {supFormatter(assetQueue.contract_reward, 2)}
                             </Typography>
                         </Stack>
                     )}
@@ -302,7 +305,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueueStatus, openD
                 </Typography>
             </Button>
         )
-    }, [isGameServerUp, isRepairing, isInQueue, assetQueueStatus])
+    }, [isGameServerUp, isRepairing, isInQueue, assetQueue])
 
     return (
         <Drawer

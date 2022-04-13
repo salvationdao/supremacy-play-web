@@ -26,7 +26,7 @@ export const EarlyAccessWarning = () => {
                     border={{
                         isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >
@@ -61,10 +61,9 @@ export const EarlyAccessWarning = () => {
                                 Thank you for participating in the Supremacy Battle Stream Early Access
                                 <br />
                                 <br />
-                                By choosing to try out this game and continue from here, you expressly acknowledge and
-                                accept that you assume all risks associated with the gameplay and/or participating in
-                                the Battle Events. This includes contributing to battle abilities, queueing your mech
-                                for battle, and other $SUPS related tasks.
+                                By choosing to try out this game and continue from here, you expressly acknowledge and accept that you assume all risks
+                                associated with the gameplay and/or participating in the Battle Events. This includes contributing to battle abilities, queueing
+                                your mech for battle, and other $SUPS related tasks.
                             </Typography>
                         </Stack>
 

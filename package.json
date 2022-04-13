@@ -10,7 +10,6 @@
         "@mui/lab": "^5.0.0-alpha.53",
         "@mui/material": "^5.0.1",
         "@mui/styles": "^5.1.0",
-        "@ninjasoftware/passport-gamebar": "^0.21.8",
         "@prismicio/client": "^6.4.2",
         "@prismicio/react": "^2.1.2",
         "@sentry/react": "^6.17.6",

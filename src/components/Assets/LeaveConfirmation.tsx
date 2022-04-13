@@ -54,7 +54,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >

@@ -40,13 +40,11 @@ export enum GameServerKeys {
     // Streams
     SubStreamList = "STREAMLIST:SUBSCRIBE",
 
-    // Queue
+    // Asset / queue
+    SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
+    GetAssetsQueue = "ASSET:QUEUE:MANY",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
-    SubQueueStatus = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
-    AssetQueueStatus = "ASSET:QUEUE:STATUS",
-    AssetQueueStatusList = "ASSET:QUEUE:STATUS:LIST",
-    SubAssetQueueStatus = "ASSET:QUEUE:STATUS:SUBSCRIBE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",

@@ -1,31 +1,25 @@
 import { Box, Button, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { DeployConfirmation } from ".."
+import { AssetQueue, DeployConfirmation, QueueFeedResponse } from ".."
 import { UNDER_MAINTENANCE } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
-import { Asset, AssetQueueStat } from "../../types/assets"
+import { Asset } from "../../types/assets"
 import { MechDrawer } from "./MechDrawer"
 import { LeaveConfirmation } from "./LeaveConfirmation"
 import { PassportServerKeys } from "../../keys"
 import { SvgSupToken } from "../../assets"
 
 export const AssetItem = ({
-    asset,
-    assetQueueStatus,
-    queueLength,
-    queueCost,
-    contractReward,
+    assetQueue,
+    queueFeed,
     setTelegramShortcode,
     isGridView,
 }: {
-    asset: Asset
-    assetQueueStatus?: AssetQueueStat
-    queueLength: number
-    queueCost: string
-    contractReward: string
+    assetQueue: AssetQueue
+    queueFeed: QueueFeedResponse
     telegramShortcode?: string
     setTelegramShortcode?: (s: string) => void
     isGridView: boolean
@@ -33,36 +27,30 @@ export const AssetItem = ({
     const { user } = usePassportServerAuth()
     const { state } = useGameServerWebsocket()
     const { state: psState, subscribe: psSubscribe } = usePassportServerWebsocket()
-    const [assetData, setAssetData] = useState<Asset>(asset)
+    const [assetData, setAssetData] = useState<Asset>()
 
     const [mechDrawerOpen, toggleMechDrawerOpen] = useToggle()
     const [deployModalOpen, toggleDeployModalOpen] = useToggle()
     const [leaveModalOpen, toggleLeaveModalOpen] = useToggle()
 
-    const rarityDeets = useMemo(() => getRarityDeets(assetData.tier), [assetData])
+    const rarityDeets = useMemo(() => getRarityDeets(assetData?.tier || ""), [assetData])
 
     // Status
     const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
-    const isRepairing = false // To be implemented on gameserver
-    const isInBattle = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position === -1, [assetQueueStatus])
-    const isInQueue = useMemo(() => assetQueueStatus && assetQueueStatus.queue_position && assetQueueStatus.queue_position >= 1, [assetQueueStatus])
+    const isInQueue = useMemo(() => assetQueue && assetQueue.position && assetQueue.position >= 1, [assetQueue])
 
     // Subscribe on asset data
     useEffect(() => {
-        if (psState !== WebSocket.OPEN || !psSubscribe || !asset) return
+        if (psState !== WebSocket.OPEN || !psSubscribe || !assetQueue) return
         return psSubscribe<{ purchased_item: Asset }>(
             PassportServerKeys.SubAssetData,
             (payload) => {
                 if (!payload || !payload.purchased_item) return
                 setAssetData(payload.purchased_item)
             },
-            { asset_hash: asset.hash },
+            { asset_hash: assetQueue.hash },
         )
-    }, [psState, psSubscribe, asset])
-
-    if (!assetData || !user) return null
-
-    const { name, label, image_url } = assetData.data.mech
+    }, [psState, psSubscribe, assetQueue])
 
     const statusArea = useMemo(() => {
         if (!isGameServerUp) {
@@ -70,8 +58,9 @@ export const AssetItem = ({
                 <Typography
                     variant="body2"
                     sx={{
-                        width: isGridView ? "unset" : "8.5rem",
+                        width: isGridView ? "unset" : "10rem",
                         alignSelf: isGridView ? "stretch" : "unset",
+                        textAlign: "center",
                         px: ".8rem",
                         pt: ".3rem",
                         pb: ".2rem",
@@ -87,7 +76,7 @@ export const AssetItem = ({
             )
         }
 
-        if (isInBattle && assetQueueStatus) {
+        if (assetQueue && assetQueue.in_battle) {
             return (
                 <>
                     <Typography
@@ -95,6 +84,7 @@ export const AssetItem = ({
                         sx={{
                             width: isGridView ? "unset" : "8.5rem",
                             alignSelf: isGridView ? "stretch" : "unset",
+                            textAlign: "center",
                             px: ".8rem",
                             pt: ".3rem",
                             pb: ".2rem",
@@ -106,12 +96,12 @@ export const AssetItem = ({
                     >
                         IN BATTLE
                     </Typography>
-                    {assetQueueStatus.contract_reward && !isGridView && (
+                    {assetQueue.contract_reward && !isGridView && (
                         <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueueStatus.contract_reward, 2)}
+                                {supFormatter(assetQueue.contract_reward, 2)}
                             </Typography>
                         </Stack>
                     )}
@@ -119,7 +109,7 @@ export const AssetItem = ({
             )
         }
 
-        if (isInQueue && assetQueueStatus) {
+        if (isInQueue && assetQueue) {
             return (
                 <>
                     <Button
@@ -169,12 +159,12 @@ export const AssetItem = ({
                     >
                         <Typography variant="body2" lineHeight={1} sx={{ color: colors.yellow }}></Typography>
                     </Button>
-                    {assetQueueStatus.contract_reward && !isGridView && (
+                    {assetQueue.contract_reward && !isGridView && (
                         <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
                             <Typography variant="caption">REWARD:&nbsp;</Typography>
                             <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
                             <Typography variant="caption" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueueStatus.contract_reward, 2)}
+                                {supFormatter(assetQueue.contract_reward, 2)}
                             </Typography>
                         </Stack>
                     )}
@@ -208,9 +198,12 @@ export const AssetItem = ({
                 </Typography>
             </Button>
         )
-    }, [isGameServerUp, isRepairing, isInQueue, assetQueueStatus, isGridView])
+    }, [isGameServerUp, assetQueue, isGridView])
 
     const mechItem = useMemo(() => {
+        if (!assetData) return <></>
+        const { name, label, image_url } = assetData.data.mech
+
         if (isGridView) {
             return (
                 <Box sx={{ p: ".4rem", width: "33.33%" }}>
@@ -254,9 +247,9 @@ export const AssetItem = ({
                                     }}
                                 />
 
-                                {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
+                                {isGameServerUp && isInQueue && assetQueue && assetQueue.position && (
                                     <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
-                                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
+                                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueue.position}</Typography>
                                     </Box>
                                 )}
                             </Box>
@@ -332,9 +325,9 @@ export const AssetItem = ({
                             }}
                         />
 
-                        {isGameServerUp && isInQueue && assetQueueStatus && assetQueueStatus.queue_position && (
+                        {isGameServerUp && isInQueue && assetQueue && assetQueue.position && (
                             <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
-                                <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueueStatus.queue_position}</Typography>
+                                <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueue.position}</Typography>
                             </Box>
                         )}
                     </Box>
@@ -367,7 +360,9 @@ export const AssetItem = ({
                 </Stack>
             </Box>
         )
-    }, [isGridView])
+    }, [assetData, statusArea, isGridView])
+
+    if (!assetData || !user) return null
 
     return (
         <>
@@ -379,9 +374,7 @@ export const AssetItem = ({
                 <DeployConfirmation
                     open={deployModalOpen}
                     asset={assetData}
-                    queueLength={queueLength}
-                    queueCost={queueCost}
-                    contractReward={contractReward}
+                    queueFeed={queueFeed}
                     onClose={() => toggleDeployModalOpen(false)}
                     setTelegramShortcode={setTelegramShortcode}
                 />
@@ -394,7 +387,7 @@ export const AssetItem = ({
                     user={user}
                     open={mechDrawerOpen}
                     asset={assetData}
-                    assetQueueStatus={assetQueueStatus}
+                    assetQueue={assetQueue}
                     onClose={() => toggleMechDrawerOpen(false)}
                     openDeployModal={() => toggleDeployModalOpen(true)}
                     openLeaveModal={() => toggleLeaveModalOpen(true)}

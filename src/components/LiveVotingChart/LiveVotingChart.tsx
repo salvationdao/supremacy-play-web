@@ -45,7 +45,7 @@ const SpoilOfWarAmount = () => {
                 </Stack>
             </TooltipHelper>
 
-            <TooltipHelper text="This is the spoils of war from previous battles, it is distributed to players with multipliers.">
+            <TooltipHelper text="This is the spoils of war from previous battles, it is distributed to players that have multipliers.">
                 <Stack direction="row" alignItems="center" justifyContent="center">
                     <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", m: 0 }}>
                         SPOILS:&nbsp;
@@ -142,7 +142,7 @@ const Content = () => {
                             width: "100%",
                         }}
                     >
-                        <TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.">
+                        <TooltipHelper text="The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent will be accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have achieved. Contribute to the battle or be part of the winning Syndicate to increase your earnings.">
                             <Box
                                 sx={{
                                     position: "absolute",
