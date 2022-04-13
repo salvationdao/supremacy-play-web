@@ -92,7 +92,15 @@ export const BattleAbilityItem = () => {
     }, [state, subscribeNetMessage])
 
     const onBribe = useCallback(
-        (votePercentage: number) => {
+        (amount: BigNumber, votePercentage: number) => {
+            setBattleAbilityProgress((baps) => {
+                return baps.map((bap) => {
+                    if (bap.faction_id === faction_id) {
+                        return { ...bap, amount: amount.plus(bap.current_sups) }
+                    }
+                    return bap
+                })
+            })
             if (send) send<boolean, { percentage: number }>(GameServerKeys.BribeBattleAbility, { percentage: votePercentage })
         },
         [send],
@@ -162,7 +170,7 @@ interface InnerProps {
     battleAbilityProgress: BattleAbilityProgressBigNum[]
     buttonColor: string
     buttonTextColor: string
-    onBribe: (ob: number) => void
+    onBribe: (c: BigNumber, ob: number) => void
 }
 
 const BattleAbilityItemInner = ({
@@ -418,7 +426,7 @@ interface VotingButtonsProps {
     buttonTextColor: string
     isVoting: boolean
     battleAbilityProcess: BattleAbilityProgressBigNum
-    onBribe: (b: number) => void
+    onBribe: (a: BigNumber, b: number) => void
 }
 
 const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityProcess, onBribe }: VotingButtonsProps) => {
@@ -440,7 +448,7 @@ const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityPr
                     amount={c.cost.toFixed(2)}
                     cost={c.cost.toFixed(2)}
                     isVoting={isVoting}
-                    onClick={() => onBribe(c.percentage)}
+                    onClick={() => onBribe(c.cost, c.percentage)}
                     Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
                 />
             ))}
