@@ -45,7 +45,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                         cx={1.11 * radius}
                         cy={1.11 * radius}
                         sx={{
-                            fill: colors.darkerNavy,
+                            fill: colors.darkNavy,
                             stroke: color || colors.neonBlue,
                             strokeDasharray: `${(circumference * percentage) / 100} ${circumference}`,
                             strokeWidth: 0.22 * radius,
@@ -55,6 +55,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     />
                 </StyledSVG>
                 <Typography
+                    variant="body2"
                     sx={{
                         position: "absolute",
                         top: "50%",
@@ -66,7 +67,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     {displayValue}
                 </Typography>
             </Box>
-            <Typography textAlign="center" sx={{ lineHeight: 1.2 }}>
+            <Typography variant="body2" textAlign="center" sx={{ lineHeight: 1.2 }}>
                 {label}
             </Typography>
         </Stack>

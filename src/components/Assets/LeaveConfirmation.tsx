@@ -14,7 +14,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
-    const { hash, name, label, image_url, tier } = asset.data.mech
+    const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
     const [isLeaving, toggleIsLeaving] = useToggle()
     const [error, setError] = useState<string>()
 
@@ -38,14 +38,14 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
     }, [state, hash])
 
     return (
-        <Modal open={open} onClose={onClose}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: 999999 }}>
             <Box
                 sx={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "46rem",
+                    width: "36rem",
                     boxShadow: 6,
                 }}
             >
@@ -59,12 +59,10 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                     innerSx={{ position: "relative" }}
                 >
                     <Stack
-                        direction="row"
                         spacing="1.6rem"
                         sx={{
                             position: "relative",
-                            pl: "1.76rem",
-                            pr: "2.56rem",
+                            px: "2.5rem",
                             py: "2.4rem",
                             backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
                         }}
@@ -72,110 +70,117 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                         <Box
                             sx={{
                                 position: "relative",
-                                flexShrink: 0,
-                                px: ".64rem",
-                                py: "1.2rem",
+                                px: ".6rem",
+                                py: "1rem",
                                 borderRadius: 0.6,
-                                boxShadow: "inset 0 0 12px 6px #00000055",
+                                boxShadow: "inset 0 0 12px 6px #00000040",
                             }}
                         >
                             <Box
                                 sx={{
-                                    my: "auto",
-                                    width: "11rem",
-                                    height: "13.2rem",
+                                    width: "100%",
+                                    height: "13.8rem",
                                     backgroundImage: `url(${image_url})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "top center",
                                     backgroundSize: "contain",
                                 }}
                             />
-
-                            <Stack
-                                spacing=".48rem"
-                                direction="row"
-                                alignItems="center"
+                            <Box
                                 sx={{
                                     position: "absolute",
-                                    bottom: ".8rem",
-                                    left: "50%",
-                                    transform: "translateX(-50%)",
+                                    left: "2rem",
+                                    bottom: "1.3rem",
+                                    width: "5rem",
+                                    height: "5rem",
+                                    border: "#FFFFFF60 1px solid",
+                                    backgroundImage: `url(${avatar_url})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "top center",
+                                    backgroundSize: "contain",
                                 }}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        lineHeight: 1,
-                                        color: rarityDeets.color,
-                                        fontFamily: "Nostromo Regular Heavy",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {rarityDeets.label}
-                                </Typography>
-                            </Stack>
+                            />
                         </Box>
 
                         <Stack spacing=".8rem">
                             <Box>
-                                <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Bold" }}>{name || label}</Typography>
-                                {user && (
-                                    <span>
-                                        <Link
-                                            href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                                            target="_blank"
-                                            sx={{ display: "inline", ml: ".7rem" }}
-                                        >
-                                            <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
-                                        </Link>
-                                    </span>
-                                )}
+                                <Box>
+                                    <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Bold" }}>{name || label}</Typography>
+                                    {user && (
+                                        <span>
+                                            <Link
+                                                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
+                                                target="_blank"
+                                                sx={{ display: "inline", ml: ".7rem" }}
+                                            >
+                                                <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
+                                            </Link>
+                                        </span>
+                                    )}
+
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            mt: ".4rem",
+                                            lineHeight: 1,
+                                            color: rarityDeets.color,
+                                            fontFamily: "Nostromo Regular Heavy",
+                                        }}
+                                    >
+                                        {rarityDeets.label}
+                                    </Typography>
+                                </Box>
                             </Box>
 
-                            <Typography sx={{ strong: { color: colors.neonBlue } }}>
-                                Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle queue? Your will be refunded the initial
-                                queuing fee.
-                            </Typography>
-
-                            <Button
-                                variant="contained"
-                                size="small"
-                                disabled={isLeaving}
-                                onClick={onLeave}
-                                sx={{
-                                    mt: "auto",
-                                    minWidth: 0,
-                                    px: ".8rem",
-                                    py: ".48rem",
-                                    backgroundColor: colors.red,
-                                    border: `${colors.red} 1px solid`,
-                                    borderRadius: 0.3,
-                                    ":hover": { backgroundColor: `${colors.red}90` },
-                                }}
-                            >
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        lineHeight: 1,
-                                        fontWeight: "fontWeightBold",
-                                        color: "#FFFFFF",
-                                    }}
-                                >
-                                    {isLeaving ? "LEAVING QUEUE..." : "REMOVE FROM QUEUE"}
+                            <Stack spacing=".8rem">
+                                <Typography sx={{ strong: { color: colors.neonBlue } }}>
+                                    Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle queue? Your will be refunded the
+                                    initial queuing fee.
                                 </Typography>
-                            </Button>
 
-                            {error && (
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        mt: ".3rem",
-                                        color: "red",
-                                    }}
-                                >
-                                    {error}
-                                </Typography>
-                            )}
+                                <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        disabled={isLeaving}
+                                        onClick={onLeave}
+                                        sx={{
+                                            flex: 1,
+                                            minWidth: 0,
+                                            mt: ".8rem",
+                                            px: ".8rem",
+                                            py: ".6rem",
+                                            backgroundColor: colors.red,
+                                            border: `${colors.red} 1px solid`,
+                                            borderRadius: 0.3,
+                                            ":hover": { backgroundColor: `${colors.red}90` },
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                lineHeight: 1,
+                                                fontWeight: "fontWeightBold",
+                                                color: "#FFFFFF",
+                                            }}
+                                        >
+                                            {isLeaving ? "LEAVING QUEUE..." : "REMOVE FROM QUEUE"}
+                                        </Typography>
+                                    </Button>
+                                </Stack>
+
+                                {error && (
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            mt: ".3rem",
+                                            color: "red",
+                                        }}
+                                    >
+                                        {error}
+                                    </Typography>
+                                )}
+                            </Stack>
                         </Stack>
                     </Stack>
 

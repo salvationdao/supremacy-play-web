@@ -14,6 +14,7 @@ import MapEnlarge from "!react-svg-loader!./svg/MapEnlarge.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import Robot from "!react-svg-loader!./svg/Robot.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
+import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
 import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
@@ -24,7 +25,10 @@ import HistoryClock from "!react-svg-loader!./svg/HistoryClock.svg"
 import Back from "!react-svg-loader!./svg/Back.svg"
 import Hourglass from "!react-svg-loader!./svg/Hourglass.svg"
 import Location from "!react-svg-loader!./svg/Location.svg"
+import ListView from "!react-svg-loader!./svg/ListView.svg"
+import GridView from "!react-svg-loader!./svg/GridView.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
+import Next from "!react-svg-loader!./svg/Next.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Success from "!react-svg-loader!./svg/Success.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
@@ -76,6 +80,7 @@ import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
 import Close from "!@svgr/webpack!./svg/Close.svg"
 import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Ability from "!@svgr/webpack!./svg/Ability.svg"
+import Save from "!@svgr/webpack!./svg/Save.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Death from "!@svgr/webpack!./svg/Death.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
@@ -719,5 +724,35 @@ export const SvgHistoryClock: React.VoidFunctionComponent<SvgWrapperProps> = (pr
 export const SvgBack: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Back />
+    </SvgWrapper>
+)
+
+export const SvgEdit: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Edit />
+    </SvgWrapper>
+)
+
+export const SvgSave: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Save />
+    </SvgWrapper>
+)
+
+export const SvgNext: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Next />
+    </SvgWrapper>
+)
+
+export const SvgListView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ListView />
+    </SvgWrapper>
+)
+
+export const SvgGridView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <GridView />
     </SvgWrapper>
 )

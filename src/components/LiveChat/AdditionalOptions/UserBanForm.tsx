@@ -128,7 +128,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
         }
     }, [selectedUser, selectedBanOptionID, reason])
 
-    const isDisabled = !selectedUser || !selectedBanOptionID || !reason || userStat.last_seven_days_kills < 5
+    const isDisabled = !selectedUser || !selectedBanOptionID || !reason || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100)
 
     if (!user) return null
 
@@ -226,7 +226,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                         ...params.InputProps,
                                         endAdornment: (
                                             <>
-                                                {isLoadingUsers ? <CircularProgress color="inherit" size="1.2rem" /> : null}
+                                                {isLoadingUsers ? <CircularProgress size="1.2rem" sx={{ color: colors.neonBlue }} /> : null}
                                                 {params.InputProps.endAdornment}
                                             </>
                                         ),
@@ -382,9 +382,9 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             </Typography>
                         </Button>
 
-                        {userStat.last_seven_days_kills < 5 && (
+                        {userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && (
                             <Typography variant="body2" sx={{ mt: "1rem", opacity: 0.6, lineHeight: 1.2 }}>
-                                <i>You must have at least 5 ability kills in the past 7 days (updated hourly) to be issue a punish proposal.</i>
+                                <i>You need at least 100 ability kills OR 5 ability kills in the past 7 days to issue a punish proposal.</i>
                             </Typography>
                         )}
 

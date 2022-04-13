@@ -112,7 +112,7 @@ export const WalletDetails = () => {
     if (!onWorldSupsRaw) {
         return (
             <Stack alignItems="center" sx={{ width: "26rem" }}>
-                <CircularProgress size="2rem" />
+                <CircularProgress size="1.8rem" sx={{ color: colors.neonBlue }} />
             </Stack>
         )
     }
