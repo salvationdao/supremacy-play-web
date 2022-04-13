@@ -87,24 +87,24 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
 
     let ignoreTimeout: boolean
     const onContribute = useCallback(
-        (percentage: number) => {
+        (amount: BigNumber, percentage: number) => {
             if (!send) return
-            // setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
-            //     if (!gap) return gap
-            //     const current_sups = new BigNumber(parseInt(gap.current_sups)).plus(new BigNumber(amount, 18)).toString()
-            //     return { ...gap, current_sups }
-            // })
-            // setCurrentSups((cs) => {
-            //     if (!ignoreTimeout) {
-            //         setIgnore(true)
-            //         ignoreTimeout = true
-            //         setTimeout(() => {
-            //             ignoreTimeout = false
-            //             setIgnore(false)
-            //         }, 150)
-            //     }
-            //     return cs.plus(new BigNumber(amount, 18))
-            // })
+            setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
+                if (!gap) return gap
+                const current_sups = new BigNumber(parseInt(gap.current_sups)).plus(new BigNumber(amount, 18)).toString()
+                return { ...gap, current_sups }
+            })
+            setCurrentSups((cs) => {
+                if (!ignoreTimeout) {
+                    setIgnore(true)
+                    ignoreTimeout = true
+                    setTimeout(() => {
+                        ignoreTimeout = false
+                        setIgnore(false)
+                    }, 150)
+                }
+                return cs.plus(new BigNumber(amount, 18))
+            })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
                 percentage,
@@ -146,7 +146,7 @@ interface InnerProps {
     currentSups: BigNumber
     supsCost: BigNumber
     isVoting: boolean
-    onContribute: (c: number) => void
+    onContribute: (c: BigNumber, p: number) => void
 }
 
 export const FactionAbilityItemInner = ({
@@ -298,7 +298,7 @@ interface VotingButtonsProps {
     text_colour: string
     isVoting: boolean
     supsCost: BigNumber
-    onContribute: (c: number) => void
+    onContribute: (c: BigNumber, p: number) => void
 }
 
 const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }: VotingButtonsProps) => {
@@ -319,7 +319,7 @@ const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }
                     amount={c.cost.toFixed(2)}
                     cost={c.cost.toFixed(2)}
                     isVoting={isVoting}
-                    onClick={() => onContribute(c.percentage)}
+                    onClick={() => onContribute(c.cost, c.percentage)}
                     Prefix={<SupsToken text_colour={text_colour} />}
                 />
             ))}
