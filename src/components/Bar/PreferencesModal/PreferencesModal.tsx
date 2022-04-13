@@ -8,6 +8,7 @@ import { ClipThing } from "../../Common/ClipThing"
 interface PreferencesModalProps {
     open: boolean
     toggle: (value: boolean) => void
+    setTelegramShortcode: (code: string) => void
 }
 
 export interface PlayerProfile {
@@ -17,7 +18,7 @@ export interface PlayerProfile {
     mobile_number: string
 }
 
-export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
+export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: PreferencesModalProps) => {
     const { user } = usePassportServerAuth()
     const { subscribe, send } = useGameServerWebsocket()
     const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>()
@@ -80,7 +81,12 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
                             PREFERENCES
                         </Typography>
                         {playerProfile ? (
-                            <BattleQueueNotifications playerProfile={playerProfile} send={send} subscribe={subscribe} />
+                            <BattleQueueNotifications
+                                setTelegramShortcode={setTelegramShortcode}
+                                playerProfile={playerProfile}
+                                send={send}
+                                subscribe={subscribe}
+                            />
                         ) : (
                             <Typography sx={{ opacity: 0.6 }}>Loading...</Typography>
                         )}
@@ -93,30 +99,29 @@ export const PreferencesModal = ({ open, toggle }: PreferencesModalProps) => {
 
 interface BattleQueueNotifcationsProps extends Partial<WebSocketProperties> {
     playerProfile: PlayerProfile
+    setTelegramShortcode: (code: string) => void
 }
 
-export const BattleQueueNotifications = ({ playerProfile, send }: BattleQueueNotifcationsProps) => {
+export const BattleQueueNotifications = ({ playerProfile, send, setTelegramShortcode }: BattleQueueNotifcationsProps) => {
     const { newSnackbarMessage } = useSnackbar()
-    const [newPlayerProfile, setNewPlayerProfile] = useState<PlayerProfile>()
+    const [newPlayerProfile, setNewPlayerProfile] = useState<PlayerProfile>(playerProfile)
 
     const [error, setError] = useState<string>()
 
     const updatePlayerProfile = async () => {
-        console.log("hello")
-
         if (!send || !newPlayerProfile) return
 
-        console.log("hello2", newPlayerProfile)
-
         try {
-            const r = await send(GameServerKeys.UpdatePlayerProfile, {
+            const resp = await send(GameServerKeys.UpdatePlayerProfile, {
                 enable_telegram_notifications: newPlayerProfile.enable_telegram_notifications,
                 enable_sms_notifications: newPlayerProfile.enable_sms_notifications,
                 enable_push_notifications: newPlayerProfile.enable_push_notifications,
                 mobile_number: newPlayerProfile.mobile_number,
             })
 
-            console.log("r", r)
+            if (resp.shortcode && !resp.telegram_id) {
+                setTelegramShortcode(resp.shortcode)
+            }
 
             setError(undefined)
             newSnackbarMessage("Saved notification preference.", "success")
@@ -124,20 +129,7 @@ export const BattleQueueNotifications = ({ playerProfile, send }: BattleQueueNot
             setError(typeof e === "string" ? e : "Unable to update SMS preference, please try again or contact support.")
         }
     }
-    useEffect(() => {
-        if (!playerProfile) {
-            setNewPlayerProfile({
-                enable_telegram_notifications: false,
-                enable_sms_notifications: false,
-                enable_push_notifications: false,
-                mobile_number: "",
-            })
-            return
-        }
-        setNewPlayerProfile(playerProfile)
-    }, [])
 
-    if (!newPlayerProfile) return <></>
     return (
         <Stack sx={{ px: "1.5rem", py: ".8rem", backgroundColor: "#FFFFFF08", borderRadius: 1 }}>
             <Typography gutterBottom sx={{ opacity: 0.8 }}>

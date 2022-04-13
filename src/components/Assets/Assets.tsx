@@ -7,7 +7,6 @@ import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, usePassp
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset, AssetOnChainStatus, AssetQueueStat, AssetQueueStatusItem } from "../../types/assets"
-import { TelegramShortcodeModal } from "./DeployConfirmation"
 
 interface QueueFeed {
     queue_length: number
@@ -30,7 +29,7 @@ const LoadingSkeleton = ({ num }: { num?: number }) => (
     </Stack>
 )
 
-const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramShortcode?: string; setTelegramShortcode?: (s: string) => void }) => {
+const DrawerContent = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = usePassportServerWebsocket()
     const { faction_id } = usePassportServerAuth()
@@ -229,15 +228,7 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
 
                     {/* Assets outside of the queue and not battling */}
                     {Array.from(assetsNotInQueue).map(([hash, a], index) => (
-                        <AssetItem
-                            telegramShortcode={telegramShortcode}
-                            setTelegramShortcode={setTelegramShortcode}
-                            key={`${hash}-${index}`}
-                            asset={a}
-                            queueLength={queueLength}
-                            queueCost={queueCost}
-                            contractReward={contractReward}
-                        />
+                        <AssetItem key={`${hash}-${index}`} asset={a} queueLength={queueLength} queueCost={queueCost} contractReward={contractReward} />
                     ))}
 
                     {/* Add Scroll Pagination */}
@@ -353,7 +344,7 @@ const DrawerContent = ({ telegramShortcode, setTelegramShortcode }: { telegramSh
 
 export const Assets = () => {
     const { isAssetOpen } = useDrawer()
-    const [telegramShortcode, setTelegramShortcode] = useState("")
+    // const [telegramShortcode, setTelegramShortcode] = useState("")
 
     return (
         <Drawer
@@ -380,10 +371,10 @@ export const Assets = () => {
                 }}
             >
                 <DrawerButtons isFixed={false} />
-                {isAssetOpen && <DrawerContent telegramShortcode={telegramShortcode} setTelegramShortcode={setTelegramShortcode} />}
+                {isAssetOpen && <DrawerContent />}
             </Stack>
 
-            <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
+            {/* <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} /> */}
         </Drawer>
     )
 }

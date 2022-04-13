@@ -1,14 +1,13 @@
-import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
+import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import QRCode from "react-qr-code"
 import { ClipThing, TooltipHelper } from ".."
-import { SvgClose, SvgContentCopyIcon, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
-import { PASSPORT_WEB, TELEGRAM_BOT_URL } from "../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
+import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
+import { PASSPORT_WEB } from "../../constants"
+import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../containers"
 import { getRarityDeets, supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { GameServerKeys, PassportServerKeys } from "../../keys"
+import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { Asset } from "../../types/assets"
 
@@ -39,17 +38,6 @@ const AmountItem = ({
     )
 }
 
-interface MobileNumberSave {
-    id: string
-    mobile_number: string
-}
-
-interface NotificationsSettings {
-    telegram_notifications: boolean
-    push_notifications: boolean
-    sms_notifications: boolean
-}
-
 export const DeployConfirmation = ({
     open,
     asset,
@@ -57,7 +45,6 @@ export const DeployConfirmation = ({
     queueCost,
     contractReward,
     onClose,
-    setTelegramShortcode,
 }: {
     open: boolean
     asset: Asset
@@ -65,11 +52,9 @@ export const DeployConfirmation = ({
     queueCost: string
     contractReward: string
     onClose: () => void
-    setTelegramShortcode?: (s: string) => void
 }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
-    const { send: psSend } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
     const [needInsured] = useToggle()
@@ -77,51 +62,12 @@ export const DeployConfirmation = ({
     const [deployFailed, setDeployFailed] = useState("")
     const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueCost, 2))
 
-    const initialSettings: NotificationsSettings = {
-        sms_notifications: false,
-        push_notifications: false,
-        telegram_notifications: false,
-    }
-    const [mobile, setMobile] = useState(user?.mobile_number)
-    const [saveMobile, setSaveMobile] = useState(false)
-    const [dbSettings, setDbSettings] = useState<NotificationsSettings | null>(null)
-    const [currentSettings, setCurrentSettings] = useState<NotificationsSettings>(initialSettings)
-    const [saveSettings, setSaveSettings] = useState(false)
-
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
-    const notificationsOn = currentSettings.push_notifications || currentSettings.sms_notifications || currentSettings.telegram_notifications
-    const settingsMatch =
-        currentSettings.push_notifications === dbSettings?.push_notifications &&
-        currentSettings.sms_notifications === dbSettings.sms_notifications &&
-        currentSettings.telegram_notifications === dbSettings.telegram_notifications
 
     useEffect(() => {
-        if (!user || !send) return
-        ;(async () => {
-            try {
-                const resp = await send<NotificationsSettings | null>(GameServerKeys.GetSettings, {
-                    key: "notification_settings",
-                })
-
-                if (resp === null) {
-                    setDbSettings(null)
-                    return
-                }
-                setDbSettings(resp)
-                setCurrentSettings(resp)
-            } catch (err) {
-                newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
-            }
-        })()
-    }, [user, send])
-
-    useEffect(() => {
-        let qc = new BigNumber(queueCost).shiftedBy(-18)
-        if (notificationsOn) {
-            qc = qc.multipliedBy(1.1)
-        }
+        const qc = new BigNumber(queueCost).shiftedBy(-18)
         setActualQueueCost(qc.toFixed(3))
-    }, [notificationsOn, queueCost])
+    }, [queueCost])
 
     useEffect(() => {
         if (!open) setDeployFailed("")
@@ -131,40 +77,15 @@ export const DeployConfirmation = ({
         if (state !== WebSocket.OPEN || !user) return
 
         try {
-            // save mobile number if checked
-            if (saveMobile && mobile != user?.mobile_number) {
-                const saveMobileNum = await psSend<MobileNumberSave>(PassportServerKeys.UserUpdate, {
-                    id: user.id,
-                    mobile_number: mobile,
-                })
-                saveMobileNum ? newSnackbarMessage("Updated mobile number", "success") : newSnackbarMessage("Issue updating mobile number.", "warning")
-            }
-
-            // if saveSettings is true, send an updated settings
-            if (saveSettings) {
-                const updatedSettings = { key: "notification_settings", value: currentSettings }
-                ;(async () => {
-                    try {
-                        const resp = await send<NotificationsSettings>(GameServerKeys.UpdateSettings, updatedSettings)
-                        setDbSettings(resp)
-                        setCurrentSettings(resp)
-                    } catch (err) {
-                        newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
-                    }
-                })()
-            }
-
             const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
                 asset_hash: hash,
                 need_insured: needInsured,
-                enable_push_notifications: currentSettings.push_notifications,
-                mobile_number: mobile,
-                enable_telegram_notifications: currentSettings.telegram_notifications,
             })
+
             if (resp && resp.success) {
-                if (resp.code !== "" && setTelegramShortcode) {
-                    setTelegramShortcode(resp.code)
-                }
+                // if (resp.code !== "" && setTelegramShortcode) {
+                //     setTelegramShortcode(resp.code)
+                // }
                 onClose()
                 newSnackbarMessage("Successfully deployed war machine.", "success")
                 setDeployFailed("")
@@ -176,7 +97,7 @@ export const DeployConfirmation = ({
         } finally {
             toggleIsDeploying(false)
         }
-    }, [state, hash, needInsured, currentSettings, saveMobile, mobile, saveSettings])
+    }, [state, hash, needInsured])
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -348,7 +269,7 @@ export const DeployConfirmation = ({
                                     </TooltipHelper>
                                 </Stack> */}
 
-                                <Stack direction="row" alignItems="center">
+                                {/* <Stack direction="row" alignItems="center">
                                     <Typography
                                         sx={{
                                             pt: ".08rem",
@@ -401,8 +322,8 @@ export const DeployConfirmation = ({
                                             />
                                         </Box>
                                     </TooltipHelper>
-                                </Stack>
-
+                                </Stack> */}
+                                {/* 
                                 <Box>
                                     <Stack direction="row" alignItems="center">
                                         <Typography
@@ -514,7 +435,7 @@ export const DeployConfirmation = ({
                                             </Stack>
                                         )}
                                     </Stack>
-                                </Box>
+                                </Box> */}
                             </Stack>
 
                             <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
@@ -566,334 +487,6 @@ export const DeployConfirmation = ({
                     </IconButton>
                 </ClipThing>
             </Box>
-        </Modal>
-    )
-}
-
-export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean; onClose: () => void; code: string }) => {
-    const { state, subscribe } = useGameServerWebsocket()
-    const [copySuccess, toggleCopySuccess] = useToggle()
-    const [userTelegramShortcodeRegistered, setUserTelegramShortcodeRegistered] = useState<boolean | undefined>(undefined)
-
-    // copy shortcode
-    useEffect(() => {
-        if (copySuccess) {
-            setTimeout(() => {
-                toggleCopySuccess(false)
-            }, 900)
-        }
-    }, [copySuccess])
-
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<boolean | undefined>(
-            GameServerKeys.UserTelegramShortcodeRegistered,
-            (payload: boolean | undefined) => {
-                setUserTelegramShortcodeRegistered(!!payload)
-            },
-            null,
-        )
-    }, [state, subscribe])
-
-    if (!TELEGRAM_BOT_URL) return <></>
-    return (
-        <Modal open={open}>
-            <>
-                {userTelegramShortcodeRegistered ? (
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                            width: "63rem",
-                        }}
-                    >
-                        <ClipThing
-                            clipSize="10px"
-                            border={{
-                                isFancy: true,
-                                borderColor: colors.neonBlue,
-                                borderThickness: ".3rem",
-                            }}
-                        >
-                            <Stack
-                                direction="row"
-                                spacing="1.6rem"
-                                sx={{
-                                    position: "relative",
-                                    pl: "1.76rem",
-                                    pr: "2.56rem",
-                                    py: "2.4rem",
-                                    backgroundColor: colors.darkNavyBlue,
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        position: "relative",
-                                        flexShrink: 0,
-                                        px: ".64rem",
-                                        py: "1.2rem",
-                                        borderRadius: 0.6,
-                                        boxShadow: "inset 0 0 12px 6px #00000055",
-                                    }}
-                                >
-                                    <Stack
-                                        spacing=".48rem"
-                                        direction="row"
-                                        alignItems="center"
-                                        sx={{
-                                            position: "absolute",
-                                            bottom: "1.2rem",
-                                            left: "50%",
-                                            transform: "translateX(-50%)",
-                                        }}
-                                    ></Stack>
-                                </Box>
-
-                                <Stack spacing=".8rem" sx={{ flex: 1 }}>
-                                    <Box>
-                                        <Typography
-                                            sx={{
-                                                fontFamily: "Nostromo Regular Bold",
-                                                marginBottom: "1rem",
-                                                fontSize: "2rem",
-                                            }}
-                                        >
-                                            Registered Successfully!
-                                        </Typography>
-                                    </Box>
-
-                                    <Button
-                                        variant="outlined"
-                                        onClick={() => {
-                                            setUserTelegramShortcodeRegistered(false)
-                                            onClose()
-                                        }}
-                                        sx={{
-                                            justifySelf: "flex-end",
-                                            mt: "auto",
-                                            ml: 3,
-                                            pt: ".7rem",
-                                            pb: ".4rem",
-                                            width: "9rem",
-                                            color: colors.neonBlue,
-                                            backgroundColor: colors.darkNavy,
-                                            borderRadius: 0.7,
-                                            fontFamily: "Nostromo Regular Bold",
-                                            border: `${colors.neonBlue} 1px solid`,
-                                            ":hover": {
-                                                opacity: 0.8,
-                                                border: `${colors.neonBlue} 1px solid`,
-                                            },
-                                        }}
-                                    >
-                                        Close
-                                    </Button>
-                                </Stack>
-                            </Stack>
-                        </ClipThing>
-                    </Box>
-                ) : (
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                            width: "73rem",
-                        }}
-                    >
-                        <ClipThing
-                            clipSize="10px"
-                            border={{
-                                isFancy: true,
-                                borderColor: colors.neonBlue,
-                                borderThickness: ".3rem",
-                            }}
-                        >
-                            <Stack
-                                direction="row"
-                                spacing="1.6rem"
-                                sx={{
-                                    position: "relative",
-                                    pl: "1.76rem",
-                                    pr: "2.56rem",
-                                    py: "2.4rem",
-                                    backgroundColor: colors.darkNavyBlue,
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        position: "relative",
-                                        flexShrink: 0,
-                                        px: ".64rem",
-                                        py: "1.2rem",
-                                        borderRadius: 0.6,
-                                        boxShadow: "inset 0 0 12px 6px #00000055",
-                                    }}
-                                >
-                                    <Stack
-                                        spacing=".48rem"
-                                        direction="row"
-                                        alignItems="center"
-                                        sx={{
-                                            position: "absolute",
-                                            bottom: "1.2rem",
-                                            left: "50%",
-                                            transform: "translateX(-50%)",
-                                        }}
-                                    ></Stack>
-                                </Box>
-
-                                <Stack spacing=".8rem" sx={{ flex: 1 }}>
-                                    <Box>
-                                        <Typography
-                                            sx={{
-                                                fontFamily: "Nostromo Regular Bold",
-                                                marginBottom: "1rem",
-                                                fontSize: "2rem",
-                                            }}
-                                        >
-                                            Telegram Notifications
-                                        </Typography>
-                                    </Box>
-
-                                    <Box>
-                                        <Typography
-                                            sx={{
-                                                fontFamily: "Nostromo Regular Bold",
-                                                marginBottom: "1rem",
-                                            }}
-                                        >
-                                            Steps to enable Telegram notification:
-                                        </Typography>
-                                    </Box>
-
-                                    <Box sx={{ display: "flex" }}>
-                                        <Typography
-                                            sx={{
-                                                fontFamily: "Nostromo Regular Bold",
-                                                marginRight: ".3rem",
-                                            }}
-                                        >
-                                            1) Open The Supremacy Telegram bot:{" "}
-                                        </Typography>
-                                        <a href={TELEGRAM_BOT_URL} rel="noreferrer" target="_blank">
-                                            <Typography
-                                                sx={{
-                                                    fontFamily: "Nostromo Regular Bold",
-                                                    WebkitBoxOrient: "vertical",
-                                                    textDecoration: "underline",
-                                                    ":hover": {
-                                                        color: colors.blue,
-                                                    },
-                                                }}
-                                            >
-                                                {TELEGRAM_BOT_URL}
-                                            </Typography>
-                                        </a>
-                                    </Box>
-                                    <Box>
-                                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Or Scan QR code:</Typography>
-                                    </Box>
-
-                                    <Box style={{ textAlign: "center", marginBottom: "1rem" }}>
-                                        <QRCode size={228} value={TELEGRAM_BOT_URL || ""} />
-                                    </Box>
-
-                                    <Box>
-                                        <Typography
-                                            sx={{
-                                                fontFamily: "Nostromo Regular Bold",
-                                            }}
-                                        >
-                                            2) Click Start (if first time using the bot)
-                                        </Typography>
-                                    </Box>
-
-                                    <Box>
-                                        <Typography
-                                            sx={{
-                                                fontFamily: "Nostromo Regular Bold",
-                                            }}
-                                        >
-                                            3) type /register
-                                        </Typography>
-                                    </Box>
-
-                                    <Box
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(code).then(
-                                                () => toggleCopySuccess(true),
-                                                () => toggleCopySuccess(false),
-                                            )
-                                        }}
-                                        sx={{
-                                            display: "flex",
-                                            ":hover": {
-                                                cursor: "pointer",
-                                                opacity: 0.6,
-                                            },
-                                        }}
-                                    >
-                                        <Typography
-                                            sx={{
-                                                fontFamily: "Nostromo Regular Bold",
-                                                display: "-webkit-box",
-                                            }}
-                                        >
-                                            4) Enter Shortcode:{" "}
-                                            <Typography marginLeft={".5rem"} marginRight={".5rem"} marginTop={"-.5rem"} fontSize={"2rem"}>
-                                                {code}
-                                            </Typography>
-                                        </Typography>
-
-                                        <SvgContentCopyIcon size="1.3rem" />
-                                        {copySuccess && (
-                                            <Typography
-                                                sx={{
-                                                    fontFamily: "Nostromo Regular Bold",
-                                                    marginTop: ".5rem",
-                                                    marginLeft: "1rem",
-                                                }}
-                                            >
-                                                Copied!
-                                            </Typography>
-                                        )}
-                                    </Box>
-                                    <Button
-                                        variant="outlined"
-                                        onClick={() => {
-                                            setUserTelegramShortcodeRegistered(false)
-                                            onClose()
-                                        }}
-                                        sx={{
-                                            justifySelf: "flex-end",
-                                            mt: "auto",
-                                            ml: 3,
-                                            pt: ".7rem",
-                                            pb: ".4rem",
-                                            width: "9rem",
-                                            color: colors.neonBlue,
-                                            backgroundColor: colors.darkNavy,
-                                            borderRadius: 0.7,
-                                            fontFamily: "Nostromo Regular Bold",
-                                            border: `${colors.neonBlue} 1px solid`,
-                                            ":hover": {
-                                                opacity: 0.8,
-                                                border: `${colors.neonBlue} 1px solid`,
-                                            },
-                                        }}
-                                    >
-                                        Close
-                                    </Button>
-                                </Stack>
-                            </Stack>
-                        </ClipThing>
-                    </Box>
-                )}
-            </>
         </Modal>
     )
 }
