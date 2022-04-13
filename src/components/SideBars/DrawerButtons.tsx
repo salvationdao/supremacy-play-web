@@ -1,3 +1,4 @@
+import ApiIcon from "@mui/icons-material/Api"
 import { Box, Stack, SxProps, Typography } from "@mui/material"
 import { ReactNode } from "react"
 import { SvgChat, SvgRobot } from "../../assets"
@@ -66,9 +67,18 @@ const SideButton = ({
 
 export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
     const { user } = useGameServerAuth()
-    const { isLiveChatOpen, toggleIsLiveChatOpen, isPlayerListOpen, toggleIsPlayerListOpen, isAssetOpen, toggleIsAssetOpen } = useDrawer()
+    const {
+        isLiveChatOpen,
+        toggleIsLiveChatOpen,
+        isPlayerListOpen,
+        toggleIsPlayerListOpen,
+        isAssetOpen,
+        toggleIsAssetOpen,
+        isPlayerAbilitiesOpen,
+        toggleIsPlayerAbilitiesOpen,
+    } = useDrawer()
 
-    const numberOfButtons = user ? 3 : 1
+    const numberOfButtons = user ? 4 : 1
 
     const styles: SxProps = isFixed
         ? {
@@ -108,6 +118,13 @@ export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
             >
                 {user && user.faction && (
                     <>
+                        <SideButton
+                            isEnabled={true}
+                            isOpen={isPlayerAbilitiesOpen}
+                            toggleIsOpen={toggleIsPlayerAbilitiesOpen}
+                            text="ABILITIES"
+                            Svg={<ApiIcon />}
+                        />
                         <SideButton
                             isEnabled={true}
                             isOpen={isAssetOpen}

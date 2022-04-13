@@ -6,6 +6,7 @@ enum DrawerPanels {
     LiveChat = "LIVE_CHAT",
     PlayerList = "PLAYER_LIST",
     Assets = "ASSETS",
+    PlayerAbilities = "PLAYER_ABILITIES",
 }
 
 export const DrawerContainer = createContainer(() => {
@@ -22,13 +23,15 @@ export const DrawerContainer = createContainer(() => {
     )
 
     return {
-        isAnyPanelOpen: activePanel != DrawerPanels.None,
-        isLiveChatOpen: activePanel == DrawerPanels.LiveChat,
-        isPlayerListOpen: activePanel == DrawerPanels.PlayerList,
-        isAssetOpen: activePanel == DrawerPanels.Assets,
+        isAnyPanelOpen: activePanel !== DrawerPanels.None,
+        isLiveChatOpen: activePanel === DrawerPanels.LiveChat,
+        isPlayerListOpen: activePanel === DrawerPanels.PlayerList,
+        isAssetOpen: activePanel === DrawerPanels.Assets,
+        isPlayerAbilitiesOpen: activePanel === DrawerPanels.PlayerAbilities,
         toggleIsLiveChatOpen: (value?: boolean) => togglePanel(DrawerPanels.LiveChat, value),
         toggleIsPlayerListOpen: (value?: boolean) => togglePanel(DrawerPanels.PlayerList, value),
         toggleIsAssetOpen: (value?: boolean) => togglePanel(DrawerPanels.Assets, value),
+        toggleIsPlayerAbilitiesOpen: (value?: boolean) => togglePanel(DrawerPanels.PlayerAbilities, value),
     }
 })
 
