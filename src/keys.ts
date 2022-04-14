@@ -49,7 +49,8 @@ export enum GameServerKeys {
     // Player Abilities
     PlayerAbilitiesList = "PLAYER:ABILITIES:LIST",
     SaleAbilitiesList = "SALE:ABILITIES:LIST",
-    SaleAbilitiesPurchase = "SALE:ABILITIES:PURCHASE",
+    SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
+    SaleAbilitySubscribe = "SALE:ABILITY:SUBSCRIBE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",

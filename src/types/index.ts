@@ -64,13 +64,15 @@ export interface PlayerAbility {
     image_url: string
     description: string
     text_colour: string
-    type: string
+    type: "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
     purchased_at: string
 }
 
-export interface SaleAbility extends PlayerAbility {
+export interface SaleAbility {
+    id: string
     current_price: string
     available_until?: Date
+    ability?: PlayerAbility
 }
 
 export interface GameAbilityProgress {

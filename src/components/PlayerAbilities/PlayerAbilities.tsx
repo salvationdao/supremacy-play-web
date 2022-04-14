@@ -92,7 +92,13 @@ const DrawerContent = () => {
                         }}
                     />
                 </Stack>
-                <Box>
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(60px, 1fr))",
+                        gap: ".5rem",
+                    }}
+                >
                     {saleAbilityIDs.map((s, index) => (
                         <SaleAbilityCard key={index} abilityID={s} />
                     ))}
