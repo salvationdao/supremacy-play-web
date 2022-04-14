@@ -52,6 +52,7 @@ const ability1 = {
     text_colour: "#FFFFFF",
     description: "mmmmmmmmmmm",
     cooldown_duration_second: 30,
+    ability_offering_id: "4c5cdc8c-4a11-40e6-981c-e2a83e0c9e15",
 }
 
 const ability2 = {
@@ -62,6 +63,7 @@ const ability2 = {
     text_colour: "#FFFFFF",
     description: "mmmmmmmmmmm",
     cooldown_duration_second: 30,
+    ability_offering_id: "6ed7a47b-a3b6-43a3-98ea-28b0855f03f5",
 }
 
 const wm1 = {

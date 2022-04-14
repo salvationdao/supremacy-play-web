@@ -12,6 +12,7 @@ import { GameAbility, GameAbilityProgress } from "../../types"
 
 interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
+    ability_offering_id: string
     percentage: number
 }
 
@@ -28,7 +29,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const { faction_id } = useGameServerAuth()
     const { bribeStage } = useGame()
 
-    const { label, colour, text_colour, image_url, identity, description } = gameAbility
+    const { label, colour, text_colour, image_url, identity, description, ability_offering_id } = gameAbility
 
     const [shouldIgnore, setIgnore] = useState<boolean>(false)
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
@@ -106,11 +107,12 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
                 return cs.plus(new BigNumber(amount, 18))
             })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
-                ability_identity: identity,
+                ability_identity: gameAbility.ability_offering_id,
+                ability_offering_id,
                 percentage,
             })
         },
-        [send, identity],
+        [send, identity, ability_offering_id],
     )
 
     const isVoting = useMemo(
