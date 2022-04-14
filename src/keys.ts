@@ -42,7 +42,7 @@ export enum GameServerKeys {
 
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
-    GetAssetsQueue = "ASSET:QUEUE:MANY",
+    GetAssetsQueue = "ASSET:MANY",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
 
