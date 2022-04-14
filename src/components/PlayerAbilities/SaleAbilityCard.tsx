@@ -130,6 +130,7 @@ export const SaleAbilityCard = ({ abilityID }: AbilityCardProps) => {
                         <SvgSupToken fill={colors.yellow} size="1.5rem" />
                         <Typography>{supFormatter(saleAbility.current_price)}</Typography>
                     </Stack>
+                    {/* {saleAbility.available_until && <Typography variant="caption">{timeSince(saleAbility.available_until)}</Typography>} */}
                 </Box>
             </ButtonBase>
         </TooltipHelper>

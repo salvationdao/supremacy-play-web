@@ -1,14 +1,17 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Button, Stack, Typography } from "@mui/material"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useBar, useDrawer, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
+import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
 import GameGuide from "../GameGuide/GameGuide"
+import { SaleAbilitiesModal } from "./SaleAbilitiesModal"
 
 const BarContent = () => {
     const { state, isServerUp } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
+    const [showSaleAbilities, toggleShowSaleAbilities] = useToggle()
 
     if (state !== WebSocket.OPEN) {
         return (
@@ -29,11 +32,15 @@ const BarContent = () => {
             <GameGuide />
             {user && (
                 <>
+                    <Button variant="outlined" onClick={() => toggleShowSaleAbilities()}>
+                        Purchase Abilities
+                    </Button>
                     <Enlist />
                     <WalletDetails />
                 </>
             )}
             <ProfileCard />
+            <SaleAbilitiesModal open={showSaleAbilities} onClose={() => toggleShowSaleAbilities(false)} />
         </>
     )
 }
@@ -62,8 +69,7 @@ export const Bar = () => {
                     pr: "1.6rem",
                     height: `${GAME_BAR_HEIGHT}rem`,
                     color: "#FFFFFF",
-                    backgroundColor:
-                        user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                     overflowX: "auto",
                     overflowY: "hidden",
                     scrollbarWidth: "none",
