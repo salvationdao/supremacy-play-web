@@ -183,7 +183,15 @@ const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; po
             </Popover>
 
             {/* preferences modal */}
-            <PreferencesModal open={preferencesModalOpen} toggle={togglePreferencesModalOpen} setTelegramShortcode={setTelegramShortcode} />
+            <PreferencesModal
+                open={preferencesModalOpen}
+                toggle={() => {
+                    togglePreferencesModalOpen(false)
+                    toggleLocalOpen(false)
+                    onClose()
+                }}
+                setTelegramShortcode={setTelegramShortcode}
+            />
 
             {/* telegram register modal */}
             <TelegramShortcodeModal open={!!telegramShortcode} code={telegramShortcode} onClose={() => setTelegramShortcode("")} />
