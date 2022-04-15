@@ -42,7 +42,7 @@ export enum GameServerKeys {
 
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
-    GetAssetsQueue = "ASSET:QUEUE:MANY",
+    GetAssetsQueue = "ASSET:MANY",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
 
@@ -60,7 +60,7 @@ export enum GameServerKeys {
     SubAISpawned = "AI:SPAWNED",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
-    GetSupsMultiplier = "USER:MULTIPLIERS:GET",
+    SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
     SubSupsMultiplierSignal = "USER:MULTIPLIER:SIGNAL:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
