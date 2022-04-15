@@ -1,8 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
 import { TooltipHelper } from "../.."
 import { getMutiplierDeets } from "../../../helpers"
-import { useTimer } from "../../../hooks"
 import { Multiplier } from "../../../types"
 
 export const MultiplierItem = ({
@@ -11,14 +10,6 @@ export const MultiplierItem = ({
     multiplier: Multiplier
 }) => {
     const multiplierDeets = useMemo(() => getMutiplierDeets(multiplier.key), [multiplier])
-
-    // const startTime =
-    //     battleEndTime && battleEndTime.getTime() != multipliersStartTime.getTime()
-    //         ? new Date(new Date().getTime() - battleEndTime.getTime() + multipliersStartTime.getTime())
-    //         : multipliersStartTime
-    // const endTime = new Date(startTime.getTime() + multiplier.expires_in_seconds * 1000)
-
-    // if (new Date().getTime() > endTime.getTime()) return null
 
     return (
         <Stack direction="row" alignItems="center">
@@ -46,16 +37,6 @@ export const MultiplierItem = ({
             <Typography sx={{ minWidth: "2.5rem", textAlign: "center", ml: "auto" }} variant="body1">
                 {multiplier.is_multiplicative ? `${parseInt(multiplier.value) * 100}%` : `${multiplier.value}x`}
             </Typography>
-
-            {/*<Stack*/}
-            {/*    alignItems="center"*/}
-            {/*    justifyContent="center"*/}
-            {/*    sx={{ minWidth: 50, ml: ".6rem", alignSelf: "stretch", background: "#00000075", borderRadius: 1 }}*/}
-            {/*>*/}
-            {/*    /!*<Typography sx={{ textAlign: "center", lineHeight: 1, color: "grey !important" }} variant="caption">*!/*/}
-            {/*    /!*    <TimeLeft endTime={endTime} battleEndTime={battleEndTime} />*!/*/}
-            {/*    /!*</Typography>*!/*/}
-            {/*</Stack>*/}
         </Stack>
     )
 }
