@@ -4,26 +4,24 @@ import { useEffect, useRef, useState } from "react"
 import { BarExpandable, BuySupsButton, SupsTooltipContent } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
 import { NullUUID } from "../../../constants"
-import { useGame, useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useWallet } from "../../../containers"
+import { useGameServerAuth, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useWallet } from "../../../containers"
 import { supFormatterNoFixed } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { MultipliersAll } from "../../../types"
+import { BattleMultipliers, MultiplierUpdateResp } from "../../../types"
 import { Transaction } from "../../../types/passport"
 
 export const WalletDetails = () => {
-    const { state, send, subscribe } = useGameServerWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
     const { user: gsUser } = useGameServerAuth()
     const { state: psState, subscribe: psSubscribe } = usePassportServerWebsocket()
-    const { map, battleEndDetail } = useGame()
     const { user, userID } = usePassportServerAuth()
     const { onWorldSupsRaw } = useWallet()
-    const startTime = useRef(new Date())
+
     // Multipliers
-    const [battleEndTime, setBattleEndTime] = useState<Date | undefined>(new Date())
-    const [multipliersStartTime, setMultipliersStartTime] = useState<Date>(new Date())
-    const [multipliers, setMultipliers] = useState<MultipliersAll>()
+    const [multipliers, setMultipliers] = useState<BattleMultipliers[]>([])
+    const [currentBattleMultiplier, setCurrentBattleMultiplier] = useState<string>("")
     // Transactions
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const [latestTransaction, setLatestTransaction] = useState<Transaction[]>([])
@@ -34,40 +32,17 @@ export const WalletDetails = () => {
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
-    // Fetch multipliers when new game starts
     useEffect(() => {
-        ;(async () => {
-            try {
-                if (state !== WebSocket.OPEN || !send || !gsUser || !map) return
-                const resp = await send<MultipliersAll, null>(GameServerKeys.GetSupsMultiplier, null)
-                if (resp) {
-                    setMultipliers(resp)
-                    setMultipliersStartTime(new Date())
-                }
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [state, send, gsUser, map])
-
-    // When battle end detail comes up, pause the timer of the multipliers
-    useEffect(() => {
-        if (!battleEndDetail) return
-        setBattleEndTime(new Date())
-    }, [battleEndDetail])
-
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !gsUser) return
-        return subscribe<boolean>(
-            GameServerKeys.SubSupsMultiplierSignal,
-            () => {
-                setBattleEndTime(undefined)
-                setMultipliersStartTime(new Date())
+        return subscribe<MultiplierUpdateResp>(
+            GameServerKeys.SubscribeSupsMultiplier,
+            (resp) => {
+                const sorted = resp.battles.sort((a, b) => a.battle_number < b.battle_number ? 1 : 0)
+                setMultipliers(sorted)
+                setCurrentBattleMultiplier(sorted[0] ? sorted[0].total_multipliers :  "0x")
             },
-            null,
-            true,
         )
-    }, [state, subscribe])
+    }, [state, subscribe, gsUser])
+
 
     // Get initial 5 transactions
     useEffect(() => {
@@ -186,6 +161,7 @@ export const WalletDetails = () => {
 
                             {multipliers && (
                                 <Typography
+                                    key={`current-multi-key-${currentBattleMultiplier}`}
                                     variant="caption"
                                     sx={{
                                         ml: ".8rem",
@@ -200,12 +176,12 @@ export const WalletDetails = () => {
                                         borderRadius: 0.6,
                                     }}
                                 >
-                                    {multipliers.total_multipliers}
+                                    {currentBattleMultiplier}
                                 </Typography>
                             )}
                         </Stack>
 
-                        <BuySupsButton user={user} />
+                        {user && <BuySupsButton user={user} />}
                     </Stack>
 
                     <Divider
@@ -234,9 +210,6 @@ export const WalletDetails = () => {
                     supsEarned={supsEarned}
                     onClose={() => toggleIsPopoverOpen(false)}
                     popoverRef={popoverRef}
-                    startTime={startTime.current}
-                    battleEndTime={battleEndTime}
-                    multipliersStartTime={multipliersStartTime}
                 />
             )}
         </>
