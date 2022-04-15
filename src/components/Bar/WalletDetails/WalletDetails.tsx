@@ -33,16 +33,12 @@ export const WalletDetails = () => {
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
     useEffect(() => {
-        return subscribe<MultiplierUpdateResp>(
-            GameServerKeys.SubscribeSupsMultiplier,
-            (resp) => {
-                const sorted = resp.battles.sort((a, b) => a.battle_number < b.battle_number ? 1 : 0)
-                setMultipliers(sorted)
-                setCurrentBattleMultiplier(sorted[0] ? sorted[0].total_multipliers :  "0x")
-            },
-        )
+        return subscribe<MultiplierUpdateResp>(GameServerKeys.SubscribeSupsMultiplier, (resp) => {
+            const sorted = resp.battles.sort((a, b) => (a.battle_number < b.battle_number ? 1 : 0))
+            setMultipliers(sorted)
+            setCurrentBattleMultiplier(sorted[0] ? sorted[0].total_multipliers : "0x")
+        })
     }, [state, subscribe, gsUser])
-
 
     // Get initial 5 transactions
     useEffect(() => {

@@ -4,7 +4,7 @@ import { MultiplierItem, TransactionItem } from "../.."
 import { Transaction, UserData } from "../../../types/passport"
 import { colors } from "../../../theme/theme"
 import { shadeColor, supFormatterNoFixed } from "../../../helpers"
-import { BattleMultipliers } from '../../../types'
+import { BattleMultipliers } from "../../../types"
 import { useEffect, useState, MutableRefObject } from "react"
 import BigNumber from "bignumber.js"
 import { useToggle } from "../../../hooks"
@@ -31,34 +31,17 @@ export const SupsTooltipContent = ({
     userID: string
     onClose: () => void
     popoverRef: MutableRefObject<null>
-
-
 }) => {
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [hideBattleTxs, toggleHideBattleTxs] = useToggle()
 
-
-
-
-
-
-
     useEffect(() => {
-
-
-
         if (!localOpen) {
             setTimeout(() => {
                 onClose()
             }, 300)
         }
     }, [localOpen])
-
-
-
-
-
-
 
     return (
         <Popover
@@ -91,17 +74,17 @@ export const SupsTooltipContent = ({
                     </Typography>
 
                     <Stack spacing=".5rem">
-                        {/*<Stack direction="row" alignItems="center">*/}
-                        {/*    <Typography sx={{ lineHeight: 1, mr: ".3rem" }}>• TIME ELAPSED:</Typography>*/}
-                        {/*    <Typography sx={{ lineHeight: 1, color: colors.neonBlue }}>*/}
-                        {/*        <TimeElapsed startTime={startTime} />*/}
-                        {/*    </Typography>*/}
-                        {/*</Stack>*/}
-
                         <Stack direction="row" alignItems="center">
                             <Typography sx={{ lineHeight: 1, mr: ".3rem" }}>• SUPS EARNED:</Typography>
                             <SvgSupToken size="1.4rem" fill={colors.supsCredit} sx={{ pb: ".1rem" }} />
-                            <Typography sx={{ lineHeight: 1, color: colors.supsCredit }}>{supFormatterNoFixed(supsEarned.current.toString(), 4)}</Typography>
+                            <Typography
+                                sx={{
+                                    lineHeight: 1,
+                                    color: colors.supsCredit,
+                                }}
+                            >
+                                {supFormatterNoFixed(supsEarned.current.toString(), 4)}
+                            </Typography>
                         </Stack>
                     </Stack>
                 </Box>
@@ -117,10 +100,9 @@ export const SupsTooltipContent = ({
                     </Stack>
                 </Box>
 
-
-                {multipliers.map((bm)=> {
+                {multipliers.map((bm) => {
                     if (bm.multipliers.length === 0) return <></>
-                    return (<BattleMultiplierView key={`bmv-key-${bm.battle_number}`} bm={bm} />)
+                    return <BattleMultiplierView key={`bmv-key-${bm.battle_number}`} bm={bm} />
                 })}
 
                 {transactions.length > 0 && (
@@ -153,6 +135,7 @@ export const SupsTooltipContent = ({
                                         !hideBattleTxs ||
                                         (!t.description.toLowerCase().includes("spoil") && !t.description.toLowerCase().includes("battle contri")),
                                 )
+
                                 .map((t, i) => (
                                     <TransactionItem userID={userID} key={i} transaction={t} />
                                 ))}
@@ -168,97 +151,85 @@ export const SupsTooltipContent = ({
     )
 }
 
-
-
-const BattleMultiplierView = ({ bm }: { bm: BattleMultipliers})=>{
+const BattleMultiplierView = ({ bm }: { bm: BattleMultipliers }) => {
     const [multiplierList] = useState(bm.multipliers.filter((m) => !m.is_multiplicative))
     const [multiplicative] = useState(bm.multipliers.filter((m) => m.is_multiplicative))
     const [total1] = useState(multiplierList.reduce((acc, m) => acc + Math.round(parseFloat(m.value) * 10) / 10, 0))
     const [total2] = useState(multiplicative.reduce((acc, m) => acc + Math.round(parseFloat(m.value) * 10) / 10, 0))
-    const  [totalMultipliers] = useState(total1 * (total2 || 1))
+    const [totalMultipliers] = useState(total1 * (total2 || 1))
     const [open, setOpen] = useState<boolean>(false)
 
     return (
         <Box key={`multies-${bm.battle_number}=${bm.total_multipliers}`}>
-        <Button fullWidth  onClick={()=> setOpen((prev)=>!prev)} sx={{ display: 'flex',justifyContent: 'space-between', padding: '2px'}}>
-            <Typography
-                sx={{
-                    mb: '.24rem',
-                    fontWeight: 'bold',
-                    color: colors.offWhite,
-                    span: { color: colors.yellow },
-                }}
-                variant='h6'
-            >
-                BATTLE: <span>{bm.battle_number}</span>
-            </Typography>
-            <Typography
-                sx={{
-                    mb: '.24rem',
-                    fontWeight: 'bold',
-                    color: colors.offWhite,
-                    span: { color: colors.yellow },
-                }}
-                variant='h6'
-            >
-                MULTIPLIERS: <span>{totalMultipliers}x</span>
-            </Typography>
-
-            {/*<IconButton onClick={()=> setOpen((prev)=>!prev)}>*/}
+            <Button fullWidth onClick={() => setOpen((prev) => !prev)} sx={{ display: "flex", justifyContent: "space-between", padding: "2px" }}>
+                <Typography
+                    sx={{
+                        mb: ".24rem",
+                        fontWeight: "bold",
+                        color: colors.offWhite,
+                        span: { color: colors.yellow },
+                    }}
+                    variant="h6"
+                >
+                    BATTLE: <span>{bm.battle_number}</span>
+                </Typography>
+                <Typography
+                    sx={{
+                        mb: ".24rem",
+                        fontWeight: "bold",
+                        color: colors.offWhite,
+                        span: { color: colors.yellow },
+                    }}
+                    variant="h6"
+                >
+                    MULTIPLIERS: <span>{totalMultipliers}x</span>
+                </Typography>
                 {open ? <ExpandLess /> : <ExpandMore />}
-            {/*</IconButton>*/}
-
-
-        </Button>
-
-
+            </Button>
 
             <Collapse in={open} timeout="auto" unmountOnExit>
-        <Box
-            sx={{
-                paddingTop:'0.5rem',
-                overflowY: 'auto',
-                overflowX: 'hidden',
-                direction: 'ltr',
-                scrollbarWidth: 'none',
-                '::-webkit-scrollbar': {
-                    width: '.4rem',
-                },
-                '::-webkit-scrollbar-track': {
-                    background: '#FFFFFF15',
-                    borderRadius: 3,
-                },
-                '::-webkit-scrollbar-thumb': {
-                    background: '#FFFFFF96',
-                    borderRadius: 3,
-                },
-            }}
-        >
-            <Stack spacing='1.2rem'>
-                <Stack spacing='.2rem'>
-                    <Stack spacing='.32rem'>
-                        {multiplierList.map((m, i) => (
-                            <MultiplierItem key={i} multiplier={m}  />
-                        ))}
-                    </Stack>
-                </Stack>
-
-                {multiplicative && multiplicative.length > 0 && (
-                    <Stack spacing='.2rem'>
-                        <Typography sx={{ color: 'grey !important' }}>BONUSES</Typography>
-                        <Stack spacing='.32rem'>
-                            {multiplicative.map((m, i) => (
-                                <MultiplierItem
-                                    key={i}
-                                    multiplier={m}
-                                />
-                            ))}
+                <Box
+                    sx={{
+                        paddingTop: "0.5rem",
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        direction: "ltr",
+                        scrollbarWidth: "none",
+                        "::-webkit-scrollbar": {
+                            width: ".4rem",
+                        },
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
+                            borderRadius: 3,
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                            background: "#FFFFFF96",
+                            borderRadius: 3,
+                        },
+                    }}
+                >
+                    <Stack spacing="1.2rem">
+                        <Stack spacing=".2rem">
+                            <Stack spacing=".32rem">
+                                {multiplierList.map((m, i) => (
+                                    <MultiplierItem key={i} multiplier={m} />
+                                ))}
+                            </Stack>
                         </Stack>
+
+                        {multiplicative && multiplicative.length > 0 && (
+                            <Stack spacing=".2rem">
+                                <Typography sx={{ color: "grey !important" }}>BONUSES</Typography>
+                                <Stack spacing=".32rem">
+                                    {multiplicative.map((m, i) => (
+                                        <MultiplierItem key={i} multiplier={m} />
+                                    ))}
+                                </Stack>
+                            </Stack>
+                        )}
                     </Stack>
-                )}
-            </Stack>
-        </Box>
+                </Box>
             </Collapse>
-    </Box>
+        </Box>
     )
 }

@@ -4,11 +4,7 @@ import { TooltipHelper } from "../.."
 import { getMutiplierDeets } from "../../../helpers"
 import { Multiplier } from "../../../types"
 
-export const MultiplierItem = ({
-    multiplier,
-}: {
-    multiplier: Multiplier
-}) => {
+export const MultiplierItem = ({ multiplier }: { multiplier: Multiplier }) => {
     const multiplierDeets = useMemo(() => getMutiplierDeets(multiplier.key), [multiplier])
 
     return (
@@ -40,4 +36,3 @@ export const MultiplierItem = ({
         </Stack>
     )
 }
-
