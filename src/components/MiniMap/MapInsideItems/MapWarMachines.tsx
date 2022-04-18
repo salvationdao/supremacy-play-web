@@ -16,14 +16,7 @@ interface MapWarMachineProps {
     targeting?: boolean
 }
 
-export const MapWarMachines = ({
-    gridWidth,
-    gridHeight,
-    warMachines,
-    map,
-    enlarged,
-    targeting,
-}: MapWarMachineProps) => {
+export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting }: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
@@ -127,17 +120,19 @@ const MapWarMachineInner = ({
             key={`warMachine-${participantID}`}
             alignItems="center"
             justifyContent="center"
+            spacing="1rem"
             onClick={handleClick}
             style={{
                 position: "absolute",
                 pointerEvents: targeting ? "none" : "all",
                 cursor: "pointer",
-                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * mapScale}px, ${
-                    (position.y - map.top) * mapScale
-                }px, 0)`,
+                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * mapScale}px, ${(position.y - map.top) * mapScale}px, 0)`,
                 transition: "transform 0.2s linear",
                 zIndex: isAlive ? 5 : 4,
                 opacity: isSpawnedAI ? 0.8 : 1,
+                border: highlightedMechHash === warMachine.hash ? `${primaryColor} 1rem dashed` : "unset",
+                backgroundColor: highlightedMechHash === warMachine.hash ? `${primaryColor}60` : "unset",
+                padding: "1rem 1.3rem",
             }}
         >
             <Box
@@ -156,12 +151,7 @@ const MapWarMachineInner = ({
                               border: `${primaryColor} solid 3px`,
                               borderRadius: 1,
                               opacity: isAlive ? 1 : 0.7,
-                              boxShadow:
-                                  highlightedMechHash === warMachine.hash
-                                      ? `0px 0px 20px 10px ${colors.neonBlue}`
-                                      : isAlive
-                                      ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70`
-                                      : "none",
+                              boxShadow: isAlive ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70` : "none",
                               zIndex: 2,
                           }
                         : {
@@ -172,10 +162,6 @@ const MapWarMachineInner = ({
                               backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
                               border: `9px solid #000000${isAlive ? "" : "00"}`,
                               borderRadius: "50%",
-                              boxShadow:
-                                  highlightedMechHash === warMachine.hash
-                                      ? `0px 0px 20px 20px ${colors.neonBlue}`
-                                      : "unset",
                               zIndex: 2,
                           }
                 }
@@ -230,37 +216,17 @@ const MapWarMachineInner = ({
                         <Box style={{ height: ARROW_LENGTH }} />
                     </Box>
                 )}
+            </Box>
 
-                {isAlive && (
-                    <Stack
-                        spacing=".24rem"
-                        style={{
-                            position: "absolute",
-                            bottom: enlarged ? "-.1rem" : "-.5rem",
-                            left: "50%",
-                            transform: "translate(-50%, calc(100% + 10px))",
-                            width: SIZE * 1.2,
-                            zIndex: 1,
-                        }}
-                    >
-                        {warMachine.maxShield > 0 && (
-                            <Box
-                                style={{
-                                    width: "100%",
-                                    height: `${0.3 * SIZE}px`,
-                                    border: "1px solid #00000080",
-                                    overflow: "hidden",
-                                }}
-                            >
-                                <Box
-                                    style={{
-                                        width: `${(shield / maxShield) * 100}%`,
-                                        height: "100%",
-                                        backgroundColor: colors.shield,
-                                    }}
-                                />
-                            </Box>
-                        )}
+            {isAlive && (
+                <Stack
+                    spacing=".24rem"
+                    style={{
+                        width: SIZE * 1.2,
+                        zIndex: 1,
+                    }}
+                >
+                    {warMachine.maxShield > 0 && (
                         <Box
                             style={{
                                 width: "100%",
@@ -271,15 +237,31 @@ const MapWarMachineInner = ({
                         >
                             <Box
                                 style={{
-                                    width: `${(health / maxHealth) * 100}%`,
+                                    width: `${(shield / maxShield) * 100}%`,
                                     height: "100%",
-                                    backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
+                                    backgroundColor: colors.shield,
                                 }}
                             />
                         </Box>
-                    </Stack>
-                )}
-            </Box>
+                    )}
+                    <Box
+                        style={{
+                            width: "100%",
+                            height: `${0.3 * SIZE}px`,
+                            border: "1px solid #00000080",
+                            overflow: "hidden",
+                        }}
+                    >
+                        <Box
+                            style={{
+                                width: `${(health / maxHealth) * 100}%`,
+                                height: "100%",
+                                backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
+                            }}
+                        />
+                    </Box>
+                </Stack>
+            )}
         </Stack>
     )
 }

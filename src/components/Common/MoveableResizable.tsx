@@ -33,13 +33,7 @@ export interface MoveableResizableConfig {
 
 const PADDING = 10
 
-export const MoveableResizable = ({
-    config,
-    children,
-}: {
-    config: MoveableResizableConfig
-    children: ReactElement
-}) => {
+export const MoveableResizable = ({ config, children }: { config: MoveableResizableConfig; children: ReactElement }) => {
     const {
         localStoragePrefix,
         defaultPositionX,
@@ -62,12 +56,8 @@ export const MoveableResizable = ({
     } = useDimension()
     const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), -1))
     const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosY`), -1))
-    const [curWidth, setCurWidth] = useState(
-        parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultSizeX),
-    )
-    const [curHeight, setCurHeight] = useState(
-        parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultSizeY),
-    )
+    const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultSizeX))
+    const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultSizeY))
 
     const adjustment = useMemo(() => Math.min(pxToRemRatio, 9) / 9, [pxToRemRatio])
 
@@ -77,10 +67,7 @@ export const MoveableResizable = ({
         if (width <= 0 || height <= 0) return
 
         const newPosX = curPosX > 0 ? clamp(PADDING, curPosX, width - curWidth - PADDING) : defaultPositionX + PADDING
-        const newPosY =
-            curPosY > 0
-                ? clamp(PADDING, curPosY, height - curHeight - PADDING)
-                : height - defaultPositionYBottom - curHeight
+        const newPosY = curPosY > 0 ? clamp(PADDING, curPosY, height - curHeight - PADDING) : height - defaultPositionYBottom - curHeight
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
@@ -154,14 +141,8 @@ export const MoveableResizable = ({
                         onResizeStop={onResizeStop}
                         adjustment={adjustment}
                         initialDimensions={[curWidth, curHeight]}
-                        minConstraints={[
-                            allowResizeX ? minSizeX : defaultSizeX,
-                            allowResizeY ? minSizeY : defaultSizeY,
-                        ]}
-                        maxConstraints={[
-                            allowResizeX ? width - curPosX - PADDING : defaultSizeX,
-                            allowResizeY ? height - curPosY - 2 * PADDING : defaultSizeY,
-                        ]}
+                        minConstraints={[allowResizeX ? minSizeX : defaultSizeX, allowResizeY ? minSizeY : defaultSizeY]}
+                        maxConstraints={[allowResizeX ? width - curPosX - PADDING : defaultSizeX, allowResizeY ? height - curPosY - 2 * PADDING : defaultSizeY]}
                         resizeHandles={["se"]}
                         handle={() => (
                             <Box
@@ -170,12 +151,7 @@ export const MoveableResizable = ({
                                     pointerEvents: "all",
                                     bottom: ".88rem",
                                     right: "1rem",
-                                    cursor:
-                                        allowResizeX && allowResizeY
-                                            ? "nesw-resize"
-                                            : allowResizeX
-                                            ? "ew-resize"
-                                            : "ns-resize",
+                                    cursor: allowResizeX && allowResizeY ? "nesw-resize" : allowResizeX ? "ew-resize" : "ns-resize",
                                     opacity: 0.4,
                                     ":hover": { opacity: 1 },
                                 }}
@@ -194,7 +170,7 @@ export const MoveableResizable = ({
                     <ClipThing
                         border={{
                             isFancy: true,
-                            borderThickness: ".25rem",
+                            borderThickness: ".2rem",
                             borderColor: theme.factionTheme.primary,
                         }}
                     >
@@ -213,18 +189,8 @@ export const MoveableResizable = ({
                             >
                                 {children}
 
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    justifyContent="flex-end"
-                                    sx={{ px: "1.04rem", pb: ".56rem" }}
-                                >
-                                    <Stack
-                                        direction="row"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        sx={{ mr: "auto" }}
-                                    >
+                                <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ px: "1.04rem", pb: ".56rem" }}>
+                                    <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mr: "auto" }}>
                                         {CaptionArea}
                                     </Stack>
 

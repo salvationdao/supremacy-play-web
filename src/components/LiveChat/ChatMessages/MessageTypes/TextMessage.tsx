@@ -253,8 +253,8 @@ export const TextMessage = ({
 
     return (
         <>
-            <Box sx={{ opacity: isSent ? 1 : 0.45 }}>
-                <Stack direction="row" justifyContent="space-between" sx={{ wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
+            <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
+                <Stack direction="row" justifyContent="space-between">
                     <Stack ref={popoverRef} direction="row" spacing=".3rem">
                         <Stack direction="row" spacing=".4rem" alignItems="flex-start">
                             {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}

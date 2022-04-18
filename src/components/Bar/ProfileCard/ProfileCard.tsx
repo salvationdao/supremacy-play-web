@@ -395,7 +395,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                                 marginBottom: "1rem",
                                             }}
                                         >
-                                            Steps to enable Telegram notification:
+                                            Steps to enable Telegram notifications:
                                         </Typography>
                                     </Box>
 

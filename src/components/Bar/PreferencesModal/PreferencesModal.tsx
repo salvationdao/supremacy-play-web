@@ -120,6 +120,11 @@ export const BattleQueueNotifications = ({ playerProfile, send, setTelegramShort
     const updatePlayerProfile = async () => {
         if (!send || !newPlayerProfile) return
 
+        if (newPlayerProfile.enable_sms_notifications && !newPlayerProfile.mobile_number) {
+            setError("Please enter mobile number to enable sms notifications")
+            return
+        }
+
         try {
             setLoading(true)
             const resp = await send(GameServerKeys.UpdatePlayerProfile, {
@@ -150,11 +155,6 @@ export const BattleQueueNotifications = ({ playerProfile, send, setTelegramShort
 
     return (
         <Stack sx={{ px: "1.5rem", py: ".8rem", backgroundColor: "#FFFFFF08", borderRadius: 1 }}>
-            <Box>
-                Enabling notifications. We will notify you via your chosen notification preference when your war machine is within the top 10 in queue. Once the
-                notification is sent you will be charged
-                <SvgSupToken width="10px" size="1.2rem" fill={colors.yellow} margin={0} /> 5
-            </Box>
             <Box sx={{ display: "flex" }}>
                 <Typography gutterBottom sx={{ opacity: 0.8 }}>
                     NOTIFICATIONS
@@ -163,9 +163,21 @@ export const BattleQueueNotifications = ({ playerProfile, send, setTelegramShort
                     placement="right-start"
                     text={
                         <Box>
-                            Enabling notifications. We will notify you via your chosen notification preference when your war machine is within the top 10 in
-                            queue. Once the notification is sent you will be charged
-                            <SvgSupToken width="10px" size="1.2rem" fill={colors.yellow} margin={0} /> 5
+                            <p>
+                                Enabling notifications. We will notify you via your chosen notification preference when your war machine is within the top 10 in
+                                queue. Once the notification is sent you will be charged
+                                <SvgSupToken
+                                    sx={{
+                                        width: "10px",
+                                        display: "inline",
+                                        mt: "3rem",
+                                    }}
+                                    size="1.2rem"
+                                    fill={colors.yellow}
+                                    margin={0}
+                                />
+                                5 $SUPS
+                            </p>
                         </Box>
                     }
                 >
@@ -190,24 +202,25 @@ export const BattleQueueNotifications = ({ playerProfile, send, setTelegramShort
                 checked={!!newPlayerProfile?.enable_sms_notifications}
                 onChangeFunction={(e) => setNewPlayerProfile({ ...newPlayerProfile, enable_sms_notifications: e.currentTarget.checked })}
             />
-
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography>Phone number: </Typography>
-                <TextField
-                    disabled={loading}
-                    sx={{
-                        flexGrow: "2",
-                        mt: "-1px",
-                        pl: "1rem",
-                        input: { px: ".5rem", py: "1px" },
-                    }}
-                    defaultValue={newPlayerProfile.mobile_number}
-                    value={newPlayerProfile.mobile_number}
-                    onChange={(e) => {
-                        setNewPlayerProfile({ ...newPlayerProfile, mobile_number: e.currentTarget.value })
-                    }}
-                />
-            </Box>
+            {newPlayerProfile.enable_sms_notifications && (
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Typography>Phone number: </Typography>
+                    <TextField
+                        disabled={loading}
+                        sx={{
+                            flexGrow: "2",
+                            mt: "-1px",
+                            pl: "1rem",
+                            input: { px: ".5rem", py: "1px" },
+                        }}
+                        defaultValue={newPlayerProfile.mobile_number}
+                        value={newPlayerProfile.mobile_number}
+                        onChange={(e) => {
+                            setNewPlayerProfile({ ...newPlayerProfile, mobile_number: e.currentTarget.value })
+                        }}
+                    />
+                </Box>
+            )}
 
             <PreferenceToggle
                 disabled={loading}

@@ -1,7 +1,7 @@
 import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { ClipThing, TooltipHelper } from ".."
+import { ClipThing, QueueFeedResponse, TooltipHelper } from ".."
 import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../containers"
@@ -38,26 +38,15 @@ const AmountItem = ({
     )
 }
 
-export const DeployConfirmation = ({
-    open,
-    asset,
-    queueLength,
-    queueCost,
-    contractReward,
-    onClose,
-}: {
-    open: boolean
-    asset: Asset
-    queueLength: number
-    queueCost: string
-    contractReward: string
-    onClose: () => void
-}) => {
+export const DeployConfirmation = ({ open, asset, queueFeed, onClose }: { open: boolean; asset: Asset; queueFeed: QueueFeedResponse; onClose: () => void }) => {
+    const queueLength = queueFeed?.queue_length || 0
+    const queueCost = queueFeed?.queue_cost || ""
+    const contractReward = queueFeed?.contract_reward || ""
+
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
-    const [needInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
     const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueCost, 2))
@@ -79,13 +68,9 @@ export const DeployConfirmation = ({
         try {
             const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
                 asset_hash: hash,
-                need_insured: needInsured,
             })
 
             if (resp && resp.success) {
-                // if (resp.code !== "" && setTelegramShortcode) {
-                //     setTelegramShortcode(resp.code)
-                // }
                 onClose()
                 newSnackbarMessage("Successfully deployed war machine.", "success")
                 setDeployFailed("")
@@ -97,7 +82,7 @@ export const DeployConfirmation = ({
         } finally {
             toggleIsDeploying(false)
         }
-    }, [state, hash, needInsured])
+    }, [state, hash])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: 999999 }}>
@@ -116,7 +101,7 @@ export const DeployConfirmation = ({
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >
@@ -222,214 +207,7 @@ export const DeployConfirmation = ({
                                 />
                             </Stack>
 
-                            <Stack>
-                                {/* <Stack direction="row" alignItems="center">
-                                    <Typography
-                                        sx={{
-                                            pt: ".08rem",
-                                            lineHeight: 1,
-                                            color: colors.green,
-                                            fontWeight: "fontWeightBold",
-                                        }}
-                                    >
-                                        Add insurance:
-                                    </Typography>
-                                    <Switch
-                                        size="small"
-                                        checked={needInsured}
-                                        onChange={() => toggleNeedInsured()}
-                                        sx={{
-                                            transform: "scale(.6)",
-                                            ".Mui-checked": { color: `${colors.green} !important` },
-                                            ".Mui-checked+.MuiSwitch-track": {
-                                                backgroundColor: `${colors.green}50 !important`,
-                                            },
-                                        }}
-                                    />
-                                    <TooltipHelper
-                                        placement="right-start"
-                                        text={
-                                            <>
-                                                Insurance costs&nbsp;
-                                                <span style={{ textDecoration: "line-through" }}>10%</span> of the contract reward but allows your damaged war
-                                                machine to be repair much faster so it can be ready for the next battle much sooner.
-                                            </>
-                                        }
-                                    >
-                                        <Box sx={{ ml: "auto" }}>
-                                            <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
-                                        </Box>
-                                    </TooltipHelper>
-                                </Stack> */}
-
-                                {/* <Stack direction="row" alignItems="center">
-                                    <Typography
-                                        sx={{
-                                            pt: ".08rem",
-                                            lineHeight: 1,
-                                            color: colors.green,
-                                            fontWeight: "fontWeightBold",
-                                        }}
-                                    >
-                                        Enable Telegram notifications:
-                                    </Typography>
-                                    <Switch
-                                        size="small"
-                                        checked={currentSettings.telegram_notifications}
-                                        onChange={(e) => {
-                                            setCurrentSettings((prev) => {
-                                                const newSettings = { ...prev }
-                                                newSettings.telegram_notifications = e.currentTarget.checked
-                                                return newSettings
-                                            })
-                                        }}
-                                        sx={{
-                                            transform: "scale(.6)",
-                                            ".Mui-checked": { color: `${colors.green} !important` },
-                                            ".Mui-checked+.MuiSwitch-track": {
-                                                backgroundColor: `${colors.green}50 !important`,
-                                            },
-                                        }}
-                                    />
-                                    <Box ml="auto" />
-
-                                    <TooltipHelper
-                                        placement="right-start"
-                                        text={
-                                            <>
-                                                Enabling notifications will add&nbsp;<strong>10%</strong> to the queue cost. We will notify you via your chosen
-                                                notification preference when your war machine is within the top 10 in queue. The notification fee{" "}
-                                                <strong>will not</strong> be refunded if your war marchine exits the queue.
-                                            </>
-                                        }
-                                    >
-                                        <Box>
-                                            <SvgInfoCircular
-                                                size="1.2rem"
-                                                sx={{
-                                                    marginLeft: ".5rem",
-                                                    paddingBottom: 0,
-                                                    opacity: 0.4,
-                                                    ":hover": { opacity: 1 },
-                                                }}
-                                            />
-                                        </Box>
-                                    </TooltipHelper>
-                                </Stack> */}
-                                {/* 
-                                <Box>
-                                    <Stack direction="row" alignItems="center">
-                                        <Typography
-                                            sx={{
-                                                pt: ".08rem",
-                                                lineHeight: 1,
-                                                color: colors.green,
-                                                fontWeight: "fontWeightBold",
-                                            }}
-                                        >
-                                            Enable SMS notifications:
-                                        </Typography>
-                                        <Switch
-                                            size="small"
-                                            checked={currentSettings.sms_notifications}
-                                            onChange={(e) => {
-                                                setCurrentSettings((prev) => {
-                                                    const newSettings = { ...prev }
-                                                    newSettings.sms_notifications = e.currentTarget.checked
-                                                    return newSettings
-                                                })
-                                                setMobile(user?.mobile_number)
-                                                setSaveMobile(false)
-                                            }}
-                                            sx={{
-                                                transform: "scale(.6)",
-                                                ".Mui-checked": { color: `${colors.green} !important` },
-                                                ".Mui-checked+.MuiSwitch-track": {
-                                                    backgroundColor: `${colors.green}50 !important`,
-                                                },
-                                            }}
-                                        />
-                                        <TooltipHelper
-                                            placement="right-start"
-                                            text={
-                                                <>
-                                                    Enabling notifications will add&nbsp;<strong>10%</strong> to the queue fee. We will notify you via your
-                                                    chosen notification preference when your war machine is within top 10 in queue. The notification fee{" "}
-                                                    <strong>will not</strong> be refunded if your war marchine exits the queue.
-                                                </>
-                                            }
-                                        >
-                                            <Box sx={{ ml: "auto" }}>
-                                                <SvgInfoCircular
-                                                    size="1.2rem"
-                                                    sx={{
-                                                        ml: ".5rem",
-                                                        pb: 0,
-                                                        opacity: 0.4,
-                                                        ":hover": { opacity: 1 },
-                                                    }}
-                                                />
-                                            </Box>
-                                        </TooltipHelper>
-                                    </Stack>
-
-                                    <Stack
-                                        spacing=".3rem"
-                                        sx={{
-                                            mt: ".2rem",
-                                            mb: "1rem",
-                                            ml: ".3rem",
-                                            pl: "1rem",
-                                            borderLeft: "#FFFFFF35 1px solid",
-                                        }}
-                                    >
-                                        {currentSettings.sms_notifications && (
-                                            <>
-                                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                                    <Typography>Phone number: </Typography>
-                                                    <TextField
-                                                        sx={{
-                                                            flexGrow: "2",
-                                                            mt: "-1px",
-                                                            pl: "1rem",
-                                                            input: { px: ".5rem", py: "1px" },
-                                                        }}
-                                                        defaultValue={mobile}
-                                                        value={mobile}
-                                                        onChange={(e) => {
-                                                            setMobile(e.target.value)
-                                                            if (e.target.value === user?.mobile_number) {
-                                                                setSaveMobile(false)
-                                                            }
-                                                        }}
-                                                    />
-                                                </Box>
-                                                {user?.mobile_number != mobile && (
-                                                    <Stack direction="row" spacing=".5rem" alignItems="center">
-                                                        <Typography>Save number to profile?</Typography>
-                                                        <Checkbox
-                                                            checked={saveMobile}
-                                                            onClick={() => setSaveMobile((prev) => !prev)}
-                                                            sx={{ m: 0, p: 0, color: user?.faction.theme.primary }}
-                                                        />
-                                                    </Stack>
-                                                )}
-                                            </>
-                                        )}
-
-                                        {!settingsMatch && (
-                                            <Stack direction="row" spacing=".5rem" alignItems="center">
-                                                <Typography>Save notification settings as default?</Typography>
-                                                <Checkbox
-                                                    checked={saveSettings}
-                                                    onClick={() => setSaveSettings((prev) => !prev)}
-                                                    sx={{ m: 0, p: 0, color: user?.faction.theme.primary }}
-                                                />
-                                            </Stack>
-                                        )}
-                                    </Stack>
-                                </Box> */}
-                            </Stack>
+                            <Stack></Stack>
 
                             <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
                                 <Button
