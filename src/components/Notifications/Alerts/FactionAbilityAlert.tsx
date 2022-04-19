@@ -18,7 +18,7 @@ export const FactionAbilityAlert = ({ data, factionsAll }: { data: BattleFaction
             border={{
                 borderColor: mainColor || colors.grey,
                 isFancy: true,
-                borderThickness: ".2rem",
+                borderThickness: ".15rem",
             }}
         >
             <Stack

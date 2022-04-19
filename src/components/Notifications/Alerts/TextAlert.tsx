@@ -9,7 +9,7 @@ export const TextAlert = ({ data }: { data: string }) => {
             border={{
                 borderColor: colors.offWhite,
                 isFancy: true,
-                borderThickness: ".2rem",
+                borderThickness: ".15rem",
             }}
         >
             <Box

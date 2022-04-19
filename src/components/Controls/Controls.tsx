@@ -6,6 +6,7 @@ import { StreamSelect } from "./StreamSelect"
 import { useGameServerAuth } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { CONTROLS_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../constants"
+import { BattleStats } from "../BattleStats/BattleStats"
 
 export const Controls = () => {
     const { user } = useGameServerAuth()
@@ -23,12 +24,12 @@ export const Controls = () => {
                 pl: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
                 pt: ".24rem",
                 pb: ".16rem",
-                backgroundColor:
-                    user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
             }}
         >
             <Stack direction="row" spacing="1.6rem">
                 <LiveCounts />
+                <BattleStats />
                 <OverlayToggles />
             </Stack>
 

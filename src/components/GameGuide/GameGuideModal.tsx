@@ -106,7 +106,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                     border={{
                         isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".2rem",
+                        borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >

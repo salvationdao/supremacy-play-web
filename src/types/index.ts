@@ -257,15 +257,6 @@ export interface Multiplier {
     battle_number: number
 }
 
-export interface MultiplierGuide {
-    key: string
-    description: string
-    title: string
-    amount: number
-    isMultiplicative: boolean
-    duration: number
-}
-
 export interface Dimension {
     width: number
     height: number

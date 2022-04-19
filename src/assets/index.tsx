@@ -84,6 +84,8 @@ import Save from "!@svgr/webpack!./svg/Save.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Death from "!@svgr/webpack!./svg/Death.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
+import Graph from "!@svgr/webpack!./svg/Graph.svg"
+import Chest from "!@svgr/webpack!./svg/Chest.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import RedMountainLogo from "./images/RedMountainLogo.png"
@@ -105,44 +107,42 @@ import WarningIcon from "@mui/icons-material/Warning"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
 import RedMoutainMechKillIcon from "!@svgr/webpack!./svg/RedMountainKillIcon.svg"
 import EmojiSelector from "!@svgr/webpack!./svg/emojiSelector.svg"
+import ExpandLessIcon from "@mui/icons-material/ExpandLess"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 
 // Multiplier images (no spaces in file names, won't work!)
 import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
 import MultiplierAFoolAndHisMoney from "./images/Multipliers/AFoolAndHisMoney.png"
 import MultiplierAirSupport from "./images/Multipliers/AirSupport.png"
-import MultiplierCitizen from "./images/Multipliers/Citizen.png"
 import MultiplierContributor from "./images/Multipliers/Contributor.png"
 import MultiplierDestroyerOfWorlds from "./images/Multipliers/DestroyerOfWorlds.png"
 import MultiplierFieldMechanic from "./images/Multipliers/FieldMechanic.png"
 import MultiplierGreaseMonkey from "./images/Multipliers/GreaseMonkey.png"
 import MultiplierMechCommander from "./images/Multipliers/MechCommander.png"
 import MultiplierNowIAmBecomeDeath from "./images/Multipliers/NowIAmBecomeDeath.png"
-import MultiplierSuperContributor from "./images/Multipliers/SuperContributor.png"
-import MultiplierSupporter from "./images/Multipliers/Supporter.png"
-import MultiplierFiend from "./images/Multipliers/Fiend.png"
+import MultiplierAirMarshal from "./images/Multipliers/AirMarshal.png"
 import MultiplierJunkE from "./images/Multipliers/JunkE.png"
-import MultiplierMechHead from "./images/Multipliers/Supporter.png"
+import MultiplierMechHead from "./images/Multipliers/MechHead.png"
 import MultiplierSniper from "./images/Multipliers/Sniper.png"
+import MultiplierGeneric from "./images/Multipliers/Generic.png"
 import MultiplierWonBattle from "./images/Multipliers/WonBattle.png"
 import MultiplierWonLastThreeBattles from "./images/Multipliers/WonLastThreeBattles.png"
 export {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
     MultiplierAirSupport,
-    MultiplierCitizen,
     MultiplierContributor,
     MultiplierDestroyerOfWorlds,
     MultiplierFieldMechanic,
     MultiplierGreaseMonkey,
     MultiplierMechCommander,
     MultiplierNowIAmBecomeDeath,
-    MultiplierSuperContributor,
-    MultiplierSupporter,
-    MultiplierFiend,
+    MultiplierAirMarshal,
     MultiplierJunkE,
     MultiplierMechHead,
     MultiplierSniper,
     MultiplierWonBattle,
+    MultiplierGeneric,
     MultiplierWonLastThreeBattles,
 }
 // End multiplier images
@@ -754,5 +754,29 @@ export const SvgListView: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgGridView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <GridView />
+    </SvgWrapper>
+)
+
+export const SvgGraph: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Graph />
+    </SvgWrapper>
+)
+
+export const SvgChest: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Chest />
+    </SvgWrapper>
+)
+
+export const SvgExpandLessIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ExpandLessIcon />
+    </SvgWrapper>
+)
+
+export const SvgExpandMoreIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ExpandMoreIcon />
     </SvgWrapper>
 )

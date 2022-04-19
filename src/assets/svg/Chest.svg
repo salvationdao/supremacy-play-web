@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1313.1404 1241.2336"
+   version="1.1"
+   id="svg26"
+   sodipodi:docname="Chest.svg"
+   inkscape:version="1.1 (1:1.1+202106031931+af4d65493e)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview28"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="0.26311031"
+     inkscape:cx="545.39862"
+     inkscape:cy="640.4158"
+     inkscape:window-width="2560"
+     inkscape:window-height="1314"
+     inkscape:window-x="1920"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg26"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">
+      .cls-1 {
+        fill: #462309;
+      }
+
+      .cls-1, .cls-2 {
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #f0c520;
+      }
+    </style>
+  </defs>
+  <path
+     class="cls-1"
+     d="M 3.5e-6,302.66037 V 977.37616 L 1019.6531,1241.2336 1313.1404,980.98999 V 336.39544 l -290.2505,167.47434 z"
+     id="path6"
+     style="stroke-width:1.14003" />
+  <path
+     class="cls-2"
+     d="M 21.578366,256.87681 1015.3364,446.03651 1278.6032,306.2754 c 0,0 -169.9177,-275.952964 -412.17046,-175.9078 0,0 -142.88329,-90.405885 -262.19544,4.81843 0,0 0.66461,-86.129519 -87.39884,-80.72444 0,0 -77.44798,-106.465726 -173.71769,-21.682957 0,0 -80.7732,-38.0584068 -87.39884,42.169737 0,0 -68.15849,-28.492609 -74.44534,42.16974 -0.005,-0.004 -139.482536,-35.802178 -159.698224,139.7587 z"
+     id="path10"
+     style="stroke-width:1.14003;fill:#ffd538;fill-opacity:1" />
+  <path
+     class="cls-2"
+     d="M 3.5e-6,302.84347 V 977.42434 L 97.102633,1001.5165 V 322.11721 Z"
+     id="path18"
+     style="stroke-width:1.14003" />
+  <path
+     class="cls-2"
+     d="m 904.13337,481.12556 v 729.99284 l 115.44423,28.9106 62.5773,-54.2074 V 470.28408 l -59.3405,34.93365 z"
+     id="path20"
+     style="stroke-width:1.14003" />
+  <path
+     class="cls-2"
+     d="m 1268.8077,363.07391 v 656.51169 l 44.2356,-38.54743 V 336.57252 Z"
+     id="path22"
+     style="stroke-width:1.14003" />
+</svg>

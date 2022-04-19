@@ -260,7 +260,6 @@ const BattleAbilityTextTop = ({ label, description, image_url, colour, cooldown_
                     }}
                 />
                 <Typography
-                    variant="body1"
                     sx={{
                         lineHeight: 1,
                         fontWeight: "fontWeightBold",

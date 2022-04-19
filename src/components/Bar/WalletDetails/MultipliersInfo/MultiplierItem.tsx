@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { TooltipHelper } from "../.."
-import { getMutiplierDeets } from "../../../helpers"
-import { Multiplier } from "../../../types"
+import { TooltipHelper } from "../../.."
+import { getMutiplierDeets } from "../../../../helpers"
+import { Multiplier } from "../../../../types"
 
 export const MultiplierItem = ({ multiplier }: { multiplier: Multiplier }) => {
     const multiplierDeets = useMemo(() => getMutiplierDeets(multiplier.key), [multiplier])
