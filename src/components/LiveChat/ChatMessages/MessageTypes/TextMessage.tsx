@@ -93,7 +93,7 @@ const UserDetailsPopover = ({
                     border={{
                         isFancy: true,
                         borderColor: factionColor || colors.neonBlue,
-                        borderThickness: ".2rem",
+                        borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >
@@ -372,7 +372,7 @@ export const TextMessage = ({
                                     opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
                                 }}
                             >
-                                {total_multiplier || 0}x
+                                {total_multiplier || 0}
                             </Typography>
 
                             {is_citizen && (

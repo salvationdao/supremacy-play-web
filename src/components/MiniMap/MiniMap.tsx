@@ -205,7 +205,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                             clipSize="10px"
                             border={{
                                 isFancy: true,
-                                borderThickness: ".2rem",
+                                borderThickness: ".15rem",
                                 borderColor: mainColor,
                             }}
                         >

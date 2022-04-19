@@ -182,17 +182,35 @@ const DrawerContent = ({
                     <strong>DISPLAYING:</strong> {assetsQueue?.length || 0} of {totalItems}
                 </Typography>
                 <Stack direction="row">
-                    <IconButton size="small" onClick={() => setPageSize(12)}>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            setPageSize(12)
+                            changePage(1)
+                        }}
+                    >
                         <Typography variant="body2" sx={{ opacity: pageSize === 12 ? 1 : 0.3 }}>
                             12
                         </Typography>
                     </IconButton>
-                    <IconButton size="small" onClick={() => setPageSize(24)}>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            setPageSize(24)
+                            changePage(1)
+                        }}
+                    >
                         <Typography variant="body2" sx={{ opacity: pageSize === 24 ? 1 : 0.3 }}>
                             24
                         </Typography>
                     </IconButton>
-                    <IconButton size="small" onClick={() => setPageSize(36)}>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            setPageSize(36)
+                            changePage(1)
+                        }}
+                    >
                         <Typography variant="body2" sx={{ opacity: pageSize === 36 ? 1 : 0.3 }}>
                             36
                         </Typography>
