@@ -21,6 +21,9 @@ export const MultipliersPopover = ({
     popoverRef: MutableRefObject<null>
 }) => {
     const [localOpen, toggleLocalOpen] = useToggle(open)
+    const actualMultipliers = multipliers.filter((m) => m.multipliers.length > 0)
+
+    console.log(actualMultipliers)
 
     useEffect(() => {
         if (!localOpen) {
@@ -55,14 +58,13 @@ export const MultipliersPopover = ({
             }}
         >
             <Stack spacing="1.2rem" sx={{ position: "relative", width: "35rem", px: "2rem", py: "1.4rem" }}>
-                {multipliers ? (
+                {actualMultipliers && actualMultipliers.length > 0 ? (
                     <Box>
                         <Typography sx={{ mb: ".24rem", fontWeight: "bold", color: colors.offWhite }} variant="h6">
                             ACTIVE MULTIPLIERS:
                         </Typography>
                         <Stack spacing=".4rem">
-                            {multipliers.map((bm) => {
-                                if (bm.multipliers.length === 0) return <></>
+                            {actualMultipliers.map((bm) => {
                                 return <MultipliersBattle key={`bmv-key-${bm.battle_number}`} bm={bm} />
                             })}
                         </Stack>
