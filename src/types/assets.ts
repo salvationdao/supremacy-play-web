@@ -1,27 +1,8 @@
-export enum AssetOnChainStatus {
-    MINTABLE = "MINTABLE",
-    STAKABLE = "STAKABLE",
-    UNSTAKABLE = "UNSTAKABLE",
-}
-
 export interface AssetDurability {
     hash: string
     started_at: Date
     expect_completed_at: Date
     repair_type: "FAST" | "STANDARD" | ""
-}
-
-// position = undefined	 	// currently not queuing
-// position = -1        	// currently in game
-// position >= 0         	// current queuing position
-export interface AssetQueueStat {
-    queue_position?: number
-    contract_reward?: string
-}
-
-export interface AssetQueueStatusItem {
-    queue_position: number
-    mech_id: string
 }
 
 export interface Asset {

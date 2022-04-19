@@ -15,9 +15,7 @@ export const VotingSystem = () => {
 const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const { user } = useGameServerAuth()
     const initialSize = { width: 390, height: 360, minWidth: 350 }
-    const [containerWidth, setContainerWidth] = useState<number>(
-        parseString(localStorage.getItem("votingSystemWidth"), initialSize.width),
-    )
+    const [containerWidth, setContainerWidth] = useState<number>(parseString(localStorage.getItem("votingSystemWidth"), initialSize.width))
     const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
     const theme = useTheme<Theme>()
     const {
@@ -80,7 +78,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                     <ClipThing
                         border={{
                             isFancy: true,
-                            borderThickness: ".3rem",
+                            borderThickness: ".2rem",
                             borderColor: theme.factionTheme.primary,
                         }}
                         clipSize="10px"

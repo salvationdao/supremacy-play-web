@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextFiel
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import QRCode from "react-qr-code"
-import { ClipThing, TooltipHelper } from ".."
+import { ClipThing, QueueFeedResponse, TooltipHelper } from ".."
 import { SvgClose, SvgContentCopyIcon, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../assets"
 import { PASSPORT_WEB, TELEGRAM_BOT_URL } from "../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
@@ -53,26 +53,25 @@ interface NotificationsSettings {
 export const DeployConfirmation = ({
     open,
     asset,
-    queueLength,
-    queueCost,
-    contractReward,
+    queueFeed,
     onClose,
     setTelegramShortcode,
 }: {
     open: boolean
     asset: Asset
-    queueLength: number
-    queueCost: string
-    contractReward: string
+    queueFeed: QueueFeedResponse
     onClose: () => void
     setTelegramShortcode?: (s: string) => void
 }) => {
+    const queueLength = queueFeed?.queue_length || 0
+    const queueCost = queueFeed?.queue_cost || ""
+    const contractReward = queueFeed?.contract_reward || ""
+
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { send: psSend } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
     const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
-    const [needInsured] = useToggle()
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
     const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueCost, 2))
@@ -156,7 +155,6 @@ export const DeployConfirmation = ({
 
             const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
                 asset_hash: hash,
-                need_insured: needInsured,
                 enable_push_notifications: currentSettings.push_notifications,
                 mobile_number: currentSettings.sms_notifications ? mobile : undefined,
                 enable_telegram_notifications: currentSettings.telegram_notifications,
@@ -176,7 +174,7 @@ export const DeployConfirmation = ({
         } finally {
             toggleIsDeploying(false)
         }
-    }, [state, hash, needInsured, currentSettings, saveMobile, mobile, saveSettings])
+    }, [state, hash, currentSettings, saveMobile, mobile, saveSettings])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: 999999 }}>
@@ -195,7 +193,7 @@ export const DeployConfirmation = ({
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >
@@ -302,45 +300,6 @@ export const DeployConfirmation = ({
                             </Stack>
 
                             <Stack>
-                                {/* <Stack direction="row" alignItems="center">
-                                    <Typography
-                                        sx={{
-                                            pt: ".08rem",
-                                            lineHeight: 1,
-                                            color: colors.green,
-                                            fontWeight: "fontWeightBold",
-                                        }}
-                                    >
-                                        Add insurance:
-                                    </Typography>
-                                    <Switch
-                                        size="small"
-                                        checked={needInsured}
-                                        onChange={() => toggleNeedInsured()}
-                                        sx={{
-                                            transform: "scale(.6)",
-                                            ".Mui-checked": { color: `${colors.green} !important` },
-                                            ".Mui-checked+.MuiSwitch-track": {
-                                                backgroundColor: `${colors.green}50 !important`,
-                                            },
-                                        }}
-                                    />
-                                    <TooltipHelper
-                                        placement="right-start"
-                                        text={
-                                            <>
-                                                Insurance costs&nbsp;
-                                                <span style={{ textDecoration: "line-through" }}>10%</span> of the contract reward but allows your damaged war
-                                                machine to be repair much faster so it can be ready for the next battle much sooner.
-                                            </>
-                                        }
-                                    >
-                                        <Box sx={{ ml: "auto" }}>
-                                            <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
-                                        </Box>
-                                    </TooltipHelper>
-                                </Stack> */}
-
                                 <Stack direction="row" alignItems="center">
                                     <Typography
                                         sx={{
@@ -607,7 +566,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                             border={{
                                 isFancy: true,
                                 borderColor: colors.neonBlue,
-                                borderThickness: ".3rem",
+                                borderThickness: ".2rem",
                             }}
                         >
                             <Stack
@@ -702,7 +661,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                             border={{
                                 isFancy: true,
                                 borderColor: colors.neonBlue,
-                                borderThickness: ".3rem",
+                                borderThickness: ".2rem",
                             }}
                         >
                             <Stack

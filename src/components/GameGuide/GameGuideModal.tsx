@@ -106,7 +106,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                     border={{
                         isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >
@@ -141,16 +141,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                     >
                                         {document &&
                                             document.results[0].data.body.map((item, i) => {
-                                                return (
-                                                    <Tab
-                                                        label={`${
-                                                            item.primary.section_title[0]
-                                                                ? item.primary.section_title[0].text
-                                                                : ""
-                                                        }`}
-                                                        key={i}
-                                                    />
-                                                )
+                                                return <Tab label={`${item.primary.section_title[0] ? item.primary.section_title[0].text : ""}`} key={i} />
                                             })}
                                     </Tabs>
                                 </Box>
@@ -216,41 +207,20 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
                                                                                         mt: ".2rem",
                                                                                         flexShrink: 0,
                                                                                         backgroundImage: `url(${
-                                                                                            item.section_image_link
-                                                                                                ? item
-                                                                                                      .section_image_link
-                                                                                                      .url
-                                                                                                : ""
+                                                                                            item.section_image_link ? item.section_image_link.url : ""
                                                                                         })`,
                                                                                         backgroundRepeat: "no-repeat",
-                                                                                        backgroundPosition:
-                                                                                            "top center",
+                                                                                        backgroundPosition: "top center",
                                                                                         backgroundSize: "contain",
                                                                                         border: `${"#FFFFFF"} 1px solid`,
                                                                                         borderRadius: 0.6,
                                                                                     }}
                                                                                 />
                                                                                 <Stack>
-                                                                                    <PrismicRichText
-                                                                                        field={
-                                                                                            item.section_content_title
-                                                                                        }
-                                                                                    />
-                                                                                    <PrismicRichText
-                                                                                        field={
-                                                                                            item.section_content_subheader
-                                                                                        }
-                                                                                    />
-                                                                                    <PrismicRichText
-                                                                                        field={
-                                                                                            item.section_content_subsubheader
-                                                                                        }
-                                                                                    />
-                                                                                    <PrismicRichText
-                                                                                        field={
-                                                                                            item.section_content_body
-                                                                                        }
-                                                                                    />
+                                                                                    <PrismicRichText field={item.section_content_title} />
+                                                                                    <PrismicRichText field={item.section_content_subheader} />
+                                                                                    <PrismicRichText field={item.section_content_subsubheader} />
+                                                                                    <PrismicRichText field={item.section_content_body} />
                                                                                 </Stack>
                                                                             </Stack>
                                                                         </Box>

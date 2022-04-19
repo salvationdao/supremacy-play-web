@@ -35,7 +35,7 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
                     border={{
                         isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >

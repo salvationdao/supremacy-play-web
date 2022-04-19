@@ -40,13 +40,11 @@ export enum GameServerKeys {
     // Streams
     SubStreamList = "STREAMLIST:SUBSCRIBE",
 
-    // Queue
+    // Asset / queue
+    SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
+    GetAssetsQueue = "ASSET:MANY",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
-    SubQueueStatus = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
-    AssetQueueStatus = "ASSET:QUEUE:STATUS",
-    AssetQueueStatusList = "ASSET:QUEUE:STATUS:LIST",
-    SubAssetQueueStatus = "ASSET:QUEUE:STATUS:SUBSCRIBE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
@@ -62,7 +60,7 @@ export enum GameServerKeys {
     SubAISpawned = "AI:SPAWNED",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
-    GetSupsMultiplier = "USER:MULTIPLIERS:GET",
+    SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
     SubSupsMultiplierSignal = "USER:MULTIPLIER:SIGNAL:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",

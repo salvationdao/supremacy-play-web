@@ -232,7 +232,6 @@ export const theme = createTheme({
         MuiPagination: {
             styleOverrides: {
                 root: {
-                    marginTop: "17px",
                     ".MuiPagination-ul": {
                         justifyContent: "center",
                     },
