@@ -3,6 +3,7 @@ import React, { Dispatch } from "react"
 interface UpdateThemeContextProps {
     updateTheme: Dispatch<React.SetStateAction<FactionThemeColor>>
 }
+
 export const UpdateTheme = React.createContext({} as UpdateThemeContextProps)
 
 export interface User {
@@ -210,7 +211,7 @@ export interface BattleEndDetail {
     started_at: Date
     ended_at: Date
     total_multipliers: string
-    multipliers: Multiplier[]
+    battle_multipliers: MultiplierUpdateResp
     winning_condition: string
     winning_faction: Faction
     winning_war_machines: WarMachineState[]
@@ -259,17 +260,22 @@ export interface Stream {
     distance?: number
 }
 
+export interface MultiplierUpdateResp {
+    battles: BattleMultipliers[]
+}
+
+export interface BattleMultipliers {
+    battle_number: number
+    total_multipliers: string
+    multipliers: Multiplier[]
+}
+
 export interface Multiplier {
     key: string
     value: string
     description: string
     is_multiplicative: boolean
-    expires_in_seconds: number
-}
-
-export interface MultipliersAll {
-    total_multipliers: string
-    multipliers: Multiplier[]
+    battle_number: number
 }
 
 export interface MultiplierGuide {
