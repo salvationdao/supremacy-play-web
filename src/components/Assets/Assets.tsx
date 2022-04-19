@@ -96,8 +96,6 @@ const DrawerContent = ({ isGridView, toggleIsGridView }: { isGridView: boolean; 
             )
         }
 
-        console.log("hererrrrrrrrrrrr")
-
         if (assetsQueue && assetsQueue.length > 0) {
             return (
                 <Stack spacing={isGridView ? 0 : ".6rem"} direction={isGridView ? "row" : "column"} flexWrap={isGridView ? "wrap" : "unset"}>
