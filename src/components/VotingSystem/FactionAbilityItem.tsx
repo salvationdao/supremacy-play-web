@@ -103,7 +103,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
                         setIgnore(false)
                     }, 150)
                 }
-                return cs.plus(new BigNumber(amount, 18))
+                return BigNumber.minimum(cs.plus(new BigNumber(amount, 18)), supsCost)
             })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
@@ -113,10 +113,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         [send, identity],
     )
 
-    const isVoting = useMemo(
-        () => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThanOrEqualTo(currentSups),
-        [bribeStage, supsCost, currentSups],
-    )
+    const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThan(currentSups), [bribeStage, supsCost, currentSups])
 
     return (
         <FactionAbilityItemInner
