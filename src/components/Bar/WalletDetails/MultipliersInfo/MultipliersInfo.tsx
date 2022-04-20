@@ -15,7 +15,7 @@ export const MultipliersInfo = () => {
     const [isMultipliersPopoverOpen, toggleIsMultipliersPopoverOpen] = useToggle()
     // Multipliers
     const [multipliers, setMultipliers] = useState<BattleMultipliers[]>([])
-    const [currentBattleMultiplier, setCurrentBattleMultiplier] = useState("")
+    const [currentBattleMultiplier, setCurrentBattleMultiplier] = useState("0x")
 
     // Subscribe to multipliers
     useEffect(() => {

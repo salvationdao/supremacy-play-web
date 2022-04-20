@@ -47,7 +47,7 @@ export const ContributorAmount = () => {
 
     return (
         <>
-            <TooltipHelper text="Your contributor multiplier.">
+            <TooltipHelper text="This contribution multiplier is applied at the end of the current battle if your syndicate is victorious.">
                 <Stack direction="row" alignItems="center" justifyContent="center">
                     <Box
                         sx={{
@@ -68,12 +68,12 @@ export const ContributorAmount = () => {
                         variant="body2"
                         sx={{ color: "#00FF90", animation: `${zoomEffect(1.2)} 300ms ease-out` }}
                     >
-                        {contributor.toFixed(2)}x
+                        ({contributor.toFixed(2)}x)
                     </Typography>
                 </Stack>
             </TooltipHelper>
 
-            <TooltipHelper text="Extra contributor multiplier if you contribute now.">
+            <TooltipHelper text="Extra contributor multiplier applied at the end of the battle if you contribute now.">
                 <Stack direction="row" alignItems="center" justifyContent="center">
                     <SvgGraph size="1.5rem" fill="#FFFFFF" sx={{ mr: ".3rem" }} />
                     <Typography variant="body2" sx={{ color: colors.yellow }}>
