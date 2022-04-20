@@ -14,7 +14,7 @@ interface VotingButtonProps {
     Suffix?: JSX.Element
 }
 
-export const VotingButton = ({ percentage, cost, color, textColor, isVoting, onClick, Prefix, Suffix }: VotingButtonProps) => {
+export const VotingButton = ({ percentage, cost, color, textColor, isVoting, onClick, Prefix }: VotingButtonProps) => {
     const { onWorldSups } = useWallet()
 
     const isVotable = useMemo(
@@ -33,21 +33,47 @@ export const VotingButton = ({ percentage, cost, color, textColor, isVoting, onC
             borderColor={color || "#14182B"}
             onClick={onClick}
         >
-            <Stack alignItems="center" justifyContent="center" direction="row" spacing=".16rem">
-                {/*{Prefix}*/}
+            <Stack
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: "rgba(0, 0, 0, .9)",
+                    opacity: 0,
+                    transition: "opacity .2s ease-out",
+                    ":hover": {
+                        opacity: 1,
+                    },
+                }}
+            >
                 <Typography
-                    variant="caption"
                     sx={{
                         lineHeight: 1,
                         fontWeight: "fontWeightBold",
-                        fontFamily: "Nostromo Regular Medium",
+                        whiteSpace: "nowrap",
+                        color: "#FFFFFF",
+                    }}
+                >
+                    ({percentage}%)
+                </Typography>
+            </Stack>
+
+            <Stack alignItems="center" justifyContent="center" direction="row">
+                {Prefix}
+                <Typography
+                    sx={{
+                        lineHeight: 1,
+                        fontWeight: "fontWeightBold",
                         whiteSpace: "nowrap",
                         color: textColor || "#FFFFFF",
                     }}
                 >
-                    {percentage}%
+                    {cost}
                 </Typography>
-                {Suffix}
             </Stack>
         </FancyButton>
     )

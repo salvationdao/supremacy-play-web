@@ -441,20 +441,19 @@ const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityPr
             percentage: voteCost.percentage,
         }
     })
-    voteCosts.forEach((vc) => console.log(vc.cost.toFixed(5), vc.percentage))
 
     return (
         <Stack direction="row" spacing=".4rem" sx={{ mt: ".48rem", width: "100%" }}>
             {voteCosts.map((c) => (
                 <VotingButton
-                    key={`vote-cost-button-${c.cost.toFixed(2)}`}
+                    key={`battle-ability-vote-cost-button-${c.percentage}`}
                     color={buttonColor}
                     textColor={buttonTextColor}
                     percentage={c.percentage.toFixed(1)}
                     cost={c.cost.toFixed(2)}
                     isVoting={isVoting}
                     onClick={() => onBribe(c.cost, c.percentage)}
-                    Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
+                    Prefix={<SvgSupToken size="1.5rem" fill={buttonTextColor} sx={{ pb: ".2rem" }} />}
                 />
             ))}
         </Stack>

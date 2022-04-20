@@ -29,7 +29,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const { faction_id } = useGameServerAuth()
     const { bribeStage } = useGame()
 
-    const { label, colour, text_colour, image_url, identity, description, ability_offering_id } = gameAbility
+    const { label, colour, text_colour, image_url, identity, description } = gameAbility
 
     const [shouldIgnore, setIgnore] = useState<boolean>(false)
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
@@ -313,11 +313,14 @@ const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }
             percentage: voteCost.percentage,
         }
     })
+
+    console.log(voteCosts)
+
     return (
         <Stack direction="row" spacing=".32rem" sx={{ mt: ".48rem", width: "100%" }}>
             {voteCosts.map((c) => (
                 <VotingButton
-                    key={`faction-ability-vote-cost-button-${c.cost.toFixed(2)}`}
+                    key={`faction-ability-vote-cost-button-${c.percentage}`}
                     color={colour}
                     textColor={text_colour || "#FFFFFF"}
                     percentage={c.percentage.toFixed(1)}
@@ -331,4 +334,4 @@ const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }
     )
 }
 
-const SupsToken = ({ text_colour }: { text_colour: string }) => <SvgSupToken size="1.4rem" fill={text_colour || "#FFFFFF"} />
+const SupsToken = ({ text_colour }: { text_colour: string }) => <SvgSupToken size="1.5rem" fill={text_colour || "#FFFFFF"} sx={{ pb: ".2rem" }} />
