@@ -49,23 +49,27 @@ export const MiniMap = () => {
         }
     }, [winner, bribeStage])
 
-    if (!isRender) return null
-
-    return (
-        <MiniMapInner
-            map={map}
-            winner={winner}
-            setWinner={setWinner}
-            bribeStage={bribeStage}
-            isMapOpen={isMapOpen}
-            toggleIsMapOpen={toggleIsMapOpen}
-            newSnackbarMessage={newSnackbarMessage}
-            factionColor={user && user.faction ? user.faction.theme.primary : colors.neonBlue}
-        />
+    const mapRender = useMemo(
+        () => (
+            <MiniMapInner
+                map={map}
+                winner={winner}
+                setWinner={setWinner}
+                bribeStage={bribeStage}
+                isMapOpen={isMapOpen}
+                toggleIsMapOpen={toggleIsMapOpen}
+                newSnackbarMessage={newSnackbarMessage}
+                factionColor={user && user.faction ? user.faction.theme.primary : colors.neonBlue}
+            />
+        ),
+        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, user],
     )
+
+    if (!isRender) return null
+    return <>{mapRender}</>
 }
 
-export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: MiniMapProps) => {
+const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: MiniMapProps) => {
     const {
         pxToRemRatio,
         streamDimensions: { width, height },
@@ -155,6 +159,29 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
 
     const mainColor = useMemo(() => (isTargeting && winner ? winner.game_ability.colour : factionColor), [isTargeting, winner, theme, factionColor])
 
+    const mapInsideRender = useMemo(() => {
+        if (isTargeting && winner) {
+            return (
+                <MiniMapInside
+                    gameAbility={winner.game_ability}
+                    containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * pxToRemRatio }}
+                    targeting
+                    setSubmitted={setSubmitted}
+                    enlarged={enlarged}
+                    newSnackbarMessage={newSnackbarMessage}
+                />
+            )
+        } else {
+            return (
+                <MiniMapInside
+                    containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * pxToRemRatio }}
+                    enlarged={enlarged}
+                    newSnackbarMessage={newSnackbarMessage}
+                />
+            )
+        }
+    }, [isTargeting, winner, dimensions, pxToRemRatio, setSubmitted, enlarged, newSnackbarMessage])
+
     if (!map) return null
 
     return (
@@ -228,22 +255,7 @@ export const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, to
                                     toggleIsMapOpen={toggleIsMapOpen}
                                 />
 
-                                {isTargeting && winner ? (
-                                    <MiniMapInside
-                                        gameAbility={winner.game_ability}
-                                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * pxToRemRatio }}
-                                        targeting
-                                        setSubmitted={setSubmitted}
-                                        enlarged={enlarged}
-                                        newSnackbarMessage={newSnackbarMessage}
-                                    />
-                                ) : (
-                                    <MiniMapInside
-                                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * pxToRemRatio }}
-                                        enlarged={enlarged}
-                                        newSnackbarMessage={newSnackbarMessage}
-                                    />
-                                )}
+                                {mapInsideRender}
 
                                 {isTargeting && winner && (
                                     <TargetTimerCountdown gameAbility={winner.game_ability} setTimeReachZero={setTimeReachZero} endTime={winner.end_time} />

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "."
 import { SupremacyPNG } from "../assets"
@@ -7,7 +7,6 @@ import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys } from "../keys"
-import { UserRank, UserStat } from "../types"
 import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
 
 interface SentChatMessageData {
