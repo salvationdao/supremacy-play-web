@@ -26,7 +26,7 @@ export const EarlyAccessWarning = () => {
                     border={{
                         isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".2rem",
+                        borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >

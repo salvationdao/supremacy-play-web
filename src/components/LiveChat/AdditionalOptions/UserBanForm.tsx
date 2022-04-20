@@ -149,7 +149,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                     border={{
                         isFancy: true,
                         borderColor: primaryColor,
-                        borderThickness: ".2rem",
+                        borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >

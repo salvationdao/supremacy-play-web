@@ -17,15 +17,7 @@ interface EnlistDetailsProps {
     factionData: FactionGeneralData
 }
 
-const Stat = ({
-    title,
-    content,
-    PrefixSvg,
-}: {
-    title: string
-    content: string | number
-    PrefixSvg?: SvgWrapperProps
-}) => {
+const Stat = ({ title, content, PrefixSvg }: { title: string; content: string | number; PrefixSvg?: SvgWrapperProps }) => {
     return (
         <Stack spacing=".24rem" sx={{ width: "18rem" }}>
             <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold", color: colors.grey }}>
@@ -34,10 +26,7 @@ const Stat = ({
 
             <Stack direction="row" alignItems="center" spacing=".32rem">
                 {PrefixSvg}
-                <Typography
-                    variant="body2"
-                    sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}
-                >
+                <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}>
                     {content}
                 </Typography>
             </Stack>
@@ -77,11 +66,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
         const { velocity, recruit_number, win_count, loss_count, kill_count, death_count, mvp } = factionStat
         return (
             <Fade in={true}>
-                <Stack
-                    direction="row"
-                    flexWrap="wrap"
-                    sx={{ pt: ".8rem", px: ".8rem", "& > *": { width: "50%", pb: "1.44rem" } }}
-                >
+                <Stack direction="row" flexWrap="wrap" sx={{ pt: ".8rem", px: ".8rem", "& > *": { width: "50%", pb: "1.44rem" } }}>
                     <Stat
                         title="SUPS Velocity"
                         content={velocity.toLocaleString("en-US", {
@@ -98,18 +83,11 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                             <Stat title="Losses" content={loss_count} />
                             <Stat
                                 title="Win Rate"
-                                content={
-                                    win_count + loss_count === 0
-                                        ? "0%"
-                                        : `${((win_count / (win_count + loss_count)) * 100).toFixed(0)}%`
-                                }
+                                content={win_count + loss_count === 0 ? "0%" : `${((win_count / (win_count + loss_count)) * 100).toFixed(0)}%`}
                             />
                             <Stat title="Kills" content={kill_count} />
                             <Stat title="Deaths" content={death_count} />
-                            <Stat
-                                title="K/D"
-                                content={death_count === 0 ? "0%" : `${((kill_count / death_count) * 100).toFixed(0)}%`}
-                            />
+                            <Stat title="K/D" content={death_count === 0 ? "0%" : `${((kill_count / death_count) * 100).toFixed(0)}%`} />
                             <Stat title="MVP" content={mvp?.username || ""} />
                         </>
                     )}
@@ -176,11 +154,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                 >
                     {factionStat && (
                         <>
-                            <IconButton
-                                sx={{ transform: "scaleX(-1)" }}
-                                onClick={() => setPage(0)}
-                                disabled={page <= 0}
-                            >
+                            <IconButton sx={{ transform: "scaleX(-1)" }} onClick={() => setPage(0)} disabled={page <= 0}>
                                 <SvgArrowRightAltSharpIcon fill={page <= 0 ? "#333333" : primary} />
                             </IconButton>
                             <IconButton onClick={() => setPage(1)} disabled={page >= 1}>
@@ -211,12 +185,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
     )
 }
 
-export const EnlistDetailsPopover = ({
-    popoverRef,
-    popoverOpen,
-    togglePopoverOpen,
-    factionData,
-}: EnlistDetailsProps) => {
+export const EnlistDetailsPopover = ({ popoverRef, popoverOpen, togglePopoverOpen, factionData }: EnlistDetailsProps) => {
     const {
         theme: { primary },
     } = factionData
@@ -243,7 +212,7 @@ export const EnlistDetailsPopover = ({
                     border={{
                         isFancy: true,
                         borderColor: primary,
-                        borderThickness: ".2rem",
+                        borderThickness: ".15rem",
                     }}
                 >
                     <Stack direction="row" sx={{ backgroundColor: "#101019" }}>
@@ -251,10 +220,7 @@ export const EnlistDetailsPopover = ({
                             <PopoverContent factionData={factionData} />
                         ) : (
                             <Box sx={{ px: "2.4rem", py: "1.2rem" }}>
-                                <Typography
-                                    variant="caption"
-                                    sx={{ opacity: 0.6, fontFamily: "Nostromo Regular Bold", color: colors.grey }}
-                                >
+                                <Typography variant="caption" sx={{ opacity: 0.6, fontFamily: "Nostromo Regular Bold", color: colors.grey }}>
                                     Loading...
                                 </Typography>
                             </Box>
