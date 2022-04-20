@@ -8,10 +8,10 @@ import { BattleEndDetail, Multiplier } from "../../../types"
 export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { battle_multipliers } = battleEndDetail
 
-    const [multiplicative, setMultiplicative] = useState<Multiplier[]>([])
+    const [, setMultiplicative] = useState<Multiplier[]>([])
     const [multiplierList, setMultiplierList] = useState<Multiplier[]>([])
     const [totalMultiplierValue, setTotalMultiplierValue] = useState(0)
-    const [totalMultiplicativeValue, setTotalMultiplicativeValue] = useState(0)
+    const [, setTotalMultiplicativeValue] = useState(0)
 
     useEffect(() => {
         if (!battle_multipliers) return
