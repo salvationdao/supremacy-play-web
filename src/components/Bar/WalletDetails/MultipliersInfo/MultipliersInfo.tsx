@@ -37,9 +37,10 @@ export const MultipliersInfo = () => {
     // Current battle multiplier should say update to 0 if battleID was in the payload
     useEffect(() => {
         if (!multipliers || multipliers.length <= 0) return
-        const currentMulti = multipliers.filter((m) => m.battle_number === battleIdentifier || m.battle_number == (battleIdentifier || 0) - 1)
+        console.log(multipliers)
+        const currentMulti = multipliers.filter((m) => m.battle_number === battleIdentifier || m.battle_number === (battleIdentifier || 0) - 1)
         setCurrentBattleMultiplier(currentMulti.length > 0 ? currentMulti[0].total_multipliers : 0)
-    }, [multipliers])
+    }, [multipliers, battleIdentifier])
 
     return (
         <>
