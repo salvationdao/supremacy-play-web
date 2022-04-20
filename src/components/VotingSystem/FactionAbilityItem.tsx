@@ -107,7 +107,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
                 return cs.plus(new BigNumber(amount, 18))
             })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
-                ability_identity: gameAbility.ability_offering_id,
+                ability_identity: identity,
                 ability_offering_id,
                 percentage,
             })
@@ -307,7 +307,7 @@ const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }
     const voteCosts = VOTING_OPTION_COSTS.map((voteCost) => {
         const cost = supsCost.multipliedBy(voteCost.percentage)
         return {
-            cost: cost.comparedTo(voteCost.minCost) === -1 ? voteCost.minCost : cost,
+            cost: cost.isLessThan(voteCost.minCost) ? voteCost.minCost : cost,
             percentage: voteCost.percentage,
         }
     })
