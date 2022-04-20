@@ -1,15 +1,16 @@
 import { Box, Modal, Typography } from "@mui/material"
 import Slide from "@mui/material/Slide"
 import { useEffect, useState } from "react"
-import { GAME_BAR_HEIGHT } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
 import { SaleAbilityCard } from "../PlayerAbilities/SaleAbilityCard"
 
 export interface SaleAbilitiesModalProps {
     open: boolean
-    onClose: ((event: any, reason: "backdropClick" | "escapeKeyDown") => void) | undefined
+    onClose: () => void | undefined
 }
 
 const modalWidth = 400
@@ -17,6 +18,7 @@ const modalWidth = 400
 export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) => {
     const { user } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
+    const [localOpen, toggleLocalOpen] = useToggle(open)
     const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
 
     useEffect(() => {
@@ -34,6 +36,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                     ],
                 },
             })
+            console.log(resp)
             setSaleAbilityIDs(resp.ability_ids)
         }
 
@@ -42,9 +45,17 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
         return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => fetchSaleAbilities())
     }, [state, send, subscribe, user])
 
+    useEffect(() => {
+        if (!localOpen) {
+            setTimeout(() => {
+                onClose()
+            }, DRAWER_TRANSITION_DURATION + 50)
+        }
+    }, [localOpen])
+
     return (
-        <Modal open={open} onClose={onClose} closeAfterTransition>
-            <Slide in={open}>
+        <Modal open={localOpen} onClose={() => toggleLocalOpen(false)} closeAfterTransition>
+            <Slide in={localOpen}>
                 <Box
                     sx={{
                         position: "absolute",

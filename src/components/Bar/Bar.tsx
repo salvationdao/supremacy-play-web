@@ -32,7 +32,7 @@ const BarContent = () => {
             <GameGuide />
             {user && (
                 <>
-                    <Button variant="outlined" onClick={() => toggleShowSaleAbilities()}>
+                    <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)}>
                         Purchase Abilities
                     </Button>
                     <Enlist />
@@ -40,7 +40,7 @@ const BarContent = () => {
                 </>
             )}
             <ProfileCard />
-            <SaleAbilitiesModal open={showSaleAbilities} onClose={() => toggleShowSaleAbilities(false)} />
+            {showSaleAbilities && <SaleAbilitiesModal open={showSaleAbilities} onClose={() => toggleShowSaleAbilities(false)} />}
         </>
     )
 }
