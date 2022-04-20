@@ -435,12 +435,13 @@ interface VotingButtonsProps {
 
 const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityProcess, onBribe }: VotingButtonsProps) => {
     const voteCosts = VOTING_OPTION_COSTS.map((voteCost) => {
-        const cost = battleAbilityProcess.current_sups.multipliedBy(voteCost.percentage)
+        const cost = battleAbilityProcess.sups_cost.multipliedBy(voteCost.percentage / 100)
         return {
             cost: cost.isLessThan(voteCost.minCost) ? voteCost.minCost : cost,
             percentage: voteCost.percentage,
         }
     })
+    voteCosts.forEach((vc) => console.log(vc.cost.toFixed(5), vc.percentage))
 
     return (
         <Stack direction="row" spacing=".4rem" sx={{ mt: ".48rem", width: "100%" }}>
@@ -449,7 +450,7 @@ const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityPr
                     key={`vote-cost-button-${c.cost.toFixed(2)}`}
                     color={buttonColor}
                     textColor={buttonTextColor}
-                    amount={c.cost.toFixed(2)}
+                    percentage={c.percentage.toFixed(1)}
                     cost={c.cost.toFixed(2)}
                     isVoting={isVoting}
                     onClick={() => onBribe(c.cost, c.percentage)}

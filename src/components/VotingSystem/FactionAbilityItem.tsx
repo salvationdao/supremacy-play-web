@@ -91,10 +91,10 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     let ignoreTimeout: boolean
     const onContribute = useCallback(
         (amount: BigNumber, percentage: number) => {
-            if (!send) return
+            if (!send || percentage > 1 || percentage < 0) return
             setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
                 if (!gap) return gap
-                const current_sups = new BigNumber(parseInt(gap.current_sups)).plus(new BigNumber(amount, 18)).toString()
+                const current_sups = new BigNumber(gap.current_sups).plus(new BigNumber(amount).multipliedBy("1000000000000000000")).toString()
                 return { ...gap, current_sups }
             })
             setCurrentSups((cs) => {
@@ -307,7 +307,7 @@ interface VotingButtonsProps {
 
 const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }: VotingButtonsProps) => {
     const voteCosts = VOTING_OPTION_COSTS.map((voteCost) => {
-        const cost = supsCost.multipliedBy(voteCost.percentage)
+        const cost = supsCost.multipliedBy(voteCost.percentage / 100)
         return {
             cost: cost.isLessThan(voteCost.minCost) ? voteCost.minCost : cost,
             percentage: voteCost.percentage,
@@ -320,7 +320,7 @@ const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }
                     key={`faction-ability-vote-cost-button-${c.cost.toFixed(2)}`}
                     color={colour}
                     textColor={text_colour || "#FFFFFF"}
-                    amount={c.cost.toFixed(2)}
+                    percentage={c.percentage.toFixed(1)}
                     cost={c.cost.toFixed(2)}
                     isVoting={isVoting}
                     onClick={() => onContribute(c.cost, c.percentage)}

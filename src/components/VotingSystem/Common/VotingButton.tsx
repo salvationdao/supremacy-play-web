@@ -4,7 +4,7 @@ import { FancyButton } from "../.."
 import { useWallet } from "../../../containers"
 
 interface VotingButtonProps {
-    amount: string
+    percentage: string
     cost: string
     color: string
     textColor?: string
@@ -14,16 +14,7 @@ interface VotingButtonProps {
     Suffix?: JSX.Element
 }
 
-export const VotingButton = ({
-    amount,
-    cost,
-    color,
-    textColor,
-    isVoting,
-    onClick,
-    Prefix,
-    Suffix,
-}: VotingButtonProps) => {
+export const VotingButton = ({ percentage, cost, color, textColor, isVoting, onClick, Prefix, Suffix }: VotingButtonProps) => {
     const { onWorldSups } = useWallet()
 
     const isVotable = useMemo(
@@ -43,7 +34,7 @@ export const VotingButton = ({
             onClick={onClick}
         >
             <Stack alignItems="center" justifyContent="center" direction="row" spacing=".16rem">
-                {Prefix}
+                {/*{Prefix}*/}
                 <Typography
                     variant="caption"
                     sx={{
@@ -54,7 +45,7 @@ export const VotingButton = ({
                         color: textColor || "#FFFFFF",
                     }}
                 >
-                    {amount}
+                    {percentage}%
                 </Typography>
                 {Suffix}
             </Stack>
