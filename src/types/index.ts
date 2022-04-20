@@ -59,6 +59,7 @@ export interface GameAbility {
 
 export interface GameAbilityProgress {
     id: string
+    offering_id: string
     sups_cost: string
     current_sups: string
     should_reset: boolean

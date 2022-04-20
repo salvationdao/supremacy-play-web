@@ -33,6 +33,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
 
     const [shouldIgnore, setIgnore] = useState<boolean>(false)
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
+    const [offeringID, setOfferingID] = useState<string>(gameAbility.ability_offering_id)
     const [currentSups, setCurrentSups] = useState(new BigNumber(gameAbility.current_sups).dividedBy("1000000000000000000"))
     const [supsCost, setSupsCost] = useState(new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"))
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
@@ -80,6 +81,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         const supsCost = new BigNumber(gameAbilityProgress.sups_cost).dividedBy("1000000000000000000")
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
+        setOfferingID(gameAbilityProgress.offering_id)
 
         if (gameAbilityProgress.should_reset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
@@ -108,11 +110,11 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
             })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
-                ability_offering_id,
+                ability_offering_id: offeringID,
                 percentage,
             })
         },
-        [send, identity, ability_offering_id],
+        [send, identity, offeringID],
     )
 
     const isVoting = useMemo(
