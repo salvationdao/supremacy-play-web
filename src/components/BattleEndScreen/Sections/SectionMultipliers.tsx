@@ -89,7 +89,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
 
                             <Stack direction="row" alignItems="center" justifyContent="space-between">
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    SUBTOTAL:{" "}
+                                    TOTAL:{" "}
                                 </Typography>
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}>
                                     {totalMultiplierValue}x
@@ -97,7 +97,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             </Stack>
                         </Stack>
 
-                        {multiplicative && multiplicative.length > 0 && (
+                        {/* {multiplicative && multiplicative.length > 0 && (
                             <Stack spacing="1.2rem">
                                 <Typography
                                     variant="h6"
@@ -144,9 +144,9 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                     </Typography>
                                 </Stack>
                             </Stack>
-                        )}
+                        )} */}
 
-                        <Stack spacing="1.2rem">
+                        {/* <Stack spacing="1.2rem">
                             <Typography
                                 variant="h6"
                                 sx={{
@@ -167,7 +167,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                     <span>{battle_multipliers.battles[0].total_multipliers}x</span>
                                 )}
                             </Typography>
-                        </Stack>
+                        </Stack> */}
                     </Stack>
                 ) : (
                     <Typography variant="h6" sx={{ pl: ".8rem", opacity: 0.8 }}>
