@@ -189,7 +189,7 @@ export interface BattleEndDetail {
     battle_identifier: number
     started_at: Date
     ended_at: Date
-    total_multipliers: string
+    total_multipliers: number
     battle_multipliers: MultiplierUpdateResp
     winning_condition: string
     winning_faction: Faction
@@ -245,7 +245,7 @@ export interface MultiplierUpdateResp {
 
 export interface BattleMultipliers {
     battle_number: number
-    total_multipliers: string
+    total_multipliers: number
     multipliers: Multiplier[]
 }
 
