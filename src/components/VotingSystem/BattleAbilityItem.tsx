@@ -449,8 +449,8 @@ const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityPr
                     key={`battle-ability-vote-cost-button-${c.percentage}`}
                     color={buttonColor}
                     textColor={buttonTextColor}
-                    percentage={c.percentage.toFixed(1)}
-                    cost={c.cost.toFixed(2)}
+                    percentage={c.percentage.toString()}
+                    cost={c.cost.toFixed(3)}
                     isVoting={isVoting}
                     onClick={() => onBribe(c.cost, c.percentage)}
                     Prefix={<SvgSupToken size="1.5rem" fill={buttonTextColor} sx={{ pb: ".2rem" }} />}
