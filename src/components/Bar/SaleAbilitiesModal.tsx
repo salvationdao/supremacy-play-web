@@ -36,7 +36,6 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                     ],
                 },
             })
-            console.log(resp)
             setSaleAbilityIDs(resp.ability_ids)
         }
 
@@ -101,8 +100,8 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                 gap: ".5rem",
                             }}
                         >
-                            {saleAbilityIDs.map((s, index) => (
-                                <SaleAbilityCard key={index} abilityID={s} />
+                            {saleAbilityIDs.map((s) => (
+                                <SaleAbilityCard key={s} abilityID={s} />
                             ))}
                         </Box>
                     </Box>

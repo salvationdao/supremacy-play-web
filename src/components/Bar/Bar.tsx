@@ -1,17 +1,27 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
+import { useEffect } from "react"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../constants"
-import { useBar, useDrawer, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
+import { SocketState, useBar, useDrawer, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
+import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import GameGuide from "../GameGuide/GameGuide"
 import { SaleAbilitiesModal } from "./SaleAbilitiesModal"
 
 const BarContent = () => {
-    const { state, isServerUp } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
+    const { state, isServerUp } = usePassportServerWebsocket()
+    const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
+    const { newSnackbarMessage } = useSnackbar()
     const [showSaleAbilities, toggleShowSaleAbilities] = useToggle()
+
+    useEffect(() => {
+        if (gsState !== SocketState.OPEN || !gsSubscribe || !user) return
+
+        return gsSubscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => newSnackbarMessage("Player abilities market has been refreshed.", "info"))
+    }, [gsState, gsSubscribe, user])
 
     if (state !== WebSocket.OPEN) {
         return (
