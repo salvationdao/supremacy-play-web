@@ -16,16 +16,21 @@ const modalWidth = 400
 
 export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) => {
     const { user } = useGameServerAuth()
-    const { state, send } = useGameServerWebsocket()
+    const { state, send, subscribe } = useGameServerWebsocket()
     const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !state || !user) return
+        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
         ;(async () => {
-            const resp = await send<{ totaL: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList, {})
+            const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList)
             setSaleAbilityIDs(resp.ability_ids)
         })()
-    }, [state, send, user])
+
+        return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, async () => {
+            const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList)
+            setSaleAbilityIDs(resp.ability_ids)
+        })
+    }, [state, send, subscribe, user])
 
     return (
         <Modal open={open} onClose={onClose} closeAfterTransition>

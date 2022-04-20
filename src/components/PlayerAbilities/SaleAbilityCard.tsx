@@ -1,7 +1,7 @@
 import { Box, ButtonBase, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
-import { SocketState, useGameServerWebsocket } from "../../containers"
+import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
@@ -13,7 +13,9 @@ export interface AbilityCardProps {
 }
 
 export const SaleAbilityCard = ({ abilityID }: AbilityCardProps) => {
-    const { state, subscribe } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
+    const { state, send, subscribe } = useGameServerWebsocket()
+    const [saleAbilityPrice, setSaleAbilityPrice] = useState<string | null>(null)
     const [saleAbility, setSaleAbility] = useState<SaleAbility | null>(null)
     const [error, setError] = useState<string | null>(null)
 
@@ -30,14 +32,21 @@ export const SaleAbilityCard = ({ abilityID }: AbilityCardProps) => {
     }
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !subscribe) return
+        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
 
         try {
-            return subscribe<SaleAbility>(
-                GameServerKeys.SaleAbilitySubscribe,
+            ;(async () => {
+                const resp = await send<SaleAbility>(GameServerKeys.SaleAbilityDetailed, {
+                    ability_id: abilityID,
+                })
+
+                setSaleAbility(resp)
+            })()
+
+            return subscribe<string>(
+                GameServerKeys.SaleAbilityPriceSubscribe,
                 (resp) => {
-                    console.log(resp)
-                    setSaleAbility(resp)
+                    setSaleAbilityPrice(resp)
                 },
                 {
                     ability_id: abilityID,
@@ -50,9 +59,9 @@ export const SaleAbilityCard = ({ abilityID }: AbilityCardProps) => {
                 setError(e)
             }
         }
-    }, [state, subscribe])
+    }, [state, send, subscribe, user])
 
-    if (!saleAbility) {
+    if (!saleAbility || !saleAbilityPrice) {
         return <Box>Loading...</Box>
     }
 
@@ -128,7 +137,7 @@ export const SaleAbilityCard = ({ abilityID }: AbilityCardProps) => {
                     </Typography>
                     <Stack direction="row" alignItems="center">
                         <SvgSupToken fill={colors.yellow} size="1.5rem" />
-                        <Typography>{supFormatter(saleAbility.current_price)}</Typography>
+                        <Typography>{supFormatter(saleAbilityPrice)}</Typography>
                     </Stack>
                     {/* {saleAbility.available_until && <Typography variant="caption">{timeSince(saleAbility.available_until)}</Typography>} */}
                 </Box>
