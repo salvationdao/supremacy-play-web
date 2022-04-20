@@ -21,15 +21,25 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
 
     useEffect(() => {
         if (state !== SocketState.OPEN || !send || !subscribe || !user) return
-        ;(async () => {
-            const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList)
-            setSaleAbilityIDs(resp.ability_ids)
-        })()
 
-        return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, async () => {
-            const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList)
+        const fetchSaleAbilities = async () => {
+            const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList, {
+                filter: {
+                    items: [
+                        {
+                            columnField: "available_until",
+                            operatorValue: "after",
+                            value: "now()",
+                        },
+                    ],
+                },
+            })
             setSaleAbilityIDs(resp.ability_ids)
-        })
+        }
+
+        fetchSaleAbilities()
+
+        return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => fetchSaleAbilities())
     }, [state, send, subscribe, user])
 
     return (
