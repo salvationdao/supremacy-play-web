@@ -314,8 +314,6 @@ const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }
         }
     })
 
-    console.log(voteCosts)
-
     return (
         <Stack direction="row" spacing=".32rem" sx={{ mt: ".48rem", width: "100%" }}>
             {voteCosts.map((c) => (

@@ -23,8 +23,6 @@ export const MultipliersPopover = ({
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const actualMultipliers = multipliers.filter((m) => m.multipliers.length > 0)
 
-    console.log(actualMultipliers)
-
     useEffect(() => {
         if (!localOpen) {
             setTimeout(() => {
