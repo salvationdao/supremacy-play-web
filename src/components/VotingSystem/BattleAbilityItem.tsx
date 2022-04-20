@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgSupToken } from "../../assets"
-import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
+import { NullUUID, PASSPORT_SERVER_HOST_IMAGES, VOTING_OPTION_COSTS } from "../../constants"
 import { FactionsAll, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -92,19 +92,23 @@ export const BattleAbilityItem = () => {
     }, [state, subscribeNetMessage])
 
     const onBribe = useCallback(
-        (voteAmount: string) => {
+        (amount: BigNumber, votePercentage: number) => {
+            if (!battleAbility) return
             setBattleAbilityProgress((baps) => {
                 return baps.map((bap) => {
                     if (bap.faction_id === faction_id) {
-                        const nbm = new BigNumber(parseInt(voteAmount), 18)
-                        return { ...bap, amount: nbm.plus(bap.current_sups) }
+                        return { ...bap, amount: amount.plus(bap.current_sups) }
                     }
                     return bap
                 })
             })
-            if (send) send<boolean, { amount: string }>(GameServerKeys.BribeBattleAbility, { amount: voteAmount })
+            if (send)
+                send<boolean, { ability_offering_id: string; percentage: number }>(GameServerKeys.BribeBattleAbility, {
+                    ability_offering_id: battleAbility.ability_offering_id,
+                    percentage: votePercentage,
+                })
         },
-        [send],
+        [send, battleAbility],
     )
 
     const isVoting = useMemo(
@@ -142,6 +146,7 @@ export const BattleAbilityItem = () => {
             isVoting={isVoting}
             fadeEffect={fadeEffect}
             factionsAll={factionsAll}
+            currentFactionID={faction_id}
             colour={colour}
             description={description}
             forceDisplay100Percentage={forceDisplay100Percentage}
@@ -159,6 +164,7 @@ export const BattleAbilityItem = () => {
 interface InnerProps {
     isVoting: boolean
     fadeEffect: boolean
+    currentFactionID?: string
     factionsAll: FactionsAll
     colour: string
     description: string
@@ -169,11 +175,12 @@ interface InnerProps {
     battleAbilityProgress: BattleAbilityProgressBigNum[]
     buttonColor: string
     buttonTextColor: string
-    onBribe: (ob: string) => void
+    onBribe: (c: BigNumber, ob: number) => void
 }
 
 const BattleAbilityItemInner = ({
     factionsAll,
+    currentFactionID,
     forceDisplay100Percentage,
     fadeEffect,
     isVoting,
@@ -187,6 +194,8 @@ const BattleAbilityItemInner = ({
     battleAbilityProgress,
     onBribe,
 }: InnerProps) => {
+    const battleAbilityFactionProcess = battleAbilityProgress.find((a) => a.faction_id === currentFactionID)
+
     return (
         <Fade in={true}>
             <Stack spacing=".56rem">
@@ -223,7 +232,15 @@ const BattleAbilityItemInner = ({
                                         forceDisplay100Percentage={forceDisplay100Percentage}
                                     />
 
-                                    <VotingButtons buttonColor={buttonColor} buttonTextColor={buttonTextColor} isVoting={isVoting} onBribe={onBribe} />
+                                    {battleAbilityFactionProcess && (
+                                        <VotingButtons
+                                            battleAbilityProcess={battleAbilityFactionProcess}
+                                            buttonColor={buttonColor}
+                                            buttonTextColor={buttonTextColor}
+                                            isVoting={isVoting}
+                                            onBribe={onBribe}
+                                        />
+                                    )}
                                 </Stack>
                             </ClipThing>
                         </Box>
@@ -412,37 +429,33 @@ interface VotingButtonsProps {
     buttonColor: string
     buttonTextColor: string
     isVoting: boolean
-    onBribe: (b: string) => void
+    battleAbilityProcess: BattleAbilityProgressBigNum
+    onBribe: (a: BigNumber, b: number) => void
 }
 
-const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, onBribe }: VotingButtonsProps) => (
-    <Stack direction="row" spacing=".4rem" sx={{ mt: ".48rem", width: "100%" }}>
-        <VotingButton
-            color={buttonColor}
-            textColor={buttonTextColor}
-            amount={"0.1"}
-            cost={"0.1"}
-            isVoting={isVoting}
-            onClick={() => onBribe("0.1")}
-            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
-        />
-        <VotingButton
-            color={buttonColor}
-            textColor={buttonTextColor}
-            amount={"1"}
-            cost={"1"}
-            isVoting={isVoting}
-            onClick={() => onBribe("1")}
-            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
-        />
-        <VotingButton
-            color={buttonColor}
-            textColor={buttonTextColor}
-            amount={"10"}
-            cost={"10"}
-            isVoting={isVoting}
-            onClick={() => onBribe("10")}
-            Prefix={<SvgSupToken size="1.4rem" fill={buttonTextColor} />}
-        />
-    </Stack>
-)
+const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityProcess, onBribe }: VotingButtonsProps) => {
+    const voteCosts = VOTING_OPTION_COSTS.map((voteCost) => {
+        const cost = battleAbilityProcess.sups_cost.multipliedBy(voteCost.percentage / 100)
+        return {
+            cost: cost.isLessThan(voteCost.minCost) ? voteCost.minCost : cost,
+            percentage: voteCost.percentage,
+        }
+    })
+
+    return (
+        <Stack direction="row" spacing=".4rem" sx={{ mt: ".48rem", width: "100%" }}>
+            {voteCosts.map((c) => (
+                <VotingButton
+                    key={`battle-ability-vote-cost-button-${c.percentage}`}
+                    color={buttonColor}
+                    textColor={buttonTextColor}
+                    percentage={c.percentage.toFixed(1)}
+                    cost={c.cost.toFixed(2)}
+                    isVoting={isVoting}
+                    onClick={() => onBribe(c.cost, c.percentage)}
+                    Prefix={<SvgSupToken size="1.5rem" fill={buttonTextColor} sx={{ pb: ".2rem" }} />}
+                />
+            ))}
+        </Stack>
+    )
+}

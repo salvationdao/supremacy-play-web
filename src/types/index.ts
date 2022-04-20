@@ -42,6 +42,7 @@ export interface BattleAbility {
     description: string
     image_url: string
     cooldown_duration_second: number
+    ability_offering_id: string
 }
 
 export interface GameAbility {
@@ -53,10 +54,12 @@ export interface GameAbility {
     image_url: string
     sups_cost: string
     current_sups: string
+    ability_offering_id: string
 }
 
 export interface GameAbilityProgress {
     id: string
+    offering_id: string
     sups_cost: string
     current_sups: string
     should_reset: boolean

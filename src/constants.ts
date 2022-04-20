@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js"
+
 const USE_PROD = false
 
 // Envar stuff
@@ -60,6 +62,22 @@ export const NOTIFICATION_TIME = 30000
 export const NOTIFICATION_LINGER = 400
 export const STREAM_ASPECT_RATIO_W_H = 16 / 9
 export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
+
+// Game stuff
+export const VOTING_OPTION_COSTS = [
+    {
+        minCost: new BigNumber(0.001),
+        percentage: 0.1,
+    },
+    {
+        minCost: new BigNumber(0.005),
+        percentage: 0.5,
+    },
+    {
+        minCost: new BigNumber(0.01),
+        percentage: 1,
+    },
+]
 
 // Other stuff
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
