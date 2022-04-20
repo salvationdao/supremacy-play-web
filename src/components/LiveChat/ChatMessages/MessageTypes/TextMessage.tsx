@@ -372,7 +372,7 @@ export const TextMessage = ({
                                     opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
                                 }}
                             >
-                                {total_multiplier || 0}
+                                {total_multiplier || 0}x
                             </Typography>
 
                             {is_citizen && (

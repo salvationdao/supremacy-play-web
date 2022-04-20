@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "."
 import { SupremacyPNG } from "../assets"
@@ -7,7 +7,6 @@ import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { GameServerKeys } from "../keys"
-import { UserRank, UserStat } from "../types"
 import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
 
 interface SentChatMessageData {
@@ -44,12 +43,6 @@ export const ChatContainer = createContainer(() => {
     const [factionChatMessages, setFactionChatMessages] = useState<ChatMessageType[]>([])
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
-    const userStats = useRef<{
-        user_rank?: UserRank
-        total_multiplier?: number
-        is_citizen?: boolean
-        from_user_stat?: UserStat
-    }>()
 
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
@@ -178,34 +171,33 @@ export const ChatContainer = createContainer(() => {
     }, [tabValue, factionChatUnread, splitOption])
 
     const saveUserStats = useCallback(
-        (data: TextMessageData) => {
+        (message: ChatMessageType, isFaction: boolean) => {
+            const data = message.data as TextMessageData
             const newStats = {
                 total_multiplier: data.total_multiplier,
                 is_citizen: data.is_citizen,
                 from_user_stat: data.from_user_stat,
             }
 
-            // If we never had userStats set, then go back and update all messages with the user stats
-            if (!userStats.current) {
-                setGlobalChatMessages((prev) =>
-                    prev.map((m) => {
-                        if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
+            if (isFaction) {
+                setFactionChatMessages((prev) => {
+                    return prev.map((m) => {
+                        if (m.type === "TEXT" && message.sent_at.getTime() - m.sent_at.getTime() < 5000) {
                             return { ...m, data: { ...m.data, ...newStats } }
                         }
                         return m
-                    }),
-                )
-                setFactionChatMessages((prev) =>
+                    })
+                })
+            } else {
+                setGlobalChatMessages((prev) =>
                     prev.map((m) => {
-                        if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
+                        if (m.type === "TEXT" && message.sent_at.getTime() - m.sent_at.getTime() < 5000) {
                             return { ...m, data: { ...m.data, ...newStats } }
                         }
                         return m
                     }),
                 )
             }
-
-            userStats.current = newStats
         },
         [user, setGlobalChatMessages, setFactionChatMessages],
     )
@@ -216,7 +208,7 @@ export const ChatContainer = createContainer(() => {
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
             if (!m) return
             if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
-                saveUserStats(m.data as TextMessageData)
+                saveUserStats(m, false)
                 return
             }
 
@@ -231,7 +223,7 @@ export const ChatContainer = createContainer(() => {
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
             if (!m) return
             if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
-                saveUserStats(m.data as TextMessageData)
+                saveUserStats(m, true)
                 return
             }
 
@@ -296,7 +288,6 @@ export const ChatContainer = createContainer(() => {
         fontSize,
         setFontSize,
         globalAnnouncement,
-        userStats,
         banProposal,
     }
 })

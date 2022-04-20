@@ -29,7 +29,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 <Stack direction="row" alignItems="center" sx={{ mr: ".6rem" }}>
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>
                     <SvgSupToken size="1.3rem" fill={color} />
-                    <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount, 18)}</Typography>
+                    <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount, 4)}</Typography>
                 </Stack>
             </TooltipHelper>
 
