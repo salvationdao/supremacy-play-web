@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Stack, Typography } from "@mui/material"
+import { Box, ButtonBase, ButtonBaseProps, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
@@ -8,11 +8,11 @@ import { colors } from "../../theme/theme"
 import { SaleAbility } from "../../types"
 import { TooltipHelper } from "../Common/TooltipHelper"
 
-export interface AbilityCardProps {
+export interface AbilityCardProps extends ButtonBaseProps {
     abilityID: string
 }
 
-export const SaleAbilityCard = ({ abilityID }: AbilityCardProps) => {
+export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     const { user } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [saleAbilityPrice, setSaleAbilityPrice] = useState<string | null>(null)
@@ -68,6 +68,7 @@ export const SaleAbilityCard = ({ abilityID }: AbilityCardProps) => {
     return (
         <TooltipHelper text={saleAbility.ability?.description}>
             <ButtonBase
+                {...props}
                 sx={{
                     display: "block",
                     textAlign: "left",
