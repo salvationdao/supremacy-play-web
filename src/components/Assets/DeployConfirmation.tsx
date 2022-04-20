@@ -193,7 +193,7 @@ export const DeployConfirmation = ({
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
-                        borderThickness: ".2rem",
+                        borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >
@@ -566,7 +566,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                             border={{
                                 isFancy: true,
                                 borderColor: colors.neonBlue,
-                                borderThickness: ".2rem",
+                                borderThickness: ".15rem",
                             }}
                         >
                             <Stack
@@ -661,7 +661,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                             border={{
                                 isFancy: true,
                                 borderColor: colors.neonBlue,
-                                borderThickness: ".2rem",
+                                borderThickness: ".15rem",
                             }}
                         >
                             <Stack

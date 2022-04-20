@@ -1,6 +1,7 @@
 import Ability from "!@svgr/webpack!./svg/Ability.svg"
 import Assets from "!@svgr/webpack!./svg/Assets.svg"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
+import Chest from "!@svgr/webpack!./svg/Chest.svg"
 import Close from "!@svgr/webpack!./svg/Close.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
 import Copy from "!@svgr/webpack!./svg/Copy.svg"
@@ -12,6 +13,7 @@ import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
+import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
@@ -24,7 +26,6 @@ import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Send from "!@svgr/webpack!./svg/Send.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
 import SupremacyLogo from "!@svgr/webpack!./svg/SupremacyLogo.svg"
-import Target from "!@svgr/webpack!./svg/Target.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Wallet from "!@svgr/webpack!./svg/Wallet.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
@@ -73,6 +74,7 @@ import Skull from "!react-svg-loader!./svg/Skull.svg"
 import Skull2 from "!react-svg-loader!./svg/Skull2.svg"
 import Success from "!react-svg-loader!./svg/Success.svg"
 import SupToken from "!react-svg-loader!./svg/SupToken.svg"
+import Target from "!react-svg-loader!./svg/Target.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
@@ -88,6 +90,8 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 import ArrowRightAltSharpIcon from "@mui/icons-material/ArrowRightAltSharp"
 import CampaignSharpIcon from "@mui/icons-material/CampaignSharp"
 import CloseSharpIcon from "@mui/icons-material/CloseSharp"
+import ExpandLessIcon from "@mui/icons-material/ExpandLess"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import FlagSharpIcon from "@mui/icons-material/FlagSharp"
 import HorizontalRuleSharpIcon from "@mui/icons-material/HorizontalRuleSharp"
 import MapSharpIcon from "@mui/icons-material/MapSharp"
@@ -105,19 +109,18 @@ import MaintenancePNG from "./images/Maintenance.png"
 // Multiplier images (no spaces in file names, won't work!)
 import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
 import MultiplierAFoolAndHisMoney from "./images/Multipliers/AFoolAndHisMoney.png"
+import MultiplierAirMarshal from "./images/Multipliers/AirMarshal.png"
 import MultiplierAirSupport from "./images/Multipliers/AirSupport.png"
-import MultiplierCitizen from "./images/Multipliers/Citizen.png"
 import MultiplierContributor from "./images/Multipliers/Contributor.png"
 import MultiplierDestroyerOfWorlds from "./images/Multipliers/DestroyerOfWorlds.png"
 import MultiplierFieldMechanic from "./images/Multipliers/FieldMechanic.png"
-import MultiplierFiend from "./images/Multipliers/Fiend.png"
+import MultiplierGeneric from "./images/Multipliers/Generic.png"
 import MultiplierGreaseMonkey from "./images/Multipliers/GreaseMonkey.png"
 import MultiplierJunkE from "./images/Multipliers/JunkE.png"
 import MultiplierMechCommander from "./images/Multipliers/MechCommander.png"
+import MultiplierMechHead from "./images/Multipliers/MechHead.png"
 import MultiplierNowIAmBecomeDeath from "./images/Multipliers/NowIAmBecomeDeath.png"
 import MultiplierSniper from "./images/Multipliers/Sniper.png"
-import MultiplierSuperContributor from "./images/Multipliers/SuperContributor.png"
-import { default as MultiplierMechHead, default as MultiplierSupporter } from "./images/Multipliers/Supporter.png"
 import MultiplierWonBattle from "./images/Multipliers/WonBattle.png"
 import MultiplierWonLastThreeBattles from "./images/Multipliers/WonLastThreeBattles.png"
 import RedMountainLogo from "./images/RedMountainLogo.png"
@@ -130,20 +133,18 @@ export {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
     MultiplierAirSupport,
-    MultiplierCitizen,
     MultiplierContributor,
     MultiplierDestroyerOfWorlds,
     MultiplierFieldMechanic,
     MultiplierGreaseMonkey,
     MultiplierMechCommander,
     MultiplierNowIAmBecomeDeath,
-    MultiplierSuperContributor,
-    MultiplierSupporter,
-    MultiplierFiend,
+    MultiplierAirMarshal,
     MultiplierJunkE,
     MultiplierMechHead,
     MultiplierSniper,
     MultiplierWonBattle,
+    MultiplierGeneric,
     MultiplierWonLastThreeBattles,
 }
 // End multiplier images
@@ -754,6 +755,30 @@ export const SvgListView: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgGridView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <GridView />
+    </SvgWrapper>
+)
+
+export const SvgGraph: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Graph />
+    </SvgWrapper>
+)
+
+export const SvgChest: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Chest />
+    </SvgWrapper>
+)
+
+export const SvgExpandLessIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ExpandLessIcon />
+    </SvgWrapper>
+)
+
+export const SvgExpandMoreIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ExpandMoreIcon />
     </SvgWrapper>
 )
 

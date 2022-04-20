@@ -29,7 +29,7 @@ export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; 
                     border={{
                         isFancy: true,
                         borderColor: colors.red,
-                        borderThickness: ".2rem",
+                        borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >

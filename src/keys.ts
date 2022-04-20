@@ -9,6 +9,10 @@ export enum GameServerKeys {
     PlayerRank = "PLAYER:RANK:GET",
     ListPunishments = "PLAYER:PUNISHMENT:LIST",
 
+    // Contributor multiplier
+    ListenContributorMulti = "BATTLE:CONTRIBUTOR:UPDATE",
+    ListenContributorRate = "CONTRIBUTOR:MULTI:AMOUNT",
+
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
 

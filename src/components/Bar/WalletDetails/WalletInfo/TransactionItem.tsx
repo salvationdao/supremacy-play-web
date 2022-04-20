@@ -1,12 +1,12 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo } from "react"
 import Tooltip from "@mui/material/Tooltip"
-import { SvgContentCopyIcon, SvgSupToken } from "../../../assets"
-import { useToggle } from "../../../hooks"
-import { Transaction } from "../../../types/passport"
-import { TooltipHelper } from "../.."
-import { dateFormatter, supFormatterNoFixed } from "../../../helpers"
-import { colors } from "../../../theme/theme"
+import { SvgContentCopyIcon, SvgSupToken } from "../../../../assets"
+import { useToggle } from "../../../../hooks"
+import { Transaction } from "../../../../types/passport"
+import { TooltipHelper } from "../../.."
+import { dateFormatter, supFormatterNoFixed } from "../../../../helpers"
+import { colors } from "../../../../theme/theme"
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const [copySuccess, toggleCopySuccess] = useToggle()
@@ -24,7 +24,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
     const tooltipText = useMemo(() => transaction.description || transaction.sub_group || transaction.group, [transaction])
 
     return (
-        <Stack direction="row" alignItems="center" sx={{ px: ".64rem", py: ".06rem", backgroundColor: "#00000030", borderRadius: 1 }}>
+        <Stack direction="row" alignItems="center" sx={{ px: ".64rem", py: ".06rem", border: `#FFFFFF30 1px dashed`, borderRadius: 0.2 }}>
             <TooltipHelper placement="left" text={tooltipText ? `  ${tooltipText.toUpperCase()}` : ""}>
                 <Stack direction="row" alignItems="center" sx={{ mr: ".6rem" }}>
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>
