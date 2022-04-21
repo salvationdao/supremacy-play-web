@@ -94,7 +94,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
             if (!send || percentage > 1 || percentage < 0) return
             setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
                 if (!gap) return gap
-                const current_sups = new BigNumber(gap.current_sups).plus(new BigNumber(amount).multipliedBy("1000000000000000000")).toString()
+                const current_sups = new BigNumber(gap.current_sups).plus(amount.multipliedBy("1000000000000000000")).toString()
                 return { ...gap, current_sups }
             })
             setCurrentSups((cs) => {
@@ -106,7 +106,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
                         setIgnore(false)
                     }, 150)
                 }
-                return BigNumber.minimum(cs.plus(new BigNumber(amount, 18)), supsCost)
+                return BigNumber.minimum(cs.plus(amount.multipliedBy("1000000000000000000")), supsCost)
             })
             send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
@@ -318,8 +318,8 @@ const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContribute }
                     key={`faction-ability-vote-cost-button-${c.percentage}`}
                     color={colour}
                     textColor={text_colour || "#FFFFFF"}
-                    percentage={c.percentage.toFixed(1)}
-                    cost={c.cost.toFixed(2)}
+                    percentage={c.percentage.toString()}
+                    cost={c.cost.toFixed(3)}
                     isVoting={isVoting}
                     onClick={() => onContribute(c.cost, c.percentage)}
                     Prefix={<SupsToken text_colour={text_colour} />}
