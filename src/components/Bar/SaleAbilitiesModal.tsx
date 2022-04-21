@@ -1,4 +1,4 @@
-import { Box, Fade, Modal, Typography } from "@mui/material"
+import { Box, Modal, Typography } from "@mui/material"
 import Slide from "@mui/material/Slide"
 import { useEffect, useState } from "react"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
@@ -19,7 +19,6 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
     const { user } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [localOpen, toggleLocalOpen] = useToggle(open)
-    const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
     const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
 
     useEffect(() => {
@@ -54,64 +53,18 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
     }, [localOpen])
 
     return (
-        <Modal open={localOpen} onClose={() => toggleLocalOpen(false)} closeAfterTransition>
-            <Slide in={localOpen}>
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: `calc(${GAME_BAR_HEIGHT}rem + 3rem)`,
-                        left: `calc(50vw - min(${modalWidth / 2}px, 50vw))`,
-                        width: "100%",
-                        maxWidth: modalWidth,
-                    }}
-                >
+        <>
+            <Modal open={localOpen} onClose={() => toggleLocalOpen(false)} closeAfterTransition>
+                <Slide in={localOpen}>
                     <Box
                         sx={{
-                            border: "1px solid orangered",
-                            padding: "1rem",
+                            position: "absolute",
+                            top: `calc(${GAME_BAR_HEIGHT}rem + 3rem)`,
+                            left: `calc(50vw - min(${modalWidth / 2}px, 50vw))`,
+                            width: "100%",
+                            maxWidth: modalWidth,
                         }}
                     >
-                        <Typography
-                            variant="h5"
-                            sx={{
-                                marginBottom: ".5rem",
-                                fontFamily: fonts.nostromobold,
-                                textTransform: "uppercase",
-                            }}
-                        >
-                            Purchase Abilities
-                        </Typography>
-                        <Box
-                            sx={{
-                                overflowX: "auto",
-                                scrollbarWidth: "none",
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: "#FFFFFF80",
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(6, 70px)",
-                                    gap: ".5rem",
-                                }}
-                            >
-                                {saleAbilityIDs.map((s) => (
-                                    <SaleAbilityCard key={s} abilityID={s} onClick={() => toggleShowPurchaseModal(true)} />
-                                ))}
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Fade in={showPurchaseModal}>
                         <Box
                             sx={{
                                 border: "1px solid orangered",
@@ -158,9 +111,9 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                 </Box>
                             </Box>
                         </Box>
-                    </Fade>
-                </Box>
-            </Slide>
-        </Modal>
+                    </Box>
+                </Slide>
+            </Modal>
+        </>
     )
 }
