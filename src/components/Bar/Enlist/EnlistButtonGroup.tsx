@@ -42,70 +42,68 @@ export const EnlistButtonGroup = () => {
     }
 
     return (
-        <Box id="tutorial-enlist">
-            <BarExpandable
-                noDivider
-                barName={"enlist"}
-                iconComponent={
-                    <Box
-                        sx={{
-                            width: "2.8rem",
-                            height: "2.8rem",
-                            backgroundImage: `url(${RedMountainLogo})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "contain",
-                            backgroundColor: "#C52A1F",
-                            borderRadius: 1,
-                            border: `${"#C52A1F"} 2px solid`,
-                        }}
-                    />
-                }
-            >
-                <Stack direction="row" alignItems="center" sx={{ mx: "1.2rem", height: "100%" }}>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing="1.6rem"
-                        sx={{
-                            position: "relative",
-                            height: "100%",
-                            overflowX: "auto",
-                            overflowY: "hidden",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                height: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: colors.darkNeonBlue,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Enlist:</Typography>
+        <BarExpandable
+            noDivider
+            barName={"enlist"}
+            iconComponent={
+                <Box
+                    sx={{
+                        width: "2.8rem",
+                        height: "2.8rem",
+                        backgroundImage: `url(${RedMountainLogo})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                        backgroundColor: "#C52A1F",
+                        borderRadius: 1,
+                        border: `${"#C52A1F"} 2px solid`,
+                    }}
+                />
+            }
+        >
+            <Stack id="tutorial-enlist" direction="row" alignItems="center" sx={{ mx: "1.2rem", height: "100%" }}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing="1.6rem"
+                    sx={{
+                        position: "relative",
+                        height: "100%",
+                        overflowX: "auto",
+                        overflowY: "hidden",
+                        scrollbarWidth: "none",
+                        "::-webkit-scrollbar": {
+                            height: ".4rem",
+                        },
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
+                            borderRadius: 3,
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                            background: colors.darkNeonBlue,
+                            borderRadius: 3,
+                        },
+                    }}
+                >
+                    <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Enlist:</Typography>
 
-                        {factionsData.map((f) => (
-                            <EnlistButton key={f.id} faction={f} />
-                        ))}
-                    </Stack>
-
-                    <Divider
-                        orientation="vertical"
-                        flexItem
-                        sx={{
-                            height: "2.3rem",
-                            my: "auto !important",
-                            ml: "2.4rem",
-                            borderColor: "#494949",
-                            borderRightWidth: 1.6,
-                        }}
-                    />
+                    {factionsData.map((f) => (
+                        <EnlistButton key={f.id} faction={f} />
+                    ))}
                 </Stack>
-            </BarExpandable>
-        </Box>
+
+                <Divider
+                    orientation="vertical"
+                    flexItem
+                    sx={{
+                        height: "2.3rem",
+                        my: "auto !important",
+                        ml: "2.4rem",
+                        borderColor: "#494949",
+                        borderRightWidth: 1.6,
+                    }}
+                />
+            </Stack>
+        </BarExpandable>
     )
 }

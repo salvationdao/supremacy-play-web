@@ -2,6 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useState, useEffect } from "react"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
+import { FactionIDs } from "../../constants"
 import { FactionsAll, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
@@ -21,14 +22,7 @@ export const LiveCounts = () => {
     const { factionsAll } = useGame()
     const { state, subscribe, subscribeNetMessage } = useGameServerWebsocket()
 
-    return (
-        <LiveCountsInner
-            factionsAll={factionsAll}
-            state={state}
-            subscribe={subscribe}
-            subscribeNetMessage={subscribeNetMessage}
-        />
-    )
+    return <LiveCountsInner factionsAll={factionsAll} state={state} subscribe={subscribe} subscribeNetMessage={subscribeNetMessage} />
 }
 
 interface LiveCountsProps extends Partial<WebSocketProperties> {
@@ -62,19 +56,11 @@ export const LiveCountsInner = ({ factionsAll, subscribe, state }: LiveCountsPro
             </Typography>
 
             <Stack direction="row" spacing=".64rem" alignItems="center" justifyContent="center">
-                <ReUsedText
-                    text={Math.abs(viewers.red_mountain).toFixed()}
-                    color={factionsAll["98bf7bb3-1a7c-4f21-8843-458d62884060"]?.theme.primary}
-                    tooltip="Red Mountain"
-                />
-                <ReUsedText
-                    text={Math.abs(viewers.boston).toFixed()}
-                    color={factionsAll["7c6dde21-b067-46cf-9e56-155c88a520e2"]?.theme.primary}
-                    tooltip="Boston Cybernetics"
-                />
+                <ReUsedText text={Math.abs(viewers.red_mountain).toFixed()} color={factionsAll[FactionIDs.RM]?.theme.primary} tooltip="Red Mountain" />
+                <ReUsedText text={Math.abs(viewers.boston).toFixed()} color={factionsAll[FactionIDs.BC]?.theme.primary} tooltip="Boston Cybernetics" />
                 <ReUsedText
                     text={Math.abs(viewers.zaibatsu).toFixed()}
-                    color={factionsAll["880db344-e405-428d-84e5-6ebebab1fe6d"]?.theme.primary}
+                    color={factionsAll[FactionIDs.ZHI]?.theme.primary}
                     tooltip="Zaibatsu Heavy Industries"
                 />
                 <ReUsedText text={Math.abs(viewers.other).toFixed()} color={"grey !important"} tooltip="Not enlisted" />

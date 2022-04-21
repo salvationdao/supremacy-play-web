@@ -26,6 +26,7 @@ import {
     tutorialNextBtn,
     tutorialPrevButton,
 } from "./components"
+import { Music } from "./components/Music/Music"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
     DimensionProvider,
@@ -216,6 +217,7 @@ const App = () => {
                                                         <OverlayTogglesProvider>
                                                             <TourProvider {...tourProviderProps}>
                                                                 <AppInner />
+                                                                <Music />
                                                             </TourProvider>
                                                         </OverlayTogglesProvider>
                                                     </DimensionProvider>

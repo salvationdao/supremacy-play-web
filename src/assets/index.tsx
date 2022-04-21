@@ -31,6 +31,8 @@ import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Next from "!react-svg-loader!./svg/Next.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Success from "!react-svg-loader!./svg/Success.svg"
+import Music from "!react-svg-loader!./svg/Music.svg"
+import MusicMute from "!react-svg-loader!./svg/MusicMute.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
 import General from "!react-svg-loader!./svg/Ranks/General.svg"
 import Corporal from "!react-svg-loader!./svg/Ranks/Corporal.svg"
@@ -778,5 +780,17 @@ export const SvgExpandLessIcon: React.VoidFunctionComponent<SvgWrapperProps> = (
 export const SvgExpandMoreIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ExpandMoreIcon />
+    </SvgWrapper>
+)
+
+export const SvgMusic: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Music />
+    </SvgWrapper>
+)
+
+export const SvgMusicMute: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MusicMute />
     </SvgWrapper>
 )

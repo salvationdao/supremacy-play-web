@@ -79,6 +79,12 @@ export const VOTING_OPTION_COSTS = [
     },
 ]
 
+export enum FactionIDs {
+    RM = "98bf7bb3-1a7c-4f21-8843-458d62884060",
+    ZHI = "880db344-e405-428d-84e5-6ebebab1fe6d",
+    BC = "7c6dde21-b067-46cf-9e56-155c88a520e2",
+}
+
 // Other stuff
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const TRAILER_VIDEO =
