@@ -5,7 +5,8 @@ import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { fonts } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
+import { ClipThing } from "../Common/ClipThing"
 import { SaleAbilityCard } from "../PlayerAbilities/SaleAbilityCard"
 
 export interface SaleAbilitiesModalProps {
@@ -65,11 +66,16 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                             maxWidth: modalWidth,
                         }}
                     >
-                        <Box
-                            sx={{
-                                border: "1px solid orangered",
+                        <ClipThing
+                            innerSx={{
                                 padding: "1rem",
+                                backgroundColor: colors.darkerNavy,
                             }}
+                            border={{
+                                borderColor: colors.blue2,
+                                isFancy: true,
+                            }}
+                            skipRightCorner
                         >
                             <Typography
                                 variant="h5"
@@ -110,7 +116,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                     ))}
                                 </Box>
                             </Box>
-                        </Box>
+                        </ClipThing>
                     </Box>
                 </Slide>
             </Modal>

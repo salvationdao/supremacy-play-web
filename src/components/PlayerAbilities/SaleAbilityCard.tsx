@@ -29,7 +29,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     const [purchaseError, setPurchaseError] = useState<string | null>(null)
 
     let abilityTypeIcon = <SvgQuestionMark />
-    switch (saleAbility?.ability?.type) {
+    switch (saleAbility?.ability?.location_select_type) {
         case "GLOBAL":
             abilityTypeIcon = <SvgGlobal />
             break

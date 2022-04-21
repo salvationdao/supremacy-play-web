@@ -65,7 +65,7 @@ export interface PlayerAbility {
     image_url: string
     description: string
     text_colour: string
-    type: "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
+    location_select_type: "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
     purchased_at: string
 }
 
