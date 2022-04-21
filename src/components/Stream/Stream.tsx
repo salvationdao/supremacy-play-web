@@ -4,6 +4,7 @@ import { NoSupsModal, Trailer } from ".."
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream, useWallet } from "../../containers"
 import { useToggle } from "../../hooks"
+import { TutorialModal } from "../Tutorial/TutorialModal"
 
 const Message = ({ render, haveSups, toggleHaveSups }: { render: boolean; haveSups: boolean; toggleHaveSups: (value?: boolean) => void }) => {
     const { onWorldSups } = useWallet()
@@ -66,6 +67,7 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
             />
             <Message render={renderTopMessage} haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
             <NoSupsModal haveSups={haveSups} />
+            <TutorialModal />
         </Stack>
     )
 }

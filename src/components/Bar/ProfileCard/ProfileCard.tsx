@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Popover, Stack, Typography } from "@mui/material"
+import { Avatar, Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useRef } from "react"
 import { BarExpandable, ConnectButton, LogoutButton, NavButton, PunishmentList } from "../.."
 import { SvgAssets, SvgInfoCircular, SvgProfile, SvgShop } from "../../../assets"
@@ -32,7 +32,7 @@ export const ProfileCard = () => {
     const { username, faction } = user
 
     return (
-        <>
+        <Box id="tutorial-passport">
             <BarExpandable
                 noDivider
                 barName={"profile"}
@@ -114,7 +114,7 @@ export const ProfileCard = () => {
             {isPunishmentsOpen && <PunishmentList open={isPunishmentsOpen} onClose={() => toggleIsPunishmentsOpen(false)} punishments={punishments} />}
 
             {isPopoverOpen && <ProfilePopover open={isPopoverOpen} popoverRef={popoverRef} onClose={() => toggleIsPopoverOpen(false)} user={user} />}
-        </>
+        </Box>
     )
 }
 

@@ -111,7 +111,7 @@ const TabbedLayout = () => {
             >
                 <Tab
                     label={
-                        <Stack direction="row" alignItems="center" justifyContent="center" spacing=".8rem">
+                        <Stack className="tutorial-global-chat" direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                             <Badge
                                 badgeContent={globalChatUnread}
                                 sx={{
@@ -143,7 +143,14 @@ const TabbedLayout = () => {
                 {isEnlisted && (
                     <Tab
                         label={
-                            <Stack direction="row" alignItems="center" justifyContent="center">
+                            <Stack
+                                className="tutorial-faction-chat"
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="center"
+                                spacing=".96rem"
+                                sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
+                            >
                                 <Badge
                                     badgeContent={factionChatUnread}
                                     sx={{
@@ -213,6 +220,7 @@ const SplitLayout = () => {
     return (
         <Stack sx={{ flex: 1, height: 0 }}>
             <Stack
+                className="tutorial-global-chat"
                 sx={{
                     position: "relative",
                     height: isEnlisted ? "50%" : "100%",
@@ -259,7 +267,13 @@ const SplitLayout = () => {
                             zIndex: 99,
                         }}
                     >
-                        <Stack direction="row" alignItems="center">
+                        <Stack
+                            className="tutorial-faction-chat"
+                            direction="row"
+                            alignItems="center"
+                            spacing=".96rem"
+                            sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
+                        >
                             <Box
                                 sx={{
                                     width: "2.1rem",
@@ -322,7 +336,7 @@ export const LiveChat = () => {
                 },
             }}
         >
-            <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
+            <Stack id="tutorial-chat" direction="row" sx={{ width: "100%", height: "100%" }}>
                 <DrawerButtons isFixed={false} />
                 <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
                     {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}

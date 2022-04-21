@@ -1,6 +1,5 @@
 import { Button, Typography } from "@mui/material"
 import { PrismicProvider } from "@prismicio/react"
-import { SvgQuestionMark } from "../../assets"
 import { prismicClient } from "../../helpers/prismicClient"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
@@ -12,19 +11,20 @@ const GameGuide = () => {
     return (
         <>
             <Button
+                tabIndex={0}
                 sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    mx: "1.2rem",
                     overflow: "hidden",
                     color: colors.neonBlue,
                     minWidth: 0,
+                    width: "100%",
+                    cursor: "pointer",
                 }}
                 onClick={() => toggleClosed()}
             >
-                <SvgQuestionMark size="1.5rem" fill={colors.neonBlue} />
-                <Typography sx={{ ml: ".6rem", lineHeight: 1, color: colors.neonBlue }}>How To Play</Typography>
+                <Typography sx={{ lineHeight: 1, color: colors.offWhite, textTransform: "uppercase" }}>Game Guide</Typography>
             </Button>
             <PrismicProvider
                 client={prismicClient}

@@ -285,6 +285,7 @@ export const Assets = () => {
         >
             <Stack
                 direction="row"
+                id="tutorial-asset"
                 sx={{
                     width: "100%",
                     height: "100%",

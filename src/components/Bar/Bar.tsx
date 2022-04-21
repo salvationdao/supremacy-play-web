@@ -4,7 +4,7 @@ import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from 
 import { useBar, useDrawer, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
-import GameGuide from "../GameGuide/GameGuide"
+import { HowToPlay } from "../HowToPlay/HowToPlay"
 
 const BarContent = () => {
     const { state, isServerUp } = usePassportServerWebsocket()
@@ -26,7 +26,7 @@ const BarContent = () => {
         <>
             {<Logo />}
             <Box sx={{ flexGrow: 1 }} />
-            <GameGuide />
+            <HowToPlay />
             {user && (
                 <>
                     <Enlist />
@@ -62,10 +62,7 @@ export const Bar = () => {
                     pr: "1.6rem",
                     height: `${GAME_BAR_HEIGHT}rem`,
                     color: "#FFFFFF",
-                    backgroundColor:
-                        user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
-                    overflowX: "auto",
-                    overflowY: "hidden",
+                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                     scrollbarWidth: "none",
                     zIndex: (theme) => theme.zIndex.drawer + 1,
                     "::-webkit-scrollbar": {

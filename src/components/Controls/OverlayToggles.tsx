@@ -4,17 +4,10 @@ import { SvgGoldBars, SvgHistory, SvgRadar } from "../../assets"
 import { useOverlayToggles } from "../../containers"
 
 export const OverlayToggles = () => {
-    const {
-        isMapOpen,
-        toggleIsMapOpen,
-        isLiveChartOpen,
-        toggleIsLiveChartOpen,
-        isBattleHistoryOpen,
-        toggleIsBattleHistoryOpen,
-    } = useOverlayToggles()
+    const { isMapOpen, toggleIsMapOpen, isLiveChartOpen, toggleIsLiveChartOpen, isBattleHistoryOpen, toggleIsBattleHistoryOpen } = useOverlayToggles()
 
     return (
-        <Stack direction="row" alignItems="center">
+        <Stack id="tutorial-overlays" direction="row" alignItems="center">
             <Typography variant="body2" sx={{ lineHeight: 1, mr: ".4rem" }}>
                 OVERLAYS:{" "}
             </Typography>

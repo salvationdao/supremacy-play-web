@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react"
 import { Box, Button, Dialog, Typography } from "@mui/material"
 import { useEffect } from "react"
+import { useTour } from "@reactour/tour"
 import { usePassportServerAuth } from "../../../containers"
 import { PASSPORT_WEB } from "../../../constants"
 import { colors } from "../../../theme/theme"
@@ -9,6 +10,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
     const [isProcessing, setIsProcessing] = useState(false)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const { sessionID, authRingCheckError, setAuthRingCheckError } = usePassportServerAuth()
+    const { setIsOpen } = useTour()
 
     const href = useMemo(() => `${PASSPORT_WEB}nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`, [sessionID])
 
@@ -34,15 +36,13 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
         if (isProcessing) return
         setIsProcessing(true)
 
+        setIsOpen(false)
+
         const width = 520
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
-        const popup = window.open(
-            href,
-            "Connect Gamebar to XSYN Passport",
-            `width=${width},height=${height},left=${left},top=${top},popup=1`,
-        )
+        const popup = window.open(href, "Connect Gamebar to XSYN Passport", `width=${width},height=${height},left=${left},top=${top},popup=1`)
         if (!popup) {
             setIsProcessing(false)
             return
@@ -55,6 +55,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
         <>
             {renderButton ? (
                 <Button
+                    id="tutorial-connect"
                     sx={{
                         ml: "2.4rem",
                         px: "1.76rem",

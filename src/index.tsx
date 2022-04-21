@@ -1,43 +1,47 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
+import { ProviderProps, TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
 import {
-    GameBar,
-    MiniMap,
+    BattleCloseAlert,
     BattleEndScreen,
     BattleHistory,
     Controls,
+    EarlyAccessWarning,
+    GameBar,
+    GlobalSnackbar,
     LeftSideBar,
     LiveVotingChart,
     LoadMessage,
+    Maintenance,
+    MiniMap,
+    Notifications,
     Stream,
     VotingSystem,
-    WarMachineStats,
-    Notifications,
-    Maintenance,
-    BattleCloseAlert,
-    GlobalSnackbar,
-    EarlyAccessWarning,
     WaitingPage,
+    WarMachineStats,
+    tourStyles,
+    tutorialNextBtn,
+    tutorialPrevButton,
 } from "./components"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
-    GameServerAuthProvider,
     DimensionProvider,
     DrawerProvider,
     GameProvider,
-    OverlayTogglesProvider,
+    GameServerAuthProvider,
     GameServerSocketProvider,
+    OverlayTogglesProvider,
+    PassportServerAuthProvider,
+    PassportServerSocketProvider,
+    SnackBarProvider,
     StreamProvider,
-    useGameServerAuth,
     useDimension,
+    useGameServerAuth,
     useGameServerWebsocket,
     WalletProvider,
-    PassportServerSocketProvider,
-    PassportServerAuthProvider,
-    SnackBarProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
@@ -180,6 +184,22 @@ const App = () => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
 
+    const tourProviderProps: ProviderProps = {
+        children: <AppInner />,
+        steps: [],
+        styles: tourStyles,
+        nextButton: tutorialNextBtn,
+        prevButton: tutorialPrevButton,
+        showBadge: false,
+        disableKeyboardNavigation: true,
+        disableDotsNavigation: true,
+        afterOpen: () => {
+            if (!localStorage.getItem("visited")) {
+                localStorage.setItem("visited", "1")
+            }
+        },
+    }
+
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
@@ -194,7 +214,9 @@ const App = () => {
                                                 <GameProvider>
                                                     <DimensionProvider>
                                                         <OverlayTogglesProvider>
-                                                            <AppInner />
+                                                            <TourProvider {...tourProviderProps}>
+                                                                <AppInner />
+                                                            </TourProvider>
                                                         </OverlayTogglesProvider>
                                                     </DimensionProvider>
                                                 </GameProvider>
