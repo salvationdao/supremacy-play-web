@@ -1,25 +1,22 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { ProviderProps, TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter, Route, Switch } from "react-router-dom"
-import { Bar, GlobalSnackbar, RightDrawer, tourStyles, tutorialNextBtn, tutorialPrevButton } from "./components"
+import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance } from "./components"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { PASSPORT_SERVER_HOST, SENTRY_CONFIG } from "./constants"
+import { PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
-    DimensionProvider,
-    DrawerProvider,
-    GameProvider,
+    RightDrawerProvider,
     GameServerAuthProvider,
     GameServerSocketProvider,
-    OverlayTogglesProvider,
     PassportServerAuthProvider,
     PassportServerSocketProvider,
     SnackBarProvider,
-    StreamProvider,
+    SupremacyProvider,
     useGameServerAuth,
+    useGameServerWebsocket,
     WalletProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
@@ -38,18 +35,23 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
+    const { isServerUp } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
+
+    if (!isServerUp || UNDER_MAINTENANCE) return <Maintenance />
 
     return (
         <>
             <Stack
                 sx={{
+                    position: "relative",
                     width: "100vw",
                     height: "100vh",
                     backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                 }}
             >
                 <Bar />
+
                 <Stack
                     direction="row"
                     sx={{
@@ -73,6 +75,8 @@ const AppInner = () => {
                             backgroundColor: colors.darkNavy,
                         }}
                     >
+                        <LoadMessage />
+
                         <Switch>
                             {ROUTES_ARRAY.map((r) => {
                                 const { id, path, exact, Component } = r
@@ -121,22 +125,6 @@ const App = () => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
 
-    const tourProviderProps: ProviderProps = {
-        children: <AppInner />,
-        steps: [],
-        styles: tourStyles,
-        nextButton: tutorialNextBtn,
-        prevButton: tutorialPrevButton,
-        showBadge: false,
-        disableKeyboardNavigation: true,
-        disableDotsNavigation: true,
-        afterOpen: () => {
-            if (!localStorage.getItem("visited")) {
-                localStorage.setItem("visited", "1")
-            }
-        },
-    }
-
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
@@ -145,23 +133,15 @@ const App = () => {
                         <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
                             <GameServerSocketProvider initialState={{ login: authLogin }}>
                                 <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
-                                    <StreamProvider>
+                                    <SupremacyProvider>
                                         <WalletProvider>
-                                            <DrawerProvider>
-                                                <GameProvider>
-                                                    <DimensionProvider>
-                                                        <OverlayTogglesProvider>
-                                                            <TourProvider {...tourProviderProps}>
-                                                                <BrowserRouter>
-                                                                    <AppInner />
-                                                                </BrowserRouter>
-                                                            </TourProvider>
-                                                        </OverlayTogglesProvider>
-                                                    </DimensionProvider>
-                                                </GameProvider>
-                                            </DrawerProvider>
+                                            <RightDrawerProvider>
+                                                <BrowserRouter>
+                                                    <AppInner />
+                                                </BrowserRouter>
+                                            </RightDrawerProvider>
                                         </WalletProvider>
-                                    </StreamProvider>
+                                    </SupremacyProvider>
                                 </GameServerAuthProvider>
                             </GameServerSocketProvider>
                         </PassportServerAuthProvider>

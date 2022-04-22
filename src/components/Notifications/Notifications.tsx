@@ -15,7 +15,7 @@ import {
 import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
 import { useTheme } from "@mui/styles"
 import { Theme } from "@mui/material/styles"
-import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useGame } from "../../containers"
+import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useSupremacy, useGame } from "../../containers"
 import { useCallback, useEffect, useMemo } from "react"
 import { GameServerKeys } from "../../keys"
 import { useArray } from "../../hooks"
@@ -53,13 +53,13 @@ export interface NotificationResponse {
 }
 
 export const Notifications = () => {
-    const { factionsAll } = useGame()
+    const { factionsAll } = useSupremacy()
     const { state, subscribe } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
     const { setForceDisplay100Percentage } = useGame()
     const theme = useTheme<Theme>()
     const {
-        streamDimensions: { height },
+        gameUIDimensions: { height },
     } = useDimension()
 
     // Notification array

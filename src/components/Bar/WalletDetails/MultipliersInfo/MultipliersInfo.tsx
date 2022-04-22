@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useRef, useState } from "react"
-import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../../../containers"
+import { useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
@@ -10,7 +10,7 @@ import { MultipliersPopover } from "./MultiplierPopover"
 export const MultipliersInfo = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
-    const { battleIdentifier } = useGame()
+    const { battleIdentifier } = useSupremacy()
     const multipliersPopoverRef = useRef(null)
     const [isMultipliersPopoverOpen, toggleIsMultipliersPopoverOpen] = useToggle()
     // Multipliers

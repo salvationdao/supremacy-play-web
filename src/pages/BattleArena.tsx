@@ -1,42 +1,39 @@
-import { Box } from "@mui/material"
+import { Box, Stack } from "@mui/material"
+import { useMemo } from "react"
+import { TourProvider } from "@reactour/tour"
 import {
-    BattleCloseAlert,
     BattleEndScreen,
     BattleHistory,
     Controls,
     EarlyAccessWarning,
     LiveVotingChart,
-    LoadMessage,
-    Maintenance,
     MiniMap,
     Notifications,
     Stream,
+    tourStyles,
+    tutorialNextBtn,
+    tutorialPrevButton,
     VotingSystem,
     WaitingPage,
     WarMachineStats,
 } from "../components"
 import { Music } from "../components/Music/Music"
-import { UNDER_MAINTENANCE } from "../constants"
-import { useGameServerAuth, useGameServerWebsocket } from "../containers"
+import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider } from "../containers"
 import { useToggle } from "../hooks"
 
-export const BattleArenaPage = () => {
-    const { state, isServerUp } = useGameServerWebsocket()
+const BattleArenaPageInner = () => {
+    const { state } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
     const [haveSups, toggleHaveSups] = useToggle(true)
 
     return (
         <>
-            {!isServerUp || UNDER_MAINTENANCE ? (
-                <Maintenance />
-            ) : (
-                <>
-                    <LoadMessage />
-                    <BattleCloseAlert />
+            <Stack sx={{ height: "100%" }}>
+                <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
                     <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
 
                     {user && haveSups && state === WebSocket.OPEN ? (
-                        <Box>
+                        <>
                             <EarlyAccessWarning />
                             <VotingSystem />
                             <MiniMap />
@@ -45,14 +42,50 @@ export const BattleArenaPage = () => {
                             <WarMachineStats />
                             <BattleEndScreen />
                             <BattleHistory />
-                        </Box>
+                        </>
                     ) : (
                         <WaitingPage />
                     )}
-                </>
-            )}
+                </Box>
+
+                <Controls />
+            </Stack>
+
             <Music />
-            <Controls />
         </>
+    )
+}
+export const BattleArenaPage = () => {
+    const tourProviderProps = useMemo(
+        () => ({
+            children: <BattleArenaPageInner />,
+            steps: [],
+            styles: tourStyles,
+            nextButton: tutorialNextBtn,
+            prevButton: tutorialPrevButton,
+            showBadge: false,
+            disableKeyboardNavigation: true,
+            disableDotsNavigation: true,
+            afterOpen: () => {
+                if (!localStorage.getItem("visited")) {
+                    localStorage.setItem("visited", "1")
+                }
+            },
+        }),
+        [],
+    )
+
+    return (
+        <StreamProvider>
+            <GameProvider>
+                <TourProvider {...tourProviderProps}>
+                    <DimensionProvider>
+                        <OverlayTogglesProvider>
+                            <BattleArenaPageInner />
+                        </OverlayTogglesProvider>
+                    </DimensionProvider>
+                </TourProvider>
+            </GameProvider>
+        </StreamProvider>
     )
 }

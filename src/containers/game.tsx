@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { NullUUID } from "../constants"
-import { GameServerKeys, PassportServerKeys } from "../keys"
+import { GameServerKeys } from "../keys"
 import { BribeStage, Map, WarMachineState, GameAbility, BattleEndDetail } from "../types"
-import { useGameServerAuth, usePassportServerWebsocket, useSnackbar } from "."
+import { useGameServerAuth, useSupremacy } from "."
 import { useGameServerWebsocket } from "."
 import { FactionGeneralData } from "../types/passport"
 
@@ -30,14 +30,11 @@ export interface FactionsAll {
 
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { setBattleIdentifier } = useSupremacy()
     const { state, send, subscribe } = useGameServerWebsocket()
-    const { send: sendPassportWS } = usePassportServerWebsocket()
     const { faction_id, userID } = useGameServerAuth()
 
     // States
-    const [battleIdentifier, setBattleIdentifier] = useState<number>()
-    const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
@@ -65,27 +62,6 @@ export const GameContainer = createContainer(() => {
             null,
         )
     }, [state, subscribe, userID])
-
-    // Get main color of each factions
-    useEffect(() => {
-        if (state !== WebSocket.OPEN) return
-        ;(async () => {
-            try {
-                const resp = await sendPassportWS<FactionGeneralData[]>(PassportServerKeys.GetFactionsAll)
-                if (resp) {
-                    const currentData = {} as FactionsAll
-                    resp.forEach((f) => {
-                        currentData[f.id] = f
-                    })
-                    setFactionsAll(currentData)
-                }
-            } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
-                console.debug(e)
-                return false
-            }
-        })()
-    }, [send, state])
 
     // Subscribe on battle end information
     useEffect(() => {
@@ -154,10 +130,8 @@ export const GameContainer = createContainer(() => {
 
     return {
         bribeStage,
-        factionsAll,
         winner,
         setWinner,
-        battleIdentifier,
         map,
         setMap,
         warMachines,

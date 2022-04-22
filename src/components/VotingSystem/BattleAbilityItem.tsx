@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, ContributionBar, TooltipHelper, VotingButton } from ".."
 import { SvgCooldown, SvgSupToken } from "../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES, VOTING_OPTION_COSTS } from "../../constants"
-import { FactionsAll, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { FactionsAll, useGame, useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
@@ -28,7 +28,8 @@ interface BattleAbilityProgressBigNum {
 export const BattleAbilityItem = () => {
     const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
     const { user, faction_id } = useGameServerAuth()
-    const { bribeStage, factionsAll, forceDisplay100Percentage } = useGame()
+    const { bribeStage, forceDisplay100Percentage } = useGame()
+    const { factionsAll } = useSupremacy()
 
     const [fadeEffect, toggleFadeEffect] = useToggle()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()

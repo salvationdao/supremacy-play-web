@@ -33,7 +33,7 @@ export const LeftDrawer = () => {
                     flexShrink: 0,
                     width: isExpanded ? `${EXPAND_DRAWER_WIDTH}rem` : 0,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
-                    zIndex: 999999,
+                    zIndex: 9999999999,
                     "& .MuiDrawer-paper": {
                         width: `${EXPAND_DRAWER_WIDTH}rem`,
                         background: "none",

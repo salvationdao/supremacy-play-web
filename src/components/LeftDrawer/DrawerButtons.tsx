@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material"
+import { Box, Button, Stack, Tab, Tabs } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgNext } from "../../assets"
 import { shadeColor } from "../../helpers"
@@ -50,20 +50,20 @@ export const DrawerButtons = ({ primaryColor, user, openLeftDrawer }: { primaryC
                     )
                 })}
             </Tabs>
-            <Box
+
+            <Button
+                onClick={() => openLeftDrawer()}
                 sx={{
-                    width: "100%",
+                    minWidth: 0,
+                    color: "#FFFFFF",
                     borderRadius: 0,
-                    "&:hover": {
-                        opacity: 1,
+                    ":hover": {
                         backgroundColor: primaryColor,
                     },
                 }}
             >
-                <IconButton onClick={() => openLeftDrawer()}>
-                    <SvgNext size="1.6rem" />
-                </IconButton>
-            </Box>
+                <SvgNext size="1.6rem" />
+            </Button>
         </Stack>
     )
 }

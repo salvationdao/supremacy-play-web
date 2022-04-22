@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../.."
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGame } from "../../../containers"
+import { useSupremacy } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { factionsAll } = useGame()
+    const { factionsAll } = useSupremacy()
     const { top_sups_contribute_factions } = battleEndDetail
 
     return (
@@ -23,10 +23,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                     }}
                 >
                     MOST SUPS SPENT (SYNDICATE)
-                    <BattleEndTooltip
-                        text="The syndicates that had spent the most SUPS, ranked in order."
-                        color={colors.neonBlue}
-                    />
+                    <BattleEndTooltip text="The syndicates that had spent the most SUPS, ranked in order." color={colors.neonBlue} />
                 </Typography>
             </Box>
 

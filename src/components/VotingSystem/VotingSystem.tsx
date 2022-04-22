@@ -20,13 +20,13 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
     const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
     const theme = useTheme<Theme>()
     const {
-        pxToRemRatio,
-        streamDimensions: { height },
+        remToPxRatio,
+        gameUIDimensions: { height },
     } = useDimension()
 
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
-    const adjustment = useMemo(() => Math.min(pxToRemRatio, 9) / 9, [pxToRemRatio])
+    const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
     const onResizeStop = useCallback(
         (data: Dimension) => {

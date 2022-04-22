@@ -24,7 +24,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
 
     return (
         <>
-            {<Logo />}
+            <Logo />
             <Box sx={{ flexGrow: 1 }} />
             <HowToPlay />
             {user && (

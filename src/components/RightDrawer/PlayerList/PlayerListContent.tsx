@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material"
 import { useEffect, useMemo, useState, Dispatch } from "react"
 import { PlayerItem } from "../.."
-import { useGame, useGameServerWebsocket } from "../../../containers"
+import { useSupremacy, useGameServerWebsocket } from "../../../containers"
 import { GameServerKeys } from "../../../keys"
 import { User } from "../../../types"
 
@@ -19,7 +19,7 @@ export const PlayerListContent = ({
     setInactivePlayers: Dispatch<React.SetStateAction<User[]>>
 }) => {
     const { state, subscribe } = useGameServerWebsocket()
-    const { factionsAll } = useGame()
+    const { factionsAll } = useSupremacy()
     const [newPlayerList, setNewPlayerList] = useState<User[]>()
 
     const faction = useMemo(() => factionsAll[user.faction_id], [])

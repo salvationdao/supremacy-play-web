@@ -1,6 +1,7 @@
 import { Drawer } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 import { DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH } from "../../constants"
+import { RightDrawerPanels, useRightDrawer } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
 import { Assets } from "./Assets/Assets"
@@ -8,38 +9,21 @@ import { DrawerButtons } from "./DrawerButtons"
 import { LiveChat } from "./LiveChat/LiveChat"
 import { PlayerList } from "./PlayerList/PlayerList"
 
-export enum DrawerPanels {
-    None = "NONE",
-    LiveChat = "LIVE_CHAT",
-    PlayerList = "PLAYER_LIST",
-    Assets = "ASSETS",
-}
-
 export const RightDrawer = () => {
     const [isDrawerOpen, toggleIsDrawerOpen] = useToggle()
-    const [activePanel, setActivePanel] = useState<DrawerPanels>(DrawerPanels.LiveChat)
-
-    const togglePanel = useCallback(
-        (newPanel: DrawerPanels, value?: boolean) => {
-            setActivePanel((prev) => {
-                if (prev === newPanel || value === false) return DrawerPanels.None
-                return newPanel
-            })
-        },
-        [setActivePanel],
-    )
+    const { activePanel, togglePanel } = useRightDrawer()
 
     useEffect(() => {
-        toggleIsDrawerOpen(activePanel !== DrawerPanels.None)
+        toggleIsDrawerOpen(activePanel !== RightDrawerPanels.None)
     }, [activePanel])
 
     const drawerContent = useMemo(() => {
         switch (activePanel) {
-            case DrawerPanels.LiveChat:
+            case RightDrawerPanels.LiveChat:
                 return <LiveChat />
-            case DrawerPanels.PlayerList:
+            case RightDrawerPanels.PlayerList:
                 return <PlayerList />
-            case DrawerPanels.Assets:
+            case RightDrawerPanels.Assets:
                 return <Assets />
             default:
                 return null

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
 import { FactionIDs } from "../../constants"
-import { FactionsAll, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { FactionsAll, useSupremacy, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { ViewerLiveCount } from "../../types"
@@ -19,7 +19,7 @@ const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; to
 }
 
 export const LiveCounts = () => {
-    const { factionsAll } = useGame()
+    const { factionsAll } = useSupremacy()
     const { state, subscribe, subscribeNetMessage } = useGameServerWebsocket()
 
     return <LiveCountsInner factionsAll={factionsAll} state={state} subscribe={subscribe} subscribeNetMessage={subscribeNetMessage} />

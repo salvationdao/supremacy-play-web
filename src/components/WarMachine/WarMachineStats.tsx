@@ -39,14 +39,14 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
 }
 
 export const WarMachineStats = () => {
-    const { pxToRemRatio } = useDimension()
+    const { remToPxRatio } = useDimension()
     const { faction_id } = useGameServerAuth()
     const { warMachines } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
     const { isMapOpen } = useOverlayToggles()
 
-    const adjustment = useMemo(() => Math.min(pxToRemRatio, 10) / 10, [pxToRemRatio])
+    const adjustment = useMemo(() => Math.min(remToPxRatio, 10) / 10, [remToPxRatio])
 
     // DO NOT REMOVE THIS! Subscribe to the result of the vote
     useEffect(() => {

@@ -4,7 +4,7 @@ import { useTheme } from "@mui/styles"
 import { useEffect, useState } from "react"
 import { FactionAbilityItem } from ".."
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useSupremacy, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { GameAbility } from "../../types"
@@ -12,7 +12,7 @@ import { GameAbility } from "../../types"
 export const FactionAbilities = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
-    const { factionsAll } = useGame()
+    const { factionsAll } = useSupremacy()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const { user, faction_id } = useGameServerAuth()
 

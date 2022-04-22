@@ -3,7 +3,7 @@ import { ReactNode, useMemo } from "react"
 import { BarExpandable, TooltipHelper } from "../.."
 import { SvgAbility, SvgBostonKillIcon, SvgDeath, SvgRedMoutainKillIcon, SvgView, SvgWrapperProps, SvgZaibatsuKillIcon } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { useGame, useGameServerAuth, usePassportServerAuth } from "../../../containers"
+import { useSupremacy, useGameServerAuth, usePassportServerAuth } from "../../../containers"
 import { UserData } from "../../../types/passport"
 import { FactionIDs, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { UserRank, UserStat } from "../../../types"
@@ -40,7 +40,7 @@ const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; too
 export const EnlistBanner = () => {
     const { user, userID } = usePassportServerAuth()
     const { userStat, userRank } = useGameServerAuth()
-    const { battleIdentifier } = useGame()
+    const { battleIdentifier } = useSupremacy()
 
     return <EnlistBannerInner user={user} userID={userID} userRank={userRank} battleIdentifier={battleIdentifier} userStat={userStat} />
 }

@@ -13,7 +13,7 @@ interface RouteStruct {
     label: string
 }
 
-const ROUTES_MAP: { [name: string]: RouteStruct } = {
+export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     home: {
         id: "home",
         path: "/",

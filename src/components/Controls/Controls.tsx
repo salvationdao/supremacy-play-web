@@ -21,6 +21,7 @@ export const Controls = () => {
                 position: "relative",
                 width: "100%",
                 height: `${CONTROLS_HEIGHT}rem`,
+                px: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
                 backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,

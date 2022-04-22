@@ -1,8 +1,7 @@
 import { Box, Tab, Tabs } from "@mui/material"
 import { useMemo } from "react"
-import { DrawerPanels } from ".."
 import { SvgChat, SvgRobot } from "../../assets"
-import { useGameServerAuth } from "../../containers"
+import { RightDrawerPanels, useGameServerAuth } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 
@@ -13,8 +12,8 @@ export const DrawerButtons = ({
     activePanel,
     togglePanel,
 }: {
-    activePanel: DrawerPanels
-    togglePanel: (newPanel: DrawerPanels, value?: boolean | undefined) => void
+    activePanel: RightDrawerPanels
+    togglePanel: (newPanel: RightDrawerPanels, value?: boolean | undefined) => void
 }) => {
     const { user } = useGameServerAuth()
     const primaryColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue), [user])
@@ -43,30 +42,30 @@ export const DrawerButtons = ({
             <Tabs value={activePanel} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ height: "100%" }}>
                 <TabButton
                     label="WAR ROOM"
-                    value={DrawerPanels.LiveChat}
+                    value={RightDrawerPanels.LiveChat}
                     icon={<SvgChat size="1rem" sx={{ pt: ".3rem" }} />}
-                    onClick={() => togglePanel(DrawerPanels.LiveChat)}
-                    isActive={activePanel === DrawerPanels.LiveChat}
+                    onClick={() => togglePanel(RightDrawerPanels.LiveChat)}
+                    isActive={activePanel === RightDrawerPanels.LiveChat}
                     primaryColor={primaryColor}
                 />
                 <TabButton
                     label="ACTIVE PLAYERS"
-                    value={DrawerPanels.PlayerList}
+                    value={RightDrawerPanels.PlayerList}
                     icon={
                         <Box sx={{ pb: ".2rem" }}>
                             <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: primaryColor }} />
                         </Box>
                     }
-                    onClick={() => togglePanel(DrawerPanels.PlayerList)}
-                    isActive={activePanel === DrawerPanels.PlayerList}
+                    onClick={() => togglePanel(RightDrawerPanels.PlayerList)}
+                    isActive={activePanel === RightDrawerPanels.PlayerList}
                     primaryColor={primaryColor}
                 />
                 <TabButton
                     label="WAR MACHINES"
-                    value={DrawerPanels.Assets}
+                    value={RightDrawerPanels.Assets}
                     icon={<SvgRobot size="1.3rem" />}
-                    onClick={() => togglePanel(DrawerPanels.Assets)}
-                    isActive={activePanel === DrawerPanels.Assets}
+                    onClick={() => togglePanel(RightDrawerPanels.Assets)}
+                    isActive={activePanel === RightDrawerPanels.Assets}
                     primaryColor={primaryColor}
                 />
             </Tabs>

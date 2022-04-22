@@ -3,7 +3,7 @@ import emojiRegex from "emoji-regex"
 import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
-import { FactionsAll, FontSizeType, SplitOptionType, useChat, useGame, useGameServerAuth } from "../../../../containers"
+import { FactionsAll, FontSizeType, SplitOptionType, useChat, useSupremacy, useGameServerAuth } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../../types/chat"
 import { BanProposal } from "../BanProposal"
@@ -20,7 +20,7 @@ interface ChatMessagesProps {
 
 export const ChatMessages = (props: ChatMessagesProps) => {
     const { filterZerosGlobal, filterZerosFaction, filterSystemMessages, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
-    const { factionsAll } = useGame()
+    const { factionsAll } = useSupremacy()
 
     return (
         <ChatMessagesInner

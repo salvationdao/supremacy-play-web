@@ -5,13 +5,13 @@ import { StepType, useTour } from "@reactour/tour"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
 import { BtnFnProps } from "@reactour/tour/dist/types"
 import { useCallback, useEffect, useMemo } from "react"
-import { useBar, useDrawer, usePassportServerAuth, useStream, useWallet } from "../../containers"
+import { useBar, useRightDrawer, usePassportServerAuth, useStream, useWallet, RightDrawerPanels } from "../../containers"
 import { colors } from "../../theme/theme"
 
 export const Tutorial = () => {
     const { setIsOpen, setSteps, setCurrentStep } = useTour()
     const { toggleActiveBar } = useBar()
-    const { isLiveChatOpen, isAssetOpen } = useDrawer()
+    const { activePanel } = useRightDrawer()
     const { streamResolutions } = useStream()
     const { user } = usePassportServerAuth()
     const { onWorldSupsRaw } = useWallet()
@@ -125,7 +125,7 @@ export const Tutorial = () => {
                     "You'll find your mechs here, these can be purchased from Supremacy Store or on the Black Market (OpenSeas). You will be able to deploy your mechs to battle here as well as see each mech's battle history.",
             },
         ]
-    }, [isLiveChatOpen, isAssetOpen])
+    }, [activePanel])
 
     //only show if user has sups
     const withSupsSteps: StepType[] = useMemo<StepType[]>(() => {
@@ -242,13 +242,13 @@ export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial
 //custom next button, on last step, clicking the next arrow btn will close the tour- does not work for arrow (that has to use esc key)
 export const tutorialNextBtn = ({ Button, currentStep, stepsLength, setIsOpen, setCurrentStep }: BtnFnProps) => {
     const { steps } = useTour()
-    const { isLiveChatOpen, isAssetOpen, toggleIsAssetOpen, toggleIsLiveChatOpen } = useDrawer()
+    const { activePanel, togglePanel } = useRightDrawer()
 
     const nextBtnStepper = useCallback(() => {
         const nextStep = steps[currentStep + 1]
         if (nextStep && nextStep.selector === "#tutorial-asset") {
-            if (!isAssetOpen) {
-                toggleIsAssetOpen()
+            if (activePanel !== RightDrawerPanels.Assets) {
+                togglePanel(RightDrawerPanels.Assets, true)
                 setTimeout(() => {
                     setCurrentStep(currentStep + 1)
                 }, 250)
@@ -260,8 +260,8 @@ export const tutorialNextBtn = ({ Button, currentStep, stepsLength, setIsOpen, s
             nextStep &&
             (nextStep.selector === "#tutorial-chat" || nextStep.selector === "#tutorial-global-chat" || nextStep.selector === "#tutorial-faction-chat")
         ) {
-            if (!isLiveChatOpen) {
-                toggleIsLiveChatOpen()
+            if (activePanel !== RightDrawerPanels.LiveChat) {
+                togglePanel(RightDrawerPanels.LiveChat, true)
                 setTimeout(() => {
                     setCurrentStep(currentStep + 1)
                 }, 250)
@@ -275,7 +275,7 @@ export const tutorialNextBtn = ({ Button, currentStep, stepsLength, setIsOpen, s
             return
         }
         setCurrentStep(currentStep + 1)
-    }, [isLiveChatOpen, isAssetOpen, toggleIsAssetOpen, toggleIsLiveChatOpen, steps, currentStep, stepsLength, setIsOpen, setCurrentStep])
+    }, [activePanel, togglePanel, steps, currentStep, stepsLength, setIsOpen, setCurrentStep])
 
     return (
         <Button
@@ -290,13 +290,13 @@ export const tutorialNextBtn = ({ Button, currentStep, stepsLength, setIsOpen, s
 //custom next button, on last step, clicking the next arrow btn will close the tour- does not work for arrow (that has to use esc key)
 export const tutorialPrevButton = ({ Button, currentStep, setCurrentStep }: BtnFnProps) => {
     const { steps } = useTour()
-    const { isLiveChatOpen, isAssetOpen, toggleIsAssetOpen, toggleIsLiveChatOpen } = useDrawer()
+    const { activePanel, togglePanel } = useRightDrawer()
 
     const prevBtnStepper = useCallback(() => {
         const prevStep = steps[currentStep - 1]
         if (prevStep && prevStep.selector === "#tutorial-asset") {
-            if (!isAssetOpen) {
-                toggleIsAssetOpen()
+            if (activePanel !== RightDrawerPanels.Assets) {
+                togglePanel(RightDrawerPanels.Assets, true)
                 setTimeout(() => {
                     setCurrentStep(currentStep - 1)
                 }, 250)
@@ -308,8 +308,8 @@ export const tutorialPrevButton = ({ Button, currentStep, setCurrentStep }: BtnF
             prevStep &&
             (prevStep.selector === "#tutorial-chat" || prevStep.selector === ".tutorial-global-chat" || prevStep.selector === ".tutorial-faction-chat")
         ) {
-            if (!isLiveChatOpen) {
-                toggleIsLiveChatOpen()
+            if (activePanel !== RightDrawerPanels.LiveChat) {
+                togglePanel(RightDrawerPanels.LiveChat, true)
                 setTimeout(() => {
                     setCurrentStep(currentStep - 1)
                 }, 250)
@@ -318,7 +318,7 @@ export const tutorialPrevButton = ({ Button, currentStep, setCurrentStep }: BtnF
         }
 
         setCurrentStep(currentStep - 1)
-    }, [isLiveChatOpen, isAssetOpen, toggleIsAssetOpen, toggleIsLiveChatOpen, steps, currentStep, setCurrentStep])
+    }, [activePanel, togglePanel, steps, currentStep, setCurrentStep])
 
     return (
         <Button
