@@ -30,8 +30,9 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                 filter: {
                     items: [
                         {
-                            columnField: "available_until",
-                            operatorValue: "after",
+                            table: "sale_player_abilities",
+                            column: "available_until",
+                            operator: "after",
                             value: "now()",
                         },
                     ],
