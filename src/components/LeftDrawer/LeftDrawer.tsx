@@ -1,212 +1,125 @@
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt"
-import { Box, Drawer, IconButton, Stack, styled, Tab, Tabs, Theme, useTheme } from "@mui/material"
-import React from "react"
+import { Button, Drawer, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { useHistory, useLocation } from "react-router-dom"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, LEFT_DRAWER_WIDTH } from "../../constants"
+import { SvgBack } from "../../assets"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
+import { useGameServerAuth } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { RoutePaths, TabLabels } from "../../routes"
+import { ROUTES_ARRAY } from "../../routes"
 import { colors } from "../../theme/theme"
+import { DrawerButtons } from "./DrawerButtons"
 
-const BUTTON_WIDTH = 20 //rem
-const ICON_BUTTON_WIDTH = 5 // rem
 const EXPAND_DRAWER_WIDTH = 30 //rem
 
-const LEFT_DRAWER_TABS = [
-    {
-        label: TabLabels.BattleArena,
-        path: RoutePaths.BattleArena,
-    },
-    {
-        label: TabLabels.Hanger,
-        path: RoutePaths.Hanger,
-    },
-    {
-        label: TabLabels.Marketplace,
-        path: RoutePaths.Marketplace,
-    },
-    {
-        label: TabLabels.Contracts,
-        path: RoutePaths.Contracts,
-        disabled: true,
-    },
-]
-
-const NUM_BUTTONS = LEFT_DRAWER_TABS.length
-
-export const LeftDrawer: React.FC = () => {
-    const theme = useTheme<Theme>()
+export const LeftDrawer = () => {
+    const { user } = useGameServerAuth()
     const location = useLocation()
-    const [isExpanded, toggleIsExpanded] = useToggle(false)
     const history = useHistory()
+    const [isExpanded, toggleIsExpanded] = useToggle(false)
+    const primaryColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue), [user])
 
     return (
         <>
-            {isExpanded && <Box sx={{ width: `${LEFT_DRAWER_WIDTH}rem` }} />}
-            <Container isExpanded={isExpanded}>
-                <Drawer
-                    transitionDuration={DRAWER_TRANSITION_DURATION}
-                    open={isExpanded}
-                    variant="persistent"
-                    anchor="left"
-                    sx={{
-                        zIndex: 1,
-                        width: isExpanded ? `${EXPAND_DRAWER_WIDTH}rem` : 0,
-                        "& .MuiDrawer-paper": {
-                            background: colors.black3,
-                            position: "absolute",
-                            border: 0,
-                        },
-                    }}
-                >
-                    <StyledTabs value={location.pathname} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile orientation="vertical" vertical>
-                        {LEFT_DRAWER_TABS.map((tab) => (
-                            <TabButton
-                                disabled={tab.disabled}
-                                key={tab.label}
-                                label={
-                                    tab.disabled ? (
-                                        <Stack
-                                            sx={{
-                                                "& span": {
-                                                    fontSize: "10px",
-                                                    color: colors.darkNeonBlue,
-                                                    letterSpacing: ".2rem",
-                                                },
-                                            }}
-                                        >
-                                            {tab.label} <span>Coming soon</span>
-                                        </Stack>
-                                    ) : (
-                                        tab.label
-                                    )
-                                }
-                                onClick={() => {
-                                    history.push(tab.path)
-                                    toggleIsExpanded()
-                                }}
-                                sx={{
-                                    width: `${EXPAND_DRAWER_WIDTH}rem`,
-                                    alignItems: "flex-start",
-                                    background: location.pathname === tab.path ? shadeColor(theme.factionTheme.primary, -70) : colors.black3,
-                                    color: location.pathname === tab.path ? theme.factionTheme.primary : "white",
-                                    "&:hover": {
-                                        background: theme.factionTheme.primary,
-                                        color: "white",
-                                        opacity: "unset",
-                                    },
-                                }}
-                            />
-                        ))}
-                    </StyledTabs>
-                </Drawer>
-                {!isExpanded && (
-                    <StyledTabs value={location.pathname} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
-                        {LEFT_DRAWER_TABS.map((tab) => (
-                            <TabButton
-                                disabled={tab.disabled}
-                                key={tab.label}
-                                label={
-                                    tab.disabled ? (
-                                        <Stack
-                                            sx={{
-                                                "& span": {
-                                                    fontSize: "10px",
-                                                    color: colors.darkNeonBlue,
-                                                    letterSpacing: ".2rem",
-                                                },
-                                            }}
-                                        >
-                                            {tab.label} <span>Coming soon</span>
-                                        </Stack>
-                                    ) : (
-                                        tab.label
-                                    )
-                                }
-                                onClick={() => history.push(tab.path)}
-                                sx={{
-                                    background: location.pathname === tab.path ? shadeColor(theme.factionTheme.primary, -70) : colors.black3,
-                                    color: location.pathname === tab.path ? theme.factionTheme.primary : "white",
-                                    "&:hover": {
-                                        background: shadeColor(theme.factionTheme.primary, -20),
-                                        color: "white",
-                                        opacity: "unset",
-                                    },
-                                }}
-                            />
-                        ))}
-                    </StyledTabs>
-                )}
-                <IconButton
-                    onClick={() => toggleIsExpanded()}
-                    sx={{
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        gap: "2rem",
-                        width: isExpanded ? `${EXPAND_DRAWER_WIDTH}rem` : `${LEFT_DRAWER_WIDTH}rem`,
-                        height: `${ICON_BUTTON_WIDTH}rem`,
-                        borderRadius: 0,
-                        position: "fixed",
-                        bottom: 0,
-                        left: 0,
-                        zIndex: 9999,
-                        background: isExpanded ? theme.factionTheme.primary : colors.black3,
-                        transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1) 0ms`,
-                        "&:hover": {
-                            background: theme.factionTheme.primary,
-                            color: "white",
-                            opacity: "unset",
-                        },
-                        "&>span": {
-                            fontFamily: "Nostromo Regular Bold",
-                        },
-                    }}
-                >
-                    <ArrowRightAltIcon fontSize="large" sx={{ color: "white", transform: `scale(1.5) ${isExpanded ? "rotate(-180deg)" : ""}` }} />
-                    {isExpanded && <span>Minimise</span>}
-                </IconButton>
-            </Container>
+            <DrawerButtons primaryColor={primaryColor} user={user} openLeftDrawer={() => toggleIsExpanded(true)} />
+            <Drawer
+                transitionDuration={DRAWER_TRANSITION_DURATION}
+                open={isExpanded}
+                onClose={() => toggleIsExpanded(false)}
+                variant="temporary"
+                anchor="left"
+                sx={{
+                    mt: `${GAME_BAR_HEIGHT}rem`,
+                    flexShrink: 0,
+                    width: isExpanded ? `${EXPAND_DRAWER_WIDTH}rem` : 0,
+                    transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
+                    zIndex: 999999,
+                    "& .MuiDrawer-paper": {
+                        width: `${EXPAND_DRAWER_WIDTH}rem`,
+                        background: "none",
+                        backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -93) : colors.darkNavyBlue,
+                        position: "absolute",
+                        borderLeft: 0,
+                    },
+                }}
+            >
+                <Stack sx={{ height: "100%" }}>
+                    <Stack sx={{ flex: 1 }}>
+                        {ROUTES_ARRAY.filter((r) => r.showInLeftDrawer).map((r) => {
+                            return (
+                                <MenuButton
+                                    key={r.id}
+                                    label={r.label}
+                                    enable={r.enable}
+                                    onClick={() => history.push(r.path)}
+                                    isActive={location.pathname === r.path}
+                                    primaryColor={primaryColor}
+                                />
+                            )
+                        })}
+                    </Stack>
+
+                    <Button
+                        onClick={() => toggleIsExpanded(false)}
+                        sx={{
+                            px: "2.3rem",
+                            py: "1rem",
+                            justifyContent: "flex-start",
+                            color: "#FFFFFF",
+                            borderRadius: 0,
+                            backgroundColor: "#00000040",
+                            ":hover": {
+                                backgroundColor: primaryColor,
+                            },
+                        }}
+                    >
+                        <SvgBack size="1.6rem" />
+                        <Typography sx={{ ml: "1rem", fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>MINIMISE</Typography>
+                    </Button>
+                </Stack>
+            </Drawer>
         </>
     )
 }
 
-const TabButton = styled(Tab)({
-    whiteSpace: "nowrap",
-    fontFamily: "Nostromo Regular Bold",
-    fontSize: "1.6rem",
-    width: `${BUTTON_WIDTH}rem`,
-    height: `${LEFT_DRAWER_WIDTH}rem`,
-    color: "white",
-})
-
-const StyledTabs = styled(Tabs)((props: { vertical?: boolean }) => {
-    return {
-        background: colors.black2,
-        transform: props.vertical ? "unset" : `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}rem - ${LEFT_DRAWER_WIDTH / 2}rem)) rotate(-90deg)`,
-        position: props.vertical ? "static" : "absolute",
-        left: props.vertical ? "unset" : "50%",
-        height: props.vertical ? "fit-content" : `${LEFT_DRAWER_WIDTH}rem`,
-        overflowX: "auto",
-        width: "fit-content",
-        "& .MuiTabs-flexContainer": {
-            flexDirection: props.vertical ? "column" : "row-reverse",
-            gap: ".3rem",
-        },
-    }
-})
-
-const Container = styled("div")((props: { isExpanded: boolean }) => {
-    return {
-        background: props.isExpanded ? "transparent" : colors.black3,
-        position: props.isExpanded ? "fixed" : "relative",
-        top: props.isExpanded ? `${GAME_BAR_HEIGHT}rem` : "unset",
-        left: 0,
-        zIndex: 99999999,
-        width: props.isExpanded ? "fit-content" : `${LEFT_DRAWER_WIDTH}rem`,
-        overflowX: "hidden",
-        height: "100%",
-        "&::-webkit-scrollbar": {
-            display: "none",
-        },
-    }
-})
+const MenuButton = ({
+    label,
+    enable,
+    isActive,
+    primaryColor,
+    onClick,
+}: {
+    label: string
+    enable?: boolean
+    icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
+    isActive?: boolean
+    primaryColor: string
+    onClick: () => void
+}) => {
+    return (
+        <Button
+            disabled={!enable}
+            onClick={onClick}
+            sx={{
+                px: "2.3rem",
+                py: "1.9rem",
+                justifyContent: "flex-start",
+                color: "#FFFFFF",
+                backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
+                borderRadius: 0,
+                borderBottom: `#FFFFFF20 2px solid`,
+                opacity: enable ? 1 : 0.5,
+                ":hover": {
+                    backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
+                },
+            }}
+        >
+            <Typography sx={{ fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>{label}</Typography>
+            {!enable && (
+                <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: "Nostromo Regular Bold", whiteSpace: "nowrap", lineHeight: 1 }}>
+                    &nbsp;(COMING SOON)
+                </Typography>
+            )}
+        </Button>
+    )
+}

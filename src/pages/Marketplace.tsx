@@ -1,5 +1,5 @@
-import React from "react"
+import { Box } from "@mui/material"
 
-export const MarketplacePage: React.FC = () => {
-    return <div>Marketplace</div>
+export const MarketplacePage = () => {
+    return <Box>Marketplace</Box>
 }

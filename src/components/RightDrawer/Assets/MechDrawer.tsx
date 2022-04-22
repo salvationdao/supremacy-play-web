@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, Drawer, IconButton, Stack, TextField, Ty
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { AssetQueue } from "../.."
 import { SvgBack, SvgDeath, SvgEdit, SvgGoldBars, SvgHistory, SvgRefresh, SvgSave, SvgSupToken } from "../../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, DRAWER_BAR_WIDTH, RIGHT_DRAWER_WIDTH, UNDER_MAINTENANCE } from "../../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, UNDER_MAINTENANCE } from "../../../constants"
 import { SocketState, useGameServerWebsocket, usePassportServerWebsocket, useSnackbar } from "../../../containers"
 import { camelToTitle, getRarityDeets, supFormatter, timeSince } from "../../../helpers"
 import { useToggle } from "../../../hooks"
@@ -23,6 +23,8 @@ import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDispla
 //         </>
 //     )
 // }
+
+const DRAWER_BAR_WIDTH = 2.5 // rem
 
 export interface MechDrawerProps {
     user: UserData

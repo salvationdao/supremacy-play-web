@@ -1,5 +1,5 @@
-import React from "react"
+import { Box } from "@mui/system"
 
-export const HangerPage: React.FC = () => {
-    return <div>Hanger</div>
+export const HangerPage = () => {
+    return <Box>Hanger</Box>
 }

@@ -4,7 +4,7 @@ import { ProviderProps, TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
-import { BrowserRouter } from "react-router-dom"
+import { BrowserRouter, Route, Switch } from "react-router-dom"
 import { Bar, GlobalSnackbar, RightDrawer, tourStyles, tutorialNextBtn, tutorialPrevButton } from "./components"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { PASSPORT_SERVER_HOST, SENTRY_CONFIG } from "./constants"
@@ -23,24 +23,16 @@ import {
     WalletProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
-import { Routes } from "./routes"
+import { ROUTES_ARRAY } from "./routes"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme, User } from "./types"
 import { UserData } from "./types/passport"
 
 if (SENTRY_CONFIG) {
-    // import { Integrations } from '@sentry/tracing'
-    // import { createBrowserHistory } from 'history'
-    // const history = createBrowserHistory()
     Sentry.init({
         dsn: SENTRY_CONFIG.DSN,
         release: SENTRY_CONFIG.RELEASE,
         environment: SENTRY_CONFIG.ENVIRONMENT,
-        // integrations: [
-        // new Integrations.BrowserTracing({
-        // routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
-        // }),
-        // ],
         tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
     })
 }
@@ -81,7 +73,12 @@ const AppInner = () => {
                             backgroundColor: colors.darkNavy,
                         }}
                     >
-                        <Routes />
+                        <Switch>
+                            {ROUTES_ARRAY.map((r) => {
+                                const { id, path, exact, Component } = r
+                                return <Route key={id} path={path} exact={exact} component={Component} />
+                            })}
+                        </Switch>
                     </Box>
 
                     <RightDrawer />

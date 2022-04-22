@@ -1,5 +1,4 @@
 import { Box } from "@mui/material"
-import React from "react"
 import {
     BattleCloseAlert,
     BattleEndScreen,
@@ -21,7 +20,7 @@ import { UNDER_MAINTENANCE } from "../constants"
 import { useGameServerAuth, useGameServerWebsocket } from "../containers"
 import { useToggle } from "../hooks"
 
-export const BattleArenaPage: React.VoidFunctionComponent = () => {
+export const BattleArenaPage = () => {
     const { state, isServerUp } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
     const [haveSups, toggleHaveSups] = useToggle(true)

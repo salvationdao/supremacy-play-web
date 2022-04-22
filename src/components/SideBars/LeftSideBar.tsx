@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ReactElement } from "react"
-import { DRAWER_BAR_WIDTH } from "../../constants"
 import { useGameServerAuth, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 
+const DRAWER_BAR_WIDTH = 2.5 // rem
 const BUTTON_WIDTH = 15.2 //rem
 const NUM_BUTTONS = 1
 

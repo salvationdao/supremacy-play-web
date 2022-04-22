@@ -1,25 +1,20 @@
-import { Box, Tab, Tabs } from "@mui/material"
-import { useMemo } from "react"
-import { DrawerPanels } from ".."
-import { SvgChat, SvgRobot } from "../../assets"
-import { useGameServerAuth } from "../../containers"
+import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material"
+import { useHistory, useLocation } from "react-router-dom"
+import { SvgNext } from "../../assets"
 import { shadeColor } from "../../helpers"
+import { ROUTES_ARRAY } from "../../routes"
 import { colors } from "../../theme/theme"
+import { User } from "../../types"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
 
-export const DrawerButtons = ({
-    activePanel,
-    togglePanel,
-}: {
-    activePanel: DrawerPanels
-    togglePanel: (newPanel: DrawerPanels, value?: boolean | undefined) => void
-}) => {
-    const { user } = useGameServerAuth()
-    const primaryColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue), [user])
+export const DrawerButtons = ({ primaryColor, user, openLeftDrawer }: { primaryColor: string; user?: User; openLeftDrawer: () => void }) => {
+    const location = useLocation()
+    const history = useHistory()
+
     return (
-        <Box
+        <Stack
             sx={{
                 position: "relative",
                 height: "100%",
@@ -40,43 +35,44 @@ export const DrawerButtons = ({
                 },
             }}
         >
-            <Tabs value={activePanel} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ height: "100%" }}>
-                <TabButton
-                    label="WAR ROOM"
-                    value={DrawerPanels.LiveChat}
-                    icon={<SvgChat size="1rem" sx={{ pt: ".3rem" }} />}
-                    onClick={() => togglePanel(DrawerPanels.LiveChat)}
-                    isActive={activePanel === DrawerPanels.LiveChat}
-                    primaryColor={primaryColor}
-                />
-                <TabButton
-                    label="ACTIVE PLAYERS"
-                    value={DrawerPanels.PlayerList}
-                    icon={
-                        <Box sx={{ pb: ".2rem" }}>
-                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: primaryColor }} />
-                        </Box>
-                    }
-                    onClick={() => togglePanel(DrawerPanels.PlayerList)}
-                    isActive={activePanel === DrawerPanels.PlayerList}
-                    primaryColor={primaryColor}
-                />
-                <TabButton
-                    label="WAR MACHINES"
-                    value={DrawerPanels.Assets}
-                    icon={<SvgRobot size="1.3rem" />}
-                    onClick={() => togglePanel(DrawerPanels.Assets)}
-                    isActive={activePanel === DrawerPanels.Assets}
-                    primaryColor={primaryColor}
-                />
+            <Tabs value={location.pathname} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
+                {ROUTES_ARRAY.filter((r) => r.showInLeftDrawer).map((r) => {
+                    return (
+                        <TabButton
+                            key={r.id}
+                            label={r.label}
+                            enable={r.enable}
+                            value={r.path}
+                            onClick={() => history.push(r.path)}
+                            isActive={location.pathname === r.path}
+                            primaryColor={primaryColor}
+                        />
+                    )
+                })}
             </Tabs>
-        </Box>
+            <Box
+                sx={{
+                    p: ".1rem",
+                    width: "100%",
+                    borderRadius: 0,
+                    "&:hover": {
+                        opacity: 1,
+                        backgroundColor: primaryColor,
+                    },
+                }}
+            >
+                <IconButton onClick={() => openLeftDrawer()}>
+                    <SvgNext size="1.6rem" />
+                </IconButton>
+            </Box>
+        </Stack>
     )
 }
 
 const TabButton = ({
     label,
     value,
+    enable,
     icon,
     isActive,
     primaryColor,
@@ -84,6 +80,7 @@ const TabButton = ({
 }: {
     label: string
     value: string
+    enable?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
@@ -98,11 +95,22 @@ const TabButton = ({
             }}
         >
             <Tab
-                label={label}
+                label={
+                    enable ? (
+                        label
+                    ) : (
+                        <Stack>
+                            {label}
+                            <br />
+                            <span style={{ color: colors.neonBlue }}>(COMING SOON)</span>
+                        </Stack>
+                    )
+                }
                 value={value}
                 icon={icon}
                 iconPosition="end"
                 onClick={onClick}
+                disabled={!enable}
                 sx={{
                     p: 0,
                     pt: ".2rem",
@@ -112,7 +120,7 @@ const TabButton = ({
                     fontSize: "1.2rem",
                     lineHeight: 1,
                     color: "#FFFFFF",
-                    backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
+                    backgroundColor: enable ? (isActive ? primaryColor : `${primaryColor}50`) : `${primaryColor}20`,
                     opacity: isActive ? 0.9 : 0.6,
                     transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,
                     ":hover": {
