@@ -51,7 +51,7 @@ export const SENTRY_CONFIG = {
 export const GAME_BAR_HEIGHT = 5.9 // rem
 export const RIGHT_DRAWER_WIDTH = 38 // rem
 export const LEFT_DRAWER_WIDTH = 5 //rem
-export const LIVE_CHAT_DRAWER_BUTTON_WIDTH = 3 // rem
+export const RIGHT_DRAWER_BUTTON_WIDTH = 3 // rem
 export const CONTROLS_HEIGHT = 3.0 // rem
 export const MINI_MAP_DEFAULT_SIZE = 240 //px
 

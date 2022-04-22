@@ -1,14 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
-import { useBar, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
+import { BarProvider, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
+import { UserData } from "../../types/passport"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
 
-const BarContent = () => {
+const BarContent = ({ user }: { user?: UserData }) => {
     const { state, isServerUp } = usePassportServerWebsocket()
-    const { user } = usePassportServerAuth()
 
     if (state !== WebSocket.OPEN) {
         return (
@@ -40,18 +40,8 @@ const BarContent = () => {
 
 export const Bar = () => {
     const { user } = usePassportServerAuth()
-    const { gameBarRef } = useBar()
-
     return (
-        <Stack
-            ref={gameBarRef}
-            sx={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                zIndex: 9999,
-            }}
-        >
+        <BarProvider>
             <Stack
                 direction="row"
                 alignItems="center"
@@ -59,6 +49,7 @@ export const Bar = () => {
                     position: "relative",
                     pl: ".8rem",
                     pr: "1.6rem",
+                    flexShrink: 0,
                     height: `${GAME_BAR_HEIGHT}rem`,
                     color: "#FFFFFF",
                     backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
@@ -79,8 +70,8 @@ export const Bar = () => {
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
             >
-                <BarContent />
+                <BarContent user={user} />
             </Stack>
-        </Stack>
+        </BarProvider>
     )
 }

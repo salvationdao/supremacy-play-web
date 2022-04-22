@@ -5,10 +5,9 @@ import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter } from "react-router-dom"
-import { DrawerButtons, GameBar, GlobalSnackbar, RightDrawer, tourStyles, tutorialNextBtn, tutorialPrevButton } from "./components"
+import { Bar, GlobalSnackbar, RightDrawer, tourStyles, tutorialNextBtn, tutorialPrevButton } from "./components"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { PageWrapper } from "./components/PageWrapper/PageWrapper"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST, SENTRY_CONFIG } from "./constants"
+import { PASSPORT_SERVER_HOST, SENTRY_CONFIG } from "./constants"
 import {
     DimensionProvider,
     DrawerProvider,
@@ -20,7 +19,6 @@ import {
     PassportServerSocketProvider,
     SnackBarProvider,
     StreamProvider,
-    useDimension,
     useGameServerAuth,
     WalletProvider,
 } from "./containers"
@@ -49,54 +47,46 @@ if (SENTRY_CONFIG) {
 
 const AppInner = () => {
     const { user } = useGameServerAuth()
-    const { mainDivDimensions } = useDimension()
 
     return (
         <>
-            <GameBar />
             <Stack
                 sx={{
-                    mt: `${GAME_BAR_HEIGHT}rem`,
-                    width: mainDivDimensions.width,
-                    height: mainDivDimensions.height,
-                    transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
+                    width: "100vw",
+                    height: "100vh",
+                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                 }}
             >
-                <Box
+                <Bar />
+                <Stack
+                    direction="row"
                     sx={{
-                        display: "flex",
-                        flex: 1,
                         position: "relative",
-                        width: "100%",
-                        backgroundColor: colors.darkNavyBlue,
+                        flex: 1,
+                        width: "100vw",
                         overflow: "hidden",
                         justifyContent: "space-between",
-                        "&>*": {
+                        "& > *": {
                             flexShrink: 0,
                         },
                     }}
                 >
                     <LeftDrawer />
-                    <PageWrapper>
-                        <Routes />
-                    </PageWrapper>
-                    <DrawerButtons />
-                    <RightDrawer />
-                </Box>
-            </Stack>
 
-            {/* Keep this. Just the under background, glimpse of it is visible when drawers open / close */}
-            <Box
-                sx={{
-                    position: "fixed",
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
-                    zIndex: -1,
-                }}
-            />
+                    <Box
+                        sx={{
+                            flex: 1,
+                            position: "relative",
+                            height: "100%",
+                            backgroundColor: colors.darkNavy,
+                        }}
+                    >
+                        <Routes />
+                    </Box>
+
+                    <RightDrawer />
+                </Stack>
+            </Stack>
 
             <GlobalSnackbar />
         </>

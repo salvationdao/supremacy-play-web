@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ReactElement } from "react"
-import { LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../constants"
+import { RIGHT_DRAWER_BUTTON_WIDTH } from "../../constants"
 import { useGameServerAuth, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
@@ -33,7 +33,7 @@ const SideButton = ({
             sx={{
                 px: "1.8rem",
                 pt: ".16rem",
-                height: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
+                height: `${RIGHT_DRAWER_BUTTON_WIDTH}rem`,
                 width: `${BUTTON_WIDTH}rem`,
                 backgroundColor: user && user.faction ? `${user.faction.theme.primary}40` : colors.darkerNeonBlue,
                 cursor: "pointer",
@@ -73,9 +73,8 @@ export const LeftSideBar = () => {
             sx={{
                 position: "relative",
                 overflow: "hidden",
-                width: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
-                backgroundColor:
-                    user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                width: `${RIGHT_DRAWER_BUTTON_WIDTH}rem`,
+                backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
                 zIndex: 1002,
             }}
         >
@@ -88,9 +87,7 @@ export const LeftSideBar = () => {
                     position: "absolute",
                     top: 0,
                     left: "50%",
-                    transform: `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}rem - ${
-                        LIVE_CHAT_DRAWER_BUTTON_WIDTH / 2
-                    }rem)) rotate(-90deg)`,
+                    transform: `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}rem - ${RIGHT_DRAWER_BUTTON_WIDTH / 2}rem)) rotate(-90deg)`,
                 }}
             >
                 <SideButton

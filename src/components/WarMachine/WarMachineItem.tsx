@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from ".."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -30,14 +30,12 @@ interface Props {
 export const WarMachineItem = (props: Props) => {
     const { state, subscribe } = useGameServerWebsocket()
     const { highlightedMechHash, setHighlightedMechHash } = useGame()
-    const { isAnyPanelOpen } = useDrawer()
     const { faction_id } = useGameServerAuth()
 
     return (
         <WarMachineItemInner
             {...props}
             faction_id={faction_id}
-            isAnyPanelOpen={isAnyPanelOpen}
             highlightedMechHash={highlightedMechHash}
             setHighlightedMechHash={setHighlightedMechHash}
             state={state}
@@ -50,7 +48,6 @@ interface PropsInner extends Props, Partial<WebSocketProperties> {
     faction_id?: string
     highlightedMechHash?: string
     setHighlightedMechHash: (s?: string) => void
-    isAnyPanelOpen: boolean
 }
 
 const WarMachineItemInner = ({
@@ -60,7 +57,6 @@ const WarMachineItemInner = ({
     faction_id,
     highlightedMechHash,
     setHighlightedMechHash,
-    isAnyPanelOpen,
     state,
     subscribe,
 }: PropsInner) => {
@@ -110,7 +106,7 @@ const WarMachineItemInner = ({
 
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
-    }, [shouldBeExpanded, isAnyPanelOpen])
+    }, [shouldBeExpanded])
 
     // If warmachine is updated, reset destroy info
     useEffect(() => {

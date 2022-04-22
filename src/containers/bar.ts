@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useDrawer } from "."
 import { DRAWER_TRANSITION_DURATION } from "../constants"
 import { useWindowDimensions } from "../hooks"
 
@@ -11,10 +10,8 @@ export interface ActiveBars {
 }
 
 export const BarContainer = createContainer(() => {
-    const gameBarRef = useRef<HTMLDivElement>()
     const windowDimensions = useWindowDimensions()
 
-    const { isAnyPanelOpen } = useDrawer()
     const [activeBars, setActiveBars] = useState<ActiveBars>({
         enlist: true,
         wallet: true,
@@ -22,9 +19,7 @@ export const BarContainer = createContainer(() => {
     })
 
     const getBarWidth = () => {
-        const el = gameBarRef.current
-        if (!el) return
-        return el.offsetWidth
+        return windowDimensions.width
     }
 
     useEffect(() => {
@@ -71,7 +66,7 @@ export const BarContainer = createContainer(() => {
                 })
             }
         }, DRAWER_TRANSITION_DURATION + 50)
-    }, [windowDimensions, isAnyPanelOpen])
+    }, [windowDimensions])
 
     // Make sure that the bar is limited to only 1, 2, or 3 things expanded at the same time, depending on screen size
     const toggleActiveBar = useCallback(
@@ -108,7 +103,6 @@ export const BarContainer = createContainer(() => {
     )
 
     return {
-        gameBarRef,
         activeBars,
         toggleActiveBar,
     }
