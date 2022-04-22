@@ -51,6 +51,7 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
     return (
         <TooltipHelper placement="bottom" text={tooltipText}>
             <Button
+                id="tutorial-purchase"
                 sx={{
                     px: "1.2rem",
                     pt: ".32rem",

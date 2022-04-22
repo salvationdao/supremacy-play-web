@@ -74,6 +74,7 @@ export const WarMachineStats = () => {
     return (
         <Slide in direction="up">
             <Stack
+                id="tutorial-mech-stats"
                 direction="row"
                 alignItems="flex-end"
                 sx={{

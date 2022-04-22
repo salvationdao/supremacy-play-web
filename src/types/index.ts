@@ -42,6 +42,7 @@ export interface BattleAbility {
     description: string
     image_url: string
     cooldown_duration_second: number
+    ability_offering_id: string
 }
 
 export interface GameAbility {
@@ -53,6 +54,7 @@ export interface GameAbility {
     image_url: string
     sups_cost: string
     current_sups: string
+    ability_offering_id: string
 }
 
 export interface PlayerAbility {
@@ -78,6 +80,7 @@ export interface SaleAbility {
 
 export interface GameAbilityProgress {
     id: string
+    offering_id: string
     sups_cost: string
     current_sups: string
     should_reset: boolean
@@ -210,7 +213,7 @@ export interface BattleEndDetail {
     battle_identifier: number
     started_at: Date
     ended_at: Date
-    total_multipliers: string
+    total_multipliers: number
     battle_multipliers: MultiplierUpdateResp
     winning_condition: string
     winning_faction: Faction
@@ -266,7 +269,7 @@ export interface MultiplierUpdateResp {
 
 export interface BattleMultipliers {
     battle_number: number
-    total_multipliers: string
+    total_multipliers: number
     multipliers: Multiplier[]
 }
 

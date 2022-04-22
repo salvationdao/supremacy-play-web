@@ -15,7 +15,7 @@ export const MultipliersInfo = () => {
     const [isMultipliersPopoverOpen, toggleIsMultipliersPopoverOpen] = useToggle()
     // Multipliers
     const [multipliers, setMultipliers] = useState<BattleMultipliers[]>([])
-    const [currentBattleMultiplier, setCurrentBattleMultiplier] = useState("")
+    const [currentBattleMultiplier, setCurrentBattleMultiplier] = useState(0)
 
     // Subscribe to multipliers
     useEffect(() => {
@@ -37,9 +37,9 @@ export const MultipliersInfo = () => {
     // Current battle multiplier should say update to 0 if battleID was in the payload
     useEffect(() => {
         if (!multipliers || multipliers.length <= 0) return
-        const currentMulti = multipliers.filter((m) => m.battle_number === battleIdentifier)
-        setCurrentBattleMultiplier(currentMulti.length > 0 ? currentMulti[0].total_multipliers : "0x")
-    }, [multipliers])
+        const currentMulti = multipliers.filter((m) => m.battle_number === battleIdentifier || m.battle_number === (battleIdentifier || 0) - 1)
+        setCurrentBattleMultiplier(currentMulti.length > 0 ? currentMulti[0].total_multipliers : 0)
+    }, [multipliers, battleIdentifier])
 
     return (
         <>
@@ -77,7 +77,7 @@ export const MultipliersInfo = () => {
                         borderRadius: 0.6,
                     }}
                 >
-                    {currentBattleMultiplier}
+                    {currentBattleMultiplier}x
                 </Typography>
             </Stack>
 

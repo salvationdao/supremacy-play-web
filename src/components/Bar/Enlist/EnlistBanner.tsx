@@ -5,7 +5,7 @@ import { SvgAbility, SvgBostonKillIcon, SvgDeath, SvgRedMoutainKillIcon, SvgView
 import { colors } from "../../../theme/theme"
 import { useGame, useGameServerAuth, usePassportServerAuth } from "../../../containers"
 import { UserData } from "../../../types/passport"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { FactionIDs, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { UserRank, UserStat } from "../../../types"
 import { getUserRankDeets } from "../../../helpers"
 
@@ -58,11 +58,11 @@ const EnlistBannerInner = ({ user, battleIdentifier, userStat, userRank }: Props
         if (!user) return <SvgDeath size="1.1rem" />
 
         switch (user.faction_id) {
-            case "880db344-e405-428d-84e5-6ebebab1fe6d":
+            case FactionIDs.ZHI:
                 return <SvgZaibatsuKillIcon size="1.1rem" />
-            case "7c6dde21-b067-46cf-9e56-155c88a520e2":
+            case FactionIDs.BC:
                 return <SvgBostonKillIcon size="1.1rem" />
-            case "98bf7bb3-1a7c-4f21-8843-458d62884060":
+            case FactionIDs.RM:
                 return <SvgRedMoutainKillIcon size="1.1rem" />
             default:
                 return <SvgDeath size="1.1rem" />
@@ -106,6 +106,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, userStat, userRank }: Props
             }
         >
             <Box
+                id="tutorial-enlisted"
                 sx={{
                     mx: "1.2rem",
                     px: "2.24rem",

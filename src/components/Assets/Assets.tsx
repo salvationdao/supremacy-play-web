@@ -1,8 +1,8 @@
-import { Box, Button, Drawer, Stack, Typography, IconButton, Pagination, CircularProgress } from "@mui/material"
+import { Box, Button, CircularProgress, Drawer, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { AssetItem, DrawerButtons } from ".."
+import { AssetItem } from ".."
 import { SvgGridView, SvgListView, SvgRobot } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, PASSPORT_WEB } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_WEB, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../containers"
 import { usePagination, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -262,7 +262,7 @@ const DrawerContent = ({
 }
 
 export const Assets = () => {
-    const { isAssetOpen } = useDrawer()
+    const { isAssetOpen, isAnyPanelOpen } = useDrawer()
     const [telegramShortcode, setTelegramShortcode] = useState("")
     // Display option
     const [isGridView, toggleIsGridView] = useToggle()
@@ -274,24 +274,26 @@ export const Assets = () => {
             variant="persistent"
             anchor="right"
             sx={{
-                width: `${RIGHT_DRAWER_WIDTH}rem`,
+                transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1) 0ms`,
+                width: isAnyPanelOpen ? `${RIGHT_DRAWER_WIDTH}rem` : 0,
                 flexShrink: 0,
-                zIndex: 9999,
                 "& .MuiDrawer-paper": {
                     width: `${RIGHT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
+                    position: "absolute",
+                    borderLeft: 0,
                 },
             }}
         >
             <Stack
                 direction="row"
+                id="tutorial-asset"
                 sx={{
                     width: "100%",
                     height: "100%",
                     backgroundColor: colors.darkNavy,
                 }}
             >
-                <DrawerButtons isFixed={false} />
                 {isAssetOpen && (
                     <DrawerContent
                         telegramShortcode={telegramShortcode}

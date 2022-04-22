@@ -8,7 +8,7 @@ export const ResolutionSelect = () => {
     if (!streamResolutions || streamResolutions.length <= 0) return null
 
     return (
-        <Stack direction="row" spacing=".24rem" alignItems="center">
+        <Stack id="tutorial-resolution" direction="row" spacing=".24rem" alignItems="center">
             <Typography variant="body2" sx={{ lineHeight: 1 }}>
                 RESOLUTION:{" "}
             </Typography>

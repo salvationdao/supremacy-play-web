@@ -57,6 +57,8 @@ import MapEnlarge from "!react-svg-loader!./svg/MapEnlarge.svg"
 import MapSkull from "!react-svg-loader!./svg/MapSkull.svg"
 import MapWarMachine from "!react-svg-loader!./svg/MapWarMachine.svg"
 import Microchip from "!react-svg-loader!./svg/Microchip.svg"
+import Music from "!react-svg-loader!./svg/Music.svg"
+import MusicMute from "!react-svg-loader!./svg/MusicMute.svg"
 import Next from "!react-svg-loader!./svg/Next.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
 import QuestionMark from "!react-svg-loader!./svg/QuestionMark.svg"
@@ -791,5 +793,17 @@ export const SvgTarget: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgMicrochip: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Microchip />
+    </SvgWrapper>
+)
+
+export const SvgMusic: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Music />
+    </SvgWrapper>
+)
+
+export const SvgMusicMute: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MusicMute />
     </SvgWrapper>
 )

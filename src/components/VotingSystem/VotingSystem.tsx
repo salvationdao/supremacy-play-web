@@ -42,6 +42,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
 
     return (
         <Stack
+            id="tutorial-vote"
             sx={{
                 position: "absolute",
                 top: "1rem",

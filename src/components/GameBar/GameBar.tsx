@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
-import { Assets, Bar, DrawerButtons, LiveChat, PlayerList } from ".."
-import { BarProvider, ChatProvider } from "../../containers"
+import { Bar } from ".."
+import { BarProvider } from "../../containers"
 
 export const GameBar: React.FC = () => {
     return (
@@ -8,16 +8,6 @@ export const GameBar: React.FC = () => {
             <BarProvider>
                 <Bar />
             </BarProvider>
-
-            <DrawerButtons />
-
-            <ChatProvider>
-                <LiveChat />
-            </ChatProvider>
-
-            <Assets />
-
-            <PlayerList />
         </Box>
     )
 }

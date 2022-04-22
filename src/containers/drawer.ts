@@ -14,7 +14,7 @@ export const DrawerContainer = createContainer(() => {
     const togglePanel = useCallback(
         (newPanel: DrawerPanels, value?: boolean) => {
             setActivePanel((prev) => {
-                if (prev == newPanel || value === false) return DrawerPanels.None
+                if (prev === newPanel || value === false) return DrawerPanels.None
                 return newPanel
             })
         },

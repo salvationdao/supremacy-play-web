@@ -1,13 +1,13 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../constants"
-import { SocketState, useBar, useDrawer, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
+import { SocketState, useBar, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import GameGuide from "../GameGuide/GameGuide"
+import { HowToPlay } from "../HowToPlay/HowToPlay"
 import { SaleAbilitiesModal } from "./SaleAbilitiesModal"
 
 const BarContent = () => {
@@ -39,7 +39,7 @@ const BarContent = () => {
         <>
             {<Logo />}
             <Box sx={{ flexGrow: 1 }} />
-            <GameGuide />
+            <HowToPlay />
             {user && (
                 <>
                     <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)}>
@@ -58,7 +58,6 @@ const BarContent = () => {
 export const Bar = () => {
     const { user } = usePassportServerAuth()
     const { gameBarRef } = useBar()
-    const { isAnyPanelOpen } = useDrawer()
 
     return (
         <Stack
@@ -80,8 +79,6 @@ export const Bar = () => {
                     height: `${GAME_BAR_HEIGHT}rem`,
                     color: "#FFFFFF",
                     backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
-                    overflowX: "auto",
-                    overflowY: "hidden",
                     scrollbarWidth: "none",
                     zIndex: (theme) => theme.zIndex.drawer + 1,
                     "::-webkit-scrollbar": {
@@ -95,7 +92,7 @@ export const Bar = () => {
                         background: colors.darkNeonBlue,
                         borderRadius: 3,
                     },
-                    width: isAnyPanelOpen ? `calc(100vw - ${RIGHT_DRAWER_WIDTH - 0.1}rem)` : "100vw",
+                    width: "100vw",
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
             >

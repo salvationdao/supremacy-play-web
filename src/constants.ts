@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js"
+
 const USE_PROD = false
 
 // Envar stuff
@@ -48,7 +50,8 @@ export const SENTRY_CONFIG = {
 // UI related stuff
 export const GAME_BAR_HEIGHT = 5.9 // rem
 export const RIGHT_DRAWER_WIDTH = 38 // rem
-export const LIVE_CHAT_DRAWER_BUTTON_WIDTH = 2.0 // rem
+export const LEFT_DRAWER_WIDTH = 5 //rem
+export const LIVE_CHAT_DRAWER_BUTTON_WIDTH = 3 // rem
 export const CONTROLS_HEIGHT = 3.0 // rem
 export const MINI_MAP_DEFAULT_SIZE = 240 //px
 
@@ -60,6 +63,28 @@ export const NOTIFICATION_TIME = 30000
 export const NOTIFICATION_LINGER = 400
 export const STREAM_ASPECT_RATIO_W_H = 16 / 9
 export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
+
+// Game stuff
+export const VOTING_OPTION_COSTS = [
+    {
+        minCost: new BigNumber(0.0001),
+        percentage: 0.01,
+    },
+    {
+        minCost: new BigNumber(0.001),
+        percentage: 0.1,
+    },
+    {
+        minCost: new BigNumber(0.01),
+        percentage: 1,
+    },
+]
+
+export enum FactionIDs {
+    RM = "98bf7bb3-1a7c-4f21-8843-458d62884060",
+    ZHI = "880db344-e405-428d-84e5-6ebebab1fe6d",
+    BC = "7c6dde21-b067-46cf-9e56-155c88a520e2",
+}
 
 // Other stuff
 export const NullUUID = "00000000-0000-0000-0000-000000000000"

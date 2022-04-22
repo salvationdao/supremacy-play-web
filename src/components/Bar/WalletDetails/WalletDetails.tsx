@@ -8,18 +8,20 @@ import { WalletInfo } from "./WalletInfo/WalletInfo"
 
 export const WalletDetails = () => {
     const { user } = usePassportServerAuth()
+    const barName = "wallet"
 
     return (
         <BarExpandable
             noDivider
-            barName={"wallet"}
+            barName={barName}
             iconComponent={
-                <Box sx={{ p: ".32rem", backgroundColor: colors.grey, borderRadius: 1 }}>
+                <Box id="tutorial-wallet-icon" sx={{ p: ".32rem", backgroundColor: colors.grey, borderRadius: 1 }}>
                     <SvgSupToken size="2rem" />
                 </Box>
             }
         >
             <Stack
+                id="tutorial-wallet"
                 direction="row"
                 alignItems="center"
                 sx={{
@@ -50,7 +52,7 @@ export const WalletDetails = () => {
                         },
                     }}
                 >
-                    <Stack direction="row" alignItems="center">
+                    <Stack id="tutorial-sups" direction="row" alignItems="center">
                         <SvgWallet size="2.3rem" sx={{ mr: ".8rem" }} />
                         <WalletInfo />
                         <MultipliersInfo />
