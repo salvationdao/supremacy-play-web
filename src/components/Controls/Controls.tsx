@@ -5,7 +5,7 @@ import { colors } from "../../theme/theme"
 import { StreamSelect } from "./StreamSelect"
 import { useGameServerAuth } from "../../containers"
 import { shadeColor } from "../../helpers"
-import { CONTROLS_HEIGHT, RIGHT_DRAWER_BUTTON_WIDTH } from "../../constants"
+import { CONTROLS_HEIGHT, DRAWER_BAR_WIDTH } from "../../constants"
 import { BattleStats } from "../BattleStats/BattleStats"
 
 export const Controls = () => {
@@ -21,7 +21,7 @@ export const Controls = () => {
                 position: "relative",
                 width: "100%",
                 height: `${CONTROLS_HEIGHT}rem`,
-                pl: `${RIGHT_DRAWER_BUTTON_WIDTH}rem`,
+                pl: `${DRAWER_BAR_WIDTH}rem`,
                 pt: ".24rem",
                 pb: ".16rem",
                 backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,

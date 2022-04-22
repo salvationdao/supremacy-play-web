@@ -1,7 +1,8 @@
 import { Box, Tab, Tabs } from "@mui/material"
+import { useMemo } from "react"
 import { DrawerPanels } from ".."
 import { SvgChat, SvgRobot } from "../../assets"
-import { RIGHT_DRAWER_BUTTON_WIDTH } from "../../constants"
+import { DRAWER_BAR_WIDTH } from "../../constants"
 import { useGameServerAuth } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
@@ -16,13 +17,14 @@ export const DrawerButtons = ({
     togglePanel: (newPanel: DrawerPanels, value?: boolean | undefined) => void
 }) => {
     const { user } = useGameServerAuth()
+    const primaryColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue), [user])
     return (
         <Box
             sx={{
                 position: "relative",
                 height: "100%",
                 overflow: "hidden",
-                width: `${RIGHT_DRAWER_BUTTON_WIDTH}rem`,
+                width: `${DRAWER_BAR_WIDTH}rem`,
                 backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -93) : colors.darkNavyBlue,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
@@ -40,21 +42,25 @@ export const DrawerButtons = ({
                     icon={<SvgChat size="1rem" sx={{ pt: ".3rem" }} />}
                     onClick={() => togglePanel(DrawerPanels.LiveChat)}
                     isActive={activePanel === DrawerPanels.LiveChat}
-                    primaryColor={user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue}
+                    primaryColor={primaryColor}
                 />
                 <TabButton
                     label="ACTIVE PLAYERS"
-                    icon={<SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />}
+                    icon={
+                        <Box sx={{ pb: ".2rem" }}>
+                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: primaryColor }} />
+                        </Box>
+                    }
                     onClick={() => togglePanel(DrawerPanels.PlayerList)}
                     isActive={activePanel === DrawerPanels.PlayerList}
-                    primaryColor={user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue}
+                    primaryColor={primaryColor}
                 />
                 <TabButton
                     label="WAR MACHINES"
                     icon={<SvgRobot size="1.3rem" />}
                     onClick={() => togglePanel(DrawerPanels.Assets)}
                     isActive={activePanel === DrawerPanels.Assets}
-                    primaryColor={user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue}
+                    primaryColor={primaryColor}
                 />
             </Tabs>
         </Box>
@@ -79,7 +85,7 @@ const TabButton = ({
             sx={{
                 position: "relative",
                 height: `${BUTTON_WIDTH}rem`,
-                width: `${RIGHT_DRAWER_BUTTON_WIDTH}rem`,
+                width: `${DRAWER_BAR_WIDTH}rem`,
             }}
         >
             <Tab
@@ -98,16 +104,14 @@ const TabButton = ({
                     color: "#FFFFFF",
                     backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
                     opacity: isActive ? 0.9 : 0.6,
-                    transform: `translate(${-BUTTON_WIDTH / 2 + RIGHT_DRAWER_BUTTON_WIDTH / 2}rem, ${
-                        BUTTON_WIDTH / 2 - RIGHT_DRAWER_BUTTON_WIDTH / 2
-                    }rem) rotate(-90deg)`,
+                    transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,
                     ":hover": {
                         opacity: 1,
                     },
                     "&, .MuiTouchRipple-root": {
                         width: `${BUTTON_WIDTH}rem`,
-                        height: `${RIGHT_DRAWER_BUTTON_WIDTH}rem`,
-                        minHeight: `${RIGHT_DRAWER_BUTTON_WIDTH}rem`,
+                        height: `${DRAWER_BAR_WIDTH}rem`,
+                        minHeight: `${DRAWER_BAR_WIDTH}rem`,
                     },
                 }}
             />

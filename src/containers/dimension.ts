@@ -2,7 +2,7 @@ import { useMediaQuery } from "@mui/material"
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDrawer } from "."
-import { CONTROLS_HEIGHT, GAME_BAR_HEIGHT, RIGHT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH, STREAM_ASPECT_RATIO_W_H } from "../constants"
+import { CONTROLS_HEIGHT, GAME_BAR_HEIGHT, DRAWER_BAR_WIDTH, RIGHT_DRAWER_WIDTH, STREAM_ASPECT_RATIO_W_H } from "../constants"
 import { useWindowDimensions } from "../hooks"
 import { Dimension } from "../types"
 import { LEFT_DRAWER_WIDTH } from "./../constants"
@@ -46,7 +46,7 @@ export const DimensionContainer = createContainer(() => {
         const rightDrawerAllowance = isAnyPanelOpen ? RIGHT_DRAWER_WIDTH * pxToRemRatio : 0
 
         // Stream div dimensions
-        const streamWidth = mainDivWidth - RIGHT_DRAWER_BUTTON_WIDTH * pxToRemRatio - rightDrawerAllowance - LEFT_DRAWER_WIDTH * pxToRemRatio
+        const streamWidth = mainDivWidth - DRAWER_BAR_WIDTH * pxToRemRatio - rightDrawerAllowance - LEFT_DRAWER_WIDTH * pxToRemRatio
         const streamHeight = mainDivHeight - CONTROLS_HEIGHT * pxToRemRatio
 
         // Work out iframe width and height based on its aspect ratio and stream width and height
