@@ -313,6 +313,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                 <Typography variant="body2">{supFormatter(price, 2)}</Typography>
                             </LoadingButton>
                             {purchaseError && <Typography color={colors.red}>Error: {purchaseError}</Typography>}
+                            {error && <Typography color={colors.red}>Error: Something went wrong while loading this ability.</Typography>}
                         </ClipThing>
                     </Box>
                 </Fade>
