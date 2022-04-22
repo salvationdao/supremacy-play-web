@@ -4,6 +4,7 @@ import { useGame, BribeStageResponse } from "../../containers"
 import { useInterval, useTimer } from "../../hooks"
 import { SvgBattleAbilityIcon } from "../../assets"
 import { colors } from "../../theme/theme"
+import { ContributorAmount } from "../BattleStats/ContributorAmount"
 
 export const BattleAbilityCountdown = () => {
     const { bribeStage } = useGame()
@@ -16,12 +17,17 @@ interface BattleAbilityCountdownInnerProps {
 
 const BattleAbilityCountdownInner = ({ bribeStage }: BattleAbilityCountdownInnerProps) => {
     return (
-        <Stack direction="row" spacing=".48rem" alignItems="center">
-            <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
-            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>
-                <CountdownText bribeStage={bribeStage} />
-            </Typography>
-        </Stack>
+        <>
+            <Stack direction="row" spacing=".48rem" alignItems="center" justifyContent="space-between">
+                <Stack direction="row" spacing=".48rem" alignItems="center">
+                    <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
+                    <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>
+                        <CountdownText bribeStage={bribeStage} />
+                    </Typography>
+                </Stack>
+                <ContributorAmount ShowContributorAmount={true} ShowContributionTotal={false} />
+            </Stack>
+        </>
     )
 }
 

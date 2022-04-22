@@ -8,8 +8,8 @@ import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
-import { LiveGraph } from "./LiveGraph"
 import { BattleStats } from "../BattleStats/BattleStats"
+import { LiveGraph } from "./LiveGraph"
 
 const DefaultMaxLiveVotingDataLength = 100
 
@@ -78,7 +78,7 @@ const Content = () => {
             // Others
             CaptionArea: (
                 <Box sx={{ pl: ".3rem" }}>
-                    <BattleStats />
+                    <BattleStats ShowContributionTotal={true} ShowContributorAmount={true} />
                 </Box>
             ),
             tooltipText:

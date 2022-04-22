@@ -67,15 +67,15 @@ export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
 // Game stuff
 export const VOTING_OPTION_COSTS = [
     {
-        minCost: new BigNumber(0.0001),
+        minCost: new BigNumber(0.01),
         percentage: 0.01,
     },
     {
-        minCost: new BigNumber(0.001),
+        minCost: new BigNumber(0.1),
         percentage: 0.1,
     },
     {
-        minCost: new BigNumber(0.01),
+        minCost: new BigNumber(1),
         percentage: 1,
     },
 ]

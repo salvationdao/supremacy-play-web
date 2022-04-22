@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
 import { FactionIDs } from "../../constants"
