@@ -43,7 +43,7 @@ export const LeftDrawer: React.FC = () => {
     return (
         <>
             {isExpanded && <Box sx={{ width: `${LEFT_DRAWER_WIDTH}rem` }} />}
-            <Container isExpanded={isExpanded}>
+            <Container expand={isExpanded.toString()}>
                 <Drawer
                     transitionDuration={DRAWER_TRANSITION_DURATION}
                     open={isExpanded}
@@ -59,11 +59,12 @@ export const LeftDrawer: React.FC = () => {
                         },
                     }}
                 >
-                    <StyledTabs value={location.pathname} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile orientation="vertical" vertical>
+                    <StyledTabs value={location.pathname} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile orientation="vertical">
                         {LEFT_DRAWER_TABS.map((tab) => (
                             <TabButton
                                 disabled={tab.disabled}
                                 key={tab.label}
+                                value={location.pathname}
                                 label={
                                     tab.disabled ? (
                                         <Stack
@@ -106,6 +107,7 @@ export const LeftDrawer: React.FC = () => {
                             <TabButton
                                 disabled={tab.disabled}
                                 key={tab.label}
+                                value={location.pathname}
                                 label={
                                     tab.disabled ? (
                                         <Stack
@@ -177,32 +179,41 @@ const TabButton = styled(Tab)({
     width: `${BUTTON_WIDTH}rem`,
     height: `${LEFT_DRAWER_WIDTH}rem`,
     color: "white",
+    "&.Mui-selected": {
+        color: "white",
+    },
 })
 
-const StyledTabs = styled(Tabs)((props: { vertical?: boolean }) => {
+const StyledTabs = styled(Tabs)((props: { orientation?: string }) => {
     return {
         background: colors.black2,
-        transform: props.vertical ? "unset" : `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}rem - ${LEFT_DRAWER_WIDTH / 2}rem)) rotate(-90deg)`,
-        position: props.vertical ? "static" : "absolute",
-        left: props.vertical ? "unset" : "50%",
-        height: props.vertical ? "fit-content" : `${LEFT_DRAWER_WIDTH}rem`,
+        transform:
+            props.orientation === "vertical"
+                ? "unset"
+                : `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}rem - ${LEFT_DRAWER_WIDTH / 2}rem)) rotate(-90deg)`,
+        position: props.orientation === "vertical" ? "static" : "absolute",
+        left: props.orientation === "vertical" ? "unset" : "50%",
+        height: props.orientation === "vertical" ? "fit-content" : `${LEFT_DRAWER_WIDTH}rem`,
         overflowX: "auto",
         width: "fit-content",
         "& .MuiTabs-flexContainer": {
-            flexDirection: props.vertical ? "column" : "row-reverse",
+            flexDirection: props.orientation === "vertical" ? "column" : "row-reverse",
             gap: ".3rem",
+        },
+        "& 	.MuiTabs-indicator": {
+            display: "none",
         },
     }
 })
 
-const Container = styled("div")((props: { isExpanded: boolean }) => {
+const Container = styled("div")((props: { expand: string }) => {
     return {
-        background: props.isExpanded ? "transparent" : colors.black3,
-        position: props.isExpanded ? "fixed" : "relative",
-        top: props.isExpanded ? `${GAME_BAR_HEIGHT}rem` : "unset",
+        background: props.expand === "true" ? "transparent" : colors.black3,
+        position: props.expand === "true" ? "fixed" : "relative",
+        top: props.expand === "true" ? `${GAME_BAR_HEIGHT}rem` : "unset",
         left: 0,
         zIndex: 99999999,
-        width: props.isExpanded ? "fit-content" : `${LEFT_DRAWER_WIDTH}rem`,
+        width: props.expand === "true" ? "fit-content" : `${LEFT_DRAWER_WIDTH}rem`,
         overflowX: "hidden",
         height: "100%",
         "&::-webkit-scrollbar": {

@@ -1,13 +1,12 @@
-import { Route, Switch } from "react-router-dom"
-import { BattleArenaPage } from "../pages/BattleArena"
-import { HangerPage } from "../pages/Hanger"
-import { MarketplacePage } from "../pages/Marketplace"
+import { Redirect, Route, Switch } from "react-router-dom"
+import { BattleArenaPage, HangerPage, MarketplacePage, NotFoundPage } from "../pages"
 
 export enum RoutePaths {
     BattleArena = "/",
     Hanger = "/hanger",
     Marketplace = "/marketplace",
     Contracts = "/contracts",
+    NotFound = "/404",
 }
 export enum TabLabels {
     BattleArena = "Battle Arena",
@@ -19,15 +18,17 @@ export enum TabLabels {
 export const Routes: React.FC = () => {
     return (
         <Switch>
-            <Route path={RoutePaths.Hanger}>
+            <Route exact path={RoutePaths.Hanger}>
                 <HangerPage />
             </Route>
-            <Route path={RoutePaths.Marketplace}>
+            <Route exact path={RoutePaths.Marketplace}>
                 <MarketplacePage />
             </Route>
-            <Route path={RoutePaths.BattleArena}>
+            <Route exact path={RoutePaths.BattleArena}>
                 <BattleArenaPage />
             </Route>
+            <Route path="/404" component={NotFoundPage} />
+            <Redirect to={RoutePaths.NotFound} />
         </Switch>
     )
 }

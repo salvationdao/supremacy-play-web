@@ -105,6 +105,7 @@ import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import BottomMechWEBP from "./images/BottomMech.webp"
 import Crosshair from "./images/Crosshair.png"
 import FlamesPNG from "./images/Flames.png"
+import Gabs from "./images/Gabs.png"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
 import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
@@ -163,6 +164,7 @@ export {
     ZaibatsuLogo,
     SupBackground,
     Crosshair,
+    Gabs,
 }
 
 export interface SvgWrapperProps extends BoxProps {
