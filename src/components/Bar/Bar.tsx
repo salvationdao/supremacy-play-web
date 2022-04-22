@@ -42,9 +42,11 @@ const BarContent = () => {
             <HowToPlay />
             {user && (
                 <>
-                    <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)}>
-                        Purchase Abilities
-                    </Button>
+                    {process.env.NODE_ENV === "development" && (
+                        <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)}>
+                            Purchase Abilities
+                        </Button>
+                    )}
                     <Enlist />
                     <WalletDetails />
                 </>

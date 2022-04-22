@@ -231,7 +231,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                         backgroundSize: "cover",
                                     }}
                                 >
-                                    <TooltipHelper text={abilityTypeDescription}>
+                                    <TooltipHelper text={abilityTypeDescription} placement="top-start">
                                         <Box
                                             sx={{
                                                 zIndex: 1,
@@ -279,7 +279,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                                 color: previousPrice && previousPrice > price ? colors.blue : colors.offWhite,
                                             }}
                                         >
-                                            {!previousPrice ? "Same" : previousPrice > price ? "Down" : "Up"}
+                                            {!previousPrice || previousPrice === price ? "Same" : previousPrice > price ? "Down" : "Up"}
                                         </Box>
                                     </Typography>
                                 </Box>
