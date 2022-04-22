@@ -338,7 +338,7 @@ export const LiveChat = () => {
                 },
             }}
         >
-            <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
+            <Stack id="tutorial-chat" direction="row" sx={{ width: "100%", height: "100%" }}>
                 <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
                     {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
                     <AdditionalOptionsButton />
