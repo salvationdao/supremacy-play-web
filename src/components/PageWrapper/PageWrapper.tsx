@@ -12,8 +12,7 @@ export const PageWrapper: React.FC = ({ children }) => {
                 sx={{
                     position: "relative",
                     height: streamDimensions.height,
-                    width: "auto",
-                    minWidth: streamDimensions.width,
+                    width: streamDimensions.width,
                     backgroundColor: colors.darkNavy,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
