@@ -62,7 +62,6 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
                     aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
                     width: iframeDimensions.width,
                     height: iframeDimensions.height,
-                    zIndex: 1,
                 }}
             />
             <Message render={renderTopMessage} haveSups={haveSups} toggleHaveSups={toggleHaveSups} />

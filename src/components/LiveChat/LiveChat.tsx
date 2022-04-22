@@ -1,8 +1,8 @@
 import { Badge, Box, Drawer, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { AdditionalOptionsButton, DrawerButtons, TooltipHelper } from ".."
+import { AdditionalOptionsButton, TooltipHelper } from ".."
 import { SvgGlobal, SvgInfoCircular } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST_IMAGES, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useChat, useDrawer, useGameServerAuth } from "../../containers"
 import { acronym, shadeColor } from "../../helpers"
 import { zoomEffect } from "../../theme/keyframes"
@@ -317,7 +317,7 @@ const SplitLayout = () => {
 }
 
 export const LiveChat = () => {
-    const { isLiveChatOpen } = useDrawer()
+    const { isLiveChatOpen, isAnyPanelOpen } = useDrawer()
     const { splitOption } = useChat()
 
     return (
@@ -327,17 +327,18 @@ export const LiveChat = () => {
             variant="persistent"
             anchor="right"
             sx={{
-                width: `${RIGHT_DRAWER_WIDTH}rem`,
+                transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1) 0ms`,
+                width: isAnyPanelOpen ? `${RIGHT_DRAWER_WIDTH}rem` : 0,
                 flexShrink: 0,
-                zIndex: 9999,
                 "& .MuiDrawer-paper": {
                     width: `${RIGHT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
+                    position: "absolute",
+                    borderLeft: 0,
                 },
             }}
         >
-            <Stack id="tutorial-chat" direction="row" sx={{ width: "100%", height: "100%" }}>
-                <DrawerButtons isFixed={false} />
+            <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
                 <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
                     {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
                     <AdditionalOptionsButton />

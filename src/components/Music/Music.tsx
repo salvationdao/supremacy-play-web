@@ -60,6 +60,10 @@ export const Music = () => {
             src: ["https://afiles.ninja-cdn.com/supremacy-stream-site/audio/rm-victory.mp3"],
             loop: true,
         })
+
+        return () => {
+            Howler.stop()
+        }
     }, [])
 
     useEffect(() => {

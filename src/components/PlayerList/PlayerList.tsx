@@ -1,6 +1,6 @@
 import { Box, Drawer, Stack, Theme, Typography, useTheme } from "@mui/material"
 import { Dispatch, useState } from "react"
-import { DrawerButtons, PlayerListContent } from ".."
+import { PlayerListContent } from ".."
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST_IMAGES, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useDrawer, useGameServerAuth } from "../../containers"
 import { acronym } from "../../helpers"
@@ -118,7 +118,7 @@ const DrawerContent = ({
 
 export const PlayerList = () => {
     const { user } = useGameServerAuth()
-    const { isPlayerListOpen } = useDrawer()
+    const { isPlayerListOpen, isAnyPanelOpen } = useDrawer()
     const theme = useTheme<Theme>()
     const [activePlayers, setActivePlayers] = useState<User[]>([])
     const [inactivePlayers, setInactivePlayers] = useState<User[]>([])
@@ -130,17 +130,18 @@ export const PlayerList = () => {
             variant="persistent"
             anchor="right"
             sx={{
-                width: `${RIGHT_DRAWER_WIDTH}rem`,
+                transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1) 0ms`,
+                width: isAnyPanelOpen ? `${RIGHT_DRAWER_WIDTH}rem` : 0,
                 flexShrink: 0,
-                zIndex: 9999,
                 "& .MuiDrawer-paper": {
                     width: `${RIGHT_DRAWER_WIDTH}rem`,
                     backgroundColor: theme.factionTheme.background,
+                    position: "absolute",
+                    borderLeft: 0,
                 },
             }}
         >
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-                <DrawerButtons isFixed={false} />
                 {isPlayerListOpen && (
                     <DrawerContent
                         user={user}

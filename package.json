@@ -29,6 +29,7 @@
         "react-draggable": "^4.4.4",
         "react-qr-code": "^2.0.5",
         "react-resizable": "^3.0.4",
+        "react-router-dom": "^5.2.0",
         "unstated-next": "^1.1.0"
     },
     "devDependencies": {

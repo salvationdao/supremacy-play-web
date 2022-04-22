@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../constants"
-import { useBar, useDrawer, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
+import { useBar, usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
@@ -41,7 +41,6 @@ const BarContent = () => {
 export const Bar = () => {
     const { user } = usePassportServerAuth()
     const { gameBarRef } = useBar()
-    const { isAnyPanelOpen } = useDrawer()
 
     return (
         <Stack
@@ -76,7 +75,7 @@ export const Bar = () => {
                         background: colors.darkNeonBlue,
                         borderRadius: 3,
                     },
-                    width: isAnyPanelOpen ? `calc(100vw - ${RIGHT_DRAWER_WIDTH - 0.1}rem)` : "100vw",
+                    width: "100vw",
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
             >

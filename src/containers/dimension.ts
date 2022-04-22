@@ -5,6 +5,7 @@ import { useDrawer } from "."
 import { CONTROLS_HEIGHT, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH, STREAM_ASPECT_RATIO_W_H } from "../constants"
 import { useWindowDimensions } from "../hooks"
 import { Dimension } from "../types"
+import { LEFT_DRAWER_WIDTH } from "./../constants"
 
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer(() => {
@@ -39,11 +40,13 @@ export const DimensionContainer = createContainer(() => {
 
     useEffect(() => {
         // Main div dimensions
-        const mainDivWidth = isAnyPanelOpen ? windowWidth - RIGHT_DRAWER_WIDTH * pxToRemRatio : windowWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH * pxToRemRatio
+        const mainDivWidth = windowWidth
         const mainDivHeight = windowHeight - GAME_BAR_HEIGHT * pxToRemRatio
 
+        const rightDrawerAllowance = isAnyPanelOpen ? RIGHT_DRAWER_WIDTH * pxToRemRatio : 0
+
         // Stream div dimensions
-        const streamWidth = mainDivWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH * pxToRemRatio
+        const streamWidth = mainDivWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH * pxToRemRatio - rightDrawerAllowance - LEFT_DRAWER_WIDTH * pxToRemRatio
         const streamHeight = mainDivHeight - CONTROLS_HEIGHT * pxToRemRatio
 
         // Work out iframe width and height based on its aspect ratio and stream width and height
