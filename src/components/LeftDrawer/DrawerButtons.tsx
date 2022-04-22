@@ -52,7 +52,6 @@ export const DrawerButtons = ({ primaryColor, user, openLeftDrawer }: { primaryC
             </Tabs>
             <Box
                 sx={{
-                    p: ".1rem",
                     width: "100%",
                     borderRadius: 0,
                     "&:hover": {
@@ -117,7 +116,7 @@ const TabButton = ({
                     position: "absolute",
                     whiteSpace: "nowrap",
                     fontFamily: "Nostromo Regular Bold",
-                    fontSize: "1.2rem",
+                    fontSize: "1.1rem",
                     lineHeight: 1,
                     color: "#FFFFFF",
                     backgroundColor: enable ? (isActive ? primaryColor : `${primaryColor}50`) : `${primaryColor}20`,

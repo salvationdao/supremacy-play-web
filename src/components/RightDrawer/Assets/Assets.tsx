@@ -28,7 +28,7 @@ interface GetAssetsResponse {
     total: number
 }
 
-const DrawerContent = ({
+const Content = ({
     telegramShortcode,
     setTelegramShortcode,
     isGridView,
@@ -277,7 +277,7 @@ export const Assets = () => {
                         backgroundColor: colors.darkNavy,
                     }}
                 >
-                    <DrawerContent
+                    <Content
                         telegramShortcode={telegramShortcode}
                         setTelegramShortcode={setTelegramShortcode}
                         isGridView={isGridView}

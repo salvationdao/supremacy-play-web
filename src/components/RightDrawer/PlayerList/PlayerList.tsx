@@ -7,7 +7,7 @@ import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { User } from "../../../types"
 
-const DrawerContent = ({
+const Content = ({
     user,
     activePlayers,
     setActivePlayers,
@@ -124,7 +124,7 @@ export const PlayerList = () => {
     return (
         <Fade in>
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-                <DrawerContent
+                <Content
                     user={user}
                     activePlayers={activePlayers}
                     inactivePlayers={inactivePlayers}

@@ -1,7 +1,7 @@
+import { useMediaQuery } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { DRAWER_TRANSITION_DURATION } from "../constants"
-import { useWindowDimensions } from "../hooks"
 
 export interface ActiveBars {
     enlist: boolean
@@ -10,7 +10,11 @@ export interface ActiveBars {
 }
 
 export const BarContainer = createContainer(() => {
-    const windowDimensions = useWindowDimensions()
+    const below500 = useMediaQuery("(max-width:500px)")
+    const below692 = useMediaQuery("(max-width:692px)")
+    const below792 = useMediaQuery("(max-width:792px)")
+    const below1250 = useMediaQuery("(max-width:1250px)")
+    const below1400 = useMediaQuery("(max-width:1400px)")
 
     const [activeBars, setActiveBars] = useState<ActiveBars>({
         enlist: true,
@@ -18,41 +22,34 @@ export const BarContainer = createContainer(() => {
         profile: true,
     })
 
-    const getBarWidth = () => {
-        return windowDimensions.width
-    }
-
     useEffect(() => {
-        const width = getBarWidth()
-        if (!width) return
-
         // This waits for the transition to occur before calculating the responsive stuff
         setTimeout(() => {
-            if (width < 500) {
+            if (below500) {
                 setActiveBars({
                     enlist: false,
                     wallet: false,
                     profile: false,
                 })
-            } else if (width < 692) {
+            } else if (below692) {
                 setActiveBars({
                     enlist: false,
                     wallet: false,
                     profile: true,
                 })
-            } else if (width < 792) {
+            } else if (below792) {
                 setActiveBars({
                     enlist: false,
                     wallet: true,
                     profile: false,
                 })
-            } else if (width < 1620) {
+            } else if (below1250) {
                 setActiveBars({
                     enlist: false,
                     wallet: true,
                     profile: true,
                 })
-            } else if (width < 1728) {
+            } else if (below1400) {
                 setActiveBars({
                     enlist: true,
                     wallet: true,
@@ -66,7 +63,7 @@ export const BarContainer = createContainer(() => {
                 })
             }
         }, DRAWER_TRANSITION_DURATION + 50)
-    }, [windowDimensions])
+    }, [below500, below692, below792, below1250, below1400])
 
     // Make sure that the bar is limited to only 1, 2, or 3 things expanded at the same time, depending on screen size
     const toggleActiveBar = useCallback(
@@ -75,17 +72,14 @@ export const BarContainer = createContainer(() => {
             const count = Object.values(newState).filter(Boolean).length
 
             if (newStatus) {
-                const width = getBarWidth()
-                if (!width) return
-
-                if (width < 1620) {
+                if (below1250) {
                     setActiveBars({
                         enlist: false,
                         wallet: false,
                         profile: false,
                         [barName]: newStatus,
                     })
-                } else if (width < 1728 && count > 2) {
+                } else if (below1400 && count > 2) {
                     setActiveBars({
                         enlist: barName !== "profile",
                         wallet: true,
@@ -99,7 +93,7 @@ export const BarContainer = createContainer(() => {
                 setActiveBars((prev) => ({ ...prev, [barName]: newStatus }))
             }
         },
-        [activeBars, getBarWidth, setActiveBars],
+        [activeBars, setActiveBars, below500, below692, below792, below1250, below1400],
     )
 
     return {

@@ -109,7 +109,7 @@ const TabButton = ({
                     position: "absolute",
                     whiteSpace: "nowrap",
                     fontFamily: "Nostromo Regular Bold",
-                    fontSize: "1.2rem",
+                    fontSize: "1.1rem",
                     lineHeight: 1,
                     color: "#FFFFFF",
                     backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
