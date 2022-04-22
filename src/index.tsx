@@ -4,7 +4,7 @@ import { ProviderProps, TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
-import { BrowserRouter } from "react-router-dom"
+import { BrowserRouter, useLocation } from "react-router-dom"
 import { DrawerButtons, GameBar, GlobalSnackbar, RightDrawer, tourStyles, tutorialNextBtn, tutorialPrevButton } from "./components"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { PageWrapper } from "./components/PageWrapper/PageWrapper"
@@ -50,6 +50,12 @@ if (SENTRY_CONFIG) {
 const AppInner = () => {
     const { user } = useGameServerAuth()
     const { mainDivDimensions } = useDimension()
+    const location = useLocation()
+
+    // Dont show gamebar and left nav in 404
+    if (location.pathname === "/404") {
+        return <Routes />
+    }
 
     return (
         <>

@@ -103,6 +103,7 @@ import LogoWEBP from "./images/Logo.webp"
 import BottomMechWEBP from "./images/BottomMech.webp"
 import SupBackground from "./images/SupBackground.webp"
 import Crosshair from "./images/Crosshair.png"
+import Gabs from "./images/Gabs.png"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
 import WarningIcon from "@mui/icons-material/Warning"
@@ -129,6 +130,7 @@ import MultiplierSniper from "./images/Multipliers/Sniper.png"
 import MultiplierGeneric from "./images/Multipliers/Generic.png"
 import MultiplierWonBattle from "./images/Multipliers/WonBattle.png"
 import MultiplierWonLastThreeBattles from "./images/Multipliers/WonLastThreeBattles.png"
+
 export {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
@@ -162,6 +164,7 @@ export {
     ZaibatsuLogo,
     SupBackground,
     Crosshair,
+    Gabs,
 }
 
 export interface SvgWrapperProps extends BoxProps {
