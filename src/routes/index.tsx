@@ -6,6 +6,7 @@ export enum RoutePaths {
     Hanger = "/hanger",
     Marketplace = "/marketplace",
     Contracts = "/contracts",
+    NotFound = "/404",
 }
 export enum TabLabels {
     BattleArena = "Battle Arena",
@@ -27,7 +28,7 @@ export const Routes: React.FC = () => {
                 <BattleArenaPage />
             </Route>
             <Route path="/404" component={NotFoundPage} />
-            <Redirect to="/404" />
+            <Redirect to={RoutePaths.NotFound} />
         </Switch>
     )
 }
