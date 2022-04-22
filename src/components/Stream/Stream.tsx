@@ -36,9 +36,12 @@ export const Stream = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggle
 
     // Don't show for couple seconds as it tries to do the auto login
     useEffect(() => {
-        setTimeout(() => {
+        const timer = setTimeout(() => {
             toggleRenderTopMessage(true)
         }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS + 2000)
+        return () => {
+            clearTimeout(timer)
+        }
     })
 
     if (!watchedTrailer) {
