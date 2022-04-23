@@ -1,10 +1,10 @@
 import { Box, Button, Modal, Skeleton, Stack, Tab, Tabs } from "@mui/material"
 import { PrismicRichText, usePrismicDocumentsByType } from "@prismicio/react"
 import { useEffect, useState } from "react"
-import { useToggle } from "../../hooks"
-import { colors } from "../../theme/theme"
-import { PrismicHowToPlay, PrismicSliceType } from "../../types/prismic"
-import { ClipThing } from "../Common/ClipThing"
+import { useToggle } from "../../../hooks"
+import { colors } from "../../../theme/theme"
+import { PrismicHowToPlay, PrismicSliceType } from "../../../types/prismic"
+import { ClipThing } from "../../Common/ClipThing"
 
 const LoadingSkeleton = () => (
     <Box sx={{ width: "82rem", flex: 1, height: 0, pr: "1.2rem", py: "1.2rem" }}>

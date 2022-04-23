@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom"
 import { useState } from "react"
 import { SvgQuestionMark } from "../../assets"
 import { colors } from "../../theme/theme"
-import GameGuide from "../GameGuide/GameGuide"
+import GameGuide from "./GameGuide/GameGuide"
 import Tutorial from "../Tutorial/Tutorial"
 import { ROUTES_MAP } from "../../routes"
 

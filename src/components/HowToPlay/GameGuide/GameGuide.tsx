@@ -1,8 +1,8 @@
 import { Button, Typography } from "@mui/material"
 import { PrismicProvider } from "@prismicio/react"
-import { prismicClient } from "../../helpers/prismicClient"
-import { useToggle } from "../../hooks"
-import { colors } from "../../theme/theme"
+import { prismicClient } from "../../../helpers/prismicClient"
+import { useToggle } from "../../../hooks"
+import { colors } from "../../../theme/theme"
 import { GameGuideModal } from "./GameGuideModal"
 
 const GameGuide = () => {

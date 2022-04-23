@@ -1,25 +1,27 @@
-import { Box, Stack } from "@mui/material"
-import { useMemo } from "react"
+import { Box, Stack, Typography } from "@mui/material"
+import { useEffect, useMemo, useRef } from "react"
 import { TourProvider } from "@reactour/tour"
 import {
     BattleEndScreen,
     BattleHistory,
     Controls,
-    EarlyAccessWarning,
     LiveVotingChart,
     MiniMap,
+    NoSupsModal,
     Notifications,
     Stream,
     tourStyles,
     tutorialNextBtn,
     tutorialPrevButton,
     VotingSystem,
-    WaitingPage,
     WarMachineStats,
 } from "../components"
 import { Music } from "../components/Music/Music"
-import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider } from "../containers"
+import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useWallet } from "../containers"
 import { useToggle } from "../hooks"
+import { colors } from "../theme/theme"
+import { SupBackground } from "../assets"
+import { TutorialModal } from "../components/Tutorial/TutorialModal"
 
 const BattleArenaPageInner = () => {
     const { state } = useGameServerWebsocket()
@@ -30,11 +32,9 @@ const BattleArenaPageInner = () => {
         <>
             <Stack sx={{ height: "100%" }}>
                 <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
-                    <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
-
-                    {user && haveSups && state === WebSocket.OPEN ? (
+                    {state === WebSocket.OPEN && user && haveSups ? (
                         <>
-                            <EarlyAccessWarning />
+                            <Stream />
                             <VotingSystem />
                             <MiniMap />
                             <Notifications />
@@ -44,7 +44,7 @@ const BattleArenaPageInner = () => {
                             <BattleHistory />
                         </>
                     ) : (
-                        <WaitingPage />
+                        <NoGameUIScreen haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
                     )}
                 </Box>
 
@@ -52,6 +52,8 @@ const BattleArenaPageInner = () => {
             </Stack>
 
             <Music />
+            <NoSupsModal haveSups={haveSups} />
+            <TutorialModal />
         </>
     )
 }
@@ -87,5 +89,98 @@ export const BattleArenaPage = () => {
                 </TourProvider>
             </GameProvider>
         </StreamProvider>
+    )
+}
+
+// Shows a generic poster and checks wallet for sups, and toggle have sups
+const NoGameUIScreen = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: (value?: boolean) => void }) => {
+    const { onWorldSups } = useWallet()
+    const firstIteration = useRef(true)
+
+    useEffect(() => {
+        if (!onWorldSups) return
+
+        const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
+
+        if (supsAboveZero && !haveSups) return toggleHaveSups(true)
+        if (!supsAboveZero && haveSups) return toggleHaveSups(false)
+        if (firstIteration.current) {
+            toggleHaveSups(supsAboveZero)
+            firstIteration.current = false
+        }
+    }, [onWorldSups, haveSups])
+
+    return (
+        <Box
+            sx={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                background: `center url(${SupBackground})`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                pointerEvents: "none",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 0,
+            }}
+        >
+            <Stack
+                sx={{
+                    position: "relative",
+                    alignItems: "center",
+                    textAlign: "center",
+                    WebkitTextStrokeColor: "black",
+                    textShadow: "1px 3px black",
+                    zIndex: 2,
+                }}
+            >
+                <Typography
+                    variant="h1"
+                    sx={{
+                        fontFamily: "Nostromo Regular Heavy",
+                        WebkitTextStrokeWidth: "2px",
+                        "@media (max-width:1440px)": {
+                            fontSize: "5vw",
+                        },
+                        "@media (max-width:800px)": {
+                            fontSize: "6vmin",
+                        },
+                    }}
+                >
+                    Battle Arena
+                </Typography>
+                <Typography
+                    variant="h3"
+                    sx={{
+                        fontFamily: "Nostromo Regular Black",
+                        WebkitTextStrokeWidth: "1px",
+                        "@media (max-width:1440px)": {
+                            fontSize: "4vw",
+                        },
+                        "@media (max-width:800px)": {
+                            fontSize: "5vmin",
+                        },
+                    }}
+                >
+                    Powered by <span style={{ color: colors.yellow, fontFamily: "inherit" }}>$SUPS</span>
+                </Typography>
+            </Stack>
+
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: "rgba(5,12,18,0.4)",
+                    zIndex: 1,
+                }}
+            />
+        </Box>
     )
 }

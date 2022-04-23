@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter, Route, Switch } from "react-router-dom"
-import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance } from "./components"
+import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
@@ -76,6 +76,7 @@ const AppInner = () => {
                         }}
                     >
                         <LoadMessage />
+                        <EarlyAccessWarning />
 
                         <Switch>
                             {ROUTES_ARRAY.map((r) => {
