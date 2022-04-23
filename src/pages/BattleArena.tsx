@@ -16,7 +16,6 @@ import {
     VotingSystem,
     WarMachineStats,
 } from "../components"
-import { Music } from "../components/Music/Music"
 import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useWallet } from "../containers"
 import { useToggle } from "../hooks"
 import { colors } from "../theme/theme"
@@ -51,7 +50,6 @@ const BattleArenaPageInner = () => {
                 <Controls />
             </Stack>
 
-            <Music />
             <NoSupsModal haveSups={haveSups} />
             <TutorialModal />
         </>
