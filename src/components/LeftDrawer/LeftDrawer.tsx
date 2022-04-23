@@ -18,10 +18,11 @@ export const LeftDrawer = () => {
     const history = useHistory()
     const [isExpanded, toggleIsExpanded] = useToggle(false)
     const primaryColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue), [user])
+    const secondaryColor = useMemo(() => (user && user.faction ? user.faction.theme.secondary : "#FFFFFF"), [user])
 
     return (
         <>
-            <DrawerButtons primaryColor={primaryColor} user={user} openLeftDrawer={() => toggleIsExpanded(true)} />
+            <DrawerButtons primaryColor={primaryColor} secondaryColor={secondaryColor} user={user} openLeftDrawer={() => toggleIsExpanded(true)} />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
                 open={isExpanded}
@@ -74,7 +75,9 @@ export const LeftDrawer = () => {
                         }}
                     >
                         <SvgBack size="1.6rem" />
-                        <Typography sx={{ ml: "1rem", fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>MINIMISE</Typography>
+                        <Typography sx={{ ml: "1rem", color: secondaryColor, fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>
+                            MINIMISE
+                        </Typography>
                     </Button>
                 </Stack>
             </Drawer>

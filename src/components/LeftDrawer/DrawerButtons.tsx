@@ -9,7 +9,17 @@ import { User } from "../../types"
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
 
-export const DrawerButtons = ({ primaryColor, user, openLeftDrawer }: { primaryColor: string; user?: User; openLeftDrawer: () => void }) => {
+export const DrawerButtons = ({
+    primaryColor,
+    secondaryColor,
+    user,
+    openLeftDrawer,
+}: {
+    primaryColor: string
+    secondaryColor: string
+    user?: User
+    openLeftDrawer: () => void
+}) => {
     const location = useLocation()
     const history = useHistory()
 
@@ -62,7 +72,7 @@ export const DrawerButtons = ({ primaryColor, user, openLeftDrawer }: { primaryC
                     },
                 }}
             >
-                <SvgNext size="1.6rem" />
+                <SvgNext size="1.6rem" fill={secondaryColor} />
             </Button>
         </Stack>
     )
