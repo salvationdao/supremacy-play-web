@@ -3,7 +3,7 @@ import { Theme } from "@mui/material/styles"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
-import { BrowserRouter, Route, Switch } from "react-router-dom"
+import { BrowserRouter, Route, Redirect, Switch, useLocation } from "react-router-dom"
 import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
@@ -20,7 +20,8 @@ import {
     WalletProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
-import { ROUTES_ARRAY } from "./routes"
+import { NotFoundPage } from "./pages"
+import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme, User } from "./types"
 import { UserData } from "./types/passport"
@@ -37,6 +38,10 @@ if (SENTRY_CONFIG) {
 const AppInner = () => {
     const { isServerUp } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
+    const location = useLocation()
+
+    // Dont show gamebar and left nav in 404
+    if (location.pathname === "/404") return <NotFoundPage />
 
     if (!isServerUp || UNDER_MAINTENANCE) return <Maintenance />
 
@@ -75,15 +80,16 @@ const AppInner = () => {
                             backgroundColor: colors.darkNavy,
                         }}
                     >
-                        <LoadMessage />
-                        <EarlyAccessWarning />
-
                         <Switch>
                             {ROUTES_ARRAY.map((r) => {
                                 const { id, path, exact, Component } = r
                                 return <Route key={id} path={path} exact={exact} component={Component} />
                             })}
+                            <Redirect to={ROUTES_MAP.not_found_page.path} />
                         </Switch>
+
+                        <LoadMessage />
+                        <EarlyAccessWarning />
                     </Box>
 
                     <RightDrawer />

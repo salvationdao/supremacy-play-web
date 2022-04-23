@@ -1,12 +1,12 @@
 import { Stack } from "@mui/material"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
-import { ResolutionSelect } from "./ResolutionSelect"
-import { colors } from "../../theme/theme"
-import { StreamSelect } from "./StreamSelect"
+import { CONTROLS_HEIGHT } from "../../constants"
 import { useGameServerAuth } from "../../containers"
 import { shadeColor } from "../../helpers"
-import { CONTROLS_HEIGHT } from "../../constants"
+import { colors } from "../../theme/theme"
 import { BattleStats } from "../BattleStats/BattleStats"
+import { ResolutionSelect } from "./ResolutionSelect"
+import { StreamSelect } from "./StreamSelect"
 
 export const Controls = () => {
     const { user } = useGameServerAuth()
@@ -29,8 +29,8 @@ export const Controls = () => {
         >
             <Stack direction="row" spacing="1.6rem">
                 <LiveCounts />
-                <BattleStats />
                 <OverlayToggles />
+                <BattleStats />
             </Stack>
 
             <Stack direction="row" spacing="1.6rem">

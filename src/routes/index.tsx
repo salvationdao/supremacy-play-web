@@ -1,7 +1,4 @@
-import { BattleArenaPage } from "../pages/BattleArena"
-import { HangerPage } from "../pages/Hanger"
-import { MarketplacePage } from "../pages/Marketplace"
-import { PageNotFound } from "../pages/PageNotFound"
+import { BattleArenaPage, HangerPage, MarketplacePage, NotFoundPage } from "../pages"
 
 interface RouteStruct {
     id: string
@@ -50,11 +47,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         enable: false,
         label: "Contracts",
     },
-    page_not_found: {
-        id: "page_not_found",
-        path: "",
+    not_found_page: {
+        id: "not_found_page",
+        path: "/404",
         exact: false,
-        Component: PageNotFound,
+        Component: NotFoundPage,
         showInLeftDrawer: false,
         enable: false,
         label: "",
