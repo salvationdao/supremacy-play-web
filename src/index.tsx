@@ -82,7 +82,7 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    <LeftDrawer />
+                    {process.env.NODE_ENV === "development" && <LeftDrawer />}
                     <PageWrapper>
                         <Routes />
                     </PageWrapper>

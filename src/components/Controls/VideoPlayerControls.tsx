@@ -52,25 +52,27 @@ export const VideoPlayerControls = () => {
                     />
                 </Stack>
 
-                <Stack direction="row" alignItems="center" sx={{ width: "15rem", mr: "1.6rem" }}>
-                    <IconButton size="small" onClick={() => toggleIsMusicMute()} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
-                        {isMusicMute || musicVolume <= 0 ? <SvgMusicMute size="1.2rem" sx={{ pb: 0 }} /> : <SvgMusic size="1.2rem" sx={{ pb: 0 }} />}
-                    </IconButton>
+                {process.env.NODE_ENV === "development" && (
+                    <Stack direction="row" alignItems="center" sx={{ width: "15rem", mr: "1.6rem" }}>
+                        <IconButton size="small" onClick={() => toggleIsMusicMute()} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
+                            {isMusicMute || musicVolume <= 0 ? <SvgMusicMute size="1.2rem" sx={{ pb: 0 }} /> : <SvgMusic size="1.2rem" sx={{ pb: 0 }} />}
+                        </IconButton>
 
-                    <Slider
-                        size="small"
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        aria-label="Volume"
-                        value={isMusicMute ? 0 : musicVolume}
-                        onChange={handleMusicVolumeChange}
-                        sx={{
-                            ml: "1.2rem",
-                            color: user && user.faction ? user.faction.theme.primary : colors.neonBlue,
-                        }}
-                    />
-                </Stack>
+                        <Slider
+                            size="small"
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            aria-label="Volume"
+                            value={isMusicMute ? 0 : musicVolume}
+                            onChange={handleMusicVolumeChange}
+                            sx={{
+                                ml: "1.2rem",
+                                color: user && user.faction ? user.faction.theme.primary : colors.neonBlue,
+                            }}
+                        />
+                    </Stack>
+                )}
             </Stack>
 
             <IconButton size="small" onClick={toggleFullscreen} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
