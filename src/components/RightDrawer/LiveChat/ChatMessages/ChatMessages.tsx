@@ -1,15 +1,14 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
-import emojiRegex from "emoji-regex"
 import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { FactionsAll, FontSizeType, SplitOptionType, useChat, useSupremacy, useGameServerAuth } from "../../../../containers"
+import { checkIfIsEmoji } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
+import { User } from "../../../../types"
 import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../../types/chat"
 import { BanProposal } from "../BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
-
-const regex = emojiRegex()
 
 interface ChatMessagesProps {
     primaryColor: string
@@ -19,12 +18,14 @@ interface ChatMessagesProps {
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
+    const { user } = useGameServerAuth()
     const { filterZerosGlobal, filterZerosFaction, filterSystemMessages, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
     const { factionsAll } = useSupremacy()
 
     return (
         <ChatMessagesInner
             {...props}
+            user={user}
             filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
             filterSystemMessages={filterSystemMessages}
             sentMessages={sentMessages}
@@ -39,6 +40,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
 }
 
 interface ChatMessagesInnerProps extends ChatMessagesProps {
+    user?: User
     filterZeros?: boolean
     filterSystemMessages?: boolean
     sentMessages: Date[]
@@ -50,6 +52,7 @@ interface ChatMessagesInnerProps extends ChatMessagesProps {
 }
 
 const ChatMessagesInner = ({
+    user,
     primaryColor,
     secondaryColor,
     chatMessages,
@@ -63,9 +66,8 @@ const ChatMessagesInner = ({
     globalAnnouncement,
     factionsAll,
 }: ChatMessagesInnerProps) => {
-    const { user } = useGameServerAuth()
-    const [autoScroll, setAutoScroll] = useState(true)
     const scrollableRef = useRef<HTMLDivElement>(null)
+    const [autoScroll, setAutoScroll] = useState(true)
 
     useLayoutEffect(() => {
         if (!autoScroll || !scrollableRef.current || chatMessages.length === 0) {
@@ -94,35 +96,6 @@ const ChatMessagesInner = ({
         },
         [autoScroll],
     )
-
-    // Checks if the message contains all emojis and is less than the specified amount on characters
-    const checkIfIsEmoji = useCallback((message: string) => {
-        if (!message) return false
-        const isCharEmojiArray: boolean[] = []
-        const trimmedMsg = message.trim()
-
-        // If message is long then don't bother
-        if (trimmedMsg.length > 8) return false
-
-        // Spreading string for proper emoji seperation-ignoring spaces that can appear between emojis and mess everything up
-        const messageArray = [...trimmedMsg.replaceAll(" ", "")]
-
-        messageArray.map((c) => {
-            // Checking if char === invisible U+fe0f unicode- a specific code for emojis
-            if (c === "️") {
-                isCharEmojiArray.push(true)
-                return
-            }
-            // Checks to see if each character matches the emoji regex from the library or a "regional indicator symbol letter" (apart of a flag emoji)
-            isCharEmojiArray.push(!!c.match(regex) || !!c.match(/[\uD83C][\uDDE6-\uDDFF]/))
-        })
-
-        // Checks if the whole message is less than 8 character-some emojis can be 2+ characters and if all of them are emojis
-        if (!isCharEmojiArray.includes(false)) {
-            return true
-        }
-        return false
-    }, [])
 
     return (
         <>

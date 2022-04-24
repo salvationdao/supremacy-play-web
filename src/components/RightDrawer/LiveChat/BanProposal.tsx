@@ -9,37 +9,6 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { BanProposalStruct } from "../../../types/chat"
 
-export const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
-    return (
-        <Stack direction="row" spacing=".7rem" alignItems="start">
-            <Typography
-                sx={{
-                    py: ".2rem",
-                    flexShrink: 0,
-                    width: "7rem",
-                    textAlign: "center",
-                    lineHeight: 1,
-                    backgroundColor: `${color || colors.red}70`,
-                }}
-            >
-                {title}
-            </Typography>
-            <Stack direction="row" spacing=".7rem" alignItems="center" sx={{ mt: ".2rem !important" }}>
-                {children}
-            </Stack>
-        </Stack>
-    )
-}
-
-const Countdown = ({ endTime, toggleOutOfTime }: { endTime: Date; toggleOutOfTime: (value?: boolean | undefined) => void }) => {
-    const { totalSecRemain } = useTimer(endTime)
-
-    useEffect(() => {
-        if (totalSecRemain <= 0) toggleOutOfTime(true)
-    }, [totalSecRemain])
-
-    return <>{totalSecRemain}</>
-}
 export const BanProposal = () => {
     const { banProposal } = useChat()
     const [render, toggleRender] = useToggle()
@@ -229,4 +198,36 @@ const BanProposalInner = ({
             </Box>
         </Grow>
     )
+}
+
+export const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
+    return (
+        <Stack direction="row" spacing=".7rem" alignItems="start">
+            <Typography
+                sx={{
+                    py: ".2rem",
+                    flexShrink: 0,
+                    width: "7rem",
+                    textAlign: "center",
+                    lineHeight: 1,
+                    backgroundColor: `${color || colors.red}70`,
+                }}
+            >
+                {title}
+            </Typography>
+            <Stack direction="row" spacing=".7rem" alignItems="center" sx={{ mt: ".2rem !important" }}>
+                {children}
+            </Stack>
+        </Stack>
+    )
+}
+
+const Countdown = ({ endTime, toggleOutOfTime }: { endTime: Date; toggleOutOfTime: (value?: boolean | undefined) => void }) => {
+    const { totalSecRemain } = useTimer(endTime)
+
+    useEffect(() => {
+        if (totalSecRemain <= 0) toggleOutOfTime(true)
+    }, [totalSecRemain])
+
+    return <>{totalSecRemain}</>
 }

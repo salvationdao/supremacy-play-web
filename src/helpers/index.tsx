@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js"
+import emojiRegex from "emoji-regex"
 import {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
@@ -364,4 +365,42 @@ export const timeSince = (date: Date) => {
 export const camelToTitle = (str: string) => {
     const result = str.replace(/([A-Z])/g, " $1")
     return result.charAt(0).toUpperCase() + result.slice(1)
+}
+
+const regex = emojiRegex()
+
+// Checks if the message contains all emojis and is less than the specified amount on characters
+export const checkIfIsEmoji = (message: string) => {
+    if (!message) return false
+    const isCharEmojiArray: boolean[] = []
+    const trimmedMsg = message.trim()
+
+    // If message is long then don't bother
+    if (trimmedMsg.length > 8) return false
+
+    // Spreading string for proper emoji seperation-ignoring spaces that can appear between emojis and mess everything up
+    const messageArray = [...trimmedMsg.replaceAll(" ", "")]
+
+    messageArray.map((c) => {
+        // Checking if char === invisible U+fe0f unicode- a specific code for emojis
+        if (c === "️") {
+            isCharEmojiArray.push(true)
+            return
+        }
+        // Checks to see if each character matches the emoji regex from the library or a "regional indicator symbol letter" (apart of a flag emoji)
+        isCharEmojiArray.push(!!c.match(regex) || !!c.match(/[\uD83C][\uDDE6-\uDDFF]/))
+    })
+
+    // Checks if the whole message is less than 8 character-some emojis can be 2+ characters and if all of them are emojis
+    if (!isCharEmojiArray.includes(false)) {
+        return true
+    }
+    return false
+}
+
+// Returns a random chat color for non faction users
+export const getRandomColor = () => {
+    let color = "#"
+    for (let i = 0; i < 3; i++) color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2)
+    return color
 }

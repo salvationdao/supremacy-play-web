@@ -5,6 +5,7 @@ import { ChatSettings, EmojiPopover } from "../../.."
 import { SvgEmoji, SvgEmojiSelector, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
 import { useChat, useGameServerAuth, useSnackbar, WebSocketProperties, useGameServerWebsocket } from "../../../../containers"
+import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
@@ -73,7 +74,7 @@ const ChatSendInner = ({
     const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
     const popoverRef = useRef(null)
 
-    const messageColor = useMemo(() => initialMessageColor || getRandomChatColor(), [initialMessageColor])
+    const messageColor = useMemo(() => initialMessageColor || getRandomColor(), [initialMessageColor])
 
     const setMessageWithCheck = useCallback(
         (newMessage: string, append?: boolean) => {
@@ -124,7 +125,7 @@ const ChatSendInner = ({
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 
-    //After user has selected an emoji- deconstructs string before and after the emoji enter point and reconstructs the message string
+    // After user has selected an emoji- deconstructs string before and after the emoji enter point and reconstructs the message string
     const handleOnEmojiSelect = useCallback(
         (emoji: BaseEmoji) => {
             //getting the index of the last colon of the string from the start of the message to the caret (cursor) position
@@ -153,7 +154,7 @@ const ChatSendInner = ({
         [caretPosition, message],
     )
 
-    //While the user is using :emoji short cut- finding the search phrase and setting caret (cursor) positioning
+    // While the user is using :emoji short cut- finding the search phrase and setting caret (cursor) positioning
     const handleEmojiShortcut = useCallback((caretStartPosition: number | null, msg: string) => {
         //there should always be a caret position or the element is not focused
         if (caretStartPosition) {
@@ -190,13 +191,11 @@ const ChatSendInner = ({
         }
     }, [])
 
-    //sets the caret (cursor) position back to where it was previously
+    // Sets the caret (cursor) position back to where it was previously
     const focusCaretTextField = useCallback(() => {
-        setTimeout(() => {
-            if (caretPosition) {
-                textfieldRef.current?.setSelectionRange(caretPosition, caretPosition)
-            }
-        }, 0)
+        if (caretPosition) {
+            textfieldRef.current?.setSelectionRange(caretPosition, caretPosition)
+        }
     }, [caretPosition])
 
     return (
@@ -447,11 +446,4 @@ const ChatSendInner = ({
             )}
         </form>
     )
-}
-
-// Returns a random chat color for non faction users
-const getRandomChatColor = () => {
-    let color = "#"
-    for (let i = 0; i < 3; i++) color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2)
-    return color
 }
