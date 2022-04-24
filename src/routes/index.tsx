@@ -3,14 +3,14 @@ import { BattleArenaPage, HangarPage, MarketplacePage, NotFoundPage } from "../p
 
 export enum RoutePaths {
     BattleArena = "/",
-    hangar = "/hangar",
+    Hangar = "/hangar",
     Marketplace = "/marketplace",
     Contracts = "/contracts",
     NotFound = "/404",
 }
 export enum TabLabels {
     BattleArena = "Battle Arena",
-    hangar = "hangar",
+    Hangar = "Hangar",
     Marketplace = "Marketplace",
     Contracts = "Contracts",
 }
@@ -18,7 +18,7 @@ export enum TabLabels {
 export const Routes: React.FC = () => {
     return (
         <Switch>
-            <Route exact path={RoutePaths.hangar}>
+            <Route exact path={RoutePaths.Hangar}>
                 <HangarPage />
             </Route>
             <Route exact path={RoutePaths.Marketplace}>
