@@ -19,7 +19,7 @@
         "bignumber.js": "^9.0.2",
         "core-js": "^3.5.0",
         "emoji-mart": "^3.0.1",
-        "emoji-regex": "^10.1.0 ",
+        "emoji-regex": "^10.1.0",
         "howler": "^2.2.3",
         "jsonwebtoken": "^8.5.1",
         "jwt-decode": "^3.1.2",
