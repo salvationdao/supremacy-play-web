@@ -2,19 +2,19 @@ import { Box, Fade, Divider, Stack, Typography } from "@mui/material"
 import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
 import { useEffect, useState } from "react"
-import { FactionAbilityItem } from ".."
-import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useSupremacy, useGameServerAuth, useGameServerWebsocket } from "../../containers"
-import { GameServerKeys } from "../../keys"
-import { colors } from "../../theme/theme"
-import { GameAbility } from "../../types"
+import { FactionAbilityItem } from "../.."
+import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { useSupremacy, useGameServerAuth, useGameServerWebsocket } from "../../../containers"
+import { GameServerKeys } from "../../../keys"
+import { colors } from "../../../theme/theme"
+import { GameAbility } from "../../../types"
 
 export const FactionAbilities = () => {
-    const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
+    const { state, subscribe } = useGameServerWebsocket()
+    const { user, factionID } = useGameServerAuth()
     const { factionsAll } = useSupremacy()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
-    const { user, factionID } = useGameServerAuth()
 
     // Subscribe to faction ability updates
     useEffect(() => {

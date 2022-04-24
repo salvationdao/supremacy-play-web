@@ -1,21 +1,12 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useGame, BribeStageResponse } from "../../containers"
-import { useInterval, useTimer } from "../../hooks"
-import { SvgBattleAbilityIcon } from "../../assets"
-import { colors } from "../../theme/theme"
-import { ContributorAmount } from "../BattleStats/ContributorAmount"
+import { BribeStageResponse } from "../../../containers"
+import { useInterval, useTimer } from "../../../hooks"
+import { SvgBattleAbilityIcon } from "../../../assets"
+import { colors } from "../../../theme/theme"
+import { ContributorAmount } from "../../BattleStats/ContributorAmount"
 
-export const BattleAbilityCountdown = () => {
-    const { bribeStage } = useGame()
-    return <BattleAbilityCountdownInner bribeStage={bribeStage} />
-}
-
-interface BattleAbilityCountdownInnerProps {
-    bribeStage?: BribeStageResponse
-}
-
-const BattleAbilityCountdownInner = ({ bribeStage }: BattleAbilityCountdownInnerProps) => {
+export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     return (
         <>
             <Stack direction="row" alignItems="center" justifyContent="space-between">

@@ -8,42 +8,12 @@ import { useDimension, useGame, useGameServerAuth, useGameServerWebsocket, useOv
 import { GameServerKeys } from "../../keys"
 import { WarMachineItem } from "./WarMachineItem"
 
-const ScrollContainer = ({ children }: { children: ReactElement }) => {
-    const theme = useTheme<Theme>()
-
-    return (
-        <Box
-            sx={{
-                flex: 1,
-                overflowY: "hidden",
-                overflowX: "auto",
-                direction: "ltr",
-                scrollbarWidth: "none",
-                "::-webkit-scrollbar": {
-                    height: ".4rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                    borderRadius: 3,
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: `${theme.factionTheme.primary}50`,
-                    borderRadius: 3,
-                },
-                transition: "all .2s",
-            }}
-        >
-            <Box sx={{ direction: "ltr" }}>{children}</Box>
-        </Box>
-    )
-}
-
 export const WarMachineStats = () => {
-    const { remToPxRatio } = useDimension()
-    const { faction_id } = useGameServerAuth()
-    const { warMachines } = useGame()
-    const { state, subscribe } = useGameServerWebsocket()
     const theme = useTheme<Theme>()
+    const { state, subscribe } = useGameServerWebsocket()
+    const { factionID } = useGameServerAuth()
+    const { warMachines } = useGame()
+    const { remToPxRatio } = useDimension()
     const { isMapOpen } = useOverlayToggles()
 
     const adjustment = useMemo(() => Math.min(remToPxRatio, 10) / 10, [remToPxRatio])
@@ -54,18 +24,13 @@ export const WarMachineStats = () => {
         return subscribe(GameServerKeys.TriggerWarMachineLocationUpdated, () => null, null)
     }, [state, subscribe])
 
-    const shouldBeExpanded = {
-        shouldBeExpandedFaction: false,
-        shouldBeExpandedOthers: false,
-    }
-
     const factionMechs = useMemo(
-        () => (warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == faction_id) : []),
-        [warMachines, faction_id],
+        () => (warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == factionID) : []),
+        [warMachines, factionID],
     )
     const otherMechs = useMemo(
-        () => (warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != faction_id) : []),
-        [warMachines, faction_id],
+        () => (warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != factionID) : []),
+        [warMachines, factionID],
     )
     const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
 
@@ -103,12 +68,7 @@ export const WarMachineStats = () => {
                         <ScrollContainer>
                             <Stack spacing="-3.2rem" direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
-                                    <WarMachineItem
-                                        key={`${wm.participantID} - ${wm.hash}`}
-                                        warMachine={wm}
-                                        scale={0.75}
-                                        shouldBeExpanded={shouldBeExpanded.shouldBeExpandedFaction}
-                                    />
+                                    <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} shouldBeExpanded={false} />
                                 ))}
                             </Stack>
                         </ScrollContainer>
@@ -132,11 +92,7 @@ export const WarMachineStats = () => {
                                     .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                     .map((wm) => (
                                         <Box key={`${wm.participantID} - ${wm.hash}`} sx={{ ":not(:last-child)": { pr: "1.6rem" } }}>
-                                            <WarMachineItem
-                                                warMachine={wm}
-                                                scale={haveFactionMechs ? 0.7 : 0.7}
-                                                shouldBeExpanded={shouldBeExpanded.shouldBeExpandedOthers}
-                                            />
+                                            <WarMachineItem warMachine={wm} scale={haveFactionMechs ? 0.7 : 0.7} shouldBeExpanded={false} />
                                         </Box>
                                     ))}
                             </Stack>
@@ -145,5 +101,35 @@ export const WarMachineStats = () => {
                 )}
             </Stack>
         </Slide>
+    )
+}
+
+const ScrollContainer = ({ children }: { children: ReactElement }) => {
+    const theme = useTheme<Theme>()
+
+    return (
+        <Box
+            sx={{
+                flex: 1,
+                overflowY: "hidden",
+                overflowX: "auto",
+                direction: "ltr",
+                scrollbarWidth: "none",
+                "::-webkit-scrollbar": {
+                    height: ".4rem",
+                },
+                "::-webkit-scrollbar-track": {
+                    background: "#FFFFFF15",
+                    borderRadius: 3,
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: `${theme.factionTheme.primary}50`,
+                    borderRadius: 3,
+                },
+                transition: "all .2s",
+            }}
+        >
+            <Box sx={{ direction: "ltr" }}>{children}</Box>
+        </Box>
     )
 }

@@ -12,42 +12,6 @@ import { ChatMessageType } from "../../../types/chat"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 
-const Content = ({
-    user,
-    faction_id,
-    primaryColor,
-    secondaryColor,
-    chatMessages,
-}: {
-    user?: User
-    faction_id: string | null
-    primaryColor: string
-    secondaryColor: string
-    chatMessages: ChatMessageType[]
-}) => {
-    return (
-        <>
-            <ChatMessages primaryColor={primaryColor} secondaryColor={secondaryColor} chatMessages={chatMessages} faction_id={faction_id} />
-
-            {user ? (
-                <ChatSend primaryColor={primaryColor} faction_id={faction_id} />
-            ) : (
-                <Box sx={{ px: "1.6rem", py: ".4rem", backgroundColor: colors.red }}>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            textAlign: "center",
-                            lineHeight: 1,
-                        }}
-                    >
-                        You must be signed in to send messages.
-                    </Typography>
-                </Box>
-            )}
-        </>
-    )
-}
-
 const TabbedLayout = () => {
     const { user } = useGameServerAuth()
     const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread, banProposal } = useChat()
@@ -333,5 +297,41 @@ const LiveChatInner = () => {
                 <AdditionalOptionsButton />
             </Stack>
         </Fade>
+    )
+}
+
+const Content = ({
+    user,
+    faction_id,
+    primaryColor,
+    secondaryColor,
+    chatMessages,
+}: {
+    user?: User
+    faction_id: string | null
+    primaryColor: string
+    secondaryColor: string
+    chatMessages: ChatMessageType[]
+}) => {
+    return (
+        <>
+            <ChatMessages primaryColor={primaryColor} secondaryColor={secondaryColor} chatMessages={chatMessages} faction_id={faction_id} />
+
+            {user ? (
+                <ChatSend primaryColor={primaryColor} faction_id={faction_id} />
+            ) : (
+                <Box sx={{ px: "1.6rem", py: ".4rem", backgroundColor: colors.red }}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            textAlign: "center",
+                            lineHeight: 1,
+                        }}
+                    >
+                        You must be signed in to send messages.
+                    </Typography>
+                </Box>
+            )}
+        </>
     )
 }

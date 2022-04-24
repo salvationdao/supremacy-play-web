@@ -7,6 +7,26 @@ import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { User } from "../../../types"
 
+export const PlayerList = () => {
+    const { user } = useGameServerAuth()
+    const [activePlayers, setActivePlayers] = useState<User[]>([])
+    const [inactivePlayers, setInactivePlayers] = useState<User[]>([])
+
+    return (
+        <Fade in>
+            <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
+                <Content
+                    user={user}
+                    activePlayers={activePlayers}
+                    inactivePlayers={inactivePlayers}
+                    setActivePlayers={setActivePlayers}
+                    setInactivePlayers={setInactivePlayers}
+                />
+            </Stack>
+        </Fade>
+    )
+}
+
 const Content = ({
     user,
     activePlayers,
@@ -113,25 +133,5 @@ const Content = ({
                 )}
             </Box>
         </Stack>
-    )
-}
-
-export const PlayerList = () => {
-    const { user } = useGameServerAuth()
-    const [activePlayers, setActivePlayers] = useState<User[]>([])
-    const [inactivePlayers, setInactivePlayers] = useState<User[]>([])
-
-    return (
-        <Fade in>
-            <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-                <Content
-                    user={user}
-                    activePlayers={activePlayers}
-                    inactivePlayers={inactivePlayers}
-                    setActivePlayers={setActivePlayers}
-                    setInactivePlayers={setInactivePlayers}
-                />
-            </Stack>
-        </Fade>
     )
 }

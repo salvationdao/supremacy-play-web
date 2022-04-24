@@ -25,7 +25,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
 
     const [authRingCheckError, setAuthRingCheckError] = useState()
 
-    const userID = user?.id
+    const userID = user?.faction.id
     const factionID = user?.faction_id
 
     useEffect(() => {

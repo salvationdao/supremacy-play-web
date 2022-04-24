@@ -7,37 +7,6 @@ import { colors } from "../../theme/theme"
 import { UserData } from "../../types/passport"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
 
-const BarContent = ({ user }: { user?: UserData }) => {
-    const { state, isServerUp } = usePassportServerWebsocket()
-
-    if (state !== WebSocket.OPEN) {
-        return (
-            <>
-                <Logo />
-                <Box sx={{ flexGrow: 1 }} />
-                <Typography sx={{ mr: "1.6rem", fontFamily: "Nostromo Regular Bold" }} variant="caption">
-                    {isServerUp ? "Connecting to passport..." : "Passport offline."}
-                </Typography>
-            </>
-        )
-    }
-
-    return (
-        <>
-            <Logo />
-            <Box sx={{ flexGrow: 1 }} />
-            <HowToPlay />
-            {user && (
-                <>
-                    <Enlist />
-                    <WalletDetails />
-                </>
-            )}
-            <ProfileCard />
-        </>
-    )
-}
-
 export const Bar = () => {
     const { user } = usePassportServerAuth()
 
@@ -74,5 +43,36 @@ export const Bar = () => {
                 <BarContent user={user} />
             </Stack>
         </BarProvider>
+    )
+}
+
+const BarContent = ({ user }: { user?: UserData }) => {
+    const { state, isServerUp } = usePassportServerWebsocket()
+
+    if (state !== WebSocket.OPEN) {
+        return (
+            <>
+                <Logo />
+                <Box sx={{ flexGrow: 1 }} />
+                <Typography sx={{ mr: "1.6rem", fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                    {isServerUp ? "Connecting to passport..." : "Passport offline."}
+                </Typography>
+            </>
+        )
+    }
+
+    return (
+        <>
+            <Logo />
+            <Box sx={{ flexGrow: 1 }} />
+            <HowToPlay />
+            {user && (
+                <>
+                    <Enlist />
+                    <WalletDetails />
+                </>
+            )}
+            <ProfileCard />
+        </>
     )
 }

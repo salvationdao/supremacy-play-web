@@ -8,6 +8,43 @@ const DRAWER_BAR_WIDTH = 2.5 // rem
 const BUTTON_WIDTH = 15.2 //rem
 const NUM_BUTTONS = 1
 
+export const LeftSideBar = () => {
+    const { user } = useGameServerAuth()
+    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, isEndBattleDetailEnabled } = useOverlayToggles()
+
+    return (
+        <Box
+            sx={{
+                position: "relative",
+                overflow: "hidden",
+                width: `${DRAWER_BAR_WIDTH}rem`,
+                backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                zIndex: 1002,
+            }}
+        >
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="flex-end"
+                spacing=".16rem"
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: "50%",
+                    transform: `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}rem - ${DRAWER_BAR_WIDTH / 2}rem)) rotate(-90deg)`,
+                }}
+            >
+                <SideButton
+                    isEnabled={isEndBattleDetailEnabled}
+                    isOpen={isEndBattleDetailOpen}
+                    toggleIsOpen={toggleIsEndBattleDetailOpen}
+                    text="PREVIOUS BATTLE"
+                />
+            </Stack>
+        </Box>
+    )
+}
+
 const SideButton = ({
     isEnabled,
     isOpen,
@@ -61,42 +98,5 @@ const SideButton = ({
             </Typography>
             {Svg}
         </Stack>
-    )
-}
-
-export const LeftSideBar = () => {
-    const { user } = useGameServerAuth()
-    const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, isEndBattleDetailEnabled } = useOverlayToggles()
-
-    return (
-        <Box
-            sx={{
-                position: "relative",
-                overflow: "hidden",
-                width: `${DRAWER_BAR_WIDTH}rem`,
-                backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
-                zIndex: 1002,
-            }}
-        >
-            <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="flex-end"
-                spacing=".16rem"
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: "50%",
-                    transform: `translate(-50%, calc(${NUM_BUTTONS * (BUTTON_WIDTH / 2)}rem - ${DRAWER_BAR_WIDTH / 2}rem)) rotate(-90deg)`,
-                }}
-            >
-                <SideButton
-                    isEnabled={isEndBattleDetailEnabled}
-                    isOpen={isEndBattleDetailOpen}
-                    toggleIsOpen={toggleIsEndBattleDetailOpen}
-                    text="PREVIOUS BATTLE"
-                />
-            </Stack>
-        </Box>
     )
 }

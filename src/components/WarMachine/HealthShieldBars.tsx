@@ -5,7 +5,9 @@ import { BoxSlanted, SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_AC
 import { colors } from "../../theme/theme"
 import { useGameServerWebsocket } from "../../containers"
 
-export const HealthShieldBars = ({ type = "horizontal", warMachine }: { type?: "vertical" | "horizontal"; warMachine: WarMachineState }) => {
+type LayoutType = "vertical" | "horizontal"
+
+export const HealthShieldBars = ({ type = "horizontal", warMachine }: { type?: LayoutType; warMachine: WarMachineState }) => {
     const { participantID, maxHealth, maxShield } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
     const [health, setHealth] = useState<number>(warMachine.health)
@@ -26,6 +28,22 @@ export const HealthShieldBars = ({ type = "horizontal", warMachine }: { type?: "
         })
     }, [participantID, state, subscribeWarMachineStatNetMessage])
 
+    return <HealthShieldBarsInner type={type} health={health} healthPercent={healthPercent} shieldPercent={shieldPercent} maxHealth={maxHealth} />
+}
+
+const HealthShieldBarsInner = ({
+    type,
+    health,
+    healthPercent,
+    shieldPercent,
+    maxHealth,
+}: {
+    type: LayoutType
+    health: number
+    healthPercent: number
+    shieldPercent: number
+    maxHealth: number
+}) => {
     if (type == "vertical") {
         return (
             <Box style={{ position: "relative", opacity: 0.8, width: "100%", height: "100%" }}>

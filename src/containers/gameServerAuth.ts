@@ -31,7 +31,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const [punishments, setPunishments] = useState<PunishListItem[]>()
     const activeInterval = useRef<NodeJS.Timer>()
 
-    const userID = user?.id
+    const userID = user?.faction.id
     const factionID = user?.faction_id
 
     const [userStat, setUserStat] = useState<UserStat>({
