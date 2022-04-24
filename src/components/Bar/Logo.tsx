@@ -1,10 +1,10 @@
 import { Box, Divider, Link, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import React, { useState } from "react"
 import { SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
 import { PASSPORT_WEB, SUPREMACY_PAGE, VERSION } from "../../constants"
 import { colors } from "../../theme/theme"
 
-export const Logo = () => {
+export const Logo = React.memo(function Logo() {
     const [text, setText] = useState<string>("EARLY ACCESS")
 
     return (
@@ -18,7 +18,7 @@ export const Logo = () => {
             </Link>
             <Box
                 onMouseEnter={() => {
-                    setText(`${VERSION.substring(0, 9)}...`)
+                    setText(`${VERSION.substring(0, 10)}...`)
                 }}
                 onMouseLeave={() => {
                     setText("EARLY ACCESS")
@@ -45,4 +45,4 @@ export const Logo = () => {
             </Box>
         </Stack>
     )
-}
+})

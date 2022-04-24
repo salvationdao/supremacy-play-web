@@ -37,12 +37,12 @@ import {
 const SPAWN_TEST_NOTIFICATIONS = false
 
 /*
-WAR_MACHINE_DESTROYED: when a war machine is destroyed
-LOCATION_SELECTING: user is choosing a target location on map
-BATTLE_ABILITY: when a faction has initiated a battle ability
-FACTION_ABILITY: when a faction has initiated a faction ability
-WARMACHINE_ABILITY: when a faction has initiated a war machine ability
-TEXT: generic notification with no styles, just text
+    WAR_MACHINE_DESTROYED: when a war machine is destroyed
+    LOCATION_SELECTING: user is choosing a target location on map
+    BATTLE_ABILITY: when a faction has initiated a battle ability
+    FACTION_ABILITY: when a faction has initiated a faction ability
+    WARMACHINE_ABILITY: when a faction has initiated a war machine ability
+    TEXT: generic notification with no styles, just text
 */
 
 type NotificationType = "TEXT" | "LOCATION_SELECT" | "BATTLE_ABILITY" | "FACTION_ABILITY" | "WAR_MACHINE_ABILITY" | "WAR_MACHINE_DESTROYED"
@@ -57,7 +57,6 @@ export const Notifications = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
     const { setForceDisplay100Percentage } = useGame()
-    const theme = useTheme<Theme>()
     const {
         gameUIDimensions: { height },
     } = useDimension()
@@ -207,6 +206,12 @@ export const Notifications = () => {
                 }),
         [notifications],
     )
+
+    return <NotificationsInner height={height} notificationsJsx={notificationsJsx} />
+}
+
+const NotificationsInner = ({ height, notificationsJsx }: { height: number; notificationsJsx: (JSX.Element | undefined | null)[] }) => {
+    const theme = useTheme<Theme>()
 
     return (
         <Stack

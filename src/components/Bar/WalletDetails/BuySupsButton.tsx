@@ -40,13 +40,13 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
         return ""
     }, [isFreeSupsEnabled, timeTilNextClaim])
 
-    const openBuySupsPage = () => {
+    const openBuySupsPage = useCallback(() => {
         const width = 520
         const height = 690
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
         window.open(TOKEN_SALE_PAGE, "SUPS Token Sale", `width=${width},height=${height},left=${left},top=${top},popup=1`)
-    }
+    }, [])
 
     return (
         <TooltipHelper placement="bottom" text={tooltipText}>

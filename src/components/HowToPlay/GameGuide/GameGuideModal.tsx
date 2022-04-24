@@ -91,6 +91,8 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
         return () => clearTimeout(timeout)
     }, [])
 
+    if (closed) return null
+
     return (
         <Modal open={!closed} onClose={() => toggleClosed(true)}>
             <Stack

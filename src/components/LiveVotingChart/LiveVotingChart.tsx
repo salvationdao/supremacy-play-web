@@ -14,28 +14,10 @@ import { BattleStats } from "../BattleStats/BattleStats"
 const DefaultMaxLiveVotingDataLength = 100
 
 export const LiveVotingChart = () => {
-    const { isLiveChartOpen } = useOverlayToggles()
-    const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
-
-    // A little timeout so fade transition can play
-    useEffect(() => {
-        if (isLiveChartOpen) return toggleIsRender(true)
-        const timeout = setTimeout(() => {
-            toggleIsRender(false)
-        }, 250)
-
-        return () => clearTimeout(timeout)
-    }, [isLiveChartOpen])
-
-    if (!isRender) return null
-
-    return <Content />
-}
-
-const Content = () => {
     const theme = useTheme<Theme>()
     const { state, subscribe } = useGameServerWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
+    const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
     const [curWidth, setCurWidth] = useState(0)
     const [curHeight, setCurHeight] = useState(0)
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
@@ -53,6 +35,16 @@ const Content = () => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe(GameServerKeys.TriggerLiveVoteCountUpdated, () => null, null)
     }, [state, subscribe])
+
+    // A little timeout so fade transition can play
+    useEffect(() => {
+        if (isLiveChartOpen) return toggleIsRender(true)
+        const timeout = setTimeout(() => {
+            toggleIsRender(false)
+        }, 250)
+
+        return () => clearTimeout(timeout)
+    }, [isLiveChartOpen])
 
     const onResize = useCallback((width: number, height: number) => {
         setCurWidth(width)
@@ -88,6 +80,8 @@ const Content = () => {
         }),
         [onResize],
     )
+
+    if (!isRender) return null
 
     return (
         <Fade in={isLiveChartOpen}>

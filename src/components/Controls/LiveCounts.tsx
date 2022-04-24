@@ -20,18 +20,9 @@ const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; to
 
 export const LiveCounts = () => {
     const { factionsAll } = useSupremacy()
-    const { state, subscribe, subscribeNetMessage } = useGameServerWebsocket()
-
-    return <LiveCountsInner factionsAll={factionsAll} state={state} subscribe={subscribe} subscribeNetMessage={subscribeNetMessage} />
-}
-
-interface LiveCountsProps extends Partial<WebSocketProperties> {
-    factionsAll?: FactionsAll
-}
-
-export const LiveCountsInner = ({ factionsAll, subscribe, state }: LiveCountsProps) => {
-    const [viewers, setViewers] = useState<ViewerLiveCount>()
+    const { state, subscribe } = useGameServerWebsocket()
     const { userID } = useGameServerAuth()
+    const [viewers, setViewers] = useState<ViewerLiveCount>()
 
     // Triggered live viewer count tick
     useEffect(() => {
@@ -46,6 +37,15 @@ export const LiveCountsInner = ({ factionsAll, subscribe, state }: LiveCountsPro
         )
     }, [state, subscribe, userID])
 
+    return <LiveCountsInner factionsAll={factionsAll} viewers={viewers} />
+}
+
+interface InnerProps extends Partial<WebSocketProperties> {
+    factionsAll?: FactionsAll
+    viewers?: ViewerLiveCount
+}
+
+export const LiveCountsInner = ({ factionsAll, viewers }: InnerProps) => {
     if (!viewers || !factionsAll) return null
 
     return (

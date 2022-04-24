@@ -13,7 +13,7 @@ interface ContibutorAmountProps {
     showContributionTotal?: boolean
 }
 
-export const ContributorAmount = ({ showContributionTotal, showContributorAmount }: ContibutorAmountProps) => {
+export const ContributorAmount = (props: ContibutorAmountProps) => {
     const { battleEndDetail } = useGame()
     const { state, subscribe } = useGameServerWebsocket()
     const [contributor, setContributor] = useDebounce(0, 350)
@@ -50,6 +50,15 @@ export const ContributorAmount = ({ showContributionTotal, showContributorAmount
         setContributor(0)
     }, [battleEndDetail])
 
+    return <ContributorAmountInner rate={rate} contributor={contributor} {...props} />
+}
+
+interface InnerProps extends ContibutorAmountProps {
+    contributor: number
+    rate: number
+}
+
+const ContributorAmountInner = ({ rate, contributor, showContributionTotal, showContributorAmount }: InnerProps) => {
     return (
         <>
             {showContributionTotal && (

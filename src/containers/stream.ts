@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
-import { useToggle } from "../hooks"
+import { useDebounce, useToggle } from "../hooks"
 import { Stream } from "../types"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useGameServerWebsocket, useSnackbar } from "."
@@ -85,9 +85,9 @@ export const StreamContainer = createContainer(() => {
     const [currentStream, setCurrentStream] = useState<Stream>()
 
     // volume
-    const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
+    const [volume, setVolume] = useDebounce(parseString(localStorage.getItem("streamVolume"), 0.3), 300)
     const [isMute, toggleIsMute] = useToggle(localStorage.getItem("isMute") == "true")
-    const [musicVolume, setMusicVolume] = useState(parseString(localStorage.getItem("musicVolume"), 0.3))
+    const [musicVolume, setMusicVolume] = useDebounce(parseString(localStorage.getItem("musicVolume"), 0.3), 300)
     const [isMusicMute, toggleIsMusicMute] = useToggle(localStorage.getItem("isMusicMute") == "true")
 
     // resolution

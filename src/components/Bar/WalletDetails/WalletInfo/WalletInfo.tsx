@@ -1,6 +1,6 @@
 import { CircularProgress, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useRef, useState } from "react"
+import { MutableRefObject, useEffect, useRef, useState } from "react"
 import { SvgSupToken } from "../../../../assets"
 import { NullUUID } from "../../../../constants"
 import { usePassportServerAuth, usePassportServerWebsocket, useWallet } from "../../../../containers"
@@ -8,7 +8,7 @@ import { supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { PassportServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { Transaction } from "../../../../types/passport"
+import { Transaction, UserData } from "../../../../types/passport"
 import { WalletPopover } from "./WalletPopover"
 
 export const WalletInfo = () => {
@@ -16,8 +16,6 @@ export const WalletInfo = () => {
     const { user, userID } = usePassportServerAuth()
     const { state, subscribe } = usePassportServerWebsocket()
     const startTime = useRef(new Date())
-    const walletPopoverRef = useRef(null)
-    const [isWalletPopoverOpen, toggleIsWalletPopoverOpen] = useToggle()
     // Transactions
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const [latestTransaction, setLatestTransaction] = useState<Transaction[]>([])
@@ -64,6 +62,39 @@ export const WalletInfo = () => {
         // Append the latest transaction into list
         setTransactions([...latestTransaction, ...transactions].slice(0, 30))
     }, [latestTransaction, userID])
+
+    return (
+        <WalletInfoInner
+            onWorldSupsRaw={onWorldSupsRaw}
+            startTime={startTime}
+            user={user}
+            userID={userID}
+            transactions={transactions}
+            supsSpent={supsSpent}
+            supsEarned={supsEarned}
+        />
+    )
+}
+
+const WalletInfoInner = ({
+    onWorldSupsRaw,
+    startTime,
+    user,
+    userID,
+    transactions,
+    supsSpent,
+    supsEarned,
+}: {
+    onWorldSupsRaw: string
+    startTime: MutableRefObject<Date>
+    user?: UserData
+    userID?: string
+    transactions: Transaction[]
+    supsSpent: MutableRefObject<BigNumber>
+    supsEarned: MutableRefObject<BigNumber>
+}) => {
+    const walletPopoverRef = useRef(null)
+    const [isWalletPopoverOpen, toggleIsWalletPopoverOpen] = useToggle()
 
     if (!onWorldSupsRaw) {
         return (

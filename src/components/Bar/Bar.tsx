@@ -40,6 +40,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
 
 export const Bar = () => {
     const { user } = usePassportServerAuth()
+
     return (
         <BarProvider>
             <Stack

@@ -23,6 +23,10 @@ export const SpoilOfWarAmount = () => {
         })
     }, [state, subscribeNetMessage])
 
+    return <SpoilOfWarAmountInner spoilOfWarAmount={spoilOfWarAmount} nextSpoilOfWarAmount={nextSpoilOfWarAmount} />
+}
+
+const SpoilOfWarAmountInner = ({ spoilOfWarAmount, nextSpoilOfWarAmount }: { spoilOfWarAmount: string; nextSpoilOfWarAmount: string }) => {
     return (
         <>
             <TooltipHelper text="This is the spoils of war accumulated in the current battle.">

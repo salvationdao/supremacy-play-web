@@ -5,7 +5,7 @@ import { getMutiplierDeets } from "../../../../helpers"
 import { Multiplier } from "../../../../types"
 
 export const MultiplierItem = ({ multiplier }: { multiplier: Multiplier }) => {
-    const multiplierDeets = useMemo(() => getMutiplierDeets(multiplier.key), [multiplier])
+    const multiplierDeets = useMemo(() => getMutiplierDeets(multiplier.key), [multiplier.key])
 
     return (
         <Stack direction="row" alignItems="center">
