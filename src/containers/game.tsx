@@ -32,7 +32,7 @@ export interface FactionsAll {
 export const GameContainer = createContainer(() => {
     const { setBattleIdentifier } = useSupremacy()
     const { state, send, subscribe } = useGameServerWebsocket()
-    const { faction_id, userID } = useGameServerAuth()
+    const { factionID, userID } = useGameServerAuth()
 
     // States
     const [map, setMap] = useState<Map>()
@@ -79,7 +79,7 @@ export const GameContainer = createContainer(() => {
 
     // Subscirbe on current voting state
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe<BribeStageResponse | undefined>(
             GameServerKeys.SubBribeStageUpdated,
             (payload) => {
@@ -90,11 +90,11 @@ export const GameContainer = createContainer(() => {
             },
             null,
         )
-    }, [state, subscribe, faction_id])
+    }, [state, subscribe, factionID])
 
     // Subscribe on winner announcements
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe<WinnerAnnouncementResponse | undefined>(
             GameServerKeys.SubBribeWinnerAnnouncement,
             (payload) => {
@@ -113,7 +113,7 @@ export const GameContainer = createContainer(() => {
             },
             null,
         )
-    }, [state, subscribe, faction_id])
+    }, [state, subscribe, factionID])
 
     // Subscribe to spawned AI events
     useEffect(() => {

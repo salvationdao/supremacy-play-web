@@ -22,39 +22,6 @@ import { colors } from "../theme/theme"
 import { SupBackground } from "../assets"
 import { TutorialModal } from "../components/Tutorial/TutorialModal"
 
-const BattleArenaPageInner = () => {
-    const { state } = useGameServerWebsocket()
-    const { user } = useGameServerAuth()
-    const [haveSups, toggleHaveSups] = useToggle(true)
-
-    return (
-        <>
-            <Stack sx={{ height: "100%" }}>
-                <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
-                    {state === WebSocket.OPEN && user && haveSups ? (
-                        <>
-                            <Stream />
-                            <VotingSystem />
-                            <MiniMap />
-                            <Notifications />
-                            <LiveVotingChart />
-                            <WarMachineStats />
-                            <BattleEndScreen />
-                            <BattleHistory />
-                        </>
-                    ) : (
-                        <NoGameUIScreen haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
-                    )}
-                </Box>
-
-                <Controls />
-            </Stack>
-
-            <NoSupsModal haveSups={haveSups} />
-            <TutorialModal />
-        </>
-    )
-}
 export const BattleArenaPage = () => {
     const tourProviderProps = useMemo(
         () => ({
@@ -87,6 +54,40 @@ export const BattleArenaPage = () => {
                 </TourProvider>
             </GameProvider>
         </StreamProvider>
+    )
+}
+
+const BattleArenaPageInner = () => {
+    const { state } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
+    const [haveSups, toggleHaveSups] = useToggle(true)
+
+    return (
+        <>
+            <Stack sx={{ height: "100%" }}>
+                <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
+                    {state === WebSocket.OPEN && user && haveSups ? (
+                        <>
+                            <Stream />
+                            <VotingSystem />
+                            <MiniMap />
+                            <Notifications />
+                            <LiveVotingChart />
+                            <WarMachineStats />
+                            <BattleEndScreen />
+                            <BattleHistory />
+                        </>
+                    ) : (
+                        <NoGameUIScreen haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
+                    )}
+                </Box>
+
+                <Controls />
+            </Stack>
+
+            <NoSupsModal haveSups={haveSups} />
+            <TutorialModal />
+        </>
     )
 }
 

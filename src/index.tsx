@@ -35,6 +35,64 @@ if (SENTRY_CONFIG) {
     })
 }
 
+const App = () => {
+    const [currentTheme, setTheme] = useState<Theme>(theme)
+    const [factionColors, setFactionColors] = useState<FactionThemeColor>({
+        primary: "#00FFFF",
+        secondary: "#00FFFF",
+        background: "#050c12",
+    })
+
+    const [authLogin, setAuthLoginX] = useState<User | null>(null)
+    const [passLogin, setPassLoginX] = useState<UserData | null>(null)
+
+    const setAuthLogin = useMemo(() => {
+        return (u: User) => {
+            if (!authLogin && u) {
+                setAuthLoginX(u)
+            }
+        }
+    }, [authLogin])
+
+    const setPassLogin = useMemo(() => {
+        return (u: UserData) => {
+            if (!passLogin && u) {
+                setPassLoginX(u)
+            }
+        }
+    }, [passLogin])
+
+    useEffect(() => {
+        setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
+    }, [factionColors])
+
+    return (
+        <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
+            <ThemeProvider theme={currentTheme}>
+                <SnackBarProvider>
+                    <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login: passLogin }}>
+                        <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
+                            <GameServerSocketProvider initialState={{ login: authLogin }}>
+                                <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
+                                    <SupremacyProvider>
+                                        <WalletProvider>
+                                            <RightDrawerProvider>
+                                                <BrowserRouter>
+                                                    <AppInner />
+                                                </BrowserRouter>
+                                            </RightDrawerProvider>
+                                        </WalletProvider>
+                                    </SupremacyProvider>
+                                </GameServerAuthProvider>
+                            </GameServerSocketProvider>
+                        </PassportServerAuthProvider>
+                    </PassportServerSocketProvider>
+                </SnackBarProvider>
+            </ThemeProvider>
+        </UpdateTheme.Provider>
+    )
+}
+
 const AppInner = () => {
     const { isServerUp } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
@@ -98,64 +156,6 @@ const AppInner = () => {
 
             <GlobalSnackbar />
         </>
-    )
-}
-
-const App = () => {
-    const [currentTheme, setTheme] = useState<Theme>(theme)
-    const [factionColors, setFactionColors] = useState<FactionThemeColor>({
-        primary: "#00FFFF",
-        secondary: "#00FFFF",
-        background: "#050c12",
-    })
-
-    const [authLogin, setAuthLoginX] = useState<User | null>(null)
-    const [passLogin, setPassLoginX] = useState<UserData | null>(null)
-
-    const setAuthLogin = useMemo(() => {
-        return (u: User) => {
-            if (!authLogin && u) {
-                setAuthLoginX(u)
-            }
-        }
-    }, [authLogin])
-
-    const setPassLogin = useMemo(() => {
-        return (u: UserData) => {
-            if (!passLogin && u) {
-                setPassLoginX(u)
-            }
-        }
-    }, [passLogin])
-
-    useEffect(() => {
-        setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
-    }, [factionColors])
-
-    return (
-        <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
-            <ThemeProvider theme={currentTheme}>
-                <SnackBarProvider>
-                    <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login: passLogin }}>
-                        <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
-                            <GameServerSocketProvider initialState={{ login: authLogin }}>
-                                <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
-                                    <SupremacyProvider>
-                                        <WalletProvider>
-                                            <RightDrawerProvider>
-                                                <BrowserRouter>
-                                                    <AppInner />
-                                                </BrowserRouter>
-                                            </RightDrawerProvider>
-                                        </WalletProvider>
-                                    </SupremacyProvider>
-                                </GameServerAuthProvider>
-                            </GameServerSocketProvider>
-                        </PassportServerAuthProvider>
-                    </PassportServerSocketProvider>
-                </SnackBarProvider>
-            </ThemeProvider>
-        </UpdateTheme.Provider>
     )
 }
 
