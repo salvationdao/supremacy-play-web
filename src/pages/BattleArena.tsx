@@ -52,7 +52,7 @@ export const BattleArenaPage: React.VoidFunctionComponent = () => {
                     )}
                 </>
             )}
-            <Music />
+            {process.env.NODE_ENV === "development" && <Music />}
             <Controls />
         </>
     )

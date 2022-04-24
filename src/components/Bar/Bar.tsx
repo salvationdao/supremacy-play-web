@@ -19,7 +19,7 @@ const BarContent = () => {
 
     useEffect(() => {
         if (gsState !== SocketState.OPEN || !gsSubscribe || !user) return
-
+        if (process.env.NODE_ENV !== "development") return
         return gsSubscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => newSnackbarMessage("Player abilities market has been refreshed.", "info"))
     }, [gsState, gsSubscribe, user])
 

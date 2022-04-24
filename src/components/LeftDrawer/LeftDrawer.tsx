@@ -18,8 +18,8 @@ const LEFT_DRAWER_TABS = [
         path: RoutePaths.BattleArena,
     },
     {
-        label: TabLabels.Hanger,
-        path: RoutePaths.Hanger,
+        label: TabLabels.Hangar,
+        path: RoutePaths.Hangar,
     },
     {
         label: TabLabels.Marketplace,
