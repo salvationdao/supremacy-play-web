@@ -38,9 +38,11 @@ export const MiniMap = () => {
     // A little timeout so fade transition can play
     useEffect(() => {
         if (isMapOpen) return toggleIsRender(true)
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             toggleIsRender(false)
         }, 250)
+
+        return () => clearTimeout(timeout)
     }, [isMapOpen])
 
     useEffect(() => {

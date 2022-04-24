@@ -530,9 +530,11 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
     // copy shortcode
     useEffect(() => {
         if (copySuccess) {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 toggleCopySuccess(false)
             }, 900)
+
+            return () => clearTimeout(timeout)
         }
     }, [copySuccess])
 

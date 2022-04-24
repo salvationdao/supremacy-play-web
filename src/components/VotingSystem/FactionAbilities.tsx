@@ -14,13 +14,13 @@ export const FactionAbilities = () => {
     const theme = useTheme<Theme>()
     const { factionsAll } = useSupremacy()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
-    const { user, faction_id } = useGameServerAuth()
+    const { user, factionID } = useGameServerAuth()
 
     // Subscribe to faction ability updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !faction_id || faction_id === NullUUID) return
+        if (state !== WebSocket.OPEN || !factionID || factionID === NullUUID) return
         return subscribe<GameAbility[] | undefined>(GameServerKeys.SubFactionUniqueAbilities, (payload) => setGameAbilities(payload), null)
-    }, [subscribe, state, faction_id])
+    }, [subscribe, state, factionID])
 
     if (!gameAbilities || gameAbilities.length <= 0) return null
 

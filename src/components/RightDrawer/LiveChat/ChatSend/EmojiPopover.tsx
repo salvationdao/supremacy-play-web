@@ -18,9 +18,11 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
 
     useEffect(() => {
         if (!localOpen) {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 toggleIsEmojiOpen(false)
             }, 300)
+
+            return () => clearTimeout(timeout)
         }
     }, [localOpen])
 

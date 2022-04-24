@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import BigNumber from "bignumber.js"
-import { usePassportServerSecureSubscription } from "../hooks"
 import { PassportServerKeys } from "../keys"
+import { usePassportServerWebsocket } from "./passportServerSocket"
+import { usePassportServerAuth } from "./passportServerAuth"
 
 export const WalletContainer = createContainer(() => {
-    const { payload: sups } = usePassportServerSecureSubscription<string>(PassportServerKeys.SubscribeWallet)
+    const { state, subscribe } = usePassportServerWebsocket()
+    const { user } = usePassportServerAuth()
     const [onWorldSupsRaw, setOnWorldSupsRaw] = useState<string>("")
     const [onWorldSups, setOnworldSups] = useState<BigNumber | undefined>()
 
-    // Set the sups amount
     useEffect(() => {
-        if (!sups) return
-        setOnWorldSupsRaw(sups)
-    }, [sups, setOnWorldSupsRaw])
-
-    // Sup tokens
-    useEffect(() => {
-        if (!onWorldSupsRaw) return
-        setOnworldSups(new BigNumber(onWorldSupsRaw))
-    }, [onWorldSupsRaw])
+        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        return subscribe<string>(PassportServerKeys.SubscribeWallet, (payload) => {
+            if (!payload) return
+            setOnWorldSupsRaw(payload)
+            setOnworldSups(new BigNumber(onWorldSupsRaw))
+        })
+    }, [state, subscribe, user])
 
     return {
         onWorldSups,

@@ -52,9 +52,11 @@ const SettingsPopover = ({
 
     useEffect(() => {
         if (!localOpen) {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 onClose()
             }, 300)
+
+            return () => clearTimeout(timeout)
         }
     }, [localOpen])
 

@@ -166,9 +166,17 @@ const MiniMapInsideInner = ({
     // --------------- Minimap - useGesture setup -------------------
     // Prevents map zooming from interfering with the browsers' accessibility zoom
     useEffect(() => {
-        document.addEventListener("gesturestart", (e) => e.preventDefault())
-        document.addEventListener("gesturechange", (e) => e.preventDefault())
-        document.addEventListener("gestureend", (e) => e.preventDefault())
+        const callback: EventListenerOrEventListenerObject = (e) => e.preventDefault()
+
+        document.addEventListener("gesturestart", callback)
+        document.addEventListener("gesturechange", callback)
+        document.addEventListener("gestureend", callback)
+
+        return () => {
+            document.removeEventListener("gesturestart", callback)
+            document.removeEventListener("gesturechange", callback)
+            document.removeEventListener("gestureend", callback)
+        }
     }, [])
 
     // Setup map drag

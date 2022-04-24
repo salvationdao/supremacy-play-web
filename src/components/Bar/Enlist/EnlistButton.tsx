@@ -20,6 +20,7 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
     return (
         <>
             <Button
+                onClick={() => togglePopoverOpen(true)}
                 sx={{
                     position: "relative",
                     display: "flex",
@@ -34,7 +35,6 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                         backgroundColor: `${primary || "#FFFFFF"} !important`,
                     },
                 }}
-                onClick={() => togglePopoverOpen()}
             >
                 <Box sx={{ position: "absolute", left: "50%", bottom: "-2.1rem" }} ref={popoverRef} />
 
@@ -54,13 +54,7 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
             </Button>
 
             {popoverOpen && (
-                <EnlistDetailsPopover
-                    popoverRef={popoverRef}
-                    popoverOpen={popoverOpen}
-                    togglePopoverOpen={togglePopoverOpen}
-                    faction_id={id}
-                    factionData={faction}
-                />
+                <EnlistDetailsPopover popoverRef={popoverRef} open={popoverOpen} onClose={() => togglePopoverOpen(false)} faction_id={id} faction={faction} />
             )}
         </>
     )

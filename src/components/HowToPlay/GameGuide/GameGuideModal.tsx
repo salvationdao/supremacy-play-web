@@ -84,9 +84,11 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
     const [showSkeleton, toggleShowSkeleton] = useToggle(true)
 
     useEffect(() => {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             toggleShowSkeleton(false)
         }, 1000)
+
+        return () => clearTimeout(timeout)
     }, [])
 
     return (

@@ -3,14 +3,25 @@ import { Box, Button, Dialog, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { useTour } from "@reactour/tour"
 import { usePassportServerAuth } from "../../../containers"
-import { PASSPORT_WEB } from "../../../constants"
+import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_WEB } from "../../../constants"
 import { colors } from "../../../theme/theme"
+import { useToggle } from "../../../hooks"
 
-export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
+export const ConnectButton = () => {
     const [isProcessing, setIsProcessing] = useState(false)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const { sessionID, authRingCheckError, setAuthRingCheckError } = usePassportServerAuth()
+    const [renderConnectButton, toggleRenderConnectButton] = useToggle()
     const { setIsOpen } = useTour()
+
+    // Don't show the connect button for couple seconds as it tries to do the auto login
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            toggleRenderConnectButton(true)
+        }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS)
+
+        return () => clearTimeout(timeout)
+    }, [])
 
     const href = useMemo(() => `${PASSPORT_WEB}nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`, [sessionID])
 
@@ -18,17 +29,17 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
     useEffect(() => {
         if (!passportPopup) return
 
-        const popupCheckTimer = setInterval(() => {
+        const popupCheckInterval = setInterval(() => {
             if (!passportPopup) return
 
             if (passportPopup.closed) {
-                popupCheckTimer && clearInterval(popupCheckTimer)
+                popupCheckInterval && clearInterval(popupCheckInterval)
                 setIsProcessing(false)
                 setPassportPopup(null)
             }
         }, 1000)
 
-        return () => clearInterval(popupCheckTimer)
+        return () => clearInterval(popupCheckInterval)
     }, [passportPopup])
 
     // Open iframe to passport web to login
@@ -53,7 +64,7 @@ export const ConnectButton = ({ renderButton }: { renderButton: boolean }) => {
 
     return (
         <>
-            {renderButton ? (
+            {renderConnectButton ? (
                 <Button
                     id="tutorial-connect"
                     sx={{

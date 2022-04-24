@@ -17,17 +17,9 @@ interface BattleAbilityProgressBigNum {
     current_sups: BigNumber
 }
 
-// interface BattleAbilityItemProps extends Partial<WebSocketProperties> {
-//     bribeStage?: BribeStageResponse
-//     user?: User
-//     faction_id?: string
-//     factionsAll: FactionsAll
-//     forceDisplay100Percentage: string
-// }
-
 export const BattleAbilityItem = () => {
     const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
-    const { user, faction_id } = useGameServerAuth()
+    const { user, factionID } = useGameServerAuth()
     const { bribeStage, forceDisplay100Percentage } = useGame()
     const { factionsAll } = useSupremacy()
 
@@ -39,7 +31,7 @@ export const BattleAbilityItem = () => {
 
     // Subscribe to battle ability updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe<BattleAbilityType>(
             GameServerKeys.SubBattleAbility,
             (payload) => {
@@ -48,13 +40,13 @@ export const BattleAbilityItem = () => {
             },
             null,
         )
-    }, [state, subscribe, faction_id])
+    }, [state, subscribe, factionID])
 
     // DO NOT REMOVE THIS! Trigger the subscribe to the progress bars net message
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
         return subscribe(GameServerKeys.TriggerBattleAbilityProgressUpdated, () => null, null)
-    }, [state, subscribe, faction_id])
+    }, [state, subscribe, factionID])
 
     // Listen on the progress of the votes
     useEffect(() => {
@@ -97,7 +89,7 @@ export const BattleAbilityItem = () => {
             if (!battleAbility) return
             setBattleAbilityProgress((baps) => {
                 return baps.map((bap) => {
-                    if (bap.faction_id === faction_id) {
+                    if (bap.faction_id === factionID) {
                         return { ...bap, amount: amount.plus(bap.current_sups) }
                     }
                     return bap
@@ -147,7 +139,7 @@ export const BattleAbilityItem = () => {
             isVoting={isVoting}
             fadeEffect={fadeEffect}
             factionsAll={factionsAll}
-            currentFactionID={faction_id}
+            currentFactionID={factionID}
             colour={colour}
             description={description}
             forceDisplay100Percentage={forceDisplay100Percentage}

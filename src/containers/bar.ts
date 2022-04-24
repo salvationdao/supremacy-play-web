@@ -24,7 +24,7 @@ export const BarContainer = createContainer(() => {
 
     useEffect(() => {
         // This waits for the transition to occur before calculating the responsive stuff
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             if (below500) {
                 setActiveBars({
                     enlist: false,
@@ -63,6 +63,8 @@ export const BarContainer = createContainer(() => {
                 })
             }
         }, DRAWER_TRANSITION_DURATION + 50)
+
+        return () => clearTimeout(timeout)
     }, [below500, below692, below792, below1250, below1400])
 
     // Make sure that the bar is limited to only 1, 2, or 3 things expanded at the same time, depending on screen size

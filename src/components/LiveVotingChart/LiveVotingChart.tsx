@@ -20,9 +20,11 @@ export const LiveVotingChart = () => {
     // A little timeout so fade transition can play
     useEffect(() => {
         if (isLiveChartOpen) return toggleIsRender(true)
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             toggleIsRender(false)
         }, 250)
+
+        return () => clearTimeout(timeout)
     }, [isLiveChartOpen])
 
     if (!isRender) return null

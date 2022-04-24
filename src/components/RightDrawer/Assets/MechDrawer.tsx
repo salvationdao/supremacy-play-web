@@ -111,9 +111,11 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
     // This allows the drawer transition to happen before we unmount it
     useEffect(() => {
         if (!localOpen) {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 onClose()
             }, DRAWER_TRANSITION_DURATION + 50)
+
+            return () => clearTimeout(timeout)
         }
     }, [localOpen])
 

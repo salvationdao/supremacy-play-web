@@ -61,9 +61,7 @@ export const Music = () => {
             loop: true,
         })
 
-        return () => {
-            Howler.stop()
-        }
+        return () => Howler.stop()
     }, [])
 
     useEffect(() => {

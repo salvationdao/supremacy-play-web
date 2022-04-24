@@ -8,9 +8,11 @@ export const TimeElapsed = ({ startTime }: { startTime: Date }) => {
     const [seconds, setSeconds] = useState<number>()
 
     useEffect(() => {
-        setInterval(() => {
+        const interval = setInterval(() => {
             setElapsedTime((s) => s + 1)
         }, 1000)
+
+        return () => clearInterval(interval)
     }, [])
 
     useEffect(() => {

@@ -1,12 +1,16 @@
 import { Box, Slide } from "@mui/material"
 import { ReactElement, useEffect } from "react"
-import { useDebounce } from "../../hooks"
+import { useToggle } from "../../hooks"
 
 export const NotificationItem = ({ duration, children }: { duration: number; children: ReactElement }) => {
-    const [isShowing, setIsShowing] = useDebounce<boolean>(true, duration)
+    const [isShowing, toggleIsShowing] = useToggle(true)
 
     useEffect(() => {
-        setIsShowing(false)
+        const timeout = setTimeout(() => {
+            toggleIsShowing(false)
+        }, duration)
+
+        return () => clearTimeout(timeout)
     }, [])
 
     return (

@@ -59,9 +59,11 @@ export const BanProposal = () => {
     // When out of time, give inner some time to animate, then stop render
     useEffect(() => {
         if (outOfTime) {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 toggleRender(false)
             }, 250)
+
+            return () => clearTimeout(timeout)
         }
     }, [outOfTime])
 
