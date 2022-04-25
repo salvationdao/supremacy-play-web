@@ -46,7 +46,7 @@ export const WarMachineStats = () => {
                     position: "absolute",
                     bottom: 0,
                     left: 0,
-                    right: isMapOpen ? `calc(${MINI_MAP_DEFAULT_SIZE * adjustment}px + 1.5rem)` : 0,
+                    right: isMapOpen ? `calc(${MINI_MAP_DEFAULT_SIZE * adjustment}px + 2rem)` : 0,
                     zIndex: 13,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",
@@ -58,15 +58,15 @@ export const WarMachineStats = () => {
                         clipSlantSize="26px"
                         skipLeft
                         sx={{
-                            pl: ".96rem",
-                            pr: "1.6rem",
+                            pl: ".5rem",
+                            pr: "1.2rem",
                             pt: "2rem",
                             pb: "1.6rem",
                             backgroundColor: `${theme.factionTheme.background}95`,
                         }}
                     >
                         <ScrollContainer>
-                            <Stack spacing="-3.2rem" direction="row" alignItems="center" justifyContent="center">
+                            <Stack spacing="-3.8rem" direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} shouldBeExpanded={false} />
                                 ))}
@@ -84,7 +84,7 @@ export const WarMachineStats = () => {
                                 alignItems="center"
                                 sx={{
                                     flex: 1,
-                                    ml: haveFactionMechs ? "-1.44rem" : 0,
+                                    ml: haveFactionMechs ? "-1.8rem" : 0,
                                     pb: haveFactionMechs ? 0 : ".48rem",
                                 }}
                             >
