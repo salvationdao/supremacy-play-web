@@ -9,7 +9,7 @@ export const WalletContainer = createContainer(() => {
     const { state, subscribe } = usePassportServerWebsocket()
     const { user } = usePassportServerAuth()
     const [onWorldSupsRaw, setOnWorldSupsRaw] = useState<string>("")
-    const [onWorldSups, setOnworldSups] = useState<BigNumber | undefined>()
+    const [onWorldSups, setOnworldSups] = useState<BigNumber>()
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe || !user) return

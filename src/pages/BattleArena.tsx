@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { TourProvider } from "@reactour/tour"
 import {
     BattleEndScreen,
@@ -17,7 +17,6 @@ import {
     WarMachineStats,
 } from "../components"
 import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useWallet } from "../containers"
-import { useToggle } from "../hooks"
 import { colors } from "../theme/theme"
 import { SupBackground } from "../assets"
 import { TutorialModal } from "../components/Tutorial/TutorialModal"
@@ -60,7 +59,7 @@ export const BattleArenaPage = () => {
 const BattleArenaPageInner = () => {
     const { state } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
-    const [haveSups, toggleHaveSups] = useToggle()
+    const [haveSups, toggleHaveSups] = useState<boolean>()
 
     return (
         <>
@@ -92,14 +91,14 @@ const BattleArenaPageInner = () => {
 }
 
 // Shows a generic poster and checks wallet for sups, and toggle have sups
-const NoGameUIScreen = ({ haveSups, toggleHaveSups }: { haveSups: boolean; toggleHaveSups: (value?: boolean) => void }) => {
+const NoGameUIScreen = ({ haveSups, toggleHaveSups }: { haveSups?: boolean; toggleHaveSups: (value?: boolean) => void }) => {
     const { onWorldSups } = useWallet()
     const firstIteration = useRef(true)
 
     useEffect(() => {
-        if (!onWorldSups) return
+        if (!onWorldSups || onWorldSups.isNaN()) return
 
-        const supsAboveZero = onWorldSups ? onWorldSups.isGreaterThan(0) : false
+        const supsAboveZero = onWorldSups.isGreaterThan(0)
 
         if (supsAboveZero && !haveSups) return toggleHaveSups(true)
         if (!supsAboveZero && haveSups) return toggleHaveSups(false)

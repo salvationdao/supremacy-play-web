@@ -7,12 +7,12 @@ import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
 import { usePassportServerAuth } from "../../containers"
 import { ClipThing } from ".."
 
-export const NoSupsModal = ({ haveSups, onAcknowledged }: { haveSups: boolean; onAcknowledged: () => void }) => {
+export const NoSupsModal = ({ haveSups, onAcknowledged }: { haveSups?: boolean; onAcknowledged: () => void }) => {
     const { user } = usePassportServerAuth()
     const [open, toggleOpen] = useToggle()
 
     useEffect(() => {
-        if (!haveSups) return toggleOpen(true)
+        if (haveSups === false) return toggleOpen(true)
         toggleOpen(false)
     }, [haveSups])
 
