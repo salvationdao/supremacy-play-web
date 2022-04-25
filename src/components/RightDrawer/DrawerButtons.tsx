@@ -45,7 +45,7 @@ export const DrawerButtons = ({
                 <TabButton
                     label="WAR ROOM"
                     value={RightDrawerPanels.LiveChat}
-                    icon={<SvgChat size="1rem" sx={{ pt: ".3rem" }} fill={activePanel === RightDrawerPanels.LiveChat ? secondaryColor : "#FFFFFF"} />}
+                    icon={<SvgChat size="1rem" sx={{ pt: ".3rem" }} />}
                     onClick={() => togglePanel(RightDrawerPanels.LiveChat)}
                     isActive={activePanel === RightDrawerPanels.LiveChat}
                     primaryColor={primaryColor}
@@ -67,7 +67,7 @@ export const DrawerButtons = ({
                 <TabButton
                     label="WAR MACHINES"
                     value={RightDrawerPanels.Assets}
-                    icon={<SvgRobot size="1.3rem" fill={activePanel === RightDrawerPanels.Assets ? secondaryColor : "#FFFFFF"} />}
+                    icon={<SvgRobot size="1.3rem" />}
                     onClick={() => togglePanel(RightDrawerPanels.Assets)}
                     isActive={activePanel === RightDrawerPanels.Assets}
                     primaryColor={primaryColor}
@@ -84,7 +84,6 @@ const TabButton = ({
     icon,
     isActive,
     primaryColor,
-    secondaryColor,
     onClick,
 }: {
     label: string
@@ -117,8 +116,8 @@ const TabButton = ({
                     fontFamily: "Nostromo Regular Bold",
                     fontSize: "1.1rem",
                     lineHeight: 1,
-                    color: isActive ? secondaryColor : "#FFFFFF",
-                    backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
+                    color: "#FFFFFF",
+                    backgroundColor: isActive ? `${primaryColor}60` : `${primaryColor}25`,
                     opacity: isActive ? 0.9 : 0.6,
                     transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,
                     ":hover": {

@@ -89,7 +89,6 @@ const TabButton = ({
     icon,
     isActive,
     primaryColor,
-    secondaryColor,
     onClick,
 }: {
     label: string
@@ -134,8 +133,8 @@ const TabButton = ({
                     fontFamily: "Nostromo Regular Bold",
                     fontSize: "1.1rem",
                     lineHeight: 1,
-                    color: isActive ? secondaryColor : "#FFFFFF",
-                    backgroundColor: enable ? (isActive ? primaryColor : `${primaryColor}50`) : `${primaryColor}20`,
+                    color: "#FFFFFF",
+                    backgroundColor: enable ? (isActive ? `${primaryColor}60` : `${primaryColor}25`) : `${primaryColor}20`,
                     opacity: isActive ? 0.9 : 0.6,
                     transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,
                     ":hover": {

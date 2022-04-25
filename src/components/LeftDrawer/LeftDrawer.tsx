@@ -113,10 +113,10 @@ const MenuButton = ({
                 py: "1.9rem",
                 justifyContent: "flex-start",
                 color: isActive ? secondaryColor : "#FFFFFF",
-                backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
+                backgroundColor: isActive ? primaryColor : `${primaryColor}30`,
                 borderRadius: 0,
                 borderBottom: `#FFFFFF20 2px solid`,
-                opacity: enable ? 1 : 0.5,
+                opacity: enable ? 1 : 0.6,
                 ":hover": {
                     backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
                 },
