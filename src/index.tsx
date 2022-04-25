@@ -138,6 +138,7 @@ const AppInner = () => {
                             position: "relative",
                             height: "100%",
                             backgroundColor: colors.darkNavy,
+                            overflow: "hidden",
                         }}
                     >
                         <LoadMessage />

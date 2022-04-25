@@ -1,11 +1,10 @@
-import { IconButton, Slider, Stack } from "@mui/material"
+import { IconButton, Slider, Stack, useTheme, Theme } from "@mui/material"
 import { useCallback } from "react"
 import { SvgFullscreen, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
-import { useGameServerAuth, useStream } from "../../containers"
-import { colors } from "../../theme/theme"
+import { useStream } from "../../containers"
 
 export const VideoPlayerControls = () => {
-    const { user } = useGameServerAuth()
+    const theme = useTheme<Theme>()
     const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useStream()
 
     const handleVolumeChange = useCallback((_: Event, newValue: number | number[]) => {
@@ -47,7 +46,7 @@ export const VideoPlayerControls = () => {
                         onChange={handleVolumeChange}
                         sx={{
                             ml: "1.2rem",
-                            color: user && user.faction ? user.faction.theme.primary : colors.neonBlue,
+                            color: theme.factionTheme.primary,
                         }}
                     />
                 </Stack>
@@ -67,7 +66,7 @@ export const VideoPlayerControls = () => {
                         onChange={handleMusicVolumeChange}
                         sx={{
                             ml: "1.2rem",
-                            color: user && user.faction ? user.faction.theme.primary : colors.neonBlue,
+                            color: theme.factionTheme.primary,
                         }}
                     />
                 </Stack>

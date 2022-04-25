@@ -97,6 +97,7 @@ const TabButton = ({
     return (
         <Box
             sx={{
+                flexShrink: 0,
                 position: "relative",
                 height: `${BUTTON_WIDTH}rem`,
                 width: `${DRAWER_BAR_WIDTH}rem`,

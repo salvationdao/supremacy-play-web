@@ -26,6 +26,7 @@ export const DrawerButtons = ({
     return (
         <Stack
             sx={{
+                flexShrink: 0,
                 position: "relative",
                 height: "100%",
                 overflow: "hidden",

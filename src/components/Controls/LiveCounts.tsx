@@ -8,16 +8,6 @@ import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { ViewerLiveCount } from "../../types"
 
-const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; tooltip: string }) => {
-    return (
-        <TooltipHelper text={tooltip} isCentered>
-            <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
-                {text}
-            </Typography>
-        </TooltipHelper>
-    )
-}
-
 export const LiveCounts = () => {
     const { factionsAll } = useSupremacy()
     const { state, subscribe } = useGameServerWebsocket()
@@ -66,5 +56,15 @@ export const LiveCountsInner = ({ factionsAll, viewers }: InnerProps) => {
                 <ReUsedText text={Math.abs(viewers.other).toFixed()} color={"grey !important"} tooltip="Not enlisted" />
             </Stack>
         </Stack>
+    )
+}
+
+const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; tooltip: string }) => {
+    return (
+        <TooltipHelper text={tooltip} isCentered>
+            <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
+                {text}
+            </Typography>
+        </TooltipHelper>
     )
 }
