@@ -5,9 +5,8 @@ import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter, Route, Redirect, Switch, useLocation } from "react-router-dom"
-import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning, tourStyles } from "./components"
-import { TutorialNextButton } from "./components/HowToPlay/Tutorial/TutorialNextButton"
-import { TutorialPrevButton } from "./components/HowToPlay/Tutorial/TutorialPrevButton"
+import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
+import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
@@ -76,11 +75,9 @@ const App = () => {
             children: <AppInner />,
             steps: [],
             styles: tourStyles,
-            nextButton: TutorialNextButton,
-            prevButton: TutorialPrevButton,
             showBadge: false,
-            disableKeyboardNavigation: true,
-            disableDotsNavigation: true,
+            disableKeyboardNavigation: false,
+            disableDotsNavigation: false,
             afterOpen: () => {
                 if (!localStorage.getItem("visited")) {
                     localStorage.setItem("visited", "1")

@@ -1,19 +1,19 @@
-import { Button, Stack, Typography } from "@mui/material"
+import { Box, Button, Typography } from "@mui/material"
 import { MaskStylesObj } from "@reactour/mask"
 import { PopoverStylesObj } from "@reactour/popover"
 import { StepType, useTour } from "@reactour/tour"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
 import { useEffect, useMemo } from "react"
-import { useBar, usePassportServerAuth, useSupremacy } from "../../../containers"
+import { RightDrawerPanels, useBar, usePassportServerAuth, useRightDrawer, useSupremacy } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { TutorialModal } from "./TutorialModal"
 
-export const Tutorial = () => {
+export const SetupTutorial = () => {
     const { user } = usePassportServerAuth()
     const { haveSups } = useSupremacy()
 
     const { setIsOpen, setSteps, setCurrentStep } = useTour()
     const { toggleActiveBar } = useBar()
+    const { activePanel, togglePanel } = useRightDrawer()
 
     // Only show if no user
     const preAuthSteps: StepType[] = useMemo(() => {
@@ -62,7 +62,7 @@ export const Tutorial = () => {
             },
             {
                 selector: "#tutorial-purchase",
-                content: "You are able to purchase more $SUPS directly from Supremacy here. These $SUPs will be available to you in your on-world wallet.",
+                content: "You can purchase more $SUPS directly from Supremacy here. These $SUPs will be available to you in your on-world wallet.",
                 action: () => {
                     toggleActiveBar("wallet", true)
                 },
@@ -90,7 +90,7 @@ export const Tutorial = () => {
                 position: "top",
             },
         ]
-    }, [user?.faction_id, toggleActiveBar])
+    }, [user?.faction_id])
 
     const resolutionSteps: StepType[] = useMemo(() => {
         return [
@@ -108,23 +108,43 @@ export const Tutorial = () => {
             {
                 selector: "#tutorial-chat",
                 content: "You can interact with other online players here.",
+                action: () => {
+                    if (activePanel !== RightDrawerPanels.LiveChat) {
+                        togglePanel(RightDrawerPanels.LiveChat, true)
+                    }
+                },
             },
             {
                 selector: ".tutorial-global-chat",
                 content: "Global Chat includes everyone from all factions.",
+                action: () => {
+                    if (activePanel !== RightDrawerPanels.LiveChat) {
+                        togglePanel(RightDrawerPanels.LiveChat, true)
+                    }
+                },
             },
             {
                 selector: ".tutorial-faction-chat",
                 content:
                     "Your sydicate chat only includes others that are apart of the same syndicate as you are. This is the best place to strategize your next move and coordinate attacks with your teammates.",
+                action: () => {
+                    if (activePanel !== RightDrawerPanels.LiveChat) {
+                        togglePanel(RightDrawerPanels.LiveChat, true)
+                    }
+                },
             },
             {
                 selector: "#tutorial-asset",
                 content:
                     "You'll find your mechs here, these can be purchased from Supremacy Store or on the Black Market (OpenSeas). You will be able to deploy your mechs to battle here as well as see each mech's battle history.",
+                action: () => {
+                    if (activePanel !== RightDrawerPanels.Assets) {
+                        togglePanel(RightDrawerPanels.Assets, true)
+                    }
+                },
             },
         ]
-    }, [])
+    }, [activePanel])
 
     //only show if user has sups
     const withSupsSteps: StepType[] = useMemo(() => {
@@ -147,22 +167,34 @@ export const Tutorial = () => {
             {
                 selector: ".tutorial-end",
                 content: (
-                    <Stack alignItems="center">
+                    <Box>
                         <Typography>
                             That concludes the tutorial. Start contributing to your Syndicate&apos;s battle effort to ensure its&apos; supremacy and reap the
                             Spoils of War!
                         </Typography>
                         <Button
-                            variant="outlined"
-                            sx={{ width: "50%", color: colors.neonBlue, mt: "1rem" }}
+                            variant="contained"
                             onClick={() => {
                                 setCurrentStep(0)
                                 setIsOpen(false)
                             }}
+                            sx={{
+                                mt: "1rem",
+                                pt: ".7rem",
+                                pb: ".4rem",
+                                backgroundColor: colors.neonBlue,
+                                color: colors.darkNavy,
+                                borderRadius: 0.7,
+                                ":hover": {
+                                    backgroundColor: colors.neonBlue,
+                                },
+                            }}
                         >
-                            Play
+                            <Typography variant="body2" sx={{ color: `${colors.navy}D9`, fontFamily: "Nostromo Regular Bold" }}>
+                                Play Now
+                            </Typography>
                         </Button>
-                    </Stack>
+                    </Box>
                 ),
                 position: "center",
             },
@@ -194,20 +226,30 @@ export const Tutorial = () => {
         tutorialSteps = [...tutorialSteps, ...endSteps]
 
         setSteps(tutorialSteps)
+        console.log("ppppppppp")
     }, [preAuthSteps, baseSteps, enlistedSteps, resolutionSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
 
     return null
 }
 
 export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial<Styles>) | undefined = {
+    maskWrapper: (base) => ({
+        ...base,
+        opacity: 0.9,
+    }),
     popover: (base) => ({
         ...base,
+        color: "#FFFFFF",
         backgroundColor: `${colors.navy}D9`,
         borderRadius: "5px",
-        color: colors.offWhite,
         fontSize: "1.5rem",
         fontFamily: "Share Tech,Roboto,Helvetica,Arial,sans-serif",
+        lineHeight: 1.5,
         padding: "3.5rem",
+        "& button:hover, & svg:hover": {
+            fill: "#FFFFFF",
+            color: "#FFFFFF",
+        },
     }),
     dot: (base) => ({
         ...base,

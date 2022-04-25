@@ -8,7 +8,7 @@ import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
 import { UserData } from "../../types/passport"
 import GameGuide from "./GameGuide/GameGuide"
-import { Tutorial } from "./Tutorial/Tutorial"
+import { SetupTutorial } from "./Tutorial/SetupTutorial"
 
 export const HowToPlay = () => {
     const below1440 = useMediaQuery("(max-width:1440px)")
@@ -57,7 +57,7 @@ export const HowToPlay = () => {
                 />
             )}
 
-            <Tutorial />
+            <SetupTutorial />
             {isGameGuideOpen && <GameGuide onClose={() => toggleIsGameGuideOpen(false)} />}
         </>
     )
@@ -114,9 +114,11 @@ const OptionButton = ({ text, onClick }: { text: string; onClick: () => void }) 
         <Button
             tabIndex={0}
             sx={{
+                justifyContent: "flex-start",
                 color: "#FFFFFF",
                 minWidth: 0,
                 cursor: "pointer",
+                px: "1.2rem",
                 ":hover": {
                     backgroundColor: "#FFFFFF20",
                 },

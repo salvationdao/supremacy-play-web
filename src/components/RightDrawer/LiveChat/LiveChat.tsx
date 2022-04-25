@@ -24,7 +24,7 @@ const LiveChatInner = () => {
     const { splitOption } = useChat()
     return (
         <Fade in>
-            <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+            <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
                 {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
                 <AdditionalOptionsButton />
             </Stack>

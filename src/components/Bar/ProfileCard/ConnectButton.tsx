@@ -46,7 +46,6 @@ export const ConnectButton = () => {
     const onClick = useCallback(async () => {
         if (isProcessing) return
         setIsProcessing(true)
-
         setIsOpen(false)
 
         const width = 520
