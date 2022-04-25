@@ -8,9 +8,9 @@ import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 
-interface ContibutorAmountProps {
-    showContributorAmount?: boolean
-    showContributionTotal?: boolean
+export interface ContibutorAmountProps {
+    hideContributionTotal?: boolean
+    hideContributorAmount?: boolean
 }
 
 export const ContributorAmount = (props: ContibutorAmountProps) => {
@@ -58,10 +58,10 @@ interface InnerProps extends ContibutorAmountProps {
     rate: number
 }
 
-const ContributorAmountInner = ({ rate, contributor, showContributionTotal, showContributorAmount }: InnerProps) => {
+const ContributorAmountInner = ({ rate, contributor, hideContributionTotal, hideContributorAmount }: InnerProps) => {
     return (
         <>
-            {showContributionTotal && (
+            {!hideContributionTotal && (
                 <TooltipHelper text="This contribution multiplier is applied at the end of the current battle if your syndicate is victorious.">
                     <Stack direction="row" alignItems="center" justifyContent="center">
                         <Box
@@ -89,7 +89,7 @@ const ContributorAmountInner = ({ rate, contributor, showContributionTotal, show
                 </TooltipHelper>
             )}
 
-            {showContributorAmount && (
+            {!hideContributorAmount && (
                 <TooltipHelper text="Extra contributor multiplier applied at the end of the battle if you contribute now.">
                     <Stack direction="row" alignItems="center" justifyContent="center">
                         <SvgGraph size="1.5rem" fill="#FFFFFF" sx={{ mr: ".3rem" }} />

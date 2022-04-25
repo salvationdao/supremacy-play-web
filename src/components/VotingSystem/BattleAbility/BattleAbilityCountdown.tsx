@@ -16,7 +16,7 @@ export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStage
                         <CountdownText bribeStage={bribeStage} />
                     </Typography>
                 </Stack>
-                <ContributorAmount showContributorAmount />
+                <ContributorAmount hideContributionTotal />
             </Stack>
         </>
     )

@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { CONTROLS_HEIGHT } from "../../constants"
-import { useGameServerAuth } from "../../containers"
+import { useGameServerAuth, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { BattleStats } from "../BattleStats/BattleStats"
@@ -10,6 +10,7 @@ import { StreamSelect } from "./StreamSelect"
 
 export const Controls = () => {
     const { user } = useGameServerAuth()
+    const { isLiveChartOpen } = useOverlayToggles()
 
     return (
         <Stack
@@ -30,7 +31,7 @@ export const Controls = () => {
             <Stack direction="row" spacing="1.6rem">
                 <LiveCounts />
                 <OverlayToggles />
-                <BattleStats />
+                <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />
             </Stack>
 
             <Stack direction="row" spacing="1.6rem">

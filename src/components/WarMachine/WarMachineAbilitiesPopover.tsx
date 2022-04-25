@@ -70,7 +70,7 @@ export const WarMachineAbilitiesPopover = ({ popoverRef, open, onClose, warMachi
                                         WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
                                     </Typography>
                                 </Stack>
-                                <ContributorAmount showContributorAmount />
+                                <ContributorAmount hideContributionTotal />
                             </Stack>
 
                             <Stack spacing=".9rem">
