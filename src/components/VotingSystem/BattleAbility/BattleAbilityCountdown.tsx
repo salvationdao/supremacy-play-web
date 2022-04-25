@@ -9,7 +9,7 @@ import { ContributorAmount } from "../../BattleStats/ContributorAmount"
 export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     return (
         <>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ pr: ".3rem" }}>
                 <Stack direction="row" spacing=".48rem" alignItems="center">
                     <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
                     <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>
@@ -58,7 +58,7 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
                 break
 
             case "COOLDOWN":
-                setSentence(`PREPARING FOR NEXT BATTLE ABILITY (${totalSecRemain}s)`)
+                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain}s)`)
                 break
         }
     }
