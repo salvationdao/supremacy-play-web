@@ -39,7 +39,7 @@ export const SetupTutorial = () => {
                     "#tutorial-wallet-icon",
                     "#tutorial-passport",
                     "#tutorial-sups",
-                    "tutorial-purchase",
+                    "#tutorial-purchase",
                 ],
             },
             {
@@ -81,13 +81,13 @@ export const SetupTutorial = () => {
                 selector: "#tutorial-overlays",
                 content:
                     "You can gain more information about Spoils of War, Mini-Map along with current and past battle histories by toggling these overlays. Note that these functionalities can only be used when you have SUPs in your on-world wallet.",
-                position: "top",
+                position: "center",
             },
             {
                 selector: "#tutorial-server",
                 content:
                     "Select your server here. Supremacy recommends always connecting to the closest server, if you ever experience delays, ensure you have the nearest server selected or try choosing another server.",
-                position: "top",
+                position: "center",
             },
         ]
     }, [user?.faction_id])
@@ -97,7 +97,7 @@ export const SetupTutorial = () => {
             {
                 selector: "#tutorial-resolution",
                 content: "Select your stream resolution here. If you are experience delays or poor internet connection, try dropping the resolution.",
-                position: "top",
+                position: "center",
             },
         ]
     }, [])
@@ -226,7 +226,6 @@ export const SetupTutorial = () => {
         tutorialSteps = [...tutorialSteps, ...endSteps]
 
         setSteps(tutorialSteps)
-        console.log("ppppppppp")
     }, [preAuthSteps, baseSteps, enlistedSteps, resolutionSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
 
     return null
@@ -245,7 +244,8 @@ export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial
         fontSize: "1.5rem",
         fontFamily: "Share Tech,Roboto,Helvetica,Arial,sans-serif",
         lineHeight: 1.5,
-        padding: "3.5rem",
+        padding: "2.8rem 3rem",
+        zIndex: 999999999,
         "& button:hover, & svg:hover": {
             fill: "#FFFFFF",
             color: "#FFFFFF",

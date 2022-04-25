@@ -74,6 +74,7 @@ const App = () => {
         () => ({
             children: <AppInner />,
             steps: [],
+            padding: 2,
             styles: tourStyles,
             showBadge: false,
             disableKeyboardNavigation: false,

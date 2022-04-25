@@ -1,4 +1,5 @@
 import { Stack } from "@mui/material"
+import { useTour } from "@reactour/tour"
 import { useState } from "react"
 import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
@@ -9,10 +10,13 @@ export const Stream = () => {
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, vidRefCallback } = useStream()
+    const { isOpen } = useTour()
 
     if (!watchedTrailer) {
         return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
     }
+
+    if (isOpen) return null
 
     return (
         <>
