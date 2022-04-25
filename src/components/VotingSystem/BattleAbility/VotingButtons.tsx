@@ -17,10 +17,21 @@ export const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAb
     const voteCosts = useMemo(
         () =>
             VOTING_OPTION_COSTS.map((voteCost) => {
-                const cost = battleAbilityProcess.sups_cost.multipliedBy(voteCost.percentage / 100)
+                const cost = battleAbilityProcess.sups_cost.multipliedBy(voteCost.percentage)
+
+                if (cost.isLessThan(voteCost.minCost)) {
+                    const minCostPercentage = Math.round(+voteCost.minCost.dividedBy(battleAbilityProcess.sups_cost) * 100)
+                    return {
+                        cost: voteCost.minCost,
+                        percentage: voteCost.percentage * 100,
+                        displayPercentage: minCostPercentage,
+                    }
+                }
+
                 return {
-                    cost: cost.isLessThan(voteCost.minCost) ? voteCost.minCost : cost,
-                    percentage: voteCost.percentage,
+                    cost,
+                    percentage: voteCost.percentage * 100,
+                    displayPercentage: voteCost.percentage * 100,
                 }
             }),
         [battleAbilityProcess.sups_cost],
@@ -34,6 +45,7 @@ export const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAb
                     color={buttonColor}
                     textColor={buttonTextColor}
                     percentage={c.percentage.toString()}
+                    displayPercentage={c.displayPercentage.toString()}
                     cost={c.cost.toFixed(3)}
                     isVoting={isVoting}
                     onClick={() => onBribe(c.cost, c.percentage)}

@@ -17,10 +17,21 @@ export const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContr
     const voteCosts = useMemo(
         () =>
             VOTING_OPTION_COSTS.map((voteCost) => {
-                const cost = supsCost.multipliedBy(voteCost.percentage / 100)
+                const cost = supsCost.multipliedBy(voteCost.percentage)
+
+                if (cost.isLessThan(voteCost.minCost)) {
+                    const minCostPercentage = Math.round(+voteCost.minCost.dividedBy(supsCost) * 100)
+                    return {
+                        cost: voteCost.minCost,
+                        percentage: voteCost.percentage * 100,
+                        displayPercentage: minCostPercentage,
+                    }
+                }
+
                 return {
-                    cost: cost.isLessThan(voteCost.minCost) ? voteCost.minCost : cost,
-                    percentage: voteCost.percentage,
+                    cost,
+                    percentage: voteCost.percentage * 100,
+                    displayPercentage: voteCost.percentage * 100,
                 }
             }),
         [supsCost],
@@ -34,6 +45,7 @@ export const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContr
                     color={colour}
                     textColor={text_colour || "#FFFFFF"}
                     percentage={c.percentage.toString()}
+                    displayPercentage={c.displayPercentage.toString()}
                     cost={c.cost.toFixed(3)}
                     isVoting={isVoting}
                     onClick={() => onContribute(c.cost, c.percentage)}
