@@ -179,7 +179,7 @@ const BattleAbilityItemInner = ({
     onBribe,
 }: InnerProps) => {
     const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
-    const battleAbilityFactionProcess = battleAbilityProgress.find((a) => a.faction_id === currentFactionID)
+    const battleAbilityFactionProgress = battleAbilityProgress.find((a) => a.faction_id === currentFactionID)
 
     return (
         <Fade in={true}>
@@ -217,9 +217,9 @@ const BattleAbilityItemInner = ({
                                         forceDisplay100Percentage={forceDisplay100Percentage}
                                     />
 
-                                    {battleAbilityFactionProcess && (
+                                    {battleAbilityFactionProgress && (
                                         <VotingButtons
-                                            battleAbilityProcess={battleAbilityFactionProcess}
+                                            battleAbilityProgress={battleAbilityFactionProgress}
                                             buttonColor={buttonColor}
                                             buttonTextColor={buttonTextColor}
                                             isVoting={isVoting}

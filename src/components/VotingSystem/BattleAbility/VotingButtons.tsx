@@ -9,18 +9,18 @@ interface VotingButtonsProps {
     buttonColor: string
     buttonTextColor: string
     isVoting: boolean
-    battleAbilityProcess: BattleAbilityProgressBigNum
+    battleAbilityProgress: BattleAbilityProgressBigNum
     onBribe: (a: BigNumber, b: number) => void
 }
 
-export const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityProcess, onBribe }: VotingButtonsProps) => {
+export const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAbilityProgress, onBribe }: VotingButtonsProps) => {
     const voteCosts = useMemo(
         () =>
             VOTING_OPTION_COSTS.map((voteCost) => {
-                const cost = battleAbilityProcess.sups_cost.multipliedBy(voteCost.percentage)
+                const cost = battleAbilityProgress.sups_cost.multipliedBy(voteCost.percentage)
 
                 if (cost.isLessThan(voteCost.minCost)) {
-                    const minCostPercentage = Math.round(+voteCost.minCost.dividedBy(battleAbilityProcess.sups_cost) * 100)
+                    const minCostPercentage = Math.round(+voteCost.minCost.dividedBy(battleAbilityProgress.sups_cost) * 100)
                     return {
                         cost: voteCost.minCost,
                         percentage: voteCost.percentage * 100,
@@ -34,8 +34,10 @@ export const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAb
                     displayPercentage: voteCost.percentage * 100,
                 }
             }),
-        [battleAbilityProcess.sups_cost],
+        [battleAbilityProgress.sups_cost],
     )
+
+    if (!battleAbilityProgress) return null
 
     return (
         <Stack direction="row" spacing=".4rem" sx={{ mt: ".48rem", width: "100%" }}>

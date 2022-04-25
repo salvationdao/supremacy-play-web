@@ -51,7 +51,7 @@ export const WalletInfo = () => {
             const summary = (tx.description + tx.sub_group + tx.group).toLowerCase()
 
             // For inflows
-            if (isCredit && !summary.includes("deposit") && !summary.includes("refund")) {
+            if (isCredit && (summary.includes("spoil") || summary.includes("won"))) {
                 supsEarned.current = supsEarned.current.plus(new BigNumber(tx.amount))
             }
 
