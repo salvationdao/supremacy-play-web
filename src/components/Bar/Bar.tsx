@@ -1,14 +1,26 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Button, Stack, Typography } from "@mui/material"
+import { useEffect } from "react"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
-import { usePassportServerAuth, usePassportServerWebsocket } from "../../containers"
+import { SocketState, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { shadeColor } from "../../helpers"
+import { useToggle } from "../../hooks"
+import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { UserData } from "../../types/passport"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
+import { SaleAbilitiesModal } from "./SaleAbilitiesModal"
 
 export const Bar = () => {
     const { user } = usePassportServerAuth()
+    const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
+    const { newSnackbarMessage } = useSnackbar()
+
+    useEffect(() => {
+        if (gsState !== SocketState.OPEN || !gsSubscribe || !user) return
+        if (process.env.NODE_ENV !== "development") return
+        return gsSubscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => newSnackbarMessage("Player abilities market has been refreshed.", "info"))
+    }, [gsState, gsSubscribe, user])
 
     return (
         <Stack
@@ -46,6 +58,7 @@ export const Bar = () => {
 
 const BarContent = ({ user }: { user?: UserData }) => {
     const { state, isServerUp } = usePassportServerWebsocket()
+    const [showSaleAbilities, toggleShowSaleAbilities] = useToggle()
 
     if (state !== WebSocket.OPEN) {
         return (
@@ -66,11 +79,17 @@ const BarContent = ({ user }: { user?: UserData }) => {
             <HowToPlay />
             {user && (
                 <>
+                    {process.env.NODE_ENV === "development" && (
+                        <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)}>
+                            Purchase Abilities
+                        </Button>
+                    )}
                     <Enlist />
                     <WalletDetails />
                 </>
             )}
             <ProfileCard />
+            {showSaleAbilities && <SaleAbilitiesModal open={showSaleAbilities} onClose={() => toggleShowSaleAbilities(false)} />}
         </>
     )
 }

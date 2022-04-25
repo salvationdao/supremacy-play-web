@@ -8,8 +8,8 @@ import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
-import { LiveGraph } from "./LiveGraph"
 import { BattleStats } from "../BattleStats/BattleStats"
+import { LiveGraph } from "./LiveGraph"
 
 const DefaultMaxLiveVotingDataLength = 100
 

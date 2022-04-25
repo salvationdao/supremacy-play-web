@@ -3,11 +3,12 @@ import emojiRegex from "emoji-regex"
 import {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
+    MultiplierAirMarshal,
     MultiplierAirSupport,
     MultiplierContributor,
     MultiplierDestroyerOfWorlds,
     MultiplierFieldMechanic,
-    MultiplierAirMarshal,
+    MultiplierGeneric,
     MultiplierGreaseMonkey,
     MultiplierJunkE,
     MultiplierMechCommander,
@@ -16,15 +17,14 @@ import {
     MultiplierSniper,
     MultiplierWonBattle,
     MultiplierWonLastThreeBattles,
-    SvgGeneral,
-    SvgPrivate,
     SvgCorporal,
+    SvgGeneral,
     SvgNewRecruit,
+    SvgPrivate,
     SvgWrapperProps,
-    MultiplierGeneric,
 } from "../assets"
-import { UserRank } from "../types"
 import { colors } from "../theme/theme"
+import { UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -335,8 +335,8 @@ export const getUserRankDeets = (rank: UserRank, width: string, height: string):
     return { icon, title, desc }
 }
 
-export const timeSince = (date: Date) => {
-    const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
+export const timeSince = (date: Date, dateToCompare?: Date) => {
+    const seconds = Math.floor(((dateToCompare ? dateToCompare.getTime() : Date.now()) - date.getTime()) / 1000)
 
     let interval = seconds / 31536000
 

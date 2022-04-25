@@ -20,6 +20,8 @@ import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
+import Target from "!react-svg-loader!./svg/Target.svg"
+import Microchip from "!react-svg-loader!./svg/Microchip.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
 import HistoryClock from "!react-svg-loader!./svg/HistoryClock.svg"
 import Back from "!react-svg-loader!./svg/Back.svg"
@@ -795,5 +797,17 @@ export const SvgMusic: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgMusicMute: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <MusicMute />
+    </SvgWrapper>
+)
+
+export const SvgTarget: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Target />
+    </SvgWrapper>
+)
+
+export const SvgMicrochip: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Microchip />
     </SvgWrapper>
 )

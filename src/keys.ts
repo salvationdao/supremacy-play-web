@@ -36,6 +36,8 @@ export enum GameServerKeys {
     TriggerFactionAbilityPriceUpdated = "ABILITY:PRICE:UPDATED",
     TriggerBattleAbilityProgressUpdated = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
     TriggerBattleQueueUpdated = "BATTLE:QUEUE:UPDATED",
+    TriggerPlayerAbilitiesListUpdated = "PLAYER:ABILITIES:LIST:UPDATED",
+    TriggerSaleAbilitiesListUpdated = "SALE:ABILITIES:LIST:UPDATED",
 
     // Global messages
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
@@ -48,6 +50,14 @@ export enum GameServerKeys {
     GetAssetsQueue = "ASSET:MANY",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
+
+    // Player Abilities
+    SaleAbilityDetailed = "SALE:ABILITY:DETAILED",
+    PlayerAbilitySubscribe = "PLAYER:ABILITY:SUBSCRIBE",
+    SaleAbilityPriceSubscribe = "SALE:ABILITY:PRICE:SUBSCRIBE",
+    PlayerAbilitiesList = "PLAYER:ABILITIES:LIST",
+    SaleAbilitiesList = "SALE:ABILITIES:LIST",
+    SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",

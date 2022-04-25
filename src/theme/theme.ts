@@ -85,6 +85,12 @@ const factionTheme: FactionTheme = {
     background: "#050c12",
 }
 
+export const fonts = {
+    nostromoblack: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    nostromobold: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    sharetech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+}
+
 export const theme = createTheme({
     breakpoints: {
         values: {
