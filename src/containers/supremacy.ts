@@ -9,6 +9,7 @@ export const SupremacyContainer = createContainer(() => {
     const { state, send } = usePassportServerWebsocket()
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
+    const [haveSups, toggleHaveSups] = useState<boolean>()
 
     // Get main color of each factions
     useEffect(() => {
@@ -31,7 +32,7 @@ export const SupremacyContainer = createContainer(() => {
         })()
     }, [send, state])
 
-    return { factionsAll, battleIdentifier, setBattleIdentifier }
+    return { factionsAll, battleIdentifier, setBattleIdentifier, haveSups, toggleHaveSups }
 })
 
 export const SupremacyProvider = SupremacyContainer.Provider

@@ -6,76 +6,7 @@ import { colors } from "../../../theme/theme"
 import { PrismicHowToPlay, PrismicSliceType } from "../../../types/prismic"
 import { ClipThing } from "../../Common/ClipThing"
 
-const LoadingSkeleton = () => (
-    <Box sx={{ width: "82rem", flex: 1, height: 0, pr: "1.2rem", py: "1.2rem" }}>
-        <Stack
-            sx={{
-                overflowY: "scroll",
-                width: "100%",
-                px: "1.5rem",
-                height: "100%",
-                scrollbarWidth: "none",
-                scrollBehavior: "smooth",
-                "::-webkit-scrollbar": {
-                    width: ".4rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                    borderRadius: 3,
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: `${colors.neonBlue}`,
-                    borderRadius: 3,
-                },
-            }}
-        >
-            <Stack direction="row" spacing="1.5rem" sx={{}}>
-                {new Array(3).fill(0).map((_, index) => (
-                    <Skeleton key={index} variant="text" width="10rem" height="5rem" />
-                ))}
-            </Stack>
-
-            <Stack sx={{ width: "100%", mt: "1rem" }} spacing="0.5rem">
-                <Box>
-                    <Skeleton variant="text" width="15rem" height="4rem" />
-                    {new Array(6).fill(0).map((_, index) => (
-                        <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
-                    ))}
-                </Box>
-
-                <Box>
-                    <Skeleton variant="text" width="25rem" height="4rem" />
-                    {new Array(10).fill(0).map((_, index) => (
-                        <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
-                    ))}
-                </Box>
-            </Stack>
-        </Stack>
-    </Box>
-)
-
-interface GameGuideModalProps {
-    toggleClosed: (value: boolean) => void
-    closed: boolean
-}
-
-interface TabPanelProps {
-    children?: React.ReactNode
-    index: number
-    value: number
-}
-
-const TabPanel = (props: TabPanelProps) => {
-    const { children, value, index, ...other } = props
-
-    return (
-        <div role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} {...other}>
-            {value === index && <Box>{children}</Box>}
-        </div>
-    )
-}
-
-export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) => {
+export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
     const [value, setValue] = useState<number>(0)
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue)
@@ -91,10 +22,8 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
         return () => clearTimeout(timeout)
     }, [])
 
-    if (closed) return null
-
     return (
-        <Modal open={!closed} onClose={() => toggleClosed(true)}>
+        <Modal open onClose={() => onClose()}>
             <Stack
                 sx={{
                     position: "absolute",
@@ -241,7 +170,7 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
 
                         <Button
                             variant="outlined"
-                            onClick={() => toggleClosed(true)}
+                            onClick={() => onClose()}
                             sx={{
                                 justifySelf: "flex-end",
                                 mt: "auto",
@@ -268,3 +197,67 @@ export const GameGuideModal = ({ toggleClosed, closed }: GameGuideModalProps) =>
         </Modal>
     )
 }
+
+interface TabPanelProps {
+    children?: React.ReactNode
+    index: number
+    value: number
+}
+
+const TabPanel = (props: TabPanelProps) => {
+    const { children, value, index, ...other } = props
+
+    return (
+        <div role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} {...other}>
+            {value === index && <Box>{children}</Box>}
+        </div>
+    )
+}
+
+const LoadingSkeleton = () => (
+    <Box sx={{ width: "82rem", flex: 1, height: 0, pr: "1.2rem", py: "1.2rem" }}>
+        <Stack
+            sx={{
+                overflowY: "scroll",
+                width: "100%",
+                px: "1.5rem",
+                height: "100%",
+                scrollbarWidth: "none",
+                scrollBehavior: "smooth",
+                "::-webkit-scrollbar": {
+                    width: ".4rem",
+                },
+                "::-webkit-scrollbar-track": {
+                    background: "#FFFFFF15",
+                    borderRadius: 3,
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: `${colors.neonBlue}`,
+                    borderRadius: 3,
+                },
+            }}
+        >
+            <Stack direction="row" spacing="1.5rem" sx={{}}>
+                {new Array(3).fill(0).map((_, index) => (
+                    <Skeleton key={index} variant="text" width="10rem" height="4rem" />
+                ))}
+            </Stack>
+
+            <Stack sx={{ width: "100%" }} spacing="0.5rem">
+                <Box>
+                    <Skeleton variant="text" width="15rem" height="4rem" />
+                    {new Array(6).fill(0).map((_, index) => (
+                        <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
+                    ))}
+                </Box>
+
+                <Box>
+                    <Skeleton variant="text" width="25rem" height="4rem" />
+                    {new Array(10).fill(0).map((_, index) => (
+                        <Skeleton variant="text" width="100%" height="2.6rem" key={index} />
+                    ))}
+                </Box>
+            </Stack>
+        </Stack>
+    </Box>
+)

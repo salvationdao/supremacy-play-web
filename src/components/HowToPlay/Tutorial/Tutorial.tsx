@@ -1,22 +1,20 @@
-import { Box, Button, Typography } from "@mui/material"
+import { Button, Stack, Typography } from "@mui/material"
 import { MaskStylesObj } from "@reactour/mask"
 import { PopoverStylesObj } from "@reactour/popover"
 import { StepType, useTour } from "@reactour/tour"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
-import { BtnFnProps } from "@reactour/tour/dist/types"
-import { useCallback, useEffect, useMemo } from "react"
-import { useBar, useRightDrawer, usePassportServerAuth, useStream, useWallet, RightDrawerPanels } from "../../containers"
-import { colors } from "../../theme/theme"
+import { useEffect, useMemo } from "react"
+import { useBar, usePassportServerAuth, useSupremacy } from "../../../containers"
+import { colors } from "../../../theme/theme"
 
 export const Tutorial = () => {
+    const { user } = usePassportServerAuth()
+    const { haveSups } = useSupremacy()
+
     const { setIsOpen, setSteps, setCurrentStep } = useTour()
     const { toggleActiveBar } = useBar()
-    const { activePanel } = useRightDrawer()
-    const { streamResolutions } = useStream()
-    const { user } = usePassportServerAuth()
-    const { onWorldSupsRaw } = useWallet()
 
-    //only show if no user
+    // Only show if no user
     const preAuthSteps: StepType[] = useMemo(() => {
         return [
             {
@@ -27,8 +25,8 @@ export const Tutorial = () => {
         ]
     }, [])
 
-    //basic steps when user is logged in
-    const baseSteps: StepType[] = useMemo<StepType[]>(() => {
+    // Basic steps when user is logged in
+    const baseSteps: StepType[] = useMemo(() => {
         return [
             {
                 selector: "#tutorial-welcome",
@@ -91,9 +89,9 @@ export const Tutorial = () => {
                 position: "top",
             },
         ]
-    }, [user, user?.faction_id])
+    }, [user?.faction_id, toggleActiveBar])
 
-    const resolutionSteps: StepType[] = useMemo<StepType[]>(() => {
+    const resolutionSteps: StepType[] = useMemo(() => {
         return [
             {
                 selector: "#tutorial-resolution",
@@ -104,7 +102,7 @@ export const Tutorial = () => {
     }, [])
 
     //only show if user is enlisted
-    const enlistedSteps: StepType[] = useMemo<StepType[]>(() => {
+    const enlistedSteps: StepType[] = useMemo(() => {
         return [
             {
                 selector: "#tutorial-chat",
@@ -125,15 +123,15 @@ export const Tutorial = () => {
                     "You'll find your mechs here, these can be purchased from Supremacy Store or on the Black Market (OpenSeas). You will be able to deploy your mechs to battle here as well as see each mech's battle history.",
             },
         ]
-    }, [activePanel])
+    }, [])
 
     //only show if user has sups
-    const withSupsSteps: StepType[] = useMemo<StepType[]>(() => {
+    const withSupsSteps: StepType[] = useMemo(() => {
         return [
             {
                 selector: "#tutorial-vote",
                 content:
-                    "Battle abilities will show up here throughout each battle. As a Syndicate Member, your job will be to contribute $SUPS to save for an ability before the other Syndicates to give an advantage to your mechs on the battlefield.",
+                    "Battle abilities will show up here throughout each battle. As a Syndicate member, your job will be to contribute $SUPS to save for an ability before the other Syndicates to give an advantage to your mechs on the battlefield.",
             },
             {
                 selector: "#tutorial-mech-stats",
@@ -142,84 +140,62 @@ export const Tutorial = () => {
         ]
     }, [])
 
-    const endStepContent = useMemo(() => {
-        return (
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <Typography>
-                    That concludes the tutorial. Start contributing to your Syndicate&apos;s battle effort to ensure its&apos; supremacy and reap the Spoils of
-                    War!
-                </Typography>
-                <Button
-                    variant="outlined"
-                    sx={{ width: "50%", color: colors.neonBlue, mt: "1rem" }}
-                    onClick={() => {
-                        setCurrentStep(0)
-                        setIsOpen(false)
-                    }}
-                >
-                    Play
-                </Button>
-            </Box>
-        )
-    }, [])
-
     //end of tutorial
-    const endSteps: StepType[] = useMemo<StepType[]>(() => {
+    const endSteps: StepType[] = useMemo(() => {
         return [
             {
                 selector: ".tutorial-end",
-                content: endStepContent,
+                content: (
+                    <Stack alignItems="center">
+                        <Typography>
+                            That concludes the tutorial. Start contributing to your Syndicate&apos;s battle effort to ensure its&apos; supremacy and reap the
+                            Spoils of War!
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            sx={{ width: "50%", color: colors.neonBlue, mt: "1rem" }}
+                            onClick={() => {
+                                setCurrentStep(0)
+                                setIsOpen(false)
+                            }}
+                        >
+                            Play
+                        </Button>
+                    </Stack>
+                ),
                 position: "center",
             },
         ]
-    }, [endStepContent])
+    }, [])
 
-    const changeTutorialSteps = useCallback(() => {
+    useEffect(() => {
         if (!user) {
             setSteps([...preAuthSteps])
             return
         }
 
-        let tutorialSteps: StepType[] = [...baseSteps]
+        let tutorialSteps = [...baseSteps]
+
         //if resolution, add it here
-        if (streamResolutions && streamResolutions.length >= 0) {
-            setSteps([...tutorialSteps, ...resolutionSteps])
+        if (document.getElementById("tutorial-resolution")) {
+            tutorialSteps = [...tutorialSteps, ...resolutionSteps]
         }
+
         //if the user is not enlisted, finish tutorial
-        if (!user.faction_id) {
-            setSteps([...tutorialSteps, ...endSteps])
-            return
+        if (user.faction_id) {
+            tutorialSteps = [...tutorialSteps, ...enlistedSteps]
         }
-        tutorialSteps = [...tutorialSteps, ...enlistedSteps]
-        //if the user does not have sups, finish tutorial
-        if (!parseInt(onWorldSupsRaw)) {
-            setSteps([...tutorialSteps, ...endSteps])
-            return
+
+        if (haveSups) {
+            tutorialSteps = [...tutorialSteps, ...withSupsSteps]
         }
-        setSteps([...tutorialSteps, ...withSupsSteps, ...endSteps])
-    }, [preAuthSteps, baseSteps, enlistedSteps, resolutionSteps, withSupsSteps, endSteps, user, user?.faction_id, onWorldSupsRaw])
 
-    useEffect(() => {
-        changeTutorialSteps()
-    }, [changeTutorialSteps])
+        tutorialSteps = [...tutorialSteps, ...endSteps]
 
-    return (
-        <Button
-            sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-                color: colors.neonBlue,
-                minWidth: 0,
-            }}
-            onClick={() => {
-                setIsOpen(true)
-            }}
-        >
-            <Typography sx={{ lineHeight: 1, color: colors.offWhite, textTransform: "uppercase" }}>Tutorial</Typography>
-        </Button>
-    )
+        setSteps(tutorialSteps)
+    }, [preAuthSteps, baseSteps, enlistedSteps, resolutionSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
+
+    return null
 }
 
 export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial<Styles>) | undefined = {
@@ -238,96 +214,3 @@ export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial
         borderColor: colors.darkNavy,
     }),
 }
-
-//custom next button, on last step, clicking the next arrow btn will close the tour- does not work for arrow (that has to use esc key)
-export const tutorialNextBtn = ({ Button, currentStep, stepsLength, setIsOpen, setCurrentStep }: BtnFnProps) => {
-    const { steps } = useTour()
-    const { activePanel, togglePanel } = useRightDrawer()
-
-    const nextBtnStepper = useCallback(() => {
-        const nextStep = steps[currentStep + 1]
-        if (nextStep && nextStep.selector === "#tutorial-asset") {
-            if (activePanel !== RightDrawerPanels.Assets) {
-                togglePanel(RightDrawerPanels.Assets, true)
-                setTimeout(() => {
-                    setCurrentStep(currentStep + 1)
-                }, 250)
-                return
-            }
-        }
-
-        if (
-            nextStep &&
-            (nextStep.selector === "#tutorial-chat" || nextStep.selector === "#tutorial-global-chat" || nextStep.selector === "#tutorial-faction-chat")
-        ) {
-            if (activePanel !== RightDrawerPanels.LiveChat) {
-                togglePanel(RightDrawerPanels.LiveChat, true)
-                setTimeout(() => {
-                    setCurrentStep(currentStep + 1)
-                }, 250)
-                return
-            }
-        }
-
-        if (currentStep + 1 === stepsLength) {
-            setIsOpen(false)
-            setCurrentStep(0)
-            return
-        }
-        setCurrentStep(currentStep + 1)
-    }, [activePanel, togglePanel, steps, currentStep, stepsLength, setIsOpen, setCurrentStep])
-
-    return (
-        <Button
-            kind="next"
-            onClick={() => {
-                nextBtnStepper()
-            }}
-        />
-    )
-}
-
-//custom next button, on last step, clicking the next arrow btn will close the tour- does not work for arrow (that has to use esc key)
-export const tutorialPrevButton = ({ Button, currentStep, setCurrentStep }: BtnFnProps) => {
-    const { steps } = useTour()
-    const { activePanel, togglePanel } = useRightDrawer()
-
-    const prevBtnStepper = useCallback(() => {
-        const prevStep = steps[currentStep - 1]
-        if (prevStep && prevStep.selector === "#tutorial-asset") {
-            if (activePanel !== RightDrawerPanels.Assets) {
-                togglePanel(RightDrawerPanels.Assets, true)
-                setTimeout(() => {
-                    setCurrentStep(currentStep - 1)
-                }, 250)
-                return
-            }
-        }
-
-        if (
-            prevStep &&
-            (prevStep.selector === "#tutorial-chat" || prevStep.selector === ".tutorial-global-chat" || prevStep.selector === ".tutorial-faction-chat")
-        ) {
-            if (activePanel !== RightDrawerPanels.LiveChat) {
-                togglePanel(RightDrawerPanels.LiveChat, true)
-                setTimeout(() => {
-                    setCurrentStep(currentStep - 1)
-                }, 250)
-                return
-            }
-        }
-
-        setCurrentStep(currentStep - 1)
-    }, [activePanel, togglePanel, steps, currentStep, setCurrentStep])
-
-    return (
-        <Button
-            kind="prev"
-            onClick={() => {
-                prevBtnStepper()
-            }}
-        />
-    )
-}
-
-export default Tutorial

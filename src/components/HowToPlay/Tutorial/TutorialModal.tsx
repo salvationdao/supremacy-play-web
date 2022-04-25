@@ -1,8 +1,8 @@
 import { Box, Button, Divider, Modal, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { useCallback, useEffect, useState } from "react"
-import { colors } from "../../theme/theme"
-import { ClipThing } from "../Common/ClipThing"
+import { colors } from "../../../theme/theme"
+import { ClipThing } from "../../Common/ClipThing"
 
 export const TutorialModal = () => {
     const [open, setOpen] = useState<boolean>(false)

@@ -22,7 +22,7 @@ export const NavButton: React.FC<NavButtonProps> = ({ href, active, sx, startIco
                 color: "#FFFFFF",
                 backgroundColor: active ? colors.darkNavyBlue : undefined,
                 ":hover": {
-                    backgroundColor: colors.darkerNeonBlue,
+                    backgroundColor: "#FFFFFF20",
                 },
                 ...sx,
             }}

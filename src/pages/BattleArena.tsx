@@ -1,6 +1,4 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { TourProvider } from "@reactour/tour"
 import {
     BattleEndScreen,
     BattleHistory,
@@ -10,47 +8,22 @@ import {
     NoSupsModal,
     Notifications,
     Stream,
-    tourStyles,
-    tutorialNextBtn,
-    tutorialPrevButton,
     VotingSystem,
     WarMachineStats,
 } from "../components"
-import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useWallet } from "../containers"
+import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useSupremacy } from "../containers"
 import { colors } from "../theme/theme"
 import { SupBackground } from "../assets"
-import { TutorialModal } from "../components/Tutorial/TutorialModal"
 
 export const BattleArenaPage = () => {
-    const tourProviderProps = useMemo(
-        () => ({
-            children: <BattleArenaPageInner />,
-            steps: [],
-            styles: tourStyles,
-            nextButton: tutorialNextBtn,
-            prevButton: tutorialPrevButton,
-            showBadge: false,
-            disableKeyboardNavigation: true,
-            disableDotsNavigation: true,
-            afterOpen: () => {
-                if (!localStorage.getItem("visited")) {
-                    localStorage.setItem("visited", "1")
-                }
-            },
-        }),
-        [],
-    )
-
     return (
         <StreamProvider>
             <GameProvider>
-                <TourProvider {...tourProviderProps}>
-                    <DimensionProvider>
-                        <OverlayTogglesProvider>
-                            <BattleArenaPageInner />
-                        </OverlayTogglesProvider>
-                    </DimensionProvider>
-                </TourProvider>
+                <DimensionProvider>
+                    <OverlayTogglesProvider>
+                        <BattleArenaPageInner />
+                    </OverlayTogglesProvider>
+                </DimensionProvider>
             </GameProvider>
         </StreamProvider>
     )
@@ -59,7 +32,7 @@ export const BattleArenaPage = () => {
 const BattleArenaPageInner = () => {
     const { state } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
-    const [haveSups, toggleHaveSups] = useState<boolean>()
+    const { haveSups, toggleHaveSups } = useSupremacy()
 
     return (
         <>
@@ -77,7 +50,7 @@ const BattleArenaPageInner = () => {
                             <BattleHistory />
                         </>
                     ) : (
-                        <NoGameUIScreen haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
+                        <NoGameUIScreen />
                     )}
                 </Box>
 
@@ -85,29 +58,12 @@ const BattleArenaPageInner = () => {
             </Stack>
 
             <NoSupsModal haveSups={haveSups} onAcknowledged={() => toggleHaveSups(true)} />
-            <TutorialModal />
         </>
     )
 }
 
 // Shows a generic poster and checks wallet for sups, and toggle have sups
-const NoGameUIScreen = ({ haveSups, toggleHaveSups }: { haveSups?: boolean; toggleHaveSups: (value?: boolean) => void }) => {
-    const { onWorldSups } = useWallet()
-    const firstIteration = useRef(true)
-
-    useEffect(() => {
-        if (!onWorldSups || onWorldSups.isNaN()) return
-
-        const supsAboveZero = onWorldSups.isGreaterThan(0)
-
-        if (supsAboveZero && !haveSups) return toggleHaveSups(true)
-        if (!supsAboveZero && haveSups) return toggleHaveSups(false)
-        if (firstIteration.current) {
-            toggleHaveSups(supsAboveZero)
-            firstIteration.current = false
-        }
-    }, [onWorldSups, haveSups])
-
+const NoGameUIScreen = () => {
     return (
         <Box
             sx={{

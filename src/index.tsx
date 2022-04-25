@@ -1,10 +1,13 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
+import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter, Route, Redirect, Switch, useLocation } from "react-router-dom"
-import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
+import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning, tourStyles } from "./components"
+import { TutorialNextButton } from "./components/HowToPlay/Tutorial/TutorialNextButton"
+import { TutorialPrevButton } from "./components/HowToPlay/Tutorial/TutorialPrevButton"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
@@ -18,6 +21,7 @@ import {
     useGameServerAuth,
     useGameServerWebsocket,
     WalletProvider,
+    BarProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
@@ -67,6 +71,25 @@ const App = () => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
 
+    const tourProviderProps = useMemo(
+        () => ({
+            children: <AppInner />,
+            steps: [],
+            styles: tourStyles,
+            nextButton: TutorialNextButton,
+            prevButton: TutorialPrevButton,
+            showBadge: false,
+            disableKeyboardNavigation: true,
+            disableDotsNavigation: true,
+            afterOpen: () => {
+                if (!localStorage.getItem("visited")) {
+                    localStorage.setItem("visited", "1")
+                }
+            },
+        }),
+        [],
+    )
+
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
@@ -77,11 +100,15 @@ const App = () => {
                                 <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
                                     <SupremacyProvider>
                                         <WalletProvider>
-                                            <RightDrawerProvider>
-                                                <BrowserRouter>
-                                                    <AppInner />
-                                                </BrowserRouter>
-                                            </RightDrawerProvider>
+                                            <BarProvider>
+                                                <RightDrawerProvider>
+                                                    <TourProvider {...tourProviderProps}>
+                                                        <BrowserRouter>
+                                                            <AppInner />
+                                                        </BrowserRouter>
+                                                    </TourProvider>
+                                                </RightDrawerProvider>
+                                            </BarProvider>
                                         </WalletProvider>
                                     </SupremacyProvider>
                                 </GameServerAuthProvider>
