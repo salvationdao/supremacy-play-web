@@ -41,7 +41,7 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
     // If warmachine is updated, reset destroy info
     useEffect(() => {
         setWarMachineDestroyedRecord(undefined)
-    }, [hash])
+    }, [props.warMachine])
 
     // Subscribe to war machine ability updates
     useEffect(() => {
