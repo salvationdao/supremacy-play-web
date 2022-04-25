@@ -1,4 +1,4 @@
-import { BattleArenaPage, HangerPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleArenaPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
 
 interface RouteStruct {
     id: string
@@ -20,14 +20,14 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         enable: true,
         label: "Battle Arena",
     },
-    hanger: {
-        id: "hanger",
-        path: "/hanger",
+    hangar: {
+        id: "hangar",
+        path: "/hangar",
         exact: true,
-        Component: HangerPage,
+        Component: HangarPage,
         showInLeftDrawer: true,
         enable: true,
-        label: "Hanger",
+        label: "Hangar",
     },
     marketplace: {
         id: "marketplace",

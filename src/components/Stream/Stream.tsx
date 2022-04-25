@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { useState } from "react"
-import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
+import { DEV_ONLY, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
 import { Music } from "../Music/Music"
 import { Trailer } from "./Trailer"
@@ -41,7 +41,7 @@ export const Stream = () => {
                 />
             </Stack>
 
-            <Music />
+            {DEV_ONLY && <Music />}
         </>
     )
 }

@@ -8,7 +8,7 @@ import { BrowserRouter, Route, Redirect, Switch, useLocation } from "react-route
 import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
+import { DEV_ONLY, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
     RightDrawerProvider,
     GameServerAuthProvider,
@@ -153,7 +153,7 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    <LeftDrawer />
+                    {DEV_ONLY && <LeftDrawer />}
 
                     <Box
                         sx={{

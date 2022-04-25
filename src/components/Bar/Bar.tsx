@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
+import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { SocketState, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
@@ -9,18 +9,17 @@ import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { UserData } from "../../types/passport"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
-import { SaleAbilitiesModal } from "./SaleAbilitiesModal"
+import { SaleAbilitiesModal } from "../PlayerAbilities/SaleAbilitiesModal"
 
 export const Bar = () => {
     const { user } = usePassportServerAuth()
-    const { state: gsState, subscribe: gsSubscribe } = useGameServerWebsocket()
+    const { state, subscribe } = useGameServerWebsocket()
     const { newSnackbarMessage } = useSnackbar()
 
     useEffect(() => {
-        if (gsState !== SocketState.OPEN || !gsSubscribe || !user) return
-        if (process.env.NODE_ENV !== "development") return
-        return gsSubscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => newSnackbarMessage("Player abilities market has been refreshed.", "info"))
-    }, [gsState, gsSubscribe, user])
+        if (state !== SocketState.OPEN || !subscribe || !user || !DEV_ONLY) return
+        return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => newSnackbarMessage("Player abilities market has been refreshed.", "info"))
+    }, [state, subscribe, user])
 
     return (
         <Stack
@@ -79,7 +78,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
             <HowToPlay />
             {user && (
                 <>
-                    {process.env.NODE_ENV === "development" && (
+                    {DEV_ONLY && (
                         <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)}>
                             Purchase Abilities
                         </Button>
@@ -89,6 +88,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
                 </>
             )}
             <ProfileCard />
+
             {showSaleAbilities && <SaleAbilitiesModal open={showSaleAbilities} onClose={() => toggleShowSaleAbilities(false)} />}
         </>
     )
