@@ -7,13 +7,19 @@ export const VideoPlayerControls = () => {
     const theme = useTheme<Theme>()
     const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useStream()
 
-    const handleVolumeChange = useCallback((_: Event, newValue: number | number[]) => {
-        setVolume(newValue as number)
-    }, [])
+    const handleVolumeChange = useCallback(
+        (_: Event, newValue: number | number[]) => {
+            setVolume(newValue as number)
+        },
+        [setVolume],
+    )
 
-    const handleMusicVolumeChange = useCallback((_: Event, newValue: number | number[]) => {
-        setMusicVolume(newValue as number)
-    }, [])
+    const handleMusicVolumeChange = useCallback(
+        (_: Event, newValue: number | number[]) => {
+            setMusicVolume(newValue as number)
+        },
+        [setMusicVolume],
+    )
 
     const toggleFullscreen = useCallback(() => {
         const elem = document.documentElement
