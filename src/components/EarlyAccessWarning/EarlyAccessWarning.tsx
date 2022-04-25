@@ -76,7 +76,6 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                                 color: colors.neonBlue,
                                 backgroundColor: colors.darkNavy,
                                 borderRadius: 0.7,
-                                fontFamily: "Nostromo Regular Bold",
                                 border: `${colors.neonBlue} 1px solid`,
                                 ":hover": {
                                     opacity: 0.8,
@@ -89,7 +88,7 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                                 Notification.requestPermission()
                             }}
                         >
-                            I AGREE, LET ME IN!
+                            <Typography sx={{ color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}>I AGREE, LET ME IN!</Typography>
                         </Button>
                     </Box>
                 </ClipThing>

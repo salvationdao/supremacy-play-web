@@ -6,6 +6,7 @@ import { Styles, StylesObj } from "@reactour/tour/dist/styles"
 import { useEffect, useMemo } from "react"
 import { useBar, usePassportServerAuth, useSupremacy } from "../../../containers"
 import { colors } from "../../../theme/theme"
+import { TutorialModal } from "./TutorialModal"
 
 export const Tutorial = () => {
     const { user } = usePassportServerAuth()

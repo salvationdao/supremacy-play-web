@@ -1,32 +1,23 @@
-import { Box, Button, Divider, Modal, Typography } from "@mui/material"
+import { Box, Button, Divider, Modal, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback } from "react"
+import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 
 export const TutorialModal = () => {
-    const [open, setOpen] = useState<boolean>(false)
-    const [visited, setVisited] = useState<boolean>(true)
+    const [visited, setVisited] = useToggle(localStorage.getItem("visited") === "true")
     const { setIsOpen } = useTour()
 
-    useEffect(() => {
-        setVisited(!!localStorage.getItem("visited"))
-        setOpen(true)
+    const onClose = useCallback(() => {
+        setVisited(true)
+        localStorage.setItem("visited", "true")
     }, [])
 
-    const closeWithReminder = useCallback(() => {
-        setOpen(false)
-        setVisited(true)
-        localStorage.setItem("visited", "1")
-    }, [])
+    if (visited) return null
 
     return (
-        <Modal
-            onClose={() => {
-                closeWithReminder()
-            }}
-            open={open && visited === false}
-        >
+        <Modal open onClose={() => onClose()}>
             <Box
                 sx={{
                     position: "absolute",
@@ -44,7 +35,6 @@ export const TutorialModal = () => {
                         borderColor: "#FFFFFF",
                         borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
                 >
                     <Box
                         sx={{
@@ -57,60 +47,57 @@ export const TutorialModal = () => {
                             width: "100%",
                         }}
                     >
-                        <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Black", textTransform: "uppercase", textAlign: "center", mb: ".5rem" }}>
-                            Welcome New Citizen
+                        <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Black", textAlign: "center", mb: ".5rem" }}>
+                            WELCOME NEW CITIZEN
                         </Typography>
-                        <Divider sx={{ width: "100%", mb: "1.5rem" }} />
-                        <Typography sx={{ fontFamily: "Nostromo Regular Bold", textTransform: "uppercase", width: "100%" }}>
+
+                        <Divider sx={{ width: "100%", mt: "1rem", mb: "2rem" }} />
+
+                        <Typography sx={{ fontFamily: "Nostromo Regular Bold", width: "100%" }}>
                             You are now in the Battle Arena where Syndicates will fight for glory. The Arena can be overwhelming if you don&apos;t know your way
                             around, the tutorial can help you get your bearings.
                         </Typography>
-                        <Box sx={{ display: "flex", width: "100%", justifyContent: "flex-end", mt: "1rem" }}>
+
+                        <Stack direction="row" spacing="1.5rem" sx={{ width: "100%", mt: "2rem" }}>
                             <Button
                                 variant="contained"
                                 onClick={() => {
-                                    closeWithReminder()
+                                    onClose()
                                     setIsOpen(true)
                                 }}
                                 sx={{
                                     pt: ".7rem",
                                     pb: ".4rem",
-                                    width: "12rem",
                                     backgroundColor: colors.neonBlue,
                                     color: colors.darkNavy,
                                     borderRadius: 0.7,
-                                    fontFamily: "Nostromo Regular Black",
-                                    fontSize: "1.3rem",
                                     ":hover": {
-                                        opacity: 0.8,
+                                        backgroundColor: colors.neonBlue,
                                     },
                                 }}
                             >
-                                Tutorial
+                                <Typography sx={{ color: colors.darkNavy, fontFamily: "Nostromo Regular Black" }}>Tutorial</Typography>
                             </Button>
                             <Button
                                 variant="outlined"
-                                onClick={() => closeWithReminder()}
+                                onClick={() => onClose()}
                                 sx={{
                                     alignSelf: "flex-end",
-                                    ml: 3,
                                     pt: ".7rem",
                                     pb: ".4rem",
-                                    width: "9rem",
                                     color: colors.neonBlue,
                                     backgroundColor: colors.darkNavy,
                                     borderRadius: 0.7,
-                                    fontFamily: "Nostromo Regular Bold",
                                     border: `${colors.neonBlue} 1px solid`,
                                     ":hover": {
-                                        opacity: 0.8,
+                                        backgroundColor: colors.darkNavy,
                                         border: `${colors.neonBlue} 1px solid`,
                                     },
                                 }}
                             >
-                                Close
+                                <Typography sx={{ color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}>Close</Typography>
                             </Button>
-                        </Box>
+                        </Stack>
                     </Box>
                 </ClipThing>
             </Box>

@@ -9,7 +9,6 @@ import { colors } from "../../theme/theme"
 import { UserData } from "../../types/passport"
 import GameGuide from "./GameGuide/GameGuide"
 import { Tutorial } from "./Tutorial/Tutorial"
-import { TutorialModal } from "./Tutorial/TutorialModal"
 
 export const HowToPlay = () => {
     const below1440 = useMediaQuery("(max-width:1440px)")
@@ -17,7 +16,7 @@ export const HowToPlay = () => {
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
-    const { isOpen, setIsOpen } = useTour()
+    const { setIsOpen } = useTour()
     const [isGameGuideOpen, toggleIsGameGuideOpen] = useToggle()
 
     return (
@@ -59,7 +58,6 @@ export const HowToPlay = () => {
             )}
 
             <Tutorial />
-            <TutorialModal />
             {isGameGuideOpen && <GameGuide onClose={() => toggleIsGameGuideOpen(false)} />}
         </>
     )

@@ -169,7 +169,7 @@ const AppInner = () => {
                         <LoadMessage />
                         <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
 
-                        {understand && isServerUp && !UNDER_MAINTENANCE ? (
+                        {understand && isServerUp && !UNDER_MAINTENANCE && (
                             <Switch>
                                 {ROUTES_ARRAY.map((r) => {
                                     const { id, path, exact, Component } = r
@@ -177,9 +177,9 @@ const AppInner = () => {
                                 })}
                                 <Redirect to={ROUTES_MAP.not_found_page.path} />
                             </Switch>
-                        ) : (
-                            <Maintenance />
                         )}
+
+                        {!isServerUp || (UNDER_MAINTENANCE && <Maintenance />)}
                     </Box>
 
                     <RightDrawer />

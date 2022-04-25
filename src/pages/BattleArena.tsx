@@ -14,6 +14,7 @@ import {
 import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useSupremacy } from "../containers"
 import { colors } from "../theme/theme"
 import { SupBackground } from "../assets"
+import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 
 export const BattleArenaPage = () => {
     return (
@@ -58,6 +59,7 @@ const BattleArenaPageInner = () => {
             </Stack>
 
             <NoSupsModal haveSups={haveSups} onAcknowledged={() => toggleHaveSups(true)} />
+            <TutorialModal />
         </>
     )
 }
