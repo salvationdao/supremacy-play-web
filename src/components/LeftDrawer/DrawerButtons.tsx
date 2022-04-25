@@ -56,6 +56,7 @@ export const DrawerButtons = ({
                             onClick={() => history.push(r.path)}
                             isActive={location.pathname === r.path}
                             primaryColor={primaryColor}
+                            secondaryColor={secondaryColor}
                         />
                     )
                 })}
@@ -69,10 +70,13 @@ export const DrawerButtons = ({
                     borderRadius: 0,
                     ":hover": {
                         backgroundColor: primaryColor,
+                        svg: {
+                            fill: secondaryColor,
+                        },
                     },
                 }}
             >
-                <SvgNext size="1.6rem" fill={secondaryColor} />
+                <SvgNext size="1.6rem" fill="#FFFFFF" />
             </Button>
         </Stack>
     )
@@ -85,6 +89,7 @@ const TabButton = ({
     icon,
     isActive,
     primaryColor,
+    secondaryColor,
     onClick,
 }: {
     label: string
@@ -93,6 +98,7 @@ const TabButton = ({
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
+    secondaryColor: string
     onClick: () => void
 }) => {
     return (
@@ -128,7 +134,7 @@ const TabButton = ({
                     fontFamily: "Nostromo Regular Bold",
                     fontSize: "1.1rem",
                     lineHeight: 1,
-                    color: "#FFFFFF",
+                    color: isActive ? secondaryColor : "#FFFFFF",
                     backgroundColor: enable ? (isActive ? primaryColor : `${primaryColor}50`) : `${primaryColor}20`,
                     opacity: isActive ? 0.9 : 0.6,
                     transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,

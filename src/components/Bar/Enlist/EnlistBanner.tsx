@@ -8,34 +8,6 @@ import { FactionIDs, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { User, UserRank, UserStat } from "../../../types"
 import { getUserRankDeets } from "../../../helpers"
 
-const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: ReactNode; content: string; PrefixSvg?: SvgWrapperProps }) => {
-    return (
-        <TooltipHelper text={tooltip}>
-            <Box>
-                <Typography
-                    variant="subtitle2"
-                    sx={{
-                        mb: ".56rem",
-                        fontFamily: "Nostromo Regular Bold",
-                        lineHeight: 1,
-                        whiteSpace: "nowrap",
-                        color: colors.grey,
-                    }}
-                >
-                    {title}
-                </Typography>
-
-                <Stack direction="row" alignItems="center" spacing=".64rem">
-                    {PrefixSvg}
-                    <Typography variant="subtitle2" sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}>
-                        {content}
-                    </Typography>
-                </Stack>
-            </Box>
-        </TooltipHelper>
-    )
-}
-
 export const EnlistBanner = () => {
     const { user, userStat, userRank } = useGameServerAuth()
     const { battleIdentifier, factionsAll } = useSupremacy()
@@ -52,6 +24,9 @@ interface PropsInner {
 }
 
 const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, userRank }: PropsInner) => {
+    const { total_ability_triggered, ability_kill_count, last_seven_days_kills, view_battle_count, mech_kill_count } = userStat
+    const rankDeets = useMemo(() => (userRank ? getUserRankDeets(userRank, ".9rem", "1.1rem") : undefined), [userRank])
+
     const killIcon = useMemo(() => {
         if (!user) return <SvgDeath size="1.1rem" />
 
@@ -79,9 +54,6 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
         theme: { primary },
     } = user.faction
 
-    const { total_ability_triggered, ability_kill_count, last_seven_days_kills, view_battle_count, mech_kill_count } = userStat
-    const rankDeets = useMemo(() => (userRank ? getUserRankDeets(userRank, ".9rem", "1.1rem") : undefined), [userRank])
-
     return (
         <BarExpandable
             noDivider
@@ -91,7 +63,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
                     sx={{
                         width: "2.8rem",
                         height: "2.8rem",
-                        backgroundImage: `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction_id]?.logo_blob_id}`,
+                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction_id]?.logo_blob_id})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "contain",
@@ -138,7 +110,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
                             width: "3.8rem",
                             height: "3.8rem",
                             flexShrink: 0,
-                            backgroundImage: `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction_id]?.logo_blob_id}`,
+                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction_id]?.logo_blob_id})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
@@ -175,5 +147,33 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
                 </Stack>
             </Box>
         </BarExpandable>
+    )
+}
+
+const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: ReactNode; content: string; PrefixSvg?: SvgWrapperProps }) => {
+    return (
+        <TooltipHelper text={tooltip}>
+            <Box>
+                <Typography
+                    variant="subtitle2"
+                    sx={{
+                        mb: ".56rem",
+                        fontFamily: "Nostromo Regular Bold",
+                        lineHeight: 1,
+                        whiteSpace: "nowrap",
+                        color: colors.grey,
+                    }}
+                >
+                    {title}
+                </Typography>
+
+                <Stack direction="row" alignItems="center" spacing=".64rem">
+                    {PrefixSvg}
+                    <Typography variant="subtitle2" sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}>
+                        {content}
+                    </Typography>
+                </Stack>
+            </Box>
+        </TooltipHelper>
     )
 }

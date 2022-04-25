@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import { AssetItem } from "../.."
 import { SvgGridView, SvgListView, SvgRobot } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
-import { useGame, useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../../containers"
+import { useGameServerAuth, useGameServerWebsocket, useSnackbar, useSupremacy } from "../../../containers"
 import { usePagination, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -28,6 +28,36 @@ interface GetAssetsResponse {
     total: number
 }
 
+export const Assets = () => {
+    const [isGridView, toggleIsGridView] = useToggle()
+    const [telegramShortcode, setTelegramShortcode] = useState("")
+
+    return (
+        <>
+            <Fade in>
+                <Stack
+                    direction="row"
+                    id="tutorial-asset"
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: colors.darkNavy,
+                    }}
+                >
+                    <Content
+                        telegramShortcode={telegramShortcode}
+                        setTelegramShortcode={setTelegramShortcode}
+                        isGridView={isGridView}
+                        toggleIsGridView={toggleIsGridView}
+                    />
+                </Stack>
+            </Fade>
+
+            <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
+        </>
+    )
+}
+
 const Content = ({
     telegramShortcode,
     setTelegramShortcode,
@@ -42,7 +72,7 @@ const Content = ({
     const { newSnackbarMessage } = useSnackbar()
     const { user } = useGameServerAuth()
     const { state, subscribe, send } = useGameServerWebsocket()
-    const { battleEndDetail } = useGame()
+    const { battleIdentifier } = useSupremacy()
 
     const [queueFeed, setQueueFeed] = useState<QueueFeedResponse>()
     const [assetsQueue, setAssetsQueue] = useState<AssetQueue[]>()
@@ -86,7 +116,7 @@ const Content = ({
                 setIsLoading(false)
             }
         })()
-    }, [send, state, page, pageSize, queueUpdated, battleEndDetail?.battle_id])
+    }, [send, state, page, pageSize, queueUpdated, battleIdentifier])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -258,35 +288,5 @@ const Content = ({
                 </Box>
             )}
         </Stack>
-    )
-}
-
-export const Assets = () => {
-    const [isGridView, toggleIsGridView] = useToggle()
-    const [telegramShortcode, setTelegramShortcode] = useState("")
-
-    return (
-        <>
-            <Fade in>
-                <Stack
-                    direction="row"
-                    id="tutorial-asset"
-                    sx={{
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: colors.darkNavy,
-                    }}
-                >
-                    <Content
-                        telegramShortcode={telegramShortcode}
-                        setTelegramShortcode={setTelegramShortcode}
-                        isGridView={isGridView}
-                        toggleIsGridView={toggleIsGridView}
-                    />
-                </Stack>
-            </Fade>
-
-            <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
-        </>
     )
 }

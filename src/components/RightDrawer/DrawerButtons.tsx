@@ -17,6 +17,8 @@ export const DrawerButtons = ({
 }) => {
     const { user } = useGameServerAuth()
     const primaryColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue), [user])
+    const secondaryColor = useMemo(() => (user && user.faction ? user.faction.theme.secondary : "#FFFFFF"), [user])
+
     return (
         <Box
             sx={{
@@ -43,30 +45,33 @@ export const DrawerButtons = ({
                 <TabButton
                     label="WAR ROOM"
                     value={RightDrawerPanels.LiveChat}
-                    icon={<SvgChat size="1rem" sx={{ pt: ".3rem" }} />}
+                    icon={<SvgChat size="1rem" sx={{ pt: ".3rem" }} fill={activePanel === RightDrawerPanels.LiveChat ? secondaryColor : "#FFFFFF"} />}
                     onClick={() => togglePanel(RightDrawerPanels.LiveChat)}
                     isActive={activePanel === RightDrawerPanels.LiveChat}
                     primaryColor={primaryColor}
+                    secondaryColor={secondaryColor}
                 />
                 <TabButton
                     label="ACTIVE PLAYERS"
                     value={RightDrawerPanels.PlayerList}
                     icon={
                         <Box sx={{ pb: ".2rem" }}>
-                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: primaryColor }} />
+                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
                         </Box>
                     }
                     onClick={() => togglePanel(RightDrawerPanels.PlayerList)}
                     isActive={activePanel === RightDrawerPanels.PlayerList}
                     primaryColor={primaryColor}
+                    secondaryColor={secondaryColor}
                 />
                 <TabButton
                     label="WAR MACHINES"
                     value={RightDrawerPanels.Assets}
-                    icon={<SvgRobot size="1.3rem" />}
+                    icon={<SvgRobot size="1.3rem" fill={activePanel === RightDrawerPanels.Assets ? secondaryColor : "#FFFFFF"} />}
                     onClick={() => togglePanel(RightDrawerPanels.Assets)}
                     isActive={activePanel === RightDrawerPanels.Assets}
                     primaryColor={primaryColor}
+                    secondaryColor={secondaryColor}
                 />
             </Tabs>
         </Box>
@@ -79,6 +84,7 @@ const TabButton = ({
     icon,
     isActive,
     primaryColor,
+    secondaryColor,
     onClick,
 }: {
     label: string
@@ -86,6 +92,7 @@ const TabButton = ({
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
+    secondaryColor: string
     onClick: () => void
 }) => {
     return (
@@ -110,7 +117,7 @@ const TabButton = ({
                     fontFamily: "Nostromo Regular Bold",
                     fontSize: "1.1rem",
                     lineHeight: 1,
-                    color: "#FFFFFF",
+                    color: isActive ? secondaryColor : "#FFFFFF",
                     backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
                     opacity: isActive ? 0.9 : 0.6,
                     transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,

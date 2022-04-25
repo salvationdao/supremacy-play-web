@@ -12,6 +12,26 @@ import { ChatMessageType } from "../../../types/chat"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 
+export const LiveChat = () => {
+    return (
+        <ChatProvider>
+            <LiveChatInner />
+        </ChatProvider>
+    )
+}
+
+const LiveChatInner = () => {
+    const { splitOption } = useChat()
+    return (
+        <Fade in>
+            <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+                {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+                <AdditionalOptionsButton />
+            </Stack>
+        </Fade>
+    )
+}
+
 const TabbedLayout = () => {
     const { user } = useGameServerAuth()
     const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread, banProposal } = useChat()
@@ -277,26 +297,6 @@ const SplitLayout = () => {
                 </Stack>
             )}
         </Stack>
-    )
-}
-
-export const LiveChat = () => {
-    return (
-        <ChatProvider>
-            <LiveChatInner />
-        </ChatProvider>
-    )
-}
-
-const LiveChatInner = () => {
-    const { splitOption } = useChat()
-    return (
-        <Fade in>
-            <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-                {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
-                <AdditionalOptionsButton />
-            </Stack>
-        </Fade>
     )
 }
 

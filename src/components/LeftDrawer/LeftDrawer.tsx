@@ -55,6 +55,7 @@ export const LeftDrawer = () => {
                                     onClick={() => history.push(r.path)}
                                     isActive={location.pathname === r.path}
                                     primaryColor={primaryColor}
+                                    secondaryColor={secondaryColor}
                                 />
                             )
                         })}
@@ -71,13 +72,15 @@ export const LeftDrawer = () => {
                             backgroundColor: "#00000040",
                             ":hover": {
                                 backgroundColor: primaryColor,
+                                svg: {
+                                    fill: secondaryColor,
+                                },
+                                "*": { color: `${secondaryColor} !important` },
                             },
                         }}
                     >
-                        <SvgBack size="1.6rem" />
-                        <Typography sx={{ ml: "1rem", color: secondaryColor, fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>
-                            MINIMISE
-                        </Typography>
+                        <SvgBack size="1.6rem" fill="#FFFFFF" />
+                        <Typography sx={{ ml: "1rem", fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>MINIMISE</Typography>
                     </Button>
                 </Stack>
             </Drawer>
@@ -90,6 +93,7 @@ const MenuButton = ({
     enable,
     isActive,
     primaryColor,
+    secondaryColor,
     onClick,
 }: {
     label: string
@@ -97,6 +101,7 @@ const MenuButton = ({
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
+    secondaryColor: string
     onClick: () => void
 }) => {
     return (
@@ -107,7 +112,7 @@ const MenuButton = ({
                 px: "2.3rem",
                 py: "1.9rem",
                 justifyContent: "flex-start",
-                color: "#FFFFFF",
+                color: isActive ? secondaryColor : "#FFFFFF",
                 backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
                 borderRadius: 0,
                 borderBottom: `#FFFFFF20 2px solid`,
@@ -117,7 +122,9 @@ const MenuButton = ({
                 },
             }}
         >
-            <Typography sx={{ fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>{label}</Typography>
+            <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>
+                {label}
+            </Typography>
             {!enable && (
                 <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: "Nostromo Regular Bold", whiteSpace: "nowrap", lineHeight: 1 }}>
                     &nbsp;(COMING SOON)
