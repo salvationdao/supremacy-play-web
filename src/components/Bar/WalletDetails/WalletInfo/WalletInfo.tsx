@@ -48,12 +48,14 @@ export const WalletInfo = () => {
         // Accrue stuff
         latestTransaction.forEach((tx) => {
             const isCredit = userID === tx.credit
+            const summary = (tx.description + tx.sub_group + tx.group).toLowerCase()
 
-            // For inflow of spoil ticks
-            if (isCredit) {
+            // For inflows
+            if (isCredit && !summary.includes("deposit") && !summary.includes("refund")) {
                 supsEarned.current = supsEarned.current.plus(new BigNumber(tx.amount))
             }
 
+            // For outflows
             if (!isCredit && !transactions.some((t) => t.id === tx.id)) {
                 supsSpent.current = supsSpent.current.plus(new BigNumber(tx.amount))
             }

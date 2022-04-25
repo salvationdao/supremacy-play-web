@@ -111,7 +111,7 @@ export const BattleAbilityItem = () => {
             bribeStage?.phase == "BRIBE" &&
             battleAbilityProgress &&
             battleAbilityProgress.length > 0 &&
-            battleAbilityProgress[0].sups_cost.isGreaterThanOrEqualTo(battleAbilityProgress[0].current_sups),
+            battleAbilityProgress[0].sups_cost.isGreaterThan(battleAbilityProgress[0].current_sups),
         [battleAbilityProgress, bribeStage],
     )
 
