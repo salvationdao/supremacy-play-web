@@ -24,8 +24,6 @@ import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDispla
 //     )
 // }
 
-const DRAWER_BAR_WIDTH = 2.5 // rem
-
 export interface MechDrawerProps {
     user: UserData
     open: boolean
@@ -318,13 +316,13 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
             anchor="right"
             transitionDuration={DRAWER_TRANSITION_DURATION}
             sx={{
-                width: `${RIGHT_DRAWER_WIDTH - DRAWER_BAR_WIDTH}rem`,
+                width: `${RIGHT_DRAWER_WIDTH}rem`,
                 flexShrink: 0,
                 zIndex: 9999,
             }}
             PaperProps={{
                 sx: {
-                    width: `${RIGHT_DRAWER_WIDTH - DRAWER_BAR_WIDTH}rem`,
+                    width: `${RIGHT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
                     backgroundImage: "none",
                 },

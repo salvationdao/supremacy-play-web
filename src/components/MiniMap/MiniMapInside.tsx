@@ -14,69 +14,6 @@ export interface MapSelection {
     y: number
 }
 
-// Count down timer for the selection
-const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onConfirm: () => void }) => {
-    const [endMoment, setEndMoment] = useState<moment.Moment>()
-    const [timeRemain, setTimeRemain] = useState<number>(-2)
-    const [delay, setDelay] = useState<number | null>(null)
-
-    // Count down starts when user has selected a location, then fires if they don't change their mind
-    useEffect(() => {
-        if (!selection) {
-            setTimeRemain(-2)
-            setEndMoment(undefined)
-            return
-        }
-
-        if (!endMoment) return setEndMoment(moment().add(3, "seconds"))
-    }, [selection])
-
-    useEffect(() => {
-        setDelay(null)
-        if (endMoment) {
-            setDelay(600) // Counts faster than 1 second
-            const d = moment.duration(endMoment.diff(moment()))
-            setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
-            return
-        }
-    }, [endMoment])
-
-    useInterval(() => {
-        setTimeRemain((t) => Math.max(t - 1, -1))
-    }, delay)
-
-    useEffect(() => {
-        if (selection && timeRemain == -1) onConfirm()
-    }, [timeRemain])
-
-    if (timeRemain < 0) return null
-
-    return (
-        <Box
-            sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                pointerEvents: "none",
-                zIndex: 999,
-            }}
-        >
-            <Typography
-                variant="h1"
-                sx={{
-                    fontFamily: "Nostromo Regular Black",
-                    color: "#D90000",
-                    opacity: 0.9,
-                    filter: "drop-shadow(0 3px 3px #00000050)",
-                }}
-            >
-                {timeRemain}
-            </Typography>
-        </Box>
-    )
-}
-
 interface Props {
     gameAbility?: GameAbility
     containerDimensions: Dimension
@@ -385,5 +322,68 @@ const MiniMapInsideInner = ({
 
             <CountdownText selection={selection} onConfirm={onConfirm} />
         </>
+    )
+}
+
+// Count down timer for the selection
+const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onConfirm: () => void }) => {
+    const [endMoment, setEndMoment] = useState<moment.Moment>()
+    const [timeRemain, setTimeRemain] = useState<number>(-2)
+    const [delay, setDelay] = useState<number | null>(null)
+
+    // Count down starts when user has selected a location, then fires if they don't change their mind
+    useEffect(() => {
+        if (!selection) {
+            setTimeRemain(-2)
+            setEndMoment(undefined)
+            return
+        }
+
+        if (!endMoment) return setEndMoment(moment().add(3, "seconds"))
+    }, [selection])
+
+    useEffect(() => {
+        setDelay(null)
+        if (endMoment) {
+            setDelay(600) // Counts faster than 1 second
+            const d = moment.duration(endMoment.diff(moment()))
+            setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
+            return
+        }
+    }, [endMoment])
+
+    useInterval(() => {
+        setTimeRemain((t) => Math.max(t - 1, -1))
+    }, delay)
+
+    useEffect(() => {
+        if (selection && timeRemain == -1) onConfirm()
+    }, [timeRemain])
+
+    if (timeRemain < 0) return null
+
+    return (
+        <Box
+            sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                pointerEvents: "none",
+                zIndex: 999,
+            }}
+        >
+            <Typography
+                variant="h1"
+                sx={{
+                    fontFamily: "Nostromo Regular Black",
+                    color: "#D90000",
+                    opacity: 0.9,
+                    filter: "drop-shadow(0 3px 3px #00000050)",
+                }}
+            >
+                {timeRemain}
+            </Typography>
+        </Box>
     )
 }
