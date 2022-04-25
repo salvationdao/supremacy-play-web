@@ -21,6 +21,8 @@ export const SupsBarStack = ({ battleAbilityProgress, factionsAll, forceDisplay1
         })
     }, [factionsAll, battleAbilityProgress, forceDisplay100Percentage])
 
+    if (!progressBars || progressBars.length <= 0) return null
+
     return (
         <Stack
             spacing=".4rem"
