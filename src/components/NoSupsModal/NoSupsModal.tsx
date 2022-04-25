@@ -7,9 +7,9 @@ import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
 import { usePassportServerAuth } from "../../containers"
 import { ClipThing } from ".."
 
-export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
+export const NoSupsModal = ({ haveSups, onAcknowledged }: { haveSups: boolean; onAcknowledged: () => void }) => {
     const { user } = usePassportServerAuth()
-    const [open, toggleOpen] = useToggle(false)
+    const [open, toggleOpen] = useToggle()
 
     useEffect(() => {
         if (!haveSups) return toggleOpen(true)
@@ -19,7 +19,7 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
     if (!user || !open) return null
 
     return (
-        <Modal open={open} onClose={() => toggleOpen(false)}>
+        <Modal open={open}>
             <Box
                 sx={{
                     position: "absolute",
@@ -101,7 +101,10 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
                                     border: `${colors.neonBlue} 1px solid`,
                                 },
                             }}
-                            onClick={() => toggleOpen(false)}
+                            onClick={() => {
+                                toggleOpen(false)
+                                onAcknowledged()
+                            }}
                         >
                             I just want to watch
                         </Button>

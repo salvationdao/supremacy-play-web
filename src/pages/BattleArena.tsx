@@ -60,7 +60,7 @@ export const BattleArenaPage = () => {
 const BattleArenaPageInner = () => {
     const { state } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
-    const [haveSups, toggleHaveSups] = useToggle(true)
+    const [haveSups, toggleHaveSups] = useToggle()
 
     return (
         <>
@@ -85,7 +85,7 @@ const BattleArenaPageInner = () => {
                 <Controls />
             </Stack>
 
-            <NoSupsModal haveSups={haveSups} />
+            <NoSupsModal haveSups={haveSups} onAcknowledged={() => toggleHaveSups(true)} />
             <TutorialModal />
         </>
     )

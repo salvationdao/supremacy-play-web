@@ -13,6 +13,7 @@ export const Stream = () => {
     if (!watchedTrailer) {
         return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
     }
+
     return (
         <>
             <Stack sx={{ width: "100%", height: "100%" }}>

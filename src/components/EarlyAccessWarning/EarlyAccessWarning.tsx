@@ -4,7 +4,7 @@ import { colors } from "../../theme/theme"
 import { useToggle } from "../../hooks"
 import { ClipThing } from ".."
 
-export const EarlyAccessWarning = () => {
+export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => void }) => {
     const [closed, toggleClosed] = useToggle()
 
     if (closed) return null
@@ -85,6 +85,7 @@ export const EarlyAccessWarning = () => {
                             }}
                             onClick={() => {
                                 toggleClosed(true)
+                                onAcknowledged()
                                 Notification.requestPermission()
                             }}
                         >

@@ -20,6 +20,7 @@ import {
     WalletProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
+import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, theme } from "./theme/theme"
@@ -97,6 +98,7 @@ const AppInner = () => {
     const { isServerUp } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
     const location = useLocation()
+    const [understand, toggleUnderstand] = useToggle()
 
     // Dont show gamebar and left nav in 404
     if (location.pathname === "/404") return <NotFoundPage />
@@ -138,16 +140,18 @@ const AppInner = () => {
                             backgroundColor: colors.darkNavy,
                         }}
                     >
-                        <Switch>
-                            {ROUTES_ARRAY.map((r) => {
-                                const { id, path, exact, Component } = r
-                                return <Route key={id} path={path} exact={exact} component={Component} />
-                            })}
-                            <Redirect to={ROUTES_MAP.not_found_page.path} />
-                        </Switch>
-
                         <LoadMessage />
-                        <EarlyAccessWarning />
+                        <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
+
+                        {understand && (
+                            <Switch>
+                                {ROUTES_ARRAY.map((r) => {
+                                    const { id, path, exact, Component } = r
+                                    return <Route key={id} path={path} exact={exact} component={Component} />
+                                })}
+                                <Redirect to={ROUTES_MAP.not_found_page.path} />
+                            </Switch>
+                        )}
                     </Box>
 
                     <RightDrawer />
