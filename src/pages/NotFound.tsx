@@ -8,17 +8,17 @@ import { colors } from "../theme/theme"
 export const NotFoundPage = () => {
     const history = useHistory()
     return (
-        <Box
+        <Stack
+            spacing="8rem"
+            direction="row"
+            alignItems="center"
+            justifyContent="center"
             sx={{
                 position: "fixed",
                 top: 0,
                 bottom: 0,
                 left: 0,
                 right: 0,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "8rem",
                 px: "5em",
                 background: colors.darkNavyBlue,
                 "@media (max-width:1000px)": {
@@ -85,18 +85,19 @@ export const NotFoundPage = () => {
                     Go to the Battle Arena
                 </FancyButton>
             </Stack>
+
             <Box
                 sx={{
-                    background: `url(${Gabs})`,
+                    backgroundImage: `url(${Gabs})`,
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     boxShadow: `inset 0px 0px 20px 50px rgba(0,0,0,0.6)`,
-                    width: "800px",
-                    height: "800px",
+                    width: "650px",
+                    height: "650px",
                     "@media (max-width:1440px)": {
-                        width: "600px",
-                        height: "600px",
+                        width: "450px",
+                        height: "450px",
                     },
                     "@media (max-width:1000px)": {
                         mt: "5rem",
@@ -110,6 +111,6 @@ export const NotFoundPage = () => {
                     },
                 }}
             />
-        </Box>
+        </Stack>
     )
 }

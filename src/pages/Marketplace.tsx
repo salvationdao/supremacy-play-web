@@ -1,5 +1,5 @@
-import { Box } from "@mui/material"
+import { Typography } from "@mui/material"
 
 export const MarketplacePage = () => {
-    return <Box>Marketplace</Box>
+    return <Typography>Marketplace</Typography>
 }
