@@ -3,6 +3,7 @@ import { Box, IconButton, Snackbar, SnackbarCloseReason, Stack, Typography } fro
 import { useSnackbar } from "../../containers"
 import { colors } from "../../theme/theme"
 import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
+import { ClipThing } from ".."
 
 export const GlobalSnackbar = () => {
     const { open, setOpen, messageInfo, setMessageInfo } = useSnackbar()
@@ -50,30 +51,42 @@ export const GlobalSnackbar = () => {
             TransitionProps={{ onExited: handleExited }}
         >
             <Box>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing=".9rem"
+                <ClipThing
+                    clipSize=".5rem"
+                    border={{
+                        isFancy: true,
+                        borderThickness: ".15rem",
+                        borderColor: "#FFFFFF",
+                    }}
                     sx={{
                         mb: "1.8rem",
                         ml: "1.9rem",
-                        px: "1.4rem",
-                        pt: ".6rem",
-                        pb: ".5rem",
-                        pr: ".9rem",
-                        backgroundColor: severityDeets.color,
-                        borderRadius: 0.4,
-                        boxShadow: 23,
                     }}
+                    backgroundColor={severityDeets.color}
+                    opacity={0.9}
                 >
-                    {severityDeets.icon}
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing=".9rem"
+                        sx={{
+                            px: "1.4rem",
+                            pt: ".6rem",
+                            pb: ".5rem",
+                            pr: ".9rem",
+                            borderRadius: 0.4,
+                            boxShadow: 23,
+                        }}
+                    >
+                        {severityDeets.icon}
 
-                    <Typography sx={{ lineHeight: 1 }}>{messageInfo ? messageInfo.message : undefined}</Typography>
+                        <Typography sx={{ lineHeight: 1 }}>{messageInfo ? messageInfo.message : undefined}</Typography>
 
-                    <IconButton size="small" onClick={handleClose}>
-                        <SvgClose2 size="1.4rem" sx={{ opacity: 0.8, ":hover": { opacity: 1 } }} />
-                    </IconButton>
-                </Stack>
+                        <IconButton size="small" onClick={handleClose}>
+                            <SvgClose2 size="1.4rem" sx={{ opacity: 0.8, ":hover": { opacity: 1 } }} />
+                        </IconButton>
+                    </Stack>
+                </ClipThing>
             </Box>
         </Snackbar>
     )
