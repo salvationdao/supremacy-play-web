@@ -4,6 +4,7 @@ import { TabProps } from "@mui/material/Tab"
 import { useTheme } from "@mui/styles"
 import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
+import { DEV_ONLY } from "../../constants"
 import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "../../containers"
 import { parseString } from "../../helpers"
 import { colors } from "../../theme/theme"
@@ -80,22 +81,24 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
                         )}
                     />
 
-                    <Tabs
-                        defaultValue={0}
-                        value={currentTab}
-                        onChange={(_, value) => setCurrentTab(value)}
-                        TabIndicatorProps={{
-                            hidden: true,
-                        }}
-                        sx={{
-                            zIndex: 1,
-                            position: "relative",
-                            minHeight: 0,
-                        }}
-                    >
-                        <TabButton label="Battle Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
-                        <TabButton label="Player Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
-                    </Tabs>
+                    {DEV_ONLY && (
+                        <Tabs
+                            defaultValue={0}
+                            value={currentTab}
+                            onChange={(_, value) => setCurrentTab(value)}
+                            TabIndicatorProps={{
+                                hidden: true,
+                            }}
+                            sx={{
+                                zIndex: 1,
+                                position: "relative",
+                                minHeight: 0,
+                            }}
+                        >
+                            <TabButton label="Battle Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
+                            <TabButton label="Player Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
+                        </Tabs>
+                    )}
                     <ClipThing
                         sx={{
                             position: "relative",
@@ -148,9 +151,11 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
                                     </Stack>
                                 </Box>
                             </TabPanel>
-                            <TabPanel value={currentTab} index={1}>
-                                <PlayerAbilities />
-                            </TabPanel>
+                            {DEV_ONLY && (
+                                <TabPanel value={currentTab} index={1}>
+                                    <PlayerAbilities />
+                                </TabPanel>
+                            )}
                         </Box>
                     </ClipThing>
                 </Box>
