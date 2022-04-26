@@ -33,8 +33,6 @@ interface SubmitRequest {
 }
 
 const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: SxProps }) => {
-    const theme = useTheme<Theme>()
-
     return (
         <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
             <Box
@@ -47,9 +45,9 @@ const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: Sx
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "contain",
-                    backgroundColor: theme.factionTheme.primary,
+                    backgroundColor: (theme) => theme.factionTheme.primary,
                     borderRadius: 0.8,
-                    border: `${theme.factionTheme.primary} 1px solid`,
+                    border: (theme) => `${theme.factionTheme.primary} 1px solid`,
                 }}
             />
             <Typography>

@@ -13,8 +13,6 @@ import {
     WarMachineAbilityAlert,
 } from ".."
 import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
-import { useTheme } from "@mui/styles"
-import { Theme } from "@mui/material/styles"
 import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useSupremacy, useGame } from "../../containers"
 import { useCallback, useEffect, useMemo } from "react"
 import { GameServerKeys } from "../../keys"
@@ -211,8 +209,6 @@ export const Notifications = () => {
 }
 
 const NotificationsInner = ({ height, notificationsJsx }: { height: number; notificationsJsx: (JSX.Element | undefined | null)[] }) => {
-    const theme = useTheme<Theme>()
-
     return (
         <Stack
             sx={{
@@ -242,7 +238,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: theme.factionTheme.primary,
+                            background: (theme) => theme.factionTheme.primary,
                             borderRadius: 3,
                         },
                     }}

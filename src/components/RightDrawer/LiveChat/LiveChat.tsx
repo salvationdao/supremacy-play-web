@@ -71,7 +71,7 @@ const TabbedLayout = () => {
                 flex: 1,
                 height: 0,
                 position: "relative",
-                backgroundColor: tabValue == 1 ? `${theme.factionTheme.primary}06` : `${colors.globalChat}13`,
+                backgroundColor: (theme) => (tabValue == 1 ? `${theme.factionTheme.primary}06` : `${colors.globalChat}13`),
             }}
         >
             <Tabs
@@ -161,9 +161,9 @@ const TabbedLayout = () => {
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
                                             backgroundSize: "contain",
-                                            backgroundColor: theme.factionTheme.primary,
+                                            backgroundColor: (theme) => theme.factionTheme.primary,
                                             borderRadius: 0.5,
-                                            border: `${theme.factionTheme.primary} solid 1px`,
+                                            border: (theme) => `${theme.factionTheme.primary} solid 1px`,
                                         }}
                                     />
                                 </Badge>
@@ -243,13 +243,16 @@ const SplitLayout = () => {
             </Stack>
 
             {isEnlisted && user && (
-                <Stack className="tutorial-faction-chat" sx={{ position: "relative", height: "50%", backgroundColor: `${theme.factionTheme.primary}06` }}>
+                <Stack
+                    className="tutorial-faction-chat"
+                    sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `${theme.factionTheme.primary}06` }}
+                >
                     <Stack
                         justifyContent="center"
                         sx={{
                             height: `${5}rem`,
                             px: "1.8rem",
-                            background: `${theme.factionTheme.primary}25`,
+                            background: (theme) => `${theme.factionTheme.primary}25`,
                             boxShadow: 1,
                             zIndex: 99,
                         }}
@@ -271,9 +274,9 @@ const SplitLayout = () => {
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
-                                    backgroundColor: theme.factionTheme.primary,
+                                    backgroundColor: (theme) => theme.factionTheme.primary,
                                     borderRadius: 0.5,
-                                    border: `${theme.factionTheme.primary} solid 1px`,
+                                    border: (theme) => `${theme.factionTheme.primary} solid 1px`,
                                 }}
                             />
                             {banProposal && (

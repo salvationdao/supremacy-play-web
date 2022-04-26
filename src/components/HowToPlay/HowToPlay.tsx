@@ -1,4 +1,4 @@
-import { Button, Popover, Stack, Typography, useMediaQuery, useTheme, Theme } from "@mui/material"
+import { Button, Popover, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { MutableRefObject, useRef } from "react"
 import { SvgQuestionMark } from "../../assets"
@@ -71,7 +71,6 @@ const OptionsPopover = ({
     openGameGuide: () => void
     openTutorial: () => void
 }) => {
-    const theme = useTheme<Theme>()
     return (
         <Popover
             open={open}
@@ -90,7 +89,7 @@ const OptionsPopover = ({
                 zIndex: 10000,
                 ".MuiPaper-root": {
                     background: "none",
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: (theme) => theme.factionTheme.background,
                     border: "#FFFFFF50 1px solid",
                 },
             }}

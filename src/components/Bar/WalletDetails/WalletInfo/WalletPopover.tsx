@@ -1,4 +1,4 @@
-import { Box, IconButton, Popover, Stack, Switch, Theme, Typography, useTheme } from "@mui/material"
+import { Box, IconButton, Popover, Stack, Switch, Typography } from "@mui/material"
 import { SvgClose, SvgSupToken } from "../../../../assets"
 import { TransactionItem } from "../../.."
 import { Transaction } from "../../../../types/passport"
@@ -29,7 +29,6 @@ export const WalletPopover = ({
     popoverRef: MutableRefObject<null>
     startTime: Date
 }) => {
-    const theme = useTheme<Theme>()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [hideBattleTxs, toggleHideBattleTxs] = useToggle()
 
@@ -62,7 +61,7 @@ export const WalletPopover = ({
                 ".MuiPaper-root": {
                     mt: ".8rem",
                     background: "none",
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: (theme) => theme.factionTheme.background,
                     border: "#FFFFFF50 1px solid",
                 },
             }}
@@ -121,9 +120,9 @@ export const WalletPopover = ({
                                 onClick={() => toggleHideBattleTxs()}
                                 sx={{
                                     transform: "scale(.5)",
-                                    ".Mui-checked": { color: `${theme.factionTheme.primary} !important` },
+                                    ".Mui-checked": { color: (theme) => `${theme.factionTheme.primary} !important` },
                                     ".Mui-checked+.MuiSwitch-track": {
-                                        backgroundColor: `${theme.factionTheme.primary}50 !important`,
+                                        backgroundColor: (theme) => `${theme.factionTheme.primary}50 !important`,
                                     },
                                 }}
                             />

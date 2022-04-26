@@ -64,7 +64,7 @@ export const WarMachineDestroyedInfo = ({
                         borderThickness: ".15rem",
                     }}
                 >
-                    <Box sx={{ position: "relative", backgroundColor: theme.factionTheme.background }}>
+                    <Box sx={{ position: "relative", backgroundColor: (theme) => theme.factionTheme.background }}>
                         <Box
                             sx={{
                                 position: "absolute",

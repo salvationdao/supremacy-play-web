@@ -1,5 +1,4 @@
-import { Button, Drawer, Stack, Typography, useTheme, Theme } from "@mui/material"
-import { Box } from "@mui/system"
+import { Button, Drawer, Stack, Typography, useTheme, Theme, Box } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgBack } from "../../assets"
 import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
@@ -24,7 +23,7 @@ export const LeftDrawer = () => {
                     position: "relative",
                     height: "100%",
                     width: `${3}rem`,
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: (theme) => theme.factionTheme.background,
                     zIndex: 9999,
                 }}
             />
@@ -49,7 +48,7 @@ export const LeftDrawer = () => {
                     "& .MuiDrawer-paper": {
                         width: `${EXPAND_DRAWER_WIDTH}rem`,
                         background: "none",
-                        backgroundColor: theme.factionTheme.background,
+                        backgroundColor: (theme) => theme.factionTheme.background,
                         position: "absolute",
                         borderLeft: 0,
                     },
@@ -82,11 +81,11 @@ export const LeftDrawer = () => {
                             borderRadius: 0,
                             backgroundColor: "#00000040",
                             ":hover": {
-                                backgroundColor: theme.factionTheme.primary,
+                                backgroundColor: (theme) => theme.factionTheme.primary,
                                 svg: {
-                                    fill: theme.factionTheme.secondary,
+                                    fill: (theme) => theme.factionTheme.secondary,
                                 },
-                                "*": { color: `${theme.factionTheme.secondary} !important` },
+                                "*": { color: (theme) => `${theme.factionTheme.secondary} !important` },
                             },
                         }}
                     >

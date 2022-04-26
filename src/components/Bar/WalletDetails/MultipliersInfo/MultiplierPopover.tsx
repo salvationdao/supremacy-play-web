@@ -1,4 +1,4 @@
-import { Box, IconButton, Popover, Stack, Typography, useTheme, Theme } from "@mui/material"
+import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { SvgClose } from "../../../../assets"
 import { colors } from "../../../../theme/theme"
 import { BattleMultipliers } from "../../../../types"
@@ -17,7 +17,6 @@ export const MultipliersPopover = ({
     onClose: () => void
     popoverRef: MutableRefObject<null>
 }) => {
-    const theme = useTheme<Theme>()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const actualMultipliers = multipliers.filter((m) => m.multipliers.length > 0)
 
@@ -50,7 +49,7 @@ export const MultipliersPopover = ({
                 ".MuiPaper-root": {
                     mt: ".8rem",
                     background: "none",
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: (theme) => theme.factionTheme.background,
                     border: "#FFFFFF50 1px solid",
                 },
             }}

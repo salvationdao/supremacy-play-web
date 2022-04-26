@@ -1,4 +1,4 @@
-import { Box, Fade, Stack, Theme, Typography, useTheme } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import { Dispatch, useState } from "react"
 import { PlayerListContent } from "../.."
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
@@ -40,8 +40,6 @@ const Content = ({
     inactivePlayers: User[]
     setInactivePlayers: Dispatch<React.SetStateAction<User[]>>
 }) => {
-    const theme = useTheme<Theme>()
-
     return (
         <Stack sx={{ flex: 1 }}>
             <Stack
@@ -53,7 +51,7 @@ const Content = ({
                     pl: "2.2rem",
                     pr: "4.8rem",
                     height: `${5}rem`,
-                    background: `${theme.factionTheme.primary}40`,
+                    background: (theme) => `${theme.factionTheme.primary}40`,
                     boxShadow: 1.5,
                 }}
             >
@@ -68,9 +66,9 @@ const Content = ({
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
-                            backgroundColor: theme.factionTheme.primary,
+                            backgroundColor: (theme) => theme.factionTheme.primary,
                             borderRadius: 0.5,
-                            border: `${theme.factionTheme.primary} solid 1px`,
+                            border: (theme) => `${theme.factionTheme.primary} solid 1px`,
                         }}
                     />
                 )}
@@ -117,7 +115,7 @@ const Content = ({
                         borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
-                        background: theme.factionTheme.primary,
+                        background: (theme) => theme.factionTheme.primary,
                         borderRadius: 3,
                     },
                 }}

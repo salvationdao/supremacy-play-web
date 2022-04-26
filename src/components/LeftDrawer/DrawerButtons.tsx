@@ -20,7 +20,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                 height: "100%",
                 overflow: "hidden",
                 width: `${DRAWER_BAR_WIDTH}rem`,
-                backgroundColor: theme.factionTheme.background,
+                backgroundColor: (theme) => theme.factionTheme.background,
                 zIndex: 9999,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
@@ -59,9 +59,9 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                     color: "#FFFFFF",
                     borderRadius: 0,
                     ":hover": {
-                        backgroundColor: theme.factionTheme.primary,
+                        backgroundColor: (theme) => theme.factionTheme.primary,
                         svg: {
-                            fill: theme.factionTheme.secondary,
+                            fill: (theme) => theme.factionTheme.secondary,
                         },
                     },
                 }}

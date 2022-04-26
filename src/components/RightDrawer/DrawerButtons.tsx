@@ -22,7 +22,7 @@ export const DrawerButtons = ({
                 height: "100%",
                 overflow: "hidden",
                 width: `${DRAWER_BAR_WIDTH}rem`,
-                backgroundColor: theme.factionTheme.background,
+                backgroundColor: (theme) => theme.factionTheme.background,
                 zIndex: 9999,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {

@@ -1,6 +1,4 @@
 import { Box, Slide, Stack } from "@mui/material"
-import { Theme } from "@mui/material/styles"
-import { useTheme } from "@mui/styles"
 import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
@@ -9,7 +7,6 @@ import { GameServerKeys } from "../../keys"
 import { WarMachineItem } from "./WarMachineItem"
 
 export const WarMachineStats = () => {
-    const theme = useTheme<Theme>()
     const { state, subscribe } = useGameServerWebsocket()
     const { factionID } = useGameServerAuth()
     const { warMachines } = useGame()
@@ -62,7 +59,7 @@ export const WarMachineStats = () => {
                             pr: "1.2rem",
                             pt: "2rem",
                             pb: "1.6rem",
-                            backgroundColor: `${theme.factionTheme.background}95`,
+                            backgroundColor: (theme) => `${theme.factionTheme.background}95`,
                         }}
                     >
                         <ScrollContainer>
@@ -105,8 +102,6 @@ export const WarMachineStats = () => {
 }
 
 const ScrollContainer = ({ children }: { children: ReactElement }) => {
-    const theme = useTheme<Theme>()
-
     return (
         <Box
             sx={{
@@ -123,7 +118,7 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
                     borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: `${theme.factionTheme.primary}50`,
+                    background: (theme) => `${theme.factionTheme.primary}50`,
                     borderRadius: 3,
                 },
                 transition: "all .2s",

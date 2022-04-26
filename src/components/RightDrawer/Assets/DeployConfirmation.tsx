@@ -204,7 +204,7 @@ export const DeployConfirmation = ({
                             position: "relative",
                             px: "2.5rem",
                             py: "2.4rem",
-                            backgroundColor: theme.factionTheme.background,
+                            backgroundColor: (theme) => theme.factionTheme.background,
                         }}
                     >
                         <Box
@@ -449,7 +449,7 @@ export const DeployConfirmation = ({
                                                         <Checkbox
                                                             checked={saveMobile}
                                                             onClick={() => setSaveMobile((prev) => !prev)}
-                                                            sx={{ m: 0, p: 0, color: theme.factionTheme.primary }}
+                                                            sx={{ m: 0, p: 0, color: (theme) => theme.factionTheme.primary }}
                                                         />
                                                     </Stack>
                                                 )}
@@ -462,7 +462,7 @@ export const DeployConfirmation = ({
                                                 <Checkbox
                                                     checked={saveSettings}
                                                     onClick={() => setSaveSettings((prev) => !prev)}
-                                                    sx={{ m: 0, p: 0, color: theme.factionTheme.primary }}
+                                                    sx={{ m: 0, p: 0, color: (theme) => theme.factionTheme.primary }}
                                                 />
                                             </Stack>
                                         )}

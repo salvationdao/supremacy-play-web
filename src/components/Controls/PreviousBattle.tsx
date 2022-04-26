@@ -1,8 +1,7 @@
-import { Button, Typography, useTheme, Theme } from "@mui/material"
+import { Button, Typography } from "@mui/material"
 import { useOverlayToggles } from "../../containers"
 
 export const PreviousBattle = () => {
-    const theme = useTheme<Theme>()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, isEndBattleDetailEnabled } = useOverlayToggles()
 
     return (
@@ -11,8 +10,8 @@ export const PreviousBattle = () => {
             onClick={() => toggleIsEndBattleDetailOpen()}
             sx={{
                 flexShrink: 0,
-                color: theme.factionTheme.primary,
-                backgroundColor: isEndBattleDetailOpen ? `${theme.factionTheme.primary}20` : `${theme.factionTheme.primary}06`,
+                color: (theme) => theme.factionTheme.primary,
+                backgroundColor: (theme) => (isEndBattleDetailOpen ? `${theme.factionTheme.primary}20` : `${theme.factionTheme.primary}06`),
                 borderRadius: 0,
             }}
         >

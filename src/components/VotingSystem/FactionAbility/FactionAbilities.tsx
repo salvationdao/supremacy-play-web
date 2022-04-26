@@ -1,6 +1,4 @@
 import { Box, Fade, Divider, Stack, Typography } from "@mui/material"
-import { Theme } from "@mui/material/styles"
-import { useTheme } from "@mui/styles"
 import { useEffect, useState } from "react"
 import { FactionAbilityItem } from "../.."
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
@@ -10,7 +8,6 @@ import { colors } from "../../../theme/theme"
 import { GameAbility } from "../../../types"
 
 export const FactionAbilities = () => {
-    const theme = useTheme<Theme>()
     const { state, subscribe } = useGameServerWebsocket()
     const { user, factionID } = useGameServerAuth()
     const { factionsAll } = useSupremacy()
@@ -27,7 +24,7 @@ export const FactionAbilities = () => {
     return (
         <Fade in={true}>
             <Box>
-                <Divider sx={{ mb: 2.3, borderColor: theme.factionTheme.primary, opacity: 0.28 }} />
+                <Divider sx={{ mb: 2.3, borderColor: (theme) => theme.factionTheme.primary, opacity: 0.28 }} />
                 <Stack spacing=".56rem">
                     <Stack direction="row" spacing=".48rem" alignItems="center">
                         {user && (

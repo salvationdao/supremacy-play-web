@@ -1,4 +1,4 @@
-import { Stack, useTheme, Theme } from "@mui/material"
+import { Stack } from "@mui/material"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { CONTROLS_HEIGHT } from "../../constants"
 import { useOverlayToggles } from "../../containers"
@@ -8,7 +8,6 @@ import { ResolutionSelect } from "./ResolutionSelect"
 import { StreamSelect } from "./StreamSelect"
 
 export const Controls = () => {
-    const theme = useTheme<Theme>()
     const { isLiveChartOpen } = useOverlayToggles()
 
     return (
@@ -24,7 +23,7 @@ export const Controls = () => {
                 pr: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
-                backgroundColor: theme.factionTheme.background,
+                backgroundColor: (theme) => theme.factionTheme.background,
                 overflowX: "auto",
                 overflowY: "hidden",
                 scrollbarWidth: "none",
@@ -36,7 +35,7 @@ export const Controls = () => {
                     borderRadius: 0,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: `${theme.factionTheme.primary}50`,
+                    background: (theme) => `${theme.factionTheme.primary}50`,
                     borderRadius: 0,
                 },
             }}

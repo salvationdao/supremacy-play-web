@@ -20,7 +20,7 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                     px: "1.3rem",
                     pt: ".2rem",
                     pb: ".3rem",
-                    backgroundColor: `${theme.factionTheme.primary}10`,
+                    backgroundColor: (theme) => `${theme.factionTheme.primary}10`,
                     opacity: isActive ? 1 : 0.6,
                 }}
             >
