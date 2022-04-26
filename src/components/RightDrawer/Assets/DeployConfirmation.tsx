@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
+import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Theme, Typography, useTheme } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import QRCode from "react-qr-code"
@@ -63,6 +63,7 @@ export const DeployConfirmation = ({
     onClose: () => void
     setTelegramShortcode?: (s: string) => void
 }) => {
+    const theme = useTheme<Theme>()
     const queueLength = queueFeed?.queue_length || 0
     const queueCost = queueFeed?.queue_cost || ""
     const contractReward = queueFeed?.contract_reward || ""
@@ -192,7 +193,7 @@ export const DeployConfirmation = ({
                     clipSize="0"
                     border={{
                         isFancy: true,
-                        borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
+                        borderColor: theme.factionTheme.primary,
                         borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
@@ -203,7 +204,7 @@ export const DeployConfirmation = ({
                             position: "relative",
                             px: "2.5rem",
                             py: "2.4rem",
-                            backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
+                            backgroundColor: theme.factionTheme.background,
                         }}
                     >
                         <Box
@@ -448,7 +449,7 @@ export const DeployConfirmation = ({
                                                         <Checkbox
                                                             checked={saveMobile}
                                                             onClick={() => setSaveMobile((prev) => !prev)}
-                                                            sx={{ m: 0, p: 0, color: user?.faction.theme.primary }}
+                                                            sx={{ m: 0, p: 0, color: theme.factionTheme.primary }}
                                                         />
                                                     </Stack>
                                                 )}
@@ -461,7 +462,7 @@ export const DeployConfirmation = ({
                                                 <Checkbox
                                                     checked={saveSettings}
                                                     onClick={() => setSaveSettings((prev) => !prev)}
-                                                    sx={{ m: 0, p: 0, color: user?.faction.theme.primary }}
+                                                    sx={{ m: 0, p: 0, color: theme.factionTheme.primary }}
                                                 />
                                             </Stack>
                                         )}

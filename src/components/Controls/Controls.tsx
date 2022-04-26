@@ -2,7 +2,6 @@ import { Stack, useTheme, Theme } from "@mui/material"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { CONTROLS_HEIGHT } from "../../constants"
 import { useOverlayToggles } from "../../containers"
-import { shadeColor } from "../../helpers"
 import { BattleStats } from "../BattleStats/BattleStats"
 import { PreviousBattle } from "./PreviousBattle"
 import { ResolutionSelect } from "./ResolutionSelect"
@@ -25,7 +24,7 @@ export const Controls = () => {
                 pr: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
-                backgroundColor: shadeColor(theme.factionTheme.primary, -95),
+                backgroundColor: theme.factionTheme.background,
                 overflowX: "auto",
                 overflowY: "hidden",
                 scrollbarWidth: "none",

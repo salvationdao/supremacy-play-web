@@ -136,7 +136,6 @@ const WalletInfoInner = ({
 
             {isWalletPopoverOpen && user && (
                 <WalletPopover
-                    user={user}
                     open={isWalletPopoverOpen}
                     sups={onWorldSupsRaw}
                     userID={userID || ""}

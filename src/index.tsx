@@ -1,5 +1,5 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
-import { Theme } from "@mui/material/styles"
+import { Theme, useTheme } from "@mui/material/styles"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
@@ -17,7 +17,6 @@ import {
     PassportServerSocketProvider,
     SnackBarProvider,
     SupremacyProvider,
-    useGameServerAuth,
     useGameServerWebsocket,
     WalletProvider,
     BarProvider,
@@ -42,9 +41,9 @@ if (SENTRY_CONFIG) {
 const App = () => {
     const [currentTheme, setTheme] = useState<Theme>(theme)
     const [factionColors, setFactionColors] = useState<FactionThemeColor>({
-        primary: "#00FFFF",
-        secondary: "#00FFFF",
-        background: "#050c12",
+        primary: colors.neonBlue,
+        secondary: colors.neonBlue,
+        background: shadeColor(colors.neonBlue, -95),
     })
 
     const [authLogin, setAuthLoginX] = useState<User | null>(null)
@@ -121,7 +120,7 @@ const App = () => {
 
 const AppInner = () => {
     const { isServerUp } = useGameServerWebsocket()
-    const { user } = useGameServerAuth()
+    const theme = useTheme<Theme>()
     const location = useLocation()
     const [understand, toggleUnderstand] = useToggle()
 
@@ -135,7 +134,7 @@ const AppInner = () => {
                     position: "relative",
                     width: "100vw",
                     height: "100vh",
-                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                    backgroundColor: theme.factionTheme.background,
                 }}
             >
                 <Bar />

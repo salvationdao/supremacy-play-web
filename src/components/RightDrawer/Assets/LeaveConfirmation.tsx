@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
+import { Box, Button, IconButton, Link, Modal, Stack, Typography, useTheme, Theme } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { SvgClose, SvgExternalLink } from "../../../assets"
@@ -11,6 +11,7 @@ import { colors } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 
 export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; asset: Asset; onClose: () => void }) => {
+    const theme = useTheme<Theme>()
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
@@ -53,7 +54,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                     clipSize="0"
                     border={{
                         isFancy: true,
-                        borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
+                        borderColor: theme.factionTheme.primary,
                         borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
@@ -64,7 +65,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                             position: "relative",
                             px: "2.5rem",
                             py: "2.4rem",
-                            backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
+                            backgroundColor: theme.factionTheme.background,
                         }}
                     >
                         <Box

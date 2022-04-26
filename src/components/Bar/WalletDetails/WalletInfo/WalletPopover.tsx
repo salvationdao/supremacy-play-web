@@ -1,16 +1,15 @@
-import { Box, IconButton, Popover, Stack, Switch, Typography } from "@mui/material"
+import { Box, IconButton, Popover, Stack, Switch, Theme, Typography, useTheme } from "@mui/material"
 import { SvgClose, SvgSupToken } from "../../../../assets"
 import { TransactionItem } from "../../.."
-import { Transaction, UserData } from "../../../../types/passport"
+import { Transaction } from "../../../../types/passport"
 import { colors } from "../../../../theme/theme"
-import { shadeColor, supFormatterNoFixed } from "../../../../helpers"
+import { supFormatterNoFixed } from "../../../../helpers"
 import { useEffect, MutableRefObject } from "react"
 import BigNumber from "bignumber.js"
 import { useToggle } from "../../../../hooks"
 import { TimeElapsed } from "./TimeElapsed"
 
 export const WalletPopover = ({
-    user,
     open,
     sups,
     transactions,
@@ -20,7 +19,6 @@ export const WalletPopover = ({
     popoverRef,
     startTime,
 }: {
-    user: UserData
     open: boolean
     sups?: string
     transactions: Transaction[]
@@ -31,6 +29,7 @@ export const WalletPopover = ({
     popoverRef: MutableRefObject<null>
     startTime: Date
 }) => {
+    const theme = useTheme<Theme>()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [hideBattleTxs, toggleHideBattleTxs] = useToggle()
 
@@ -63,7 +62,7 @@ export const WalletPopover = ({
                 ".MuiPaper-root": {
                     mt: ".8rem",
                     background: "none",
-                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                    backgroundColor: theme.factionTheme.background,
                     border: "#FFFFFF50 1px solid",
                 },
             }}
@@ -122,9 +121,9 @@ export const WalletPopover = ({
                                 onClick={() => toggleHideBattleTxs()}
                                 sx={{
                                     transform: "scale(.5)",
-                                    ".Mui-checked": { color: `${user?.faction.theme.primary} !important` },
+                                    ".Mui-checked": { color: `${theme.factionTheme.primary} !important` },
                                     ".Mui-checked+.MuiSwitch-track": {
-                                        backgroundColor: `${user?.faction.theme.primary}50 !important`,
+                                        backgroundColor: `${theme.factionTheme.primary}50 !important`,
                                     },
                                 }}
                             />

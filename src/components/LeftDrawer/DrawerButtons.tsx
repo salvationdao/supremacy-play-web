@@ -1,25 +1,14 @@
-import { Box, Button, Stack, Tab, Tabs } from "@mui/material"
+import { Box, Button, Stack, Tab, Tabs, useTheme, Theme } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgNext } from "../../assets"
-import { shadeColor } from "../../helpers"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors } from "../../theme/theme"
-import { User } from "../../types"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
 
-export const DrawerButtons = ({
-    primaryColor,
-    secondaryColor,
-    user,
-    openLeftDrawer,
-}: {
-    primaryColor: string
-    secondaryColor: string
-    user?: User
-    openLeftDrawer: () => void
-}) => {
+export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }) => {
+    const theme = useTheme<Theme>()
     const location = useLocation()
     const history = useHistory()
 
@@ -31,7 +20,7 @@ export const DrawerButtons = ({
                 height: "100%",
                 overflow: "hidden",
                 width: `${DRAWER_BAR_WIDTH}rem`,
-                backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                backgroundColor: theme.factionTheme.background,
                 zIndex: 9999,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
@@ -56,8 +45,8 @@ export const DrawerButtons = ({
                             value={r.path}
                             onClick={() => history.push(r.path)}
                             isActive={location.pathname === r.path}
-                            primaryColor={primaryColor}
-                            secondaryColor={secondaryColor}
+                            primaryColor={theme.factionTheme.primary}
+                            secondaryColor={theme.factionTheme.secondary}
                         />
                     )
                 })}
@@ -70,9 +59,9 @@ export const DrawerButtons = ({
                     color: "#FFFFFF",
                     borderRadius: 0,
                     ":hover": {
-                        backgroundColor: primaryColor,
+                        backgroundColor: theme.factionTheme.primary,
                         svg: {
-                            fill: secondaryColor,
+                            fill: theme.factionTheme.secondary,
                         },
                     },
                 }}

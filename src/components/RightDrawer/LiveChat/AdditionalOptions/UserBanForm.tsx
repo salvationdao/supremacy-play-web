@@ -1,4 +1,19 @@
-import { Autocomplete, Box, Button, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
+import {
+    Autocomplete,
+    Box,
+    Button,
+    CircularProgress,
+    IconButton,
+    MenuItem,
+    Modal,
+    Select,
+    Stack,
+    SxProps,
+    TextField,
+    Typography,
+    useTheme,
+    Theme,
+} from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
@@ -17,31 +32,36 @@ interface SubmitRequest {
     reason: string
 }
 
-const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: SxProps }) => (
-    <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
-        <Box
-            sx={{
-                mt: "-0.1rem !important",
-                width: "1.7rem",
-                height: "1.7rem",
-                flexShrink: 0,
-                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "contain",
-                backgroundColor: user.faction.theme.primary,
-                borderRadius: 0.8,
-                border: `${user.faction.theme.primary} 1px solid`,
-            }}
-        />
-        <Typography>
-            {`${banUser.username}`}
-            <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banUser.gid}`}</span>
-        </Typography>
-    </Stack>
-)
+const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: SxProps }) => {
+    const theme = useTheme<Theme>()
+
+    return (
+        <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
+            <Box
+                sx={{
+                    mt: "-0.1rem !important",
+                    width: "1.7rem",
+                    height: "1.7rem",
+                    flexShrink: 0,
+                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "contain",
+                    backgroundColor: theme.factionTheme.primary,
+                    borderRadius: 0.8,
+                    border: `${theme.factionTheme.primary} 1px solid`,
+                }}
+            />
+            <Typography>
+                {`${banUser.username}`}
+                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banUser.gid}`}</span>
+            </Typography>
+        </Stack>
+    )
+}
 
 export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User; open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
+    const theme = useTheme<Theme>()
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { userStat } = useGameServerAuth()
@@ -58,8 +78,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
     const [selectedBanOptionID, setSelectedBanOptionID] = useState("")
     const [reason, setReason] = useState("")
 
-    const primaryColor = (user && user.faction.theme.primary) || colors.neonBlue
-    const secondaryColor = (user && user.faction.theme.secondary) || "#FFFFFF"
+    const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
 
     // Load the ban options
     useEffect(() => {
@@ -158,7 +178,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             px: "2rem",
                             pt: "1.8rem",
                             pb: "2rem",
-                            backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
+                            backgroundColor: theme.factionTheme.background,
                             ".MuiAutocomplete-popper": {
                                 zIndex: 99999,
                                 ".MuiPaper-root": {

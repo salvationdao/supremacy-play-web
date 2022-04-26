@@ -1,10 +1,8 @@
-import { Popover, Stack } from "@mui/material"
+import { Popover, Stack, Theme, useTheme } from "@mui/material"
 import { MutableRefObject, useEffect } from "react"
 import { SvgAssets, SvgProfile, SvgShop } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
-import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { colors } from "../../../../theme/theme"
 import { UserData } from "../../../../types/passport"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
@@ -20,6 +18,7 @@ export const ProfilePopover = ({
     onClose: () => void
     user: UserData
 }) => {
+    const theme = useTheme<Theme>()
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
     useEffect(() => {
@@ -50,7 +49,7 @@ export const ProfilePopover = ({
                 zIndex: 10000,
                 ".MuiPaper-root": {
                     background: "none",
-                    backgroundColor: user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                    backgroundColor: theme.factionTheme.background,
                     border: "#FFFFFF50 1px solid",
                 },
             }}

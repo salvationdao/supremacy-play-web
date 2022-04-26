@@ -1,10 +1,7 @@
-import { Button, Drawer, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import { Button, Drawer, Stack, Typography, useTheme, Theme } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgBack } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
-import { useGameServerAuth } from "../../containers"
-import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors } from "../../theme/theme"
@@ -13,16 +10,14 @@ import { DrawerButtons } from "./DrawerButtons"
 const EXPAND_DRAWER_WIDTH = 30 //rem
 
 export const LeftDrawer = () => {
-    const { user } = useGameServerAuth()
+    const theme = useTheme<Theme>()
     const location = useLocation()
     const history = useHistory()
     const [isExpanded, toggleIsExpanded] = useToggle(false)
-    const primaryColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue), [user])
-    const secondaryColor = useMemo(() => (user && user.faction ? user.faction.theme.secondary : "#FFFFFF"), [user])
 
     return (
         <>
-            <DrawerButtons primaryColor={primaryColor} secondaryColor={secondaryColor} user={user} openLeftDrawer={() => toggleIsExpanded(true)} />
+            <DrawerButtons openLeftDrawer={() => toggleIsExpanded(true)} />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
                 open={isExpanded}
@@ -38,7 +33,7 @@ export const LeftDrawer = () => {
                     "& .MuiDrawer-paper": {
                         width: `${EXPAND_DRAWER_WIDTH}rem`,
                         background: "none",
-                        backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                        backgroundColor: theme.factionTheme.background,
                         position: "absolute",
                         borderLeft: 0,
                     },
@@ -54,8 +49,8 @@ export const LeftDrawer = () => {
                                     enable={r.enable}
                                     onClick={() => history.push(r.path)}
                                     isActive={location.pathname === r.path}
-                                    primaryColor={primaryColor}
-                                    secondaryColor={secondaryColor}
+                                    primaryColor={theme.factionTheme.primary}
+                                    secondaryColor={theme.factionTheme.secondary}
                                 />
                             )
                         })}
@@ -71,11 +66,11 @@ export const LeftDrawer = () => {
                             borderRadius: 0,
                             backgroundColor: "#00000040",
                             ":hover": {
-                                backgroundColor: primaryColor,
+                                backgroundColor: theme.factionTheme.primary,
                                 svg: {
-                                    fill: secondaryColor,
+                                    fill: theme.factionTheme.secondary,
                                 },
-                                "*": { color: `${secondaryColor} !important` },
+                                "*": { color: `${theme.factionTheme.secondary} !important` },
                             },
                         }}
                     >

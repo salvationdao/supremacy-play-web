@@ -1,25 +1,23 @@
-import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Popover, Stack, Typography, useTheme, Theme } from "@mui/material"
 import { SvgClose } from "../../../../assets"
 import { colors } from "../../../../theme/theme"
-import { shadeColor } from "../../../../helpers"
-import { BattleMultipliers, User } from "../../../../types"
+import { BattleMultipliers } from "../../../../types"
 import { useEffect, MutableRefObject } from "react"
 import { useToggle } from "../../../../hooks"
 import { MultipliersBattle } from "./MultipliersBattle"
 
 export const MultipliersPopover = ({
-    user,
     open,
     multipliers,
     onClose,
     popoverRef,
 }: {
-    user: User
     open: boolean
     multipliers: BattleMultipliers[]
     onClose: () => void
     popoverRef: MutableRefObject<null>
 }) => {
+    const theme = useTheme<Theme>()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const actualMultipliers = multipliers.filter((m) => m.multipliers.length > 0)
 
@@ -52,7 +50,7 @@ export const MultipliersPopover = ({
                 ".MuiPaper-root": {
                     mt: ".8rem",
                     background: "none",
-                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                    backgroundColor: theme.factionTheme.background,
                     border: "#FFFFFF50 1px solid",
                 },
             }}

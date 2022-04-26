@@ -137,7 +137,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
             >
                 <Box sx={{ position: "relative", pointerEvents: "all" }}>
                     <ResizeBox
-                        color={theme.factionTheme.primary || colors.darkNeonBlue}
+                        color={theme.factionTheme.primary}
                         onResizeStop={onResizeStop}
                         adjustment={adjustment}
                         initialDimensions={[curWidth, curHeight]}

@@ -96,7 +96,6 @@ const MultipliersInfoInner = ({
 
             {isMultipliersPopoverOpen && user && (
                 <MultipliersPopover
-                    user={user}
                     open={isMultipliersPopoverOpen}
                     multipliers={multipliers}
                     onClose={() => toggleIsMultipliersPopoverOpen(false)}

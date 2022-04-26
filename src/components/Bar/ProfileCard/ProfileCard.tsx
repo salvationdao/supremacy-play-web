@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Stack, Typography } from "@mui/material"
+import { Avatar, IconButton, Stack, Typography, useTheme, Theme } from "@mui/material"
 import { useRef } from "react"
 import { BarExpandable, ConnectButton, PunishmentList } from "../.."
 import { SvgInfoCircular } from "../../../assets"
@@ -9,6 +9,7 @@ import { colors } from "../../../theme/theme"
 import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
 
 export const ProfileCard = () => {
+    const theme = useTheme<Theme>()
     const { user } = usePassportServerAuth()
     const { punishments } = useGameServerAuth()
     const popoverRef = useRef(null)
@@ -32,8 +33,8 @@ export const ProfileCard = () => {
                             height: "2.9rem",
                             width: "2.9rem",
                             borderRadius: 1,
-                            border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
-                            backgroundColor: faction ? faction.theme.primary : "transparent",
+                            border: `${theme.factionTheme.primary} 2px solid`,
+                            backgroundColor: theme.factionTheme.primary,
                         }}
                         variant="square"
                     />
@@ -74,8 +75,8 @@ export const ProfileCard = () => {
                             height: "2.6rem",
                             width: "2.6rem",
                             borderRadius: 0.8,
-                            border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
-                            backgroundColor: faction ? faction.theme.primary : "transparent",
+                            border: `${theme.factionTheme.primary} 2px solid`,
+                            backgroundColor: theme.factionTheme.primary,
                         }}
                         variant="square"
                     />
@@ -86,7 +87,7 @@ export const ProfileCard = () => {
                             mt: ".29rem !important",
                             lineHeight: 1,
                             fontFamily: "Nostromo Regular Black",
-                            color: faction ? faction.theme.primary : "#FFFFFF",
+                            color: theme.factionTheme.primary,
                         }}
                     >
                         {username}

@@ -1,4 +1,4 @@
-import { Badge, Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Badge, Box, Fade, Stack, Tab, Tabs, Theme, Typography, useTheme } from "@mui/material"
 import { useMemo } from "react"
 import { AdditionalOptionsButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgInfoCircular } from "../../../assets"
@@ -33,6 +33,7 @@ const LiveChatInner = () => {
 }
 
 const TabbedLayout = () => {
+    const theme = useTheme<Theme>()
     const { user } = useGameServerAuth()
     const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread, banProposal } = useChat()
 
@@ -50,8 +51,8 @@ const TabbedLayout = () => {
         bannerBackgroundColor = shadeColor(colors.globalChat, -30)
     } else if (tabValue == 1 && isEnlisted) {
         faction_id = user.faction_id
-        primaryColor = user.faction.theme.primary
-        secondaryColor = user.faction.theme.secondary
+        primaryColor = theme.factionTheme.primary
+        secondaryColor = theme.factionTheme.secondary
         bannerBackgroundColor = `${primaryColor}25`
     } else {
         return null
@@ -70,7 +71,7 @@ const TabbedLayout = () => {
                 flex: 1,
                 height: 0,
                 position: "relative",
-                backgroundColor: tabValue == 1 && user && user.faction ? `${user?.faction.theme.primary}06` : `${colors.globalChat}13`,
+                backgroundColor: tabValue == 1 ? `${theme.factionTheme.primary}06` : `${colors.globalChat}13`,
             }}
         >
             <Tabs
@@ -159,9 +160,9 @@ const TabbedLayout = () => {
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
                                             backgroundSize: "contain",
-                                            backgroundColor: user.faction.theme.primary,
+                                            backgroundColor: theme.factionTheme.primary,
                                             borderRadius: 0.5,
-                                            border: `${user.faction.theme.primary} solid 1px`,
+                                            border: `${theme.factionTheme.primary} solid 1px`,
                                         }}
                                     />
                                 </Badge>
@@ -187,6 +188,7 @@ const TabbedLayout = () => {
 }
 
 const SplitLayout = () => {
+    const theme = useTheme<Theme>()
     const { user } = useGameServerAuth()
     const { globalChatMessages, factionChatMessages, banProposal } = useChat()
 
@@ -240,13 +242,13 @@ const SplitLayout = () => {
             </Stack>
 
             {isEnlisted && user && (
-                <Stack sx={{ position: "relative", height: "50%", backgroundColor: `${user?.faction.theme.primary}06` }}>
+                <Stack sx={{ position: "relative", height: "50%", backgroundColor: `${theme.factionTheme.primary}06` }}>
                     <Stack
                         justifyContent="center"
                         sx={{
                             height: `${5}rem`,
                             px: "1.8rem",
-                            background: `${user.faction.theme.primary}25`,
+                            background: `${theme.factionTheme.primary}25`,
                             boxShadow: 1,
                             zIndex: 99,
                         }}
@@ -269,9 +271,9 @@ const SplitLayout = () => {
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
-                                    backgroundColor: user.faction.theme.primary,
+                                    backgroundColor: theme.factionTheme.primary,
                                     borderRadius: 0.5,
-                                    border: `${user.faction.theme.primary} solid 1px`,
+                                    border: `${theme.factionTheme.primary} solid 1px`,
                                 }}
                             />
                             {banProposal && (
@@ -290,8 +292,8 @@ const SplitLayout = () => {
                     <Content
                         user={user}
                         faction_id={user.faction_id}
-                        primaryColor={user.faction.theme.primary}
-                        secondaryColor={user.faction.theme.secondary}
+                        primaryColor={theme.factionTheme.primary}
+                        secondaryColor={theme.factionTheme.secondary}
                         chatMessages={factionChatMessages}
                     />
                 </Stack>

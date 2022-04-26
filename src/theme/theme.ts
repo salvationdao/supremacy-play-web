@@ -44,8 +44,8 @@ export const colors = {
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
-    darkNavyBlue: "#070719",
-    navy: "#28283f",
+    darkNavyBlue: "#0C0C1A",
+    navy: "#2A2A40",
     darkNavy: "#101019",
     darkerNavy: "#08080C",
 
