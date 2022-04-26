@@ -137,9 +137,8 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
     }
 }
 
- const unpackBooleansFromByte = (packedByte: number): boolean[] => {
-     const booleans = Array<boolean>(8).fill(false);
-	for (let i = 0; i < 8; ++i)
-		booleans[i] = (packedByte & (1 << i)) != 0;
-     return booleans
- }
+const unpackBooleansFromByte = (packedByte: number): boolean[] => {
+    const booleans = Array<boolean>(8).fill(false)
+    for (let i = 0; i < 8; ++i) booleans[i] = (packedByte & (1 << i)) != 0
+    return booleans
+}
