@@ -1,25 +1,19 @@
 import { Box, Button, Divider, Link, Modal, Stack, Typography } from "@mui/material"
 import { colors } from "../../theme/theme"
-import { useEffect } from "react"
 import { useToggle } from "../../hooks/useToggle"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
 import { usePassportServerAuth } from "../../containers"
 import { ClipThing } from ".."
 
-export const NoSupsModal = ({ haveSups, onAcknowledged }: { haveSups?: boolean; onAcknowledged: () => void }) => {
+export const NoSupsModal = () => {
     const { user } = usePassportServerAuth()
     const [open, toggleOpen] = useToggle()
-
-    useEffect(() => {
-        if (haveSups === false) return toggleOpen(true)
-        toggleOpen(false)
-    }, [haveSups])
 
     if (!user || !open) return null
 
     return (
-        <Modal open={open}>
+        <Modal open>
             <Box
                 sx={{
                     position: "absolute",
@@ -101,10 +95,7 @@ export const NoSupsModal = ({ haveSups, onAcknowledged }: { haveSups?: boolean; 
                                     border: `${colors.neonBlue} 1px solid`,
                                 },
                             }}
-                            onClick={() => {
-                                toggleOpen(false)
-                                onAcknowledged()
-                            }}
+                            onClick={() => toggleOpen(false)}
                         >
                             I just want to watch
                         </Button>

@@ -33,7 +33,7 @@ export const BattleArenaPage = () => {
 const BattleArenaPageInner = () => {
     const { state } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
-    const { haveSups, toggleHaveSups } = useSupremacy()
+    const { haveSups } = useSupremacy()
 
     return (
         <>
@@ -58,7 +58,7 @@ const BattleArenaPageInner = () => {
                 <Controls />
             </Stack>
 
-            <NoSupsModal haveSups={haveSups} onAcknowledged={() => toggleHaveSups(true)} />
+            {state === WebSocket.OPEN && user && !haveSups && <NoSupsModal />}
             <TutorialModal />
         </>
     )
