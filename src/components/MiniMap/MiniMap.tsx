@@ -206,7 +206,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                 display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                                 pointerEvents: "all",
                                 position: "absolute",
-                                top: ".89rem",
+                                top: ".75rem",
                                 left: "1.15rem",
                                 cursor: "nwse-resize",
                                 color: colors.text,
@@ -214,7 +214,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                 zIndex: 50,
                             }}
                         >
-                            <SvgResizeXY size="1.05rem" sx={{ transform: "rotate(90deg)" }} />
+                            <SvgResizeXY size="1rem" sx={{ transform: "rotate(90deg)" }} />
                         </Box>
                     )}
                 />
