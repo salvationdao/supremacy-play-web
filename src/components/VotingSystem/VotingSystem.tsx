@@ -8,6 +8,7 @@ import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "..
 import { parseString } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Dimension } from "../../types"
+import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
 import { BattleAbilityItem } from "./BattleAbilityItem"
 
 export const VotingSystem = () => {
@@ -149,7 +150,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                                 </Box>
                             </TabPanel>
                             <TabPanel value={currentTab} index={1}>
-                                testing
+                                <PlayerAbilities />
                             </TabPanel>
                         </Box>
                     </ClipThing>
