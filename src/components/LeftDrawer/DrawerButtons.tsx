@@ -2,7 +2,7 @@ import { Box, Button, Stack, Tab, Tabs, useTheme, Theme } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgNext } from "../../assets"
 import { ROUTES_ARRAY } from "../../routes"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
@@ -120,7 +120,7 @@ const TabButton = ({
                     pt: ".2rem",
                     position: "absolute",
                     whiteSpace: "nowrap",
-                    fontFamily: "Nostromo Regular Bold",
+                    fontFamily: fonts.nostromoBold,
                     fontSize: "1.1rem",
                     lineHeight: 1,
                     color: "#FFFFFF",

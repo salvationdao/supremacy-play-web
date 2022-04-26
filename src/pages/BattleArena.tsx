@@ -12,7 +12,7 @@ import {
     WarMachineStats,
 } from "../components"
 import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useSupremacy } from "../containers"
-import { colors } from "../theme/theme"
+import { colors, fonts } from "../theme/theme"
 import { SupBackground } from "../assets"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 
@@ -97,7 +97,7 @@ const NoGameUIScreen = () => {
                 <Typography
                     variant="h1"
                     sx={{
-                        fontFamily: "Nostromo Regular Heavy",
+                        fontFamily: fonts.nostromoHeavy,
                         WebkitTextStrokeWidth: "2px",
                         "@media (max-width:1440px)": {
                             fontSize: "5vw",
@@ -112,7 +112,7 @@ const NoGameUIScreen = () => {
                 <Typography
                     variant="h3"
                     sx={{
-                        fontFamily: "Nostromo Regular Black",
+                        fontFamily: fonts.nostromoBlack,
                         WebkitTextStrokeWidth: "1px",
                         "@media (max-width:1440px)": {
                             fontSize: "4vw",

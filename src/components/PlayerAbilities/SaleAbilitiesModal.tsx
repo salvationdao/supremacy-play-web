@@ -5,7 +5,7 @@ import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { ClipThing } from "../Common/ClipThing"
 import { SaleAbilityCard } from "../PlayerAbilities/SaleAbilityCard"
 
@@ -82,7 +82,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                 variant="h5"
                                 sx={{
                                     marginBottom: ".5rem",
-                                    fontFamily: "Nostromo Regular Bold",
+                                    fontFamily: fonts.nostromoBold,
                                     textTransform: "uppercase",
                                 }}
                             >

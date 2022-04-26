@@ -2,7 +2,7 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { BarExpandable, TooltipHelper } from "../.."
 import { SvgAbility, SvgBostonKillIcon, SvgDeath, SvgRedMoutainKillIcon, SvgView, SvgWrapperProps, SvgZaibatsuKillIcon } from "../../../assets"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { useSupremacy, useGameServerAuth, FactionsAll } from "../../../containers"
 import { FactionIDs, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { User, UserRank, UserStat } from "../../../types"
@@ -158,7 +158,7 @@ const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; too
                     variant="subtitle2"
                     sx={{
                         mb: ".56rem",
-                        fontFamily: "Nostromo Regular Bold",
+                        fontFamily: fonts.nostromoBold,
                         lineHeight: 1,
                         whiteSpace: "nowrap",
                         color: colors.grey,
@@ -169,7 +169,7 @@ const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; too
 
                 <Stack direction="row" alignItems="center" spacing=".64rem">
                     {PrefixSvg}
-                    <Typography variant="subtitle2" sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}>
+                    <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
                         {content}
                     </Typography>
                 </Stack>

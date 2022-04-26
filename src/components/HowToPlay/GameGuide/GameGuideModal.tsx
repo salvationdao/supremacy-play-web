@@ -2,7 +2,7 @@ import { Box, Button, Modal, Skeleton, Stack, Tab, Tabs } from "@mui/material"
 import { PrismicRichText, usePrismicDocumentsByType } from "@prismicio/react"
 import { useEffect, useState } from "react"
 import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { PrismicHowToPlay, PrismicSliceType } from "../../../types/prismic"
 import { ClipThing } from "../../Common/ClipThing"
 
@@ -68,7 +68,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                                 px: "2rem",
                                                 fontSize: "1.6rem",
                                                 opacity: 0.7,
-                                                fontFamily: "Share Tech",
+                                                fontFamily: fonts.shareTech,
                                             },
                                         }}
                                     >
@@ -181,7 +181,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                 color: colors.neonBlue,
                                 backgroundColor: colors.darkNavy,
                                 borderRadius: 0.7,
-                                fontFamily: "Nostromo Regular Bold",
+                                fontFamily: fonts.nostromoBold,
                                 border: `${colors.neonBlue} 1px solid`,
                                 ":hover": {
                                     opacity: 0.8,

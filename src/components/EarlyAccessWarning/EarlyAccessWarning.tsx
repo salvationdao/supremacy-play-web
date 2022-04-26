@@ -1,6 +1,6 @@
 import { Box, Button, Modal, Stack, Typography } from "@mui/material"
 import { Alert } from "@mui/lab"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { useToggle } from "../../hooks"
 import { ClipThing } from ".."
 
@@ -46,18 +46,18 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                                         pt: "1.12rem",
                                         fontSize: "1.3rem",
                                         fontWeight: "fontWeightBold",
-                                        fontFamily: "Nostromo Regular Bold",
+                                        fontFamily: fonts.nostromoBold,
                                     },
                                 }}
                             >
                                 The game is in early access and the $SUPS you use are real!
                             </Alert>
 
-                            <Typography sx={{ fontFamily: "Nostromo Regular Bold" }} variant="body1">
+                            <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="body1">
                                 EARLY ACCESS!
                             </Typography>
 
-                            <Typography sx={{ fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                            <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="caption">
                                 Thank you for participating in the Supremacy Battle Stream Early Access
                                 <br />
                                 <br />
@@ -88,7 +88,7 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                                 Notification.requestPermission()
                             }}
                         >
-                            <Typography sx={{ color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}>I AGREE, LET ME IN!</Typography>
+                            <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }}>I AGREE, LET ME IN!</Typography>
                         </Button>
                     </Box>
                 </ClipThing>

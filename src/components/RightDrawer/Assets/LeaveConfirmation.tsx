@@ -7,7 +7,7 @@ import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../.
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 
 export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; asset: Asset; onClose: () => void }) => {
@@ -106,7 +106,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                         <Stack spacing=".8rem">
                             <Box>
                                 <Box>
-                                    <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Bold" }}>{name || label}</Typography>
+                                    <Typography sx={{ display: "inline", fontFamily: fonts.nostromoBold }}>{name || label}</Typography>
                                     {user && (
                                         <span>
                                             <Link
@@ -125,7 +125,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                             mt: ".4rem",
                                             lineHeight: 1,
                                             color: rarityDeets.color,
-                                            fontFamily: "Nostromo Regular Heavy",
+                                            fontFamily: fonts.nostromoHeavy,
                                         }}
                                     >
                                         {rarityDeets.label}

@@ -7,7 +7,7 @@ import { SocketState, useGameServerWebsocket, usePassportServerWebsocket, useSna
 import { camelToTitle, getRarityDeets, supFormatter, timeSince } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../../types"
 import { Asset } from "../../../types/assets"
 import { UserData } from "../../../types/passport"
@@ -366,7 +366,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
                                         "& .MuiInputBase-input": {
                                             p: 0,
                                             display: "inline",
-                                            fontFamily: "Nostromo Regular Black",
+                                            fontFamily: fonts.nostromoBlack,
                                             wordBreak: "break-word",
                                         },
                                         ".MuiInputBase-input:focus": {
@@ -433,7 +433,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
                                 sx={{
                                     mt: ".3rem",
                                     color: rarityDeets.color,
-                                    fontFamily: "Nostromo Regular Heavy",
+                                    fontFamily: fonts.nostromoHeavy,
                                 }}
                             >
                                 {rarityDeets.label}
@@ -633,7 +633,7 @@ const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, d
                 <Typography variant="subtitle2" sx={{ textTransform: "uppercase" }}>
                     {mapName}
                 </Typography>
-                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBold }}>
                     {statusText}
                 </Typography>
                 {status !== "pending" && (
@@ -656,7 +656,7 @@ const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, d
                     <Typography
                         variant="h6"
                         sx={{
-                            fontFamily: "Nostromo Regular Bold",
+                            fontFamily: fonts.nostromoBold,
                             color: kills > 0 ? colors.gold : colors.lightGrey,
                         }}
                     >

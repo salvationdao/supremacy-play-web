@@ -5,7 +5,7 @@ import { SvgInfoCircular } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useGameServerAuth, usePassportServerAuth } from "../../../containers"
 import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
 
 export const ProfileCard = () => {
@@ -86,7 +86,7 @@ export const ProfileCard = () => {
                         sx={{
                             mt: ".29rem !important",
                             lineHeight: 1,
-                            fontFamily: "Nostromo Regular Black",
+                            fontFamily: fonts.nostromoBlack,
                             color: theme.factionTheme.primary,
                         }}
                     >

@@ -5,7 +5,7 @@ import { StepType, useTour } from "@reactour/tour"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
 import { useEffect, useMemo } from "react"
 import { RightDrawerPanels, useBar, usePassportServerAuth, useRightDrawer, useSupremacy } from "../../../containers"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 
 export const SetupTutorial = () => {
     const { user } = usePassportServerAuth()
@@ -180,7 +180,7 @@ export const SetupTutorial = () => {
                                 },
                             }}
                         >
-                            <Typography variant="body2" sx={{ color: `${colors.navy}D9`, fontFamily: "Nostromo Regular Bold" }}>
+                            <Typography variant="body2" sx={{ color: `${colors.navy}D9`, fontFamily: fonts.nostromoBold }}>
                                 Play Now
                             </Typography>
                         </Button>
@@ -228,7 +228,7 @@ export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial
         backgroundColor: `${colors.navy}D9`,
         borderRadius: "5px",
         fontSize: "1.5rem",
-        fontFamily: "Share Tech,Roboto,Helvetica,Arial,sans-serif",
+        fontFamily: fonts.shareTech,
         lineHeight: 1.5,
         padding: "2.8rem 3rem",
         zIndex: 999999999,

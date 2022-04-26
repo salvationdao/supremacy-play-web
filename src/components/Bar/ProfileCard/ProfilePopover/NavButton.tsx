@@ -1,5 +1,5 @@
 import { Stack, Box, Button, SxProps, Theme } from "@mui/material"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 
 interface NavButtonProps {
     href?: string
@@ -15,7 +15,7 @@ export const NavButton: React.FC<NavButtonProps> = ({ href, active, sx, startIco
             sx={{
                 alignItems: "center",
                 justifyContent: "start",
-                fontFamily: "Nostromo Regular Bold",
+                fontFamily: fonts.nostromoBold,
                 px: "1.2rem",
                 pt: ".9rem",
                 pb: ".6rem",

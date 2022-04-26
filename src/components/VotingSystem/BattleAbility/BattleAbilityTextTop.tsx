@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from "../.."
 import { SvgCooldown } from "../../../assets"
+import { fonts } from "../../../theme/theme"
 
 interface BattleAbilityTextTopProps {
     label: string
@@ -32,7 +33,7 @@ export const BattleAbilityTextTop = ({ label, description, image_url, colour, co
                     sx={{
                         lineHeight: 1,
                         fontWeight: "fontWeightBold",
-                        fontFamily: "Nostromo Regular Bold",
+                        fontFamily: fonts.nostromoBold,
                         color: colour,
                         overflow: "hidden",
                         textOverflow: "ellipsis",

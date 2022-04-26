@@ -22,7 +22,7 @@ import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../..
 import { snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { BanOption, BanUser } from "../../../../types/chat"
 import { User } from "../../../../types"
 
@@ -189,7 +189,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             },
                         }}
                     >
-                        <Typography sx={{ mb: ".9rem", fontFamily: "Nostromo Regular Black" }}>PROPOSE TO PUNISH A PLAYER</Typography>
+                        <Typography sx={{ mb: ".9rem", fontFamily: fonts.nostromoBlack }}>PROPOSE TO PUNISH A PLAYER</Typography>
 
                         <Autocomplete
                             options={userDropdown}
@@ -228,7 +228,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
                                             py: 0,
-                                            fontFamily: "Share Tech",
+                                            fontFamily: fonts.shareTech,
                                         },
                                         ".Mui-disabled": {
                                             WebkitTextFillColor: "unset",
@@ -344,7 +344,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: "Share Tech",
+                                            fontFamily: fonts.shareTech,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",

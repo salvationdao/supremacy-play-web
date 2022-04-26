@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Link, Modal, Stack, Typography } from "@mui/material"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { useToggle } from "../../hooks/useToggle"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
@@ -43,23 +43,23 @@ export const NoSupsModal = () => {
                         <Stack spacing={2}>
                             <Box sx={{ display: "flex", alignItems: "center" }}>
                                 <WarningAmberIcon color="warning" sx={{ fontSize: "3rem", mr: "1.3rem" }} />
-                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Black" }}>
+                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                                     NOT ENOUGH $SUPS
                                 </Typography>
                             </Box>
 
-                            <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                                 In order to experience the Battle Arena to its&apos; maximum potential, including voting on in game abilities, viewing the
                                 minimap and individual mech health bars, your wallet must contain $SUPS.
                             </Typography>
 
                             <Divider />
 
-                            <Typography variant="h6" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                            <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBold }}>
                                 To Obtain $SUPS:
                             </Typography>
 
-                            <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                                 1. Navigate to the{" "}
                                 <Link target="_blank" href={TOKEN_SALE_PAGE} color={colors.neonBlue}>
                                     token sale here
@@ -88,7 +88,7 @@ export const NoSupsModal = () => {
                                 color: colors.neonBlue,
                                 backgroundColor: colors.darkNavy,
                                 borderRadius: 0.7,
-                                fontFamily: "Nostromo Regular Bold",
+                                fontFamily: fonts.nostromoBold,
                                 border: `${colors.neonBlue} 1px solid`,
                                 ":hover": {
                                     opacity: 0.8,

@@ -6,7 +6,7 @@ import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
 import { FactionsAll } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
-import { colors } from "../../../../../theme/theme"
+import { colors, fonts } from "../../../../../theme/theme"
 import { TextMessageData } from "../../../../../types/chat"
 import { User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
@@ -166,7 +166,7 @@ export const TextMessage = ({
                                         sx={{
                                             display: "inline-block",
                                             lineHeight: 1,
-                                            fontFamily: "Nostromo Regular Bold",
+                                            fontFamily: fonts.nostromoBold,
                                             fontSize: smallFontSize,
                                             color: abilityKillColor,
                                         }}
@@ -179,7 +179,7 @@ export const TextMessage = ({
                                             display: "inline-block",
                                             ml: ".1rem",
                                             lineHeight: 1,
-                                            fontFamily: "Nostromo Regular Bold",
+                                            fontFamily: fonts.nostromoBold,
                                             fontSize: smallFontSize,
                                             color: abilityKillColor,
                                         }}
@@ -195,7 +195,7 @@ export const TextMessage = ({
                                     ml: ".4rem",
                                     color: multiplierColor,
                                     textAlign: "center",
-                                    fontFamily: "Nostromo Regular Bold",
+                                    fontFamily: fonts.nostromoBold,
                                     fontSize: smallFontSize,
                                     opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
                                 }}
@@ -212,7 +212,7 @@ export const TextMessage = ({
                                             ml: ".4rem",
                                             pb: ".3rem",
                                             textAlign: "center",
-                                            fontFamily: "Nostromo Regular Bold",
+                                            fontFamily: fonts.nostromoBold,
                                             fontSize: smallFontSize,
                                         }}
                                     >

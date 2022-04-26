@@ -7,7 +7,7 @@ import { usePassportServerAuth, usePassportServerWebsocket, useWallet } from "..
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { PassportServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { Transaction, UserData } from "../../../../types/passport"
 import { WalletPopover } from "./WalletPopover"
 
@@ -129,7 +129,7 @@ const WalletInfoInner = ({
                 }}
             >
                 <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />
-                <Typography sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1 }}>
+                <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1 }}>
                     {onWorldSupsRaw ? supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"}
                 </Typography>
             </Stack>

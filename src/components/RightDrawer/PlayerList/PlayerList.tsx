@@ -4,7 +4,7 @@ import { PlayerListContent } from "../.."
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useGameServerAuth } from "../../../containers"
 import { acronym } from "../../../helpers"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 
 export const PlayerList = () => {
@@ -75,7 +75,7 @@ const Content = ({
                     />
                 )}
                 <Stack spacing=".1rem">
-                    <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
+                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                         {user && user.faction ? `${acronym(user.faction.label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing="1.3rem">

@@ -3,7 +3,7 @@ import moment from "moment"
 import { useMemo } from "react"
 import { BOTTOM_BUTTONS_HEIGHT, FancyButton } from "../.."
 import { useOverlayToggles } from "../../../containers"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
@@ -11,18 +11,12 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
     const { battle_identifier, started_at, ended_at } = battleEndDetail
 
     const primaryColor = useMemo(
-        () =>
-            battleEndDetail && battleEndDetail.winning_faction
-                ? battleEndDetail && battleEndDetail.winning_faction.theme.primary
-                : colors.darkNavyBlue,
+        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.theme.primary : colors.darkNavyBlue),
         [battleEndDetail],
     )
 
     const secondaryColor = useMemo(
-        () =>
-            battleEndDetail && battleEndDetail.winning_faction
-                ? battleEndDetail && battleEndDetail.winning_faction.theme.secondary
-                : colors.text,
+        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.theme.secondary : colors.text),
         [battleEndDetail],
     )
 
@@ -40,15 +34,9 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 height: `${BOTTOM_BUTTONS_HEIGHT}rem`,
             }}
         >
-            <Stack
-                direction="row"
-                spacing=".64rem"
-                alignItems="flex-end"
-                sx={{ mr: "auto", pb: ".48rem", height: "100%" }}
-            >
+            <Stack direction="row" spacing=".64rem" alignItems="flex-end" sx={{ mr: "auto", pb: ".48rem", height: "100%" }}>
                 <Typography variant="body2" sx={{ color: "grey !important" }}>
-                    BATTLE ID #{battle_identifier.toString().padStart(4, "0")} ({moment(started_at).format("h:mm A")} to{" "}
-                    {moment(ended_at).format("h:mm A")})
+                    BATTLE ID #{battle_identifier.toString().padStart(4, "0")} ({moment(started_at).format("h:mm A")} to {moment(ended_at).format("h:mm A")})
                 </Typography>
             </Stack>
 
@@ -60,7 +48,7 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     pt: ".3rem",
                     width: "9rem",
                     color: secondaryColor,
-                    fontFamily: "Nostromo Regular Black",
+                    fontFamily: fonts.nostromoBlack,
                 }}
                 backgroundColor={primaryColor}
                 borderColor={primaryColor}

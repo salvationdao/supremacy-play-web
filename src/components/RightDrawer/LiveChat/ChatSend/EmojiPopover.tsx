@@ -1,7 +1,7 @@
 import { Box, Popover } from "@mui/material"
 import "emoji-mart/css/emoji-mart.css"
 import { BaseEmoji, Picker } from "emoji-mart"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { useToggle } from "../../../../hooks"
 import { useEffect } from "react"
 
@@ -88,7 +88,7 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
                             border: "none",
                         },
                         "#emoji-mart-search-8": {
-                            fontFamily: "Share Tech",
+                            fontFamily: fonts.shareTech,
                         },
                         "#emoji-mart-search-30": {
                             pb: "3.6px",

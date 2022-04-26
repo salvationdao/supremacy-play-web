@@ -1,7 +1,7 @@
 import { keyframes } from "@emotion/react"
 import { Box, Skeleton, Stack, styled, Typography } from "@mui/material"
 import React from "react"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 
 interface PercentageDisplayProps {
     displayValue: string
@@ -60,7 +60,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                         position: "absolute",
                         top: "50%",
                         left: "50%",
-                        fontFamily: "Nostromo Regular Bold",
+                        fontFamily: fonts.nostromoBold,
                         transform: "translate(-50%, -50%)",
                     }}
                 >

@@ -5,7 +5,7 @@ import { SvgBack } from "../../assets"
 import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useToggle } from "../../hooks"
 import { ROUTES_ARRAY } from "../../routes"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
 
 const EXPAND_DRAWER_WIDTH = 30 //rem
@@ -91,7 +91,7 @@ export const LeftDrawer = () => {
                         }}
                     >
                         <SvgBack size="1.6rem" fill="#FFFFFF" />
-                        <Typography sx={{ ml: "1rem", fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>MINIMISE</Typography>
+                        <Typography sx={{ ml: "1rem", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>MINIMISE</Typography>
                     </Button>
                 </Stack>
             </Drawer>
@@ -133,11 +133,11 @@ const MenuButton = ({
                 },
             }}
         >
-            <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>
+            <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>
                 {label}
             </Typography>
             {!enable && (
-                <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: "Nostromo Regular Bold", whiteSpace: "nowrap", lineHeight: 1 }}>
+                <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold, whiteSpace: "nowrap", lineHeight: 1 }}>
                     &nbsp;(COMING SOON)
                 </Typography>
             )}

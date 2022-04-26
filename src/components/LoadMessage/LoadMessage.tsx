@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material"
 import { useGameServerWebsocket } from "../../containers"
 import { pulseEffect } from "../../theme/keyframes"
+import { fonts } from "../../theme/theme"
 
 export const LoadMessage = () => {
     const { state, isServerUp } = useGameServerWebsocket()
@@ -31,7 +32,7 @@ export const LoadMessage = () => {
                 pointerEvents: "none",
             }}
         >
-            <Typography variant="h6" sx={{ fontFamily: "Nostromo Regular Bold", fontWeight: "fontWeightBold" }}>
+            <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBold, fontWeight: "fontWeightBold" }}>
                 {message}
             </Typography>
         </Box>

@@ -2,7 +2,7 @@ import { Box, Modal, Stack, Theme, Typography, useTheme } from "@mui/material"
 import { useMemo } from "react"
 import { ClipThing } from ".."
 import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { DamageRecord, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 export const WarMachineDestroyedInfo = ({
@@ -97,12 +97,10 @@ export const WarMachineDestroyedInfo = ({
 
                                     <Stack alignItems="center" sx={{ flex: 1 }}>
                                         <SvgSkull size="12rem" sx={{ mb: ".8rem" }} />
-                                        <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Heavy" }}>
+                                        <Typography variant="h5" sx={{ fontFamily: fonts.nostromoHeavy }}>
                                             DESTROYED
                                         </Typography>
-                                        <Typography sx={{ fontFamily: "Nostromo Regular Bold", color: colors.neonBlue }}>
-                                            {killDamagePercent}% DAMAGE
-                                        </Typography>
+                                        <Typography sx={{ fontFamily: fonts.nostromoBold, color: colors.neonBlue }}>{killDamagePercent}% DAMAGE</Typography>
                                     </Stack>
 
                                     <WarMachineBig warMachine={destroyed_war_machine} name={destroyed_war_machine.name || destroyed_war_machine.hash} isDead />
@@ -192,7 +190,7 @@ const WarMachineBig = ({ warMachine, name, isDead }: { warMachine?: WarMachineSt
                 variant="h6"
                 sx={{
                     textAlign: "center",
-                    fontFamily: "Nostromo Regular Black",
+                    fontFamily: fonts.nostromoBlack,
                     display: "-webkit-box",
                     overflow: "hidden",
                     overflowWrap: "anywhere",
@@ -222,7 +220,7 @@ const WarMachineSmall = ({ warMachine, name, damagePercent }: { warMachine?: War
                 <Typography
                     variant="body2"
                     sx={{
-                        fontFamily: "Nostromo Regular Black",
+                        fontFamily: fonts.nostromoBlack,
                         display: "-webkit-box",
                         overflow: "hidden",
                         overflowWrap: "anywhere",
@@ -234,7 +232,7 @@ const WarMachineSmall = ({ warMachine, name, damagePercent }: { warMachine?: War
                 >
                     {name}
                 </Typography>
-                <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                     {damagePercent}%
                 </Typography>
             </Stack>
@@ -259,7 +257,7 @@ const DamageList = ({ title, damageRecords, top = 2 }: { title: string; damageRe
                     variant="body2"
                     sx={{
                         textAlign: "center",
-                        fontFamily: "Nostromo Regular Heavy",
+                        fontFamily: fonts.nostromoHeavy,
                     }}
                 >
                     {title}
@@ -279,7 +277,7 @@ const DamageList = ({ title, damageRecords, top = 2 }: { title: string; damageRe
                             />
                         ))
                 ) : (
-                    <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                         Nothing to show...
                     </Typography>
                 )}

@@ -7,6 +7,7 @@ import { Crosshair } from "../../assets"
 import { Severity, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
+import { fonts } from "../../theme/theme"
 import { Dimension, GameAbility, Map, WarMachineState } from "../../types"
 
 export interface MapSelection {
@@ -376,7 +377,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
             <Typography
                 variant="h1"
                 sx={{
-                    fontFamily: "Nostromo Regular Black",
+                    fontFamily: fonts.nostromoBlack,
                     color: "#D90000",
                     opacity: 0.9,
                     filter: "drop-shadow(0 3px 3px #00000050)",

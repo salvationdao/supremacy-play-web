@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material"
 import { PrismicProvider } from "@prismicio/react"
 import { prismicClient } from "../../../helpers/prismicClient"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { GameGuideModal } from "./GameGuideModal"
 
 const GameGuide = ({ onClose }: { onClose: () => void }) => {
@@ -10,12 +10,12 @@ const GameGuide = ({ onClose }: { onClose: () => void }) => {
             client={prismicClient}
             richTextComponents={{
                 heading1: ({ children }) => (
-                    <Typography variant="h1" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                    <Typography variant="h1" sx={{ fontFamily: fonts.nostromoBold }}>
                         {children}
                     </Typography>
                 ),
                 heading2: ({ children }) => (
-                    <Typography variant="h2" sx={{ fontFamily: "Nostromo Regular Bold", fontSize: "2.5rem" }}>
+                    <Typography variant="h2" sx={{ fontFamily: fonts.nostromoBold, fontSize: "2.5rem" }}>
                         {children}
                     </Typography>
                 ),
@@ -32,12 +32,12 @@ const GameGuide = ({ onClose }: { onClose: () => void }) => {
                     </Typography>
                 ),
                 heading4: ({ children }) => (
-                    <Typography variant="h4" sx={{ fontFamily: "Nostromo Regular Bold", fontSize: "1rem" }}>
+                    <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBold, fontSize: "1rem" }}>
                         {children}
                     </Typography>
                 ),
                 heading5: ({ children }) => (
-                    <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Bold", fontSize: "1rem" }}>
+                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBold, fontSize: "1rem" }}>
                         {children}
                     </Typography>
                 ),

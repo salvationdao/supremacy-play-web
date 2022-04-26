@@ -6,7 +6,7 @@ import { PASSPORT_WEB } from "../../../constants"
 import { useGameServerAuth, useGameServerWebsocket, useSnackbar, useSupremacy } from "../../../containers"
 import { usePagination, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { TelegramShortcodeModal } from "./DeployConfirmation"
 
 export interface QueueFeedResponse {
@@ -197,7 +197,7 @@ const Content = ({
                 }}
             >
                 <SvgRobot size="2.3rem" fill={colors.text} sx={{ pb: ".56rem" }} />
-                <Typography variant="caption" sx={{ fontFamily: "Nostromo Regular Black" }}>
+                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                     WAR MACHINES
                 </Typography>
             </Stack>

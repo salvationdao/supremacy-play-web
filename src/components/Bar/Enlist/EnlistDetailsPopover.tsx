@@ -6,7 +6,7 @@ import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { usePassportServerWebsocket, useSnackbar } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { PassportServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { FactionGeneralData, FactionStat } from "../../../types/passport"
 
 interface EnlistDetailsProps {
@@ -70,13 +70,13 @@ export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: Enl
 const Stat = ({ title, content, PrefixSvg }: { title: string; content: string | number; PrefixSvg?: SvgWrapperProps }) => {
     return (
         <Stack spacing=".24rem" sx={{ width: "18rem" }}>
-            <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold", color: colors.grey }}>
+            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, color: colors.grey }}>
                 {title}
             </Typography>
 
             <Stack direction="row" alignItems="center" spacing=".32rem">
                 {PrefixSvg}
-                <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}>
+                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
                     {content}
                 </Typography>
             </Stack>
@@ -185,7 +185,7 @@ const PopoverContent = ({ faction }: { faction: FactionGeneralData }) => {
                         borderRadius: 0.5,
                     }}
                 />
-                <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                     {label.toUpperCase()}
                 </Typography>
             </Stack>
@@ -227,7 +227,7 @@ const PopoverContent = ({ faction }: { faction: FactionGeneralData }) => {
                             py: ".16rem",
                             pt: ".5rem",
                             color: secondary,
-                            fontFamily: "Nostromo Regular Black",
+                            fontFamily: fonts.nostromoBlack,
                         }}
                         onClick={enlistFaction}
                     >

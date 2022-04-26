@@ -6,7 +6,7 @@ import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { ChatProvider, useChat, useGameServerAuth } from "../../../containers"
 import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { ChatMessageType } from "../../../types/chat"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
@@ -103,7 +103,7 @@ const TabbedLayout = () => {
                                 sx={{
                                     ".MuiBadge-badge": {
                                         fontSize: "1.2rem",
-                                        fontFamily: "Share Tech",
+                                        fontFamily: fonts.shareTech,
                                         fontWeight: "fontWeightBold",
                                         lineHeight: 0,
                                         color: "#FFFFFF",
@@ -117,7 +117,7 @@ const TabbedLayout = () => {
                                 variant="caption"
                                 sx={{
                                     lineHeight: 1,
-                                    fontFamily: "Nostromo Regular Black",
+                                    fontFamily: fonts.nostromoBlack,
                                     textAlign: "start",
                                 }}
                             >
@@ -142,7 +142,7 @@ const TabbedLayout = () => {
                                     sx={{
                                         ".MuiBadge-badge": {
                                             fontSize: "1.2rem",
-                                            fontFamily: "Share Tech",
+                                            fontFamily: fonts.shareTech,
                                             fontWeight: "fontWeightBold",
                                             lineHeight: 0,
                                             color: "#FFFFFF",
@@ -174,7 +174,7 @@ const TabbedLayout = () => {
                                         </Box>
                                     </TooltipHelper>
                                 )}
-                                <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", textAlign: "start" }}>
+                                <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
                                     {factionTabLabel}
                                 </Typography>
                             </Stack>
@@ -231,7 +231,7 @@ const SplitLayout = () => {
                         variant="caption"
                         sx={{
                             lineHeight: 1,
-                            fontFamily: "Nostromo Regular Black",
+                            fontFamily: fonts.nostromoBlack,
                             textAlign: "start",
                         }}
                     >
@@ -283,7 +283,7 @@ const SplitLayout = () => {
                                     </Box>
                                 </TooltipHelper>
                             )}
-                            <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", textAlign: "start" }}>
+                            <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
                                 {factionTabLabel}
                             </Typography>
                         </Stack>

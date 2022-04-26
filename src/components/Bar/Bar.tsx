@@ -5,7 +5,7 @@ import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../con
 import { SocketState, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { UserData } from "../../types/passport"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
 import { SaleAbilitiesModal } from "../PlayerAbilities/SaleAbilitiesModal"
@@ -64,7 +64,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
             <>
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-                <Typography sx={{ mr: "1.6rem", fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                <Typography sx={{ mr: "1.6rem", fontFamily: fonts.nostromoBold }} variant="caption">
                     {isServerUp ? "Connecting to passport..." : "Passport offline."}
                 </Typography>
             </>

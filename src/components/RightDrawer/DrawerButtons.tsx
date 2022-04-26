@@ -1,7 +1,7 @@
 import { Box, Tab, Tabs, Theme, useTheme } from "@mui/material"
 import { SvgChat, SvgRobot } from "../../assets"
 import { RightDrawerPanels } from "../../containers"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
@@ -110,7 +110,7 @@ const TabButton = ({
                     pt: ".2rem",
                     position: "absolute",
                     whiteSpace: "nowrap",
-                    fontFamily: "Nostromo Regular Bold",
+                    fontFamily: fonts.nostromoBold,
                     fontSize: "1.1rem",
                     lineHeight: 1,
                     color: "#FFFFFF",

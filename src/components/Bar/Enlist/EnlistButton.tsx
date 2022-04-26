@@ -4,7 +4,7 @@ import { EnlistDetailsPopover } from "../.."
 import { SvgPlus } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { FactionGeneralData } from "../../../types/passport"
 
 export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
@@ -27,7 +27,7 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                     alignItems: "center",
                     px: ".96rem",
                     py: ".4rem",
-                    fontFamily: "Nostromo Regular Bold",
+                    fontFamily: fonts.nostromoBold,
                     backgroundColor: "transparent",
                     borderRadius: 0.2,
                     border: `1px solid ${primary}`,

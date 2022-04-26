@@ -8,6 +8,7 @@ import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../contai
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
+import { fonts } from "../../theme/theme"
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 // in rems
@@ -337,7 +338,7 @@ const WarMachineItemInner = ({
                                     sx={{
                                         lineHeight: 1,
                                         fontWeight: "fontWeightBold",
-                                        fontFamily: "Nostromo Regular Black",
+                                        fontFamily: fonts.nostromoBlack,
                                         textOverflow: "ellipsis",
                                         overflow: "hidden",
                                         whiteSpace: "normal",
