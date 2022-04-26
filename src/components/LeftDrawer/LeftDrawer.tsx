@@ -1,7 +1,7 @@
-import { Button, Drawer, Stack, Typography, useTheme, Theme, Box } from "@mui/material"
+import { Button, Drawer, Stack, Typography, useTheme, Theme } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgBack } from "../../assets"
-import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useToggle } from "../../hooks"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts } from "../../theme/theme"
@@ -14,21 +14,6 @@ export const LeftDrawer = () => {
     const location = useLocation()
     const history = useHistory()
     const [isExpanded, toggleIsExpanded] = useToggle(false)
-
-    if (!DEV_ONLY) {
-        return (
-            <Box
-                sx={{
-                    flexShrink: 0,
-                    position: "relative",
-                    height: "100%",
-                    width: `${3}rem`,
-                    backgroundColor: (theme) => theme.factionTheme.background,
-                    zIndex: 9999,
-                }}
-            />
-        )
-    }
 
     return (
         <>

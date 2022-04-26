@@ -175,7 +175,6 @@ export interface Map {
     cells_y: number
     top: number
     left: number
-    scale: number
     disabled_cells: number[]
 }
 
