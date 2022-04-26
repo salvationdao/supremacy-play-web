@@ -125,7 +125,9 @@ const MapWarMachineInner = ({
                 position: "absolute",
                 pointerEvents: targeting ? "none" : "all",
                 cursor: "pointer",
-                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left) * mapScale}px, ${(position.y - map.top) * mapScale}px, 0)`,
+                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left_pixels) * mapScale}px, ${
+                    (position.y - map.top_pixels) * mapScale
+                }px, 0)`,
                 transition: "transform 0.2s linear",
                 zIndex: isAlive ? 5 : 4,
                 opacity: isSpawnedAI ? 0.8 : 1,
