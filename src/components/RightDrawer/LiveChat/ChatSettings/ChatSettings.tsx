@@ -1,5 +1,5 @@
 import { IconButton, Popover, Stack, Typography } from "@mui/material"
-import { MutableRefObject, useEffect, useRef } from "react"
+import { MutableRefObject, useEffect, useMemo, useRef } from "react"
 import { NoMultiFilter, SplitView, SystemMessageFilter } from "../../.."
 import { SvgSettings } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
@@ -60,7 +60,7 @@ const SettingsPopover = ({
         }
     }, [localOpen])
 
-    const backgroundColor = shadeColor(primaryColor, -95)
+    const backgroundColor = useMemo(() => shadeColor(primaryColor, -95), [primaryColor])
 
     return (
         <Popover

@@ -2,7 +2,6 @@ import { Box, Stack } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
 import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
-import { shadeColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../../types"
 
@@ -151,7 +150,7 @@ const MapWarMachineInner = ({
                               border: `${primaryColor} solid 3px`,
                               borderRadius: 1,
                               opacity: isAlive ? 1 : 0.7,
-                              boxShadow: isAlive ? `0 0 8px 2px ${shadeColor(primaryColor, 80)}70` : "none",
+                              boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
                               zIndex: 2,
                           }
                         : {
