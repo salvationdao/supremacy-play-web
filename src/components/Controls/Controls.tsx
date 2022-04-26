@@ -48,7 +48,7 @@ export const Controls = () => {
                 <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />
             </Stack>
 
-            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0 }}>
+            <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0 }}>
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />

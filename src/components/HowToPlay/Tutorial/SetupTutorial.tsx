@@ -81,26 +81,16 @@ export const SetupTutorial = () => {
                 selector: "#tutorial-overlays",
                 content:
                     "You can gain more information about Spoils of War, Mini-Map along with current and past battle histories by toggling these overlays. Note that these functionalities can only be used when you have SUPs in your on-world wallet.",
-                position: "center",
+                position: "top",
             },
             {
-                selector: "#tutorial-server",
+                selector: "#tutorial-stream-options",
                 content:
-                    "Select your server here. Supremacy recommends always connecting to the closest server, if you ever experience delays, ensure you have the nearest server selected or try choosing another server.",
-                position: "center",
+                    "You can select your streaming server, change the resolution, and other options here. Supremacy recommends always connecting to the closest server, if you ever experience delays, ensure you have the nearest server selected or try choosing another server.",
+                position: "top",
             },
         ]
     }, [user?.faction_id])
-
-    const resolutionSteps: StepType[] = useMemo(() => {
-        return [
-            {
-                selector: "#tutorial-resolution",
-                content: "Select your stream resolution here. If you are experience delays or poor internet connection, try dropping the resolution.",
-                position: "center",
-            },
-        ]
-    }, [])
 
     //only show if user is enlisted
     const enlistedSteps: StepType[] = useMemo(() => {
@@ -209,11 +199,6 @@ export const SetupTutorial = () => {
 
         let tutorialSteps = [...baseSteps]
 
-        //if resolution, add it here
-        if (document.getElementById("tutorial-resolution")) {
-            tutorialSteps = [...tutorialSteps, ...resolutionSteps]
-        }
-
         //if the user is not enlisted, finish tutorial
         if (user.faction_id) {
             tutorialSteps = [...tutorialSteps, ...enlistedSteps]
@@ -226,7 +211,7 @@ export const SetupTutorial = () => {
         tutorialSteps = [...tutorialSteps, ...endSteps]
 
         setSteps(tutorialSteps)
-    }, [preAuthSteps, baseSteps, enlistedSteps, resolutionSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
+    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
 
     return null
 }
@@ -234,6 +219,7 @@ export const SetupTutorial = () => {
 export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial<Styles>) | undefined = {
     maskWrapper: (base) => ({
         ...base,
+        zIndex: 999999998,
         opacity: 0.9,
     }),
     popover: (base) => ({

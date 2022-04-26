@@ -95,8 +95,9 @@ const TabbedLayout = () => {
                 }}
             >
                 <Tab
+                    className="tutorial-global-chat"
                     label={
-                        <Stack className="tutorial-global-chat" direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
+                        <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                             <Badge
                                 badgeContent={globalChatUnread}
                                 sx={{
@@ -127,9 +128,9 @@ const TabbedLayout = () => {
                 />
                 {isEnlisted && (
                     <Tab
+                        className="tutorial-faction-chat"
                         label={
                             <Stack
-                                className="tutorial-faction-chat"
                                 direction="row"
                                 alignItems="center"
                                 justifyContent="center"
@@ -242,7 +243,7 @@ const SplitLayout = () => {
             </Stack>
 
             {isEnlisted && user && (
-                <Stack sx={{ position: "relative", height: "50%", backgroundColor: `${theme.factionTheme.primary}06` }}>
+                <Stack className="tutorial-faction-chat" sx={{ position: "relative", height: "50%", backgroundColor: `${theme.factionTheme.primary}06` }}>
                     <Stack
                         justifyContent="center"
                         sx={{
@@ -254,7 +255,6 @@ const SplitLayout = () => {
                         }}
                     >
                         <Stack
-                            className="tutorial-faction-chat"
                             direction="row"
                             alignItems="center"
                             spacing=".96rem"
