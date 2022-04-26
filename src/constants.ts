@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js"
 const USE_PROD = false
 
 // Envar stuff
+export const DEV_ONLY = process.env.NODE_ENV === "development"
 const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
 const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/nosidebar/buy"
 const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
@@ -50,8 +51,6 @@ export const SENTRY_CONFIG = {
 // UI related stuff
 export const GAME_BAR_HEIGHT = 5.9 // rem
 export const RIGHT_DRAWER_WIDTH = 38 // rem
-export const LEFT_DRAWER_WIDTH = 5 //rem
-export const LIVE_CHAT_DRAWER_BUTTON_WIDTH = 3 // rem
 export const CONTROLS_HEIGHT = 3.0 // rem
 export const MINI_MAP_DEFAULT_SIZE = 240 //px
 
@@ -67,16 +66,16 @@ export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
 // Game stuff
 export const VOTING_OPTION_COSTS = [
     {
-        minCost: new BigNumber(0.0001),
-        percentage: 0.01,
-    },
-    {
-        minCost: new BigNumber(0.001),
-        percentage: 0.1,
-    },
-    {
+        percentage: 0.0001, // 0.01%
         minCost: new BigNumber(0.01),
-        percentage: 1,
+    },
+    {
+        percentage: 0.001, // 0.1%
+        minCost: new BigNumber(0.1),
+    },
+    {
+        percentage: 0.01, // 1%
+        minCost: new BigNumber(1),
     },
 ]
 

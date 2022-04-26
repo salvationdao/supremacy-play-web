@@ -1,57 +1,71 @@
 import { useMediaQuery } from "@mui/material"
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useDrawer } from "."
-import { CONTROLS_HEIGHT, GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH, RIGHT_DRAWER_WIDTH, STREAM_ASPECT_RATIO_W_H } from "../constants"
-import { useWindowDimensions } from "../hooks"
+import { STREAM_ASPECT_RATIO_W_H } from "../constants"
+import { useDebounce } from "../hooks"
 import { Dimension } from "../types"
-import { LEFT_DRAWER_WIDTH } from "./../constants"
 
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer(() => {
-    const { width: windowWidth, height: windowHeight } = useWindowDimensions()
-    const { isAnyPanelOpen } = useDrawer()
+    const [remToPxRatio, setRemToPxRatio] = useState(10)
+    const below900 = useMediaQuery("(max-width:900px)")
+    const below1500 = useMediaQuery("(max-width:1500px)")
+    const below1920 = useMediaQuery("(max-width:1920px)")
 
-    const [mainDivDimensions, setMainDivDimensions] = useState<Dimension>({
-        width: 0,
-        height: 0,
-    })
-    const [streamDimensions, setStreamDimensions] = useState<Dimension>({
-        width: 0,
-        height: 0,
-    })
+    const [gameUIDimensions, setGameUIDimensions] = useDebounce<Dimension>(
+        {
+            width: 0,
+            height: 0,
+        },
+        300,
+    )
     const [iframeDimensions, setIframeDimensions] = useState<{ width: number | string; height: number | string }>({
         width: 0,
         height: 0,
     })
 
-    const below900 = useMediaQuery("(max-width:900px)")
-    const below1500 = useMediaQuery("(max-width:1500px)")
-    const below1920 = useMediaQuery("(max-width:1920px)")
-    const [pxToRemRatio, setPxToRemRatio] = useState(10)
-
-    // Refer to `src/theme/global.css`
+    // Please refer to `src/theme/global.css`
     useEffect(() => {
-        if (below900) return setPxToRemRatio(0.44 * 16)
-        if (below1500) return setPxToRemRatio(0.5 * 16)
-        if (below1920) return setPxToRemRatio(0.54 * 16)
-        setPxToRemRatio(0.625 * 16)
+        if (below900) return setRemToPxRatio(0.44 * 16)
+        if (below1500) return setRemToPxRatio(0.5 * 16)
+        if (below1920) return setRemToPxRatio(0.54 * 16)
+        setRemToPxRatio(0.625 * 16)
     }, [below1920, below1500, below900])
 
     useEffect(() => {
-        // Main div dimensions
-        const mainDivWidth = windowWidth
-        const mainDivHeight = windowHeight - GAME_BAR_HEIGHT * pxToRemRatio
+        const gameUIContainer = document.getElementById("game-ui-container")
+        if (!gameUIContainer) {
+            console.error("Please assign #game-ui-container to the game UI.")
+            return
+        }
 
-        const rightDrawerAllowance = isAnyPanelOpen ? RIGHT_DRAWER_WIDTH * pxToRemRatio : 0
+        const resize_ob = new ResizeObserver((entries) => {
+            const rect = entries[0].contentRect
+            setGameUIDimensions({
+                width: rect.width,
+                height: rect.height,
+            })
+        })
 
-        // Stream div dimensions
-        const streamWidth = mainDivWidth - LIVE_CHAT_DRAWER_BUTTON_WIDTH * pxToRemRatio - rightDrawerAllowance - LEFT_DRAWER_WIDTH * pxToRemRatio
-        const streamHeight = mainDivHeight - CONTROLS_HEIGHT * pxToRemRatio
+        resize_ob.observe(gameUIContainer)
+        return () => {
+            resize_ob.unobserve(gameUIContainer)
+        }
+    }, [])
+
+    useEffect(() => {
+        const gameUIContainer = document.getElementById("game-ui-container")
+        if (!gameUIContainer) {
+            console.error("Please assign #game-ui-container to the game UI.")
+            return
+        }
+
+        const containerWidth = gameUIContainer.offsetWidth
+        const containerHeight = gameUIContainer.offsetHeight
 
         // Work out iframe width and height based on its aspect ratio and stream width and height
-        let iframeWidth: number | string = streamWidth
-        let iframeHeight: number | string = streamHeight
+        let iframeWidth: number | string = containerWidth
+        let iframeHeight: number | string = containerHeight
         const iframeRatio = iframeWidth / iframeHeight
         if (iframeRatio >= STREAM_ASPECT_RATIO_W_H) {
             iframeHeight = "unset"
@@ -59,15 +73,13 @@ export const DimensionContainer = createContainer(() => {
             iframeWidth = "unset"
         }
 
-        setStreamDimensions({ width: streamWidth, height: streamHeight })
-        setMainDivDimensions({ width: mainDivWidth, height: mainDivHeight })
+        setGameUIDimensions({ width: containerWidth, height: containerHeight })
         setIframeDimensions({ width: iframeWidth, height: iframeHeight })
-    }, [windowWidth, windowHeight, isAnyPanelOpen, pxToRemRatio])
+    }, [gameUIDimensions, remToPxRatio])
 
     return {
-        pxToRemRatio,
-        mainDivDimensions,
-        streamDimensions,
+        remToPxRatio,
+        gameUIDimensions,
         iframeDimensions,
     }
 })

@@ -4,7 +4,7 @@ import { BarExpandable, EnlistButton } from "../.."
 import { RedMountainLogo } from "../../../assets"
 import { usePassportServerWebsocket, useSnackbar } from "../../../containers"
 import { PassportServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { FactionGeneralData } from "../../../types/passport"
 
 export const EnlistButtonGroup = () => {
@@ -13,7 +13,7 @@ export const EnlistButtonGroup = () => {
     const [factionsData, setFactionsData] = useState<FactionGeneralData[]>()
 
     useEffect(() => {
-        if (state !== WebSocket.OPEN) return
+        if (state !== WebSocket.OPEN || !send) return
         ;(async () => {
             try {
                 const resp = await send<FactionGeneralData[], null>(PassportServerKeys.GetFactionsAll, null)
@@ -85,7 +85,7 @@ export const EnlistButtonGroup = () => {
                         },
                     }}
                 >
-                    <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Enlist:</Typography>
+                    <Typography sx={{ fontFamily: fonts.nostromoBold }}>Enlist:</Typography>
 
                     {factionsData.map((f) => (
                         <EnlistButton key={f.id} faction={f} />

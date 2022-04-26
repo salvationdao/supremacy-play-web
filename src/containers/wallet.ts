@@ -1,25 +1,43 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import BigNumber from "bignumber.js"
-import { usePassportServerSecureSubscription } from "../hooks"
 import { PassportServerKeys } from "../keys"
+import { usePassportServerWebsocket } from "./passportServerSocket"
+import { usePassportServerAuth } from "./passportServerAuth"
+import { useSupremacy } from "."
 
 export const WalletContainer = createContainer(() => {
-    const { payload: sups } = usePassportServerSecureSubscription<string>(PassportServerKeys.SubscribeWallet)
+    const { state, subscribe } = usePassportServerWebsocket()
+    const { user } = usePassportServerAuth()
+    const { haveSups, toggleHaveSups } = useSupremacy()
     const [onWorldSupsRaw, setOnWorldSupsRaw] = useState<string>("")
-    const [onWorldSups, setOnworldSups] = useState<BigNumber | undefined>()
+    const [onWorldSups, setOnworldSups] = useState<BigNumber>()
+    const firstIteration = useRef(true)
 
-    // Set the sups amount
     useEffect(() => {
-        if (!sups) return
-        setOnWorldSupsRaw(sups)
-    }, [sups, setOnWorldSupsRaw])
+        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        return subscribe<string>(PassportServerKeys.SubscribeWallet, (payload) => {
+            if (!payload) return
+            setOnWorldSupsRaw(payload)
+            setOnworldSups(new BigNumber(onWorldSupsRaw))
+        })
+    }, [state, subscribe, user])
 
-    // Sup tokens
     useEffect(() => {
-        if (!onWorldSupsRaw) return
-        setOnworldSups(new BigNumber(onWorldSupsRaw))
-    }, [onWorldSupsRaw])
+        if (!onWorldSups || onWorldSups.isNaN()) return
+
+        const supsAboveZero = onWorldSups.isGreaterThan(0)
+
+        if (firstIteration.current) {
+            toggleHaveSups(supsAboveZero)
+            firstIteration.current = false
+            return
+        }
+
+        // Only update the have sups state when there's a change
+        if (supsAboveZero && !haveSups) return toggleHaveSups(true)
+        if (!supsAboveZero && haveSups) return toggleHaveSups(false)
+    }, [onWorldSups, haveSups])
 
     return {
         onWorldSups,

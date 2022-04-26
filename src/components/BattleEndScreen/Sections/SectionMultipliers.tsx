@@ -2,7 +2,7 @@ import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { BattleEndTooltip, StyledImageText, TooltipHelper } from "../.."
 import { getMutiplierDeets } from "../../../helpers"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail, Multiplier } from "../../../types"
 
 export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
@@ -34,7 +34,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                     variant="h5"
                     sx={{
                         position: "relative",
-                        fontFamily: "Nostromo Regular Black",
+                        fontFamily: fonts.nostromoBlack,
                         fontWeight: "fontWeightBold",
                         color: colors.yellow,
                     }}
@@ -55,7 +55,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                 variant="h6"
                                 sx={{
                                     color: colors.neonBlue,
-                                    fontFamily: "Nostromo Regular Black",
+                                    fontFamily: fonts.nostromoBlack,
                                 }}
                             >
                                 MULTIPLIERS
@@ -103,7 +103,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                     variant="h6"
                                     sx={{
                                         color: colors.neonBlue,
-                                        fontFamily: "Nostromo Regular Black",
+                                        fontFamily: fonts.nostromoBlack,
                                     }}
                                 >
                                     BONUSES
@@ -151,7 +151,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                 variant="h6"
                                 sx={{
                                     color: colors.neonBlue,
-                                    fontFamily: "Nostromo Regular Black",
+                                    fontFamily: fonts.nostromoBlack,
                                 }}
                             >
                                 TOTAL MULTIPLIERS

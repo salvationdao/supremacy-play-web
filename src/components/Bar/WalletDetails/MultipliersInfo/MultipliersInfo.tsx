@@ -1,18 +1,16 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useRef, useState } from "react"
-import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../../../containers"
+import { useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
-import { BattleMultipliers, MultiplierUpdateResp } from "../../../../types"
+import { colors, fonts } from "../../../../theme/theme"
+import { BattleMultipliers, MultiplierUpdateResp, User } from "../../../../types"
 import { MultipliersPopover } from "./MultiplierPopover"
 
 export const MultipliersInfo = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
-    const { battleIdentifier } = useGame()
-    const multipliersPopoverRef = useRef(null)
-    const [isMultipliersPopoverOpen, toggleIsMultipliersPopoverOpen] = useToggle()
+    const { battleIdentifier } = useSupremacy()
     // Multipliers
     const [multipliers, setMultipliers] = useState<BattleMultipliers[]>([])
     const [currentBattleMultiplier, setCurrentBattleMultiplier] = useState(0)
@@ -40,6 +38,21 @@ export const MultipliersInfo = () => {
         const currentMulti = multipliers.filter((m) => m.battle_number === battleIdentifier || m.battle_number === (battleIdentifier || 0) - 1)
         setCurrentBattleMultiplier(currentMulti.length > 0 ? currentMulti[0].total_multipliers : 0)
     }, [multipliers, battleIdentifier])
+
+    return <MultipliersInfoInner currentBattleMultiplier={currentBattleMultiplier} user={user} multipliers={multipliers} />
+}
+
+const MultipliersInfoInner = ({
+    currentBattleMultiplier,
+    user,
+    multipliers,
+}: {
+    currentBattleMultiplier: number
+    user?: User
+    multipliers: BattleMultipliers[]
+}) => {
+    const multipliersPopoverRef = useRef(null)
+    const [isMultipliersPopoverOpen, toggleIsMultipliersPopoverOpen] = useToggle()
 
     return (
         <>
@@ -71,7 +84,7 @@ export const MultipliersInfo = () => {
                         pb: ".24rem",
                         textAlign: "center",
                         lineHeight: 1,
-                        fontFamily: "Nostromo Regular Bold",
+                        fontFamily: fonts.nostromoBold,
                         border: `${colors.orange} 1px solid`,
                         color: colors.orange,
                         borderRadius: 0.6,
@@ -83,7 +96,6 @@ export const MultipliersInfo = () => {
 
             {isMultipliersPopoverOpen && user && (
                 <MultipliersPopover
-                    user={user}
                     open={isMultipliersPopoverOpen}
                     multipliers={multipliers}
                     onClose={() => toggleIsMultipliersPopoverOpen(false)}

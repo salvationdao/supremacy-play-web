@@ -44,8 +44,8 @@ export const colors = {
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
-    darkNavyBlue: "#070719",
-    navy: "#28283f",
+    darkNavyBlue: "#0C0C1A",
+    navy: "#2A2A40",
     darkNavy: "#101019",
     darkerNavy: "#08080C",
 
@@ -86,9 +86,12 @@ const factionTheme: FactionTheme = {
 }
 
 export const fonts = {
-    nostromoblack: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-    nostromobold: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-    sharetech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    nostromoHeavy: ["Nostromo Regular Heavy", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    nostromoBlack: ["Nostromo Regular Black", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    nostromoBold: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    nostromoMedium: ["Nostromo Regular Medium", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    nostromoLight: ["Nostromo Regular Light", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    shareTech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
 }
 
 export const theme = createTheme({
@@ -123,48 +126,48 @@ export const theme = createTheme({
     typography: {
         htmlFontSize: 16,
         h1: {
-            fontFamily: ["Nostromo Regular Black", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.nostromoBlack,
             fontSize: "8.18rem",
         },
         h2: {
-            fontFamily: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.nostromoBold,
             fontSize: "5.15rem",
         },
         h3: {
-            fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.shareTech,
             fontSize: "4.13rem",
         },
         h4: {
-            fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.shareTech,
             fontSize: "2.96rem",
         },
         h5: {
-            fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.shareTech,
             fontSize: "2.13rem",
         },
         h6: {
-            fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.shareTech,
             fontSize: "1.78rem",
         },
         body1: {
-            fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.shareTech,
             fontSize: "1.43rem",
         },
         body2: {
-            fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.shareTech,
             fontSize: "1.28rem",
         },
         subtitle1: {
-            fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.shareTech,
             fontSize: "1.19rem",
             textAlign: "center",
         },
         subtitle2: {
-            fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.shareTech,
             fontSize: "1.19rem",
         },
         caption: {
-            fontFamily: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+            fontFamily: fonts.shareTech,
             fontSize: "1.19rem",
         },
     },
@@ -249,7 +252,7 @@ export const theme = createTheme({
         MuiTab: {
             styleOverrides: {
                 root: {
-                    fontFamily: "Nostromo Regular Black",
+                    fontFamily: fonts.nostromoBlack,
                     color: "white",
                 },
             },

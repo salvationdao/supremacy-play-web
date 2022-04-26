@@ -213,7 +213,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                 variant="h5"
                                 sx={{
                                     marginBottom: ".5rem",
-                                    fontFamily: fonts.nostromobold,
+                                    fontFamily: fonts.nostromoBold,
                                     textTransform: "uppercase",
                                 }}
                             >

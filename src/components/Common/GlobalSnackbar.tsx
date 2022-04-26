@@ -56,7 +56,7 @@ export const GlobalSnackbar = () => {
                     spacing=".9rem"
                     sx={{
                         mb: "1.8rem",
-                        ml: ".9rem",
+                        ml: "1.9rem",
                         px: "1.4rem",
                         pt: ".6rem",
                         pb: ".5rem",

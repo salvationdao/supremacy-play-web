@@ -1,5 +1,4 @@
-import { Box, Fade, Stack, Theme, Typography } from "@mui/material"
-import { useTheme } from "@mui/styles"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig } from ".."
 import { useGameServerWebsocket, useOverlayToggles } from "../../containers"
@@ -8,32 +7,15 @@ import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
-import { LiveGraph } from "./LiveGraph"
 import { BattleStats } from "../BattleStats/BattleStats"
+import { LiveGraph } from "./LiveGraph"
 
 const DefaultMaxLiveVotingDataLength = 100
 
 export const LiveVotingChart = () => {
-    const { isLiveChartOpen } = useOverlayToggles()
-    const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
-
-    // A little timeout so fade transition can play
-    useEffect(() => {
-        if (isLiveChartOpen) return toggleIsRender(true)
-        setTimeout(() => {
-            toggleIsRender(false)
-        }, 250)
-    }, [isLiveChartOpen])
-
-    if (!isRender) return null
-
-    return <Content />
-}
-
-const Content = () => {
-    const theme = useTheme<Theme>()
     const { state, subscribe } = useGameServerWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
+    const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
     const [curWidth, setCurWidth] = useState(0)
     const [curHeight, setCurHeight] = useState(0)
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
@@ -51,6 +33,16 @@ const Content = () => {
         if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe(GameServerKeys.TriggerLiveVoteCountUpdated, () => null, null)
     }, [state, subscribe])
+
+    // A little timeout so fade transition can play
+    useEffect(() => {
+        if (isLiveChartOpen) return toggleIsRender(true)
+        const timeout = setTimeout(() => {
+            toggleIsRender(false)
+        }, 250)
+
+        return () => clearTimeout(timeout)
+    }, [isLiveChartOpen])
 
     const onResize = useCallback((width: number, height: number) => {
         setCurWidth(width)
@@ -87,6 +79,8 @@ const Content = () => {
         [onResize],
     )
 
+    if (!isRender) return null
+
     return (
         <Fade in={isLiveChartOpen}>
             <Box>
@@ -109,7 +103,7 @@ const Content = () => {
                                 px: ".56rem",
                                 pt: "1.6rem",
                                 background: "#00000099",
-                                border: `${theme.factionTheme.primary}10 1px solid`,
+                                border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
                                 borderRadius: 1,
                             }}
                         >

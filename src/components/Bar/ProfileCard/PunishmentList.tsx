@@ -1,13 +1,11 @@
-import { Box, IconButton, Modal, Stack, Theme, Typography, useTheme } from "@mui/material"
+import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../.."
 import { SvgClose } from "../../../assets"
 import { dateFormatter, snakeToTitle } from "../../../helpers"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { PunishListItem } from "../../../types/chat"
 
 export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; onClose: () => void; punishments?: PunishListItem[] }) => {
-    const theme = useTheme<Theme>()
-
     if (!punishments || punishments.length <= 0) return null
 
     return (
@@ -33,8 +31,8 @@ export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; 
                     }}
                     innerSx={{ position: "relative" }}
                 >
-                    <Box sx={{ position: "relative", px: "1rem", py: "1.6rem", backgroundColor: theme.factionTheme.background }}>
-                        <Typography variant="h6" sx={{ mb: "1rem", px: "1rem", fontFamily: "Nostromo Regular Black" }}>
+                    <Box sx={{ position: "relative", px: "1rem", py: "1.6rem", backgroundColor: (theme) => theme.factionTheme.background }}>
+                        <Typography variant="h6" sx={{ mb: "1rem", px: "1rem", fontFamily: fonts.nostromoBlack }}>
                             YOU&apos;VE BEEN PUNISHED!
                         </Typography>
 

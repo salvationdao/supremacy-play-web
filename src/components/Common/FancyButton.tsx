@@ -1,12 +1,11 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
 import { Box, styled, SxProps } from "@mui/system"
-import React from "react"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
 
 const Base = styled(LoadingButton)({
     borderRadius: 0,
-    fontFamily: "Share Tech, sans serif",
+    fontFamily: fonts.shareTech,
     fontWeight: "fontWeightBold",
     backgroundColor: colors.darkNeonBlue,
     color: "white",
@@ -21,7 +20,7 @@ const Base = styled(LoadingButton)({
         color: "#FFFFFF",
     },
     "& > *": {
-        fontFamily: "Share Tech, sans serif",
+        fontFamily: fonts.shareTech,
         fontWeight: "fontWeightBold",
     },
 })

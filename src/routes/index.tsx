@@ -1,34 +1,64 @@
-import { Redirect, Route, Switch } from "react-router-dom"
-import { BattleArenaPage, HangerPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleArenaPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
 
-export enum RoutePaths {
-    BattleArena = "/",
-    Hanger = "/hanger",
-    Marketplace = "/marketplace",
-    Contracts = "/contracts",
-    NotFound = "/404",
-}
-export enum TabLabels {
-    BattleArena = "Battle Arena",
-    Hanger = "Hanger",
-    Marketplace = "Marketplace",
-    Contracts = "Contracts",
+interface RouteStruct {
+    id: string
+    path: string
+    exact: boolean
+    Component?: () => JSX.Element
+    showInLeftDrawer?: boolean
+    enable?: boolean
+    label: string
 }
 
-export const Routes: React.FC = () => {
-    return (
-        <Switch>
-            <Route exact path={RoutePaths.Hanger}>
-                <HangerPage />
-            </Route>
-            <Route exact path={RoutePaths.Marketplace}>
-                <MarketplacePage />
-            </Route>
-            <Route exact path={RoutePaths.BattleArena}>
-                <BattleArenaPage />
-            </Route>
-            <Route path="/404" component={NotFoundPage} />
-            <Redirect to={RoutePaths.NotFound} />
-        </Switch>
-    )
+export const ROUTES_MAP: { [name: string]: RouteStruct } = {
+    home: {
+        id: "home",
+        path: "/",
+        exact: true,
+        Component: BattleArenaPage,
+        showInLeftDrawer: true,
+        enable: true,
+        label: "Battle Arena",
+    },
+    hangar: {
+        id: "hangar",
+        path: "/hangar",
+        exact: true,
+        Component: HangarPage,
+        showInLeftDrawer: true,
+        enable: true,
+        label: "Hangar",
+    },
+    marketplace: {
+        id: "marketplace",
+        path: "/marketplace",
+        exact: true,
+        Component: MarketplacePage,
+        showInLeftDrawer: true,
+        enable: true,
+        label: "Marketplace",
+    },
+    contracts: {
+        id: "contracts",
+        path: "/contracts",
+        exact: true,
+        Component: undefined,
+        showInLeftDrawer: true,
+        enable: false,
+        label: "Contracts",
+    },
+    not_found_page: {
+        id: "not_found_page",
+        path: "/404",
+        exact: false,
+        Component: NotFoundPage,
+        showInLeftDrawer: false,
+        enable: false,
+        label: "",
+    },
+}
+
+export const ROUTES_ARRAY: RouteStruct[] = []
+for (const [, value] of Object.entries(ROUTES_MAP)) {
+    ROUTES_ARRAY.push(value)
 }

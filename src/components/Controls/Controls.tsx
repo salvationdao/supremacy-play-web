@@ -1,15 +1,14 @@
 import { Stack } from "@mui/material"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
-import { ResolutionSelect } from "./ResolutionSelect"
-import { colors } from "../../theme/theme"
-import { StreamSelect } from "./StreamSelect"
-import { useGameServerAuth } from "../../containers"
-import { shadeColor } from "../../helpers"
-import { CONTROLS_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../constants"
+import { CONTROLS_HEIGHT } from "../../constants"
+import { useOverlayToggles } from "../../containers"
 import { BattleStats } from "../BattleStats/BattleStats"
+import { PreviousBattle } from "./PreviousBattle"
+import { ResolutionSelect } from "./ResolutionSelect"
+import { StreamSelect } from "./StreamSelect"
 
 export const Controls = () => {
-    const { user } = useGameServerAuth()
+    const { isLiveChartOpen } = useOverlayToggles()
 
     return (
         <Stack
@@ -21,19 +20,34 @@ export const Controls = () => {
                 position: "relative",
                 width: "100%",
                 height: `${CONTROLS_HEIGHT}rem`,
-                pl: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
+                pr: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
-                backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                backgroundColor: (theme) => theme.factionTheme.background,
+                overflowX: "auto",
+                overflowY: "hidden",
+                scrollbarWidth: "none",
+                "::-webkit-scrollbar": {
+                    height: ".4rem",
+                },
+                "::-webkit-scrollbar-track": {
+                    background: "#FFFFFF15",
+                    borderRadius: 0,
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: (theme) => `${theme.factionTheme.primary}50`,
+                    borderRadius: 0,
+                },
             }}
         >
-            <Stack direction="row" spacing="1.6rem">
+            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0 }}>
+                <PreviousBattle />
                 <LiveCounts />
-                <BattleStats />
                 <OverlayToggles />
+                <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />
             </Stack>
 
-            <Stack direction="row" spacing="1.6rem">
+            <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0 }}>
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />

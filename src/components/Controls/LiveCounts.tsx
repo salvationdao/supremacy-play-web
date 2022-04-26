@@ -1,37 +1,18 @@
 import { Stack, Typography } from "@mui/material"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
 import { FactionIDs } from "../../constants"
-import { FactionsAll, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { FactionsAll, useSupremacy, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { ViewerLiveCount } from "../../types"
 
-const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; tooltip: string }) => {
-    return (
-        <TooltipHelper text={tooltip} isCentered>
-            <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
-                {text}
-            </Typography>
-        </TooltipHelper>
-    )
-}
-
 export const LiveCounts = () => {
-    const { factionsAll } = useGame()
-    const { state, subscribe, subscribeNetMessage } = useGameServerWebsocket()
-
-    return <LiveCountsInner factionsAll={factionsAll} state={state} subscribe={subscribe} subscribeNetMessage={subscribeNetMessage} />
-}
-
-interface LiveCountsProps extends Partial<WebSocketProperties> {
-    factionsAll?: FactionsAll
-}
-
-export const LiveCountsInner = ({ factionsAll, subscribe, state }: LiveCountsProps) => {
-    const [viewers, setViewers] = useState<ViewerLiveCount>()
+    const { factionsAll } = useSupremacy()
+    const { state, subscribe } = useGameServerWebsocket()
     const { userID } = useGameServerAuth()
+    const [viewers, setViewers] = useState<ViewerLiveCount>()
 
     // Triggered live viewer count tick
     useEffect(() => {
@@ -46,6 +27,15 @@ export const LiveCountsInner = ({ factionsAll, subscribe, state }: LiveCountsPro
         )
     }, [state, subscribe, userID])
 
+    return <LiveCountsInner factionsAll={factionsAll} viewers={viewers} />
+}
+
+interface InnerProps extends Partial<WebSocketProperties> {
+    factionsAll?: FactionsAll
+    viewers?: ViewerLiveCount
+}
+
+export const LiveCountsInner = ({ factionsAll, viewers }: InnerProps) => {
     if (!viewers || !factionsAll) return null
 
     return (
@@ -66,5 +56,15 @@ export const LiveCountsInner = ({ factionsAll, subscribe, state }: LiveCountsPro
                 <ReUsedText text={Math.abs(viewers.other).toFixed()} color={"grey !important"} tooltip="Not enlisted" />
             </Stack>
         </Stack>
+    )
+}
+
+const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; tooltip: string }) => {
+    return (
+        <TooltipHelper text={tooltip} isCentered>
+            <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
+                {text}
+            </Typography>
+        </TooltipHelper>
     )
 }

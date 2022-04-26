@@ -41,7 +41,6 @@ export enum GameServerKeys {
 
     // Global messages
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
-    SubStreamClose = "STREAM:CLOSE:SUBSCRIBE",
 
     // Streams
     SubStreamList = "STREAMLIST:SUBSCRIBE",

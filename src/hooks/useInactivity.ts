@@ -17,7 +17,9 @@ export const useInactivity = (duration: number = 900000) => {
         }
 
         window.addEventListener("mousemove", whenMouseMoves)
+
         return () => {
+            clearTimeout(timeout)
             window.removeEventListener("mousemove", whenMouseMoves)
         }
     }, [])

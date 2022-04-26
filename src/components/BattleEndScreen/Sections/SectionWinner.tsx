@@ -2,12 +2,12 @@ import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../.."
 import { GenericWarMachinePNG } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGame } from "../../../containers"
-import { colors } from "../../../theme/theme"
+import { useSupremacy } from "../../../containers"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { factionsAll } = useGame()
+    const { factionsAll } = useSupremacy()
     const { battle_identifier, winning_faction, winning_war_machines } = battleEndDetail
 
     return (
@@ -18,7 +18,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     variant="h6"
                     sx={{
                         position: "relative",
-                        fontFamily: "Nostromo Regular Black",
+                        fontFamily: fonts.nostromoBlack,
                         fontWeight: "fontWeightBold",
                         color: colors.neonBlue,
                     }}

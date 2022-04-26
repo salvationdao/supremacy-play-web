@@ -2,7 +2,6 @@ import { Box } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useState } from "react"
 import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
-import { NullUUID } from "../../constants"
 import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { GameAbility, GameAbilityProgress } from "../../types"
@@ -16,7 +15,7 @@ export const SkillBar = ({
     gameAbility: GameAbility
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
 }) => {
-    const { faction_id } = useGameServerAuth()
+    const { factionID } = useGameServerAuth()
     const { state, subscribe, subscribeAbilityNetMessage } = useGameServerWebsocket()
 
     const { identity, colour } = gameAbility
@@ -30,23 +29,24 @@ export const SkillBar = ({
         () => (initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100),
         [initialTargetCost, currentSups],
     )
+
     const costPercent = useMemo(() => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100), [initialTargetCost, supsCost])
 
     // DO NOT REMOVE THIS! Triggered faction ability or war machine ability price ticking
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !faction_id || faction_id === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe || !factionID) return
         return subscribe(GameServerKeys.TriggerFactionAbilityPriceUpdated, () => null, { ability_identity: identity })
-    }, [state, subscribe, faction_id, identity])
+    }, [state, subscribe, factionID, identity])
 
     // Listen on current faction ability price change
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !faction_id || faction_id === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID) return
 
         return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
             if (!payload) return
             setGameAbilityProgress(payload)
         })
-    }, [identity, state, subscribeAbilityNetMessage, faction_id])
+    }, [identity, state, subscribeAbilityNetMessage, factionID])
 
     useEffect(() => {
         if (!gameAbilityProgress) return
@@ -63,10 +63,14 @@ export const SkillBar = ({
         }
     }, [gameAbilityProgress])
 
+    return <SkillBarInner index={index} colour={colour} progressPercent={progressPercent} costPercent={costPercent} />
+}
+
+const SkillBarInner = ({ index, colour, progressPercent, costPercent }: { index: number; colour: string; progressPercent: number; costPercent: number }) => {
     return (
         <Box
             key={index}
-            sx={{
+            style={{
                 position: "absolute",
                 bottom: 0,
                 right: `${index * WIDTH_PER_SLANTED_BAR - index * 0.2}rem`,

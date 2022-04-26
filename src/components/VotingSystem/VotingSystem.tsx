@@ -12,26 +12,25 @@ import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
 import { BattleAbilityItem } from "./BattleAbilityItem"
 
 export const VotingSystem = () => {
+    const { factionID } = useGameServerAuth()
     const { bribeStage } = useGame()
-
-    return <VotingSystemInner bribeStage={bribeStage} />
+    return <VotingSystemInner factionID={factionID} bribeStage={bribeStage} />
 }
 
-const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
-    const { user } = useGameServerAuth()
-    const initialSize = { width: 390, height: 360, minWidth: 370 }
+const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; bribeStage?: BribeStageResponse }) => {
+    const theme = useTheme<Theme>()
+    const initialSize = useMemo(() => ({ width: 390, height: 360, minWidth: 370 }), [])
     const [containerWidth, setContainerWidth] = useState<number>(parseString(localStorage.getItem("votingSystemWidth"), initialSize.width))
     const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
-    const theme = useTheme<Theme>()
     const {
-        pxToRemRatio,
-        streamDimensions: { height },
+        remToPxRatio,
+        gameUIDimensions: { height },
     } = useDimension()
     const [currentTab, setCurrentTab] = useState(0)
 
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
-    const adjustment = useMemo(() => Math.min(pxToRemRatio, 9) / 9, [pxToRemRatio])
+    const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
     const onResizeStop = useCallback(
         (data: Dimension) => {
@@ -43,7 +42,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
         [containerWidth, containerHeight],
     )
 
-    if (!user || !user.faction) return null
+    if (!factionID || !bribeStage) return null
 
     return (
         <Stack
@@ -122,7 +121,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                                 <Box
                                     sx={{
                                         flex: 1,
-                                        // 100vh, 160px gap bottom, 10px gap above, 56px for the title
+                                        // 140px gap bottom, 10px gap above
                                         maxHeight: `calc(${height}px - 140px - 10px)`,
                                         overflowY: "auto",
                                         overflowX: "hidden",

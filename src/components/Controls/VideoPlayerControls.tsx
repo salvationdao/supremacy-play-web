@@ -1,20 +1,25 @@
 import { IconButton, Slider, Stack } from "@mui/material"
 import { useCallback } from "react"
 import { SvgFullscreen, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
-import { useGameServerAuth, useStream } from "../../containers"
-import { colors } from "../../theme/theme"
+import { DEV_ONLY } from "../../constants"
+import { useStream } from "../../containers"
 
 export const VideoPlayerControls = () => {
-    const { user } = useGameServerAuth()
     const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useStream()
 
-    const handleVolumeChange = useCallback((_: Event, newValue: number | number[]) => {
-        setVolume(newValue as number)
-    }, [])
+    const handleVolumeChange = useCallback(
+        (_: Event, newValue: number | number[]) => {
+            setVolume(newValue as number)
+        },
+        [setVolume],
+    )
 
-    const handleMusicVolumeChange = useCallback((_: Event, newValue: number | number[]) => {
-        setMusicVolume(newValue as number)
-    }, [])
+    const handleMusicVolumeChange = useCallback(
+        (_: Event, newValue: number | number[]) => {
+            setMusicVolume(newValue as number)
+        },
+        [setMusicVolume],
+    )
 
     const toggleFullscreen = useCallback(() => {
         const elem = document.documentElement
@@ -47,30 +52,32 @@ export const VideoPlayerControls = () => {
                         onChange={handleVolumeChange}
                         sx={{
                             ml: "1.2rem",
-                            color: user && user.faction ? user.faction.theme.primary : colors.neonBlue,
+                            color: (theme) => theme.factionTheme.primary,
                         }}
                     />
                 </Stack>
 
-                <Stack direction="row" alignItems="center" sx={{ width: "15rem", mr: "1.6rem" }}>
-                    <IconButton size="small" onClick={() => toggleIsMusicMute()} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
-                        {isMusicMute || musicVolume <= 0 ? <SvgMusicMute size="1.2rem" sx={{ pb: 0 }} /> : <SvgMusic size="1.2rem" sx={{ pb: 0 }} />}
-                    </IconButton>
+                {DEV_ONLY && (
+                    <Stack direction="row" alignItems="center" sx={{ width: "15rem", mr: "1.6rem" }}>
+                        <IconButton size="small" onClick={() => toggleIsMusicMute()} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
+                            {isMusicMute || musicVolume <= 0 ? <SvgMusicMute size="1.2rem" sx={{ pb: 0 }} /> : <SvgMusic size="1.2rem" sx={{ pb: 0 }} />}
+                        </IconButton>
 
-                    <Slider
-                        size="small"
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        aria-label="Volume"
-                        value={isMusicMute ? 0 : musicVolume}
-                        onChange={handleMusicVolumeChange}
-                        sx={{
-                            ml: "1.2rem",
-                            color: user && user.faction ? user.faction.theme.primary : colors.neonBlue,
-                        }}
-                    />
-                </Stack>
+                        <Slider
+                            size="small"
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            aria-label="Volume"
+                            value={isMusicMute ? 0 : musicVolume}
+                            onChange={handleMusicVolumeChange}
+                            sx={{
+                                ml: "1.2rem",
+                                color: (theme) => theme.factionTheme.primary,
+                            }}
+                        />
+                    </Stack>
+                )}
             </Stack>
 
             <IconButton size="small" onClick={toggleFullscreen} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
