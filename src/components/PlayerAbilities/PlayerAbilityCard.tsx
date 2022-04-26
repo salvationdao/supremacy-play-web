@@ -189,7 +189,7 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                                     textTransform: "uppercase",
                                 }}
                             >
-                                Purchase {playerAbility.label || "Ability"}
+                                Activate {playerAbility.label || "Ability"}
                             </Typography>
                             <Stack direction="row" spacing="1rem">
                                 <ClipThing
