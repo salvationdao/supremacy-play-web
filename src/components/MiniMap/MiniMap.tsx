@@ -160,7 +160,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
                     targeting
                     setSubmitted={setSubmitted}
-                    enlarged={enlarged}
+                    enlarged={enlarged || dimensions.width > 450}
                     newSnackbarMessage={newSnackbarMessage}
                 />
             )
@@ -168,7 +168,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
             return (
                 <MiniMapInside
                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                    enlarged={enlarged}
+                    enlarged={enlarged || dimensions.width > 450}
                     newSnackbarMessage={newSnackbarMessage}
                 />
             )
@@ -225,9 +225,10 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                             clipSize="10px"
                             border={{
                                 isFancy: true,
-                                borderThickness: ".15rem",
+                                borderThickness: ".2rem",
                                 borderColor: mainColor,
                             }}
+                            backgroundColor={colors.darkNavy}
                         >
                             <Box
                                 sx={{
@@ -237,7 +238,6 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                     height: dimensions.height,
                                     transition: "all .2s",
                                     overflow: "hidden",
-                                    backgroundColor: colors.darkNavy,
                                 }}
                             >
                                 <TopIconSettings
