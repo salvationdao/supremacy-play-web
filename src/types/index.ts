@@ -202,6 +202,7 @@ export interface NetMessageTickWarMachine {
     rotation?: number
     health?: number
     shield?: number
+    energy?: number
 }
 
 export interface NetMessageTick {

@@ -18,10 +18,11 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
 
                 // Get Sync byte (tells us which data was updated for this warmachine)
                 const syncByte = dv.getUint8(offset)
+                const booleans = unpackBooleansFromByte(syncByte)
                 offset++
 
                 // Position + Yaw
-                if (syncByte >= 100) {
+                if (booleans[0]) {
                     const x = dv.getInt32(offset, false)
                     offset += 4
                     const y = dv.getInt32(offset, false)
@@ -32,13 +33,18 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 }
 
                 // Health
-                if (syncByte == 1 || syncByte == 11 || syncByte == 101 || syncByte == 111) {
+                if (booleans[1]) {
                     warmachineUpdate.health = dv.getInt32(offset, false)
                     offset += 4
                 }
                 // Shield
-                if (syncByte == 10 || syncByte == 11 || syncByte == 110 || syncByte == 111) {
+                if (booleans[2]) {
                     warmachineUpdate.shield = dv.getInt32(offset, false)
+                    offset += 4
+                }
+                // Energy
+                if (booleans[3]) {
+                    warmachineUpdate.energy = dv.getInt32(offset, false)
                     offset += 4
                 }
                 payload.warmachines.push(warmachineUpdate)
@@ -130,3 +136,10 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
         }
     }
 }
+
+ const unpackBooleansFromByte = (packedByte: number): boolean[] => {
+     const booleans = Array<boolean>(8).fill(false);
+	for (let i = 0; i < 8; ++i)
+		booleans[i] = (packedByte & (1 << i)) != 0;
+     return booleans
+ }
