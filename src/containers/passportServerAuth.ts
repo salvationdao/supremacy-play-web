@@ -17,8 +17,6 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
     const { newSnackbarMessage } = useSnackbar()
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
-    const userID = user?.id
-    const faction_id = user?.faction_id
 
     const [hasToken, setHasToken] = useState(false)
     const [sessionID, setSessionID] = useState("")
@@ -26,6 +24,9 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
     const [sessionIDError, setSessionIDError] = useState()
 
     const [authRingCheckError, setAuthRingCheckError] = useState()
+
+    const userID = user?.id
+    const factionID = user?.faction ? user.faction.id : undefined
 
     useEffect(() => {
         if (user && initialState && initialState.setLogin) initialState.setLogin(user)
@@ -78,7 +79,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
     return {
         user,
         userID,
-        faction_id,
+        factionID,
         hasToken,
         sessionID,
         sessionIDLoading,

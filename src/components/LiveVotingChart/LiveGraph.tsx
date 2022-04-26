@@ -1,7 +1,7 @@
 import { useGameServerWebsocket } from "../../containers"
 import { NetMessageType } from "../../types"
 import BigNumber from "bignumber.js"
-import { useEffect, useRef, useState } from "react"
+import { RefObject, MutableRefObject, useEffect, useRef, useState } from "react"
 import { colors } from "../../theme/theme"
 import { Box, Stack, Typography } from "@mui/material"
 
@@ -103,17 +103,11 @@ export const LiveGraph = (props: LiveGraphProps) => {
             context.strokeStyle = colors.neonBlue
 
             // Add first point in the graph
-            context.moveTo(
-                GRAPH_LEFT,
-                GRAPH_HEIGHT - (liveVotingData[0].rawData / largest.current) * GRAPH_HEIGHT + GRAPH_TOP,
-            )
+            context.moveTo(GRAPH_LEFT, GRAPH_HEIGHT - (liveVotingData[0].rawData / largest.current) * GRAPH_HEIGHT + GRAPH_TOP)
 
             liveVotingData.forEach((lvd, i) => {
                 if (i === 0) return
-                context.lineTo(
-                    (GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT,
-                    GRAPH_HEIGHT * (1 - lvd.rawData / largest.current) + GRAPH_TOP,
-                )
+                context.lineTo((GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT, GRAPH_HEIGHT * (1 - lvd.rawData / largest.current) + GRAPH_TOP)
             })
 
             // Actually draw the graph
@@ -121,6 +115,20 @@ export const LiveGraph = (props: LiveGraphProps) => {
         }
     }, [liveVotingData, canvasRef.current])
 
+    return <LiveGraphInner maxWidthPx={maxWidthPx} maxHeightPx={maxHeightPx} canvasRef={canvasRef} largest={largest} />
+}
+
+const LiveGraphInner = ({
+    maxWidthPx,
+    maxHeightPx,
+    canvasRef,
+    largest,
+}: {
+    maxWidthPx: number
+    maxHeightPx: number
+    canvasRef: RefObject<HTMLCanvasElement>
+    largest: MutableRefObject<number>
+}) => {
     return (
         <>
             <Box

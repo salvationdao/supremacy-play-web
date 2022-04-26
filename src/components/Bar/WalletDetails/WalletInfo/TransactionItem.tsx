@@ -13,9 +13,11 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
 
     useEffect(() => {
         if (copySuccess) {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 toggleCopySuccess(false)
             }, 900)
+
+            return () => clearTimeout(timeout)
         }
     }, [copySuccess])
 

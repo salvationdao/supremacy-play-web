@@ -294,8 +294,3 @@ export interface UserStat {
     ability_kill_count: number
     mech_kill_count: number
 }
-
-export interface ContibutorAmountProps {
-    ShowContributorAmount: boolean
-    ShowContributionTotal: boolean
-}

@@ -1,20 +1,26 @@
-import { IconButton, Slider, Stack } from "@mui/material"
+import { IconButton, Slider, Stack, useTheme, Theme } from "@mui/material"
 import { useCallback } from "react"
 import { SvgFullscreen, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
-import { useGameServerAuth, useStream } from "../../containers"
-import { colors } from "../../theme/theme"
+import { DEV_ONLY } from "../../constants"
+import { useStream } from "../../containers"
 
 export const VideoPlayerControls = () => {
-    const { user } = useGameServerAuth()
+    const theme = useTheme<Theme>()
     const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useStream()
 
-    const handleVolumeChange = useCallback((_: Event, newValue: number | number[]) => {
-        setVolume(newValue as number)
-    }, [])
+    const handleVolumeChange = useCallback(
+        (_: Event, newValue: number | number[]) => {
+            setVolume(newValue as number)
+        },
+        [setVolume],
+    )
 
-    const handleMusicVolumeChange = useCallback((_: Event, newValue: number | number[]) => {
-        setMusicVolume(newValue as number)
-    }, [])
+    const handleMusicVolumeChange = useCallback(
+        (_: Event, newValue: number | number[]) => {
+            setMusicVolume(newValue as number)
+        },
+        [setMusicVolume],
+    )
 
     const toggleFullscreen = useCallback(() => {
         const elem = document.documentElement
@@ -47,12 +53,12 @@ export const VideoPlayerControls = () => {
                         onChange={handleVolumeChange}
                         sx={{
                             ml: "1.2rem",
-                            color: user && user.faction ? user.faction.theme.primary : colors.neonBlue,
+                            color: theme.factionTheme.primary,
                         }}
                     />
                 </Stack>
 
-                {process.env.NODE_ENV === "development" && (
+                {DEV_ONLY && (
                     <Stack direction="row" alignItems="center" sx={{ width: "15rem", mr: "1.6rem" }}>
                         <IconButton size="small" onClick={() => toggleIsMusicMute()} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
                             {isMusicMute || musicVolume <= 0 ? <SvgMusicMute size="1.2rem" sx={{ pb: 0 }} /> : <SvgMusic size="1.2rem" sx={{ pb: 0 }} />}
@@ -68,7 +74,7 @@ export const VideoPlayerControls = () => {
                             onChange={handleMusicVolumeChange}
                             sx={{
                                 ml: "1.2rem",
-                                color: user && user.faction ? user.faction.theme.primary : colors.neonBlue,
+                                color: theme.factionTheme.primary,
                             }}
                         />
                     </Stack>

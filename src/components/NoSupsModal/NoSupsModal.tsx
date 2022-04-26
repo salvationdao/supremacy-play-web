@@ -1,25 +1,19 @@
 import { Box, Button, Divider, Link, Modal, Stack, Typography } from "@mui/material"
 import { colors } from "../../theme/theme"
-import { useEffect } from "react"
 import { useToggle } from "../../hooks/useToggle"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
 import { usePassportServerAuth } from "../../containers"
 import { ClipThing } from ".."
 
-export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
+export const NoSupsModal = () => {
     const { user } = usePassportServerAuth()
-    const [open, toggleOpen] = useToggle(false)
-
-    useEffect(() => {
-        if (!haveSups) return toggleOpen(true)
-        toggleOpen(false)
-    }, [haveSups])
+    const [open, toggleOpen] = useToggle(true)
 
     if (!user || !open) return null
 
     return (
-        <Modal open={open} onClose={() => toggleOpen(false)}>
+        <Modal open>
             <Box
                 sx={{
                     position: "absolute",

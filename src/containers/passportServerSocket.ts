@@ -98,9 +98,11 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
     useEffect(() => {
         if (!reconnect) return
         serverCheckInterval(1)
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             setIsServerUp(false)
         }, 90000)
+
+        return () => clearTimeout(timeout)
     }, [reconnect])
 
     const serverCheckInterval = async (num: number) => {

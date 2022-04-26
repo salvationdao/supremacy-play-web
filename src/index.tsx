@@ -1,112 +1,42 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
-import { ProviderProps, TourProvider } from "@reactour/tour"
+import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
-import { BrowserRouter, useLocation } from "react-router-dom"
-import { DrawerButtons, GameBar, GlobalSnackbar, RightDrawer, tourStyles, tutorialNextBtn, tutorialPrevButton } from "./components"
+import { BrowserRouter, Route, Redirect, Switch, useLocation } from "react-router-dom"
+import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
+import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { PageWrapper } from "./components/PageWrapper/PageWrapper"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST, SENTRY_CONFIG } from "./constants"
+import { DEV_ONLY, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
-    DimensionProvider,
-    DrawerProvider,
-    GameProvider,
+    RightDrawerProvider,
     GameServerAuthProvider,
     GameServerSocketProvider,
-    OverlayTogglesProvider,
     PassportServerAuthProvider,
     PassportServerSocketProvider,
     SnackBarProvider,
-    StreamProvider,
-    useDimension,
+    SupremacyProvider,
     useGameServerAuth,
+    useGameServerWebsocket,
     WalletProvider,
+    BarProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
-import { Routes } from "./routes"
+import { useToggle } from "./hooks"
+import { NotFoundPage } from "./pages"
+import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme, User } from "./types"
 import { UserData } from "./types/passport"
 
 if (SENTRY_CONFIG) {
-    // import { Integrations } from '@sentry/tracing'
-    // import { createBrowserHistory } from 'history'
-    // const history = createBrowserHistory()
     Sentry.init({
         dsn: SENTRY_CONFIG.DSN,
         release: SENTRY_CONFIG.RELEASE,
         environment: SENTRY_CONFIG.ENVIRONMENT,
-        // integrations: [
-        // new Integrations.BrowserTracing({
-        // routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
-        // }),
-        // ],
         tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
     })
-}
-
-const AppInner = () => {
-    const { user } = useGameServerAuth()
-    const { mainDivDimensions } = useDimension()
-    const location = useLocation()
-
-    // Dont show gamebar and left nav in 404
-    if (location.pathname === "/404") {
-        return <Routes />
-    }
-
-    return (
-        <>
-            <GameBar />
-            <Stack
-                sx={{
-                    mt: `${GAME_BAR_HEIGHT}rem`,
-                    width: mainDivDimensions.width,
-                    height: mainDivDimensions.height,
-                    transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
-                }}
-            >
-                <Box
-                    sx={{
-                        display: "flex",
-                        flex: 1,
-                        position: "relative",
-                        width: "100%",
-                        backgroundColor: colors.darkNavyBlue,
-                        overflow: "hidden",
-                        justifyContent: "space-between",
-                        "&>*": {
-                            flexShrink: 0,
-                        },
-                    }}
-                >
-                    {process.env.NODE_ENV === "development" && <LeftDrawer />}
-                    <PageWrapper>
-                        <Routes />
-                    </PageWrapper>
-                    <DrawerButtons />
-                    <RightDrawer />
-                </Box>
-            </Stack>
-
-            {/* Keep this. Just the under background, glimpse of it is visible when drawers open / close */}
-            <Box
-                sx={{
-                    position: "fixed",
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
-                    zIndex: -1,
-                }}
-            />
-
-            <GlobalSnackbar />
-        </>
-    )
 }
 
 const App = () => {
@@ -140,21 +70,23 @@ const App = () => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
 
-    const tourProviderProps: ProviderProps = {
-        children: <AppInner />,
-        steps: [],
-        styles: tourStyles,
-        nextButton: tutorialNextBtn,
-        prevButton: tutorialPrevButton,
-        showBadge: false,
-        disableKeyboardNavigation: true,
-        disableDotsNavigation: true,
-        afterOpen: () => {
-            if (!localStorage.getItem("visited")) {
-                localStorage.setItem("visited", "1")
-            }
-        },
-    }
+    const tourProviderProps = useMemo(
+        () => ({
+            children: <AppInner />,
+            steps: [],
+            padding: 2,
+            styles: tourStyles,
+            showBadge: false,
+            disableKeyboardNavigation: false,
+            disableDotsNavigation: false,
+            afterOpen: () => {
+                if (!localStorage.getItem("visited")) {
+                    localStorage.setItem("visited", "1")
+                }
+            },
+        }),
+        [],
+    )
 
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
@@ -164,23 +96,19 @@ const App = () => {
                         <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
                             <GameServerSocketProvider initialState={{ login: authLogin }}>
                                 <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
-                                    <StreamProvider>
+                                    <SupremacyProvider>
                                         <WalletProvider>
-                                            <DrawerProvider>
-                                                <GameProvider>
-                                                    <DimensionProvider>
-                                                        <OverlayTogglesProvider>
-                                                            <TourProvider {...tourProviderProps}>
-                                                                <BrowserRouter>
-                                                                    <AppInner />
-                                                                </BrowserRouter>
-                                                            </TourProvider>
-                                                        </OverlayTogglesProvider>
-                                                    </DimensionProvider>
-                                                </GameProvider>
-                                            </DrawerProvider>
+                                            <BarProvider>
+                                                <RightDrawerProvider>
+                                                    <TourProvider {...tourProviderProps}>
+                                                        <BrowserRouter>
+                                                            <AppInner />
+                                                        </BrowserRouter>
+                                                    </TourProvider>
+                                                </RightDrawerProvider>
+                                            </BarProvider>
                                         </WalletProvider>
-                                    </StreamProvider>
+                                    </SupremacyProvider>
                                 </GameServerAuthProvider>
                             </GameServerSocketProvider>
                         </PassportServerAuthProvider>
@@ -188,6 +116,76 @@ const App = () => {
                 </SnackBarProvider>
             </ThemeProvider>
         </UpdateTheme.Provider>
+    )
+}
+
+const AppInner = () => {
+    const { isServerUp } = useGameServerWebsocket()
+    const { user } = useGameServerAuth()
+    const location = useLocation()
+    const [understand, toggleUnderstand] = useToggle()
+
+    // Dont show gamebar and left nav in 404
+    if (location.pathname === "/404") return <NotFoundPage />
+
+    return (
+        <>
+            <Stack
+                sx={{
+                    position: "relative",
+                    width: "100vw",
+                    height: "100vh",
+                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                }}
+            >
+                <Bar />
+
+                <Stack
+                    direction="row"
+                    sx={{
+                        position: "relative",
+                        flex: 1,
+                        width: "100vw",
+                        overflow: "hidden",
+                        justifyContent: "space-between",
+                        "& > *": {
+                            flexShrink: 0,
+                        },
+                    }}
+                >
+                    {DEV_ONLY && <LeftDrawer />}
+
+                    <Box
+                        sx={{
+                            flex: 1,
+                            position: "relative",
+                            height: "100%",
+                            backgroundColor: colors.darkNavy,
+                            overflow: "hidden",
+                        }}
+                    >
+                        <LoadMessage />
+                        <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
+
+                        {understand && isServerUp && !UNDER_MAINTENANCE && (
+                            <Switch>
+                                {ROUTES_ARRAY.map((r) => {
+                                    const { id, path, exact, Component } = r
+                                    return <Route key={id} path={path} exact={exact} component={Component} />
+                                })}
+                                <Redirect to={ROUTES_MAP.not_found_page.path} />
+                            </Switch>
+                        )}
+
+                        {!isServerUp || (UNDER_MAINTENANCE && <Maintenance />)}
+                    </Box>
+
+                    <RightDrawer />
+                </Stack>
+            </Stack>
+
+            <GlobalSnackbar />
+        </>
     )
 }
 

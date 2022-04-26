@@ -4,7 +4,7 @@ import { colors } from "../../theme/theme"
 import { useToggle } from "../../hooks"
 import { ClipThing } from ".."
 
-export const EarlyAccessWarning = () => {
+export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => void }) => {
     const [closed, toggleClosed] = useToggle()
 
     if (closed) return null
@@ -76,7 +76,6 @@ export const EarlyAccessWarning = () => {
                                 color: colors.neonBlue,
                                 backgroundColor: colors.darkNavy,
                                 borderRadius: 0.7,
-                                fontFamily: "Nostromo Regular Bold",
                                 border: `${colors.neonBlue} 1px solid`,
                                 ":hover": {
                                     opacity: 0.8,
@@ -85,10 +84,11 @@ export const EarlyAccessWarning = () => {
                             }}
                             onClick={() => {
                                 toggleClosed(true)
+                                onAcknowledged()
                                 Notification.requestPermission()
                             }}
                         >
-                            I AGREE, LET ME IN!
+                            <Typography sx={{ color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}>I AGREE, LET ME IN!</Typography>
                         </Button>
                     </Box>
                 </ClipThing>

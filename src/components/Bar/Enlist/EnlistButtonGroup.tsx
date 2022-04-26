@@ -13,7 +13,7 @@ export const EnlistButtonGroup = () => {
     const [factionsData, setFactionsData] = useState<FactionGeneralData[]>()
 
     useEffect(() => {
-        if (state !== WebSocket.OPEN) return
+        if (state !== WebSocket.OPEN || !send) return
         ;(async () => {
             try {
                 const resp = await send<FactionGeneralData[], null>(PassportServerKeys.GetFactionsAll, null)

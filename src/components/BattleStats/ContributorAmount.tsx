@@ -7,7 +7,11 @@ import { useDebounce } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
-import { ContibutorAmountProps } from "../../types/index"
+
+export interface ContibutorAmountProps {
+    hideContributionTotal?: boolean
+    hideContributorAmount?: boolean
+}
 
 export const ContributorAmount = (props: ContibutorAmountProps) => {
     const { battleEndDetail } = useGame()
@@ -46,9 +50,18 @@ export const ContributorAmount = (props: ContibutorAmountProps) => {
         setContributor(0)
     }, [battleEndDetail])
 
+    return <ContributorAmountInner rate={rate} contributor={contributor} {...props} />
+}
+
+interface InnerProps extends ContibutorAmountProps {
+    contributor: number
+    rate: number
+}
+
+const ContributorAmountInner = ({ rate, contributor, hideContributionTotal, hideContributorAmount }: InnerProps) => {
     return (
         <>
-            {props.ShowContributionTotal && (
+            {!hideContributionTotal && (
                 <TooltipHelper text="This contribution multiplier is applied at the end of the current battle if your syndicate is victorious.">
                     <Stack direction="row" alignItems="center" justifyContent="center">
                         <Box
@@ -76,7 +89,7 @@ export const ContributorAmount = (props: ContibutorAmountProps) => {
                 </TooltipHelper>
             )}
 
-            {props.ShowContributorAmount && (
+            {!hideContributorAmount && (
                 <TooltipHelper text="Extra contributor multiplier applied at the end of the battle if you contribute now.">
                     <Stack direction="row" alignItems="center" justifyContent="center">
                         <SvgGraph size="1.5rem" fill="#FFFFFF" sx={{ mr: ".3rem" }} />

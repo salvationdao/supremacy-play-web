@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../.."
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGame } from "../../../containers"
+import { useSupremacy } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { factionsAll } = useGame()
+    const { factionsAll } = useSupremacy()
     const { most_frequent_ability_executors } = battleEndDetail
 
     return (
@@ -23,10 +23,7 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                     }}
                 >
                     EXECUTORS
-                    <BattleEndTooltip
-                        text="The players that had executed the most abilities during the battle."
-                        color={colors.neonBlue}
-                    />
+                    <BattleEndTooltip text="The players that had executed the most abilities during the battle." color={colors.neonBlue} />
                 </Typography>
             </Box>
 
@@ -40,9 +37,7 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                             <StyledImageText
                                 color={u.faction_colour}
                                 text={u.username}
-                                imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${
-                                    factionsAll[u.faction_id]?.logo_blob_id
-                                }`}
+                                imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[u.faction_id]?.logo_blob_id}`}
                                 variant="h6"
                                 imageSize={2.9}
                                 imageBorderThickness=".2rem"
