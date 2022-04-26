@@ -3,13 +3,12 @@ import { Theme } from "@mui/material/styles"
 import { TabProps } from "@mui/material/Tab"
 import { useTheme } from "@mui/styles"
 import { useCallback, useMemo, useState } from "react"
-import { ClipThing, FactionAbilities, ResizeBox } from ".."
+import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
 import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "../../containers"
 import { parseString } from "../../helpers"
 import { colors } from "../../theme/theme"
 import { Dimension } from "../../types"
 import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
-import { BattleAbilityItem } from "./BattleAbilityItem"
 
 export const VotingSystem = () => {
     const { factionID } = useGameServerAuth()
@@ -55,7 +54,7 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
                 filter: "drop-shadow(0 3px 3px #00000050)",
             }}
         >
-            <Slide in={true} direction="right">
+            <Slide in={isBattleStarted} direction="right">
                 <Box sx={{ position: "relative" }}>
                     <ResizeBox
                         color={theme.factionTheme.primary}
