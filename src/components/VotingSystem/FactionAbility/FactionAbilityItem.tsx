@@ -28,6 +28,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const { factionID } = useGameServerAuth()
     const { bribeStage } = useGame()
 
+    const [shouldIgnore, setIgnore] = useState<boolean>(false)
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
     const [offeringID, setOfferingID] = useState<string>(gameAbility.ability_offering_id)
     const [currentSups, setCurrentSups] = useState(new BigNumber(gameAbility.current_sups).dividedBy("1000000000000000000"))
@@ -51,7 +52,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
-            if (!payload) return
+            if (!payload || shouldIgnore) return
 
             let unchanged = true
             if (!progressPayload.current) {
@@ -84,19 +85,38 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         }
     }, [gameAbilityProgress])
 
+    let ignoreTimeout: boolean
     const onContribute = useCallback(
-        (amount: BigNumber, percentage: number) => {
+        async (amount: BigNumber, percentage: number) => {
             if (!send || percentage > 1 || percentage < 0) return
 
-            setCurrentSups((cs) => amount.plus(cs))
-
-            send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
+            const resp = await send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
                 ability_identity: identity,
                 ability_offering_id: offeringID,
                 percentage,
             })
+
+            if (resp) {
+                setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
+                    if (!gap) return gap
+                    const current_sups = new BigNumber(gap.current_sups).plus(amount.multipliedBy("1000000000000000000")).toString()
+                    return { ...gap, current_sups }
+                })
+                setCurrentSups((cs) => {
+                    if (!ignoreTimeout) {
+                        setIgnore(true)
+                        ignoreTimeout = true
+                        setTimeout(() => {
+                            ignoreTimeout = false
+                            setIgnore(false)
+                        }, 150)
+                    }
+
+                    return BigNumber.minimum(cs.plus(amount), supsCost)
+                })
+            }
         },
-        [send, identity, offeringID, setCurrentSups],
+        [send, identity, offeringID],
     )
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThan(currentSups), [bribeStage, supsCost, currentSups])
