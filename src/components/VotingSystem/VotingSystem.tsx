@@ -88,6 +88,8 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
                             hidden: true,
                         }}
                         sx={{
+                            zIndex: 1,
+                            position: "relative",
                             minHeight: 0,
                         }}
                     >
@@ -96,7 +98,6 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
                     </Tabs>
                     <ClipThing
                         sx={{
-                            zIndex: -1,
                             position: "relative",
                             top: "-1px",
                         }}
