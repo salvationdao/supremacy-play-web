@@ -58,7 +58,7 @@ const BattleArenaPageInner = () => {
                 <Controls />
             </Stack>
 
-            {state === WebSocket.OPEN && user && !haveSups && <NoSupsModal />}
+            {state === WebSocket.OPEN && user && haveSups === false && <NoSupsModal />}
             <TutorialModal />
         </>
     )

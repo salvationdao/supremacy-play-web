@@ -1,5 +1,4 @@
-import { Box, Stack, ThemeProvider } from "@mui/material"
-import { Theme, useTheme } from "@mui/material/styles"
+import { Box, Stack, ThemeProvider, Theme } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
@@ -20,6 +19,7 @@ import {
     useGameServerWebsocket,
     WalletProvider,
     BarProvider,
+    useGameServerAuth,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
@@ -120,7 +120,7 @@ const App = () => {
 
 const AppInner = () => {
     const { isServerUp } = useGameServerWebsocket()
-    const theme = useTheme<Theme>()
+    useGameServerAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
     const location = useLocation()
     const [understand, toggleUnderstand] = useToggle()
 
@@ -134,7 +134,7 @@ const AppInner = () => {
                     position: "relative",
                     width: "100vw",
                     height: "100vh",
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: (theme) => theme.factionTheme.background,
                 }}
             >
                 <Bar />

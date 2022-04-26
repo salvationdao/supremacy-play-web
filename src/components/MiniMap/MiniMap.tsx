@@ -206,7 +206,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                 display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                                 pointerEvents: "all",
                                 position: "absolute",
-                                top: ".7rem",
+                                top: ".75rem",
                                 left: "1.15rem",
                                 cursor: "nwse-resize",
                                 color: colors.text,
