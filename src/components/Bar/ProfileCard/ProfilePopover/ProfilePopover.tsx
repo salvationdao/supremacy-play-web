@@ -1,6 +1,6 @@
 import { Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect } from "react"
-import { SvgAssets, SvgProfile, SvgShop } from "../../../../assets"
+import { SvgAssets, SvgProfile, SvgShop, SvgSupport } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
 import { useToggle } from "../../../../hooks"
 import { UserData } from "../../../../types/passport"
@@ -62,6 +62,9 @@ export const ProfilePopover = ({
                 </NavButton>
                 <NavButton href={`${PASSPORT_WEB}profile/${user.username}/edit`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}>
                     Edit Profile
+                </NavButton>
+                <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />}>
+                    SUPPORT
                 </NavButton>
                 <LogoutButton />
             </Stack>
