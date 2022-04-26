@@ -61,11 +61,7 @@ export const BarExpandable = ({ barName, iconComponent, children, noDivider }: B
                         pointerEvents: isActive ? "none" : "all",
                     }}
                 >
-                    <IconButton
-                        disabled={isActive}
-                        sx={{ mr: ".4rem", color: "#FFFFFF", flexShrink: 0 }}
-                        onClick={() => toggleActiveBar(barName, true)}
-                    >
+                    <IconButton disabled={isActive} sx={{ mr: ".4rem", color: "#FFFFFF", flexShrink: 0 }} onClick={() => toggleActiveBar(barName, true)}>
                         {iconComponent}
                     </IconButton>
 
