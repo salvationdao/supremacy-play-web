@@ -88,24 +88,28 @@ export const BattleAbilityItem = () => {
     }, [state, subscribeNetMessage])
 
     const onBribe = useCallback(
-        (amount: BigNumber, percentage: number) => {
-            if (!send || !battleAbility || percentage > 1 || percentage < 0) return
+        async (amount: BigNumber, votePercentage: number) => {
+            if (!battleAbility) return
 
-            setBattleAbilityProgress((baps) => {
-                return baps.map((bap) => {
-                    if (bap.faction_id === factionID) {
-                        return { ...bap, amount: amount.plus(bap.current_sups) }
-                    }
-                    return bap
+            if (send) {
+                const resp = await send<boolean, { ability_offering_id: string; percentage: number }>(GameServerKeys.BribeBattleAbility, {
+                    ability_offering_id: battleAbility.ability_offering_id,
+                    percentage: votePercentage,
                 })
-            })
 
-            send<boolean, { ability_offering_id: string; percentage: number }>(GameServerKeys.BribeBattleAbility, {
-                ability_offering_id: battleAbility.ability_offering_id,
-                percentage,
-            })
+                if (resp) {
+                    setBattleAbilityProgress((baps) => {
+                        return baps.map((bap) => {
+                            if (bap.faction_id === factionID) {
+                                return { ...bap, amount: amount.plus(bap.current_sups) }
+                            }
+                            return bap
+                        })
+                    })
+                }
+            }
         },
-        [send, battleAbility, setBattleAbilityProgress],
+        [send, battleAbility],
     )
 
     const isVoting = useMemo(
