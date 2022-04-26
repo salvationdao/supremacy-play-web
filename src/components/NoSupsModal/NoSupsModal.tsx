@@ -8,7 +8,7 @@ import { ClipThing } from ".."
 
 export const NoSupsModal = () => {
     const { user } = usePassportServerAuth()
-    const [open, toggleOpen] = useToggle()
+    const [open, toggleOpen] = useToggle(true)
 
     if (!user || !open) return null
 

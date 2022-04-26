@@ -28,12 +28,15 @@ export const WalletContainer = createContainer(() => {
 
         const supsAboveZero = onWorldSups.isGreaterThan(0)
 
-        if (supsAboveZero && !haveSups) return toggleHaveSups(true)
-        if (!supsAboveZero && haveSups) return toggleHaveSups(false)
         if (firstIteration.current) {
             toggleHaveSups(supsAboveZero)
             firstIteration.current = false
+            return
         }
+
+        // Only update the have sups state when there's a change
+        if (supsAboveZero && !haveSups) return toggleHaveSups(true)
+        if (!supsAboveZero && haveSups) return toggleHaveSups(false)
     }, [onWorldSups, haveSups])
 
     return {
