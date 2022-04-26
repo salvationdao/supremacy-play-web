@@ -7,7 +7,7 @@ import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { SaleAbility } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { TooltipHelper } from "../Common/TooltipHelper"
@@ -213,7 +213,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                 variant="h5"
                                 sx={{
                                     marginBottom: ".5rem",
-                                    fontFamily: "Nostromo Regular Bold",
+                                    fontFamily: fonts.nostromoBold,
                                     textTransform: "uppercase",
                                 }}
                             >

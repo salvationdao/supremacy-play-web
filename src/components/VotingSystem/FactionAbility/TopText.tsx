@@ -1,5 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from "../.."
+import { fonts } from "../../../theme/theme"
 
 interface TopTextProps {
     description: string
@@ -30,7 +31,7 @@ export const TopText = ({ description, image_url, colour, label }: TopTextProps)
                 sx={{
                     lineHeight: 1,
                     fontWeight: "fontWeightBold",
-                    fontFamily: "Nostromo Regular Bold",
+                    fontFamily: fonts.nostromoBold,
                     color: colour,
                     overflow: "hidden",
                     textOverflow: "ellipsis",

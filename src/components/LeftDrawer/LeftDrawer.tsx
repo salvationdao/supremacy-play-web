@@ -1,28 +1,38 @@
-import { Button, Drawer, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import { Button, Drawer, Stack, Typography, useTheme, Theme, Box } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgBack } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
-import { useGameServerAuth } from "../../containers"
-import { shadeColor } from "../../helpers"
+import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useToggle } from "../../hooks"
 import { ROUTES_ARRAY } from "../../routes"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
 
 const EXPAND_DRAWER_WIDTH = 30 //rem
 
 export const LeftDrawer = () => {
-    const { user } = useGameServerAuth()
+    const theme = useTheme<Theme>()
     const location = useLocation()
     const history = useHistory()
     const [isExpanded, toggleIsExpanded] = useToggle(false)
-    const primaryColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : colors.darkerNeonBlue), [user])
-    const secondaryColor = useMemo(() => (user && user.faction ? user.faction.theme.secondary : "#FFFFFF"), [user])
+
+    if (!DEV_ONLY) {
+        return (
+            <Box
+                sx={{
+                    flexShrink: 0,
+                    position: "relative",
+                    height: "100%",
+                    width: `${3}rem`,
+                    backgroundColor: (theme) => theme.factionTheme.background,
+                    zIndex: 9999,
+                }}
+            />
+        )
+    }
 
     return (
         <>
-            <DrawerButtons primaryColor={primaryColor} secondaryColor={secondaryColor} user={user} openLeftDrawer={() => toggleIsExpanded(true)} />
+            <DrawerButtons openLeftDrawer={() => toggleIsExpanded(true)} />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
                 open={isExpanded}
@@ -38,7 +48,7 @@ export const LeftDrawer = () => {
                     "& .MuiDrawer-paper": {
                         width: `${EXPAND_DRAWER_WIDTH}rem`,
                         background: "none",
-                        backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                        backgroundColor: (theme) => theme.factionTheme.background,
                         position: "absolute",
                         borderLeft: 0,
                     },
@@ -54,8 +64,8 @@ export const LeftDrawer = () => {
                                     enable={r.enable}
                                     onClick={() => history.push(r.path)}
                                     isActive={location.pathname === r.path}
-                                    primaryColor={primaryColor}
-                                    secondaryColor={secondaryColor}
+                                    primaryColor={theme.factionTheme.primary}
+                                    secondaryColor={theme.factionTheme.secondary}
                                 />
                             )
                         })}
@@ -71,16 +81,16 @@ export const LeftDrawer = () => {
                             borderRadius: 0,
                             backgroundColor: "#00000040",
                             ":hover": {
-                                backgroundColor: primaryColor,
+                                backgroundColor: (theme) => theme.factionTheme.primary,
                                 svg: {
-                                    fill: secondaryColor,
+                                    fill: (theme) => theme.factionTheme.secondary,
                                 },
-                                "*": { color: `${secondaryColor} !important` },
+                                "*": { color: (theme) => `${theme.factionTheme.secondary} !important` },
                             },
                         }}
                     >
                         <SvgBack size="1.6rem" fill="#FFFFFF" />
-                        <Typography sx={{ ml: "1rem", fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>MINIMISE</Typography>
+                        <Typography sx={{ ml: "1rem", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>MINIMISE</Typography>
                     </Button>
                 </Stack>
             </Drawer>
@@ -122,11 +132,11 @@ const MenuButton = ({
                 },
             }}
         >
-            <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: "Nostromo Regular Heavy", whiteSpace: "nowrap", lineHeight: 1 }}>
+            <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>
                 {label}
             </Typography>
             {!enable && (
-                <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: "Nostromo Regular Bold", whiteSpace: "nowrap", lineHeight: 1 }}>
+                <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold, whiteSpace: "nowrap", lineHeight: 1 }}>
                     &nbsp;(COMING SOON)
                 </Typography>
             )}

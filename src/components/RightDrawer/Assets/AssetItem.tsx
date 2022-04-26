@@ -5,7 +5,7 @@ import { UNDER_MAINTENANCE } from "../../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
 import { getRarityDeets, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 import { MechDrawer } from "./MechDrawer"
 import { LeaveConfirmation } from "./LeaveConfirmation"
@@ -249,7 +249,7 @@ export const AssetItem = ({
 
                                 {isGameServerUp && isInQueue && assetQueue && assetQueue.position && (
                                     <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
-                                        <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueue.position}</Typography>
+                                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{assetQueue.position}</Typography>
                                     </Box>
                                 )}
                             </Box>
@@ -257,7 +257,7 @@ export const AssetItem = ({
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    fontFamily: "Nostromo Regular Bold",
+                                    fontFamily: fonts.nostromoBold,
                                     letterSpacing: ".1rem",
                                     fontSize: "1rem",
                                     lineHeight: 1.25,
@@ -327,20 +327,20 @@ export const AssetItem = ({
 
                         {isGameServerUp && isInQueue && assetQueue && assetQueue.position && (
                             <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
-                                <Typography sx={{ fontFamily: "Nostromo Regular Black" }}>{assetQueue.position}</Typography>
+                                <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{assetQueue.position}</Typography>
                             </Box>
                         )}
                     </Box>
 
                     <Stack sx={{ flex: 1 }}>
-                        <Typography variant="caption" sx={{ lineHeight: 1, color: rarityDeets.color, fontFamily: "Nostromo Regular Black" }}>
+                        <Typography variant="caption" sx={{ lineHeight: 1, color: rarityDeets.color, fontFamily: fonts.nostromoBlack }}>
                             {rarityDeets.label}
                         </Typography>
                         <Typography
                             variant="caption"
                             sx={{
                                 my: ".2rem",
-                                fontFamily: "Nostromo Regular Bold",
+                                fontFamily: fonts.nostromoBold,
                                 letterSpacing: ".1rem",
                                 display: "-webkit-box",
                                 overflow: "hidden",

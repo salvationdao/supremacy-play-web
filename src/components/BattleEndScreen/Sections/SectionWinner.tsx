@@ -3,7 +3,7 @@ import { BattleEndTooltip, StyledImageText } from "../.."
 import { GenericWarMachinePNG } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useSupremacy } from "../../../containers"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
@@ -18,7 +18,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     variant="h6"
                     sx={{
                         position: "relative",
-                        fontFamily: "Nostromo Regular Black",
+                        fontFamily: fonts.nostromoBlack,
                         fontWeight: "fontWeightBold",
                         color: colors.neonBlue,
                     }}

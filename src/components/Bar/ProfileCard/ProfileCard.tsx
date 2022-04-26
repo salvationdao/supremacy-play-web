@@ -5,7 +5,7 @@ import { SvgInfoCircular } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useGameServerAuth, usePassportServerAuth } from "../../../containers"
 import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
 
 export const ProfileCard = () => {
@@ -32,8 +32,8 @@ export const ProfileCard = () => {
                             height: "2.9rem",
                             width: "2.9rem",
                             borderRadius: 1,
-                            border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
-                            backgroundColor: faction ? faction.theme.primary : "transparent",
+                            border: (theme) => `${theme.factionTheme.primary} 2px solid`,
+                            backgroundColor: (theme) => theme.factionTheme.primary,
                         }}
                         variant="square"
                     />
@@ -74,8 +74,8 @@ export const ProfileCard = () => {
                             height: "2.6rem",
                             width: "2.6rem",
                             borderRadius: 0.8,
-                            border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
-                            backgroundColor: faction ? faction.theme.primary : "transparent",
+                            border: (theme) => `${theme.factionTheme.primary} 2px solid`,
+                            backgroundColor: (theme) => theme.factionTheme.primary,
                         }}
                         variant="square"
                     />
@@ -85,8 +85,8 @@ export const ProfileCard = () => {
                         sx={{
                             mt: ".29rem !important",
                             lineHeight: 1,
-                            fontFamily: "Nostromo Regular Black",
-                            color: faction ? faction.theme.primary : "#FFFFFF",
+                            fontFamily: fonts.nostromoBlack,
+                            color: (theme) => theme.factionTheme.primary,
                         }}
                     >
                         {username}

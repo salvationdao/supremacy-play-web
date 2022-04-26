@@ -5,7 +5,7 @@ import { TOKEN_SALE_PAGE } from "../../../constants"
 import { usePassportServerWebsocket } from "../../../containers"
 import { dateFormatter } from "../../../helpers"
 import { PassportServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { UserData } from "../../../types/passport"
 
 export const BuySupsButton = ({ user }: { user?: UserData }) => {
@@ -63,7 +63,7 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
                     borderRadius: 0.2,
                     border: `1px solid ${isFreeSupsEnabled ? colors.gold : colors.neonBlue}`,
                     overflow: "hidden",
-                    fontFamily: "Nostromo Regular Bold",
+                    fontFamily: fonts.nostromoBold,
                 }}
                 onClick={isFreeSupsEnabled ? getFreeSups : openBuySupsPage}
                 disabled={isFreeSupsEnabled && timeTilNextClaim && timeTilNextClaim < new Date()}

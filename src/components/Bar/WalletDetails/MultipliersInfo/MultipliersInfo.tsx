@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { BattleMultipliers, MultiplierUpdateResp, User } from "../../../../types"
 import { MultipliersPopover } from "./MultiplierPopover"
 
@@ -84,7 +84,7 @@ const MultipliersInfoInner = ({
                         pb: ".24rem",
                         textAlign: "center",
                         lineHeight: 1,
-                        fontFamily: "Nostromo Regular Bold",
+                        fontFamily: fonts.nostromoBold,
                         border: `${colors.orange} 1px solid`,
                         color: colors.orange,
                         borderRadius: 0.6,
@@ -96,7 +96,6 @@ const MultipliersInfoInner = ({
 
             {isMultipliersPopoverOpen && user && (
                 <MultipliersPopover
-                    user={user}
                     open={isMultipliersPopoverOpen}
                     multipliers={multipliers}
                     onClose={() => toggleIsMultipliersPopoverOpen(false)}

@@ -1,7 +1,7 @@
 import { Box, IconButton, Link, Stack, Typography } from "@mui/material"
 import { LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube, MaintenancePNG } from "../../assets"
 import { SUPREMACY_PAGE } from "../../constants"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 
 export const Maintenance = () => {
     return (
@@ -57,7 +57,7 @@ export const Maintenance = () => {
                         <Typography
                             sx={{
                                 textAlign: "center",
-                                fontFamily: "Nostromo Regular Heavy",
+                                fontFamily: fonts.nostromoHeavy,
                                 fontSize: "3.26rem",
                             }}
                         >

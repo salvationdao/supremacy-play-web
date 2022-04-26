@@ -1,15 +1,13 @@
-import { Stack, useTheme, Theme } from "@mui/material"
+import { Stack } from "@mui/material"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { CONTROLS_HEIGHT } from "../../constants"
 import { useOverlayToggles } from "../../containers"
-import { shadeColor } from "../../helpers"
 import { BattleStats } from "../BattleStats/BattleStats"
 import { PreviousBattle } from "./PreviousBattle"
 import { ResolutionSelect } from "./ResolutionSelect"
 import { StreamSelect } from "./StreamSelect"
 
 export const Controls = () => {
-    const theme = useTheme<Theme>()
     const { isLiveChartOpen } = useOverlayToggles()
 
     return (
@@ -25,7 +23,7 @@ export const Controls = () => {
                 pr: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
-                backgroundColor: shadeColor(theme.factionTheme.primary, -95),
+                backgroundColor: (theme) => theme.factionTheme.background,
                 overflowX: "auto",
                 overflowY: "hidden",
                 scrollbarWidth: "none",
@@ -37,7 +35,7 @@ export const Controls = () => {
                     borderRadius: 0,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: `${theme.factionTheme.primary}50`,
+                    background: (theme) => `${theme.factionTheme.primary}50`,
                     borderRadius: 0,
                 },
             }}
@@ -49,7 +47,7 @@ export const Controls = () => {
                 <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />
             </Stack>
 
-            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0 }}>
+            <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0 }}>
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />

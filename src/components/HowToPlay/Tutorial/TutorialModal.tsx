@@ -2,7 +2,7 @@ import { Box, Button, Divider, Modal, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { useCallback } from "react"
 import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 
 export const TutorialModal = () => {
@@ -47,13 +47,13 @@ export const TutorialModal = () => {
                             width: "100%",
                         }}
                     >
-                        <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Black", textAlign: "center", mb: ".5rem" }}>
+                        <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack, textAlign: "center", mb: ".5rem" }}>
                             WELCOME NEW CITIZEN
                         </Typography>
 
                         <Divider sx={{ width: "100%", mt: "1rem", mb: "2rem" }} />
 
-                        <Typography sx={{ fontFamily: "Nostromo Regular Bold", width: "100%" }}>
+                        <Typography sx={{ fontFamily: fonts.nostromoBold, width: "100%" }}>
                             You are now in the Battle Arena where Syndicates will fight for glory. The Arena can be overwhelming if you don&apos;t know your way
                             around, the tutorial can help you get your bearings.
                         </Typography>
@@ -76,7 +76,7 @@ export const TutorialModal = () => {
                                     },
                                 }}
                             >
-                                <Typography sx={{ color: colors.darkNavy, fontFamily: "Nostromo Regular Black" }}>Tutorial</Typography>
+                                <Typography sx={{ color: colors.darkNavy, fontFamily: fonts.nostromoBlack }}>Tutorial</Typography>
                             </Button>
                             <Button
                                 variant="outlined"
@@ -95,7 +95,7 @@ export const TutorialModal = () => {
                                     },
                                 }}
                             >
-                                <Typography sx={{ color: colors.neonBlue, fontFamily: "Nostromo Regular Bold" }}>Close</Typography>
+                                <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }}>Skip</Typography>
                             </Button>
                         </Stack>
                     </Box>

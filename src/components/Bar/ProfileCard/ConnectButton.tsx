@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useTour } from "@reactour/tour"
 import { usePassportServerAuth } from "../../../containers"
 import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_WEB } from "../../../constants"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { useToggle } from "../../../hooks"
 
 export const ConnectButton = () => {
@@ -76,7 +76,7 @@ export const ConnectButton = () => {
                         whiteSpace: "nowrap",
                         borderRadius: 0.2,
                         border: `1px solid ${colors.neonBlue}`,
-                        fontFamily: "Nostromo Regular Bold",
+                        fontFamily: fonts.nostromoBold,
                         color: colors.darkestNeonBlue,
                         backgroundColor: colors.neonBlue,
                         ":hover": {
@@ -92,7 +92,7 @@ export const ConnectButton = () => {
                     Connect
                 </Button>
             ) : (
-                <Typography sx={{ mr: "1.6rem", fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                <Typography sx={{ mr: "1.6rem", fontFamily: fonts.nostromoBold }} variant="caption">
                     Signing in...
                 </Typography>
             )}
@@ -113,7 +113,7 @@ export const ConnectButton = () => {
                     open={!!authRingCheckError}
                 >
                     <Box sx={{ px: "2.4rem", py: "2rem", pb: "2.4rem", backgroundColor: colors.darkNavy }}>
-                        <Typography variant="h6" gutterBottom sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                        <Typography variant="h6" gutterBottom sx={{ fontFamily: fonts.nostromoBold }}>
                             Login Failed...
                         </Typography>
                         <Typography variant="body1">The account that you have entered is invalid.</Typography>

@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useRef } from "react"
 import { SvgPlay, TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
 import { useToggle } from "../../hooks"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 
 export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer: boolean; setWatchedTrailer: Dispatch<SetStateAction<boolean>> }) => {
     const videoRef = useRef<HTMLVideoElement>(null)
@@ -80,7 +80,7 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
                             zIndex: 99,
                             backgroundColor: colors.darkNavy,
                             borderRadius: 0.7,
-                            fontFamily: "Nostromo Regular Bold",
+                            fontFamily: fonts.nostromoBold,
                             ":hover": { opacity: 0.8, backgroundColor: colors.darkNavy },
                             ":disabled": {
                                 color: "#FFFFFF80",

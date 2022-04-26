@@ -2,7 +2,7 @@ import { Box, Divider, Link, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
 import { PASSPORT_WEB, SUPREMACY_PAGE, VERSION } from "../../constants"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 
 export const Logo = React.memo(function Logo() {
     const [text, setText] = useState<string>("EARLY ACCESS")
@@ -37,7 +37,7 @@ export const Logo = React.memo(function Logo() {
                         color: colors.neonBlue,
                         textAlign: "center",
                         lineHeight: 1,
-                        fontFamily: "Nostromo Regular Bold",
+                        fontFamily: fonts.nostromoBold,
                     }}
                 >
                     {text}

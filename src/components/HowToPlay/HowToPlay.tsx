@@ -2,17 +2,13 @@ import { Button, Popover, Stack, Typography, useMediaQuery } from "@mui/material
 import { useTour } from "@reactour/tour"
 import { MutableRefObject, useRef } from "react"
 import { SvgQuestionMark } from "../../assets"
-import { usePassportServerAuth } from "../../containers"
-import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
-import { UserData } from "../../types/passport"
 import GameGuide from "./GameGuide/GameGuide"
 import { SetupTutorial } from "./Tutorial/SetupTutorial"
 
 export const HowToPlay = () => {
     const below1440 = useMediaQuery("(max-width:1440px)")
-    const { user } = usePassportServerAuth()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
@@ -42,7 +38,6 @@ export const HowToPlay = () => {
 
             {isPopoverOpen && (
                 <OptionsPopover
-                    user={user}
                     open={isPopoverOpen}
                     onClose={() => toggleIsPopoverOpen(false)}
                     popoverRef={popoverRef}
@@ -64,14 +59,12 @@ export const HowToPlay = () => {
 }
 
 const OptionsPopover = ({
-    user,
     open,
     onClose,
     popoverRef,
     openGameGuide,
     openTutorial,
 }: {
-    user?: UserData
     open: boolean
     onClose: () => void
     popoverRef: MutableRefObject<null>
@@ -96,7 +89,7 @@ const OptionsPopover = ({
                 zIndex: 10000,
                 ".MuiPaper-root": {
                     background: "none",
-                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
+                    backgroundColor: (theme) => theme.factionTheme.background,
                     border: "#FFFFFF50 1px solid",
                 },
             }}

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
+import { shadeColor } from "../helpers"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User, UserRank, UserStat } from "../types"
@@ -85,7 +86,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             (u) => {
                 if (u) {
                     setUser(u)
-                    if (u?.faction?.theme) updateTheme(u.faction.theme)
+                    if (u?.faction?.theme) updateTheme({ ...u.faction.theme, background: shadeColor(u.faction.theme.primary, -95) })
                 }
             },
             { id: userID },
@@ -99,7 +100,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             (u) => {
                 if (u) {
                     setUser(u)
-                    if (u?.faction?.theme) updateTheme(u.faction.theme)
+                    if (u?.faction?.theme) updateTheme({ ...u.faction.theme, background: shadeColor(u.faction.theme.primary, -95) })
                 }
             },
             null,

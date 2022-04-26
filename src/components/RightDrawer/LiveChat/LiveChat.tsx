@@ -1,4 +1,4 @@
-import { Badge, Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Badge, Box, Fade, Stack, Tab, Tabs, Theme, Typography, useTheme } from "@mui/material"
 import { useMemo } from "react"
 import { AdditionalOptionsButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgInfoCircular } from "../../../assets"
@@ -6,7 +6,7 @@ import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { ChatProvider, useChat, useGameServerAuth } from "../../../containers"
 import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { ChatMessageType } from "../../../types/chat"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
@@ -33,6 +33,7 @@ const LiveChatInner = () => {
 }
 
 const TabbedLayout = () => {
+    const theme = useTheme<Theme>()
     const { user } = useGameServerAuth()
     const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread, banProposal } = useChat()
 
@@ -50,8 +51,8 @@ const TabbedLayout = () => {
         bannerBackgroundColor = shadeColor(colors.globalChat, -30)
     } else if (tabValue == 1 && isEnlisted) {
         faction_id = user.faction_id
-        primaryColor = user.faction.theme.primary
-        secondaryColor = user.faction.theme.secondary
+        primaryColor = theme.factionTheme.primary
+        secondaryColor = theme.factionTheme.secondary
         bannerBackgroundColor = `${primaryColor}25`
     } else {
         return null
@@ -70,7 +71,7 @@ const TabbedLayout = () => {
                 flex: 1,
                 height: 0,
                 position: "relative",
-                backgroundColor: tabValue == 1 && user && user.faction ? `${user?.faction.theme.primary}06` : `${colors.globalChat}13`,
+                backgroundColor: (theme) => (tabValue == 1 ? `${theme.factionTheme.primary}06` : `${colors.globalChat}13`),
             }}
         >
             <Tabs
@@ -94,14 +95,15 @@ const TabbedLayout = () => {
                 }}
             >
                 <Tab
+                    className="tutorial-global-chat"
                     label={
-                        <Stack className="tutorial-global-chat" direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
+                        <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                             <Badge
                                 badgeContent={globalChatUnread}
                                 sx={{
                                     ".MuiBadge-badge": {
                                         fontSize: "1.2rem",
-                                        fontFamily: "Share Tech",
+                                        fontFamily: fonts.shareTech,
                                         fontWeight: "fontWeightBold",
                                         lineHeight: 0,
                                         color: "#FFFFFF",
@@ -115,7 +117,7 @@ const TabbedLayout = () => {
                                 variant="caption"
                                 sx={{
                                     lineHeight: 1,
-                                    fontFamily: "Nostromo Regular Black",
+                                    fontFamily: fonts.nostromoBlack,
                                     textAlign: "start",
                                 }}
                             >
@@ -126,9 +128,9 @@ const TabbedLayout = () => {
                 />
                 {isEnlisted && (
                     <Tab
+                        className="tutorial-faction-chat"
                         label={
                             <Stack
-                                className="tutorial-faction-chat"
                                 direction="row"
                                 alignItems="center"
                                 justifyContent="center"
@@ -140,7 +142,7 @@ const TabbedLayout = () => {
                                     sx={{
                                         ".MuiBadge-badge": {
                                             fontSize: "1.2rem",
-                                            fontFamily: "Share Tech",
+                                            fontFamily: fonts.shareTech,
                                             fontWeight: "fontWeightBold",
                                             lineHeight: 0,
                                             color: "#FFFFFF",
@@ -159,9 +161,9 @@ const TabbedLayout = () => {
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
                                             backgroundSize: "contain",
-                                            backgroundColor: user.faction.theme.primary,
+                                            backgroundColor: (theme) => theme.factionTheme.primary,
                                             borderRadius: 0.5,
-                                            border: `${user.faction.theme.primary} solid 1px`,
+                                            border: (theme) => `${theme.factionTheme.primary} solid 1px`,
                                         }}
                                     />
                                 </Badge>
@@ -172,7 +174,7 @@ const TabbedLayout = () => {
                                         </Box>
                                     </TooltipHelper>
                                 )}
-                                <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", textAlign: "start" }}>
+                                <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
                                     {factionTabLabel}
                                 </Typography>
                             </Stack>
@@ -187,6 +189,7 @@ const TabbedLayout = () => {
 }
 
 const SplitLayout = () => {
+    const theme = useTheme<Theme>()
     const { user } = useGameServerAuth()
     const { globalChatMessages, factionChatMessages, banProposal } = useChat()
 
@@ -228,7 +231,7 @@ const SplitLayout = () => {
                         variant="caption"
                         sx={{
                             lineHeight: 1,
-                            fontFamily: "Nostromo Regular Black",
+                            fontFamily: fonts.nostromoBlack,
                             textAlign: "start",
                         }}
                     >
@@ -240,19 +243,21 @@ const SplitLayout = () => {
             </Stack>
 
             {isEnlisted && user && (
-                <Stack sx={{ position: "relative", height: "50%", backgroundColor: `${user?.faction.theme.primary}06` }}>
+                <Stack
+                    className="tutorial-faction-chat"
+                    sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `${theme.factionTheme.primary}06` }}
+                >
                     <Stack
                         justifyContent="center"
                         sx={{
                             height: `${5}rem`,
                             px: "1.8rem",
-                            background: `${user.faction.theme.primary}25`,
+                            background: (theme) => `${theme.factionTheme.primary}25`,
                             boxShadow: 1,
                             zIndex: 99,
                         }}
                     >
                         <Stack
-                            className="tutorial-faction-chat"
                             direction="row"
                             alignItems="center"
                             spacing=".96rem"
@@ -269,9 +274,9 @@ const SplitLayout = () => {
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
-                                    backgroundColor: user.faction.theme.primary,
+                                    backgroundColor: (theme) => theme.factionTheme.primary,
                                     borderRadius: 0.5,
-                                    border: `${user.faction.theme.primary} solid 1px`,
+                                    border: (theme) => `${theme.factionTheme.primary} solid 1px`,
                                 }}
                             />
                             {banProposal && (
@@ -281,7 +286,7 @@ const SplitLayout = () => {
                                     </Box>
                                 </TooltipHelper>
                             )}
-                            <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: "Nostromo Regular Black", textAlign: "start" }}>
+                            <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
                                 {factionTabLabel}
                             </Typography>
                         </Stack>
@@ -290,8 +295,8 @@ const SplitLayout = () => {
                     <Content
                         user={user}
                         faction_id={user.faction_id}
-                        primaryColor={user.faction.theme.primary}
-                        secondaryColor={user.faction.theme.secondary}
+                        primaryColor={theme.factionTheme.primary}
+                        secondaryColor={theme.factionTheme.secondary}
                         chatMessages={factionChatMessages}
                     />
                 </Stack>

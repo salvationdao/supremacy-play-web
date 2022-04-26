@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../.."
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useSupremacy } from "../../../containers"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
@@ -17,7 +17,7 @@ export const SectionTopSups = ({ battleEndDetail }: { battleEndDetail: BattleEnd
                     variant="h6"
                     sx={{
                         position: "relative",
-                        fontFamily: "Nostromo Regular Black",
+                        fontFamily: fonts.nostromoBlack,
                         fontWeight: "fontWeightBold",
                         color: colors.neonBlue,
                     }}

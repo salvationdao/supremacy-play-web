@@ -3,10 +3,9 @@ import { useEffect } from "react"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { SocketState, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
-import { shadeColor } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { UserData } from "../../types/passport"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
 import { SaleAbilitiesModal } from "../PlayerAbilities/SaleAbilitiesModal"
@@ -32,7 +31,7 @@ export const Bar = () => {
                 flexShrink: 0,
                 height: `${GAME_BAR_HEIGHT}rem`,
                 color: "#FFFFFF",
-                backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
+                backgroundColor: (theme) => theme.factionTheme.background,
                 scrollbarWidth: "none",
                 zIndex: (theme) => theme.zIndex.drawer + 1,
                 "::-webkit-scrollbar": {
@@ -64,7 +63,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
             <>
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-                <Typography sx={{ mr: "1.6rem", fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                <Typography sx={{ mr: "1.6rem", fontFamily: fonts.nostromoBold }} variant="caption">
                     {isServerUp ? "Connecting to passport..." : "Passport offline."}
                 </Typography>
             </>

@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
+import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Theme, Typography, useTheme } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import QRCode from "react-qr-code"
@@ -9,7 +9,7 @@ import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsock
 import { getRarityDeets, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 
 const AmountItem = ({
@@ -63,6 +63,7 @@ export const DeployConfirmation = ({
     onClose: () => void
     setTelegramShortcode?: (s: string) => void
 }) => {
+    const theme = useTheme<Theme>()
     const queueLength = queueFeed?.queue_length || 0
     const queueCost = queueFeed?.queue_cost || ""
     const contractReward = queueFeed?.contract_reward || ""
@@ -192,7 +193,7 @@ export const DeployConfirmation = ({
                     clipSize="0"
                     border={{
                         isFancy: true,
-                        borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
+                        borderColor: theme.factionTheme.primary,
                         borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
@@ -203,7 +204,7 @@ export const DeployConfirmation = ({
                             position: "relative",
                             px: "2.5rem",
                             py: "2.4rem",
-                            backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
+                            backgroundColor: (theme) => theme.factionTheme.background,
                         }}
                     >
                         <Box
@@ -244,7 +245,7 @@ export const DeployConfirmation = ({
                         <Stack spacing=".8rem">
                             <Box>
                                 <Box>
-                                    <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Bold" }}>{name || label}</Typography>
+                                    <Typography sx={{ display: "inline", fontFamily: fonts.nostromoBold }}>{name || label}</Typography>
                                     {user && (
                                         <span>
                                             <Link
@@ -264,7 +265,7 @@ export const DeployConfirmation = ({
                                         mt: ".4rem",
                                         lineHeight: 1,
                                         color: rarityDeets.color,
-                                        fontFamily: "Nostromo Regular Heavy",
+                                        fontFamily: fonts.nostromoHeavy,
                                     }}
                                 >
                                     {rarityDeets.label}
@@ -448,7 +449,7 @@ export const DeployConfirmation = ({
                                                         <Checkbox
                                                             checked={saveMobile}
                                                             onClick={() => setSaveMobile((prev) => !prev)}
-                                                            sx={{ m: 0, p: 0, color: user?.faction.theme.primary }}
+                                                            sx={{ m: 0, p: 0, color: (theme) => theme.factionTheme.primary }}
                                                         />
                                                     </Stack>
                                                 )}
@@ -461,7 +462,7 @@ export const DeployConfirmation = ({
                                                 <Checkbox
                                                     checked={saveSettings}
                                                     onClick={() => setSaveSettings((prev) => !prev)}
-                                                    sx={{ m: 0, p: 0, color: user?.faction.theme.primary }}
+                                                    sx={{ m: 0, p: 0, color: (theme) => theme.factionTheme.primary }}
                                                 />
                                             </Stack>
                                         )}
@@ -609,7 +610,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 marginBottom: "1rem",
                                                 fontSize: "2rem",
                                             }}
@@ -634,7 +635,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                             color: colors.neonBlue,
                                             backgroundColor: colors.darkNavy,
                                             borderRadius: 0.7,
-                                            fontFamily: "Nostromo Regular Bold",
+                                            fontFamily: fonts.nostromoBold,
                                             border: `${colors.neonBlue} 1px solid`,
                                             ":hover": {
                                                 opacity: 0.8,
@@ -704,7 +705,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 marginBottom: "1rem",
                                                 fontSize: "2rem",
                                             }}
@@ -716,7 +717,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 marginBottom: "1rem",
                                             }}
                                         >
@@ -727,7 +728,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box sx={{ display: "flex" }}>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 marginRight: ".3rem",
                                             }}
                                         >
@@ -736,7 +737,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                         <a href={TELEGRAM_BOT_URL} rel="noreferrer" target="_blank">
                                             <Typography
                                                 sx={{
-                                                    fontFamily: "Nostromo Regular Bold",
+                                                    fontFamily: fonts.nostromoBold,
                                                     WebkitBoxOrient: "vertical",
                                                     textDecoration: "underline",
                                                     ":hover": {
@@ -749,7 +750,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                         </a>
                                     </Box>
                                     <Box>
-                                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Or Scan QR code:</Typography>
+                                        <Typography sx={{ fontFamily: fonts.nostromoBold }}>Or Scan QR code:</Typography>
                                     </Box>
 
                                     <Box style={{ textAlign: "center", marginBottom: "1rem" }}>
@@ -759,7 +760,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                             }}
                                         >
                                             2) Click Start (if first time using the bot)
@@ -769,7 +770,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                             }}
                                         >
                                             3) type /register
@@ -793,7 +794,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     >
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 display: "-webkit-box",
                                             }}
                                         >
@@ -807,7 +808,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                         {copySuccess && (
                                             <Typography
                                                 sx={{
-                                                    fontFamily: "Nostromo Regular Bold",
+                                                    fontFamily: fonts.nostromoBold,
                                                     marginTop: ".5rem",
                                                     marginLeft: "1rem",
                                                 }}
@@ -832,7 +833,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                             color: colors.neonBlue,
                                             backgroundColor: colors.darkNavy,
                                             borderRadius: 0.7,
-                                            fontFamily: "Nostromo Regular Bold",
+                                            fontFamily: fonts.nostromoBold,
                                             border: `${colors.neonBlue} 1px solid`,
                                             ":hover": {
                                                 opacity: 0.8,

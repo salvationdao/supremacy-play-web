@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
+import { Box, Button, IconButton, Link, Modal, Stack, Typography, useTheme, Theme } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { SvgClose, SvgExternalLink } from "../../../assets"
@@ -7,10 +7,11 @@ import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../.
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 
 export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; asset: Asset; onClose: () => void }) => {
+    const theme = useTheme<Theme>()
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { user } = usePassportServerAuth()
@@ -53,7 +54,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                     clipSize="0"
                     border={{
                         isFancy: true,
-                        borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
+                        borderColor: theme.factionTheme.primary,
                         borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
@@ -64,7 +65,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                             position: "relative",
                             px: "2.5rem",
                             py: "2.4rem",
-                            backgroundColor: (user && user.faction.theme.background) || colors.darkNavyBlue,
+                            backgroundColor: theme.factionTheme.background,
                         }}
                     >
                         <Box
@@ -105,7 +106,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                         <Stack spacing=".8rem">
                             <Box>
                                 <Box>
-                                    <Typography sx={{ display: "inline", fontFamily: "Nostromo Regular Bold" }}>{name || label}</Typography>
+                                    <Typography sx={{ display: "inline", fontFamily: fonts.nostromoBold }}>{name || label}</Typography>
                                     {user && (
                                         <span>
                                             <Link
@@ -124,7 +125,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                                             mt: ".4rem",
                                             lineHeight: 1,
                                             color: rarityDeets.color,
-                                            fontFamily: "Nostromo Regular Heavy",
+                                            fontFamily: fonts.nostromoHeavy,
                                         }}
                                     >
                                         {rarityDeets.label}

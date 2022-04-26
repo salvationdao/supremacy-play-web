@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 
 export interface GlobalAnnouncementType {
     title: string
@@ -54,7 +54,7 @@ export const GlobalAnnouncement = ({ globalAnnouncement }: { globalAnnouncement:
                 <Typography
                     sx={{
                         textAlign: "center",
-                        fontFamily: "Nostromo Regular Heavy",
+                        fontFamily: fonts.nostromoHeavy,
                     }}
                 >
                     {globalAnnouncement.title}

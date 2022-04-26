@@ -1,4 +1,4 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack, Typography, useTheme, Theme } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BattleAbilityCountdown, ClipThing } from "../.."
@@ -18,8 +18,9 @@ export interface BattleAbilityProgressBigNum {
 }
 
 export const BattleAbilityItem = () => {
+    const theme = useTheme<Theme>()
     const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
-    const { user, factionID } = useGameServerAuth()
+    const { factionID } = useGameServerAuth()
     const { bribeStage, forceDisplay100Percentage } = useGame()
     const { factionsAll } = useSupremacy()
 
@@ -120,9 +121,6 @@ export const BattleAbilityItem = () => {
         [battleAbilityProgress, bribeStage],
     )
 
-    const buttonColor = useMemo(() => (user && user.faction ? user.faction.theme.primary : battleAbility ? battleAbility.colour : colors.neonBlue), [user])
-    const buttonTextColor = useMemo(() => (user && user.faction ? user.faction.theme.secondary : "#FFFFFF"), [user])
-
     if (!battleAbility) {
         return (
             <Typography
@@ -149,8 +147,8 @@ export const BattleAbilityItem = () => {
             currentFactionID={factionID}
             forceDisplay100Percentage={forceDisplay100Percentage}
             battleAbilityProgress={battleAbilityProgress}
-            buttonColor={buttonColor}
-            buttonTextColor={buttonTextColor}
+            buttonColor={theme.factionTheme.primary}
+            buttonTextColor={theme.factionTheme.secondary}
             onBribe={onBribe}
         />
     )

@@ -1,18 +1,9 @@
-import { Box, Fade, useTheme } from "@mui/material"
+import { Box, Fade, Theme, useTheme } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import {
-    useDimension,
-    useGame,
-    useOverlayToggles,
-    BribeStageResponse,
-    WinnerAnnouncementResponse,
-    useGameServerAuth,
-    useSnackbar,
-    Severity,
-} from "../../containers"
+import { useDimension, useGame, useOverlayToggles, BribeStageResponse, WinnerAnnouncementResponse, useSnackbar, Severity } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
 import { Dimension, Map } from "../../types"
@@ -29,8 +20,8 @@ interface MiniMapProps {
 }
 
 export const MiniMap = () => {
+    const theme = useTheme<Theme>()
     const { newSnackbarMessage } = useSnackbar()
-    const { user } = useGameServerAuth()
     const { map, winner, setWinner, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isMapOpen)
@@ -61,10 +52,10 @@ export const MiniMap = () => {
                 isMapOpen={isMapOpen}
                 toggleIsMapOpen={toggleIsMapOpen}
                 newSnackbarMessage={newSnackbarMessage}
-                factionColor={user && user.faction ? user.faction.theme.primary : colors.neonBlue}
+                factionColor={theme.factionTheme.primary}
             />
         ),
-        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, user],
+        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme],
     )
 
     if (!isRender) return null

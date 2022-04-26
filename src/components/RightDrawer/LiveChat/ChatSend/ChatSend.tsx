@@ -8,7 +8,7 @@ import { useChat, useGameServerAuth, useSnackbar, WebSocketProperties, useGameSe
 import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { User, UserRank } from "../../../../types"
 import { ChatMessageType } from "../../../../types/chat"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
@@ -370,7 +370,7 @@ const ChatSendInner = ({
                         boxShadow: 1,
                         "& .MuiInputBase-root": {
                             backgroundColor: "#49494970",
-                            fontFamily: "Share Tech",
+                            fontFamily: fonts.shareTech,
                             pt: "1rem",
                             pb: ".8rem",
                         },

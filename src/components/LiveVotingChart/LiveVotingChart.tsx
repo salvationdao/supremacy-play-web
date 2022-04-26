@@ -1,5 +1,4 @@
-import { Box, Fade, Stack, Theme, Typography } from "@mui/material"
-import { useTheme } from "@mui/styles"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig } from ".."
 import { useGameServerWebsocket, useOverlayToggles } from "../../containers"
@@ -14,7 +13,6 @@ import { LiveGraph } from "./LiveGraph"
 const DefaultMaxLiveVotingDataLength = 100
 
 export const LiveVotingChart = () => {
-    const theme = useTheme<Theme>()
     const { state, subscribe } = useGameServerWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
@@ -105,7 +103,7 @@ export const LiveVotingChart = () => {
                                 px: ".56rem",
                                 pt: "1.6rem",
                                 background: "#00000099",
-                                border: `${theme.factionTheme.primary}10 1px solid`,
+                                border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
                                 borderRadius: 1,
                             }}
                         >
