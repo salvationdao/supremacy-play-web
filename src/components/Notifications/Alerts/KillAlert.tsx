@@ -57,6 +57,7 @@ export const KillAlert = ({ data, factionsAll }: { data: KillAlertProps; faction
                 isFancy: true,
                 borderThickness: ".15rem",
             }}
+            opacity={0.7}
             backgroundColor={colors.darkNavy}
         >
             <Box

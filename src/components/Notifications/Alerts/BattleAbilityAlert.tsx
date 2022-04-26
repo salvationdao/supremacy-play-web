@@ -26,6 +26,7 @@ export const BattleAbilityAlert = ({ data, factionsAll }: { data: BattleFactionA
                 isFancy: true,
                 borderThickness: ".15rem",
             }}
+            opacity={0.7}
             backgroundColor={colors.darkNavy}
         >
             <Stack
