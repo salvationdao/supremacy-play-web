@@ -32,7 +32,7 @@ import {
     killNoti3,
 } from "./testData"
 
-const SPAWN_TEST_NOTIFICATIONS = false
+const SPAWN_TEST_NOTIFICATIONS = true
 
 /*
     WAR_MACHINE_DESTROYED: when a war machine is destroyed

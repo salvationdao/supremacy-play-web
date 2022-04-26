@@ -1,4 +1,4 @@
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Modal, Stack, Typography, useTheme, Theme } from "@mui/material"
 import { ClipThing } from "../.."
 import { SvgClose } from "../../../assets"
 import { dateFormatter, snakeToTitle } from "../../../helpers"
@@ -6,6 +6,8 @@ import { colors, fonts } from "../../../theme/theme"
 import { PunishListItem } from "../../../types/chat"
 
 export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; onClose: () => void; punishments?: PunishListItem[] }) => {
+    const theme = useTheme<Theme>()
+
     if (!punishments || punishments.length <= 0) return null
 
     return (
@@ -16,7 +18,7 @@ export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; 
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "36rem",
+                    width: "40rem",
                     border: "none",
                     outline: "none",
                     boxShadow: 6,
@@ -29,9 +31,10 @@ export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; 
                         borderColor: colors.red,
                         borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={theme.factionTheme.background}
                 >
-                    <Box sx={{ position: "relative", px: "1rem", py: "1.6rem", backgroundColor: (theme) => theme.factionTheme.background }}>
+                    <Box sx={{ position: "relative", px: "1rem", py: "1.6rem" }}>
                         <Typography variant="h6" sx={{ mb: "1rem", px: "1rem", fontFamily: fonts.nostromoBlack }}>
                             YOU&apos;VE BEEN PUNISHED!
                         </Typography>

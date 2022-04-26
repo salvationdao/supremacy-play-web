@@ -151,14 +151,13 @@ export const FactionAbilityItemInner = ({ gameAbility, initialTargetCost, clipSl
         <Box>
             <Fade in={true}>
                 <Box>
-                    <ClipThing clipSize="6px" clipSlantSize={clipSlantSize}>
+                    <ClipThing clipSize="6px" clipSlantSize={clipSlantSize} backgroundColor={colour ? `${colour}15` : `${colors.darkNavyBlue}80`}>
                         <Stack
                             spacing=".8rem"
                             alignItems="flex-start"
                             sx={{
                                 flex: 1,
                                 minWidth: "32.5rem",
-                                backgroundColor: colour ? `${colour}15` : `${colors.darkNavyBlue}80`,
                                 px: "1.6rem",
                                 pt: "1.28rem",
                                 pb: "1.28rem",

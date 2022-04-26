@@ -192,14 +192,13 @@ const BattleAbilityItemInner = ({
                 <Stack key={fadeEffect.toString()} spacing="1.04rem">
                     <Fade in={true}>
                         <Box>
-                            <ClipThing clipSize="6px">
+                            <ClipThing clipSize="6px" backgroundColor={`${colour || colors.darkNavy}15`}>
                                 <Stack
                                     spacing=".8rem"
                                     alignItems="flex-start"
                                     sx={{
                                         flex: 1,
                                         minWidth: "32.5rem",
-                                        backgroundColor: `${colour || colors.darkNavy}15`,
                                         px: "1.6rem",
                                         pt: "1.12rem",
                                         pb: "1.28rem",

@@ -68,53 +68,53 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                         }}
                     >
                         <ClipThing
-                            innerSx={{
-                                padding: "1rem",
-                                backgroundColor: colors.darkerNavy,
-                            }}
                             border={{
+                                borderThickness: ".15rem",
                                 borderColor: colors.blue2,
                                 isFancy: true,
                             }}
                             skipRightCorner
+                            backgroundColor={colors.darkNavy}
                         >
-                            <Typography
-                                variant="h5"
-                                sx={{
-                                    marginBottom: ".5rem",
-                                    fontFamily: fonts.nostromoBold,
-                                    textTransform: "uppercase",
-                                }}
-                            >
-                                Purchase Abilities
-                            </Typography>
-                            <Box
-                                sx={{
-                                    overflowX: "auto",
-                                    scrollbarWidth: "none",
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: "#FFFFFF80",
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                <Box
+                            <Box sx={{ px: "2rem", py: "1.5rem" }}>
+                                <Typography
+                                    variant="h5"
                                     sx={{
-                                        display: "grid",
-                                        gridTemplateColumns: "repeat(6, 70px)",
-                                        gap: ".5rem",
+                                        marginBottom: ".5rem",
+                                        fontFamily: fonts.nostromoBold,
+                                        textTransform: "uppercase",
                                     }}
                                 >
-                                    {saleAbilityIDs.map((s) => (
-                                        <SaleAbilityCard key={s} abilityID={s} />
-                                    ))}
+                                    Purchase Abilities
+                                </Typography>
+                                <Box
+                                    sx={{
+                                        overflowX: "auto",
+                                        scrollbarWidth: "none",
+                                        "::-webkit-scrollbar": {
+                                            width: ".4rem",
+                                        },
+                                        "::-webkit-scrollbar-track": {
+                                            background: "#FFFFFF15",
+                                            borderRadius: 3,
+                                        },
+                                        "::-webkit-scrollbar-thumb": {
+                                            background: "#FFFFFF80",
+                                            borderRadius: 3,
+                                        },
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            display: "grid",
+                                            gridTemplateColumns: "repeat(6, 70px)",
+                                            gap: ".5rem",
+                                        }}
+                                    >
+                                        {saleAbilityIDs.map((s) => (
+                                            <SaleAbilityCard key={s} abilityID={s} />
+                                        ))}
+                                    </Box>
                                 </Box>
                             </Box>
                         </ClipThing>

@@ -26,6 +26,7 @@ export const BattleAbilityAlert = ({ data, factionsAll }: { data: BattleFactionA
                 isFancy: true,
                 borderThickness: ".15rem",
             }}
+            backgroundColor={colors.darkNavy}
         >
             <Stack
                 spacing=".5rem"
@@ -33,7 +34,6 @@ export const BattleAbilityAlert = ({ data, factionsAll }: { data: BattleFactionA
                     px: "1.44rem",
                     pt: "1.2rem",
                     pb: ".8rem",
-                    backgroundColor: colors.darkNavy,
                 }}
             >
                 <Box>

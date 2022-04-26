@@ -196,7 +196,8 @@ export const DeployConfirmation = ({
                         borderColor: theme.factionTheme.primary,
                         borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={theme.factionTheme.background}
                 >
                     <Stack
                         spacing="1.6rem"
@@ -204,7 +205,6 @@ export const DeployConfirmation = ({
                             position: "relative",
                             px: "2.5rem",
                             py: "2.4rem",
-                            backgroundColor: (theme) => theme.factionTheme.background,
                         }}
                     >
                         <Box
@@ -571,6 +571,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                 borderColor: colors.neonBlue,
                                 borderThickness: ".15rem",
                             }}
+                            backgroundColor={colors.darkNavyBlue}
                         >
                             <Stack
                                 direction="row"
@@ -580,7 +581,6 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     pl: "1.76rem",
                                     pr: "2.56rem",
                                     py: "2.4rem",
-                                    backgroundColor: colors.darkNavyBlue,
                                 }}
                             >
                                 <Box
@@ -666,6 +666,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                 borderColor: colors.neonBlue,
                                 borderThickness: ".15rem",
                             }}
+                            backgroundColor={colors.darkNavyBlue}
                         >
                             <Stack
                                 direction="row"
@@ -675,7 +676,6 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     pl: "1.76rem",
                                     pr: "2.56rem",
                                     py: "2.4rem",
-                                    backgroundColor: colors.darkNavyBlue,
                                 }}
                             >
                                 <Box

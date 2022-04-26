@@ -24,6 +24,7 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
         <Stack
             direction="row"
             justifyContent="flex-end"
+            alignItems="flex-start"
             sx={{
                 position: "absolute",
                 bottom: 0,
@@ -42,7 +43,13 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
 
             <FancyButton
                 excludeCaret
-                clipSize="8px"
+                clipThingsProps={{
+                    clipSize: "8px",
+                    backgroundColor: primaryColor,
+                    border: {
+                        borderColor: primaryColor,
+                    },
+                }}
                 sx={{
                     py: ".16rem",
                     pt: ".3rem",
@@ -50,8 +57,6 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     color: secondaryColor,
                     fontFamily: fonts.nostromoBlack,
                 }}
-                backgroundColor={primaryColor}
-                borderColor={primaryColor}
                 onClick={() => toggleIsEndBattleDetailOpen(false)}
             >
                 CLOSE

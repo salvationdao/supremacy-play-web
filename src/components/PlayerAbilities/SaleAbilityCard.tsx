@@ -199,120 +199,121 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                         }}
                     >
                         <ClipThing
-                            innerSx={{
-                                padding: "1rem",
-                                backgroundColor: colors.darkNavy,
-                            }}
                             border={{
                                 borderColor: colors.neonBlue,
                                 borderThickness: ".15rem",
                                 isFancy: true,
                             }}
+                            backgroundColor={colors.darkNavy}
                         >
-                            <Typography
-                                variant="h5"
-                                sx={{
-                                    marginBottom: ".5rem",
-                                    fontFamily: fonts.nostromoBold,
-                                    textTransform: "uppercase",
-                                }}
-                            >
-                                Purchase {saleAbility.ability?.label || "Ability"}
-                            </Typography>
-                            <Stack direction="row" spacing="1rem">
-                                <ClipThing
-                                    innerSx={{
-                                        position: "relative",
-                                        minHeight: "100px",
-                                        minWidth: "100px",
-                                        background: `center center`,
-                                        backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${saleAbility.ability?.image_url})`,
-                                        backgroundSize: "cover",
+                            <Box sx={{ px: "2rem", py: "1.5rem" }}>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        marginBottom: ".5rem",
+                                        fontFamily: fonts.nostromoBold,
+                                        textTransform: "uppercase",
                                     }}
                                 >
-                                    <TooltipHelper text={abilityTypeDescription} placement="top-start">
+                                    Purchase {saleAbility.ability?.label || "Ability"}
+                                </Typography>
+                                <Stack direction="row" spacing="1rem">
+                                    <ClipThing sx={{ flexShrink: 0 }} backgroundColor={colors.darkNavy}>
                                         <Box
                                             sx={{
-                                                zIndex: 1,
-                                                position: "absolute",
-                                                bottom: ".2rem",
-                                                right: ".2rem",
+                                                position: "relative",
+                                                height: "60px",
+                                                width: "60px",
+                                                background: `center center`,
+                                                backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${saleAbility.ability?.image_url})`,
+                                                backgroundSize: "cover",
                                             }}
                                         >
-                                            {abilityTypeIcon}
+                                            <TooltipHelper text={abilityTypeDescription} placement="top-start">
+                                                <Box
+                                                    sx={{
+                                                        zIndex: 1,
+                                                        position: "absolute",
+                                                        bottom: ".2rem",
+                                                        right: ".2rem",
+                                                    }}
+                                                >
+                                                    {abilityTypeIcon}
+                                                </Box>
+                                            </TooltipHelper>
                                         </Box>
-                                    </TooltipHelper>
-                                </ClipThing>
-                                <Box
-                                    sx={{
-                                        alignSelf: "stretch",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "space-between",
-                                    }}
-                                >
-                                    <Typography>{saleAbility.ability?.description}</Typography>
-                                    <Typography
-                                        variant="caption"
+                                    </ClipThing>
+                                    <Box
                                         sx={{
-                                            alignSelf: "end",
+                                            alignSelf: "stretch",
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            justifyContent: "space-between",
                                         }}
                                     >
-                                        <Box
-                                            component="span"
+                                        <Typography>{saleAbility.ability?.description}</Typography>
+                                        <Typography
+                                            variant="caption"
                                             sx={{
-                                                display: "inline-block",
-                                                width: 7,
-                                                height: 7,
-                                                marginRight: ".5rem",
-                                                borderRadius: "50%",
-                                                backgroundColor: colors.red,
-                                                animation: `${pulseEffect} 3s infinite`,
-                                            }}
-                                        />
-                                        Price Trend:
-                                        <Box
-                                            component="span"
-                                            sx={{
-                                                ml: ".5rem",
-                                                color: previousPrice && previousPrice > price ? colors.blue : colors.offWhite,
+                                                alignSelf: "end",
                                             }}
                                         >
-                                            {!previousPrice || previousPrice === price ? "Same" : previousPrice > price ? "Down" : "Up"}
-                                        </Box>
-                                    </Typography>
-                                </Box>
-                            </Stack>
-                            <LoadingButton
-                                variant="contained"
-                                size="small"
-                                sx={{
-                                    width: "100%",
-                                    minWidth: 0,
-                                    mt: "1rem",
-                                    mb: ".5rem",
-                                    px: ".8rem",
-                                    py: ".6rem",
-                                    fontWeight: "fontWeightBold",
-                                    color: colors.offWhite,
-                                    lineHeight: 1,
-                                    textTransform: "uppercase",
-                                    backgroundColor: colors.green,
-                                    border: `${colors.green} 1px solid`,
-                                    borderRadius: 0.3,
-                                    ":hover": {
-                                        backgroundColor: `${colors.green}90`,
-                                    },
-                                }}
-                                onClick={() => onPurchase()}
-                                loading={purchaseLoading}
-                            >
-                                <Typography variant="body2">Purchase for</Typography>
-                                <SvgSupToken size="1.5rem" fill={colors.gold} />
-                                <Typography variant="body2">{supFormatter(price, 2)}</Typography>
-                            </LoadingButton>
-                            {purchaseError && <Typography color={colors.red}>Error: {purchaseError}</Typography>}
-                            {error && <Typography color={colors.red}>Error: Something went wrong while loading this ability.</Typography>}
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    display: "inline-block",
+                                                    width: 7,
+                                                    height: 7,
+                                                    marginRight: ".5rem",
+                                                    borderRadius: "50%",
+                                                    backgroundColor: colors.red,
+                                                    animation: `${pulseEffect} 3s infinite`,
+                                                }}
+                                            />
+                                            Price Trend:
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    ml: ".5rem",
+                                                    color: previousPrice && previousPrice > price ? colors.blue : colors.offWhite,
+                                                }}
+                                            >
+                                                {!previousPrice || previousPrice === price ? "Same" : previousPrice > price ? "Down" : "Up"}
+                                            </Box>
+                                        </Typography>
+                                    </Box>
+                                </Stack>
+                                <LoadingButton
+                                    variant="contained"
+                                    size="small"
+                                    sx={{
+                                        width: "100%",
+                                        minWidth: 0,
+                                        mt: "1rem",
+                                        mb: ".5rem",
+                                        px: ".8rem",
+                                        py: ".6rem",
+                                        fontWeight: "fontWeightBold",
+                                        color: colors.offWhite,
+                                        lineHeight: 1,
+                                        textTransform: "uppercase",
+                                        backgroundColor: colors.green,
+                                        border: `${colors.green} 1px solid`,
+                                        borderRadius: 0.3,
+                                        ":hover": {
+                                            backgroundColor: `${colors.green}90`,
+                                        },
+                                    }}
+                                    onClick={() => onPurchase()}
+                                    loading={purchaseLoading}
+                                >
+                                    <Typography variant="body2">Purchase for</Typography>
+                                    <SvgSupToken size="1.5rem" fill={colors.gold} />
+                                    <Typography variant="body2">{supFormatter(price, 2)}</Typography>
+                                </LoadingButton>
+                                {purchaseError && <Typography color={colors.red}>Error: {purchaseError}</Typography>}
+                                {error && <Typography color={colors.red}>Error: Something went wrong while loading this ability.</Typography>}
+                            </Box>
                         </ClipThing>
                     </Box>
                 </Fade>

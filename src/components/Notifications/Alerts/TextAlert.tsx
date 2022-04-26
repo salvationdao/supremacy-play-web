@@ -11,13 +11,13 @@ export const TextAlert = ({ data }: { data: string }) => {
                 isFancy: true,
                 borderThickness: ".15rem",
             }}
+            backgroundColor={colors.darkNavy}
         >
             <Box
                 sx={{
                     px: "1.44rem",
                     pt: "1.2rem",
                     pb: ".8rem",
-                    backgroundColor: colors.darkNavy,
                 }}
             >
                 <Typography variant="body1" sx={{ display: "inline", color: colors.offWhite }}>
