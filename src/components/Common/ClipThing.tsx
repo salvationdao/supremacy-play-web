@@ -33,9 +33,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
         lineHeight: 1,
         clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
             skipRightCorner ? "0%" : clipSize
-        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, ${
-            clipSlantSize != "0px" ? "2px" : "0%"
-        } calc(100% - ${clipSize}))`,
+        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, ${clipSlantSize != "0px" ? "2px" : "0%"} calc(100% - ${clipSize}))`,
     }
 
     const outerClipStyles: SxProps = {
