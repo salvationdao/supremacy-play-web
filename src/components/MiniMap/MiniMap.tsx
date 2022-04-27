@@ -22,9 +22,21 @@ interface MiniMapProps {
 export const MiniMap = () => {
     const theme = useTheme<Theme>()
     const { newSnackbarMessage } = useSnackbar()
-    const { map, winner, setWinner, bribeStage } = useGame()
+    const { map, winner, setWinner, bribeStage, battleEndDetail, warMachines } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isMapOpen)
+
+    // Temp hotfix ask james ****************************
+    const [show, toggleShow] = useToggle(false)
+
+    useEffect(() => {
+        toggleShow(false)
+    }, [battleEndDetail?.battle_identifier])
+
+    useEffect(() => {
+        toggleShow(true)
+    }, [warMachines])
+    // End ****************************************
 
     // A little timeout so fade transition can play
     useEffect(() => {
@@ -49,13 +61,13 @@ export const MiniMap = () => {
                 winner={winner}
                 setWinner={setWinner}
                 bribeStage={bribeStage}
-                isMapOpen={isMapOpen}
+                isMapOpen={isMapOpen && show}
                 toggleIsMapOpen={toggleIsMapOpen}
                 newSnackbarMessage={newSnackbarMessage}
                 factionColor={theme.factionTheme.primary}
             />
         ),
-        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme],
+        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme, show],
     )
 
     if (!isRender) return null
