@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useRef, useState } from "react"
-import { useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../../../../containers"
+import { useGameServerAuth, useGameServerWebsocket } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -10,7 +10,6 @@ import { MultipliersPopover } from "./MultiplierPopover"
 export const MultipliersInfo = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
-    const { battleIdentifier } = useSupremacy()
     // Multipliers
     const [multipliers, setMultipliers] = useState<BattleMultipliers[]>([])
     const [currentBattleMultiplier, setCurrentBattleMultiplier] = useState(0)
@@ -35,9 +34,9 @@ export const MultipliersInfo = () => {
     // Current battle multiplier should say update to 0 if battleID was in the payload
     useEffect(() => {
         if (!multipliers || multipliers.length <= 0) return
-        const currentMulti = multipliers.filter((m) => m.battle_number === battleIdentifier || m.battle_number === (battleIdentifier || 0) - 1)
-        setCurrentBattleMultiplier(currentMulti.length > 0 ? currentMulti[0].total_multipliers : 0)
-    }, [multipliers, battleIdentifier])
+        const total = multipliers.reduce((acc, m) => acc + m.total_multipliers, 0)
+        setCurrentBattleMultiplier(total)
+    }, [multipliers])
 
     return <MultipliersInfoInner currentBattleMultiplier={currentBattleMultiplier} user={user} multipliers={multipliers} />
 }
