@@ -78,11 +78,6 @@ const App = () => {
             showBadge: false,
             disableKeyboardNavigation: false,
             disableDotsNavigation: false,
-            afterOpen: () => {
-                if (!localStorage.getItem("visited")) {
-                    localStorage.setItem("visited", "1")
-                }
-            },
         }),
         [],
     )

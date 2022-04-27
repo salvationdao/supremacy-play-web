@@ -1,6 +1,5 @@
 import { Box, Button, Divider, Modal, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
-import { useCallback } from "react"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
@@ -9,15 +8,10 @@ export const TutorialModal = () => {
     const [visited, setVisited] = useToggle(localStorage.getItem("visited") === "true")
     const { setIsOpen } = useTour()
 
-    const onClose = useCallback(() => {
-        setVisited(true)
-        localStorage.setItem("visited", "true")
-    }, [])
-
     if (visited) return null
 
     return (
-        <Modal open onClose={() => onClose()}>
+        <Modal open onClose={() => setVisited(true)}>
             <Box
                 sx={{
                     position: "absolute",
@@ -62,7 +56,7 @@ export const TutorialModal = () => {
                             <Button
                                 variant="contained"
                                 onClick={() => {
-                                    onClose()
+                                    setVisited(true)
                                     setIsOpen(true)
                                 }}
                                 sx={{
@@ -80,7 +74,10 @@ export const TutorialModal = () => {
                             </Button>
                             <Button
                                 variant="outlined"
-                                onClick={() => onClose()}
+                                onClick={() => {
+                                    setVisited(true)
+                                    localStorage.setItem("visited", "true")
+                                }}
                                 sx={{
                                     alignSelf: "flex-end",
                                     pt: ".7rem",

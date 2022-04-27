@@ -109,6 +109,7 @@ const WalletInfoInner = ({
     return (
         <>
             <Stack
+                id="tutorial-sups"
                 direction="row"
                 alignItems="center"
                 ref={walletPopoverRef}

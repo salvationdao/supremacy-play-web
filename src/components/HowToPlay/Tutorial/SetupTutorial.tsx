@@ -15,17 +15,6 @@ export const SetupTutorial = () => {
     const { toggleActiveBar } = useBar()
     const { activePanel, togglePanel } = useRightDrawer()
 
-    // Only show if no user
-    const preAuthSteps: StepType[] = useMemo(() => {
-        return [
-            {
-                selector: "#tutorial-connect",
-                content: "Connect to your wallet here, you'll get the most out of this tutorial and Supremacy while logged in.",
-                mutationObservables: ["#tutorial-connect"],
-            },
-        ]
-    }, [])
-
     // Basic steps when user is logged in
     const baseSteps: StepType[] = useMemo(() => {
         return [
@@ -44,8 +33,9 @@ export const SetupTutorial = () => {
             },
             {
                 selector: user?.faction_id ? "#tutorial-enlisted" : "#tutorial-enlist",
-                content:
-                    "Here you can enlist in a Syndicate, if you haven't already. Take care with who you choose to align yourself with- this will be the Syndicate you stay with for a while. After enlistment, you can see your personal game stats, including mech kills, ability kills and rank.",
+                content: user?.faction_id
+                    ? "You can see your personal game stats here."
+                    : "Here you can enlist into a Syndicate. Take care with who you choose to align yourself with- this will be the Syndicate you stay with for a while.",
                 action: () => {
                     toggleActiveBar("enlist", true)
                 },
@@ -54,7 +44,16 @@ export const SetupTutorial = () => {
             {
                 selector: "#tutorial-sups",
                 content:
-                    "This is the amount of $SUPS you have in your on-world wallet. Choose wisely how you spend them and you can turn the tides of battle in your Syndicate's favor. You will be able to see information on your current session and most recent transactions here.",
+                    "This is the amount of $SUPS you have in your on-world wallet. Choose wisely how you spend them as you turn the tides of battles in your Syndicate's favor. You will be able to see information on your current session and most recent transactions here.",
+                action: () => {
+                    toggleActiveBar("wallet", true)
+                },
+                resizeObservables: ["#tutorial-enlist", "#tutorial-enlisted", "#tutorial-wallet", "#tutorial-passport"],
+            },
+            {
+                selector: "#tutorial-multi",
+                content:
+                    "The is where you can see what multipliers are applied to your account. Having multipliers will earn you $SUPS from the Spoils of War pool.",
                 action: () => {
                     toggleActiveBar("wallet", true)
                 },
@@ -62,7 +61,7 @@ export const SetupTutorial = () => {
             },
             {
                 selector: "#tutorial-purchase",
-                content: "You can purchase more $SUPS directly from Supremacy here. These $SUPs will be available to you in your on-world wallet.",
+                content: "You can purchase $SUPS directly from Supremacy here. The $SUPs will be available to you in your on-world wallet.",
                 action: () => {
                     toggleActiveBar("wallet", true)
                 },
@@ -71,7 +70,7 @@ export const SetupTutorial = () => {
             {
                 selector: "#tutorial-passport",
                 content:
-                    "Access key profile functionality here, these will open up your profile information on your Passport along with your War Machine inventory and the game store.",
+                    "Access key profile functionalities here, these will open up your profile information on your Passport along with your War Machine inventory and the game store.",
                 action: () => {
                     toggleActiveBar("profile", true)
                 },
@@ -79,14 +78,13 @@ export const SetupTutorial = () => {
             },
             {
                 selector: "#tutorial-overlays",
-                content:
-                    "You can gain more information about Spoils of War, Mini-Map along with current and past battle histories by toggling these overlays. Note that these functionalities can only be used when you have SUPs in your on-world wallet.",
+                content: "You can gain more information about Spoils of War, minimap along with current and past battle histories by toggling these overlays.",
                 position: "top",
             },
             {
                 selector: "#tutorial-stream-options",
                 content:
-                    "You can select your streaming server, change the resolution, and other options here. Supremacy recommends always connecting to the closest server, if you ever experience delays, ensure you have the nearest server selected or try choosing another server.",
+                    "You can select your streaming server, change the resolution, and other options here. Supremacy recommends always connecting to the closest server, if you ever experience delays.",
                 position: "top",
             },
         ]
@@ -97,7 +95,7 @@ export const SetupTutorial = () => {
         return [
             {
                 selector: "#tutorial-chat",
-                content: "You can interact with other online players here.",
+                content: "This is where you can interact with other online players.",
                 action: () => {
                     if (activePanel !== RightDrawerPanels.LiveChat) {
                         togglePanel(RightDrawerPanels.LiveChat, true)
@@ -106,7 +104,7 @@ export const SetupTutorial = () => {
             },
             {
                 selector: ".tutorial-global-chat",
-                content: "Global Chat includes everyone from all factions.",
+                content: "Global Chat includes everyone from all Syndicates.",
                 action: () => {
                     if (activePanel !== RightDrawerPanels.LiveChat) {
                         togglePanel(RightDrawerPanels.LiveChat, true)
@@ -116,7 +114,7 @@ export const SetupTutorial = () => {
             {
                 selector: ".tutorial-faction-chat",
                 content:
-                    "Your sydicate chat only includes others that are apart of the same syndicate as you are. This is the best place to strategize your next move and coordinate attacks with your teammates.",
+                    "Your sydicate chat only includes others that are apart of the same syndicate as you are. This is the best place to strategize know your team and co-ordinate the next attack.",
                 action: () => {
                     if (activePanel !== RightDrawerPanels.LiveChat) {
                         togglePanel(RightDrawerPanels.LiveChat, true)
@@ -142,7 +140,7 @@ export const SetupTutorial = () => {
             {
                 selector: "#tutorial-vote",
                 content:
-                    "Battle abilities will show up here throughout each battle. As a Syndicate member, your job will be to contribute $SUPS to save for an ability before the other Syndicates to give an advantage to your mechs on the battlefield.",
+                    "Game abilities will show up here throughout. Work with your Syndicate and contribute to these game to give an advantage to your Syndicate mechs on the battlefield.",
             },
             {
                 selector: "#tutorial-mech-stats",
@@ -159,14 +157,14 @@ export const SetupTutorial = () => {
                 content: (
                     <Box>
                         <Typography>
-                            That concludes the tutorial. Start contributing to your Syndicate&apos;s battle effort to ensure its&apos; supremacy and reap the
-                            Spoils of War!
+                            Start contributing to your Syndicate&apos;s battle effort to ensure its&apos; supremacy and reap the Spoils of War!
                         </Typography>
                         <Button
                             variant="contained"
                             onClick={() => {
                                 setCurrentStep(0)
                                 setIsOpen(false)
+                                localStorage.setItem("visited", "true")
                             }}
                             sx={{
                                 mt: "1rem",
@@ -192,15 +190,10 @@ export const SetupTutorial = () => {
     }, [])
 
     useEffect(() => {
-        if (!user) {
-            setSteps([...preAuthSteps])
-            return
-        }
-
         let tutorialSteps = [...baseSteps]
 
         //if the user is not enlisted, finish tutorial
-        if (user.faction_id) {
+        if (user?.faction_id) {
             tutorialSteps = [...tutorialSteps, ...enlistedSteps]
         }
 
@@ -211,7 +204,7 @@ export const SetupTutorial = () => {
         tutorialSteps = [...tutorialSteps, ...endSteps]
 
         setSteps(tutorialSteps)
-    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
+    }, [baseSteps, enlistedSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
 
     return null
 }
