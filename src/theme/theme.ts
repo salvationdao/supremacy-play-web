@@ -113,12 +113,12 @@ export enum siteZIndex {
     Trailer = 69,
     BattleEnd = 60,
     BattleHistory = 70,
+    MoveableResizableHover = 45,
+    MoveableResizable = 20,
     Notfications = 40,
     MiniMap = 30,
     MechStats = 30,
     VotingSystem = 30,
-    MoveableResizableHover = 30,
-    MoveableResizable = 20,
 }
 
 export const theme = createTheme({
