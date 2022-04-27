@@ -111,12 +111,12 @@ export enum siteZIndex {
     // Battle areana
     Controls = 70,
     Trailer = 69,
-    BattleEnd = 60,
     BattleHistory = 70,
+    BattleEnd = 60,
+    MiniMap = 50,
     MoveableResizableHover = 45,
     MoveableResizable = 20,
     Notfications = 40,
-    MiniMap = 30,
     MechStats = 30,
     VotingSystem = 30,
 }
