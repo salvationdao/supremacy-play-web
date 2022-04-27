@@ -35,14 +35,14 @@ export const Bar = () => {
                 scrollbarWidth: "none",
                 zIndex: siteZIndex.Popover,
                 "::-webkit-scrollbar": {
-                    height: ".4rem",
+                    height: ".3rem",
                 },
                 "::-webkit-scrollbar-track": {
                     background: "#FFFFFF15",
                     borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: colors.darkNeonBlue,
+                    background: "#FFFFFF50",
                     borderRadius: 3,
                 },
                 width: "100vw",
@@ -78,7 +78,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
             {user && (
                 <>
                     {DEV_ONLY && (
-                        <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)}>
+                        <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)} sx={{ flexShrink: 0 }}>
                             Purchase Abilities
                         </Button>
                     )}
