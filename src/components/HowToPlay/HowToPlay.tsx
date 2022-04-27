@@ -22,6 +22,7 @@ export const HowToPlay = () => {
                 onClick={() => toggleIsPopoverOpen()}
                 ref={popoverRef}
                 sx={{
+                    flexShrink: 0,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
