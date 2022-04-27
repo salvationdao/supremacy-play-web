@@ -26,6 +26,13 @@ export const MiniMap = () => {
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isMapOpen)
 
+    // Temp hotfix ask james ****************************
+    const [show, toggleShow] = useToggle(false)
+    useEffect(() => {
+        toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
+    }, [bribeStage])
+    // End ****************************************
+
     // A little timeout so fade transition can play
     useEffect(() => {
         if (isMapOpen) return toggleIsRender(true)
@@ -49,13 +56,13 @@ export const MiniMap = () => {
                 winner={winner}
                 setWinner={setWinner}
                 bribeStage={bribeStage}
-                isMapOpen={isMapOpen}
+                isMapOpen={isMapOpen && show}
                 toggleIsMapOpen={toggleIsMapOpen}
                 newSnackbarMessage={newSnackbarMessage}
                 factionColor={theme.factionTheme.primary}
             />
         ),
-        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme],
+        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme, show],
     )
 
     if (!isRender) return null

@@ -3,15 +3,23 @@ import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { useDimension, useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
+import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { WarMachineItem } from "./WarMachineItem"
 
 export const WarMachineStats = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { factionID } = useGameServerAuth()
-    const { warMachines } = useGame()
+    const { warMachines, bribeStage } = useGame()
     const { remToPxRatio } = useDimension()
     const { isMapOpen } = useOverlayToggles()
+
+    // Temp hotfix ask james ****************************
+    const [show, toggleShow] = useToggle(false)
+    useEffect(() => {
+        toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
+    }, [bribeStage])
+    // End ****************************************
 
     const adjustment = useMemo(() => Math.min(remToPxRatio, 10) / 10, [remToPxRatio])
 
@@ -34,7 +42,7 @@ export const WarMachineStats = () => {
     if (!warMachines || warMachines.length <= 0) return null
 
     return (
-        <Slide in direction="up">
+        <Slide in={show} direction="up">
             <Stack
                 id="tutorial-mech-stats"
                 direction="row"

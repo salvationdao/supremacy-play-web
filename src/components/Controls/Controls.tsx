@@ -24,6 +24,7 @@ export const Controls = () => {
                 pt: ".24rem",
                 pb: ".16rem",
                 backgroundColor: (theme) => theme.factionTheme.background,
+                zIndex: 999,
                 overflowX: "auto",
                 overflowY: "hidden",
                 scrollbarWidth: "none",
