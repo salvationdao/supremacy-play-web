@@ -109,11 +109,12 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
                             borderColor: theme.factionTheme.primary,
                         }}
                         clipSize="10px"
-                        innerSx={{ width: containerWidth, height: containerHeight, transition: "all .2s" }}
+                        sx={{ width: containerWidth, height: "fit-content", transition: "all .2s" }}
+                        backgroundColor={theme.factionTheme.background}
+                        opacity={0.8}
                     >
                         <Box
                             sx={{
-                                backgroundColor: theme.factionTheme.background,
                                 pl: ".72rem",
                                 pr: "1.6rem",
                                 pt: "1.44rem",

@@ -62,7 +62,7 @@ export const BattleEndScreen = () => {
                         position: "relative",
                         height: "100%",
                         width: "100%",
-                        pl: "3.44rem",
+                        pl: "2.9rem",
                         pr: ".8rem",
                         pt: "2.4rem",
                         pb: "1.2rem",

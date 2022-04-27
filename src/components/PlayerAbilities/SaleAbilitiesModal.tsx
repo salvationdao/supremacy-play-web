@@ -68,69 +68,70 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                         }}
                     >
                         <ClipThing
-                            innerSx={{
-                                padding: "1rem",
-                                backgroundColor: colors.darkerNavy,
-                            }}
                             border={{
+                                borderThickness: ".15rem",
                                 borderColor: colors.blue2,
                                 isFancy: true,
                             }}
                             skipRightCorner
+                            backgroundColor={colors.darkNavy}
                         >
-                            <Typography
-                                variant="h5"
-                                sx={{
-                                    marginBottom: ".5rem",
-                                    fontFamily: fonts.nostromoBold,
-                                    textTransform: "uppercase",
-                                }}
-                            >
-                                Purchase Abilities
-                            </Typography>
-                            <Box
-                                sx={{
-                                    overflowX: "auto",
-                                    scrollbarWidth: "none",
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: "#FFFFFF80",
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                {saleAbilityIDs.length > 0 ? (
-                                    <Box
-                                        sx={{
-                                            display: "grid",
-                                            gridTemplateColumns: "repeat(6, 70px)",
-                                            gap: ".5rem",
-                                        }}
-                                    >
-                                        {saleAbilityIDs.map((s) => (
-                                            <SaleAbilityCard key={s} abilityID={s} />
-                                        ))}
-                                    </Box>
-                                ) : (
-                                    <Typography
-                                        sx={{
-                                            px: "1.28rem",
-                                            pt: "1.28rem",
-                                            mb: ".56rem",
-                                            color: colors.grey,
-                                            userSelect: "text !important",
-                                            opacity: 0.8,
-                                        }}
-                                    >
-                                        There are currently no abilities on sale.
-                                    </Typography>
-                                )}
+                            <Box sx={{ px: "2rem", py: "1.5rem" }}>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        marginBottom: ".5rem",
+                                        fontFamily: fonts.nostromoBold,
+                                        textTransform: "uppercase",
+                                    }}
+                                >
+                                    Purchase Abilities
+                                </Typography>
+                                <Box
+                                    sx={{
+                                        overflowX: "auto",
+                                        scrollbarWidth: "none",
+                                        "::-webkit-scrollbar": {
+                                            width: ".4rem",
+                                        },
+                                        "::-webkit-scrollbar-track": {
+                                            background: "#FFFFFF15",
+                                            borderRadius: 3,
+                                        },
+                                        "::-webkit-scrollbar-thumb": {
+                                            background: "#FFFFFF80",
+                                            borderRadius: 3,
+                                        },
+                                    }}
+                                >
+                                    {saleAbilityIDs.length > 0 ? (
+
+<Box
+    sx={{
+        display: "grid",
+        gridTemplateColumns: "repeat(6, 70px)",
+        gap: ".5rem",
+    }}
+>
+    {saleAbilityIDs.map((s) => (
+        <SaleAbilityCard key={s} abilityID={s} />
+    ))}
+</Box>
+) : (
+<Typography
+    sx={{
+        px: "1.28rem",
+        pt: "1.28rem",
+        mb: ".56rem",
+        color: colors.grey,
+        userSelect: "text !important",
+        opacity: 0.8,
+    }}
+>
+    There are currently no abilities on sale.
+</Typography>
+)}
+                                </Box>
                             </Box>
                         </ClipThing>
                     </Box>

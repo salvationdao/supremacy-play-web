@@ -109,8 +109,8 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
         if (width <= 0 || height <= 0) return
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
         // 110px is approx the height of the mech stats
-        const maxWidth = width - 25
-        const maxHeight = height - 110 - 12.5
+        const maxWidth = Math.min(width - 25, 1200)
+        const maxHeight = Math.min(height - 110 - 12.5, maxWidth * mapHeightWidthRatio)
         let targetingWidth = Math.min(maxWidth, 900)
         let targetingHeight = targetingWidth * mapHeightWidthRatio
 
@@ -160,7 +160,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
                     targeting
                     setSubmitted={setSubmitted}
-                    enlarged={enlarged}
+                    enlarged={enlarged || dimensions.width > 450}
                     newSnackbarMessage={newSnackbarMessage}
                 />
             )
@@ -168,7 +168,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
             return (
                 <MiniMapInside
                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                    enlarged={enlarged}
+                    enlarged={enlarged || dimensions.width > 450}
                     newSnackbarMessage={newSnackbarMessage}
                 />
             )
@@ -206,7 +206,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                 display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                                 pointerEvents: "all",
                                 position: "absolute",
-                                top: ".89rem",
+                                top: ".75rem",
                                 left: "1.15rem",
                                 cursor: "nwse-resize",
                                 color: colors.text,
@@ -214,7 +214,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                 zIndex: 50,
                             }}
                         >
-                            <SvgResizeXY size="1.05rem" sx={{ transform: "rotate(90deg)" }} />
+                            <SvgResizeXY size="1rem" sx={{ transform: "rotate(90deg)" }} />
                         </Box>
                     )}
                 />
@@ -225,9 +225,10 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                             clipSize="10px"
                             border={{
                                 isFancy: true,
-                                borderThickness: ".15rem",
+                                borderThickness: ".2rem",
                                 borderColor: mainColor,
                             }}
+                            backgroundColor={colors.darkNavy}
                         >
                             <Box
                                 sx={{
@@ -237,7 +238,6 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                     height: dimensions.height,
                                     transition: "all .2s",
                                     overflow: "hidden",
-                                    backgroundColor: colors.darkNavy,
                                 }}
                             >
                                 <TopIconSettings

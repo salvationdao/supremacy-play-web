@@ -70,7 +70,6 @@ export const NotFoundPage = () => {
                     This page does not exist.
                 </Typography>
                 <FancyButton
-                    onClick={() => history.push("/")}
                     sx={{
                         fontSize: "3rem",
                         px: "2em",
@@ -81,6 +80,7 @@ export const NotFoundPage = () => {
                             fontSize: "5vw",
                         },
                     }}
+                    onClick={() => history.push("/")}
                 >
                     Go to the Battle Arena
                 </FancyButton>

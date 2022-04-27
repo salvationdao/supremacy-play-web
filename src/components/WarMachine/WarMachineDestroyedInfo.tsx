@@ -63,8 +63,9 @@ export const WarMachineDestroyedInfo = ({
                         borderColor: theme.factionTheme.primary,
                         borderThickness: ".15rem",
                     }}
+                    backgroundColor={theme.factionTheme.background}
                 >
-                    <Box sx={{ position: "relative", backgroundColor: (theme) => theme.factionTheme.background }}>
+                    <Box sx={{ position: "relative" }}>
                         <Box
                             sx={{
                                 position: "absolute",
@@ -123,14 +124,15 @@ const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imag
     return (
         <Box sx={{ width: "fit-content" }}>
             <ClipThing
+                clipSize="6px"
                 border={{
                     isFancy: false,
                     borderThickness: ".15rem",
                     borderColor: color,
                 }}
-                clipSize="6px"
+                innerSx={{ background: `linear-gradient(${color}, #000000)` }}
             >
-                <Box sx={{ background: `linear-gradient(${color}, #000000)` }}>
+                <Box>
                     <Box
                         sx={{
                             position: "relative",

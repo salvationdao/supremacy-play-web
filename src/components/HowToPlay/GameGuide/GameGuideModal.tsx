@@ -41,13 +41,13 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                         borderColor: "#FFFFFF",
                         borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={colors.darkNavyBlue}
                 >
                     <Stack
                         sx={{
                             height: "65vh",
                             pb: "2rem",
-                            backgroundColor: `${colors.darkNavyBlue}`,
                         }}
                     >
                         {(state === "loading" || showSkeleton) && <LoadingSkeleton />}
@@ -117,19 +117,19 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                                             item.items.map((item, i) => {
                                                                 return (
                                                                     <ClipThing
+                                                                        key={i}
                                                                         clipSize="0"
                                                                         border={{
                                                                             isFancy: true,
                                                                             borderColor: colors.offWhite,
                                                                             borderThickness: ".1rem",
                                                                         }}
-                                                                        key={i}
+                                                                        backgroundColor={colors.darkNavyBlue}
                                                                     >
                                                                         <Box
                                                                             sx={{
                                                                                 px: "2rem",
                                                                                 py: "1.5rem",
-                                                                                backgroundColor: colors.darkNavyBlue,
                                                                             }}
                                                                         >
                                                                             <Stack direction="row" spacing="1.3rem">

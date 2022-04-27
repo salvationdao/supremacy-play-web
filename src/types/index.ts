@@ -173,9 +173,8 @@ export interface Map {
     height: number
     cells_x: number
     cells_y: number
-    top: number
-    left: number
-    scale: number
+    top_pixels: number
+    left_pixels: number
     disabled_cells: number[]
 }
 
@@ -202,6 +201,7 @@ export interface NetMessageTickWarMachine {
     rotation?: number
     health?: number
     shield?: number
+    energy?: number
 }
 
 export interface NetMessageTick {

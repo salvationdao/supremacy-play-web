@@ -38,7 +38,7 @@ export const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContr
     )
 
     return (
-        <Stack direction="row" spacing=".32rem" sx={{ mt: ".48rem", width: "100%" }}>
+        <Stack direction="row" spacing=".6rem" sx={{ mt: ".48rem", width: "100%" }}>
             {voteCosts.map((c) => (
                 <VotingButton
                     key={`faction-ability-vote-cost-button-${c.percentage}`}
