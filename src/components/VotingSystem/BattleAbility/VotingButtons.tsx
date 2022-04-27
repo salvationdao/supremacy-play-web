@@ -20,7 +20,7 @@ export const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAb
                 const cost = battleAbilityProgress.sups_cost.multipliedBy(voteCost.percentage)
 
                 if (cost.isLessThan(voteCost.minCost)) {
-                    const minCostPercentage = Math.round(+voteCost.minCost.dividedBy(battleAbilityProgress.sups_cost) * 100)
+                    const minCostPercentage = +voteCost.minCost.dividedBy(battleAbilityProgress.sups_cost) * 100
                     return {
                         cost: voteCost.minCost,
                         percentage: voteCost.percentage * 100,
@@ -47,7 +47,7 @@ export const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAb
                     color={buttonColor}
                     textColor={buttonTextColor}
                     percentage={c.percentage.toString()}
-                    displayPercentage={c.displayPercentage.toString()}
+                    displayPercentage={c.displayPercentage.toFixed(2)}
                     cost={c.cost.toFixed(3)}
                     isVoting={isVoting}
                     onClick={() => onBribe(c.cost, c.percentage)}

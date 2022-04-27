@@ -20,7 +20,7 @@ export const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContr
                 const cost = supsCost.multipliedBy(voteCost.percentage)
 
                 if (cost.isLessThan(voteCost.minCost)) {
-                    const minCostPercentage = Math.round(+voteCost.minCost.dividedBy(supsCost) * 100)
+                    const minCostPercentage = +voteCost.minCost.dividedBy(supsCost) * 100
                     return {
                         cost: voteCost.minCost,
                         percentage: voteCost.percentage * 100,
@@ -45,7 +45,7 @@ export const VotingButtons = ({ colour, text_colour, isVoting, supsCost, onContr
                     color={colour}
                     textColor={text_colour || "#FFFFFF"}
                     percentage={c.percentage.toString()}
-                    displayPercentage={c.displayPercentage.toString()}
+                    displayPercentage={c.displayPercentage.toFixed(2)}
                     cost={c.cost.toFixed(3)}
                     isVoting={isVoting}
                     onClick={() => onContribute(c.cost, c.percentage)}
