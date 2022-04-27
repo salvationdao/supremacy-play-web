@@ -42,7 +42,7 @@ const App = () => {
     const [currentTheme, setTheme] = useState<Theme>(theme)
     const [factionColors, setFactionColors] = useState<FactionThemeColor>({
         primary: colors.neonBlue,
-        secondary: colors.neonBlue,
+        secondary: "#000000",
         background: shadeColor(colors.neonBlue, -95),
     })
 
