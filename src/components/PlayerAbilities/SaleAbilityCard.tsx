@@ -2,7 +2,7 @@ import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, ButtonBaseProps, Fade, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
-import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { SocketState, useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -27,6 +27,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     const [error, setError] = useState<string | null>(null)
 
     // Purchasing
+    const { newSnackbarMessage } = useSnackbar()
     const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
     const [purchaseLoading, setPurchaseLoading] = useState(false)
     const [purchaseError, setPurchaseError] = useState<string | null>(null)
@@ -54,6 +55,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                 ability_id: abilityID,
                 amount: price,
             })
+            newSnackbarMessage(`Successfully purchased 1 ${saleAbility?.ability?.label || "Ability"}`, "success")
             toggleShowPurchaseModal(false)
             setPurchaseError(null)
         } catch (e) {
@@ -201,7 +203,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                     >
                         <ClipThing
                             border={{
-                                borderColor: colors.neonBlue,
+                                borderColor: saleAbility.ability?.colour || colors.neonBlue,
                                 borderThickness: ".15rem",
                                 isFancy: true,
                             }}
