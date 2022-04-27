@@ -88,27 +88,32 @@ export const LiveGraph = (props: LiveGraphProps) => {
             // Add first point in the graph
             context.moveTo(GRAPH_LEFT, GRAPH_HEIGHT - (liveVotingData[0] / largest.current) * GRAPH_HEIGHT + GRAPH_TOP)
 
-            const redDots: { x: number; y: number }[] = []
+            const newBattlePoints: { x: number; y: number }[] = []
 
             liveVotingData.forEach((lvd, i) => {
                 if (i === 0) return
-                const location = {
-                    x: (GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT,
-                    y: GRAPH_HEIGHT * (1 - Math.max(0, lvd) / largest.current) + GRAPH_TOP,
+
+                const locationX = (GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT
+                if (lvd === -1) {
+                    const locationY = GRAPH_HEIGHT * (1 - Math.max(0, liveVotingData[i - 1]) / largest.current) + GRAPH_TOP
+                    newBattlePoints.push({ x: locationX, y: locationY })
+                    return
                 }
-                if (lvd === -1) return redDots.push(location)
-                context.lineTo(location.x, location.y)
+                const locationY = GRAPH_HEIGHT * (1 - Math.max(0, lvd) / largest.current) + GRAPH_TOP
+                context.lineTo(locationX, locationY)
             })
 
             // Actually draw the graph
             context.stroke()
 
-            // Draw the red dots
-            context.fillStyle = "#FF0000"
-            redDots.forEach((loc) => {
+            // Draw dashed line for new battle point
+            context.strokeStyle = colors.lightRed
+            newBattlePoints.forEach((loc) => {
                 context.beginPath()
-                context.fillRect(loc.x, loc.y, 2, 2)
-                context.fill()
+                context.setLineDash([5, 15])
+                context.moveTo(loc.x, loc.y - 0.5)
+                context.lineTo(loc.x, loc.y + 0.5)
+                context.stroke()
             })
         }
     }, [liveVotingData, canvasRef.current])
