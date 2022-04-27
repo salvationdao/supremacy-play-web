@@ -57,8 +57,9 @@ export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: Enl
                         borderColor: primary,
                         borderThickness: ".15rem",
                     }}
+                    backgroundColor="#101019"
                 >
-                    <Stack direction="row" sx={{ backgroundColor: "#101019" }}>
+                    <Stack direction="row">
                         <PopoverContent faction={faction} />
                     </Stack>
                 </ClipThing>
@@ -218,10 +219,14 @@ const PopoverContent = ({ faction }: { faction: FactionGeneralData }) => {
                     )}
 
                     <FancyButton
-                        clipSize="7px"
-                        borderColor={primary}
-                        backgroundColor={primary}
-                        clipSx={{ ml: "auto !important" }}
+                        clipThingsProps={{
+                            clipSize: "7px",
+                            sx: { ml: "auto !important" },
+                            backgroundColor: primary,
+                            border: {
+                                borderColor: primary,
+                            },
+                        }}
                         sx={{
                             px: "2.56rem",
                             py: ".16rem",

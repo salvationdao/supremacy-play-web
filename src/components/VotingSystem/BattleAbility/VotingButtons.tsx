@@ -40,7 +40,7 @@ export const VotingButtons = ({ buttonColor, buttonTextColor, isVoting, battleAb
     if (!battleAbilityProgress) return null
 
     return (
-        <Stack direction="row" spacing=".4rem" sx={{ mt: ".48rem", width: "100%" }}>
+        <Stack direction="row" spacing=".6rem" sx={{ mt: ".48rem", width: "100%" }}>
             {voteCosts.map((c) => (
                 <VotingButton
                     key={`battle-ability-vote-cost-button-${c.percentage}`}

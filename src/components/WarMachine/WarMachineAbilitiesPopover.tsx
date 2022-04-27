@@ -47,8 +47,10 @@ export const WarMachineAbilitiesPopover = ({ popoverRef, open, onClose, warMachi
                         borderThickness: ".14rem",
                         borderColor: factionTheme.primary,
                     }}
+                    opacity={0.8}
+                    backgroundColor={factionTheme.background}
                 >
-                    <Box sx={{ backgroundColor: factionTheme.background, px: "1.28rem", pt: "1.28rem", pb: "1.28rem" }}>
+                    <Box sx={{ px: "1.28rem", pt: "1.28rem", pb: "1.28rem" }}>
                         <Stack spacing=".72rem">
                             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ pr: ".3rem" }}>
                                 <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ ml: ".88rem" }}>

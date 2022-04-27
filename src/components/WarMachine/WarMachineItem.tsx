@@ -213,8 +213,9 @@ const WarMachineItemInner = ({
                     border={{ isFancy: false, borderColor: primary, borderThickness: ".4rem" }}
                     sx={{ zIndex: 2 }}
                     skipRightCorner={!isExpanded}
+                    innerSx={{ background: `linear-gradient(${primary}, #000000)` }}
                 >
-                    <Box sx={{ background: `linear-gradient(${primary}, #000000)` }}>
+                    <Box>
                         <Box
                             onClick={handleClick}
                             sx={{

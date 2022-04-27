@@ -81,9 +81,10 @@ export const UserDetailsPopover = ({
                         borderColor: factionColor || colors.neonBlue,
                         borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={colors.darkNavy}
                 >
-                    <Stack sx={{ minWidth: "20rem", px: "1.2rem", py: ".8rem", backgroundColor: colors.darkNavy }}>
+                    <Stack sx={{ minWidth: "20rem", px: "1.2rem", py: ".8rem" }}>
                         <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
                             {factionLogoBlobID && factionLogoBlobID != NullUUID && (
                                 <Box

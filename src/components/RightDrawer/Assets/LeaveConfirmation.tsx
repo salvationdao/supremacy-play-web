@@ -57,7 +57,8 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                         borderColor: theme.factionTheme.primary,
                         borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={theme.factionTheme.background}
                 >
                     <Stack
                         spacing="1.6rem"
@@ -65,7 +66,6 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                             position: "relative",
                             px: "2.5rem",
                             py: "2.4rem",
-                            backgroundColor: theme.factionTheme.background,
                         }}
                     >
                         <Box

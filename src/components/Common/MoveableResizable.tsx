@@ -167,6 +167,8 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                             borderThickness: ".15rem",
                             borderColor: theme.factionTheme.primary,
                         }}
+                        backgroundColor={theme.factionTheme.background}
+                        opacity={0.8}
                     >
                         <Box sx={{ position: "relative" }}>
                             <Stack
@@ -177,7 +179,6 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                                     transition: "all .2s",
                                     resize: "all",
                                     overflow: "hidden",
-                                    backgroundColor: theme.factionTheme.background,
                                     borderRadius: 0.5,
                                 }}
                             >

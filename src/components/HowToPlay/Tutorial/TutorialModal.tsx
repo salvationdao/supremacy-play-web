@@ -35,6 +35,7 @@ export const TutorialModal = () => {
                         borderColor: "#FFFFFF",
                         borderThickness: ".15rem",
                     }}
+                    backgroundColor={colors.darkNavyBlue}
                 >
                     <Box
                         sx={{
@@ -43,7 +44,6 @@ export const TutorialModal = () => {
                             alignItems: "center",
                             px: "3.2rem",
                             py: "2.4rem",
-                            backgroundColor: `${colors.darkNavyBlue}`,
                             width: "100%",
                         }}
                     >

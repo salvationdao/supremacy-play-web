@@ -169,14 +169,14 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                         borderColor: primaryColor,
                         borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={theme.factionTheme.background}
                 >
                     <Stack
                         sx={{
                             px: "2rem",
                             pt: "1.8rem",
                             pb: "2rem",
-                            backgroundColor: theme.factionTheme.background,
                             ".MuiAutocomplete-popper": {
                                 zIndex: 99999,
                                 ".MuiPaper-root": {

@@ -104,11 +104,13 @@ const BanProposalInner = ({
                 <Stack direction="row" spacing=".6rem">
                     <FancyButton
                         excludeCaret
-                        clipSize="4px"
-                        sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
-                        clipSx={{ flex: 1, position: "relative" }}
-                        backgroundColor={colors.red}
-                        borderColor={colors.red}
+                        clipThingsProps={{
+                            clipSize: "4px",
+                            backgroundColor: colors.red,
+                            border: { borderColor: colors.red },
+                            sx: { flex: 1, position: "relative" },
+                        }}
+                        sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                         onClick={() => submitVote(false)}
                     >
                         <Typography variant="body2">NO</Typography>
@@ -116,11 +118,13 @@ const BanProposalInner = ({
 
                     <FancyButton
                         excludeCaret
-                        clipSize="4px"
-                        sx={{ pt: ".3rem", pb: 0, minWidth: "5rem" }}
-                        clipSx={{ flex: 1, position: "relative" }}
-                        backgroundColor={colors.green}
-                        borderColor={colors.green}
+                        clipThingsProps={{
+                            clipSize: "4px",
+                            backgroundColor: colors.green,
+                            border: { borderColor: colors.green },
+                            sx: { flex: 1, position: "relative" },
+                        }}
+                        sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                         onClick={() => submitVote(true)}
                     >
                         <Typography variant="body2">YES</Typography>

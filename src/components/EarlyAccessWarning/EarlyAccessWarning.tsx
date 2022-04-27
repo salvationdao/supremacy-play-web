@@ -28,13 +28,13 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                         borderColor: "#FFFFFF",
                         borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={colors.darkNavyBlue}
                 >
                     <Box
                         sx={{
                             px: "3.2rem",
                             py: "2.4rem",
-                            backgroundColor: `${colors.darkNavyBlue}`,
                         }}
                     >
                         <Stack spacing="1.6rem">

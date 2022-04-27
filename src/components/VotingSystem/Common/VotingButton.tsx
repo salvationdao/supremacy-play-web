@@ -27,11 +27,13 @@ export const VotingButton = ({ displayPercentage, cost, color, textColor, isVoti
         <FancyButton
             disabled={!isVotable}
             excludeCaret
-            clipSize="4px"
+            clipThingsProps={{
+                clipSize: "4px",
+                backgroundColor: color || "#14182B",
+                border: { borderColor: color || "#14182B" },
+                sx: { flex: 1, position: "relative" },
+            }}
             sx={{ pt: ".32rem", pb: ".24rem", minWidth: "2rem" }}
-            clipSx={{ flex: 1, position: "relative" }}
-            backgroundColor={color || "#14182B"}
-            borderColor={color || "#14182B"}
             onClick={onClick}
         >
             <Stack

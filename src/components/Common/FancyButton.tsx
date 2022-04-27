@@ -1,13 +1,12 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
 import { Box, styled, SxProps } from "@mui/system"
-import { colors, fonts } from "../../theme/theme"
+import { fonts } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
 
 const Base = styled(LoadingButton)({
     borderRadius: 0,
     fontFamily: fonts.shareTech,
     fontWeight: "fontWeightBold",
-    backgroundColor: colors.darkNeonBlue,
     color: "white",
     textTransform: "uppercase",
     "&:focus": {
@@ -34,49 +33,16 @@ const Triangle = styled("div")({
     width: "1rem",
 })
 
-interface FancyButtonProps extends LoadingButtonProps, ClipThingProps {
-    borderColor?: string
-    borderThickness?: string
-    backgroundColor?: string
+interface FancyButtonProps extends LoadingButtonProps {
     excludeCaret?: boolean
     sx?: SxProps
-    clipSx?: SxProps
+    caretColor?: string
+    clipThingsProps?: ClipThingProps
 }
 
-export const FancyButton = ({
-    children,
-    borderColor,
-    backgroundColor,
-    clipSize,
-    clipSx,
-    sx,
-    fullWidth,
-    borderThickness,
-    excludeCaret = false,
-    disabled,
-    ...props
-}: FancyButtonProps) => {
+export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, ...props }: FancyButtonProps) => {
     return (
-        <ClipThing
-            clipSize={clipSize}
-            sx={{
-                display: "inline-block",
-                width: fullWidth ? "100%" : "auto",
-                ...clipSx,
-                position: "relative",
-            }}
-            border={{
-                borderThickness,
-                isFancy: true,
-                borderColor: borderColor,
-            }}
-            innerSx={{
-                backgroundColor,
-                "&:hover": {
-                    ".fancy-button-hover": { opacity: 0.2 },
-                },
-            }}
-        >
+        <ClipThing {...clipThingsProps}>
             {disabled && (
                 <Box
                     sx={{
@@ -91,39 +57,9 @@ export const FancyButton = ({
                     }}
                 />
             )}
-
-            <Box
-                className="fancy-button-hover"
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: "black",
-                    opacity: 0,
-                    pointerEvents: "none",
-                    transition: "all .2s",
-                    zIndex: 9,
-                }}
-            />
-
-            <Base
-                sx={{
-                    ...sx,
-                    backgroundColor,
-                }}
-                fullWidth
-                {...props}
-            >
+            <Base sx={{ ...sx }} fullWidth {...props}>
                 {children}
-                {!excludeCaret && (
-                    <Triangle
-                        sx={{
-                            backgroundColor: borderColor,
-                        }}
-                    />
-                )}
+                {!excludeCaret && <Triangle sx={{ backgroundColor: caretColor }} />}
             </Base>
         </ClipThing>
     )
