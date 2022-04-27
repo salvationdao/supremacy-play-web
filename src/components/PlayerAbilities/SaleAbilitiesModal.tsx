@@ -105,32 +105,31 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                     }}
                                 >
                                     {saleAbilityIDs.length > 0 ? (
-
-<Box
-    sx={{
-        display: "grid",
-        gridTemplateColumns: "repeat(6, 70px)",
-        gap: ".5rem",
-    }}
->
-    {saleAbilityIDs.map((s) => (
-        <SaleAbilityCard key={s} abilityID={s} />
-    ))}
-</Box>
-) : (
-<Typography
-    sx={{
-        px: "1.28rem",
-        pt: "1.28rem",
-        mb: ".56rem",
-        color: colors.grey,
-        userSelect: "text !important",
-        opacity: 0.8,
-    }}
->
-    There are currently no abilities on sale.
-</Typography>
-)}
+                                        <Box
+                                            sx={{
+                                                display: "grid",
+                                                gridTemplateColumns: "repeat(6, 70px)",
+                                                gap: ".5rem",
+                                            }}
+                                        >
+                                            {saleAbilityIDs.map((s) => (
+                                                <SaleAbilityCard key={s} abilityID={s} />
+                                            ))}
+                                        </Box>
+                                    ) : (
+                                        <Typography
+                                            sx={{
+                                                px: "1.28rem",
+                                                pt: "1.28rem",
+                                                mb: ".56rem",
+                                                color: colors.grey,
+                                                userSelect: "text !important",
+                                                opacity: 0.8,
+                                            }}
+                                        >
+                                            There are currently no abilities on sale.
+                                        </Typography>
+                                    )}
                                 </Box>
                             </Box>
                         </ClipThing>

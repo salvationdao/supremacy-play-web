@@ -103,7 +103,9 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
                         sx={{
                             position: "relative",
                             top: "-1px",
-                            width: containerWidth, height: "fit-content", transition: "all .2s"
+                            width: containerWidth,
+                            height: "fit-content",
+                            transition: "all .2s",
                         }}
                         border={{
                             borderThickness: ".15rem",

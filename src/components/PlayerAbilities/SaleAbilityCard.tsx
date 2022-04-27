@@ -55,6 +55,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                 amount: price,
             })
             toggleShowPurchaseModal(false)
+            setPurchaseError(null)
         } catch (e) {
             if (e instanceof Error) {
                 setPurchaseError(e.message)
