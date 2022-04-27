@@ -96,7 +96,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
                     x: (GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT,
                     y: GRAPH_HEIGHT * (1 - Math.max(0, lvd) / largest.current) + GRAPH_TOP,
                 }
-                if (lvd === -1) return redDots.push({ x: location.x, y: GRAPH_HEIGHT * (1 - Math.max(0, liveVotingData[i - 1]) / largest.current) + GRAPH_TOP })
+                if (lvd === -1) return redDots.push(location)
                 context.lineTo(location.x, location.y)
             })
 
@@ -108,7 +108,6 @@ export const LiveGraph = (props: LiveGraphProps) => {
             redDots.forEach((loc) => {
                 context.beginPath()
                 context.fillRect(loc.x, loc.y, 2.5, 2.5)
-                // context.arc(loc.x, 0, 5, 0, Math.PI * 2, true)
                 context.fill()
             })
         }
