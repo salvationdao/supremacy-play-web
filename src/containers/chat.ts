@@ -81,25 +81,6 @@ export const ChatContainer = createContainer(() => {
         [setFailedMessages],
     )
 
-    const newMessageHandler = useCallback(
-        (message: ChatMessageType, faction_id: string | null) => {
-            if (faction_id === null) {
-                setGlobalChatMessages((prev) => {
-                    // Buffer the messages
-                    const newArray = prev.concat(message)
-                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-                })
-            } else {
-                setFactionChatMessages((prev) => {
-                    // Buffer the messages
-                    const newArray = prev.concat(message)
-                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-                })
-            }
-        },
-        [setGlobalChatMessages, setFactionChatMessages],
-    )
-
     // Global announcements
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -202,6 +183,27 @@ export const ChatContainer = createContainer(() => {
         [user, setGlobalChatMessages, setFactionChatMessages],
     )
 
+    const newMessageHandler = useCallback(
+        (message: ChatMessageType, faction_id: string | null) => {
+            if (faction_id === null) {
+                setGlobalChatMessages((prev) => {
+                    if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
+                    // Buffer the messages
+                    const newArray = prev.concat(message)
+                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
+                })
+            } else {
+                setFactionChatMessages((prev) => {
+                    if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
+                    // Buffer the messages
+                    const newArray = prev.concat(message)
+                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
+                })
+            }
+        },
+        [setGlobalChatMessages, setFactionChatMessages, tabValue, globalChatUnread, factionChatUnread],
+    )
+
     // Subscribe to global chat messages
     useEffect(() => {
         if (state !== WebSocket.OPEN) return
@@ -211,11 +213,9 @@ export const ChatContainer = createContainer(() => {
                 saveUserStats(m, false)
                 return
             }
-
             newMessageHandler(m, null)
-            if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
         })
-    }, [state, user, subscribe, tabValue, globalChatUnread])
+    }, [state, user, subscribe])
 
     // Subscribe to faction chat messages
     useEffect(() => {
@@ -226,11 +226,9 @@ export const ChatContainer = createContainer(() => {
                 saveUserStats(m, true)
                 return
             }
-
             newMessageHandler(m, "faction_id")
-            if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
         })
-    }, [user, state, subscribe, tabValue, factionChatUnread])
+    }, [user, state, subscribe])
 
     // Subscribe to ban proposals
     useEffect(() => {
