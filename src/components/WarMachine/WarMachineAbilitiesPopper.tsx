@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js"
 import { ClipThing, FactionAbilityItem } from ".."
 import { GenericWarMachinePNG } from "../../assets"
 import { GameAbility, WarMachineState } from "../../types"
+import { ContributorAmount } from "../BattleStats/ContributorAmount"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -49,24 +50,27 @@ export const WarMachineAbilitiesPopover = ({ popoverRef, open, onClose, warMachi
                 >
                     <Box sx={{ backgroundColor: factionTheme.background, px: "1.28rem", pt: "1.28rem", pb: "1.28rem" }}>
                         <Stack spacing=".72rem">
-                            <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ ml: ".88rem" }}>
-                                <Box
-                                    sx={{
-                                        width: "1.7rem",
-                                        height: "1.7rem",
-                                        backgroundImage: `url(${warMachine.imageAvatar || GenericWarMachinePNG})`,
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "center",
-                                        backgroundSize: "cover",
-                                        backgroundColor: factionTheme.primary,
-                                        mb: ".12rem",
-                                        border: `${factionTheme.primary} 1px solid`,
-                                        borderRadius: 0.5,
-                                    }}
-                                />
-                                <Typography sx={{ lineHeight: 1, color: factionTheme.primary, fontWeight: "fontWeightBold" }}>
-                                    WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
-                                </Typography>
+                            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ ml: ".88rem" }}>
+                                    <Box
+                                        sx={{
+                                            width: "1.7rem",
+                                            height: "1.7rem",
+                                            backgroundImage: `url(${warMachine.imageAvatar || GenericWarMachinePNG})`,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
+                                            backgroundSize: "cover",
+                                            backgroundColor: factionTheme.primary,
+                                            mb: ".12rem",
+                                            border: `${factionTheme.primary} 1px solid`,
+                                            borderRadius: 0.5,
+                                        }}
+                                    />
+                                    <Typography sx={{ lineHeight: 1, color: factionTheme.primary, fontWeight: "fontWeightBold" }}>
+                                        WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
+                                    </Typography>
+                                </Stack>
+                                <ContributorAmount ShowContributorAmount={true} ShowContributionTotal={false} />
                             </Stack>
 
                             <Stack spacing=".9rem">

@@ -8,10 +8,10 @@ import { BattleEndDetail, Multiplier } from "../../../types"
 export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { battle_multipliers } = battleEndDetail
 
-    const [multiplicative, setMultiplicative] = useState<Multiplier[]>([])
+    const [, setMultiplicative] = useState<Multiplier[]>([])
     const [multiplierList, setMultiplierList] = useState<Multiplier[]>([])
     const [totalMultiplierValue, setTotalMultiplierValue] = useState(0)
-    const [totalMultiplicativeValue, setTotalMultiplicativeValue] = useState(0)
+    const [, setTotalMultiplicativeValue] = useState(0)
 
     useEffect(() => {
         if (!battle_multipliers) return
@@ -39,7 +39,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                         color: colors.yellow,
                     }}
                 >
-                    NEW REWARDS{battle_multipliers.battles[0].total_multipliers}
+                    NEW REWARDS ({battle_multipliers.battles[0].total_multipliers}x)
                     <BattleEndTooltip
                         text={`These are the multipliers that you have earned based on your participation in this battle.`}
                         color={colors.yellow}
@@ -89,7 +89,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
 
                             <Stack direction="row" alignItems="center" justifyContent="space-between">
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    SUBTOTAL:{" "}
+                                    TOTAL:{" "}
                                 </Typography>
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}>
                                     {totalMultiplierValue}x
@@ -97,7 +97,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             </Stack>
                         </Stack>
 
-                        {multiplicative && multiplicative.length > 0 && (
+                        {/* {multiplicative && multiplicative.length > 0 && (
                             <Stack spacing="1.2rem">
                                 <Typography
                                     variant="h6"
@@ -144,9 +144,9 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                     </Typography>
                                 </Stack>
                             </Stack>
-                        )}
+                        )} */}
 
-                        <Stack spacing="1.2rem">
+                        {/* <Stack spacing="1.2rem">
                             <Typography
                                 variant="h6"
                                 sx={{
@@ -164,10 +164,10 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                         <span>{battle_multipliers.battles[0].total_multipliers}</span>
                                     </>
                                 ) : (
-                                    <span>{battle_multipliers.battles[0].total_multipliers}</span>
+                                    <span>{battle_multipliers.battles[0].total_multipliers}x</span>
                                 )}
                             </Typography>
-                        </Stack>
+                        </Stack> */}
                     </Stack>
                 ) : (
                     <Typography variant="h6" sx={{ pl: ".8rem", opacity: 0.8 }}>

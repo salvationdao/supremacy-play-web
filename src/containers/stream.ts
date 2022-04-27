@@ -87,6 +87,8 @@ export const StreamContainer = createContainer(() => {
     // volume
     const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
     const [isMute, toggleIsMute] = useToggle(true)
+    const [musicVolume, setMusicVolume] = useState(parseString(localStorage.getItem("musicVolume"), 0.3))
+    const [isMusicMute, toggleIsMusicMute] = useToggle(true)
 
     // resolution
     const [selectedResolution, setSelectedResolution] = useState<number>()
@@ -126,6 +128,17 @@ export const StreamContainer = createContainer(() => {
         }
         toggleIsMute(false)
     }, [volume])
+
+    useEffect(() => {
+        localStorage.setItem("musicVolume", musicVolume.toString())
+
+        if (musicVolume <= 0) {
+            toggleIsMusicMute(true)
+            return
+        }
+
+        toggleIsMusicMute(false)
+    }, [musicVolume])
 
     const changeStream = useCallback((s: Stream) => {
         if (!s) return
@@ -273,6 +286,11 @@ export const StreamContainer = createContainer(() => {
         setVolume,
         isMute,
         toggleIsMute,
+
+        musicVolume,
+        setMusicVolume,
+        isMusicMute,
+        toggleIsMusicMute,
 
         defaultResolution,
     }

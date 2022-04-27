@@ -93,7 +93,7 @@ const UserDetailsPopover = ({
                     border={{
                         isFancy: true,
                         borderColor: factionColor || colors.neonBlue,
-                        borderThickness: ".2rem",
+                        borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >

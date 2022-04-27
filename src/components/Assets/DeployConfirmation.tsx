@@ -101,7 +101,7 @@ export const DeployConfirmation = ({ open, asset, queueFeed, onClose }: { open: 
                     border={{
                         isFancy: true,
                         borderColor: (user && user.faction.theme.primary) || colors.neonBlue,
-                        borderThickness: ".2rem",
+                        borderThickness: ".15rem",
                     }}
                     innerSx={{ position: "relative" }}
                 >

@@ -28,7 +28,7 @@ export const WarMachineAbilityAlert = ({ data, factionsAll }: { data: WarMachine
             border={{
                 borderColor: mainColor || colors.grey,
                 isFancy: true,
-                borderThickness: ".2rem",
+                borderThickness: ".15rem",
             }}
         >
             <Stack

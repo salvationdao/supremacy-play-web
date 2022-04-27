@@ -2,9 +2,8 @@ import { Box, Stack, Theme } from "@mui/material"
 import { useTheme } from "@mui/styles"
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
-import { ResizeBox } from ".."
-import { SvgDrag, SvgResizeX, SvgResizeY, SvgResizeXY, SvgHide } from "../../assets"
-import { UI_OPACITY } from "../../constants"
+import { ResizeBox, TooltipHelper } from ".."
+import { SvgDrag, SvgHide, SvgInfoCircular } from "../../assets"
 import { useDimension } from "../../containers"
 import { clamp, parseString } from "../../helpers"
 import { colors } from "../../theme/theme"
@@ -29,6 +28,7 @@ export interface MoveableResizableConfig {
     onHideCallback?: () => void
     // Others
     CaptionArea?: ReactElement
+    tooltipText?: string
 }
 
 const PADDING = 10
@@ -47,6 +47,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
         onReizeCallback,
         onHideCallback,
         CaptionArea,
+        tooltipText,
     } = config
 
     const theme = useTheme<Theme>()
@@ -113,7 +114,6 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                 left: 0,
                 pointerEvents: "none",
                 zIndex: 18,
-                opacity: UI_OPACITY,
                 filter: "drop-shadow(0 3px 3px #00000050)",
                 ":hover": {
                     zIndex: 999,
@@ -147,30 +147,24 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                         handle={() => (
                             <Box
                                 sx={{
-                                    position: "absolute",
                                     pointerEvents: "all",
-                                    bottom: ".88rem",
-                                    right: "1rem",
-                                    cursor: allowResizeX && allowResizeY ? "nesw-resize" : allowResizeX ? "ew-resize" : "ns-resize",
-                                    opacity: 0.4,
-                                    ":hover": { opacity: 1 },
+                                    position: "absolute",
+                                    top: 0,
+                                    right: 0,
+                                    cursor: "ew-resize",
+                                    zIndex: 50,
+                                    width: "10px",
+                                    height: "100%",
                                 }}
-                            >
-                                {allowResizeX && allowResizeY ? (
-                                    <SvgResizeXY size="1.2rem" />
-                                ) : allowResizeX ? (
-                                    <SvgResizeX size="1.2rem" />
-                                ) : (
-                                    <SvgResizeY size="1.2rem" />
-                                )}
-                            </Box>
+                            />
                         )}
                     />
 
                     <ClipThing
+                        clipSize=".5rem"
                         border={{
                             isFancy: true,
-                            borderThickness: ".2rem",
+                            borderThickness: ".15rem",
                             borderColor: theme.factionTheme.primary,
                         }}
                     >
@@ -194,6 +188,18 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                                         {CaptionArea}
                                     </Stack>
 
+                                    <TooltipHelper text={tooltipText}>
+                                        <Box
+                                            sx={{
+                                                mr: ".88rem",
+                                                opacity: 0.4,
+                                                ":hover": { opacity: 1 },
+                                            }}
+                                        >
+                                            <SvgInfoCircular fill={colors.text} size="1.2rem" />
+                                        </Box>
+                                    </TooltipHelper>
+
                                     <Box
                                         onClick={() => onHideCallback && onHideCallback()}
                                         sx={{
@@ -210,12 +216,12 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                                         className="handle"
                                         sx={{
                                             cursor: "move",
-                                            mr: allowResizeX || allowResizeY ? "2rem" : ".3rem",
+                                            mr: allowResizeX || allowResizeY ? ".4rem" : ".3rem",
                                             opacity: 0.4,
                                             ":hover": { opacity: 1 },
                                         }}
                                     >
-                                        <SvgDrag size="1.3rem" />
+                                        <SvgDrag size="1.2rem" />
                                     </Box>
                                 </Stack>
                             </Stack>

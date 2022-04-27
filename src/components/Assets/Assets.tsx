@@ -1,8 +1,8 @@
-import { Box, Button, Drawer, Stack, Typography, IconButton, Pagination, CircularProgress } from "@mui/material"
+import { Box, Button, CircularProgress, Drawer, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { AssetItem, DrawerButtons } from ".."
+import { AssetItem } from ".."
 import { SvgGridView, SvgListView, SvgRobot } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, PASSPORT_WEB } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_WEB, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../containers"
 import { usePagination, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -166,17 +166,35 @@ const DrawerContent = ({ isGridView, toggleIsGridView }: { isGridView: boolean; 
                     <strong>DISPLAYING:</strong> {assetsQueue?.length || 0} of {totalItems}
                 </Typography>
                 <Stack direction="row">
-                    <IconButton size="small" onClick={() => setPageSize(12)}>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            setPageSize(12)
+                            changePage(1)
+                        }}
+                    >
                         <Typography variant="body2" sx={{ opacity: pageSize === 12 ? 1 : 0.3 }}>
                             12
                         </Typography>
                     </IconButton>
-                    <IconButton size="small" onClick={() => setPageSize(24)}>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            setPageSize(24)
+                            changePage(1)
+                        }}
+                    >
                         <Typography variant="body2" sx={{ opacity: pageSize === 24 ? 1 : 0.3 }}>
                             24
                         </Typography>
                     </IconButton>
-                    <IconButton size="small" onClick={() => setPageSize(36)}>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            setPageSize(36)
+                            changePage(1)
+                        }}
+                    >
                         <Typography variant="body2" sx={{ opacity: pageSize === 36 ? 1 : 0.3 }}>
                             36
                         </Typography>
@@ -228,7 +246,8 @@ const DrawerContent = ({ isGridView, toggleIsGridView }: { isGridView: boolean; 
 }
 
 export const Assets = () => {
-    const { isAssetOpen } = useDrawer()
+    const { isAssetOpen, isAnyPanelOpen } = useDrawer()
+    // const [telegramShortcode, setTelegramShortcode] = useState("")
     // Display option
     const [isGridView, toggleIsGridView] = useToggle()
 
@@ -239,25 +258,34 @@ export const Assets = () => {
             variant="persistent"
             anchor="right"
             sx={{
-                width: `${RIGHT_DRAWER_WIDTH}rem`,
+                transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1) 0ms`,
+                width: isAnyPanelOpen ? `${RIGHT_DRAWER_WIDTH}rem` : 0,
                 flexShrink: 0,
-                zIndex: 9999,
                 "& .MuiDrawer-paper": {
                     width: `${RIGHT_DRAWER_WIDTH}rem`,
                     backgroundColor: colors.darkNavy,
+                    position: "absolute",
+                    borderLeft: 0,
                 },
             }}
         >
             <Stack
                 direction="row"
+                id="tutorial-asset"
                 sx={{
                     width: "100%",
                     height: "100%",
                     backgroundColor: colors.darkNavy,
                 }}
             >
-                <DrawerButtons isFixed={false} />
-                {isAssetOpen && <DrawerContent isGridView={isGridView} toggleIsGridView={toggleIsGridView} />}
+                {isAssetOpen && (
+                    <DrawerContent
+                        // telegramShortcode={telegramShortcode}
+                        // setTelegramShortcode={setTelegramShortcode}
+                        isGridView={isGridView}
+                        toggleIsGridView={toggleIsGridView}
+                    />
+                )}
             </Stack>
         </Drawer>
     )

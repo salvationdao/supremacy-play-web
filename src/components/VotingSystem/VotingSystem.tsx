@@ -9,12 +9,13 @@ import { Dimension } from "../../types"
 
 export const VotingSystem = () => {
     const { bribeStage } = useGame()
+
     return <VotingSystemInner bribeStage={bribeStage} />
 }
 
 const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const { user } = useGameServerAuth()
-    const initialSize = { width: 390, height: 360, minWidth: 350 }
+    const initialSize = { width: 390, height: 360, minWidth: 370 }
     const [containerWidth, setContainerWidth] = useState<number>(parseString(localStorage.getItem("votingSystemWidth"), initialSize.width))
     const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
     const theme = useTheme<Theme>()
@@ -41,6 +42,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
 
     return (
         <Stack
+            id="tutorial-vote"
             sx={{
                 position: "absolute",
                 top: "1rem",
@@ -78,7 +80,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                     <ClipThing
                         border={{
                             isFancy: true,
-                            borderThickness: ".2rem",
+                            borderThickness: ".15rem",
                             borderColor: theme.factionTheme.primary,
                         }}
                         clipSize="10px"

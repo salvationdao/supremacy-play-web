@@ -1,4 +1,4 @@
-import { Box, Stack, SxProps, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
 import { SvgChat, SvgRobot } from "../../assets"
 import { GAME_BAR_HEIGHT, LIVE_CHAT_DRAWER_BUTTON_WIDTH } from "../../constants"
@@ -64,32 +64,19 @@ const SideButton = ({
     )
 }
 
-export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
+export const DrawerButtons = () => {
     const { user } = useGameServerAuth()
     const { isLiveChatOpen, toggleIsLiveChatOpen, isPlayerListOpen, toggleIsPlayerListOpen, isAssetOpen, toggleIsAssetOpen } = useDrawer()
-
-    const numberOfButtons = user ? 3 : 1
-
-    const styles: SxProps = isFixed
-        ? {
-              position: "fixed",
-              top: 0,
-              bottom: 0,
-              right: 0,
-          }
-        : {
-              position: "relative",
-              height: "100%",
-          }
 
     return (
         <Box
             sx={{
-                ...styles,
+                position: "relative",
+                height: "100%",
                 overflow: "hidden",
                 width: `${LIVE_CHAT_DRAWER_BUTTON_WIDTH}rem`,
                 backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
-                zIndex: 1,
+                zIndex: 2,
             }}
         >
             <Stack
@@ -101,9 +88,7 @@ export const DrawerButtons = ({ isFixed = true }: { isFixed?: boolean }) => {
                     position: "absolute",
                     top: 0,
                     left: "50%",
-                    transform: `translate(-50%, calc(${numberOfButtons * (BUTTON_WIDTH / 2)}rem - ${
-                        LIVE_CHAT_DRAWER_BUTTON_WIDTH / 2
-                    }rem + ${GAME_BAR_HEIGHT}rem)) rotate(-90deg)`,
+                    transform: `translate(-50%, calc(${BUTTON_WIDTH}rem +  ${GAME_BAR_HEIGHT}rem)) rotate(-90deg)`,
                 }}
             >
                 {user && user.faction && (

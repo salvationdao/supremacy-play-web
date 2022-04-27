@@ -12,7 +12,7 @@ import {
     TextAlert,
     WarMachineAbilityAlert,
 } from ".."
-import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME, UI_OPACITY } from "../../constants"
+import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
 import { useTheme } from "@mui/styles"
 import { Theme } from "@mui/material/styles"
 import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useGame } from "../../containers"
@@ -216,7 +216,6 @@ export const Notifications = () => {
                 right: "1rem",
                 zIndex: 15,
                 overflow: "hidden",
-                opacity: UI_OPACITY,
             }}
         >
             <Box>

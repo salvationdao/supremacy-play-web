@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@antmedia/webrtc_adaptor": "^2.4.2-latest",
-        "@emotion/react": "^11.4.1",
+        "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.3.0",
         "@mui/icons-material": "^5.0.1",
         "@mui/lab": "^5.0.0-alpha.53",
@@ -12,6 +12,7 @@
         "@mui/styles": "^5.1.0",
         "@prismicio/client": "^6.4.2",
         "@prismicio/react": "^2.1.2",
+        "@reactour/tour": "^2.10.2",
         "@sentry/react": "^6.17.6",
         "@types/react-router-dom": "^5.3.3",
         "@use-gesture/react": "^10.2.6",
@@ -19,6 +20,7 @@
         "core-js": "^3.5.0",
         "emoji-mart": "^3.0.1",
         "emoji-regex": "^10.1.0",
+        "howler": "^2.2.3",
         "jsonwebtoken": "^8.5.1",
         "jwt-decode": "^3.1.2",
         "moment": "^2.29.2",
@@ -27,6 +29,7 @@
         "react-draggable": "^4.4.4",
         "react-qr-code": "^2.0.5",
         "react-resizable": "^3.0.4",
+        "react-router-dom": "^5.2.0",
         "unstated-next": "^1.1.0"
     },
     "devDependencies": {
@@ -39,6 +42,7 @@
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
         "@types/emoji-mart": "^3.0.9",
+        "@types/howler": "^2.2.7",
         "@types/jest": "^27.4.0",
         "@types/node": "^16.11.21",
         "@types/react": "^17.0.24",

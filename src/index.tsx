@@ -1,46 +1,31 @@
 import { Box, Stack, ThemeProvider } from "@mui/material"
 import { Theme } from "@mui/material/styles"
+import { ProviderProps, TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
+import { BrowserRouter, useLocation } from "react-router-dom"
+import { DrawerButtons, GameBar, GlobalSnackbar, RightDrawer, tourStyles, tutorialNextBtn, tutorialPrevButton } from "./components"
+import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
+import { PageWrapper } from "./components/PageWrapper/PageWrapper"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST, SENTRY_CONFIG } from "./constants"
 import {
-    GameBar,
-    MiniMap,
-    BattleEndScreen,
-    BattleHistory,
-    Controls,
-    LeftSideBar,
-    LiveVotingChart,
-    LoadMessage,
-    Stream,
-    VotingSystem,
-    WarMachineStats,
-    Notifications,
-    Maintenance,
-    BattleCloseAlert,
-    GlobalSnackbar,
-    EarlyAccessWarning,
-    WaitingPage,
-} from "./components"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
-import {
-    GameServerAuthProvider,
     DimensionProvider,
     DrawerProvider,
     GameProvider,
-    OverlayTogglesProvider,
+    GameServerAuthProvider,
     GameServerSocketProvider,
-    StreamProvider,
-    useGameServerAuth,
-    useDimension,
-    useGameServerWebsocket,
-    WalletProvider,
-    PassportServerSocketProvider,
+    OverlayTogglesProvider,
     PassportServerAuthProvider,
+    PassportServerSocketProvider,
     SnackBarProvider,
+    StreamProvider,
+    useDimension,
+    useGameServerAuth,
+    WalletProvider,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
-import { useToggle } from "./hooks"
+import { Routes } from "./routes"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme, User } from "./types"
 import { UserData } from "./types/passport"
@@ -63,10 +48,14 @@ if (SENTRY_CONFIG) {
 }
 
 const AppInner = () => {
-    const { state, isServerUp } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
-    const { mainDivDimensions, streamDimensions } = useDimension()
-    const [haveSups, toggleHaveSups] = useToggle(true)
+    const { mainDivDimensions } = useDimension()
+    const location = useLocation()
+
+    // Dont show gamebar and left nav in 404
+    if (location.pathname === "/404") {
+        return <Routes />
+    }
 
     return (
         <>
@@ -79,56 +68,27 @@ const AppInner = () => {
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                 }}
             >
-                <Stack
-                    direction="row"
+                <Box
                     sx={{
+                        display: "flex",
                         flex: 1,
                         position: "relative",
                         width: "100%",
                         backgroundColor: colors.darkNavyBlue,
                         overflow: "hidden",
+                        justifyContent: "space-between",
+                        "&>*": {
+                            flexShrink: 0,
+                        },
                     }}
                 >
-                    <LeftSideBar />
-
-                    <Box
-                        sx={{
-                            position: "relative",
-                            height: streamDimensions.height,
-                            width: streamDimensions.width,
-                            backgroundColor: colors.darkNavy,
-                            transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
-                            clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
-                        }}
-                    >
-                        {!isServerUp || UNDER_MAINTENANCE ? (
-                            <Maintenance />
-                        ) : (
-                            <>
-                                <LoadMessage />
-                                <BattleCloseAlert />
-                                <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
-
-                                {user && haveSups && state === WebSocket.OPEN ? (
-                                    <Box>
-                                        <EarlyAccessWarning />
-                                        <VotingSystem />
-                                        <MiniMap />
-                                        <Notifications />
-                                        <LiveVotingChart />
-                                        <WarMachineStats />
-                                        <BattleEndScreen />
-                                        <BattleHistory />
-                                    </Box>
-                                ) : (
-                                    <WaitingPage />
-                                )}
-                            </>
-                        )}
-                    </Box>
-                </Stack>
-
-                <Controls />
+                    {process.env.NODE_ENV === "development" && <LeftDrawer />}
+                    <PageWrapper>
+                        <Routes />
+                    </PageWrapper>
+                    <DrawerButtons />
+                    <RightDrawer />
+                </Box>
             </Stack>
 
             {/* Keep this. Just the under background, glimpse of it is visible when drawers open / close */}
@@ -180,6 +140,22 @@ const App = () => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
 
+    const tourProviderProps: ProviderProps = {
+        children: <AppInner />,
+        steps: [],
+        styles: tourStyles,
+        nextButton: tutorialNextBtn,
+        prevButton: tutorialPrevButton,
+        showBadge: false,
+        disableKeyboardNavigation: true,
+        disableDotsNavigation: true,
+        afterOpen: () => {
+            if (!localStorage.getItem("visited")) {
+                localStorage.setItem("visited", "1")
+            }
+        },
+    }
+
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
@@ -194,7 +170,11 @@ const App = () => {
                                                 <GameProvider>
                                                     <DimensionProvider>
                                                         <OverlayTogglesProvider>
-                                                            <AppInner />
+                                                            <TourProvider {...tourProviderProps}>
+                                                                <BrowserRouter>
+                                                                    <AppInner />
+                                                                </BrowserRouter>
+                                                            </TourProvider>
                                                         </OverlayTogglesProvider>
                                                     </DimensionProvider>
                                                 </GameProvider>

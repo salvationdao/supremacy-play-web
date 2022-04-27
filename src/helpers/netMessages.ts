@@ -1,8 +1,4 @@
-import {
-    BattleAbilityProgress, GameAbilityProgress, NetMessageTick,
-    NetMessageTickWarMachine,
-    NetMessageType, ViewerLiveCount
-} from "../types"
+import { BattleAbilityProgress, GameAbilityProgress, NetMessageTick, NetMessageTickWarMachine, NetMessageType, ViewerLiveCount } from "../types"
 
 export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; payload: unknown } | undefined => {
     const dv = new DataView(buffer)
@@ -73,9 +69,10 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                     const strArr = str.split("_")
                     return {
                         id: strArr[0],
-                        sups_cost: strArr[1],
-                        current_sups: strArr[2],
-                        should_reset: strArr[3] == "1",
+                        offering_id: strArr[1],
+                        sups_cost: strArr[2],
+                        current_sups: strArr[3],
+                        should_reset: strArr[4] == "1",
                     }
                 })
             return { type, payload }

@@ -37,6 +37,8 @@ export const colors = {
     blue: "#0074D9",
     blue2: "#309FFF",
     purple: "#A985FF",
+    black2: "#13161B",
+    black3: "#080303",
 
     lightNeonBlue: "#8DE9FF",
     neonBlue: "#00FFFF",
@@ -81,6 +83,12 @@ const factionTheme: FactionTheme = {
     primary: "#00FFFF",
     secondary: "#00FFFF",
     background: "#050c12",
+}
+
+export const fonts = {
+    nostromoblack: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    nostromobold: ["Nostromo Regular Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    sharetech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
 }
 
 export const theme = createTheme({

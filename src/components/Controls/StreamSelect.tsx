@@ -6,7 +6,7 @@ export const StreamSelect = () => {
     const { currentStream, changeStream, streamOptions } = useStream()
 
     return (
-        <Stack direction="row" spacing=".24rem" alignItems="center">
+        <Stack id="tutorial-server" direction="row" spacing=".24rem" alignItems="center">
             <Typography variant="body2" sx={{ lineHeight: 1 }}>
                 STREAM SERVER:{" "}
             </Typography>

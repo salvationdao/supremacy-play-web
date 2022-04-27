@@ -55,6 +55,7 @@ export const ProfileCard = () => {
                 }
             >
                 <Stack
+                    id="tutorial-passport"
                     ref={popoverRef}
                     onClick={() => toggleIsPopoverOpen()}
                     direction="row"
