@@ -1,5 +1,5 @@
-import React from "react"
+import { Typography } from "@mui/material"
 
-export const HangarPage: React.FC = () => {
-    return <div>hangar</div>
+export const HangarPage = () => {
+    return <Typography>Hangar</Typography>
 }

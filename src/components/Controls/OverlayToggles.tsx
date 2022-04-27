@@ -7,7 +7,7 @@ export const OverlayToggles = () => {
     const { isMapOpen, toggleIsMapOpen, isLiveChartOpen, toggleIsLiveChartOpen, isBattleHistoryOpen, toggleIsBattleHistoryOpen } = useOverlayToggles()
 
     return (
-        <Stack id="tutorial-overlays" direction="row" alignItems="center">
+        <Stack id="tutorial-overlays" direction="row" alignItems="center" sx={{ height: "100%" }}>
             <Typography variant="body2" sx={{ lineHeight: 1, mr: ".4rem" }}>
                 OVERLAYS:{" "}
             </Typography>

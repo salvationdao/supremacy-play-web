@@ -3,11 +3,12 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from ".."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../assets"
-import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useDrawer, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
+import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
+import { fonts } from "../../theme/theme"
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 // in rems
@@ -21,67 +22,100 @@ const HEIGHT = 7.6
 const SKILL_BUTTON_TEXT_ROTATION = 76.5
 const DEAD_OPACITY = 0.6
 
-interface Props {
+interface WarMachineItemProps {
     warMachine: WarMachineState
     scale: number
     shouldBeExpanded: boolean
 }
 
-export const WarMachineItem = (props: Props) => {
+export const WarMachineItem = (props: WarMachineItemProps) => {
     const { state, subscribe } = useGameServerWebsocket()
     const { highlightedMechHash, setHighlightedMechHash } = useGame()
-    const { isAnyPanelOpen } = useDrawer()
-    const { faction_id } = useGameServerAuth()
+    const { factionID } = useGameServerAuth()
+    const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
+    const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
+
+    const {
+        warMachine: { hash, participantID, factionID: warMachineFactionID },
+    } = props
+
+    // If warmachine is updated, reset destroy info
+    useEffect(() => {
+        setWarMachineDestroyedRecord(undefined)
+    }, [props.warMachine])
+
+    // Subscribe to war machine ability updates
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !factionID || factionID !== warMachineFactionID || !subscribe) return
+        return subscribe<GameAbility[] | undefined>(
+            GameServerKeys.SubWarMachineAbilitiesUpdated,
+            (payload) => {
+                if (payload) setGameAbilities(payload)
+            },
+            {
+                hash,
+            },
+        )
+    }, [subscribe, state, hash, factionID, warMachineFactionID])
+
+    // Subscribe to whether the war machine has been destroyed
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<WarMachineDestroyedRecord>(
+            GameServerKeys.SubWarMachineDestroyed,
+            (payload) => {
+                if (!payload) return
+                setWarMachineDestroyedRecord(payload)
+            },
+            { participantID },
+        )
+    }, [state, subscribe, participantID, hash])
 
     return (
         <WarMachineItemInner
             {...props}
-            faction_id={faction_id}
-            isAnyPanelOpen={isAnyPanelOpen}
+            factionID={factionID}
             highlightedMechHash={highlightedMechHash}
             setHighlightedMechHash={setHighlightedMechHash}
-            state={state}
-            subscribe={subscribe}
+            gameAbilities={gameAbilities}
+            warMachineDestroyedRecord={warMachineDestroyedRecord}
         />
     )
 }
 
-interface PropsInner extends Props, Partial<WebSocketProperties> {
-    faction_id?: string
+interface WarMachineItemInnerProps extends WarMachineItemProps {
+    factionID?: string
     highlightedMechHash?: string
     setHighlightedMechHash: (s?: string) => void
-    isAnyPanelOpen: boolean
+    gameAbilities?: GameAbility[]
+    warMachineDestroyedRecord?: WarMachineDestroyedRecord
 }
 
 const WarMachineItemInner = ({
     warMachine,
     scale,
     shouldBeExpanded,
-    faction_id,
+    factionID,
     highlightedMechHash,
     setHighlightedMechHash,
-    isAnyPanelOpen,
-    state,
-    subscribe,
-}: PropsInner) => {
+    gameAbilities,
+    warMachineDestroyedRecord,
+}: WarMachineItemInnerProps) => {
     const { hash, participantID, faction, name, imageAvatar, tier } = warMachine
-    const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
-    const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
+    const {
+        logo_blob_id,
+        theme: { primary, secondary, background },
+    } = faction
+
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
     const [isExpanded, toggleIsExpanded] = useToggle(false)
     const [isDestroyedInfoOpen, toggleIsDestroyedInfoOpen] = useToggle()
     const maxAbilityPriceMap = useRef<Map<string, BigNumber>>(new Map<string, BigNumber>())
-    const {
-        id: warMachinefaction_id,
-        logo_blob_id,
-        theme: { primary, secondary, background },
-    } = faction
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
-
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
-    const isOwnFaction = useMemo(() => faction_id == warMachine.factionID, [faction_id, warMachine])
+    const isOwnFaction = useMemo(() => factionID == warMachine.factionID, [factionID, warMachine])
     const numSkillBars = useMemo(() => (gameAbilities ? gameAbilities.length : 0), [gameAbilities])
     const isAlive = !warMachineDestroyedRecord
 
@@ -110,39 +144,7 @@ const WarMachineItemInner = ({
 
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
-    }, [shouldBeExpanded, isAnyPanelOpen])
-
-    // If warmachine is updated, reset destroy info
-    useEffect(() => {
-        setWarMachineDestroyedRecord(undefined)
-    }, [warMachine])
-
-    // Subscribe to war machine ability updates
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !faction_id || faction_id === NullUUID || faction_id !== warMachinefaction_id || !subscribe) return
-        return subscribe<GameAbility[] | undefined>(
-            GameServerKeys.SubWarMachineAbilitiesUpdated,
-            (payload) => {
-                if (payload) setGameAbilities(payload)
-            },
-            {
-                hash,
-            },
-        )
-    }, [subscribe, state, hash, faction_id, warMachinefaction_id])
-
-    // Subscribe to whether the war machine has been destroyed
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<WarMachineDestroyedRecord>(
-            GameServerKeys.SubWarMachineDestroyed,
-            (payload) => {
-                if (!payload) return
-                setWarMachineDestroyedRecord(payload)
-            },
-            { participantID },
-        )
-    }, [state, subscribe, participantID, hash])
+    }, [shouldBeExpanded])
 
     return (
         <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
@@ -211,8 +213,9 @@ const WarMachineItemInner = ({
                     border={{ isFancy: false, borderColor: primary, borderThickness: ".4rem" }}
                     sx={{ zIndex: 2 }}
                     skipRightCorner={!isExpanded}
+                    innerSx={{ background: `linear-gradient(${primary}, #000000)` }}
                 >
-                    <Box sx={{ background: `linear-gradient(${primary}, #000000)` }}>
+                    <Box>
                         <Box
                             onClick={handleClick}
                             sx={{
@@ -336,7 +339,7 @@ const WarMachineItemInner = ({
                                     sx={{
                                         lineHeight: 1,
                                         fontWeight: "fontWeightBold",
-                                        fontFamily: "Nostromo Regular Black",
+                                        fontFamily: fonts.nostromoBlack,
                                         textOverflow: "ellipsis",
                                         overflow: "hidden",
                                         whiteSpace: "normal",

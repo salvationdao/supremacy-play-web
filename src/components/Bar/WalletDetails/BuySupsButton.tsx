@@ -5,7 +5,7 @@ import { TOKEN_SALE_PAGE } from "../../../constants"
 import { usePassportServerWebsocket } from "../../../containers"
 import { dateFormatter } from "../../../helpers"
 import { PassportServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { UserData } from "../../../types/passport"
 
 export const BuySupsButton = ({ user }: { user?: UserData }) => {
@@ -40,13 +40,13 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
         return ""
     }, [isFreeSupsEnabled, timeTilNextClaim])
 
-    const openBuySupsPage = () => {
+    const openBuySupsPage = useCallback(() => {
         const width = 520
         const height = 690
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
         window.open(TOKEN_SALE_PAGE, "SUPS Token Sale", `width=${width},height=${height},left=${left},top=${top},popup=1`)
-    }
+    }, [])
 
     return (
         <TooltipHelper placement="bottom" text={tooltipText}>
@@ -63,7 +63,7 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
                     borderRadius: 0.2,
                     border: `1px solid ${isFreeSupsEnabled ? colors.gold : colors.neonBlue}`,
                     overflow: "hidden",
-                    fontFamily: "Nostromo Regular Bold",
+                    fontFamily: fonts.nostromoBold,
                 }}
                 onClick={isFreeSupsEnabled ? getFreeSups : openBuySupsPage}
                 disabled={isFreeSupsEnabled && timeTilNextClaim && timeTilNextClaim < new Date()}

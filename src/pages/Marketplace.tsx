@@ -1,5 +1,5 @@
-import React from "react"
+import { Typography } from "@mui/material"
 
-export const MarketplacePage: React.FC = () => {
-    return <div>Marketplace</div>
+export const MarketplacePage = () => {
+    return <Typography>Marketplace</Typography>
 }

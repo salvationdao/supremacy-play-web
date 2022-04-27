@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "."
+import { shadeColor } from "../helpers"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { UpdateTheme, User, UserRank, UserStat } from "../types"
@@ -9,7 +10,7 @@ import { PunishListItem } from "../types/chat"
 export interface AuthContainerType {
     user: User | undefined
     userID: string | undefined
-    faction_id: string | undefined
+    factionID: string | undefined
     authSessionIDGetLoading: boolean
     authSessionIDGetError: undefined
     userStat: UserStat
@@ -29,8 +30,10 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     const [user, setUser] = useState<User>()
     const [userRank, setUserRank] = useState<UserRank>()
     const [punishments, setPunishments] = useState<PunishListItem[]>()
-    const userID = user?.id
     const activeInterval = useRef<NodeJS.Timer>()
+
+    const userID = user?.id
+    const factionID = user?.faction ? user.faction.id : undefined
 
     const [userStat, setUserStat] = useState<UserStat>({
         id: "",
@@ -83,7 +86,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             (u) => {
                 if (u) {
                     setUser(u)
-                    if (u?.faction?.theme) updateTheme(u.faction.theme)
+                    if (u?.faction?.theme) updateTheme({ ...u.faction.theme, background: shadeColor(u.faction.theme.primary, -95) })
                 }
             },
             { id: userID },
@@ -97,7 +100,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             (u) => {
                 if (u) {
                     setUser(u)
-                    if (u?.faction?.theme) updateTheme(u.faction.theme)
+                    if (u?.faction?.theme) updateTheme({ ...u.faction.theme, background: shadeColor(u.faction.theme.primary, -95) })
                 }
             },
             null,
@@ -185,8 +188,8 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
     return {
         user,
         userRank,
-        userID: user?.id,
-        faction_id: user?.faction_id,
+        userID,
+        factionID,
         authSessionIDGetLoading,
         authSessionIDGetError,
         userStat,

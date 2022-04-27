@@ -52,15 +52,15 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
 
     const theme = useTheme<Theme>()
     const {
-        pxToRemRatio,
-        streamDimensions: { width, height },
+        remToPxRatio,
+        gameUIDimensions: { width, height },
     } = useDimension()
     const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), -1))
     const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosY`), -1))
     const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultSizeX))
     const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultSizeY))
 
-    const adjustment = useMemo(() => Math.min(pxToRemRatio, 9) / 9, [pxToRemRatio])
+    const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
     // Position shouldn't be loading from local storage with initial state, since it depends on current width and height
     // Make sure live voting chart is inside iframe when page is resized etc.
@@ -137,7 +137,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
             >
                 <Box sx={{ position: "relative", pointerEvents: "all" }}>
                     <ResizeBox
-                        color={theme.factionTheme.primary || colors.darkNeonBlue}
+                        color={theme.factionTheme.primary}
                         onResizeStop={onResizeStop}
                         adjustment={adjustment}
                         initialDimensions={[curWidth, curHeight]}
@@ -167,6 +167,8 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                             borderThickness: ".15rem",
                             borderColor: theme.factionTheme.primary,
                         }}
+                        backgroundColor={theme.factionTheme.background}
+                        opacity={0.8}
                     >
                         <Box sx={{ position: "relative" }}>
                             <Stack
@@ -177,7 +179,6 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                                     transition: "all .2s",
                                     resize: "all",
                                     overflow: "hidden",
-                                    backgroundColor: theme.factionTheme.background,
                                     borderRadius: 0.5,
                                 }}
                             >

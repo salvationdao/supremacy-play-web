@@ -14,7 +14,6 @@
         "@prismicio/react": "^2.1.2",
         "@reactour/tour": "^2.10.2",
         "@sentry/react": "^6.17.6",
-        "@types/react-router-dom": "^5.3.3",
         "@use-gesture/react": "^10.2.6",
         "bignumber.js": "^9.0.2",
         "core-js": "^3.5.0",
@@ -48,6 +47,7 @@
         "@types/react": "^17.0.24",
         "@types/react-dom": "^17.0.9",
         "@types/react-resizable": "^1.7.4",
+        "@types/react-router-dom": "^5.3.3",
         "@typescript-eslint/eslint-plugin": "^5.9.1",
         "@typescript-eslint/parser": "^5.9.1",
         "cross-env": "^7.0.3",
@@ -67,7 +67,9 @@
         "start": "cross-env PORT=3002 react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "format": "prettier --write src/",
+        "format-check": "prettier --check src/"
     },
     "eslintConfig": {
         "extends": [

@@ -5,6 +5,7 @@ import { useWallet } from "../../../containers"
 
 interface VotingButtonProps {
     percentage: string
+    displayPercentage: string
     cost: string
     color: string
     textColor?: string
@@ -14,7 +15,7 @@ interface VotingButtonProps {
     Suffix?: JSX.Element
 }
 
-export const VotingButton = ({ percentage, cost, color, textColor, isVoting, onClick, Prefix }: VotingButtonProps) => {
+export const VotingButton = ({ displayPercentage, cost, color, textColor, isVoting, onClick, Prefix }: VotingButtonProps) => {
     const { onWorldSups } = useWallet()
 
     const isVotable = useMemo(
@@ -26,11 +27,13 @@ export const VotingButton = ({ percentage, cost, color, textColor, isVoting, onC
         <FancyButton
             disabled={!isVotable}
             excludeCaret
-            clipSize="4px"
+            clipThingsProps={{
+                clipSize: "4px",
+                backgroundColor: color || "#14182B",
+                border: { borderColor: color || "#14182B" },
+                sx: { flex: 1, position: "relative" },
+            }}
             sx={{ pt: ".32rem", pb: ".24rem", minWidth: "2rem" }}
-            clipSx={{ flex: 1, position: "relative" }}
-            backgroundColor={color || "#14182B"}
-            borderColor={color || "#14182B"}
             onClick={onClick}
         >
             <Stack
@@ -58,7 +61,7 @@ export const VotingButton = ({ percentage, cost, color, textColor, isVoting, onC
                         color: "#FFFFFF",
                     }}
                 >
-                    ({percentage}%)
+                    ({displayPercentage}%)
                 </Typography>
             </Stack>
 

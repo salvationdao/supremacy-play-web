@@ -1,8 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { Dispatch, SetStateAction, useEffect } from "react"
 import { GameAbility } from "../../../types"
-import { useTheme } from "@mui/styles"
-import { Theme } from "@mui/material/styles"
 import { useTimer } from "../../../hooks"
 
 export const TargetTimerCountdown = ({
@@ -14,7 +12,6 @@ export const TargetTimerCountdown = ({
     setTimeReachZero: Dispatch<SetStateAction<boolean>>
     endTime: Date
 }) => {
-    const theme = useTheme<Theme>()
     const { label, colour } = gameAbility
 
     return (
@@ -30,7 +27,7 @@ export const TargetTimerCountdown = ({
                 right: 0,
                 px: "1.12rem",
                 py: ".48rem",
-                backgroundColor: `${theme.factionTheme.background}`,
+                backgroundColor: (theme) => `${theme.factionTheme.background}`,
                 borderRadius: 0.5,
                 zIndex: 9,
             }}
@@ -44,13 +41,7 @@ export const TargetTimerCountdown = ({
     )
 }
 
-const CountdownText = ({
-    endTime,
-    setTimeReachZero,
-}: {
-    endTime: Date
-    setTimeReachZero: Dispatch<SetStateAction<boolean>>
-}) => {
+const CountdownText = ({ endTime, setTimeReachZero }: { endTime: Date; setTimeReachZero: Dispatch<SetStateAction<boolean>> }) => {
     const { totalSecRemain } = useTimer(endTime)
 
     useEffect(() => {
