@@ -103,13 +103,13 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
                         sx={{
                             position: "relative",
                             top: "-1px",
+                            width: containerWidth, height: "fit-content", transition: "all .2s"
                         }}
                         border={{
                             borderThickness: ".15rem",
                             borderColor: theme.factionTheme.primary,
                         }}
                         clipSize="10px"
-                        sx={{ width: containerWidth, height: "fit-content", transition: "all .2s" }}
                         backgroundColor={theme.factionTheme.background}
                         opacity={0.8}
                     >
