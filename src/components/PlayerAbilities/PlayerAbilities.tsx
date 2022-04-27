@@ -5,6 +5,8 @@ import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
+const pageSize = 8
+
 export const PlayerAbilities = () => {
     const { user } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
@@ -12,7 +14,6 @@ export const PlayerAbilities = () => {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
-    const [pageSize, setPageSize] = useState(8)
     const [totalPages, setTotalPages] = useState(0)
 
     useEffect(() => {
