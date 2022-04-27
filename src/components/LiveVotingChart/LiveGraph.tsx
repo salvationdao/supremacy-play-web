@@ -107,7 +107,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
             context.fillStyle = "#FF0000"
             redDots.forEach((loc) => {
                 context.beginPath()
-                context.arc(loc.x, loc.y, 2, 0 * Math.PI, 2 * Math.PI)
+                context.fillRect(loc.x, loc.y, 1, 1)
                 context.fill()
             })
         }
