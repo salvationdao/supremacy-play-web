@@ -10,20 +10,15 @@ import { WarMachineItem } from "./WarMachineItem"
 export const WarMachineStats = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { factionID } = useGameServerAuth()
-    const { warMachines, battleEndDetail } = useGame()
+    const { warMachines, bribeStage } = useGame()
     const { remToPxRatio } = useDimension()
     const { isMapOpen } = useOverlayToggles()
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
-
     useEffect(() => {
-        toggleShow(false)
-    }, [battleEndDetail?.battle_identifier])
-
-    useEffect(() => {
-        toggleShow(true)
-    }, [warMachines])
+        toggleShow(bribeStage && bribeStage.phase !== "HOLD")
+    }, [bribeStage])
     // End ****************************************
 
     const adjustment = useMemo(() => Math.min(remToPxRatio, 10) / 10, [remToPxRatio])
