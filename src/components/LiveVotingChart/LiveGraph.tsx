@@ -9,24 +9,31 @@ interface LiveGraphProps {
     maxHeightPx: number
     maxWidthPx: number
     maxLiveVotingDataLength: number
-}
-
-interface LiveVotingData {
-    rawData: number
-    smoothData: number
+    battleIdentifier?: number
 }
 
 export const LiveGraph = (props: LiveGraphProps) => {
-    const { maxWidthPx, maxHeightPx, maxLiveVotingDataLength } = props
+    const { battleIdentifier, maxWidthPx, maxHeightPx, maxLiveVotingDataLength } = props
 
     const { state, subscribeNetMessage } = useGameServerWebsocket()
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [liveVotingData, setLiveVotingData] = useState<LiveVotingData[]>([])
+    const [liveVotingData, setLiveVotingData] = useState<number[]>([])
     const largest = useRef<number>(0.1)
+    const battleID = useRef(battleIdentifier)
 
     useEffect(() => {
-        const zeroArray: LiveVotingData[] = []
-        for (let i = 0; i < maxLiveVotingDataLength; i++) zeroArray.push({ rawData: 0, smoothData: 0 })
+        if (battleIdentifier !== battleID.current) {
+            setLiveVotingData((lvd) => {
+                lvd.shift()
+                return lvd.concat(-1)
+            })
+            battleID.current = battleIdentifier
+        }
+    }, [battleIdentifier])
+
+    useEffect(() => {
+        const zeroArray: number[] = []
+        for (let i = 0; i < maxLiveVotingDataLength; i++) zeroArray.push(0)
         setLiveVotingData(zeroArray)
     }, [maxLiveVotingDataLength])
 
@@ -43,23 +50,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
                     }
                 }
 
-                // Get latest two data
-                const latestData: number[] = [rawData]
-                if (lvd.length >= 2) {
-                    latestData.concat(lvd[lvd.length - 1].rawData, lvd[lvd.length - 2].rawData)
-                } else if (lvd.length === 1) {
-                    latestData.concat(lvd[lvd.length - 1].rawData, 0)
-                } else {
-                    latestData.concat(0, 0)
-                }
-
-                let sum = 0
-                latestData.forEach((d) => {
-                    sum += d
-                })
-                const smoothData = sum / 3
-
-                return lvd.concat({ rawData, smoothData })
+                return lvd.concat(rawData)
             })
         })
     }, [state, subscribeNetMessage])
@@ -70,8 +61,8 @@ export const LiveGraph = (props: LiveGraphProps) => {
         // Calculate largest piece of data
         largest.current = 0.1
         liveVotingData.forEach((lvd) => {
-            if (lvd.rawData > largest.current) {
-                largest.current = lvd.rawData
+            if (lvd > largest.current) {
+                largest.current = lvd
             }
         })
 
@@ -84,18 +75,10 @@ export const LiveGraph = (props: LiveGraphProps) => {
             context.clearRect(0, 0, canvas.width, canvas.height)
 
             const GRAPH_TOP = 0
-            const GRAPH_BOTTOM = canvas.height
             const GRAPH_LEFT = 0
-            const GRAPH_RIGHT = canvas.width
 
             const GRAPH_HEIGHT = canvas.height - 18
             const GRAPH_WIDTH = canvas.width
-
-            context.beginPath()
-            // Draw X and Y axis
-            context.moveTo(GRAPH_RIGHT, GRAPH_BOTTOM)
-            context.lineTo(GRAPH_LEFT, GRAPH_BOTTOM)
-            context.stroke()
 
             // Draw raw voting data
             context.beginPath()
@@ -103,15 +86,31 @@ export const LiveGraph = (props: LiveGraphProps) => {
             context.strokeStyle = colors.neonBlue
 
             // Add first point in the graph
-            context.moveTo(GRAPH_LEFT, GRAPH_HEIGHT - (liveVotingData[0].rawData / largest.current) * GRAPH_HEIGHT + GRAPH_TOP)
+            context.moveTo(GRAPH_LEFT, GRAPH_HEIGHT - (liveVotingData[0] / largest.current) * GRAPH_HEIGHT + GRAPH_TOP)
+
+            const redDots: { x: number; y: number }[] = []
 
             liveVotingData.forEach((lvd, i) => {
                 if (i === 0) return
-                context.lineTo((GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT, GRAPH_HEIGHT * (1 - lvd.rawData / largest.current) + GRAPH_TOP)
+                const location = {
+                    x: (GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT,
+                    y: GRAPH_HEIGHT * (1 - Math.max(0, lvd) / largest.current) + GRAPH_TOP,
+                }
+                if (lvd === -1) return redDots.push({ x: location.x, y: GRAPH_HEIGHT * (1 - Math.max(0, liveVotingData[i - 1]) / largest.current) + GRAPH_TOP })
+                context.lineTo(location.x, location.y)
             })
 
             // Actually draw the graph
             context.stroke()
+
+            // Draw the red dots
+            context.fillStyle = "#FF0000"
+            redDots.forEach((loc) => {
+                context.beginPath()
+                context.fillRect(loc.x, loc.y, 2.5, 2.5)
+                // context.arc(loc.x, 0, 5, 0, Math.PI * 2, true)
+                context.fill()
+            })
         }
     }, [liveVotingData, canvasRef.current])
 
