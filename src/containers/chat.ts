@@ -182,7 +182,11 @@ export const ChatContainer = createContainer(() => {
             if (isFaction) {
                 setFactionChatMessages((prev) => {
                     return prev.map((m) => {
-                        if (m.type === "TEXT" && message.sent_at.getTime() - m.sent_at.getTime() < 5000) {
+                        if (
+                            m.type === "TEXT" &&
+                            (m.data as TextMessageData).from_user.id === user?.id &&
+                            message.sent_at.getTime() - m.sent_at.getTime() < 5000
+                        ) {
                             return { ...m, data: { ...m.data, ...newStats } }
                         }
                         return m
@@ -191,7 +195,11 @@ export const ChatContainer = createContainer(() => {
             } else {
                 setGlobalChatMessages((prev) =>
                     prev.map((m) => {
-                        if (m.type === "TEXT" && message.sent_at.getTime() - m.sent_at.getTime() < 5000) {
+                        if (
+                            m.type === "TEXT" &&
+                            (m.data as TextMessageData).from_user.id === user?.id &&
+                            message.sent_at.getTime() - m.sent_at.getTime() < 5000
+                        ) {
                             return { ...m, data: { ...m.data, ...newStats } }
                         }
                         return m
@@ -199,7 +207,7 @@ export const ChatContainer = createContainer(() => {
                 )
             }
         },
-        [user, setGlobalChatMessages, setFactionChatMessages],
+        [user?.id, setGlobalChatMessages, setFactionChatMessages],
     )
 
     // Subscribe to global chat messages
