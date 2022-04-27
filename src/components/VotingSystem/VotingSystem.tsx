@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
 import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "../../containers"
 import { parseString } from "../../helpers"
+import { siteZIndex } from "../../theme/theme"
 import { Dimension } from "../../types"
 
 export const VotingSystem = () => {
@@ -46,7 +47,7 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
                 position: "absolute",
                 top: "1rem",
                 left: "1rem",
-                zIndex: 14,
+                zIndex: siteZIndex.VotingSystem,
                 filter: "drop-shadow(0 3px 3px #00000050)",
             }}
         >

@@ -5,7 +5,7 @@ import { StepType, useTour } from "@reactour/tour"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
 import { useEffect, useMemo } from "react"
 import { RightDrawerPanels, useBar, usePassportServerAuth, useRightDrawer, useSupremacy } from "../../../containers"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 
 export const SetupTutorial = () => {
     const { user } = usePassportServerAuth()
@@ -212,7 +212,7 @@ export const SetupTutorial = () => {
 export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial<Styles>) | undefined = {
     maskWrapper: (base) => ({
         ...base,
-        zIndex: 999999998,
+        zIndex: siteZIndex.Modal - 1,
         opacity: 0.9,
     }),
     popover: (base) => ({
@@ -224,7 +224,7 @@ export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial
         fontFamily: fonts.shareTech,
         lineHeight: 1.5,
         padding: "2.8rem 3rem",
-        zIndex: 999999999,
+        zIndex: siteZIndex.Modal,
         "& button:hover, & svg:hover": {
             fill: "#FFFFFF",
             color: "#FFFFFF",

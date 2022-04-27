@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react"
 import { DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { RightDrawerPanels, useRightDrawer } from "../../containers"
 import { useToggle } from "../../hooks"
-import { colors } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 import { Assets } from "./Assets/Assets"
 import { DrawerButtons } from "./DrawerButtons"
 import { LiveChat } from "./LiveChat/LiveChat"
@@ -42,6 +42,7 @@ export const RightDrawer = () => {
                     flexShrink: 0,
                     width: isDrawerOpen ? `${RIGHT_DRAWER_WIDTH}rem` : 0,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
+                    zIndex: siteZIndex.RightDrawer,
                     "& .MuiDrawer-paper": {
                         width: `${RIGHT_DRAWER_WIDTH}rem`,
                         backgroundColor: colors.darkNavy,

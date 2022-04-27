@@ -12,7 +12,7 @@ import {
     WarMachineStats,
 } from "../components"
 import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useSupremacy } from "../containers"
-import { colors, fonts } from "../theme/theme"
+import { colors, fonts, siteZIndex } from "../theme/theme"
 import { SupBackground } from "../assets"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { useToggle } from "../hooks"
@@ -39,7 +39,7 @@ const BattleArenaPageInner = () => {
 
     return (
         <>
-            <Stack sx={{ height: "100%" }}>
+            <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
                 <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
                     {state === WebSocket.OPEN && user && haveSups ? (
                         <>
@@ -83,7 +83,7 @@ const NoGameUIScreen = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                zIndex: 0,
+                zIndex: siteZIndex.RoutePage,
             }}
         >
             <Stack

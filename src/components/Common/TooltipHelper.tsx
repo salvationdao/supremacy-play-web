@@ -1,6 +1,6 @@
 import { Box, Tooltip, Typography } from "@mui/material"
 import { ReactElement } from "react"
-import { fonts } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 
 export const TooltipHelper = ({
     text,
@@ -35,9 +35,9 @@ export const TooltipHelper = ({
             arrow
             placement={placement || (isCentered ? "bottom" : "bottom-start")}
             sx={{
-                zIndex: "9999999 !important",
+                zIndex: `${siteZIndex.Tooltip} !important`,
                 ".MuiTooltip-popper": {
-                    zIndex: "9999999 !important",
+                    zIndex: `${siteZIndex.Tooltip} !important`,
                 },
             }}
             title={

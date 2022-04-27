@@ -81,7 +81,7 @@ const TabbedLayout = () => {
                     height: `${5}rem`,
                     background: bannerBackgroundColor,
                     boxShadow: 1,
-                    zIndex: 99,
+                    zIndex: 9,
                     ".MuiButtonBase-root": {
                         height: `${5}rem`,
                     },
@@ -223,7 +223,7 @@ const SplitLayout = () => {
                         px: "1.8rem",
                         background: shadeColor(colors.globalChat, -30),
                         boxShadow: 1,
-                        zIndex: 99,
+                        zIndex: 9,
                     }}
                 >
                     <SvgGlobal size="2rem" />
@@ -254,7 +254,7 @@ const SplitLayout = () => {
                             px: "1.8rem",
                             background: (theme) => `${theme.factionTheme.primary}25`,
                             boxShadow: 1,
-                            zIndex: 99,
+                            zIndex: 9,
                         }}
                     >
                         <Stack

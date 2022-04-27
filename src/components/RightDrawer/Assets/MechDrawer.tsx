@@ -7,7 +7,7 @@ import { SocketState, useGameServerWebsocket, usePassportServerWebsocket, useSna
 import { camelToTitle, getRarityDeets, supFormatter, timeSince } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../../types"
 import { Asset } from "../../../types/assets"
 import { UserData } from "../../../types/passport"
@@ -318,7 +318,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
             sx={{
                 width: `${RIGHT_DRAWER_WIDTH}rem`,
                 flexShrink: 0,
-                zIndex: 9999,
+                zIndex: siteZIndex.Drawer,
             }}
             PaperProps={{
                 sx: {

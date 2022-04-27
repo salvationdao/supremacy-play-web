@@ -4,6 +4,7 @@ import { useSnackbar } from "../../containers"
 import { colors } from "../../theme/theme"
 import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
 import { ClipThing } from ".."
+import { DEV_ONLY } from "../../constants"
 
 export const GlobalSnackbar = () => {
     const { open, setOpen, messageInfo, setMessageInfo } = useSnackbar()
@@ -60,7 +61,7 @@ export const GlobalSnackbar = () => {
                     }}
                     sx={{
                         mb: "1.8rem",
-                        ml: "1.9rem",
+                        ml: DEV_ONLY ? "1.9rem" : "0",
                     }}
                     backgroundColor={severityDeets.color}
                     opacity={0.9}

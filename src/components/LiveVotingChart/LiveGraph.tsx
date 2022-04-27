@@ -161,7 +161,7 @@ const LiveGraphInner = ({
                     my: ".72rem",
                     ml: ".48rem",
                     pl: ".48rem",
-                    zIndex: 999,
+                    zIndex: 99,
                     borderLeft: `${colors.text}80 1px dashed`,
                 }}
             >
