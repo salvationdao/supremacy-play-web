@@ -5,7 +5,9 @@ import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
-const pageSize = 8
+const columns = 5
+const rows = 2
+const pageSize = columns * rows
 
 export const PlayerAbilities = () => {
     const { user } = useGameServerAuth()
@@ -40,7 +42,7 @@ export const PlayerAbilities = () => {
         fetchSaleAbilities()
 
         return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => fetchSaleAbilities())
-    }, [state, send, subscribe, user, currentPage, pageSize])
+    }, [state, send, subscribe, user, currentPage])
 
     return (
         <Box>
@@ -61,8 +63,8 @@ export const PlayerAbilities = () => {
                     <Box
                         sx={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(4, 1fr)",
-                            gridTemplateRows: "repeat(2, 1fr)",
+                            gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                            gridTemplateRows: `repeat(${rows}, 1fr)`,
                             gap: ".5rem",
                         }}
                     >
