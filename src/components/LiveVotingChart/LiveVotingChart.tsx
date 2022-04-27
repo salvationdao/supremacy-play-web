@@ -103,7 +103,7 @@ export const LiveVotingChart = () => {
                                 height: "100%",
                                 px: ".56rem",
                                 pt: "1.6rem",
-                                background: "#00000099",
+                                background: "#000000E6",
                                 border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
                                 borderRadius: 1,
                             }}
