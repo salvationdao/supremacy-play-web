@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab"
-import { Box, ButtonBase, Fade, Modal, Stack, Typography } from "@mui/material"
+import { Box, ButtonBase, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
+import { SvgClose, SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -132,7 +132,6 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                                     width: "100%",
                                     height: "100%",
                                     objectFit: "cover",
-                                    filter: "grayscale(1)",
                                     transformOrigin: "center",
                                     transition: "transform .1s ease-out",
                                 }}
@@ -171,89 +170,94 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                         }}
                     >
                         <ClipThing
-                            innerSx={{
-                                padding: "1rem",
-                                backgroundColor: colors.darkNavy,
-                            }}
                             border={{
-                                borderColor: colors.neonBlue,
+                                borderColor: playerAbility.colour,
                                 borderThickness: ".15rem",
                                 isFancy: true,
                             }}
+                            backgroundColor={colors.darkNavy}
+                            sx={{ position: "relative" }}
                         >
-                            <Typography
-                                variant="h5"
-                                sx={{
-                                    marginBottom: ".5rem",
-                                    fontFamily: fonts.nostromoBold,
-                                    textTransform: "uppercase",
-                                }}
-                            >
-                                Activate {playerAbility.label || "Ability"}
-                            </Typography>
-                            <Stack direction="row" spacing="1rem">
-                                <ClipThing
-                                    innerSx={{
-                                        position: "relative",
-                                        minHeight: "100px",
-                                        minWidth: "100px",
-                                        background: `center center`,
-                                        backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${playerAbility.image_url})`,
-                                        backgroundSize: "cover",
+                            <IconButton size="small" onClick={() => toggleShowActivateModal(false)} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
+                                <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                            </IconButton>
+                            <Box sx={{ px: "2rem", py: "1.5rem" }}>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        marginBottom: ".5rem",
+                                        fontFamily: fonts.nostromoBold,
+                                        textTransform: "uppercase",
                                     }}
                                 >
-                                    <TooltipHelper text={abilityTypeDescription} placement="top-start">
+                                    Activate {playerAbility.label || "Ability"}
+                                </Typography>
+                                <Stack direction="row" spacing="1rem">
+                                    <ClipThing sx={{ flexShrink: 0 }} backgroundColor={colors.darkNavy}>
                                         <Box
                                             sx={{
-                                                zIndex: 1,
-                                                position: "absolute",
-                                                bottom: ".2rem",
-                                                right: ".2rem",
+                                                position: "relative",
+                                                height: "60px",
+                                                width: "60px",
+                                                background: `center center`,
+                                                backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${playerAbility.image_url})`,
+                                                backgroundSize: "cover",
                                             }}
                                         >
-                                            {abilityTypeIcon}
+                                            <TooltipHelper text={abilityTypeDescription} placement="top-start">
+                                                <Box
+                                                    sx={{
+                                                        zIndex: 1,
+                                                        position: "absolute",
+                                                        bottom: ".2rem",
+                                                        right: ".2rem",
+                                                    }}
+                                                >
+                                                    {abilityTypeIcon}
+                                                </Box>
+                                            </TooltipHelper>
                                         </Box>
-                                    </TooltipHelper>
-                                </ClipThing>
-                                <Box
+                                    </ClipThing>
+                                    <Box
+                                        sx={{
+                                            alignSelf: "stretch",
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            justifyContent: "space-between",
+                                        }}
+                                    >
+                                        <Typography>{playerAbility.description}</Typography>
+                                    </Box>
+                                </Stack>
+                                <LoadingButton
+                                    variant="contained"
+                                    size="small"
                                     sx={{
-                                        alignSelf: "stretch",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "space-between",
+                                        width: "100%",
+                                        minWidth: 0,
+                                        mt: "1rem",
+                                        mb: ".5rem",
+                                        px: ".8rem",
+                                        py: ".6rem",
+                                        fontWeight: "fontWeightBold",
+                                        color: colors.offWhite,
+                                        lineHeight: 1,
+                                        textTransform: "uppercase",
+                                        backgroundColor: colors.green,
+                                        border: `${colors.green} 1px solid`,
+                                        borderRadius: 0.3,
+                                        ":hover": {
+                                            backgroundColor: `${colors.green}90`,
+                                        },
                                     }}
+                                    onClick={() => onActivate()}
+                                    loading={activateLoading}
                                 >
-                                    <Typography>{playerAbility.description}</Typography>
-                                </Box>
-                            </Stack>
-                            <LoadingButton
-                                variant="contained"
-                                size="small"
-                                sx={{
-                                    width: "100%",
-                                    minWidth: 0,
-                                    mt: "1rem",
-                                    mb: ".5rem",
-                                    px: ".8rem",
-                                    py: ".6rem",
-                                    fontWeight: "fontWeightBold",
-                                    color: colors.offWhite,
-                                    lineHeight: 1,
-                                    textTransform: "uppercase",
-                                    backgroundColor: colors.green,
-                                    border: `${colors.green} 1px solid`,
-                                    borderRadius: 0.3,
-                                    ":hover": {
-                                        backgroundColor: `${colors.green}90`,
-                                    },
-                                }}
-                                onClick={() => onActivate()}
-                                loading={activateLoading}
-                            >
-                                <Typography variant="body2">Activate Ability</Typography>
-                            </LoadingButton>
-                            {activateError && <Typography color={colors.red}>Error: {activateError}</Typography>}
-                            {error && <Typography color={colors.red}>Error: Something went wrong while loading this ability.</Typography>}
+                                    <Typography variant="body2">Activate Ability</Typography>
+                                </LoadingButton>
+                                {activateError && <Typography color={colors.red}>Error: {activateError}</Typography>}
+                                {error && <Typography color={colors.red}>Error: Something went wrong while loading this ability.</Typography>}
+                            </Box>
                         </ClipThing>
                     </Box>
                 </Fade>
