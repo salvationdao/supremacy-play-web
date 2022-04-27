@@ -52,7 +52,7 @@ export const WalletDetails = () => {
                         },
                     }}
                 >
-                    <Stack id="tutorial-sups" direction="row" alignItems="center">
+                    <Stack direction="row" alignItems="center">
                         <SvgWallet size="2.3rem" sx={{ mr: ".8rem" }} />
                         <WalletInfo />
                         <MultipliersInfo />

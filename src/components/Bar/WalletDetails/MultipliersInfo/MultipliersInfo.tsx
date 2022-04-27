@@ -57,6 +57,7 @@ const MultipliersInfoInner = ({
     return (
         <>
             <Stack
+                id="tutorial-multi"
                 direction="row"
                 alignItems="center"
                 ref={multipliersPopoverRef}

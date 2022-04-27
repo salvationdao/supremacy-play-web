@@ -15,6 +15,7 @@ import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket
 import { colors, fonts } from "../theme/theme"
 import { SupBackground } from "../assets"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
+import { useToggle } from "../hooks"
 
 export const BattleArenaPage = () => {
     return (
@@ -34,6 +35,7 @@ const BattleArenaPageInner = () => {
     const { state } = useGameServerWebsocket()
     const { user } = useGameServerAuth()
     const { haveSups } = useSupremacy()
+    const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
 
     return (
         <>
@@ -58,8 +60,8 @@ const BattleArenaPageInner = () => {
                 <Controls />
             </Stack>
 
-            {state === WebSocket.OPEN && user && haveSups === false && <NoSupsModal />}
-            <TutorialModal />
+            {state === WebSocket.OPEN && user && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
+            {user && !noSupsModalOpen && <TutorialModal />}
         </>
     )
 }
