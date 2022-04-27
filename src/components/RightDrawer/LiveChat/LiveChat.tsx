@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { AdditionalOptionsButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgInfoCircular } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { ChatProvider, useChat, useGameServerAuth } from "../../../containers"
+import { useChat, useGameServerAuth } from "../../../containers"
 import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
@@ -13,14 +13,6 @@ import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 
 export const LiveChat = () => {
-    return (
-        <ChatProvider>
-            <LiveChatInner />
-        </ChatProvider>
-    )
-}
-
-const LiveChatInner = () => {
     const { splitOption } = useChat()
     return (
         <Fade in>

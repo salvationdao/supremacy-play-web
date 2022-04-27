@@ -1,7 +1,7 @@
 import { Drawer } from "@mui/material"
 import { useEffect, useMemo } from "react"
 import { DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH } from "../../constants"
-import { RightDrawerPanels, useRightDrawer } from "../../containers"
+import { ChatProvider, RightDrawerPanels, useRightDrawer } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Assets } from "./Assets/Assets"
@@ -31,7 +31,7 @@ export const RightDrawer = () => {
     }, [activePanel])
 
     return (
-        <>
+        <ChatProvider>
             <DrawerButtons activePanel={activePanel} togglePanel={togglePanel} />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
@@ -53,6 +53,6 @@ export const RightDrawer = () => {
             >
                 {drawerContent}
             </Drawer>
-        </>
+        </ChatProvider>
     )
 }
