@@ -8,26 +8,24 @@ import { parseString } from "../../helpers"
 import { Dimension } from "../../types"
 
 export const VotingSystem = () => {
+    const { factionID } = useGameServerAuth()
     const { bribeStage } = useGame()
-    return <VotingSystemInner bribeStage={bribeStage} />
+    return <VotingSystemInner factionID={factionID} bribeStage={bribeStage} />
 }
 
-const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
-    const { user } = useGameServerAuth()
-    const initialSize = { width: 390, height: 360, minWidth: 350 }
-    const [containerWidth, setContainerWidth] = useState<number>(
-        parseString(localStorage.getItem("votingSystemWidth"), initialSize.width),
-    )
-    const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
+const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; bribeStage?: BribeStageResponse }) => {
     const theme = useTheme<Theme>()
+    const initialSize = useMemo(() => ({ width: 390, height: 360, minWidth: 370 }), [])
+    const [containerWidth, setContainerWidth] = useState<number>(parseString(localStorage.getItem("votingSystemWidth"), initialSize.width))
+    const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
     const {
-        pxToRemRatio,
-        streamDimensions: { height },
+        remToPxRatio,
+        gameUIDimensions: { height },
     } = useDimension()
 
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
-    const adjustment = useMemo(() => Math.min(pxToRemRatio, 9) / 9, [pxToRemRatio])
+    const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
     const onResizeStop = useCallback(
         (data: Dimension) => {
@@ -39,10 +37,11 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
         [containerWidth, containerHeight],
     )
 
-    if (!user || !user.faction) return null
+    if (!factionID || !bribeStage) return null
 
     return (
         <Stack
+            id="tutorial-vote"
             sx={{
                 position: "absolute",
                 top: "1rem",
@@ -80,15 +79,16 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                     <ClipThing
                         border={{
                             isFancy: true,
-                            borderThickness: ".3rem",
+                            borderThickness: ".15rem",
                             borderColor: theme.factionTheme.primary,
                         }}
                         clipSize="10px"
-                        innerSx={{ width: containerWidth, height: containerHeight, transition: "all .2s" }}
+                        sx={{ width: containerWidth, height: "fit-content", transition: "all .2s" }}
+                        backgroundColor={theme.factionTheme.background}
+                        opacity={0.8}
                     >
                         <Box
                             sx={{
-                                backgroundColor: theme.factionTheme.background,
                                 pl: ".72rem",
                                 pr: "1.6rem",
                                 pt: "1.44rem",
@@ -98,7 +98,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                             <Box
                                 sx={{
                                     flex: 1,
-                                    // 100vh, 160px gap bottom, 10px gap above, 56px for the title
+                                    // 140px gap bottom, 10px gap above
                                     maxHeight: `calc(${height}px - 140px - 10px)`,
                                     overflowY: "auto",
                                     overflowX: "hidden",

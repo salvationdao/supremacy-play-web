@@ -16,17 +16,9 @@ interface ResizeBoxProps {
     adjustment?: number
 }
 
-export const ResizeBox = ({
-    sx,
-    color,
-    onResizeStop,
-    initialDimensions,
-    minConstraints,
-    maxConstraints,
-    resizeHandles,
-    handle,
-    adjustment,
-}: ResizeBoxProps) => {
+export const ResizeBox = (props: ResizeBoxProps) => {
+    const { onResizeStop, initialDimensions, minConstraints, adjustment } = props
+
     const [resizing, toggleResizing] = useToggle()
     const [resizingDimensions, setResizingDimensions] = useState<Dimension>({
         width: initialDimensions ? initialDimensions[0] : minConstraints ? minConstraints[0] : 0,
@@ -66,6 +58,40 @@ export const ResizeBox = ({
         toggleResizing(false)
     }, [resizingDimensions])
 
+    return (
+        <ResizeBoxInner
+            resizing={resizing}
+            resizingDimensions={resizingDimensions}
+            onResize={onResize}
+            onResizeStart={onResizeStart}
+            onResizeStop2={onResizeStop2}
+            {...props}
+        />
+    )
+}
+
+interface InnerProps extends ResizeBoxProps {
+    resizing: boolean
+    resizingDimensions: Dimension
+    onResize: (e?: SyntheticEvent<Element, Event>, data?: ResizeCallbackData) => void
+    onResizeStart: () => void
+    onResizeStop2: () => void
+}
+
+const ResizeBoxInner = ({
+    resizing,
+    resizingDimensions,
+    adjustment,
+    color,
+    onResize,
+    onResizeStart,
+    onResizeStop2,
+    minConstraints,
+    maxConstraints,
+    resizeHandles,
+    handle,
+    sx,
+}: InnerProps) => {
     return (
         <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, zIndex: 99, pointerEvents: "none" }}>
             {resizing && (

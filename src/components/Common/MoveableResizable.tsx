@@ -2,9 +2,8 @@ import { Box, Stack, Theme } from "@mui/material"
 import { useTheme } from "@mui/styles"
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
-import { ResizeBox } from ".."
-import { SvgDrag, SvgResizeX, SvgResizeY, SvgResizeXY, SvgHide } from "../../assets"
-import { UI_OPACITY } from "../../constants"
+import { ResizeBox, TooltipHelper } from ".."
+import { SvgDrag, SvgHide, SvgInfoCircular } from "../../assets"
 import { useDimension } from "../../containers"
 import { clamp, parseString } from "../../helpers"
 import { colors } from "../../theme/theme"
@@ -29,17 +28,12 @@ export interface MoveableResizableConfig {
     onHideCallback?: () => void
     // Others
     CaptionArea?: ReactElement
+    tooltipText?: string
 }
 
 const PADDING = 10
 
-export const MoveableResizable = ({
-    config,
-    children,
-}: {
-    config: MoveableResizableConfig
-    children: ReactElement
-}) => {
+export const MoveableResizable = ({ config, children }: { config: MoveableResizableConfig; children: ReactElement }) => {
     const {
         localStoragePrefix,
         defaultPositionX,
@@ -53,23 +47,20 @@ export const MoveableResizable = ({
         onReizeCallback,
         onHideCallback,
         CaptionArea,
+        tooltipText,
     } = config
 
     const theme = useTheme<Theme>()
     const {
-        pxToRemRatio,
-        streamDimensions: { width, height },
+        remToPxRatio,
+        gameUIDimensions: { width, height },
     } = useDimension()
     const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), -1))
     const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosY`), -1))
-    const [curWidth, setCurWidth] = useState(
-        parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultSizeX),
-    )
-    const [curHeight, setCurHeight] = useState(
-        parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultSizeY),
-    )
+    const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultSizeX))
+    const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultSizeY))
 
-    const adjustment = useMemo(() => Math.min(pxToRemRatio, 9) / 9, [pxToRemRatio])
+    const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
     // Position shouldn't be loading from local storage with initial state, since it depends on current width and height
     // Make sure live voting chart is inside iframe when page is resized etc.
@@ -77,10 +68,7 @@ export const MoveableResizable = ({
         if (width <= 0 || height <= 0) return
 
         const newPosX = curPosX > 0 ? clamp(PADDING, curPosX, width - curWidth - PADDING) : defaultPositionX + PADDING
-        const newPosY =
-            curPosY > 0
-                ? clamp(PADDING, curPosY, height - curHeight - PADDING)
-                : height - defaultPositionYBottom - curHeight
+        const newPosY = curPosY > 0 ? clamp(PADDING, curPosY, height - curHeight - PADDING) : height - defaultPositionYBottom - curHeight
 
         setCurPosX(newPosX)
         setCurPosY(newPosY)
@@ -126,7 +114,6 @@ export const MoveableResizable = ({
                 left: 0,
                 pointerEvents: "none",
                 zIndex: 18,
-                opacity: UI_OPACITY,
                 filter: "drop-shadow(0 3px 3px #00000050)",
                 ":hover": {
                     zIndex: 999,
@@ -150,53 +137,38 @@ export const MoveableResizable = ({
             >
                 <Box sx={{ position: "relative", pointerEvents: "all" }}>
                     <ResizeBox
-                        color={theme.factionTheme.primary || colors.darkNeonBlue}
+                        color={theme.factionTheme.primary}
                         onResizeStop={onResizeStop}
                         adjustment={adjustment}
                         initialDimensions={[curWidth, curHeight]}
-                        minConstraints={[
-                            allowResizeX ? minSizeX : defaultSizeX,
-                            allowResizeY ? minSizeY : defaultSizeY,
-                        ]}
-                        maxConstraints={[
-                            allowResizeX ? width - curPosX - PADDING : defaultSizeX,
-                            allowResizeY ? height - curPosY - 2 * PADDING : defaultSizeY,
-                        ]}
+                        minConstraints={[allowResizeX ? minSizeX : defaultSizeX, allowResizeY ? minSizeY : defaultSizeY]}
+                        maxConstraints={[allowResizeX ? width - curPosX - PADDING : defaultSizeX, allowResizeY ? height - curPosY - 2 * PADDING : defaultSizeY]}
                         resizeHandles={["se"]}
                         handle={() => (
                             <Box
                                 sx={{
-                                    position: "absolute",
                                     pointerEvents: "all",
-                                    bottom: ".88rem",
-                                    right: "1rem",
-                                    cursor:
-                                        allowResizeX && allowResizeY
-                                            ? "nesw-resize"
-                                            : allowResizeX
-                                            ? "ew-resize"
-                                            : "ns-resize",
-                                    opacity: 0.4,
-                                    ":hover": { opacity: 1 },
+                                    position: "absolute",
+                                    top: 0,
+                                    right: 0,
+                                    cursor: "ew-resize",
+                                    zIndex: 50,
+                                    width: "10px",
+                                    height: "100%",
                                 }}
-                            >
-                                {allowResizeX && allowResizeY ? (
-                                    <SvgResizeXY size="1.2rem" />
-                                ) : allowResizeX ? (
-                                    <SvgResizeX size="1.2rem" />
-                                ) : (
-                                    <SvgResizeY size="1.2rem" />
-                                )}
-                            </Box>
+                            />
                         )}
                     />
 
                     <ClipThing
+                        clipSize=".5rem"
                         border={{
                             isFancy: true,
-                            borderThickness: ".25rem",
+                            borderThickness: ".15rem",
                             borderColor: theme.factionTheme.primary,
                         }}
+                        backgroundColor={theme.factionTheme.background}
+                        opacity={0.8}
                     >
                         <Box sx={{ position: "relative" }}>
                             <Stack
@@ -207,26 +179,27 @@ export const MoveableResizable = ({
                                     transition: "all .2s",
                                     resize: "all",
                                     overflow: "hidden",
-                                    backgroundColor: theme.factionTheme.background,
                                     borderRadius: 0.5,
                                 }}
                             >
                                 {children}
 
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    justifyContent="flex-end"
-                                    sx={{ px: "1.04rem", pb: ".56rem" }}
-                                >
-                                    <Stack
-                                        direction="row"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        sx={{ mr: "auto" }}
-                                    >
+                                <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ px: "1.04rem", pb: ".56rem" }}>
+                                    <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mr: "auto" }}>
                                         {CaptionArea}
                                     </Stack>
+
+                                    <TooltipHelper text={tooltipText}>
+                                        <Box
+                                            sx={{
+                                                mr: ".88rem",
+                                                opacity: 0.4,
+                                                ":hover": { opacity: 1 },
+                                            }}
+                                        >
+                                            <SvgInfoCircular fill={colors.text} size="1.2rem" />
+                                        </Box>
+                                    </TooltipHelper>
 
                                     <Box
                                         onClick={() => onHideCallback && onHideCallback()}
@@ -244,12 +217,12 @@ export const MoveableResizable = ({
                                         className="handle"
                                         sx={{
                                             cursor: "move",
-                                            mr: allowResizeX || allowResizeY ? "2rem" : ".3rem",
+                                            mr: allowResizeX || allowResizeY ? ".4rem" : ".3rem",
                                             opacity: 0.4,
                                             ":hover": { opacity: 1 },
                                         }}
                                     >
-                                        <SvgDrag size="1.3rem" />
+                                        <SvgDrag size="1.2rem" />
                                     </Box>
                                 </Stack>
                             </Stack>

@@ -1,33 +1,21 @@
-import { Avatar, IconButton, Popover, Stack, Typography } from "@mui/material"
-import { MutableRefObject, useEffect, useRef } from "react"
-import { BarExpandable, ConnectButton, LogoutButton, NavButton, PunishmentList } from "../.."
-import { SvgAssets, SvgInfoCircular, SvgProfile, SvgShop } from "../../../assets"
-import { GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS, PASSPORT_SERVER_HOST_IMAGES, PASSPORT_WEB } from "../../../constants"
+import { Avatar, IconButton, Stack, Typography } from "@mui/material"
+import { useRef } from "react"
+import { BarExpandable, ConnectButton, PunishmentList } from "../.."
+import { SvgInfoCircular } from "../../../assets"
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useGameServerAuth, usePassportServerAuth } from "../../../containers"
-import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
-import { UserData } from "../../../types/passport"
+import { colors, fonts } from "../../../theme/theme"
+import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
 
 export const ProfileCard = () => {
     const { user } = usePassportServerAuth()
     const { punishments } = useGameServerAuth()
-    const [renderConnectButton, toggleRenderConnectButton] = useToggle()
-
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [isPunishmentsOpen, toggleIsPunishmentsOpen] = useToggle()
 
-    // Don't show the connect button for couple seconds as it tries to do the auto login
-    useEffect(() => {
-        setTimeout(() => {
-            toggleRenderConnectButton(true)
-        }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS)
-    }, [])
-
-    if (!user) {
-        return <ConnectButton renderButton={renderConnectButton} />
-    }
+    if (!user) return <ConnectButton />
 
     const { username, faction } = user
 
@@ -44,14 +32,15 @@ export const ProfileCard = () => {
                             height: "2.9rem",
                             width: "2.9rem",
                             borderRadius: 1,
-                            border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
-                            backgroundColor: faction ? faction.theme.primary : "transparent",
+                            border: (theme) => `${theme.factionTheme.primary} 2px solid`,
+                            backgroundColor: (theme) => theme.factionTheme.primary,
                         }}
                         variant="square"
                     />
                 }
             >
                 <Stack
+                    id="tutorial-passport"
                     ref={popoverRef}
                     onClick={() => toggleIsPopoverOpen()}
                     direction="row"
@@ -85,8 +74,8 @@ export const ProfileCard = () => {
                             height: "2.6rem",
                             width: "2.6rem",
                             borderRadius: 0.8,
-                            border: `${faction ? faction.theme.primary : colors.neonBlue} 2px solid`,
-                            backgroundColor: faction ? faction.theme.primary : "transparent",
+                            border: (theme) => `${theme.factionTheme.primary} 2px solid`,
+                            backgroundColor: (theme) => theme.factionTheme.primary,
                         }}
                         variant="square"
                     />
@@ -96,8 +85,8 @@ export const ProfileCard = () => {
                         sx={{
                             mt: ".29rem !important",
                             lineHeight: 1,
-                            fontFamily: "Nostromo Regular Black",
-                            color: faction ? faction.theme.primary : "#FFFFFF",
+                            fontFamily: fonts.nostromoBlack,
+                            color: (theme) => theme.factionTheme.primary,
                         }}
                     >
                         {username}
@@ -115,55 +104,5 @@ export const ProfileCard = () => {
 
             {isPopoverOpen && <ProfilePopover open={isPopoverOpen} popoverRef={popoverRef} onClose={() => toggleIsPopoverOpen(false)} user={user} />}
         </>
-    )
-}
-
-const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: UserData }) => {
-    const [localOpen, toggleLocalOpen] = useToggle(open)
-
-    useEffect(() => {
-        if (!localOpen) {
-            setTimeout(() => {
-                onClose()
-            }, 300)
-        }
-    }, [localOpen])
-
-    return (
-        <Popover
-            open={localOpen}
-            anchorEl={popoverRef.current}
-            onClose={() => toggleLocalOpen(false)}
-            anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-            }}
-            transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-            }}
-            sx={{
-                mt: ".8rem",
-                zIndex: 10000,
-                ".MuiPaper-root": {
-                    background: "none",
-                    backgroundColor: user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavy,
-                    border: "#FFFFFF50 1px solid",
-                },
-            }}
-        >
-            <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
-                <NavButton href={`${PASSPORT_WEB}collections/${user.username}`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                    My Inventory
-                </NavButton>
-                <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                    Purchase Assets
-                </NavButton>
-                <NavButton href={`${PASSPORT_WEB}profile/${user.username}/edit`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                    Edit Profile
-                </NavButton>
-                <LogoutButton />
-            </Stack>
-        </Popover>
     )
 }

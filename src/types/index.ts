@@ -3,6 +3,7 @@ import React, { Dispatch } from "react"
 interface UpdateThemeContextProps {
     updateTheme: Dispatch<React.SetStateAction<FactionThemeColor>>
 }
+
 export const UpdateTheme = React.createContext({} as UpdateThemeContextProps)
 
 export interface User {
@@ -41,6 +42,7 @@ export interface BattleAbility {
     description: string
     image_url: string
     cooldown_duration_second: number
+    ability_offering_id: string
 }
 
 export interface GameAbility {
@@ -52,10 +54,33 @@ export interface GameAbility {
     image_url: string
     sups_cost: string
     current_sups: string
+    ability_offering_id: string
+}
+
+export interface PlayerAbility {
+    id: string
+    owner_id: string
+    blueprint_id: string
+    game_client_ability_id: string
+    label: string
+    colour: string
+    image_url: string
+    description: string
+    text_colour: string
+    location_select_type: "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
+    purchased_at: string
+}
+
+export interface SaleAbility {
+    id: string
+    current_price: string
+    available_until?: Date
+    ability?: PlayerAbility
 }
 
 export interface GameAbilityProgress {
     id: string
+    offering_id: string
     sups_cost: string
     current_sups: string
     should_reset: boolean
@@ -148,9 +173,8 @@ export interface Map {
     height: number
     cells_x: number
     cells_y: number
-    top: number
-    left: number
-    scale: number
+    top_pixels: number
+    left_pixels: number
     disabled_cells: number[]
 }
 
@@ -177,6 +201,7 @@ export interface NetMessageTickWarMachine {
     rotation?: number
     health?: number
     shield?: number
+    energy?: number
 }
 
 export interface NetMessageTick {
@@ -188,8 +213,8 @@ export interface BattleEndDetail {
     battle_identifier: number
     started_at: Date
     ended_at: Date
-    total_multipliers: string
-    multipliers: Multiplier[]
+    total_multipliers: number
+    battle_multipliers: MultiplierUpdateResp
     winning_condition: string
     winning_faction: Faction
     winning_war_machines: WarMachineState[]
@@ -238,26 +263,22 @@ export interface Stream {
     distance?: number
 }
 
+export interface MultiplierUpdateResp {
+    battles: BattleMultipliers[]
+}
+
+export interface BattleMultipliers {
+    battle_number: number
+    total_multipliers: number
+    multipliers: Multiplier[]
+}
+
 export interface Multiplier {
     key: string
     value: string
     description: string
     is_multiplicative: boolean
-    expires_in_seconds: number
-}
-
-export interface MultipliersAll {
-    total_multipliers: string
-    multipliers: Multiplier[]
-}
-
-export interface MultiplierGuide {
-    key: string
-    description: string
-    title: string
-    amount: number
-    isMultiplicative: boolean
-    duration: number
+    battle_number: number
 }
 
 export interface Dimension {

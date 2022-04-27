@@ -1,25 +1,17 @@
 import { Box, Button, Divider, Link, Modal, Stack, Typography } from "@mui/material"
-import { colors } from "../../theme/theme"
-import { useEffect } from "react"
-import { useToggle } from "../../hooks/useToggle"
+import { colors, fonts } from "../../theme/theme"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
 import { usePassportServerAuth } from "../../containers"
 import { ClipThing } from ".."
 
-export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
+export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
     const { user } = usePassportServerAuth()
-    const [open, toggleOpen] = useToggle(false)
 
-    useEffect(() => {
-        if (!haveSups) return toggleOpen(true)
-        toggleOpen(false)
-    }, [haveSups])
-
-    if (!user || !open) return null
+    if (!user) return null
 
     return (
-        <Modal open={open} onClose={() => toggleOpen(false)}>
+        <Modal open>
             <Box
                 sx={{
                     position: "absolute",
@@ -35,37 +27,37 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
                     border={{
                         isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".3rem",
+                        borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={colors.darkNavyBlue}
                 >
                     <Box
                         sx={{
                             px: "3.2rem",
                             py: "2.4rem",
-                            backgroundColor: `${colors.darkNavyBlue}`,
                         }}
                     >
                         <Stack spacing={2}>
                             <Box sx={{ display: "flex", alignItems: "center" }}>
                                 <WarningAmberIcon color="warning" sx={{ fontSize: "3rem", mr: "1.3rem" }} />
-                                <Typography variant="h5" sx={{ fontFamily: "Nostromo Regular Black" }}>
+                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                                     NOT ENOUGH $SUPS
                                 </Typography>
                             </Box>
 
-                            <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                                 In order to experience the Battle Arena to its&apos; maximum potential, including voting on in game abilities, viewing the
                                 minimap and individual mech health bars, your wallet must contain $SUPS.
                             </Typography>
 
                             <Divider />
 
-                            <Typography variant="h6" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                            <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBold }}>
                                 To Obtain $SUPS:
                             </Typography>
 
-                            <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                                 1. Navigate to the{" "}
                                 <Link target="_blank" href={TOKEN_SALE_PAGE} color={colors.neonBlue}>
                                     token sale here
@@ -94,14 +86,14 @@ export const NoSupsModal = ({ haveSups }: { haveSups: boolean }) => {
                                 color: colors.neonBlue,
                                 backgroundColor: colors.darkNavy,
                                 borderRadius: 0.7,
-                                fontFamily: "Nostromo Regular Bold",
+                                fontFamily: fonts.nostromoBold,
                                 border: `${colors.neonBlue} 1px solid`,
                                 ":hover": {
                                     opacity: 0.8,
                                     border: `${colors.neonBlue} 1px solid`,
                                 },
                             }}
-                            onClick={() => toggleOpen(false)}
+                            onClick={onClose}
                         >
                             I just want to watch
                         </Button>

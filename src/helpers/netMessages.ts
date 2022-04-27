@@ -1,8 +1,4 @@
-import {
-    BattleAbilityProgress, GameAbilityProgress, NetMessageTick,
-    NetMessageTickWarMachine,
-    NetMessageType, ViewerLiveCount
-} from "../types"
+import { BattleAbilityProgress, GameAbilityProgress, NetMessageTick, NetMessageTickWarMachine, NetMessageType, ViewerLiveCount } from "../types"
 
 export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; payload: unknown } | undefined => {
     const dv = new DataView(buffer)
@@ -22,10 +18,11 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
 
                 // Get Sync byte (tells us which data was updated for this warmachine)
                 const syncByte = dv.getUint8(offset)
+                const booleans = unpackBooleansFromByte(syncByte)
                 offset++
 
                 // Position + Yaw
-                if (syncByte >= 100) {
+                if (booleans[0]) {
                     const x = dv.getInt32(offset, false)
                     offset += 4
                     const y = dv.getInt32(offset, false)
@@ -36,13 +33,18 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                 }
 
                 // Health
-                if (syncByte == 1 || syncByte == 11 || syncByte == 101 || syncByte == 111) {
+                if (booleans[1]) {
                     warmachineUpdate.health = dv.getInt32(offset, false)
                     offset += 4
                 }
                 // Shield
-                if (syncByte == 10 || syncByte == 11 || syncByte == 110 || syncByte == 111) {
+                if (booleans[2]) {
                     warmachineUpdate.shield = dv.getInt32(offset, false)
+                    offset += 4
+                }
+                // Energy
+                if (booleans[3]) {
+                    warmachineUpdate.energy = dv.getInt32(offset, false)
                     offset += 4
                 }
                 payload.warmachines.push(warmachineUpdate)
@@ -73,9 +75,10 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
                     const strArr = str.split("_")
                     return {
                         id: strArr[0],
-                        sups_cost: strArr[1],
-                        current_sups: strArr[2],
-                        should_reset: strArr[3] == "1",
+                        offering_id: strArr[1],
+                        sups_cost: strArr[2],
+                        current_sups: strArr[3],
+                        should_reset: strArr[4] == "1",
                     }
                 })
             return { type, payload }
@@ -132,4 +135,10 @@ export const parseNetMessage = (buffer: ArrayBuffer): { type: NetMessageType; pa
             return { type, payload }
         }
     }
+}
+
+const unpackBooleansFromByte = (packedByte: number): boolean[] => {
+    const booleans = Array<boolean>(8).fill(false)
+    for (let i = 0; i < 8; ++i) booleans[i] = (packedByte & (1 << i)) != 0
+    return booleans
 }

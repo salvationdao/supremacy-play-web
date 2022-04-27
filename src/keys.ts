@@ -9,6 +9,10 @@ export enum GameServerKeys {
     PlayerRank = "PLAYER:RANK:GET",
     ListPunishments = "PLAYER:PUNISHMENT:LIST",
 
+    // Contributor multiplier
+    ListenContributorMulti = "BATTLE:CONTRIBUTOR:UPDATE",
+    ListenContributorRate = "CONTRIBUTOR:MULTI:AMOUNT",
+
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
 
@@ -32,21 +36,28 @@ export enum GameServerKeys {
     TriggerFactionAbilityPriceUpdated = "ABILITY:PRICE:UPDATED",
     TriggerBattleAbilityProgressUpdated = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
     TriggerBattleQueueUpdated = "BATTLE:QUEUE:UPDATED",
+    TriggerPlayerAbilitiesListUpdated = "PLAYER:ABILITIES:LIST:UPDATED",
+    TriggerSaleAbilitiesListUpdated = "SALE:ABILITIES:LIST:UPDATED",
 
     // Global messages
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
-    SubStreamClose = "STREAM:CLOSE:SUBSCRIBE",
 
     // Streams
     SubStreamList = "STREAMLIST:SUBSCRIBE",
 
-    // Queue
+    // Asset / queue
+    SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
+    GetAssetsQueue = "ASSET:MANY",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
-    SubQueueStatus = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
-    AssetQueueStatus = "ASSET:QUEUE:STATUS",
-    AssetQueueStatusList = "ASSET:QUEUE:STATUS:LIST",
-    SubAssetQueueStatus = "ASSET:QUEUE:STATUS:SUBSCRIBE",
+
+    // Player Abilities
+    SaleAbilityDetailed = "SALE:ABILITY:DETAILED",
+    PlayerAbilitySubscribe = "PLAYER:ABILITY:SUBSCRIBE",
+    SaleAbilityPriceSubscribe = "SALE:ABILITY:PRICE:SUBSCRIBE",
+    PlayerAbilitiesList = "PLAYER:ABILITIES:LIST",
+    SaleAbilitiesList = "SALE:ABILITIES:LIST",
+    SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
@@ -62,7 +73,7 @@ export enum GameServerKeys {
     SubAISpawned = "AI:SPAWNED",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
-    GetSupsMultiplier = "USER:MULTIPLIERS:GET",
+    SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
     SubSupsMultiplierSignal = "USER:MULTIPLIER:SIGNAL:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",

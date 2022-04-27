@@ -9,15 +9,16 @@ export const TextAlert = ({ data }: { data: string }) => {
             border={{
                 borderColor: colors.offWhite,
                 isFancy: true,
-                borderThickness: ".2rem",
+                borderThickness: ".15rem",
             }}
+            opacity={0.7}
+            backgroundColor={colors.darkNavy}
         >
             <Box
                 sx={{
                     px: "1.44rem",
                     pt: "1.2rem",
                     pb: ".8rem",
-                    backgroundColor: colors.darkNavy,
                 }}
             >
                 <Typography variant="body1" sx={{ display: "inline", color: colors.offWhite }}>

@@ -1,6 +1,9 @@
+import BigNumber from "bignumber.js"
+
 const USE_PROD = false
 
 // Envar stuff
+export const DEV_ONLY = process.env.NODE_ENV === "development"
 const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
 const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/nosidebar/buy"
 const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
@@ -48,19 +51,39 @@ export const SENTRY_CONFIG = {
 // UI related stuff
 export const GAME_BAR_HEIGHT = 5.9 // rem
 export const RIGHT_DRAWER_WIDTH = 38 // rem
-export const LIVE_CHAT_DRAWER_BUTTON_WIDTH = 2.0 // rem
 export const CONTROLS_HEIGHT = 3.0 // rem
 export const MINI_MAP_DEFAULT_SIZE = 240 //px
 
 export const DRAWER_TRANSITION_DURATION = 250
 export const MESSAGES_BUFFER_SIZE = 500
 export const MAX_CHAT_MESSAGE_LENGTH = 280
-export const UI_OPACITY = 0.96
 export const GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS = 2000
 export const NOTIFICATION_TIME = 30000
 export const NOTIFICATION_LINGER = 400
 export const STREAM_ASPECT_RATIO_W_H = 16 / 9
 export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
+
+// Game stuff
+export const VOTING_OPTION_COSTS = [
+    {
+        percentage: 0.0001, // 0.01%
+        minCost: new BigNumber(0.01),
+    },
+    {
+        percentage: 0.001, // 0.1%
+        minCost: new BigNumber(0.1),
+    },
+    {
+        percentage: 0.01, // 1%
+        minCost: new BigNumber(1),
+    },
+]
+
+export enum FactionIDs {
+    RM = "98bf7bb3-1a7c-4f21-8843-458d62884060",
+    ZHI = "880db344-e405-428d-84e5-6ebebab1fe6d",
+    BC = "7c6dde21-b067-46cf-9e56-155c88a520e2",
+}
 
 // Other stuff
 export const NullUUID = "00000000-0000-0000-0000-000000000000"

@@ -2,20 +2,21 @@ import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { BattleEndTooltip, StyledImageText, TooltipHelper } from "../.."
 import { getMutiplierDeets } from "../../../helpers"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail, Multiplier } from "../../../types"
 
 export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { total_multipliers, multipliers } = battleEndDetail
+    const { battle_multipliers } = battleEndDetail
 
-    const [multiplicative, setMultiplicative] = useState<Multiplier[]>([])
+    const [, setMultiplicative] = useState<Multiplier[]>([])
     const [multiplierList, setMultiplierList] = useState<Multiplier[]>([])
     const [totalMultiplierValue, setTotalMultiplierValue] = useState(0)
-    const [totalMultiplicativeValue, setTotalMultiplicativeValue] = useState(0)
+    const [, setTotalMultiplicativeValue] = useState(0)
 
     useEffect(() => {
-        const m1 = multipliers.filter((m) => !m.is_multiplicative)
-        const m2 = multipliers.filter((m) => m.is_multiplicative)
+        if (!battle_multipliers) return
+        const m1 = battle_multipliers.battles[0].multipliers.filter((m) => !m.is_multiplicative)
+        const m2 = battle_multipliers.battles[0].multipliers.filter((m) => m.is_multiplicative)
         setMultiplierList(m1)
         setMultiplicative(m2)
 
@@ -23,7 +24,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
         const total2 = m2.reduce((acc, m) => acc + Math.round(parseFloat(m.value) * 10) / 10, 0)
         setTotalMultiplierValue(total1)
         setTotalMultiplicativeValue(total2)
-    }, [multipliers])
+    }, [battle_multipliers])
 
     return (
         <Stack>
@@ -33,12 +34,12 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                     variant="h5"
                     sx={{
                         position: "relative",
-                        fontFamily: "Nostromo Regular Black",
+                        fontFamily: fonts.nostromoBlack,
                         fontWeight: "fontWeightBold",
                         color: colors.yellow,
                     }}
                 >
-                    NEW REWARDS{total_multipliers == "0.0x" ? "" : ` (${total_multipliers})`}
+                    NEW REWARDS ({battle_multipliers.battles[0].total_multipliers}x)
                     <BattleEndTooltip
                         text={`These are the multipliers that you have earned based on your participation in this battle.`}
                         color={colors.yellow}
@@ -54,7 +55,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                 variant="h6"
                                 sx={{
                                     color: colors.neonBlue,
-                                    fontFamily: "Nostromo Regular Black",
+                                    fontFamily: fonts.nostromoBlack,
                                 }}
                             >
                                 MULTIPLIERS
@@ -88,7 +89,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
 
                             <Stack direction="row" alignItems="center" justifyContent="space-between">
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    SUBTOTAL:{" "}
+                                    TOTAL:{" "}
                                 </Typography>
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", color: colors.yellow }}>
                                     {totalMultiplierValue}x
@@ -96,13 +97,13 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             </Stack>
                         </Stack>
 
-                        {multiplicative && multiplicative.length > 0 && (
+                        {/* {multiplicative && multiplicative.length > 0 && (
                             <Stack spacing="1.2rem">
                                 <Typography
                                     variant="h6"
                                     sx={{
                                         color: colors.neonBlue,
-                                        fontFamily: "Nostromo Regular Black",
+                                        fontFamily: fonts.nostromoBlack,
                                     }}
                                 >
                                     BONUSES
@@ -143,14 +144,14 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                     </Typography>
                                 </Stack>
                             </Stack>
-                        )}
+                        )} */}
 
-                        <Stack spacing="1.2rem">
+                        {/* <Stack spacing="1.2rem">
                             <Typography
                                 variant="h6"
                                 sx={{
                                     color: colors.neonBlue,
-                                    fontFamily: "Nostromo Regular Black",
+                                    fontFamily: fonts.nostromoBlack,
                                 }}
                             >
                                 TOTAL MULTIPLIERS
@@ -159,13 +160,14 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}>
                                 {multiplicative && multiplicative.length > 0 ? (
                                     <>
-                                        <span>{totalMultiplierValue}x</span> x <span>{totalMultiplicativeValue * 100}%</span> = <span>{total_multipliers}</span>
+                                        <span>{totalMultiplierValue}x</span> x <span>{totalMultiplicativeValue * 100}%</span> ={" "}
+                                        <span>{battle_multipliers.battles[0].total_multipliers}</span>
                                     </>
                                 ) : (
-                                    <span>{total_multipliers}</span>
+                                    <span>{battle_multipliers.battles[0].total_multipliers}x</span>
                                 )}
                             </Typography>
-                        </Stack>
+                        </Stack> */}
                     </Stack>
                 ) : (
                     <Typography variant="h6" sx={{ pl: ".8rem", opacity: 0.8 }}>

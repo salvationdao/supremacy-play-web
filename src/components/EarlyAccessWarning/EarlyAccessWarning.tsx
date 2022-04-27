@@ -1,10 +1,10 @@
 import { Box, Button, Modal, Stack, Typography } from "@mui/material"
 import { Alert } from "@mui/lab"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { useToggle } from "../../hooks"
 import { ClipThing } from ".."
 
-export const EarlyAccessWarning = () => {
+export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => void }) => {
     const [closed, toggleClosed] = useToggle()
 
     if (closed) return null
@@ -26,15 +26,15 @@ export const EarlyAccessWarning = () => {
                     border={{
                         isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".3rem",
+                        borderThickness: ".15rem",
                     }}
-                    innerSx={{ position: "relative" }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={colors.darkNavyBlue}
                 >
                     <Box
                         sx={{
                             px: "3.2rem",
                             py: "2.4rem",
-                            backgroundColor: `${colors.darkNavyBlue}`,
                         }}
                     >
                         <Stack spacing="1.6rem">
@@ -46,25 +46,24 @@ export const EarlyAccessWarning = () => {
                                         pt: "1.12rem",
                                         fontSize: "1.3rem",
                                         fontWeight: "fontWeightBold",
-                                        fontFamily: "Nostromo Regular Bold",
+                                        fontFamily: fonts.nostromoBold,
                                     },
                                 }}
                             >
                                 The game is in early access and the $SUPS you use are real!
                             </Alert>
 
-                            <Typography sx={{ fontFamily: "Nostromo Regular Bold" }} variant="body1">
+                            <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="body1">
                                 EARLY ACCESS!
                             </Typography>
 
-                            <Typography sx={{ fontFamily: "Nostromo Regular Bold" }} variant="caption">
+                            <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="caption">
                                 Thank you for participating in the Supremacy Battle Stream Early Access
                                 <br />
                                 <br />
-                                By choosing to try out this game and continue from here, you expressly acknowledge and
-                                accept that you assume all risks associated with the gameplay and/or participating in
-                                the Battle Events. This includes contributing to battle abilities, queueing your mech
-                                for battle, and other $SUPS related tasks.
+                                By choosing to try out this game and continue from here, you expressly acknowledge and accept that you assume all risks
+                                associated with the gameplay and/or participating in the Battle Events. This includes contributing to battle abilities, queueing
+                                your mech for battle, and other $SUPS related tasks.
                             </Typography>
                         </Stack>
 
@@ -77,7 +76,6 @@ export const EarlyAccessWarning = () => {
                                 color: colors.neonBlue,
                                 backgroundColor: colors.darkNavy,
                                 borderRadius: 0.7,
-                                fontFamily: "Nostromo Regular Bold",
                                 border: `${colors.neonBlue} 1px solid`,
                                 ":hover": {
                                     opacity: 0.8,
@@ -86,10 +84,11 @@ export const EarlyAccessWarning = () => {
                             }}
                             onClick={() => {
                                 toggleClosed(true)
+                                onAcknowledged()
                                 Notification.requestPermission()
                             }}
                         >
-                            I AGREE, LET ME IN!
+                            <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }}>I AGREE, LET ME IN!</Typography>
                         </Button>
                     </Box>
                 </ClipThing>

@@ -1,5 +1,6 @@
 import { Box, Tooltip, Typography } from "@mui/material"
 import { ReactElement } from "react"
+import { fonts } from "../../theme/theme"
 
 export const TooltipHelper = ({
     text,
@@ -41,10 +42,7 @@ export const TooltipHelper = ({
             }}
             title={
                 <Box sx={{ px: ".4rem", py: ".16rem" }}>
-                    <Typography
-                        variant="body1"
-                        sx={{ fontFamily: "Share Tech", textAlign: isCentered ? "center" : "start" }}
-                    >
+                    <Typography variant="body1" sx={{ fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}>
                         {text}
                     </Typography>
                 </Box>

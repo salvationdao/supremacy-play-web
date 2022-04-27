@@ -5,17 +5,17 @@ import { colors } from "../../theme/theme"
 export interface ClipThingProps {
     clipSize?: string
     clipSlantSize?: string
-    border?:
-        | {
-              borderThickness?: string
-              borderColor?: string
-              isFancy?: boolean
-          }
-        | boolean
+    border?: {
+        borderThickness?: string
+        borderColor?: string
+        isFancy?: boolean
+    }
     sx?: SxProps
+    outerSx?: SxProps
     innerSx?: SxProps
-    fillHeight?: boolean
     skipRightCorner?: boolean
+    opacity?: number
+    backgroundColor?: string
 }
 
 export const ClipThing: React.FC<ClipThingProps> = ({
@@ -23,23 +23,21 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     clipSize = "1rem",
     clipSlantSize = "0px",
     border,
-    innerSx,
     sx,
-    fillHeight,
+    innerSx,
+    outerSx,
     skipRightCorner,
+    opacity,
+    backgroundColor,
 }) => {
     const innerClipStyles: SxProps = {
-        height: fillHeight ? "100%" : "fit-content",
         lineHeight: 1,
         clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
             skipRightCorner ? "0%" : clipSize
-        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, ${
-            clipSlantSize != "0px" ? "2px" : "0%"
-        } calc(100% - ${clipSize}))`,
+        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, ${clipSlantSize != "0px" ? "2px" : "0%"} calc(100% - ${clipSize}))`,
     }
 
     const outerClipStyles: SxProps = {
-        height: fillHeight ? "100%" : "fit-content",
         lineHeight: 1,
         clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
             skipRightCorner ? "0%" : clipSize
@@ -52,11 +50,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     }
 
     if (border) {
-        if (typeof border == "boolean") {
-            // Set default styles
-            borderStyles.padding = "1px"
-            borderStyles.backgroundColor = colors.neonBlue
-        } else {
+        if (border) {
             borderStyles.padding = border.borderThickness || "1px"
             const _color = border.borderColor || colors.neonBlue
             if (border.isFancy) {
@@ -70,21 +64,41 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     return (
         <Box
             sx={{
-                ...borderStyles,
+                position: "relative",
+                p: border && typeof border !== "boolean" ? border.borderThickness : 0,
+                overflow: "hidden",
                 ...outerClipStyles,
                 ...sx,
             }}
         >
             <Box
-                sx={
-                    {
-                        ...innerSx,
-                        ...innerClipStyles,
-                    } as Record<string, unknown>
-                }
+                sx={{
+                    ...borderStyles,
+                    ...outerClipStyles,
+                    ...outerSx,
+                    ...{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        zIndex: -1,
+                        opacity: opacity || 1,
+                    },
+                }}
             >
-                {children}
+                <Box
+                    sx={
+                        {
+                            ...innerSx,
+                            ...innerClipStyles,
+                            height: "100%",
+                            backgroundColor: backgroundColor || "unset",
+                        } as Record<string, unknown>
+                    }
+                />
             </Box>
+            <Box sx={{ ...innerClipStyles }}>{children}</Box>
         </Box>
     )
 }

@@ -1,31 +1,30 @@
 import BigNumber from "bignumber.js"
+import emojiRegex from "emoji-regex"
 import {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
+    MultiplierAirMarshal,
     MultiplierAirSupport,
-    MultiplierCitizen,
     MultiplierContributor,
     MultiplierDestroyerOfWorlds,
     MultiplierFieldMechanic,
-    MultiplierFiend,
+    MultiplierGeneric,
     MultiplierGreaseMonkey,
     MultiplierJunkE,
     MultiplierMechCommander,
     MultiplierMechHead,
     MultiplierNowIAmBecomeDeath,
     MultiplierSniper,
-    MultiplierSuperContributor,
-    MultiplierSupporter,
     MultiplierWonBattle,
     MultiplierWonLastThreeBattles,
-    SvgGeneral,
-    SvgPrivate,
     SvgCorporal,
+    SvgGeneral,
     SvgNewRecruit,
+    SvgPrivate,
     SvgWrapperProps,
 } from "../assets"
-import { MultiplierGuide, UserRank } from "../types"
 import { colors } from "../theme/theme"
+import { UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -70,14 +69,14 @@ export const mergeDeep = (target: any, ...sources: any): any => {
     return mergeDeep(target, ...sources)
 }
 
-export const shadeColor = (hexColor: string, percent: number) => {
+export const shadeColor = (hexColor: string, factor: number) => {
     let R = parseInt(hexColor.substring(1, 3), 16)
     let G = parseInt(hexColor.substring(3, 5), 16)
     let B = parseInt(hexColor.substring(5, 7), 16)
 
-    R = parseInt((R * (100 + percent)) / 100 + "")
-    G = parseInt((G * (100 + percent)) / 100 + "")
-    B = parseInt((B * (100 + percent)) / 100 + "")
+    R = parseInt((R * (100 + factor)) / 100 + "")
+    G = parseInt((G * (100 + factor)) / 100 + "")
+    B = parseInt((B * (100 + factor)) / 100 + "")
 
     R = R < 255 ? R : 255
     G = G < 255 ? G : 255
@@ -214,16 +213,7 @@ export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
     let image
 
     switch (multiplierKey.toLowerCase()) {
-        case "citizen":
-            image = MultiplierCitizen
-            break
-        case "supporter":
-            image = MultiplierSupporter
-            break
         case "contributor":
-            image = MultiplierSuperContributor
-            break
-        case "super contributor":
             image = MultiplierContributor
             break
         case "a fool and his money":
@@ -253,8 +243,8 @@ export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
         case "admiral":
             image = MultiplierAdmiral
             break
-        case "fiend":
-            image = MultiplierFiend
+        case "air marshal":
+            image = MultiplierAirMarshal
             break
         case "junk-e":
             image = MultiplierJunkE
@@ -279,128 +269,11 @@ export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
         case "checkmultiplierupdate":
         case "supstick":
         default:
-            image = MultiplierCitizen
+            image = MultiplierGeneric
             break
     }
 
     return { image }
-}
-
-export const getMultiplierGuide = (multiplierKey: string): MultiplierGuide => {
-    let description: string
-    let title: string
-    let amount: number
-    let isMultiplicative = false
-    let duration: number
-
-    switch (multiplierKey.toLowerCase()) {
-        case "supporter":
-            title = multiplierKey
-            amount = 5
-            duration = 1
-            description = `When a player is within the top 50% of ability $SUPS average.`
-            break
-        case "contributor":
-            title = multiplierKey
-            amount = 10
-            duration = 1
-            description = `When a player is within the top 25% of ability $SUPS average.`
-            break
-        case "super contributor":
-            title = multiplierKey
-            amount = 20
-            duration = 1
-            description = `When a player is within the top 10% of ability $SUPS average.`
-            break
-        case "a fool and his money":
-            title = multiplierKey
-            amount = 5
-            duration = 1
-            description = `A player who has put the most individual SUPS in but your Syndicate didn’t win the ability.`
-            break
-        case "air support":
-            title = multiplierKey
-            amount = 5
-            duration = 1
-            description = `For a player who triggered the last airstrike of the battle.`
-            break
-        case "air marshal":
-            title = multiplierKey
-            amount = 5
-            duration = 1
-            description = `For a player who triggered the last three airstrikes`
-            break
-        case "now i am become death":
-            title = multiplierKey
-            amount = 5
-            duration = 1
-            description = `For a player who triggered a nuke.`
-            break
-        case "destroyer of worlds":
-            title = multiplierKey
-            amount = 10
-            duration = 1
-            description = `For a player who has triggered the previous three nukes.`
-            break
-        case "grease monkey":
-            title = multiplierKey
-            amount = 3
-            duration = 1
-            description = `For a player who triggered a repair drop.`
-            break
-        case "field mechanic":
-            title = multiplierKey
-            amount = 5
-            duration = 1
-            description = `For a player who has triggered the previous three repair drops.`
-            break
-        case "combo breaker":
-            title = multiplierKey
-            amount = 5
-            duration = 1
-            description = `For a player who triggers an ability for their syndicate after it has lost the last 3 rounds.`
-            break
-        case "c-c-c-c-combo breaker":
-            title = multiplierKey
-            amount = 5
-            duration = 3
-            description = `For a player who triggers an ability for their syndicate after it has lost the last ten rounds.`
-            break
-        case "mech commander":
-            title = multiplierKey
-            amount = 5
-            duration = 1
-            description = `When a player’s mech wins the battles.`
-            break
-        case "admiral":
-            title = multiplierKey
-            amount = 10
-            duration = 1
-            description = `When a player’s mech wins the last 3 battles.`
-            break
-        case "won battle":
-            title = multiplierKey
-            amount = 5
-            isMultiplicative = true
-            duration = 1
-            description = `When a player’s syndicate has won the last battle.`
-            break
-        case "won last three battles":
-            title = multiplierKey
-            amount = 10
-            duration = 3
-            description = `When a player’s syndicate has won the last 3 battles.`
-            break
-        case "citizen":
-        default:
-            title = multiplierKey
-            amount = 2
-            duration = 2
-            description = `For a player whose syndicate won the battle and they are within the 95% of $SUPS spent. For a player whose syndicate did't win the battle but they are within the top 80% of $SUPS spent.`
-            break
-    }
-
-    return { key: multiplierKey, title, description, amount, isMultiplicative, duration }
 }
 
 export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
@@ -462,8 +335,8 @@ export const getUserRankDeets = (rank: UserRank, width: string, height: string):
     return { icon, title, desc }
 }
 
-export const timeSince = (date: Date) => {
-    const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
+export const timeSince = (date: Date, dateToCompare?: Date) => {
+    const seconds = Math.floor(((dateToCompare ? dateToCompare.getTime() : Date.now()) - date.getTime()) / 1000)
 
     let interval = seconds / 31536000
 
@@ -492,4 +365,42 @@ export const timeSince = (date: Date) => {
 export const camelToTitle = (str: string) => {
     const result = str.replace(/([A-Z])/g, " $1")
     return result.charAt(0).toUpperCase() + result.slice(1)
+}
+
+const regex = emojiRegex()
+
+// Checks if the message contains all emojis and is less than the specified amount on characters
+export const checkIfIsEmoji = (message: string) => {
+    if (!message) return false
+    const isCharEmojiArray: boolean[] = []
+    const trimmedMsg = message.trim()
+
+    // If message is long then don't bother
+    if (trimmedMsg.length > 8) return false
+
+    // Spreading string for proper emoji seperation-ignoring spaces that can appear between emojis and mess everything up
+    const messageArray = [...trimmedMsg.replaceAll(" ", "")]
+
+    messageArray.map((c) => {
+        // Checking if char === invisible U+fe0f unicode- a specific code for emojis
+        if (c === "️") {
+            isCharEmojiArray.push(true)
+            return
+        }
+        // Checks to see if each character matches the emoji regex from the library or a "regional indicator symbol letter" (apart of a flag emoji)
+        isCharEmojiArray.push(!!c.match(regex) || !!c.match(/[\uD83C][\uDDE6-\uDDFF]/))
+    })
+
+    // Checks if the whole message is less than 8 character-some emojis can be 2+ characters and if all of them are emojis
+    if (!isCharEmojiArray.includes(false)) {
+        return true
+    }
+    return false
+}
+
+// Returns a random chat color for non faction users
+export const getRandomColor = () => {
+    let color = "#"
+    for (let i = 0; i < 3; i++) color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2)
+    return color
 }

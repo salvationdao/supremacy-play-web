@@ -4,7 +4,7 @@ import { EnlistDetailsPopover } from "../.."
 import { SvgPlus } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { FactionGeneralData } from "../../../types/passport"
 
 export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
@@ -20,13 +20,14 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
     return (
         <>
             <Button
+                onClick={() => togglePopoverOpen(true)}
                 sx={{
                     position: "relative",
                     display: "flex",
                     alignItems: "center",
                     px: ".96rem",
                     py: ".4rem",
-                    fontFamily: "Nostromo Regular Bold",
+                    fontFamily: fonts.nostromoBold,
                     backgroundColor: "transparent",
                     borderRadius: 0.2,
                     border: `1px solid ${primary}`,
@@ -34,7 +35,6 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                         backgroundColor: `${primary || "#FFFFFF"} !important`,
                     },
                 }}
-                onClick={() => togglePopoverOpen()}
             >
                 <Box sx={{ position: "absolute", left: "50%", bottom: "-2.1rem" }} ref={popoverRef} />
 
@@ -54,13 +54,7 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
             </Button>
 
             {popoverOpen && (
-                <EnlistDetailsPopover
-                    popoverRef={popoverRef}
-                    popoverOpen={popoverOpen}
-                    togglePopoverOpen={togglePopoverOpen}
-                    faction_id={id}
-                    factionData={faction}
-                />
+                <EnlistDetailsPopover popoverRef={popoverRef} open={popoverOpen} onClose={() => togglePopoverOpen(false)} faction_id={id} faction={faction} />
             )}
         </>
     )

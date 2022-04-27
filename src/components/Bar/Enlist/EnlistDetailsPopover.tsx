@@ -1,43 +1,83 @@
 import { Box, Fade, IconButton, Popover, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SvgArrowRightAltSharpIcon, SvgSupToken, SvgWrapperProps } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { usePassportServerWebsocket, useSnackbar } from "../../../containers"
-import { usePassportServerSubscription } from "../../../hooks"
+import { useToggle } from "../../../hooks"
 import { PassportServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { FactionGeneralData, FactionStat } from "../../../types/passport"
 
 interface EnlistDetailsProps {
     popoverRef: React.MutableRefObject<null>
-    popoverOpen: boolean
-    togglePopoverOpen: (_state: boolean) => void
+    open: boolean
+    onClose: () => void
     faction_id: string
-    factionData: FactionGeneralData
+    faction: FactionGeneralData
 }
 
-const Stat = ({
-    title,
-    content,
-    PrefixSvg,
-}: {
-    title: string
-    content: string | number
-    PrefixSvg?: SvgWrapperProps
-}) => {
+export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: EnlistDetailsProps) => {
+    const [localOpen, toggleLocalOpen] = useToggle(open)
+    const {
+        theme: { primary },
+    } = faction
+
+    useEffect(() => {
+        if (!localOpen) {
+            const timeout = setTimeout(() => {
+                onClose()
+            }, 300)
+
+            return () => clearTimeout(timeout)
+        }
+    }, [localOpen])
+
+    return (
+        <Popover
+            open={localOpen}
+            anchorEl={popoverRef.current}
+            onClose={() => toggleLocalOpen(false)}
+            anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+            }}
+            transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+            }}
+            PaperProps={{ sx: { backgroundColor: "transparent", boxShadow: 0, overflow: "visible" } }}
+            sx={{ zIndex: 999999 }}
+        >
+            <Box sx={{ filter: "drop-shadow(0 3px 3px #00000050)" }}>
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        isFancy: true,
+                        borderColor: primary,
+                        borderThickness: ".15rem",
+                    }}
+                    backgroundColor="#101019"
+                >
+                    <Stack direction="row">
+                        <PopoverContent faction={faction} />
+                    </Stack>
+                </ClipThing>
+            </Box>
+        </Popover>
+    )
+}
+
+const Stat = ({ title, content, PrefixSvg }: { title: string; content: string | number; PrefixSvg?: SvgWrapperProps }) => {
     return (
         <Stack spacing=".24rem" sx={{ width: "18rem" }}>
-            <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold", color: colors.grey }}>
+            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, color: colors.grey }}>
                 {title}
             </Typography>
 
             <Stack direction="row" alignItems="center" spacing=".32rem">
                 {PrefixSvg}
-                <Typography
-                    variant="body2"
-                    sx={{ fontFamily: "Nostromo Regular Bold", lineHeight: 1, whiteSpace: "nowrap" }}
-                >
+                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
                     {content}
                 </Typography>
             </Stack>
@@ -45,43 +85,43 @@ const Stat = ({
     )
 }
 
-interface EnlistFactionRequest {
-    faction_id: string
-}
-
-const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) => {
+const PopoverContent = ({ faction }: { faction: FactionGeneralData }) => {
     const { newSnackbarMessage } = useSnackbar()
-    const factionStat = usePassportServerSubscription<FactionStat>(PassportServerKeys.SubscribeFactionStat, {
-        faction_id: factionData.id,
-    }).payload
-
+    const { state, send, subscribe } = usePassportServerWebsocket()
+    const [factionStat, setFactionStat] = useState<FactionStat>()
     const [page, setPage] = useState(0)
-    const { send, state } = usePassportServerWebsocket()
+
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<FactionStat>(
+            PassportServerKeys.SubscribeFactionStat,
+            (payload) => {
+                if (!payload) return
+                setFactionStat(payload)
+            },
+            { faction_id: faction.id },
+        )
+    }, [state, subscribe])
 
     const enlistFaction = useCallback(async () => {
-        if (state !== WebSocket.OPEN) {
-            return
-        }
+        if (state !== WebSocket.OPEN) return
+
         try {
-            await send<null, EnlistFactionRequest>(PassportServerKeys.EnlistFaction, { faction_id: factionData.id })
+            await send<null, { faction_id: string }>(PassportServerKeys.EnlistFaction, { faction_id: faction.id })
             newSnackbarMessage("Successfully enlisted into syndicate.", "success")
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to enlist into syndicate.", "error")
             console.debug(e)
         }
         return
-    }, [send, state, factionData])
+    }, [send, state, faction.id])
 
     const factionExtraInfo = useMemo(() => {
         if (!factionStat) return null
         const { velocity, recruit_number, win_count, loss_count, kill_count, death_count, mvp } = factionStat
         return (
             <Fade in={true}>
-                <Stack
-                    direction="row"
-                    flexWrap="wrap"
-                    sx={{ pt: ".8rem", px: ".8rem", "& > *": { width: "50%", pb: "1.44rem" } }}
-                >
+                <Stack direction="row" flexWrap="wrap" sx={{ pt: ".8rem", px: ".8rem", "& > *": { width: "50%", pb: "1.44rem" } }}>
                     <Stat
                         title="SUPS Velocity"
                         content={velocity.toLocaleString("en-US", {
@@ -98,18 +138,11 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                             <Stat title="Losses" content={loss_count} />
                             <Stat
                                 title="Win Rate"
-                                content={
-                                    win_count + loss_count === 0
-                                        ? "0%"
-                                        : `${((win_count / (win_count + loss_count)) * 100).toFixed(0)}%`
-                                }
+                                content={win_count + loss_count === 0 ? "0%" : `${((win_count / (win_count + loss_count)) * 100).toFixed(0)}%`}
                             />
                             <Stat title="Kills" content={kill_count} />
                             <Stat title="Deaths" content={death_count} />
-                            <Stat
-                                title="K/D"
-                                content={death_count === 0 ? "0%" : `${((kill_count / death_count) * 100).toFixed(0)}%`}
-                            />
+                            <Stat title="K/D" content={death_count === 0 ? "0%" : `${((kill_count / death_count) * 100).toFixed(0)}%`} />
                             <Stat title="MVP" content={mvp?.username || ""} />
                         </>
                     )}
@@ -124,7 +157,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
         logo_blob_id,
         background_blob_id,
         description,
-    } = factionData
+    } = faction
 
     return (
         <Stack direction="row">
@@ -153,7 +186,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                         borderRadius: 0.5,
                     }}
                 />
-                <Typography variant="body2" sx={{ fontFamily: "Nostromo Regular Bold" }}>
+                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                     {label.toUpperCase()}
                 </Typography>
             </Stack>
@@ -176,11 +209,7 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                 >
                     {factionStat && (
                         <>
-                            <IconButton
-                                sx={{ transform: "scaleX(-1)" }}
-                                onClick={() => setPage(0)}
-                                disabled={page <= 0}
-                            >
+                            <IconButton sx={{ transform: "scaleX(-1)" }} onClick={() => setPage(0)} disabled={page <= 0}>
                                 <SvgArrowRightAltSharpIcon fill={page <= 0 ? "#333333" : primary} />
                             </IconButton>
                             <IconButton onClick={() => setPage(1)} disabled={page >= 1}>
@@ -190,16 +219,20 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                     )}
 
                     <FancyButton
-                        clipSize="7px"
-                        borderColor={primary}
-                        backgroundColor={primary}
-                        clipSx={{ ml: "auto !important" }}
+                        clipThingsProps={{
+                            clipSize: "7px",
+                            sx: { ml: "auto !important" },
+                            backgroundColor: primary,
+                            border: {
+                                borderColor: primary,
+                            },
+                        }}
                         sx={{
                             px: "2.56rem",
                             py: ".16rem",
                             pt: ".5rem",
                             color: secondary,
-                            fontFamily: "Nostromo Regular Black",
+                            fontFamily: fonts.nostromoBlack,
                         }}
                         onClick={enlistFaction}
                     >
@@ -208,60 +241,5 @@ const PopoverContent = ({ factionData }: { factionData: FactionGeneralData }) =>
                 </Stack>
             </Stack>
         </Stack>
-    )
-}
-
-export const EnlistDetailsPopover = ({
-    popoverRef,
-    popoverOpen,
-    togglePopoverOpen,
-    factionData,
-}: EnlistDetailsProps) => {
-    const {
-        theme: { primary },
-    } = factionData
-
-    return (
-        <Popover
-            open={popoverOpen}
-            anchorEl={popoverRef.current}
-            onClose={() => togglePopoverOpen(false)}
-            anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-            }}
-            transformOrigin={{
-                vertical: "top",
-                horizontal: "center",
-            }}
-            PaperProps={{ sx: { backgroundColor: "transparent", boxShadow: 0, overflow: "visible" } }}
-            sx={{ zIndex: 999999 }}
-        >
-            <Box sx={{ filter: "drop-shadow(0 3px 3px #00000050)" }}>
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        isFancy: true,
-                        borderColor: primary,
-                        borderThickness: ".2rem",
-                    }}
-                >
-                    <Stack direction="row" sx={{ backgroundColor: "#101019" }}>
-                        {factionData ? (
-                            <PopoverContent factionData={factionData} />
-                        ) : (
-                            <Box sx={{ px: "2.4rem", py: "1.2rem" }}>
-                                <Typography
-                                    variant="caption"
-                                    sx={{ opacity: 0.6, fontFamily: "Nostromo Regular Bold", color: colors.grey }}
-                                >
-                                    Loading...
-                                </Typography>
-                            </Box>
-                        )}
-                    </Stack>
-                </ClipThing>
-            </Box>
-        </Popover>
     )
 }

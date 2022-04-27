@@ -1,160 +1,49 @@
-import { Box, Stack, ThemeProvider } from "@mui/material"
-import { Theme } from "@mui/material/styles"
+import { Box, Stack, ThemeProvider, Theme } from "@mui/material"
+import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
+import { BrowserRouter, Route, Redirect, Switch, useLocation } from "react-router-dom"
+import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
+import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
+import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
+import { DEV_ONLY, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
-    GameBar,
-    MiniMap,
-    BattleEndScreen,
-    BattleHistory,
-    Controls,
-    LeftSideBar,
-    LiveVotingChart,
-    LoadMessage,
-    Stream,
-    VotingSystem,
-    WarMachineStats,
-    Notifications,
-    Maintenance,
-    BattleCloseAlert,
-    GlobalSnackbar,
-    EarlyAccessWarning,
-    WaitingPage,
-} from "./components"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
-import {
+    RightDrawerProvider,
     GameServerAuthProvider,
-    DimensionProvider,
-    DrawerProvider,
-    GameProvider,
-    OverlayTogglesProvider,
     GameServerSocketProvider,
-    StreamProvider,
-    useGameServerAuth,
-    useDimension,
+    PassportServerAuthProvider,
+    PassportServerSocketProvider,
+    SnackBarProvider,
+    SupremacyProvider,
     useGameServerWebsocket,
     WalletProvider,
-    PassportServerSocketProvider,
-    PassportServerAuthProvider,
-    SnackBarProvider,
+    BarProvider,
+    useGameServerAuth,
 } from "./containers"
 import { mergeDeep, shadeColor } from "./helpers"
 import { useToggle } from "./hooks"
+import { NotFoundPage } from "./pages"
+import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, theme } from "./theme/theme"
 import { FactionThemeColor, UpdateTheme, User } from "./types"
 import { UserData } from "./types/passport"
 
 if (SENTRY_CONFIG) {
-    // import { Integrations } from '@sentry/tracing'
-    // import { createBrowserHistory } from 'history'
-    // const history = createBrowserHistory()
     Sentry.init({
         dsn: SENTRY_CONFIG.DSN,
         release: SENTRY_CONFIG.RELEASE,
         environment: SENTRY_CONFIG.ENVIRONMENT,
-        // integrations: [
-        // new Integrations.BrowserTracing({
-        // routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
-        // }),
-        // ],
         tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
     })
-}
-
-const AppInner = () => {
-    const { state, isServerUp } = useGameServerWebsocket()
-    const { user } = useGameServerAuth()
-    const { mainDivDimensions, streamDimensions } = useDimension()
-    const [haveSups, toggleHaveSups] = useToggle(true)
-
-    return (
-        <>
-            <GameBar />
-            <Stack
-                sx={{
-                    mt: `${GAME_BAR_HEIGHT}rem`,
-                    width: mainDivDimensions.width,
-                    height: mainDivDimensions.height,
-                    transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
-                }}
-            >
-                <Stack
-                    direction="row"
-                    sx={{
-                        flex: 1,
-                        position: "relative",
-                        width: "100%",
-                        backgroundColor: colors.darkNavyBlue,
-                        overflow: "hidden",
-                    }}
-                >
-                    <LeftSideBar />
-
-                    <Box
-                        sx={{
-                            position: "relative",
-                            height: streamDimensions.height,
-                            width: streamDimensions.width,
-                            backgroundColor: colors.darkNavy,
-                            transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
-                            clipPath: `polygon(0% 0%, calc(100% - 0%) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px)`,
-                        }}
-                    >
-                        {!isServerUp || UNDER_MAINTENANCE ? (
-                            <Maintenance />
-                        ) : (
-                            <>
-                                <LoadMessage />
-                                <BattleCloseAlert />
-                                <Stream haveSups={haveSups} toggleHaveSups={toggleHaveSups} />
-
-                                {user && haveSups && state === WebSocket.OPEN ? (
-                                    <Box>
-                                        <EarlyAccessWarning />
-                                        <VotingSystem />
-                                        <MiniMap />
-                                        <Notifications />
-                                        <LiveVotingChart />
-                                        <WarMachineStats />
-                                        <BattleEndScreen />
-                                        <BattleHistory />
-                                    </Box>
-                                ) : (
-                                    <WaitingPage />
-                                )}
-                            </>
-                        )}
-                    </Box>
-                </Stack>
-
-                <Controls />
-            </Stack>
-
-            {/* Keep this. Just the under background, glimpse of it is visible when drawers open / close */}
-            <Box
-                sx={{
-                    position: "fixed",
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: user && user.faction ? shadeColor(user.faction.theme.primary, -95) : colors.darkNavyBlue,
-                    zIndex: -1,
-                }}
-            />
-
-            <GlobalSnackbar />
-        </>
-    )
 }
 
 const App = () => {
     const [currentTheme, setTheme] = useState<Theme>(theme)
     const [factionColors, setFactionColors] = useState<FactionThemeColor>({
-        primary: "#00FFFF",
-        secondary: "#00FFFF",
-        background: "#050c12",
+        primary: colors.neonBlue,
+        secondary: "#000000",
+        background: shadeColor(colors.neonBlue, -95),
     })
 
     const [authLogin, setAuthLoginX] = useState<User | null>(null)
@@ -180,6 +69,19 @@ const App = () => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
 
+    const tourProviderProps = useMemo(
+        () => ({
+            children: <AppInner />,
+            steps: [],
+            padding: 2,
+            styles: tourStyles,
+            showBadge: false,
+            disableKeyboardNavigation: false,
+            disableDotsNavigation: false,
+        }),
+        [],
+    )
+
     return (
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
@@ -188,19 +90,19 @@ const App = () => {
                         <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
                             <GameServerSocketProvider initialState={{ login: authLogin }}>
                                 <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
-                                    <StreamProvider>
+                                    <SupremacyProvider>
                                         <WalletProvider>
-                                            <DrawerProvider>
-                                                <GameProvider>
-                                                    <DimensionProvider>
-                                                        <OverlayTogglesProvider>
+                                            <BarProvider>
+                                                <RightDrawerProvider>
+                                                    <TourProvider {...tourProviderProps}>
+                                                        <BrowserRouter>
                                                             <AppInner />
-                                                        </OverlayTogglesProvider>
-                                                    </DimensionProvider>
-                                                </GameProvider>
-                                            </DrawerProvider>
+                                                        </BrowserRouter>
+                                                    </TourProvider>
+                                                </RightDrawerProvider>
+                                            </BarProvider>
                                         </WalletProvider>
-                                    </StreamProvider>
+                                    </SupremacyProvider>
                                 </GameServerAuthProvider>
                             </GameServerSocketProvider>
                         </PassportServerAuthProvider>
@@ -211,52 +113,74 @@ const App = () => {
     )
 }
 
-const testUserAgent = (): boolean => {
-    if (/HeadlessChrome/.test(window.navigator.userAgent)) {
-        // Headless
-        return true
-    } else {
-        // Not Headless
-        return false
-    }
-}
+const AppInner = () => {
+    const { isServerUp } = useGameServerWebsocket()
+    useGameServerAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
+    const location = useLocation()
+    const [understand, toggleUnderstand] = useToggle()
 
-const testChromeWindow = (): boolean => {
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    if (eval.toString().length == 33 && !(window as any).chrome) {
-        // Headless
-        return true
-    } else {
-        // Not Headless
-        return false
-    }
-}
+    // Dont show gamebar and left nav in 404
+    if (location.pathname === "/404") return <NotFoundPage />
 
-const testAppVersion = (): boolean => {
-    const appVersion = navigator.appVersion
-    return /headless/i.test(appVersion)
-}
+    return (
+        <>
+            <Stack
+                sx={{
+                    position: "relative",
+                    width: "100vw",
+                    height: "100vh",
+                    backgroundColor: (theme) => theme.factionTheme.background,
+                }}
+            >
+                <Bar />
 
-const testNotificationPermissions = (callback: (res: boolean) => void) => {
-    navigator.permissions
-        .query({
-            name: "notifications",
-        })
-        .then(function (permissionStatus) {
-            if (Notification.permission === "denied" && permissionStatus.state === "prompt") {
-                // Headless
-                callback(true)
-            } else {
-                // Not Headless
-                callback(false)
-            }
-        })
-}
+                <Stack
+                    direction="row"
+                    sx={{
+                        position: "relative",
+                        flex: 1,
+                        width: "100vw",
+                        overflow: "hidden",
+                        justifyContent: "space-between",
+                        "& > *": {
+                            flexShrink: 0,
+                        },
+                    }}
+                >
+                    {DEV_ONLY && <LeftDrawer />}
 
-testNotificationPermissions((notResult) => {
-    if (notResult || testUserAgent() || testChromeWindow() || testAppVersion()) {
-        throw new Error("unable to configure fruit punch for circuitboard exposure.")
-    }
-})
+                    <Box
+                        sx={{
+                            flex: 1,
+                            position: "relative",
+                            height: "100%",
+                            backgroundColor: colors.darkNavy,
+                            overflow: "hidden",
+                        }}
+                    >
+                        <LoadMessage />
+                        <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
+
+                        {understand && isServerUp && !UNDER_MAINTENANCE && (
+                            <Switch>
+                                {ROUTES_ARRAY.map((r) => {
+                                    const { id, path, exact, Component } = r
+                                    return <Route key={id} path={path} exact={exact} component={Component} />
+                                })}
+                                <Redirect to={ROUTES_MAP.not_found_page.path} />
+                            </Switch>
+                        )}
+
+                        {!isServerUp || (UNDER_MAINTENANCE && <Maintenance />)}
+                    </Box>
+
+                    <RightDrawer />
+                </Stack>
+            </Stack>
+
+            <GlobalSnackbar />
+        </>
+    )
+}
 
 ReactDOM.render(<App />, document.getElementById("root"))

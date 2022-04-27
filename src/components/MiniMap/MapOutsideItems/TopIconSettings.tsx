@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography } from "@mui/material"
 import { SvgMapEnlarge, SvgHide } from "../../../assets"
 import { shadeColor } from "../../../helpers"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Map } from "../../../types"
 
 export const TopIconSettings = ({
@@ -69,7 +69,7 @@ export const TopIconSettings = ({
                     left: enlarged ? "5.6rem" : "7.6rem",
                     top: 7.2,
                     fontSize: "1rem",
-                    fontFamily: "Nostromo Regular Black",
+                    fontFamily: fonts.nostromoBlack,
                     lineHeight: 1,
                     opacity: 0.8,
                 }}
