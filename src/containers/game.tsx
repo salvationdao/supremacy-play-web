@@ -32,7 +32,7 @@ export interface FactionsAll {
 export const GameContainer = createContainer(() => {
     const { setBattleIdentifier } = useSupremacy()
     const { state, send, subscribe } = useGameServerWebsocket()
-    const { factionID, userID } = useGameServerAuth()
+    const { factionID } = useGameServerAuth()
 
     // States
     const [map, setMap] = useState<Map>()
