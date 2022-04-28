@@ -15,6 +15,17 @@ export const SetupTutorial = () => {
     const { toggleActiveBar } = useBar()
     const { activePanel, togglePanel } = useRightDrawer()
 
+    // Only show if no user
+    const preAuthSteps: StepType[] = useMemo(() => {
+        return [
+            {
+                selector: "#tutorial-connect",
+                content: "Connect to your wallet here, you'll get the most out of this tutorial and Supremacy while logged in.",
+                mutationObservables: ["#tutorial-connect"],
+            },
+        ]
+    }, [])
+
     // Basic steps when user is logged in
     const baseSteps: StepType[] = useMemo(() => {
         return [
@@ -190,10 +201,15 @@ export const SetupTutorial = () => {
     }, [])
 
     useEffect(() => {
+        if (!user) {
+            setSteps([...preAuthSteps])
+            return
+        }
+
         let tutorialSteps = [...baseSteps]
 
         //if the user is not enlisted, finish tutorial
-        if (user?.faction_id) {
+        if (user.faction_id) {
             tutorialSteps = [...tutorialSteps, ...enlistedSteps]
         }
 
@@ -204,7 +220,7 @@ export const SetupTutorial = () => {
         tutorialSteps = [...tutorialSteps, ...endSteps]
 
         setSteps(tutorialSteps)
-    }, [baseSteps, enlistedSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
+    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
 
     return null
 }
