@@ -72,7 +72,7 @@ export const SetupTutorial = () => {
             },
             {
                 selector: "#tutorial-purchase",
-                content: "You can purchase $SUPS directly from Supremacy here. The $SUPs will be available to you in your on-world wallet.",
+                content: "You can purchase $SUPS directly from Supremacy here. The $SUPS will be available to you in your on-world wallet.",
                 action: () => {
                     toggleActiveBar("wallet", true)
                 },
@@ -81,7 +81,7 @@ export const SetupTutorial = () => {
             {
                 selector: "#tutorial-passport",
                 content:
-                    "Access key profile functionalities here, these will open up your profile information on your Passport along with your War Machine inventory and the game store.",
+                    "Access key profile functionalities here. These will open up your profile information on your Passport along with your War Machine inventory and the game store.",
                 action: () => {
                     toggleActiveBar("profile", true)
                 },
