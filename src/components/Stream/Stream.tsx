@@ -18,7 +18,7 @@ export const Stream = () => {
         return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
     }
 
-    if (isOpen || !currentStream || !currentStream.stream_id) return <NoStreamScreen />
+    if (isOpen) return null
 
     return (
         <>
@@ -40,14 +40,14 @@ export const Stream = () => {
                         width: iframeDimensions.width,
                         height: iframeDimensions.height,
                         zIndex: siteZIndex.Stream,
-                        backgroundColor: colors.darkNavy,
-                        background: `center url(${SupBackground})`,
+                        background: currentStream?.stream_id ? `center url(${SupBackground}) ${colors.darkNavy}` : "unset",
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat",
                     }}
                 />
             </Stack>
 
+            <NoStreamScreen />
             {DEV_ONLY && <Music />}
         </>
     )
@@ -70,7 +70,7 @@ const NoStreamScreen = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                zIndex: siteZIndex.RoutePage,
+                zIndex: siteZIndex.Stream - 1,
             }}
         >
             <Stack
