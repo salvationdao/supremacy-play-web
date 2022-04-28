@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
 import { FactionIDs } from "../../constants"
-import { FactionsAll, useSupremacy, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { FactionsAll, useSupremacy, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { ViewerLiveCount } from "../../types"
@@ -11,12 +11,11 @@ import { ViewerLiveCount } from "../../types"
 export const LiveCounts = () => {
     const { factionsAll } = useSupremacy()
     const { state, subscribe } = useGameServerWebsocket()
-    const { userID } = useGameServerAuth()
     const [viewers, setViewers] = useState<ViewerLiveCount>()
 
     // Triggered live viewer count tick
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<ViewerLiveCount>(
             GameServerKeys.SubViewersLiveCount,
             (payload) => {
@@ -25,7 +24,7 @@ export const LiveCounts = () => {
             null,
             true,
         )
-    }, [state, subscribe, userID])
+    }, [state, subscribe])
 
     return <LiveCountsInner factionsAll={factionsAll} viewers={viewers} />
 }
