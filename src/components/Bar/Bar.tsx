@@ -5,7 +5,7 @@ import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../con
 import { SocketState, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { colors, fonts } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 import { UserData } from "../../types/passport"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
 import { SaleAbilitiesModal } from "../PlayerAbilities/SaleAbilitiesModal"
@@ -33,16 +33,16 @@ export const Bar = () => {
                 color: "#FFFFFF",
                 backgroundColor: (theme) => theme.factionTheme.background,
                 scrollbarWidth: "none",
-                zIndex: (theme) => theme.zIndex.drawer + 1,
+                zIndex: siteZIndex.Popover,
                 "::-webkit-scrollbar": {
-                    height: ".4rem",
+                    height: ".3rem",
                 },
                 "::-webkit-scrollbar-track": {
                     background: "#FFFFFF15",
                     borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: colors.darkNeonBlue,
+                    background: "#FFFFFF50",
                     borderRadius: 3,
                 },
                 width: "100vw",
@@ -78,7 +78,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
             {user && (
                 <>
                     {DEV_ONLY && (
-                        <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)}>
+                        <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)} sx={{ flexShrink: 0 }}>
                             Purchase Abilities
                         </Button>
                     )}
@@ -86,7 +86,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
                     <WalletDetails />
                 </>
             )}
-            <ProfileCard />
+            <ProfileCard user={user} />
 
             {showSaleAbilities && <SaleAbilitiesModal open={showSaleAbilities} onClose={() => toggleShowSaleAbilities(false)} />}
         </>

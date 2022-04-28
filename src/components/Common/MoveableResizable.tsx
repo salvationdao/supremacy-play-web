@@ -6,7 +6,7 @@ import { ResizeBox, TooltipHelper } from ".."
 import { SvgDrag, SvgHide, SvgInfoCircular } from "../../assets"
 import { useDimension } from "../../containers"
 import { clamp, parseString } from "../../helpers"
-import { colors } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension } from "../../types"
 import { ClipThing } from "../../components"
 
@@ -113,10 +113,10 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                 top: 0,
                 left: 0,
                 pointerEvents: "none",
-                zIndex: 18,
+                zIndex: siteZIndex.MoveableResizable,
                 filter: "drop-shadow(0 3px 3px #00000050)",
                 ":hover": {
-                    zIndex: 999,
+                    zIndex: siteZIndex.MoveableResizableHover,
                 },
             }}
         >
@@ -152,7 +152,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                                     top: 0,
                                     right: 0,
                                     cursor: "ew-resize",
-                                    zIndex: 50,
+                                    zIndex: siteZIndex.MoveableResizable,
                                     width: "10px",
                                     height: "100%",
                                 }}

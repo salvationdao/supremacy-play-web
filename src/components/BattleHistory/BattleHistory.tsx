@@ -1,7 +1,7 @@
 import { Fade } from "@mui/material"
 import { Box } from "@mui/system"
 import { useOverlayToggles } from "../../containers"
-import { colors } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 
 export const BattleHistory = () => {
     const { isBattleHistoryOpen } = useOverlayToggles()
@@ -16,7 +16,7 @@ export const BattleHistory = () => {
                     left: 0,
                     right: 0,
                     backgroundColor: colors.darkNavy,
-                    zIndex: 999,
+                    zIndex: siteZIndex.BattleHistory,
                 }}
             >
                 {isBattleHistoryOpen && (

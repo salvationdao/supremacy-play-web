@@ -22,7 +22,7 @@ import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../..
 import { snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BanOption, BanUser } from "../../../../types/chat"
 import { User } from "../../../../types"
 
@@ -178,11 +178,11 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             pt: "1.8rem",
                             pb: "2rem",
                             ".MuiAutocomplete-popper": {
-                                zIndex: 99999,
+                                zIndex: siteZIndex.Modal,
                                 ".MuiPaper-root": {
                                     background: "none",
                                     backgroundColor: colors.darkerNeonBlue,
-                                    zIndex: 99999,
+                                    zIndex: siteZIndex.Modal,
                                 },
                             },
                         }}

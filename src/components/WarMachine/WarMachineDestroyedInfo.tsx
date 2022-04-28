@@ -2,7 +2,7 @@ import { Box, Modal, Stack, Theme, Typography, useTheme } from "@mui/material"
 import { useMemo } from "react"
 import { ClipThing } from ".."
 import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
-import { colors, fonts } from "../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { DamageRecord, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 export const WarMachineDestroyedInfo = ({
@@ -43,7 +43,7 @@ export const WarMachineDestroyedInfo = ({
     )
 
     return (
-        <Modal open={open} onClose={onClose} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
             <Box
                 sx={{
                     position: "absolute",

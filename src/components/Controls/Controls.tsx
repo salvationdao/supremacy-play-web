@@ -2,6 +2,7 @@ import { Stack } from "@mui/material"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { CONTROLS_HEIGHT } from "../../constants"
 import { useOverlayToggles } from "../../containers"
+import { siteZIndex } from "../../theme/theme"
 import { BattleStats } from "../BattleStats/BattleStats"
 import { PreviousBattle } from "./PreviousBattle"
 import { ResolutionSelect } from "./ResolutionSelect"
@@ -24,7 +25,7 @@ export const Controls = () => {
                 pt: ".24rem",
                 pb: ".16rem",
                 backgroundColor: (theme) => theme.factionTheme.background,
-                zIndex: 999,
+                zIndex: siteZIndex.Controls,
                 overflowX: "auto",
                 overflowY: "hidden",
                 scrollbarWidth: "none",
@@ -41,14 +42,14 @@ export const Controls = () => {
                 },
             }}
         >
-            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0 }}>
+            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
                 <PreviousBattle />
                 <LiveCounts />
                 <OverlayToggles />
                 <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />
             </Stack>
 
-            <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0 }}>
+            <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />
