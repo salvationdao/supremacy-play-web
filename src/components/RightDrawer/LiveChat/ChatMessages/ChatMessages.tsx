@@ -70,11 +70,12 @@ const ChatMessagesInner = ({
     const [autoScroll, setAutoScroll] = useState(true)
 
     useLayoutEffect(() => {
+        // Auto scroll to the bottom if enabled, has messages and user login/logout state changed
         if (!autoScroll || !scrollableRef.current || chatMessages.length === 0) {
             return
         }
         scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight
-    }, [chatMessages, autoScroll])
+    }, [chatMessages, autoScroll, user])
 
     const onClickScrollToBottom = useCallback(() => {
         if (!scrollableRef.current) return
@@ -87,7 +88,7 @@ const ChatMessagesInner = ({
             const extraHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
             const scrollUpTooMuch = currentTarget.scrollTop < extraHeight - 0.5 * currentTarget.offsetHeight
 
-            // Enable autoscroll if they havent scroll more than half of the container
+            // Enable autoscroll if they haven't scroll more than half of the container
             if (autoScroll && scrollUpTooMuch) {
                 setAutoScroll(false)
             } else if (!autoScroll && !scrollUpTooMuch) {
