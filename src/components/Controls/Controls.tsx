@@ -42,7 +42,7 @@ export const Controls = () => {
                 },
             }}
         >
-            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0 }}>
+            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
                 <PreviousBattle />
                 <LiveCounts />
                 <OverlayToggles />
