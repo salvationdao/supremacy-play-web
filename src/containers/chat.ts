@@ -198,19 +198,19 @@ export const ChatContainer = createContainer(() => {
                 if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread((prev) => prev + 1)
                 setGlobalChatMessages((prev) => {
                     // Buffer the messages
-                    const newArray = prev.concat(message)
+                    const newArray = [...prev, message]
                     return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
                 })
             } else {
                 if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread((prev) => prev + 1)
                 setFactionChatMessages((prev) => {
                     // Buffer the messages
-                    const newArray = prev.concat(message)
+                    const newArray = [...prev, message]
                     return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
                 })
             }
         },
-        [setGlobalChatMessages, setFactionChatMessages, tabValue, splitOption, setGlobalChatUnread, setFactionChatUnread],
+        [tabValue, splitOption, setGlobalChatMessages, setFactionChatMessages, setGlobalChatUnread, setFactionChatUnread],
     )
 
     useEffect(() => {
@@ -224,12 +224,12 @@ export const ChatContainer = createContainer(() => {
 
     // Subscribe to global chat messages
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !user || !subscribe) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
             if (!m) return
             setNewMessage({ f: null, m })
         })
-    }, [state, user, subscribe])
+    }, [state, subscribe])
 
     // Subscribe to faction chat messages
     useEffect(() => {
