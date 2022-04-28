@@ -32,7 +32,7 @@ export interface FactionsAll {
 export const GameContainer = createContainer(() => {
     const { setBattleIdentifier } = useSupremacy()
     const { state, send, subscribe } = useGameServerWebsocket()
-    const { factionID } = useGameServerAuth()
+    const { userID, factionID } = useGameServerAuth()
 
     // States
     const [map, setMap] = useState<Map>()
@@ -56,12 +56,15 @@ export const GameContainer = createContainer(() => {
                 setMap(payload.game_map)
                 setWarMachines(payload.war_machines)
                 setSpawnedAI(payload.spawned_ai)
-
-                send(GameServerKeys.GameUserOnline)
             },
             null,
         )
     }, [state, subscribe])
+
+    useEffect(() => {
+        if (!send || !userID || !map) return
+        send(GameServerKeys.GameUserOnline)
+    }, [send, map, userID])
 
     // Subscribe on battle end information
     useEffect(() => {

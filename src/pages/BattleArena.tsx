@@ -41,15 +41,15 @@ const BattleArenaPageInner = () => {
             <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
                 <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
                     <Stream />
-                    <MiniMap />
-                    <Notifications />
-                    <WarMachineStats />
-                    <BattleEndScreen />
-                    <LiveVotingChart />
-                    <BattleHistory />
 
-                    {state === WebSocket.OPEN && user && haveSups && (
+                    {state === WebSocket.OPEN && (
                         <>
+                            <MiniMap />
+                            <Notifications />
+                            <WarMachineStats />
+                            <BattleEndScreen />
+                            <LiveVotingChart />
+                            <BattleHistory />
                             <VotingSystem />
                         </>
                     )}

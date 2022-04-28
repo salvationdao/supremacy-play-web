@@ -3,18 +3,17 @@ import { Theme } from "@mui/material/styles"
 import { useTheme } from "@mui/styles"
 import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
-import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "../../containers"
+import { BribeStageResponse, useDimension, useGame } from "../../containers"
 import { parseString } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { Dimension } from "../../types"
 
 export const VotingSystem = () => {
-    const { factionID } = useGameServerAuth()
     const { bribeStage } = useGame()
-    return <VotingSystemInner factionID={factionID} bribeStage={bribeStage} />
+    return <VotingSystemInner bribeStage={bribeStage} />
 }
 
-const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; bribeStage?: BribeStageResponse }) => {
+const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const theme = useTheme<Theme>()
     const initialSize = useMemo(() => ({ width: 390, height: 360, minWidth: 370 }), [])
     const [containerWidth, setContainerWidth] = useState<number>(parseString(localStorage.getItem("votingSystemWidth"), initialSize.width))
@@ -38,7 +37,7 @@ const VotingSystemInner = ({ factionID, bribeStage }: { factionID?: string; brib
         [containerWidth, containerHeight],
     )
 
-    if (!factionID || !bribeStage) return null
+    if (!bribeStage) return null
 
     return (
         <Stack
