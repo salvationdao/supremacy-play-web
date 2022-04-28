@@ -214,7 +214,9 @@ export const StreamContainer = createContainer(() => {
         }
 
         setNewStreamOptions(quietestStreams)
-    }, [changeStream, currentStream, streams])
+        // NOTE: adding streams to deps causes render loop
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentStream, changeStream])
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
