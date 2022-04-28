@@ -41,6 +41,9 @@ export const Stream = () => {
                         height: iframeDimensions.height,
                         zIndex: siteZIndex.Stream,
                         backgroundColor: colors.darkNavy,
+                        background: `center url(${SupBackground})`,
+                        backgroundSize: "cover",
+                        backgroundRepeat: "no-repeat",
                     }}
                 />
             </Stack>
