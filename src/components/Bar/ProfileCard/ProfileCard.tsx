@@ -3,13 +3,13 @@ import { useRef } from "react"
 import { BarExpandable, ConnectButton, PunishmentList } from "../.."
 import { SvgInfoCircular } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGameServerAuth, usePassportServerAuth } from "../../../containers"
+import { useGameServerAuth } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
+import { UserData } from "../../../types/passport"
 import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
 
-export const ProfileCard = () => {
-    const { user } = usePassportServerAuth()
+export const ProfileCard = ({ user }: { user?: UserData }) => {
     const { punishments } = useGameServerAuth()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()

@@ -86,7 +86,7 @@ const BarContent = ({ user }: { user?: UserData }) => {
                     <WalletDetails />
                 </>
             )}
-            <ProfileCard />
+            <ProfileCard user={user} />
 
             {showSaleAbilities && <SaleAbilitiesModal open={showSaleAbilities} onClose={() => toggleShowSaleAbilities(false)} />}
         </>

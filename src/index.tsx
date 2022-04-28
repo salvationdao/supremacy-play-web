@@ -77,7 +77,7 @@ const App = () => {
             styles: tourStyles,
             showBadge: false,
             disableKeyboardNavigation: false,
-            disableDotsNavigation: false,
+            disableDotsNavigation: true,
         }),
         [],
     )
@@ -115,7 +115,7 @@ const App = () => {
 
 const AppInner = () => {
     const { isServerUp } = useGameServerWebsocket()
-    const { user } = useGameServerAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
+    useGameServerAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
     const location = useLocation()
     const [understand, toggleUnderstand] = useToggle()
 
@@ -159,7 +159,7 @@ const AppInner = () => {
                         }}
                     >
                         <LoadMessage />
-                        {user && <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />}
+                        <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
 
                         {understand && isServerUp && !UNDER_MAINTENANCE && (
                             <Switch>
