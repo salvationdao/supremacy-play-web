@@ -47,7 +47,7 @@ export const Stream = () => {
                 />
             </Stack>
 
-            <NoStreamScreen />
+            {!currentStream || (!currentStream.stream_id && <NoStreamScreen />)}
             {DEV_ONLY && <Music />}
         </>
     )
