@@ -106,7 +106,6 @@ export enum siteZIndex {
     Bar = 199,
     LeftDrawer = 198,
     RightDrawer = 197,
-    Stream = 102,
     RoutePage = 101,
 
     // Battle areana
@@ -120,6 +119,7 @@ export enum siteZIndex {
     Notfications = 40,
     MechStats = 30,
     VotingSystem = 30,
+    Stream = 5,
 }
 
 export const theme = createTheme({

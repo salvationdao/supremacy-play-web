@@ -47,7 +47,7 @@ export const GameContainer = createContainer(() => {
 
     // Subscribe for game settings
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<GameSettingsResponse | undefined>(
             GameServerKeys.SubGameSettings,
             (payload) => {
@@ -61,7 +61,7 @@ export const GameContainer = createContainer(() => {
             },
             null,
         )
-    }, [state, subscribe, userID])
+    }, [state, subscribe])
 
     // Subscribe on battle end information
     useEffect(() => {
@@ -79,7 +79,7 @@ export const GameContainer = createContainer(() => {
 
     // Subscirbe on current voting state
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<BribeStageResponse | undefined>(
             GameServerKeys.SubBribeStageUpdated,
             (payload) => {
@@ -90,7 +90,7 @@ export const GameContainer = createContainer(() => {
             },
             null,
         )
-    }, [state, subscribe, factionID])
+    }, [state, subscribe])
 
     // Subscribe on winner announcements
     useEffect(() => {
