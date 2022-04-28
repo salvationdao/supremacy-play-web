@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "."
 import { SupremacyPNG } from "../assets"
@@ -43,6 +43,7 @@ export const ChatContainer = createContainer(() => {
     const [factionChatMessages, setFactionChatMessages] = useState<ChatMessageType[]>([])
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
+    const [newMessage, setNewMessage] = useState<{ f: string | null; m: ChatMessageType }>()
 
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
@@ -186,47 +187,48 @@ export const ChatContainer = createContainer(() => {
     const newMessageHandler = useCallback(
         (message: ChatMessageType, faction_id: string | null) => {
             if (faction_id === null) {
+                if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread((prev) => prev + 1)
                 setGlobalChatMessages((prev) => {
-                    if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
                     // Buffer the messages
                     const newArray = prev.concat(message)
                     return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
                 })
             } else {
+                if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread((prev) => prev + 1)
                 setFactionChatMessages((prev) => {
-                    if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
                     // Buffer the messages
                     const newArray = prev.concat(message)
                     return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
                 })
             }
         },
-        [setGlobalChatMessages, setFactionChatMessages, tabValue, globalChatUnread, factionChatUnread],
+        [setGlobalChatMessages, setFactionChatMessages, tabValue, splitOption, setGlobalChatUnread, setFactionChatUnread],
     )
+
+    useEffect(() => {
+        if (!newMessage) return
+        if (newMessage.m.type === "TEXT" && (newMessage.m.data as TextMessageData).from_user.id === user?.id) {
+            saveUserStats(newMessage.m, !!newMessage.f)
+            return
+        }
+        newMessageHandler(newMessage.m, newMessage.f)
+    }, [newMessage])
 
     // Subscribe to global chat messages
     useEffect(() => {
-        if (state !== WebSocket.OPEN) return
+        if (state !== WebSocket.OPEN || !user || !subscribe) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
             if (!m) return
-            if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
-                saveUserStats(m, false)
-                return
-            }
-            newMessageHandler(m, null)
+            setNewMessage({ f: null, m })
         })
     }, [state, user, subscribe])
 
     // Subscribe to faction chat messages
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
+        if (state !== WebSocket.OPEN || !subscribe || !user || !user.faction_id || !user.faction) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
             if (!m) return
-            if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
-                saveUserStats(m, true)
-                return
-            }
-            newMessageHandler(m, "faction_id")
+            setNewMessage({ f: "faction_id", m })
         })
     }, [user, state, subscribe])
 
