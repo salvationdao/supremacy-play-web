@@ -108,11 +108,12 @@ export const LiveGraph = (props: LiveGraphProps) => {
 
             // Draw dashed line for new battle point
             context.strokeStyle = colors.lightRed
+            context.lineWidth = 2
             newBattlePoints.forEach((loc) => {
                 context.beginPath()
-                context.setLineDash([5, 15])
-                context.moveTo(loc.x, loc.y - 0.5)
-                context.lineTo(loc.x, loc.y + 0.5)
+                context.setLineDash([4, 4])
+                context.moveTo(loc.x - 5, loc.y - 10)
+                context.lineTo(loc.x - 5, loc.y + 10)
                 context.stroke()
             })
         }
