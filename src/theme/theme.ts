@@ -106,6 +106,7 @@ export enum siteZIndex {
     Bar = 199,
     LeftDrawer = 198,
     RightDrawer = 197,
+    Stream = 102,
     RoutePage = 101,
 
     // Battle areana
@@ -114,7 +115,7 @@ export enum siteZIndex {
     BattleHistory = 70,
     BattleEnd = 60,
     MiniMap = 50,
-    MoveableResizableHover = 45,
+    MoveableResizableHover = 51,
     MoveableResizable = 20,
     Notfications = 40,
     MechStats = 30,

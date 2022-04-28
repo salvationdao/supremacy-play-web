@@ -115,7 +115,7 @@ const App = () => {
 
 const AppInner = () => {
     const { isServerUp } = useGameServerWebsocket()
-    useGameServerAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
+    const { user } = useGameServerAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
     const location = useLocation()
     const [understand, toggleUnderstand] = useToggle()
 
@@ -159,7 +159,7 @@ const AppInner = () => {
                         }}
                     >
                         <LoadMessage />
-                        <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
+                        {user && <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />}
 
                         {understand && isServerUp && !UNDER_MAINTENANCE && (
                             <Switch>

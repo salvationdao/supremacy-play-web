@@ -3,6 +3,7 @@ import { useTour } from "@reactour/tour"
 import { useState } from "react"
 import { DEV_ONLY, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
+import { siteZIndex } from "../../theme/theme"
 import { Music } from "../Music/Music"
 import { Trailer } from "./Trailer"
 
@@ -20,7 +21,7 @@ export const Stream = () => {
 
     return (
         <>
-            <Stack sx={{ width: "100%", height: "100%" }}>
+            <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
                 <video
                     key={currentStream?.stream_id}
                     id={"remoteVideo"}
@@ -37,6 +38,7 @@ export const Stream = () => {
                         aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
                         width: iframeDimensions.width,
                         height: iframeDimensions.height,
+                        zIndex: siteZIndex.Stream,
                     }}
                 />
             </Stack>

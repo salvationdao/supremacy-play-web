@@ -41,9 +41,9 @@ const BattleArenaPageInner = () => {
         <>
             <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
                 <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
+                    <Stream />
                     {state === WebSocket.OPEN && user && haveSups ? (
                         <>
-                            <Stream />
                             <VotingSystem />
                             <MiniMap />
                             <Notifications />
