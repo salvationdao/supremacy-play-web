@@ -104,6 +104,9 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                             background: `${colors.neonBlue}`,
                                             borderRadius: 3,
                                         },
+                                        a: {
+                                            color: colors.neonBlue,
+                                        },
                                     }}
                                 >
                                     {document &&

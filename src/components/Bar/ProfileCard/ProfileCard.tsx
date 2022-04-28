@@ -3,13 +3,13 @@ import { useRef } from "react"
 import { BarExpandable, ConnectButton, PunishmentList } from "../.."
 import { SvgInfoCircular } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGameServerAuth, usePassportServerAuth } from "../../../containers"
+import { useGameServerAuth } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
+import { UserData } from "../../../types/passport"
 import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
 
-export const ProfileCard = () => {
-    const { user } = usePassportServerAuth()
+export const ProfileCard = ({ user }: { user?: UserData }) => {
     const { punishments } = useGameServerAuth()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
@@ -55,14 +55,14 @@ export const ProfileCard = () => {
                         overflowY: "hidden",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            height: ".4rem",
+                            height: ".3rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: colors.darkNeonBlue,
+                            background: "#FFFFFF50",
                             borderRadius: 3,
                         },
                     }}

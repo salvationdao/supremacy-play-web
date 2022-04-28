@@ -29,7 +29,7 @@ export const TargetTimerCountdown = ({
                 py: ".48rem",
                 backgroundColor: (theme) => `${theme.factionTheme.background}`,
                 borderRadius: 0.5,
-                zIndex: 9,
+                zIndex: 98,
             }}
         >
             <Typography variant="h6" sx={{ span: { lineHeight: 1, fontWeight: "fontWeightBold", color: colour } }}>

@@ -30,7 +30,7 @@ export const WarMachineAbilityAlert = ({ data, factionsAll }: { data: WarMachine
                 isFancy: true,
                 borderThickness: ".15rem",
             }}
-            opacity={0.7}
+            opacity={0.8}
             backgroundColor={colors.darkNavy}
         >
             <Stack

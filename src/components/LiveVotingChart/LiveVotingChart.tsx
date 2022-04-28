@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig } from ".."
-import { useGameServerWebsocket, useOverlayToggles } from "../../containers"
+import { useGameServerWebsocket, useOverlayToggles, useSupremacy } from "../../containers"
 import { parseString } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -15,6 +15,7 @@ const DefaultMaxLiveVotingDataLength = 100
 export const LiveVotingChart = () => {
     const { state, subscribe } = useGameServerWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
+    const { battleIdentifier } = useSupremacy()
     const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
     const [curWidth, setCurWidth] = useState(0)
     const [curHeight, setCurHeight] = useState(0)
@@ -57,10 +58,10 @@ export const LiveVotingChart = () => {
             defaultPositionX: 0,
             defaultPositionYBottom: 128,
             defaultSizeX: 415,
-            defaultSizeY: 115,
+            defaultSizeY: 120,
             // Limits
             minSizeX: 415,
-            minSizeY: 115,
+            minSizeY: 120,
             // Toggles
             allowResizeX: true,
             allowResizeY: false,
@@ -102,7 +103,7 @@ export const LiveVotingChart = () => {
                                 height: "100%",
                                 px: ".56rem",
                                 pt: "1.6rem",
-                                background: "#00000099",
+                                background: "#000000E6",
                                 border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
                                 borderRadius: 1,
                             }}
@@ -133,7 +134,12 @@ export const LiveVotingChart = () => {
                                 </Typography>
                             </Stack>
 
-                            <LiveGraph maxWidthPx={curWidth} maxHeightPx={curHeight} maxLiveVotingDataLength={maxLiveVotingDataLength} />
+                            <LiveGraph
+                                battleIdentifier={battleIdentifier}
+                                maxWidthPx={curWidth}
+                                maxHeightPx={curHeight}
+                                maxLiveVotingDataLength={maxLiveVotingDataLength}
+                            />
                         </Box>
                     </Box>
                 </MoveableResizable>

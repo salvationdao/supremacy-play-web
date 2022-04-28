@@ -9,7 +9,7 @@ import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsock
 import { getRarityDeets, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 
 const AmountItem = ({
@@ -178,7 +178,7 @@ export const DeployConfirmation = ({
     }, [state, hash, currentSettings, saveMobile, mobile, saveSettings])
 
     return (
-        <Modal open={open} onClose={onClose} sx={{ zIndex: 999999 }}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",

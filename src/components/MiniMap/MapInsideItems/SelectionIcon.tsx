@@ -39,7 +39,7 @@ export const SelectionIcon = ({
                 backgroundPosition: "center",
                 backgroundSize: "cover",
                 transform: `translate(${selection.x * gridWidth - sizeX / 2}px, ${selection.y * gridHeight - sizeY / 2}px)`,
-                zIndex: 999,
+                zIndex: 100,
             }}
         />
     )

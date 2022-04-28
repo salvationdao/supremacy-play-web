@@ -165,7 +165,7 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
                 isFancy: true,
                 borderThickness: ".15rem",
             }}
-            opacity={0.7}
+            opacity={0.8}
             backgroundColor={colors.darkNavy}
         >
             <Stack

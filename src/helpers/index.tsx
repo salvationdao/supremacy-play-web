@@ -317,12 +317,12 @@ export const getUserRankDeets = (rank: UserRank, width: string, height: string):
         case "CORPORAL":
             icon = <SvgCorporal width={width} height={height} />
             title = "CORPORAL"
-            desc = 'User has achieved "Private" and has at least 1 ability kill.'
+            desc = 'User has achieved previous rank "Private" and has at least 1 ability kill.'
             break
         case "GENERAL":
             icon = <SvgGeneral width={width} height={height} />
             title = "GENERAL"
-            desc = 'User has achieved "Corporal" and contributed top 20% of ability kills for their Syndicate in the past 7 days.'
+            desc = 'User has achieved previous rank "Corporal" and contributed top 20% of ability kills for their Syndicate in the past 7 days.'
             break
         case "NEW_RECRUIT":
         default:

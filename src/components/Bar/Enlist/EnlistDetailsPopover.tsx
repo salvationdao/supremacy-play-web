@@ -6,7 +6,7 @@ import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { usePassportServerWebsocket, useSnackbar } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { PassportServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { FactionGeneralData, FactionStat } from "../../../types/passport"
 
 interface EnlistDetailsProps {
@@ -47,7 +47,7 @@ export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: Enl
                 horizontal: "center",
             }}
             PaperProps={{ sx: { backgroundColor: "transparent", boxShadow: 0, overflow: "visible" } }}
-            sx={{ zIndex: 999999 }}
+            sx={{ zIndex: siteZIndex.Popover }}
         >
             <Box sx={{ filter: "drop-shadow(0 3px 3px #00000050)" }}>
                 <ClipThing

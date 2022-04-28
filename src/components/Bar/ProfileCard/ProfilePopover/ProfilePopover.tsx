@@ -3,6 +3,7 @@ import { MutableRefObject, useEffect } from "react"
 import { SvgAssets, SvgProfile, SvgShop, SvgSupport } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
 import { useToggle } from "../../../../hooks"
+import { siteZIndex } from "../../../../theme/theme"
 import { UserData } from "../../../../types/passport"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
@@ -45,7 +46,7 @@ export const ProfilePopover = ({
             }}
             sx={{
                 mt: ".8rem",
-                zIndex: 10000,
+                zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
                     background: "none",
                     backgroundColor: (theme) => theme.factionTheme.background,
