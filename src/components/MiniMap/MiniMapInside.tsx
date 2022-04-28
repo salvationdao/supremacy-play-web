@@ -371,7 +371,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 pointerEvents: "none",
-                zIndex: 999,
+                zIndex: 99,
             }}
         >
             <Typography

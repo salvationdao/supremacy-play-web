@@ -4,6 +4,7 @@ import { NoMultiFilter, SplitView, SystemMessageFilter } from "../../.."
 import { SvgSettings } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
+import { siteZIndex } from "../../../../theme/theme"
 import { ChatFontSize } from "./ChatFontSize"
 
 export const ChatSettings = ({ primaryColor, faction_id }: { primaryColor: string; faction_id: string | null }) => {
@@ -77,7 +78,7 @@ const SettingsPopover = ({
             }}
             sx={{
                 mt: ".8rem",
-                zIndex: 10000,
+                zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
                     mt: "-2.5rem",
                     background: "none",

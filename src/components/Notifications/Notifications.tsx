@@ -31,6 +31,7 @@ import {
     killNoti2,
     killNoti3,
 } from "./testData"
+import { siteZIndex } from "../../theme/theme"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -215,7 +216,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                 position: "absolute",
                 top: "1rem",
                 right: "1rem",
-                zIndex: 15,
+                zIndex: siteZIndex.Notfications,
                 overflow: "hidden",
             }}
         >

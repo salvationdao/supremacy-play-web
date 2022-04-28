@@ -2,7 +2,7 @@ import { Box, Button, Stack, Tab, Tabs, useTheme, Theme } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgNext } from "../../assets"
 import { ROUTES_ARRAY } from "../../routes"
-import { colors, fonts } from "../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
@@ -21,7 +21,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                 overflow: "hidden",
                 width: `${DRAWER_BAR_WIDTH}rem`,
                 backgroundColor: (theme) => theme.factionTheme.background,
-                zIndex: 9999,
+                zIndex: siteZIndex.LeftDrawer,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
                         mb: ".2rem",

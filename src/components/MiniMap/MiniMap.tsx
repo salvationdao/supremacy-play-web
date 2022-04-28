@@ -5,7 +5,7 @@ import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { useDimension, useGame, useOverlayToggles, BribeStageResponse, WinnerAnnouncementResponse, useSnackbar, Severity } from "../../containers"
 import { useToggle } from "../../hooks"
-import { colors } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension, Map } from "../../types"
 
 interface MiniMapProps {
@@ -194,7 +194,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                 pointerEvents: "none",
                 filter: "drop-shadow(0 3px 3px #00000050)",
                 transition: "all .2s",
-                zIndex: 32,
+                zIndex: siteZIndex.MiniMap,
             }}
         >
             <Box sx={{ position: "relative", pointerEvents: "all" }}>
@@ -218,7 +218,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                 cursor: "nwse-resize",
                                 color: colors.text,
                                 opacity: 0.8,
-                                zIndex: 50,
+                                zIndex: siteZIndex.MiniMap,
                             }}
                         >
                             <SvgResizeXY size="1rem" sx={{ transform: "rotate(90deg)" }} />

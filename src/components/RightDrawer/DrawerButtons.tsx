@@ -1,7 +1,7 @@
 import { Box, Tab, Tabs, Theme, useTheme } from "@mui/material"
 import { SvgChat, SvgRobot } from "../../assets"
 import { RightDrawerPanels } from "../../containers"
-import { colors, fonts } from "../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
@@ -23,7 +23,7 @@ export const DrawerButtons = ({
                 overflow: "hidden",
                 width: `${DRAWER_BAR_WIDTH}rem`,
                 backgroundColor: (theme) => theme.factionTheme.background,
-                zIndex: 9999,
+                zIndex: siteZIndex.RightDrawer,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
                         mb: ".2rem",

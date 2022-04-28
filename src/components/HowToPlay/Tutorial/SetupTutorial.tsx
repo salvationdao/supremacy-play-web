@@ -5,7 +5,7 @@ import { StepType, useTour } from "@reactour/tour"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
 import { useEffect, useMemo } from "react"
 import { RightDrawerPanels, useBar, usePassportServerAuth, useRightDrawer, useSupremacy } from "../../../containers"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 
 export const SetupTutorial = () => {
     const { user } = usePassportServerAuth()
@@ -14,6 +14,17 @@ export const SetupTutorial = () => {
     const { setIsOpen, setSteps, setCurrentStep } = useTour()
     const { toggleActiveBar } = useBar()
     const { activePanel, togglePanel } = useRightDrawer()
+
+    // Only show if no user
+    const preAuthSteps: StepType[] = useMemo(() => {
+        return [
+            {
+                selector: "#tutorial-connect",
+                content: "Connect to your wallet here, you'll get the most out of this tutorial and Supremacy while logged in.",
+                mutationObservables: ["#tutorial-connect"],
+            },
+        ]
+    }, [])
 
     // Basic steps when user is logged in
     const baseSteps: StepType[] = useMemo(() => {
@@ -61,7 +72,7 @@ export const SetupTutorial = () => {
             },
             {
                 selector: "#tutorial-purchase",
-                content: "You can purchase $SUPS directly from Supremacy here. The $SUPs will be available to you in your on-world wallet.",
+                content: "You can purchase $SUPS directly from Supremacy here. The $SUPS will be available to you in your on-world wallet.",
                 action: () => {
                     toggleActiveBar("wallet", true)
                 },
@@ -70,7 +81,7 @@ export const SetupTutorial = () => {
             {
                 selector: "#tutorial-passport",
                 content:
-                    "Access key profile functionalities here, these will open up your profile information on your Passport along with your War Machine inventory and the game store.",
+                    "Access key profile functionalities here. These will open up your profile information on your Passport along with your War Machine inventory and the game store.",
                 action: () => {
                     toggleActiveBar("profile", true)
                 },
@@ -190,10 +201,15 @@ export const SetupTutorial = () => {
     }, [])
 
     useEffect(() => {
+        if (!user) {
+            setSteps([...preAuthSteps])
+            return
+        }
+
         let tutorialSteps = [...baseSteps]
 
         //if the user is not enlisted, finish tutorial
-        if (user?.faction_id) {
+        if (user.faction_id) {
             tutorialSteps = [...tutorialSteps, ...enlistedSteps]
         }
 
@@ -204,7 +220,7 @@ export const SetupTutorial = () => {
         tutorialSteps = [...tutorialSteps, ...endSteps]
 
         setSteps(tutorialSteps)
-    }, [baseSteps, enlistedSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
+    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
 
     return null
 }
@@ -212,7 +228,7 @@ export const SetupTutorial = () => {
 export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial<Styles>) | undefined = {
     maskWrapper: (base) => ({
         ...base,
-        zIndex: 999999998,
+        zIndex: siteZIndex.Modal - 1,
         opacity: 0.9,
     }),
     popover: (base) => ({
@@ -224,7 +240,7 @@ export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial
         fontFamily: fonts.shareTech,
         lineHeight: 1.5,
         padding: "2.8rem 3rem",
-        zIndex: 999999999,
+        zIndex: siteZIndex.Modal,
         "& button:hover, & svg:hover": {
             fill: "#FFFFFF",
             color: "#FFFFFF",
