@@ -173,7 +173,7 @@ const Mech = ({ state, subscribe, warMachine, setDeathCount }: MechProps) => {
             },
             { participantID },
         )
-    }, [state, subscribe, participantID, hash])
+    }, [state, subscribe, participantID])
 
     useEffect(() => {
         if (warMachineDestroyedRecord && setDeathCount) {

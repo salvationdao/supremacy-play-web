@@ -69,7 +69,7 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
             },
             { participantID },
         )
-    }, [state, subscribe, participantID, hash])
+    }, [state, subscribe, participantID])
 
     return (
         <WarMachineItemInner
