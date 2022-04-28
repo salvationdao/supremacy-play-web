@@ -3,7 +3,7 @@ import { useTour } from "@reactour/tour"
 import { MutableRefObject, useRef } from "react"
 import { SvgQuestionMark } from "../../assets"
 import { useToggle } from "../../hooks"
-import { colors } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 import GameGuide from "./GameGuide/GameGuide"
 import { SetupTutorial } from "./Tutorial/SetupTutorial"
 
@@ -22,6 +22,7 @@ export const HowToPlay = () => {
                 onClick={() => toggleIsPopoverOpen()}
                 ref={popoverRef}
                 sx={{
+                    flexShrink: 0,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -86,7 +87,7 @@ const OptionsPopover = ({
             }}
             sx={{
                 mt: ".8rem",
-                zIndex: 10000,
+                zIndex: siteZIndex.Modal,
                 ".MuiPaper-root": {
                     background: "none",
                     backgroundColor: (theme) => theme.factionTheme.background,

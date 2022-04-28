@@ -5,6 +5,7 @@ import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { useDimension, useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
+import { siteZIndex } from "../../theme/theme"
 import { WarMachineItem } from "./WarMachineItem"
 
 export const WarMachineStats = () => {
@@ -52,7 +53,7 @@ export const WarMachineStats = () => {
                     bottom: 0,
                     left: 0,
                     right: isMapOpen ? `calc(${MINI_MAP_DEFAULT_SIZE * adjustment}px + 2rem)` : 0,
-                    zIndex: 13,
+                    zIndex: siteZIndex.MechStats,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",
                 }}

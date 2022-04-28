@@ -1,6 +1,6 @@
 import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { SvgClose } from "../../../../assets"
-import { colors } from "../../../../theme/theme"
+import { colors, siteZIndex } from "../../../../theme/theme"
 import { BattleMultipliers } from "../../../../types"
 import { useEffect, MutableRefObject } from "react"
 import { useToggle } from "../../../../hooks"
@@ -45,7 +45,7 @@ export const MultipliersPopover = ({
             }}
             sx={{
                 mt: ".8rem",
-                zIndex: 10000,
+                zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
                     mt: ".8rem",
                     background: "none",

@@ -1,7 +1,7 @@
 import { Box, IconButton, Link, Stack, Typography } from "@mui/material"
 import { LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube, MaintenancePNG } from "../../assets"
 import { SUPREMACY_PAGE } from "../../constants"
-import { colors, fonts } from "../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 
 export const Maintenance = () => {
     return (
@@ -27,7 +27,7 @@ export const Maintenance = () => {
                     left: "5rem",
                     right: "5rem",
                     transform: "translateY(-60%)",
-                    zIndex: 3,
+                    zIndex: siteZIndex.RoutePage,
                 }}
             >
                 <Link target="_blank" href={SUPREMACY_PAGE} sx={{ width: "100%", height: "12rem" }}>

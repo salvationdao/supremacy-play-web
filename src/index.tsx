@@ -77,7 +77,7 @@ const App = () => {
             styles: tourStyles,
             showBadge: false,
             disableKeyboardNavigation: false,
-            disableDotsNavigation: false,
+            disableDotsNavigation: true,
         }),
         [],
     )

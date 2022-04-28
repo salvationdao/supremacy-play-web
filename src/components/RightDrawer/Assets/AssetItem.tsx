@@ -210,13 +210,15 @@ export const AssetItem = ({
                     <Box
                         onClick={() => toggleMechDrawerOpen()}
                         sx={{
+                            height: "100%",
                             borderRadius: 0.2,
                             cursor: "pointer",
                             ":hover": { backgroundColor: `#FFFFFF20` },
                         }}
                     >
-                        <Box
+                        <Stack
                             sx={{
+                                height: "100%",
                                 px: ".7rem",
                                 pt: ".6rem",
                                 pb: ".8rem",
@@ -273,10 +275,10 @@ export const AssetItem = ({
                                 {name || label}
                             </Typography>
 
-                            <Stack spacing=".3rem" alignItems="center" sx={{ mt: ".7rem" }}>
+                            <Stack spacing=".3rem" alignItems="center" sx={{ mt: "auto", pt: ".7rem" }}>
                                 {statusArea}
                             </Stack>
-                        </Box>
+                        </Stack>
                     </Box>
                 </Box>
             )

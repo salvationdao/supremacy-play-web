@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material"
 import { useGameServerWebsocket } from "../../containers"
 import { pulseEffect } from "../../theme/keyframes"
-import { fonts } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 
 export const LoadMessage = () => {
     const { state, isServerUp } = useGameServerWebsocket()
@@ -28,7 +28,7 @@ export const LoadMessage = () => {
                 backgroundColor: "#000000",
                 animation: `${pulseEffect} 5s infinite`,
                 filter: "drop-shadow(0 3px 3px #00000060)",
-                zIndex: 999,
+                zIndex: siteZIndex.LoadMessage,
                 pointerEvents: "none",
             }}
         >

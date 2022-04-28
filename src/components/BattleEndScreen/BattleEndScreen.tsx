@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react"
 import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionMultipliers, SectionTopSups, SectionTopSupsFaction, SectionWinner } from ".."
 import { useGame, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
-import { colors } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 
 export const BOTTOM_BUTTONS_HEIGHT = 5 //rems
 
@@ -52,7 +52,7 @@ export const BattleEndScreen = () => {
                     bottom: 0,
                     left: 0,
                     boxShadow: 20,
-                    zIndex: 999,
+                    zIndex: siteZIndex.Popover,
                     maxWidth: "48rem",
                     ...backgroundColorGradient,
                 }}
