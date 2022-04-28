@@ -44,7 +44,9 @@ export const ResizeBox = (props: ResizeBoxProps) => {
                 width: minConstraints[0] * (adjustment || 1),
                 height: minConstraints[1] * (adjustment || 1),
             })
-    }, [adjustment, minConstraints, onResizeStop])
+        // NOTE: adding minConstraints to deps will cause infinite rendering loop
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [adjustment, onResizeStop])
 
     const onResizeStart = useCallback(() => toggleResizing(true), [toggleResizing])
 
@@ -56,7 +58,7 @@ export const ResizeBox = (props: ResizeBoxProps) => {
                 height: resizingDimensions.height * (adjustment || 1),
             })
         toggleResizing(false)
-    }, [adjustment, onResizeStop, resizingDimensions, toggleResizing])
+    }, [resizingDimensions, toggleResizing, onResizeStop, adjustment])
 
     return (
         <ResizeBoxInner

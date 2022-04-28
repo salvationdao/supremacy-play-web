@@ -13,7 +13,7 @@ interface SubscribeGamebar {
 /**
  * A Container that handles Authorisation
  */
-const AuthContainer = createContainer((initialState?: { setLogin(user: UserData): void }) => {
+const AuthContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, send, subscribe } = usePassportServerWebsocket()
     const [user, setUser] = useState<UserData>()
@@ -27,10 +27,6 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
 
     const userID = user?.id
     const factionID = user?.faction ? user.faction.id : undefined
-
-    useEffect(() => {
-        if (user && initialState && initialState.setLogin) initialState.setLogin(user)
-    }, [user])
 
     // get user by session id
     useEffect(() => {
@@ -49,7 +45,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: UserData)
                 setSessionIDLoading(false)
             }
         })()
-    }, [send, state, userID, sessionID])
+    }, [send, state, userID, sessionID, newSnackbarMessage])
 
     useEffect(() => {
         if (!subscribe || !sessionID || state !== WebSocket.OPEN) return
