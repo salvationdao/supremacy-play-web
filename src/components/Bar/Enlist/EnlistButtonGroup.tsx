@@ -31,7 +31,7 @@ export const EnlistButtonGroup = () => {
                 return false
             }
         })()
-    }, [send, state])
+    }, [newSnackbarMessage, send, state])
 
     if (!factionsData) {
         return (

@@ -19,7 +19,7 @@ export const WalletContainer = createContainer(() => {
         return subscribe<string>(PassportServerKeys.SubscribeWallet, (payload) => {
             if (!payload) return
             setOnWorldSupsRaw(payload)
-            setOnworldSups(new BigNumber(onWorldSupsRaw))
+            setOnworldSups(new BigNumber(payload))
         })
     }, [state, subscribe, user])
 
@@ -37,7 +37,7 @@ export const WalletContainer = createContainer(() => {
         // Only update the have sups state when there's a change
         if (supsAboveZero && !haveSups) return toggleHaveSups(true)
         if (!supsAboveZero && haveSups) return toggleHaveSups(false)
-    }, [onWorldSups, haveSups])
+    }, [onWorldSups, haveSups, toggleHaveSups])
 
     return {
         onWorldSups,

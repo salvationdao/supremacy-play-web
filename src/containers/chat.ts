@@ -114,7 +114,7 @@ export const ChatContainer = createContainer(() => {
             console.debug(e)
             return
         }
-    }, [state, send])
+    }, [state, send, newSnackbarMessage])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
@@ -135,7 +135,7 @@ export const ChatContainer = createContainer(() => {
             console.debug(e)
             return
         }
-    }, [state, user, send])
+    }, [state, user, send, newSnackbarMessage])
 
     useEffect(() => {
         if (splitOption == "split") {
@@ -150,7 +150,7 @@ export const ChatContainer = createContainer(() => {
         if (tabValue === 0 && globalChatUnread !== 0) {
             setGlobalChatUnread(0)
         }
-    }, [tabValue, factionChatUnread, splitOption])
+    }, [tabValue, factionChatUnread, globalChatUnread, splitOption])
 
     const saveUserStats = useCallback(
         (message: ChatMessageType, isFaction: boolean) => {
@@ -220,7 +220,7 @@ export const ChatContainer = createContainer(() => {
             return
         }
         newMessageHandler(newMessage.m, newMessage.f)
-    }, [newMessage])
+    }, [newMessage, newMessageHandler, saveUserStats, user?.id])
 
     // Subscribe to global chat messages
     useEffect(() => {

@@ -36,7 +36,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
         } finally {
             toggleIsLeaving(false)
         }
-    }, [state, hash])
+    }, [state, isLeaving, toggleIsLeaving, send, hash, onClose, newSnackbarMessage])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

@@ -41,7 +41,7 @@ export const BattleAbilityItem = () => {
             },
             null,
         )
-    }, [state, subscribe])
+    }, [state, subscribe, toggleFadeEffect])
 
     // DO NOT REMOVE THIS! Trigger the subscribe to the progress bars net message
     useEffect(() => {
@@ -109,7 +109,7 @@ export const BattleAbilityItem = () => {
                 }
             }
         },
-        [send, battleAbility],
+        [battleAbility, send, factionID],
     )
 
     const isVoting = useMemo(

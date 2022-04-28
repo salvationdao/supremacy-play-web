@@ -100,7 +100,7 @@ export const SetupTutorial = () => {
                 position: "top",
             },
         ]
-    }, [user?.faction_id])
+    }, [toggleActiveBar, user?.faction_id])
 
     //only show if user is enlisted
     const enlistedSteps: StepType[] = useMemo(() => {
@@ -144,7 +144,7 @@ export const SetupTutorial = () => {
                 },
             },
         ]
-    }, [activePanel])
+    }, [activePanel, togglePanel])
 
     //only show if user has sups
     const withSupsSteps: StepType[] = useMemo(() => {
@@ -200,7 +200,7 @@ export const SetupTutorial = () => {
                 position: "center",
             },
         ]
-    }, [])
+    }, [setCurrentStep, setIsOpen])
 
     useEffect(() => {
         if (!user) {
@@ -222,7 +222,7 @@ export const SetupTutorial = () => {
         tutorialSteps = [...tutorialSteps, ...endSteps]
 
         setSteps(tutorialSteps)
-    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, user, user?.faction_id, haveSups])
+    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, user, haveSups, setSteps])
 
     return null
 }

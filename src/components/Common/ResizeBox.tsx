@@ -44,9 +44,9 @@ export const ResizeBox = (props: ResizeBoxProps) => {
                 width: minConstraints[0] * (adjustment || 1),
                 height: minConstraints[1] * (adjustment || 1),
             })
-    }, [adjustment])
+    }, [adjustment, minConstraints, onResizeStop])
 
-    const onResizeStart = useCallback(() => toggleResizing(true), [])
+    const onResizeStart = useCallback(() => toggleResizing(true), [toggleResizing])
 
     const onResizeStop2 = useCallback(() => {
         if (!resizingDimensions || resizingDimensions.width <= 0 || resizingDimensions.height <= 0) return
@@ -56,7 +56,7 @@ export const ResizeBox = (props: ResizeBoxProps) => {
                 height: resizingDimensions.height * (adjustment || 1),
             })
         toggleResizing(false)
-    }, [resizingDimensions])
+    }, [adjustment, onResizeStop, resizingDimensions, toggleResizing])
 
     return (
         <ResizeBoxInner

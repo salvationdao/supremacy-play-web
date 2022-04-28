@@ -74,7 +74,7 @@ const MiniMapInsideInner = ({
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
             console.debug(e)
         }
-    }, [state, send, selection, setSubmitted, setSelection])
+    }, [state, selection, send, setSubmitted, newSnackbarMessage])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
@@ -341,7 +341,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
         }
 
         if (!endMoment) return setEndMoment(moment().add(3, "seconds"))
-    }, [selection])
+    }, [endMoment, selection])
 
     useEffect(() => {
         setDelay(null)
@@ -359,7 +359,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
 
     useEffect(() => {
         if (selection && timeRemain == -1) onConfirm()
-    }, [timeRemain])
+    }, [onConfirm, selection, timeRemain])
 
     if (timeRemain < 0) return null
 

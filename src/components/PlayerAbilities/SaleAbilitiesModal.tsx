@@ -52,7 +52,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                 onClose()
             }, DRAWER_TRANSITION_DURATION + 50)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     return (
         <>

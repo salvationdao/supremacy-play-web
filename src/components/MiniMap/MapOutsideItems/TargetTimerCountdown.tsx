@@ -46,7 +46,7 @@ const CountdownText = ({ endTime, setTimeReachZero }: { endTime: Date; setTimeRe
 
     useEffect(() => {
         if (totalSecRemain <= 1) setTimeReachZero(true)
-    }, [totalSecRemain])
+    }, [setTimeReachZero, totalSecRemain])
 
     return <>{Math.max(totalSecRemain - 2, 0)}</>
 }

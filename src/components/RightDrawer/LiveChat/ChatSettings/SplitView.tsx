@@ -6,9 +6,12 @@ import { SplitOptionType, useChat } from "../../../../containers"
 export const SplitView = () => {
     const { splitOption, setSplitOption } = useChat()
 
-    const onChange = useCallback((event: React.MouseEvent<HTMLElement>, newValue: SplitOptionType) => {
-        if (newValue) setSplitOption(newValue)
-    }, [])
+    const onChange = useCallback(
+        (event: React.MouseEvent<HTMLElement>, newValue: SplitOptionType) => {
+            if (newValue) setSplitOption(newValue)
+        },
+        [setSplitOption],
+    )
 
     return (
         <Stack

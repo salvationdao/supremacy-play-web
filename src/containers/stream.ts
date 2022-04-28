@@ -116,8 +116,8 @@ export const StreamContainer = createContainer(() => {
     }, [selectedResolution, currentStream, streamResolutions, currentPlayingStreamHost])
 
     useEffect(() => {
-        if (isMute) setVolume(0)
-        if (isMusicMute) setMusicVolume(0)
+        if (localStorage.getItem("isMute") == "true") setVolume(0)
+        if (localStorage.getItem("isMusicMute") == "true") setMusicVolume(0)
     }, [])
 
     useEffect(() => {
@@ -140,7 +140,7 @@ export const StreamContainer = createContainer(() => {
             vidRef.current.volume = volume
         }
         toggleIsMute(false)
-    }, [volume])
+    }, [toggleIsMute, volume])
 
     useEffect(() => {
         localStorage.setItem("musicVolume", musicVolume.toString())
@@ -151,7 +151,7 @@ export const StreamContainer = createContainer(() => {
         }
 
         toggleIsMusicMute(false)
-    }, [musicVolume])
+    }, [musicVolume, toggleIsMusicMute])
 
     const changeStream = useCallback((s: Stream) => {
         if (!s) return
@@ -183,22 +183,7 @@ export const StreamContainer = createContainer(() => {
         // By default its sorted by quietest servers first
         const quietestStreams = availStreams.sort((a, b) => (a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1))
 
-        // If the local storage stream is in the list, set as current stream
-        const localStream = localStorage.getItem("new_stream_props")
-        if (localStream) {
-            const savedStream = JSON.parse(localStream)
-            if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
-                setCurrentStream(savedStream)
-                setNewStreamOptions(quietestStreams, true)
-                return
-            }
-        }
-
-        setNewStreamOptions(quietestStreams)
-    }, [streams])
-
-    const setNewStreamOptions = useCallback(
-        (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
+        const setNewStreamOptions = (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
             // Limit to only a few for the dropdown and include our current selection if not already in the list
             const temp = newStreamOptions.slice(0, MAX_OPTIONS)
             if (currentStream && !getObjectFromArrayByKey(temp, currentStream.stream_id, "stream_id")) {
@@ -215,9 +200,21 @@ export const StreamContainer = createContainer(() => {
 
             // Reverse the order for rendering so best is closer to user's mouse
             setStreamOptions(temp.reverse())
-        },
-        [currentStream],
-    )
+        }
+
+        // If the local storage stream is in the list, set as current stream
+        const localStream = localStorage.getItem("new_stream_props")
+        if (localStream) {
+            const savedStream = JSON.parse(localStream)
+            if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
+                setCurrentStream(savedStream)
+                setNewStreamOptions(quietestStreams, true)
+                return
+            }
+        }
+
+        setNewStreamOptions(quietestStreams)
+    }, [changeStream, currentStream, streams])
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
@@ -228,7 +225,7 @@ export const StreamContainer = createContainer(() => {
             }
             try {
                 vidRef.current = vid
-                vidRef.current.volume = volume
+                vidRef.current.volume = parseString(localStorage.getItem("streamVolume"), 0.3)
 
                 webRtc.current = new WebRTCAdaptor({
                     websocket_url: currentStream.url,
@@ -278,7 +275,7 @@ export const StreamContainer = createContainer(() => {
                 webRtc.current = undefined
             }
         },
-        [currentStream],
+        [currentStream, newSnackbarMessage],
     )
 
     return {

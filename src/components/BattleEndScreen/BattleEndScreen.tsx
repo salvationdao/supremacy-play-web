@@ -17,12 +17,12 @@ export const BattleEndScreen = () => {
             toggleIsEndBattleDetailEnabled(true)
             toggleIsEndBattleDetailOpen(true)
         }
-    }, [battleEndDetail])
+    }, [battleEndDetail, toggleIsEndBattleDetailEnabled, toggleIsEndBattleDetailOpen])
 
     // New game started, so close the panel
     useEffect(() => {
         if (map) toggleIsEndBattleDetailOpen(false)
-    }, [map])
+    }, [map, toggleIsEndBattleDetailOpen])
 
     const primaryColor = useMemo(
         () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail.winning_faction.theme.primary : colors.neonBlue),

@@ -113,7 +113,7 @@ export const DeployConfirmation = ({
                 newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
             }
         })()
-    }, [user, send])
+    }, [user, send, newSnackbarMessage])
 
     useEffect(() => {
         let qc = new BigNumber(queueCost).shiftedBy(-18)
@@ -175,7 +175,21 @@ export const DeployConfirmation = ({
         } finally {
             toggleIsDeploying(false)
         }
-    }, [state, hash, currentSettings, saveMobile, mobile, saveSettings])
+    }, [
+        state,
+        user,
+        saveMobile,
+        mobile,
+        saveSettings,
+        send,
+        hash,
+        currentSettings,
+        psSend,
+        newSnackbarMessage,
+        setTelegramShortcode,
+        onClose,
+        toggleIsDeploying,
+    ])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -537,7 +551,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
 
             return () => clearTimeout(timeout)
         }
-    }, [copySuccess])
+    }, [copySuccess, toggleCopySuccess])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return

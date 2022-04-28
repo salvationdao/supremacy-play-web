@@ -43,26 +43,28 @@ export const WalletInfo = () => {
 
     // Append to latest transaction to list
     useEffect(() => {
-        if (!transactions || transactions.length <= 0 || !latestTransaction || latestTransaction.length <= 0 || !userID || userID === NullUUID) return
+        setTransactions((prev) => {
+            if (!prev || prev.length <= 0 || !latestTransaction || latestTransaction.length <= 0 || !userID || userID === NullUUID) return []
 
-        // Accrue stuff
-        latestTransaction.forEach((tx) => {
-            const isCredit = userID === tx.credit
-            const summary = (tx.description + tx.sub_group + tx.group).toLowerCase()
+            // Accrue stuff
+            latestTransaction.forEach((tx) => {
+                const isCredit = userID === tx.credit
+                const summary = (tx.description + tx.sub_group + tx.group).toLowerCase()
 
-            // For inflows
-            if (isCredit && (summary.includes("spoil") || summary.includes("won"))) {
-                supsEarned.current = supsEarned.current.plus(new BigNumber(tx.amount))
-            }
+                // For inflows
+                if (isCredit && (summary.includes("spoil") || summary.includes("won"))) {
+                    supsEarned.current = supsEarned.current.plus(new BigNumber(tx.amount))
+                }
 
-            // For outflows
-            if (!isCredit && !transactions.some((t) => t.id === tx.id)) {
-                supsSpent.current = supsSpent.current.plus(new BigNumber(tx.amount))
-            }
+                // For outflows
+                if (!isCredit && !prev.some((t) => t.id === tx.id)) {
+                    supsSpent.current = supsSpent.current.plus(new BigNumber(tx.amount))
+                }
+            })
+
+            // Append the latest transaction into list
+            return [...latestTransaction, ...prev].slice(0, 30)
         })
-
-        // Append the latest transaction into list
-        setTransactions([...latestTransaction, ...transactions].slice(0, 30))
     }, [latestTransaction, userID])
 
     return (

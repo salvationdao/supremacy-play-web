@@ -47,7 +47,7 @@ interface SupsBarProps {
 
 const SupsBar = ({ forceDisplay100Percentage, factionsAll, abilityProgress }: SupsBarProps) => {
     const { faction_id, sups_cost, current_sups } = abilityProgress
-    const primaryColor = useMemo(() => factionsAll[faction_id]?.theme.primary, [factionsAll])
+    const primaryColor = useMemo(() => factionsAll[faction_id]?.theme.primary, [faction_id, factionsAll])
 
     return (
         <Stack key={faction_id} spacing=".96rem" direction="row" alignItems="center">

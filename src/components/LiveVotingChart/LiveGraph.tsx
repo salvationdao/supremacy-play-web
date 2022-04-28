@@ -53,7 +53,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
                 return lvd.concat(rawData)
             })
         })
-    }, [state, subscribeNetMessage])
+    }, [maxLiveVotingDataLength, state, subscribeNetMessage])
 
     // Draw live graph
     useEffect(() => {
@@ -117,7 +117,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
                 context.stroke()
             })
         }
-    }, [liveVotingData, canvasRef.current])
+    }, [liveVotingData, maxWidthPx, maxLiveVotingDataLength])
 
     return <LiveGraphInner maxWidthPx={maxWidthPx} maxHeightPx={maxHeightPx} canvasRef={canvasRef} largest={largest} />
 }

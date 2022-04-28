@@ -76,16 +76,19 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
         localStorage.setItem(`${localStoragePrefix}PosY`, newPosY.toString())
 
         onReizeCallback && onReizeCallback(curWidth, curHeight)
-    }, [width, height, curWidth, curHeight])
+    }, [width, height, curWidth, curHeight, curPosX, defaultPositionX, curPosY, defaultPositionYBottom, localStoragePrefix, onReizeCallback])
 
     // When dragging stops, just set the position and save to local storage
     // The bounds in the  Draggable component already limits it's range of motion
-    const onDragStop = useCallback((e: DraggableEvent, data: DraggableData) => {
-        setCurPosX(data.x)
-        setCurPosY(data.y)
-        localStorage.setItem(`${localStoragePrefix}PosX`, data.x.toString())
-        localStorage.setItem(`${localStoragePrefix}PosY`, data.y.toString())
-    }, [])
+    const onDragStop = useCallback(
+        (e: DraggableEvent, data: DraggableData) => {
+            setCurPosX(data.x)
+            setCurPosY(data.y)
+            localStorage.setItem(`${localStoragePrefix}PosX`, data.x.toString())
+            localStorage.setItem(`${localStoragePrefix}PosY`, data.y.toString())
+        },
+        [localStoragePrefix],
+    )
 
     // When user resize is done, save into local storage
     const onResizeStop = useCallback(
@@ -103,7 +106,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
             localStorage.setItem(`${localStoragePrefix}SizeX`, size.width.toString())
             localStorage.setItem(`${localStoragePrefix}SizeY`, size.height.toString())
         },
-        [curWidth, curHeight, allowResizeX, allowResizeY, minSizeX, minSizeY, width, height, adjustment],
+        [curWidth, curHeight, allowResizeX, minSizeX, adjustment, width, allowResizeY, minSizeY, height, localStoragePrefix],
     )
 
     return (

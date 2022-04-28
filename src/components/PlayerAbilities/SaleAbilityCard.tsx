@@ -100,7 +100,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                 setError(e)
             }
         }
-    }, [state, send, subscribe, user])
+    }, [state, send, subscribe, user, abilityID])
 
     if (!saleAbility || !price) {
         return <Box>Loading...</Box>

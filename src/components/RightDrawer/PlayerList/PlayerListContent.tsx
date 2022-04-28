@@ -22,7 +22,7 @@ export const PlayerListContent = ({
     const { factionsAll } = useSupremacy()
     const [newPlayerList, setNewPlayerList] = useState<User[]>()
 
-    const faction = useMemo(() => factionsAll[user.faction_id], [])
+    const faction = useMemo(() => factionsAll[user.faction_id], [factionsAll, user.faction_id])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -48,7 +48,7 @@ export const PlayerListContent = ({
 
         setActivePlayers(newPlayerList.sort((a, b) => a.username.localeCompare(b.username)))
         setInactivePlayers(newInactiveList.sort((a, b) => a.username.localeCompare(b.username)))
-    }, [newPlayerList, setActivePlayers, setInactivePlayers])
+    }, [activePlayers, inactivePlayers, newPlayerList, setActivePlayers, setInactivePlayers])
 
     return (
         <Stack spacing=".5rem">

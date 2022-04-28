@@ -198,7 +198,7 @@ export const AssetItem = ({
                 </Typography>
             </Button>
         )
-    }, [isGameServerUp, assetQueue, isGridView])
+    }, [isGameServerUp, assetQueue, isInQueue, isGridView, toggleLeaveModalOpen, toggleDeployModalOpen])
 
     const mechItem = useMemo(() => {
         if (!assetData) return <></>
@@ -362,7 +362,7 @@ export const AssetItem = ({
                 </Stack>
             </Box>
         )
-    }, [assetData, statusArea, isGridView])
+    }, [assetData, isGridView, isGameServerUp, isInQueue, assetQueue, rarityDeets.color, rarityDeets.label, statusArea, toggleMechDrawerOpen])
 
     if (!assetData || !user) return null
 

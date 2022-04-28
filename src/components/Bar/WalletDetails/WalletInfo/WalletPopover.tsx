@@ -40,7 +40,7 @@ export const WalletPopover = ({
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     return (
         <Popover

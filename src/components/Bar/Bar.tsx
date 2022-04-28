@@ -18,7 +18,7 @@ export const Bar = () => {
     useEffect(() => {
         if (state !== SocketState.OPEN || !subscribe || !user || !DEV_ONLY) return
         return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => newSnackbarMessage("Player abilities market has been refreshed.", "info"))
-    }, [state, subscribe, user])
+    }, [newSnackbarMessage, state, subscribe, user])
 
     return (
         <Stack

@@ -40,7 +40,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
             default:
                 return <SvgDeath size="1.1rem" />
         }
-    }, [user?.faction_id])
+    }, [user])
 
     if (!user || !user.faction || !factionsAll || !userStat) {
         return (

@@ -116,7 +116,7 @@ const Content = ({
                 setIsLoading(false)
             }
         })()
-    }, [send, state, page, pageSize, queueUpdated, battleIdentifier])
+    }, [send, state, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -179,7 +179,7 @@ const Content = ({
                 </Button>
             </Stack>
         )
-    }, [isLoading, assetsQueue, queueFeed, isGridView])
+    }, [isLoading, assetsQueue, queueFeed, isGridView, telegramShortcode, setTelegramShortcode])
 
     return (
         <Stack sx={{ flex: 1 }}>

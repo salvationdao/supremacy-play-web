@@ -6,9 +6,12 @@ import { FontSizeType, useChat } from "../../../../containers"
 export const ChatFontSize = () => {
     const { setFontSize, fontSize } = useChat()
 
-    const onChange = useCallback((event: React.MouseEvent<HTMLElement>, newValue: FontSizeType) => {
-        if (newValue) setFontSize(newValue)
-    }, [])
+    const onChange = useCallback(
+        (event: React.MouseEvent<HTMLElement>, newValue: FontSizeType) => {
+            if (newValue) setFontSize(newValue)
+        },
+        [setFontSize],
+    )
 
     return (
         <Stack

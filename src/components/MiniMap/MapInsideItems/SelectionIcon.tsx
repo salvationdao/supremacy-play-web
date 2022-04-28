@@ -18,11 +18,11 @@ export const SelectionIcon = ({
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
     targeting?: boolean
 }) => {
-    if (!selection || !gameAbility || !targeting) return null
-
-    const { colour, image_url } = gameAbility
     const sizeX = useMemo(() => gridWidth * 1.5, [gridWidth])
     const sizeY = useMemo(() => gridHeight * 1.5, [gridHeight])
+
+    if (!selection || !gameAbility || !targeting) return null
+    const { colour, image_url } = gameAbility
 
     return (
         <Box
