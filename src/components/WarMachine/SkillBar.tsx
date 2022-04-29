@@ -55,13 +55,15 @@ export const SkillBar = ({
         setCurrentSups(currentSups)
         setSupsCost(supsCost)
 
-        if (gameAbilityProgress.should_reset || initialTargetCost.isZero()) {
-            setInitialTargetCost(supsCost)
-
-            // Cache max price for the popover
-            maxAbilityPriceMap.current.set(identity, supsCost)
-        }
-    }, [gameAbilityProgress, identity, initialTargetCost, maxAbilityPriceMap])
+        setInitialTargetCost((prev) => {
+            if (gameAbilityProgress.should_reset || prev.isZero()) {
+                // Cache max price for the popover
+                maxAbilityPriceMap.current.set(identity, supsCost)
+                return supsCost
+            }
+            return prev
+        })
+    }, [gameAbilityProgress, identity, maxAbilityPriceMap])
 
     return <SkillBarInner index={index} colour={colour} progressPercent={progressPercent} costPercent={costPercent} />
 }
