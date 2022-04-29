@@ -52,7 +52,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
-            if (!payload || shouldIgnore) return
+            if (!payload || (!payload.should_reset && shouldIgnore)) return
 
             let unchanged = true
             if (!progressPayload.current) {
