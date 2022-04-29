@@ -58,7 +58,7 @@ export const MultipliersPopover = ({
                 {actualMultipliers && actualMultipliers.length > 0 ? (
                     <Box>
                         <Typography sx={{ fontWeight: "bold", color: colors.offWhite }} variant="h6">
-                            ACTIVE MULTIPLIERS:
+                            ACTIVE MULTIPLIERS
                         </Typography>
 
                         <Typography sx={{ mb: ".9rem", opacity: 0.7 }}>

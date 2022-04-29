@@ -36,7 +36,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
         abilityMaxPrice || new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"),
     )
-    console.log(initialTargetCost)
+
     const progressPayload = useRef<GameAbilityProgress>()
 
     const { identity } = gameAbility
