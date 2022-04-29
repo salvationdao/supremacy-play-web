@@ -22,7 +22,7 @@ export const useInactivity = (duration: number = 900000) => {
             clearTimeout(timeout)
             window.removeEventListener("mousemove", whenMouseMoves)
         }
-    }, [])
+    }, [duration])
 
     return isActive
 }

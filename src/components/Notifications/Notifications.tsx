@@ -31,6 +31,7 @@ import {
     killNoti2,
     killNoti3,
 } from "./testData"
+import { siteZIndex } from "../../theme/theme"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -61,41 +62,6 @@ export const Notifications = () => {
 
     // Notification array
     const { value: notifications, add: addNotification, removeByID } = useArray([], "notiID")
-
-    // Test cases
-    useEffect(() => {
-        if (!SPAWN_TEST_NOTIFICATIONS) return
-
-        newNotification(locationSelectNoti)
-        newNotification(locationSelectNoti2)
-        newNotification(locationSelectNoti3)
-        newNotification(locationSelectNoti4)
-        newNotification(locationSelectNoti5)
-        newNotification(battleAbilityNoti)
-        newNotification(factionAbilityNoti)
-        newNotification(warMachineAbilityNoti)
-        newNotification(textNoti)
-        newNotification(killNoti)
-        newNotification(killNoti2)
-        newNotification(killNoti3)
-    }, [])
-
-    // Notifications
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<NotificationResponse | undefined>(
-            GameServerKeys.SubGameNotification,
-            (payload) => {
-                newNotification(payload)
-
-                if (payload?.type === "BATTLE_ABILITY") {
-                    const p = payload as { type: NotificationType; data: BattleFactionAbilityAlertProps }
-                    setForceDisplay100Percentage(p?.data?.user?.faction_id || "")
-                }
-            },
-            null,
-        )
-    }, [state, subscribe, user])
 
     // Function to add new notification to array, and will clear itself out after certain time
     const newNotification = useCallback(
@@ -151,8 +117,43 @@ export const Notifications = () => {
                 )
             }
         },
-        [addNotification],
+        [addNotification, removeByID],
     )
+
+    // Test cases
+    useEffect(() => {
+        if (!SPAWN_TEST_NOTIFICATIONS) return
+
+        newNotification(locationSelectNoti)
+        newNotification(locationSelectNoti2)
+        newNotification(locationSelectNoti3)
+        newNotification(locationSelectNoti4)
+        newNotification(locationSelectNoti5)
+        newNotification(battleAbilityNoti)
+        newNotification(factionAbilityNoti)
+        newNotification(warMachineAbilityNoti)
+        newNotification(textNoti)
+        newNotification(killNoti)
+        newNotification(killNoti2)
+        newNotification(killNoti3)
+    }, [newNotification])
+
+    // Notifications
+    useEffect(() => {
+        if (state !== WebSocket.OPEN || !subscribe) return
+        return subscribe<NotificationResponse | undefined>(
+            GameServerKeys.SubGameNotification,
+            (payload) => {
+                newNotification(payload)
+
+                if (payload?.type === "BATTLE_ABILITY") {
+                    const p = payload as { type: NotificationType; data: BattleFactionAbilityAlertProps }
+                    setForceDisplay100Percentage(p?.data?.user?.faction_id || "")
+                }
+            },
+            null,
+        )
+    }, [newNotification, setForceDisplay100Percentage, state, subscribe, user])
 
     const notificationsJsx = useMemo(
         () =>
@@ -202,7 +203,7 @@ export const Notifications = () => {
                             )
                     }
                 }),
-        [notifications],
+        [factionsAll, notifications],
     )
 
     return <NotificationsInner height={height} notificationsJsx={notificationsJsx} />
@@ -215,7 +216,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                 position: "absolute",
                 top: "1rem",
                 right: "1rem",
-                zIndex: 15,
+                zIndex: siteZIndex.Notfications,
                 overflow: "hidden",
             }}
         >

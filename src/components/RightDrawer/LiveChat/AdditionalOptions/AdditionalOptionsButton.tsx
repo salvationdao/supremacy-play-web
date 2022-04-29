@@ -73,7 +73,7 @@ const OptionsPopover = ({
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     return (
         <Popover
@@ -89,7 +89,7 @@ const OptionsPopover = ({
                 horizontal: "center",
             }}
             sx={{
-                zIndex: 10000,
+                zIndex: 15,
                 ".MuiPaper-root": {
                     ml: 2,
                     width: `${RIGHT_DRAWER_WIDTH}rem`,

@@ -32,7 +32,7 @@ export const BattleAbilityItem = () => {
 
     // Subscribe to battle ability updates
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<BattleAbilityType>(
             GameServerKeys.SubBattleAbility,
             (payload) => {
@@ -41,13 +41,13 @@ export const BattleAbilityItem = () => {
             },
             null,
         )
-    }, [state, subscribe, factionID])
+    }, [state, subscribe, toggleFadeEffect])
 
     // DO NOT REMOVE THIS! Trigger the subscribe to the progress bars net message
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe(GameServerKeys.TriggerBattleAbilityProgressUpdated, () => null, null)
-    }, [state, subscribe, factionID])
+    }, [state, subscribe])
 
     // Listen on the progress of the votes
     useEffect(() => {
@@ -109,7 +109,7 @@ export const BattleAbilityItem = () => {
                 }
             }
         },
-        [send, battleAbility],
+        [battleAbility, send, factionID],
     )
 
     const isVoting = useMemo(

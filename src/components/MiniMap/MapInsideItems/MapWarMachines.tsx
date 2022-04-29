@@ -89,8 +89,8 @@ const MapWarMachineInner = ({
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const SIZE = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
-    const ICON_SIZE = useMemo(() => (isSpawnedAI ? 0.8 * SIZE : 1 * SIZE), [isSpawnedAI])
-    const ARROW_LENGTH = useMemo(() => ICON_SIZE / 2 + 0.5 * SIZE, [SIZE])
+    const ICON_SIZE = useMemo(() => (isSpawnedAI ? 0.8 * SIZE : 1 * SIZE), [SIZE, isSpawnedAI])
+    const ARROW_LENGTH = useMemo(() => ICON_SIZE / 2 + 0.5 * SIZE, [ICON_SIZE, SIZE])
     const DOT_SIZE = useMemo(() => (isSpawnedAI ? 0.7 * SIZE : 1.2 * SIZE), [isSpawnedAI, SIZE])
     const primaryColor = useMemo(() => (faction && faction.theme ? faction.theme.primary : "#FFFFFF"), [faction])
     const isAlive = useMemo(() => health > 0, [health])
@@ -110,7 +110,7 @@ const MapWarMachineInner = ({
         if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
         } else setHighlightedMechHash(hash)
-    }, [hash, highlightedMechHash])
+    }, [hash, highlightedMechHash, setHighlightedMechHash])
 
     if (!position) return null
 
@@ -149,8 +149,8 @@ const MapWarMachineInner = ({
                               backgroundRepeat: "no-repeat",
                               backgroundPosition: "center",
                               backgroundSize: "cover",
-                              border: `${primaryColor} solid 3px`,
-                              borderRadius: 1,
+                              border: `${primaryColor} solid 7.5px`,
+                              borderRadius: 3,
                               opacity: isAlive ? 1 : 0.7,
                               boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
                               zIndex: 2,

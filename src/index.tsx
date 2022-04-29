@@ -26,8 +26,7 @@ import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, theme } from "./theme/theme"
-import { FactionThemeColor, UpdateTheme, User } from "./types"
-import { UserData } from "./types/passport"
+import { FactionThemeColor, UpdateTheme } from "./types"
 
 if (SENTRY_CONFIG) {
     Sentry.init({
@@ -46,25 +45,6 @@ const App = () => {
         background: shadeColor(colors.neonBlue, -95),
     })
 
-    const [authLogin, setAuthLoginX] = useState<User | null>(null)
-    const [passLogin, setPassLoginX] = useState<UserData | null>(null)
-
-    const setAuthLogin = useMemo(() => {
-        return (u: User) => {
-            if (!authLogin && u) {
-                setAuthLoginX(u)
-            }
-        }
-    }, [authLogin])
-
-    const setPassLogin = useMemo(() => {
-        return (u: UserData) => {
-            if (!passLogin && u) {
-                setPassLoginX(u)
-            }
-        }
-    }, [passLogin])
-
     useEffect(() => {
         setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
     }, [factionColors])
@@ -77,7 +57,7 @@ const App = () => {
             styles: tourStyles,
             showBadge: false,
             disableKeyboardNavigation: false,
-            disableDotsNavigation: false,
+            disableDotsNavigation: true,
         }),
         [],
     )
@@ -86,10 +66,10 @@ const App = () => {
         <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
             <ThemeProvider theme={currentTheme}>
                 <SnackBarProvider>
-                    <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login: passLogin }}>
-                        <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
-                            <GameServerSocketProvider initialState={{ login: authLogin }}>
-                                <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
+                    <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST }}>
+                        <PassportServerAuthProvider>
+                            <GameServerSocketProvider>
+                                <GameServerAuthProvider>
                                     <SupremacyProvider>
                                         <WalletProvider>
                                             <BarProvider>

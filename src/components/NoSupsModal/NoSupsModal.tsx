@@ -6,9 +6,9 @@ import { usePassportServerAuth } from "../../containers"
 import { ClipThing } from ".."
 
 export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
-    const { user } = usePassportServerAuth()
+    const { userID } = usePassportServerAuth()
 
-    if (!user) return null
+    if (!userID) return null
 
     return (
         <Modal open>

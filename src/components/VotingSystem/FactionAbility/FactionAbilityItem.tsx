@@ -69,7 +69,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
             progressPayload.current = payload
             setGameAbilityProgress(payload)
         })
-    }, [identity, state, subscribeAbilityNetMessage, factionID])
+    }, [identity, state, subscribeAbilityNetMessage, factionID, shouldIgnore])
 
     // Set states
     useEffect(() => {
@@ -83,11 +83,12 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         if (gameAbilityProgress.should_reset || initialTargetCost.isZero()) {
             setInitialTargetCost(supsCost)
         }
-    }, [gameAbilityProgress])
+    }, [gameAbilityProgress, initialTargetCost])
 
-    let ignoreTimeout: boolean
     const onContribute = useCallback(
         async (amount: BigNumber, percentage: number) => {
+            let ignoreTimeout: boolean
+
             if (!send || percentage > 1 || percentage < 0) return
 
             const resp = await send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
@@ -116,7 +117,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
                 })
             }
         },
-        [send, identity, offeringID],
+        [send, identity, offeringID, supsCost],
     )
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThan(currentSups), [bribeStage, supsCost, currentSups])

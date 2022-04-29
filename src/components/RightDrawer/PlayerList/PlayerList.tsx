@@ -10,18 +10,11 @@ import { User } from "../../../types"
 export const PlayerList = () => {
     const { user } = useGameServerAuth()
     const [activePlayers, setActivePlayers] = useState<User[]>([])
-    const [inactivePlayers, setInactivePlayers] = useState<User[]>([])
 
     return (
         <Fade in>
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-                <Content
-                    user={user}
-                    activePlayers={activePlayers}
-                    inactivePlayers={inactivePlayers}
-                    setActivePlayers={setActivePlayers}
-                    setInactivePlayers={setInactivePlayers}
-                />
+                <Content user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
             </Stack>
         </Fade>
     )
@@ -31,14 +24,10 @@ const Content = ({
     user,
     activePlayers,
     setActivePlayers,
-    inactivePlayers,
-    setInactivePlayers,
 }: {
     user?: User
     activePlayers: User[]
     setActivePlayers: Dispatch<React.SetStateAction<User[]>>
-    inactivePlayers: User[]
-    setInactivePlayers: Dispatch<React.SetStateAction<User[]>>
 }) => {
     return (
         <Stack sx={{ flex: 1 }}>
@@ -84,13 +73,6 @@ const Content = ({
                                 {activePlayers.length}
                             </Typography>
                         </Stack>
-                        {/* <Stack direction="row" alignItems="center" spacing=".4rem">
-                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.yellow }} />
-                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                <strong>Inactive: </strong>
-                                {inactivePlayers.length}
-                            </Typography>
-                        </Stack> */}
                     </Stack>
                 </Stack>
             </Stack>
@@ -120,15 +102,7 @@ const Content = ({
                     },
                 }}
             >
-                {user && (
-                    <PlayerListContent
-                        user={user}
-                        activePlayers={activePlayers}
-                        inactivePlayers={inactivePlayers}
-                        setActivePlayers={setActivePlayers}
-                        setInactivePlayers={setInactivePlayers}
-                    />
-                )}
+                {user && <PlayerListContent user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />}
             </Box>
         </Stack>
     )

@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { AdditionalOptionsButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgInfoCircular } from "../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { ChatProvider, useChat, useGameServerAuth } from "../../../containers"
+import { useChat, useGameServerAuth } from "../../../containers"
 import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
@@ -13,14 +13,6 @@ import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 
 export const LiveChat = () => {
-    return (
-        <ChatProvider>
-            <LiveChatInner />
-        </ChatProvider>
-    )
-}
-
-const LiveChatInner = () => {
     const { splitOption } = useChat()
     return (
         <Fade in>
@@ -34,11 +26,11 @@ const LiveChatInner = () => {
 
 const TabbedLayout = () => {
     const theme = useTheme<Theme>()
-    const { user } = useGameServerAuth()
+    const { user, factionID } = useGameServerAuth()
     const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread, banProposal } = useChat()
 
     const chatMessages = tabValue == 0 ? globalChatMessages : factionChatMessages
-    const isEnlisted = user && user.faction_id && user.faction
+    const isEnlisted = factionID && user
     let faction_id
     let primaryColor
     let secondaryColor
@@ -81,7 +73,7 @@ const TabbedLayout = () => {
                     height: `${5}rem`,
                     background: bannerBackgroundColor,
                     boxShadow: 1,
-                    zIndex: 99,
+                    zIndex: 9,
                     ".MuiButtonBase-root": {
                         height: `${5}rem`,
                     },
@@ -190,10 +182,10 @@ const TabbedLayout = () => {
 
 const SplitLayout = () => {
     const theme = useTheme<Theme>()
-    const { user } = useGameServerAuth()
+    const { user, factionID } = useGameServerAuth()
     const { globalChatMessages, factionChatMessages, banProposal } = useChat()
 
-    const isEnlisted = useMemo(() => user && user.faction_id && user.faction, [user])
+    const isEnlisted = factionID && user
     const factionTabLabel = useMemo(() => {
         if (isEnlisted && user) {
             let aaa = user.faction.label
@@ -223,7 +215,7 @@ const SplitLayout = () => {
                         px: "1.8rem",
                         background: shadeColor(colors.globalChat, -30),
                         boxShadow: 1,
-                        zIndex: 99,
+                        zIndex: 9,
                     }}
                 >
                     <SvgGlobal size="2rem" />
@@ -242,7 +234,7 @@ const SplitLayout = () => {
                 <Content user={user} faction_id={null} primaryColor={colors.globalChat} secondaryColor={"#FFFFFF"} chatMessages={globalChatMessages} />
             </Stack>
 
-            {isEnlisted && user && (
+            {isEnlisted && (
                 <Stack
                     className="tutorial-faction-chat"
                     sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `${theme.factionTheme.primary}06` }}
@@ -254,7 +246,7 @@ const SplitLayout = () => {
                             px: "1.8rem",
                             background: (theme) => `${theme.factionTheme.primary}25`,
                             boxShadow: 1,
-                            zIndex: 99,
+                            zIndex: 9,
                         }}
                     >
                         <Stack
