@@ -41,7 +41,7 @@ export const PlayerAbilities = () => {
 
         fetchSaleAbilities()
 
-        return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => fetchSaleAbilities())
+        return subscribe(GameServerKeys.TriggerPlayerAbilitiesListUpdated, () => fetchSaleAbilities())
     }, [state, send, subscribe, user, currentPage])
 
     return (
