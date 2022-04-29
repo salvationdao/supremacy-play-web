@@ -2,7 +2,7 @@ import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgClose, SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
-import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { SocketState, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -15,6 +15,7 @@ const activateModalWidth = 400
 
 export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     const { user } = useGameServerAuth()
+    const { setPlayerAbility: submitPlayerAbility } = useGame()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility | null>(null)
     const [error, setError] = useState<string | null>(null)
@@ -40,20 +41,10 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
             abilityTypeIcon = <SvgMicrochip />
     }
 
-    const onActivate = async () => {
-        try {
-            setActivateLoading(true)
-
-            toggleShowActivateModal(false)
-        } catch (e) {
-            if (e instanceof Error) {
-                setActivateError(e.message)
-            } else if (typeof e === "string") {
-                setActivateError(e)
-            }
-        } finally {
-            setActivateLoading(false)
-        }
+    const onActivate = () => {
+        if (!playerAbility) return
+        submitPlayerAbility(playerAbility)
+        toggleShowActivateModal(false)
     }
 
     useEffect(() => {

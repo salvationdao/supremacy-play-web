@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { Dispatch, SetStateAction, useMemo } from "react"
 import { MapSelection } from "../.."
-import { GameAbility } from "../../../types"
+import { GameAbility, PlayerAbility } from "../../../types"
 
 export const SelectionIcon = ({
     selection,
@@ -14,7 +14,7 @@ export const SelectionIcon = ({
     selection: MapSelection | undefined
     gridWidth: number
     gridHeight: number
-    gameAbility?: GameAbility
+    gameAbility?: GameAbility | PlayerAbility
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
     targeting?: boolean
 }) => {

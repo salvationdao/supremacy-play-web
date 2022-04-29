@@ -8,7 +8,7 @@ import { Severity, useGame, useGameServerWebsocket, WebSocketProperties } from "
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
-import { Dimension, GameAbility, Map, WarMachineState } from "../../types"
+import { Dimension, GameAbility, Map, PlayerAbility, WarMachineState } from "../../types"
 
 export interface MapSelection {
     x: number
@@ -17,6 +17,7 @@ export interface MapSelection {
 
 interface Props {
     gameAbility?: GameAbility
+    playerAbility?: PlayerAbility
     containerDimensions: Dimension
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
@@ -40,6 +41,7 @@ const MiniMapInsideInner = ({
     state,
     send,
     gameAbility,
+    playerAbility,
     containerDimensions,
     targeting,
     setSubmitted,
@@ -63,10 +65,25 @@ const MiniMapInsideInner = ({
     const onConfirm = useCallback(async () => {
         try {
             if (state !== WebSocket.OPEN || !selection || !send) return
-            send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
-                x: Math.floor(selection.x),
-                y: Math.floor(selection.y),
-            })
+            if (gameAbility) {
+                console.info("activated game ability", gameAbility.label)
+                await send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
+                    x: Math.floor(selection.x),
+                    y: Math.floor(selection.y),
+                })
+            } else if (playerAbility) {
+                console.info("activated player ability", playerAbility.label)
+                await send<boolean, { ability_id: string; location_select_type: string; x?: number; y?: number; mech_id?: string }>(
+                    GameServerKeys.PlayerAbilityUse,
+                    {
+                        ability_id: playerAbility.id,
+                        location_select_type: playerAbility.location_select_type,
+                        x: Math.floor(selection.x),
+                        y: Math.floor(selection.y),
+                        mech_id: undefined, // todo: implement this
+                    },
+                )
+            }
             setSubmitted && setSubmitted(true)
             setSelection(undefined)
             newSnackbarMessage("Successfully submitted target location.", "success")
@@ -74,7 +91,7 @@ const MiniMapInsideInner = ({
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
             console.debug(e)
         }
-    }, [state, send, selection, setSubmitted, setSelection])
+    }, [state, send, selection, setSubmitted, setSelection, gameAbility, playerAbility])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
@@ -288,7 +305,7 @@ const MiniMapInsideInner = ({
                 >
                     <SelectionIcon
                         key={selection && `column-${selection.y}-row-${selection.x}`}
-                        gameAbility={gameAbility}
+                        gameAbility={gameAbility || playerAbility}
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
                         selection={selection}

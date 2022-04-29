@@ -3,15 +3,17 @@ import { useEffect, useMemo, useState } from "react"
 import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { useDimension, useGame, useOverlayToggles, BribeStageResponse, WinnerAnnouncementResponse, useSnackbar, Severity } from "../../containers"
+import { BribeStageResponse, Severity, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors } from "../../theme/theme"
-import { Dimension, Map } from "../../types"
+import { Dimension, Map, PlayerAbility } from "../../types"
 
 interface MiniMapProps {
     map?: Map
     winner?: WinnerAnnouncementResponse
     setWinner: (winner?: WinnerAnnouncementResponse) => void
+    playerAbility?: PlayerAbility
+    setPlayerAbility: React.Dispatch<React.SetStateAction<PlayerAbility | undefined>>
     bribeStage?: BribeStageResponse
     isMapOpen: boolean
     toggleIsMapOpen: (open?: boolean) => void
@@ -22,7 +24,7 @@ interface MiniMapProps {
 export const MiniMap = () => {
     const theme = useTheme<Theme>()
     const { newSnackbarMessage } = useSnackbar()
-    const { map, winner, setWinner, bribeStage } = useGame()
+    const { map, winner, setWinner, playerAbility, setPlayerAbility, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isMapOpen)
 
@@ -37,10 +39,10 @@ export const MiniMap = () => {
     }, [isMapOpen])
 
     useEffect(() => {
-        if (winner && bribeStage?.phase == "LOCATION_SELECT") {
+        if ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) {
             toggleIsMapOpen(true)
         }
-    }, [winner, bribeStage])
+    }, [winner, bribeStage, playerAbility])
 
     const mapRender = useMemo(
         () => (
@@ -48,6 +50,8 @@ export const MiniMap = () => {
                 map={map}
                 winner={winner}
                 setWinner={setWinner}
+                playerAbility={playerAbility}
+                setPlayerAbility={setPlayerAbility}
                 bribeStage={bribeStage}
                 isMapOpen={isMapOpen}
                 toggleIsMapOpen={toggleIsMapOpen}
@@ -62,7 +66,18 @@ export const MiniMap = () => {
     return <>{mapRender}</>
 }
 
-const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: MiniMapProps) => {
+const MiniMapInner = ({
+    map,
+    winner,
+    setWinner,
+    playerAbility,
+    setPlayerAbility,
+    bribeStage,
+    isMapOpen,
+    toggleIsMapOpen,
+    factionColor,
+    newSnackbarMessage,
+}: MiniMapProps) => {
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
@@ -87,8 +102,8 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
     const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
     const isTargeting = useMemo(
-        () => winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT",
-        [winner, timeReachZero, submitted, bribeStage],
+        () => ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) && !timeReachZero && !submitted,
+        [winner, playerAbility, timeReachZero, submitted, bribeStage?.phase],
     )
 
     // Set initial size
@@ -125,45 +140,69 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
     }, [width, height, enlarged, adjustment])
 
     useEffect(() => {
-        const endTime = winner?.end_time
-
-        if (endTime) {
+        if (!playerAbility || winner) {
+            const endTime = winner?.end_time
+            if (endTime) {
+                setSubmitted(false)
+                setTimeReachZero(false)
+            }
+        } else {
             setSubmitted(false)
-            setTimeReachZero(false)
         }
-    }, [winner])
+    }, [winner, playerAbility])
 
     useEffect(() => {
-        if (winner && bribeStage?.phase == "LOCATION_SELECT") {
+        if ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) {
             toggleEnlarged(true)
         }
-    }, [winner, bribeStage])
+    }, [winner, bribeStage, playerAbility])
 
     useEffect(() => {
-        if (timeReachZero || submitted) {
-            toggleEnlarged(false)
-            setWinner(undefined)
-        }
+        console.log("test")
+        if (!playerAbility || winner) {
+            if (timeReachZero || submitted) {
+                toggleEnlarged(false)
+                setWinner(undefined)
+            }
 
-        if (timeReachZero) {
-            newSnackbarMessage("Failed to submit target location on time.", "error")
+            if (timeReachZero) {
+                newSnackbarMessage("Failed to submit target location on time.", "error")
+            }
+        } else {
+            if (submitted) {
+                toggleEnlarged(false)
+                setPlayerAbility(undefined)
+            }
         }
-    }, [timeReachZero, submitted])
+    }, [timeReachZero, submitted, playerAbility, winner])
 
     const mainColor = useMemo(() => (isTargeting && winner ? winner.game_ability.colour : factionColor), [isTargeting, winner, theme, factionColor])
 
     const mapInsideRender = useMemo(() => {
-        if (isTargeting && winner) {
-            return (
-                <MiniMapInside
-                    gameAbility={winner.game_ability}
-                    containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                    targeting
-                    setSubmitted={setSubmitted}
-                    enlarged={enlarged || dimensions.width > 450}
-                    newSnackbarMessage={newSnackbarMessage}
-                />
-            )
+        if (isTargeting) {
+            if (winner) {
+                return (
+                    <MiniMapInside
+                        gameAbility={winner.game_ability}
+                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
+                        targeting
+                        setSubmitted={setSubmitted}
+                        enlarged={enlarged || dimensions.width > 450}
+                        newSnackbarMessage={newSnackbarMessage}
+                    />
+                )
+            } else if (playerAbility) {
+                return (
+                    <MiniMapInside
+                        playerAbility={playerAbility}
+                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
+                        targeting
+                        setSubmitted={setSubmitted}
+                        enlarged={enlarged || dimensions.width > 450}
+                        newSnackbarMessage={newSnackbarMessage}
+                    />
+                )
+            }
         } else {
             return (
                 <MiniMapInside
@@ -173,7 +212,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                 />
             )
         }
-    }, [isTargeting, winner, dimensions, remToPxRatio, setSubmitted, enlarged, newSnackbarMessage])
+    }, [isTargeting, winner, playerAbility, dimensions, remToPxRatio, setSubmitted, enlarged, newSnackbarMessage])
 
     if (!map) return null
 
