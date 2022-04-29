@@ -30,7 +30,7 @@ export const MiniMap = () => {
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
         toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
-    }, [bribeStage])
+    }, [bribeStage, toggleShow])
     // End ****************************************
 
     // A little timeout so fade transition can play
@@ -41,13 +41,13 @@ export const MiniMap = () => {
         }, 250)
 
         return () => clearTimeout(timeout)
-    }, [isMapOpen])
+    }, [isMapOpen, toggleIsRender])
 
     useEffect(() => {
         if (winner && bribeStage?.phase == "LOCATION_SELECT") {
             toggleIsMapOpen(true)
         }
-    }, [winner, bribeStage])
+    }, [winner, bribeStage, toggleIsMapOpen])
 
     const mapRender = useMemo(
         () => (
@@ -74,8 +74,6 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
         remToPxRatio,
         gameUIDimensions: { width, height },
     } = useDimension()
-    const theme = useTheme()
-
     const [enlarged, toggleEnlarged] = useToggle()
     const [mapHeightWidthRatio, setMapHeightWidthRatio] = useState(1)
     const [defaultDimensions, setDefaultDimensions] = useState<Dimension>({
@@ -110,13 +108,13 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
         setDefaultDimensions(defaultRes)
         setDimensions(res)
         setMapHeightWidthRatio(ratio)
-    }, [map, adjustment])
+    }, [map, adjustment, remToPxRatio, dimensions.width])
 
     useEffect(() => {
         if (width <= 0 || height <= 0) return
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
         // 110px is approx the height of the mech stats
-        const maxWidth = Math.min(width - 25, 1200)
+        const maxWidth = Math.min(width - 25, 900)
         const maxHeight = Math.min(height - 110 - 12.5, maxWidth * mapHeightWidthRatio)
         let targetingWidth = Math.min(maxWidth, 900)
         let targetingHeight = targetingWidth * mapHeightWidthRatio
@@ -129,7 +127,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
         const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width * adjustment
         const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height * adjustment
         setDimensions({ width: newWidth, height: newHeight })
-    }, [width, height, enlarged, adjustment])
+    }, [width, height, enlarged, adjustment, mapHeightWidthRatio, isTargeting, defaultDimensions])
 
     useEffect(() => {
         const endTime = winner?.end_time
@@ -144,7 +142,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
         if (winner && bribeStage?.phase == "LOCATION_SELECT") {
             toggleEnlarged(true)
         }
-    }, [winner, bribeStage])
+    }, [winner, bribeStage, toggleEnlarged])
 
     useEffect(() => {
         if (timeReachZero || submitted) {
@@ -155,9 +153,9 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
         if (timeReachZero) {
             newSnackbarMessage("Failed to submit target location on time.", "error")
         }
-    }, [timeReachZero, submitted])
+    }, [timeReachZero, submitted, toggleEnlarged, setWinner, newSnackbarMessage])
 
-    const mainColor = useMemo(() => (isTargeting && winner ? winner.game_ability.colour : factionColor), [isTargeting, winner, theme, factionColor])
+    const mainColor = useMemo(() => (isTargeting && winner ? winner.game_ability.colour : factionColor), [isTargeting, winner, factionColor])
 
     const mapInsideRender = useMemo(() => {
         if (isTargeting && winner) {

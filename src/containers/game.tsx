@@ -59,7 +59,7 @@ export const GameContainer = createContainer(() => {
             },
             null,
         )
-    }, [state, subscribe])
+    }, [state, subscribe, setBattleIdentifier])
 
     useEffect(() => {
         if (!send || !userID || !map) return

@@ -9,14 +9,17 @@ import { DEV_ONLY } from "../../constants"
 export const GlobalSnackbar = () => {
     const { open, setOpen, messageInfo, setMessageInfo } = useSnackbar()
 
-    const handleClose = useCallback((_event: Event | SyntheticEvent<unknown, Event>, reason?: SnackbarCloseReason) => {
-        if (reason === "clickaway") return
-        setOpen(false)
-    }, [])
+    const handleClose = useCallback(
+        (_event: Event | SyntheticEvent<unknown, Event>, reason?: SnackbarCloseReason) => {
+            if (reason === "clickaway") return
+            setOpen(false)
+        },
+        [setOpen],
+    )
 
     const handleExited = useCallback(() => {
         setMessageInfo(undefined)
-    }, [])
+    }, [setMessageInfo])
 
     const severityDeets: { color: string; icon: ReactNode } = useMemo(() => {
         let color = colors.blue

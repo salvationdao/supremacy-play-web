@@ -24,7 +24,7 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, toggleIsEmojiOpen])
 
     return (
         <Popover

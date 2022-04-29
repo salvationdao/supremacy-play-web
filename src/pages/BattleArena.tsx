@@ -32,7 +32,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { state } = useGameServerWebsocket()
-    const { user } = useGameServerAuth()
+    const { userID } = useGameServerAuth()
     const { haveSups } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
 
@@ -58,8 +58,8 @@ const BattleArenaPageInner = () => {
                 <Controls />
             </Stack>
 
-            {state === WebSocket.OPEN && user && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
-            {user && !noSupsModalOpen && <TutorialModal />}
+            {state === WebSocket.OPEN && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
+            {userID && !noSupsModalOpen && <TutorialModal />}
         </>
     )
 }

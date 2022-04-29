@@ -71,12 +71,16 @@ export const NotFoundPage = () => {
                     This page does not exist.
                 </Typography>
                 <FancyButton
+                    clipThingsProps={{
+                        clipSize: "8px",
+                        backgroundColor: colors.darkerNeonBlue,
+                        border: {
+                            borderColor: colors.neonBlue,
+                        },
+                    }}
                     sx={{
                         fontSize: "3rem",
                         px: "2em",
-                        "&:hover": {
-                            background: colors.darkerNeonBlue,
-                        },
                         "@media (max-width:600px)": {
                             fontSize: "5vw",
                         },

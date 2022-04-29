@@ -12,7 +12,7 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
     const onEnded = useCallback(() => {
         setWatchedTrailer(true)
         if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
-    }, [watchedTrailer])
+    }, [setWatchedTrailer, watchedTrailer])
 
     return (
         <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}>

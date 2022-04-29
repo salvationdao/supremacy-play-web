@@ -19,7 +19,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
 
             return () => clearTimeout(timeout)
         }
-    }, [copySuccess])
+    }, [copySuccess, toggleCopySuccess])
 
     const isCredit = useMemo(() => userID === transaction.credit, [userID, transaction])
     const color = useMemo(() => (isCredit ? colors.supsCredit : colors.supsDebit), [isCredit])

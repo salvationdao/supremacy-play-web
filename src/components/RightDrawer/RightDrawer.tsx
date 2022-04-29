@@ -15,7 +15,7 @@ export const RightDrawer = () => {
 
     useEffect(() => {
         toggleIsDrawerOpen(activePanel !== RightDrawerPanels.None)
-    }, [activePanel])
+    }, [activePanel, toggleIsDrawerOpen])
 
     const drawerContent = useMemo(() => {
         switch (activePanel) {

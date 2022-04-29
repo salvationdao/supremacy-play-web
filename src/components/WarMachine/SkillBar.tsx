@@ -61,7 +61,7 @@ export const SkillBar = ({
             // Cache max price for the popover
             maxAbilityPriceMap.current.set(identity, supsCost)
         }
-    }, [gameAbilityProgress])
+    }, [gameAbilityProgress, identity, initialTargetCost, maxAbilityPriceMap])
 
     return <SkillBarInner index={index} colour={colour} progressPercent={progressPercent} costPercent={costPercent} />
 }
