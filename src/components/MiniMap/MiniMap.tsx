@@ -8,17 +8,6 @@ import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension, Map } from "../../types"
 
-interface MiniMapProps {
-    map?: Map
-    winner?: WinnerAnnouncementResponse
-    setWinner: (winner?: WinnerAnnouncementResponse) => void
-    bribeStage?: BribeStageResponse
-    isMapOpen: boolean
-    toggleIsMapOpen: (open?: boolean) => void
-    factionColor: string
-    newSnackbarMessage: (message: string, severity?: Severity) => void
-}
-
 export const MiniMap = () => {
     const theme = useTheme<Theme>()
     const { newSnackbarMessage } = useSnackbar()
@@ -69,7 +58,18 @@ export const MiniMap = () => {
     return <>{mapRender}</>
 }
 
-const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: MiniMapProps) => {
+interface InnerProps {
+    map?: Map
+    winner?: WinnerAnnouncementResponse
+    setWinner: (winner?: WinnerAnnouncementResponse) => void
+    bribeStage?: BribeStageResponse
+    isMapOpen: boolean
+    toggleIsMapOpen: (open?: boolean) => void
+    factionColor: string
+    newSnackbarMessage: (message: string, severity?: Severity) => void
+}
+
+const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: InnerProps) => {
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
