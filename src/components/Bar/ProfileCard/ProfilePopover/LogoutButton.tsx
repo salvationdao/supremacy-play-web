@@ -8,7 +8,7 @@ import { NavButton } from "./NavButton"
 
 export const LogoutButton = () => {
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
-    const { user, sessionID } = usePassportServerAuth()
+    const { userID, sessionID } = usePassportServerAuth()
     const [isProcessing, setIsProcessing] = useState(false)
 
     // Check if login in the iframe has been successful (widnow closed), do clean up
@@ -49,12 +49,12 @@ export const LogoutButton = () => {
     }, [isProcessing, sessionID])
 
     useEffect(() => {
-        if (!user && passportPopup) {
+        if (!userID && passportPopup) {
             passportPopup.close()
         }
-    }, [user, passportPopup])
+    }, [userID, passportPopup])
 
-    if (!user) return null
+    if (!userID) return null
 
     return (
         <NavButton

@@ -9,7 +9,7 @@ import { MultipliersPopover } from "./MultiplierPopover"
 
 export const MultipliersInfo = () => {
     const { state, subscribe } = useGameServerWebsocket()
-    const { user } = useGameServerAuth()
+    const { user, userID } = useGameServerAuth()
     const { battleIdentifier } = useSupremacy()
     // Multipliers
     const [multipliers, setMultipliers] = useState<BattleMultipliers[]>([])
@@ -19,7 +19,7 @@ export const MultipliersInfo = () => {
     useEffect(() => {
         ;(async () => {
             try {
-                if (state !== WebSocket.OPEN || !subscribe || !user) return
+                if (state !== WebSocket.OPEN || !subscribe || !userID) return
                 return subscribe<MultiplierUpdateResp>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
                     if (!payload) return
                     const battles = payload.battles
@@ -30,7 +30,7 @@ export const MultipliersInfo = () => {
                 console.error(e)
             }
         })()
-    }, [state, subscribe, user])
+    }, [state, subscribe, userID])
 
     // Current battle multiplier should say update to 0 if battleID was in the payload
     useEffect(() => {

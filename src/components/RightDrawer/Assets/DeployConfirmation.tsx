@@ -71,7 +71,7 @@ export const DeployConfirmation = ({
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { send: psSend } = usePassportServerWebsocket()
-    const { user } = usePassportServerAuth()
+    const { user, userID } = usePassportServerAuth()
     const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
@@ -96,7 +96,7 @@ export const DeployConfirmation = ({
         currentSettings.telegram_notifications === dbSettings.telegram_notifications
 
     useEffect(() => {
-        if (!user || !send) return
+        if (!userID || !send) return
         ;(async () => {
             try {
                 const resp = await send<NotificationsSettings | null>(GameServerKeys.GetSettings, {
@@ -113,7 +113,7 @@ export const DeployConfirmation = ({
                 newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
             }
         })()
-    }, [user, send, newSnackbarMessage])
+    }, [userID, send, newSnackbarMessage])
 
     useEffect(() => {
         let qc = new BigNumber(queueCost).shiftedBy(-18)

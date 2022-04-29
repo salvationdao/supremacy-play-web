@@ -26,11 +26,11 @@ export const LiveChat = () => {
 
 const TabbedLayout = () => {
     const theme = useTheme<Theme>()
-    const { user } = useGameServerAuth()
+    const { user, factionID } = useGameServerAuth()
     const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread, banProposal } = useChat()
 
     const chatMessages = tabValue == 0 ? globalChatMessages : factionChatMessages
-    const isEnlisted = user && user.faction_id && user.faction
+    const isEnlisted = factionID && user
     let faction_id
     let primaryColor
     let secondaryColor
@@ -182,10 +182,10 @@ const TabbedLayout = () => {
 
 const SplitLayout = () => {
     const theme = useTheme<Theme>()
-    const { user } = useGameServerAuth()
+    const { user, factionID } = useGameServerAuth()
     const { globalChatMessages, factionChatMessages, banProposal } = useChat()
 
-    const isEnlisted = useMemo(() => user && user.faction_id && user.faction, [user])
+    const isEnlisted = factionID && user
     const factionTabLabel = useMemo(() => {
         if (isEnlisted && user) {
             let aaa = user.faction.label
@@ -234,7 +234,7 @@ const SplitLayout = () => {
                 <Content user={user} faction_id={null} primaryColor={colors.globalChat} secondaryColor={"#FFFFFF"} chatMessages={globalChatMessages} />
             </Stack>
 
-            {isEnlisted && user && (
+            {isEnlisted && (
                 <Stack
                     className="tutorial-faction-chat"
                     sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `${theme.factionTheme.primary}06` }}

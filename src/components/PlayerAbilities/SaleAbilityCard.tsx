@@ -19,7 +19,7 @@ export interface AbilityCardProps extends ButtonBaseProps {
 const purchaseModalWidth = 400
 
 export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
-    const { user } = useGameServerAuth()
+    const { userID } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [saleAbility, setSaleAbility] = useState<SaleAbility | null>(null)
     const [price, setPrice] = useState<string | null>(null)
@@ -67,7 +67,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     }
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
+        if (state !== SocketState.OPEN || !send || !subscribe || !userID) return
 
         try {
             ;(async () => {
@@ -100,7 +100,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                 setError(e)
             }
         }
-    }, [state, send, subscribe, user, abilityID])
+    }, [state, send, subscribe, userID, abilityID])
 
     if (!saleAbility || !price) {
         return <Box>Loading...</Box>

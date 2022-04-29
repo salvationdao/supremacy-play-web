@@ -25,21 +25,21 @@ export const WalletInfo = () => {
 
     // Get initial 5 transactions
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<Transaction[]>(PassportServerKeys.SubscribeUserTransactions, (payload) => {
             if (!payload) return
             setTransactions(payload)
         })
-    }, [state, subscribe, user])
+    }, [state, subscribe, userID])
 
     // Subscribe to latest transactions
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions, (payload) => {
             if (!payload) return
             setLatestTransaction(payload)
         })
-    }, [state, subscribe, user])
+    }, [state, subscribe, userID])
 
     // Append to latest transaction to list
     useEffect(() => {

@@ -11,14 +11,14 @@ import { HowToPlay } from "../HowToPlay/HowToPlay"
 import { SaleAbilitiesModal } from "../PlayerAbilities/SaleAbilitiesModal"
 
 export const Bar = () => {
-    const { user } = usePassportServerAuth()
+    const { user, userID } = usePassportServerAuth()
     const { state, subscribe } = useGameServerWebsocket()
     const { newSnackbarMessage } = useSnackbar()
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !subscribe || !user || !DEV_ONLY) return
+        if (state !== SocketState.OPEN || !subscribe || !userID || !DEV_ONLY) return
         return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => newSnackbarMessage("Player abilities market has been refreshed.", "info"))
-    }, [newSnackbarMessage, state, subscribe, user])
+    }, [newSnackbarMessage, state, subscribe, userID])
 
     return (
         <Stack

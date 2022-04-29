@@ -17,13 +17,13 @@ export interface SaleAbilitiesModalProps {
 const modalWidth = 400
 
 export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) => {
-    const { user } = useGameServerAuth()
+    const { userID } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
+        if (state !== SocketState.OPEN || !send || !subscribe || !userID) return
 
         const fetchSaleAbilities = async () => {
             const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList, {
@@ -44,7 +44,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
         fetchSaleAbilities()
 
         return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => fetchSaleAbilities())
-    }, [state, send, subscribe, user])
+    }, [state, send, subscribe, userID])
 
     useEffect(() => {
         if (!localOpen) {
