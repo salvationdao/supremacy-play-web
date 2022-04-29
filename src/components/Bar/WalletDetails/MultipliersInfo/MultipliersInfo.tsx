@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Badge, Stack, Typography } from "@mui/material"
 import { useEffect, useRef, useState } from "react"
 import { useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
@@ -14,6 +14,7 @@ export const MultipliersInfo = () => {
     // Multipliers
     const [multipliers, setMultipliers] = useState<BattleMultipliers[]>([])
     const [currentBattleMultiplier, setCurrentBattleMultiplier] = useState(0)
+    const [totalBattleMultipliers, setTotalBattleMultipliers] = useState(0)
 
     // Subscribe to multipliers
     useEffect(() => {
@@ -37,17 +38,27 @@ export const MultipliersInfo = () => {
         if (!multipliers || multipliers.length <= 0) return
         const currentMulti = multipliers.filter((m) => m.battle_number === battleIdentifier || m.battle_number === (battleIdentifier || 0) - 1)
         setCurrentBattleMultiplier(currentMulti.length > 0 ? currentMulti[0].total_multipliers : 0)
+        setTotalBattleMultipliers(multipliers.filter((m) => m.total_multipliers > 0).length)
     }, [multipliers, battleIdentifier])
 
-    return <MultipliersInfoInner currentBattleMultiplier={currentBattleMultiplier} user={user} multipliers={multipliers} />
+    return (
+        <MultipliersInfoInner
+            currentBattleMultiplier={currentBattleMultiplier}
+            totalBattleMultipliers={totalBattleMultipliers}
+            user={user}
+            multipliers={multipliers}
+        />
+    )
 }
 
 const MultipliersInfoInner = ({
     currentBattleMultiplier,
+    totalBattleMultipliers,
     user,
     multipliers,
 }: {
     currentBattleMultiplier: number
+    totalBattleMultipliers: number
     user?: User
     multipliers: BattleMultipliers[]
 }) => {
@@ -76,23 +87,37 @@ const MultipliersInfoInner = ({
                     },
                 }}
             >
-                <Typography
-                    key={`current-multi-key-${currentBattleMultiplier}`}
-                    variant="caption"
+                <Badge
+                    badgeContent={totalBattleMultipliers}
                     sx={{
-                        px: ".8rem",
-                        pt: ".4rem",
-                        pb: ".24rem",
-                        textAlign: "center",
-                        lineHeight: 1,
-                        fontFamily: fonts.nostromoBold,
-                        border: `${colors.orange} 1px solid`,
-                        color: colors.orange,
-                        borderRadius: 0.6,
+                        ".MuiBadge-badge": {
+                            fontSize: "1rem",
+                            fontFamily: fonts.shareTech,
+                            fontWeight: "fontWeightBold",
+                            lineHeight: 0,
+                            color: "#FFFFFF",
+                            backgroundColor: colors.orange,
+                        },
                     }}
                 >
-                    {currentBattleMultiplier}x
-                </Typography>
+                    <Typography
+                        key={`current-multi-key-${currentBattleMultiplier}`}
+                        variant="caption"
+                        sx={{
+                            px: ".8rem",
+                            pt: ".6rem",
+                            pb: ".44rem",
+                            textAlign: "center",
+                            lineHeight: 1,
+                            fontFamily: fonts.nostromoBold,
+                            border: `${colors.orange} 1px solid`,
+                            color: colors.orange,
+                            borderRadius: 0.6,
+                        }}
+                    >
+                        {currentBattleMultiplier}x
+                    </Typography>
+                </Badge>
             </Stack>
 
             {isMultipliersPopoverOpen && user && (

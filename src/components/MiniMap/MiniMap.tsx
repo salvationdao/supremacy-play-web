@@ -104,11 +104,13 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
             width: MINI_MAP_DEFAULT_SIZE * adjustment,
             height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment + 2.4 * remToPxRatio,
         }
-        const res = { width: dimensions.width, height: dimensions.width * ratio }
+
         setDefaultDimensions(defaultRes)
-        setDimensions(res)
+        setDimensions((prev) => {
+            return { width: prev.width, height: prev.width * ratio }
+        })
         setMapHeightWidthRatio(ratio)
-    }, [map, adjustment, remToPxRatio, dimensions.width])
+    }, [map, adjustment, remToPxRatio])
 
     useEffect(() => {
         if (width <= 0 || height <= 0) return

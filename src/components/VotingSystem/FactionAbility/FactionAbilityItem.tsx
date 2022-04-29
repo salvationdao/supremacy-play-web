@@ -80,10 +80,13 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         setSupsCost(supsCost)
         setOfferingID(gameAbilityProgress.offering_id)
 
-        if (gameAbilityProgress.should_reset || initialTargetCost.isZero()) {
-            setInitialTargetCost(supsCost)
-        }
-    }, [gameAbilityProgress, initialTargetCost])
+        setInitialTargetCost((prev) => {
+            if (gameAbilityProgress.should_reset || prev.isZero()) {
+                return supsCost
+            }
+            return prev
+        })
+    }, [gameAbilityProgress])
 
     const onContribute = useCallback(
         async (amount: BigNumber, percentage: number) => {
