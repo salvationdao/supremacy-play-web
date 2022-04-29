@@ -334,14 +334,15 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
 
     // Count down starts when user has selected a location, then fires if they don't change their mind
     useEffect(() => {
-        if (!selection) {
-            setTimeRemain(-2)
-            setEndMoment(undefined)
-            return
-        }
+        setEndMoment((prev) => {
+            if (!selection) {
+                setTimeRemain(-2)
+                return undefined
+            }
 
-        if (!endMoment) return setEndMoment(moment().add(3, "seconds"))
-    }, [endMoment, selection])
+            if (!prev) return moment().add(3, "seconds")
+        })
+    }, [selection])
 
     useEffect(() => {
         setDelay(null)

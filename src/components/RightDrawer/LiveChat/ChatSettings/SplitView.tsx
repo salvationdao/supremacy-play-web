@@ -1,5 +1,5 @@
 import { Stack, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material"
-import { useCallback } from "react"
+import { useCallback, MouseEvent } from "react"
 import { SvgChatSplit, SvgChatTabbed } from "../../../../assets"
 import { SplitOptionType, useChat } from "../../../../containers"
 
@@ -7,7 +7,7 @@ export const SplitView = () => {
     const { splitOption, setSplitOption } = useChat()
 
     const onChange = useCallback(
-        (event: React.MouseEvent<HTMLElement>, newValue: SplitOptionType) => {
+        (event: MouseEvent<HTMLElement>, newValue: SplitOptionType) => {
             if (newValue) setSplitOption(newValue)
         },
         [setSplitOption],

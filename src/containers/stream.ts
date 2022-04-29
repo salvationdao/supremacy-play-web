@@ -153,12 +153,6 @@ export const StreamContainer = createContainer(() => {
         toggleIsMusicMute(false)
     }, [musicVolume, toggleIsMusicMute])
 
-    const changeStream = useCallback((s: Stream) => {
-        if (!s) return
-        setCurrentStream(s)
-        localStorage.setItem("new_stream_props", JSON.stringify(s))
-    }, [])
-
     // Subscribe to list of streams
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -168,22 +162,14 @@ export const StreamContainer = createContainer(() => {
         })
     }, [state, subscribe])
 
-    // Build stream options for the drop down
-    useEffect(() => {
-        if (!streams || streams.length <= 0) return
+    const changeStream = useCallback((s: Stream) => {
+        if (!s) return
+        setCurrentStream(s)
+        localStorage.setItem("new_stream_props", JSON.stringify(s))
+    }, [])
 
-        // Filter for servers that have capacity and is onlnine
-        const availStreams = streams.filter((x) => {
-            return x.users_now < x.user_max && x.status === "online" && x.active
-        })
-
-        if (availStreams.length <= 0) return
-
-        // Reduce the list of options so it's not too many for the user
-        // By default its sorted by quietest servers first
-        const quietestStreams = availStreams.sort((a, b) => (a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1))
-
-        const setNewStreamOptions = (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
+    const setNewStreamOptions = useCallback(
+        (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
             // Limit to only a few for the dropdown and include our current selection if not already in the list
             const temp = newStreamOptions.slice(0, MAX_OPTIONS)
             if (currentStream && !getObjectFromArrayByKey(temp, currentStream.stream_id, "stream_id")) {
@@ -200,7 +186,25 @@ export const StreamContainer = createContainer(() => {
 
             // Reverse the order for rendering so best is closer to user's mouse
             setStreamOptions(temp.reverse())
-        }
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    )
+
+    // Build stream options for the drop down
+    useEffect(() => {
+        if (!streams || streams.length <= 0) return
+
+        // Filter for servers that have capacity and is onlnine
+        const availStreams = streams.filter((x) => {
+            return x.users_now < x.user_max && x.status === "online" && x.active
+        })
+
+        if (availStreams.length <= 0) return
+
+        // Reduce the list of options so it's not too many for the user
+        // By default its sorted by quietest servers first
+        const quietestStreams = availStreams.sort((a, b) => (a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1))
 
         // If the local storage stream is in the list, set as current stream
         const localStream = localStorage.getItem("new_stream_props")
@@ -214,9 +218,7 @@ export const StreamContainer = createContainer(() => {
         }
 
         setNewStreamOptions(quietestStreams)
-        // NOTE: adding streams to deps causes render loop
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentStream, changeStream])
+    }, [setNewStreamOptions, streams])
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {

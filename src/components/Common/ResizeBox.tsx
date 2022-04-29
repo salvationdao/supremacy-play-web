@@ -58,7 +58,7 @@ export const ResizeBox = (props: ResizeBoxProps) => {
                 height: resizingDimensions.height * (adjustment || 1),
             })
         toggleResizing(false)
-    }, [resizingDimensions, toggleResizing, onResizeStop, adjustment])
+    }, [resizingDimensions, onResizeStop, toggleResizing, adjustment])
 
     return (
         <ResizeBoxInner

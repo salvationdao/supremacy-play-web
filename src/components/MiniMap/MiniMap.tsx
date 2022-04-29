@@ -114,7 +114,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
         if (width <= 0 || height <= 0) return
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
         // 110px is approx the height of the mech stats
-        const maxWidth = Math.min(width - 25, 1200)
+        const maxWidth = Math.min(width - 25, 900)
         const maxHeight = Math.min(height - 110 - 12.5, maxWidth * mapHeightWidthRatio)
         let targetingWidth = Math.min(maxWidth, 900)
         let targetingHeight = targetingWidth * mapHeightWidthRatio
@@ -127,7 +127,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
         const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width * adjustment
         const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height * adjustment
         setDimensions({ width: newWidth, height: newHeight })
-    }, [width, height, enlarged, adjustment, mapHeightWidthRatio, isTargeting, defaultDimensions.width, defaultDimensions.height])
+    }, [width, height, enlarged, adjustment, mapHeightWidthRatio, isTargeting, defaultDimensions])
 
     useEffect(() => {
         const endTime = winner?.end_time
