@@ -36,7 +36,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(
         abilityMaxPrice || new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"),
     )
-
+    console.log(initialTargetCost)
     const progressPayload = useRef<GameAbilityProgress>()
 
     const { identity } = gameAbility
@@ -80,10 +80,13 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         setSupsCost(supsCost)
         setOfferingID(gameAbilityProgress.offering_id)
 
-        if (gameAbilityProgress.should_reset || initialTargetCost.isZero()) {
-            setInitialTargetCost(supsCost)
-        }
-    }, [gameAbilityProgress, initialTargetCost])
+        setInitialTargetCost((prev) => {
+            if (gameAbilityProgress.should_reset || prev.isZero()) {
+                return supsCost
+            }
+            return prev
+        })
+    }, [gameAbilityProgress])
 
     const onContribute = useCallback(
         async (amount: BigNumber, percentage: number) => {

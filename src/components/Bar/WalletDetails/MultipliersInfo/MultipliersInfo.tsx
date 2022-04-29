@@ -13,6 +13,7 @@ export const MultipliersInfo = () => {
     // Multipliers
     const [multipliers, setMultipliers] = useState<BattleMultipliers[]>([])
     const [currentBattleMultiplier, setCurrentBattleMultiplier] = useState(0)
+    const []
 
     // Subscribe to multipliers
     useEffect(() => {
@@ -34,8 +35,8 @@ export const MultipliersInfo = () => {
     // Current battle multiplier should say update to 0 if battleID was in the payload
     useEffect(() => {
         if (!multipliers || multipliers.length <= 0) return
-        const total = multipliers.reduce((acc, m) => acc + m.total_multipliers, 0)
-        setCurrentBattleMultiplier(total)
+        const currentMulti = multipliers.filter((m) => m.battle_number === battleIdentifier)
+        setCurrentBattleMultiplier(currentMulti.length > 0 ? currentMulti[0].total_multipliers : "0x")
     }, [multipliers])
 
     return <MultipliersInfoInner currentBattleMultiplier={currentBattleMultiplier} user={user} multipliers={multipliers} />

@@ -112,8 +112,8 @@ export const LiveGraph = (props: LiveGraphProps) => {
             newBattlePoints.forEach((loc) => {
                 context.beginPath()
                 context.setLineDash([4, 4])
-                context.moveTo(loc.x - 5, loc.y - 10)
-                context.lineTo(loc.x - 5, loc.y + 10)
+                context.moveTo(loc.x - 3, loc.y - 10)
+                context.lineTo(loc.x - 3, loc.y + 10)
                 context.stroke()
             })
         }
