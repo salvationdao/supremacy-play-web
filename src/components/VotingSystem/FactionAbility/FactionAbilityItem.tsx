@@ -57,11 +57,11 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
             let unchanged = true
             if (!progressPayload.current) {
                 unchanged = false
+            } else if (payload.should_reset !== progressPayload.current.should_reset) {
+                unchanged = false
             } else if (payload.sups_cost !== progressPayload.current.sups_cost) {
                 unchanged = false
             } else if (payload.current_sups !== progressPayload.current.current_sups) {
-                unchanged = false
-            } else if (payload.should_reset !== progressPayload.current.should_reset) {
                 unchanged = false
             }
 
