@@ -11,7 +11,7 @@ import { Trailer } from "./Trailer"
 export const Stream = () => {
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
     const { iframeDimensions } = useDimension()
-    const { currentStream, isMute, vidRefCallback } = useStream()
+    const { currentStream, isMute, streamResolutions, vidRefCallback } = useStream()
     const { isOpen } = useTour()
 
     if (!watchedTrailer) {
@@ -20,9 +20,13 @@ export const Stream = () => {
 
     if (isOpen) return null
 
+    const isPlaying = streamResolutions && streamResolutions.length > 0
+
     return (
         <>
             <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
+                {!isPlaying && <NoStreamScreen />}
+
                 <video
                     key={currentStream?.stream_id}
                     id={"remoteVideo"}
@@ -40,14 +44,13 @@ export const Stream = () => {
                         width: iframeDimensions.width,
                         height: iframeDimensions.height,
                         zIndex: siteZIndex.Stream,
-                        background: currentStream?.stream_id ? `center url(${SupBackground}) ${colors.darkNavy}` : "unset",
+                        background: isPlaying ? "unset" : `center url(${SupBackground}) ${colors.darkNavy}`,
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat",
                     }}
                 />
             </Stack>
 
-            {!currentStream || (!currentStream.stream_id && <NoStreamScreen />)}
             {DEV_ONLY && <Music />}
         </>
     )
@@ -70,7 +73,7 @@ const NoStreamScreen = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                zIndex: siteZIndex.Stream - 1,
+                zIndex: siteZIndex.Stream + 1,
             }}
         >
             <Stack
