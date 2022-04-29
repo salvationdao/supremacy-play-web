@@ -167,7 +167,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
                     targeting
                     setSubmitted={setSubmitted}
-                    enlarged={enlarged || dimensions.width > 450}
+                    enlarged={enlarged || dimensions.width > 388}
                     newSnackbarMessage={newSnackbarMessage}
                 />
             )
@@ -175,7 +175,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
             return (
                 <MiniMapInside
                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                    enlarged={enlarged || dimensions.width > 450}
+                    enlarged={enlarged || dimensions.width > 388}
                     newSnackbarMessage={newSnackbarMessage}
                 />
             )
