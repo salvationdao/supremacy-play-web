@@ -96,7 +96,7 @@ const MultipliersInfoInner = ({
                             fontWeight: "fontWeightBold",
                             lineHeight: 0,
                             color: "#FFFFFF",
-                            backgroundColor: colors.red,
+                            backgroundColor: colors.orange,
                         },
                     }}
                 >
