@@ -8,7 +8,7 @@ import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../contai
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { colors, fonts } from "../../theme/theme"
+import { fonts } from "../../theme/theme"
 import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 // in rems
