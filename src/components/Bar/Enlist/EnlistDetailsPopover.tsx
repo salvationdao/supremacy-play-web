@@ -31,7 +31,7 @@ export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: Enl
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     return (
         <Popover
@@ -101,7 +101,7 @@ const PopoverContent = ({ faction }: { faction: FactionGeneralData }) => {
             },
             { faction_id: faction.id },
         )
-    }, [state, subscribe])
+    }, [faction.id, state, subscribe])
 
     const enlistFaction = useCallback(async () => {
         if (state !== WebSocket.OPEN) return
@@ -114,7 +114,7 @@ const PopoverContent = ({ faction }: { faction: FactionGeneralData }) => {
             console.debug(e)
         }
         return
-    }, [send, state, faction.id])
+    }, [state, send, faction.id, newSnackbarMessage])
 
     const factionExtraInfo = useMemo(() => {
         if (!factionStat) return null

@@ -17,13 +17,13 @@ export interface SaleAbilitiesModalProps {
 const modalWidth = 400
 
 export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) => {
-    const { user } = useGameServerAuth()
+    const { userID } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
+        if (state !== SocketState.OPEN || !send || !subscribe || !userID) return
 
         const fetchSaleAbilities = async () => {
             const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList, {
@@ -44,7 +44,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
         fetchSaleAbilities()
 
         return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => fetchSaleAbilities())
-    }, [state, send, subscribe, user])
+    }, [state, send, subscribe, userID])
 
     useEffect(() => {
         if (!localOpen) {
@@ -52,7 +52,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                 onClose()
             }, DRAWER_TRANSITION_DURATION + 50)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     return (
         <>
@@ -104,17 +104,32 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                         },
                                     }}
                                 >
-                                    <Box
-                                        sx={{
-                                            display: "grid",
-                                            gridTemplateColumns: "repeat(6, 70px)",
-                                            gap: ".5rem",
-                                        }}
-                                    >
-                                        {saleAbilityIDs.map((s) => (
-                                            <SaleAbilityCard key={s} abilityID={s} />
-                                        ))}
-                                    </Box>
+                                    {saleAbilityIDs.length > 0 ? (
+                                        <Box
+                                            sx={{
+                                                display: "grid",
+                                                gridTemplateColumns: "repeat(6, 70px)",
+                                                gap: ".5rem",
+                                            }}
+                                        >
+                                            {saleAbilityIDs.map((s) => (
+                                                <SaleAbilityCard key={s} abilityID={s} />
+                                            ))}
+                                        </Box>
+                                    ) : (
+                                        <Typography
+                                            sx={{
+                                                px: "1.28rem",
+                                                pt: "1.28rem",
+                                                mb: ".56rem",
+                                                color: colors.grey,
+                                                userSelect: "text !important",
+                                                opacity: 0.8,
+                                            }}
+                                        >
+                                            There are currently no abilities on sale.
+                                        </Typography>
+                                    )}
                                 </Box>
                             </Box>
                         </ClipThing>

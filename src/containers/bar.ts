@@ -95,7 +95,7 @@ export const BarContainer = createContainer(() => {
                 setActiveBars((prev) => ({ ...prev, [barName]: newStatus }))
             }
         },
-        [activeBars, setActiveBars, below600, below792, below892, below1350, below1500],
+        [activeBars, setActiveBars, below1350, below1500],
     )
 
     return {

@@ -9,7 +9,7 @@ import { GameAbility } from "../../../types"
 
 export const FactionAbilities = () => {
     const { state, subscribe } = useGameServerWebsocket()
-    const { user, factionID } = useGameServerAuth()
+    const { factionID } = useGameServerAuth()
     const { factionsAll } = useSupremacy()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
 
@@ -27,13 +27,13 @@ export const FactionAbilities = () => {
                 <Divider sx={{ mb: 2.3, borderColor: (theme) => theme.factionTheme.primary, opacity: 0.28 }} />
                 <Stack spacing=".56rem">
                     <Stack direction="row" spacing=".48rem" alignItems="center">
-                        {user && (
+                        {factionID && (
                             <Box
                                 sx={{
                                     width: "1.9rem",
                                     height: "1.9rem",
-                                    backgroundImage: factionsAll[user.faction_id]
-                                        ? `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction_id].logo_blob_id})`
+                                    backgroundImage: factionsAll[factionID]
+                                        ? `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[factionID].logo_blob_id})`
                                         : "",
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",

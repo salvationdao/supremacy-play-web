@@ -11,7 +11,7 @@ export const NotificationItem = ({ duration, children }: { duration: number; chi
         }, duration)
 
         return () => clearTimeout(timeout)
-    }, [])
+    }, [duration, toggleIsShowing])
 
     return (
         <Slide in={isShowing} direction="left">

@@ -19,7 +19,7 @@ export const WarMachineStats = () => {
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
         toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
-    }, [bribeStage])
+    }, [bribeStage, toggleShow])
     // End ****************************************
 
     const adjustment = useMemo(() => Math.min(remToPxRatio, 10) / 10, [remToPxRatio])

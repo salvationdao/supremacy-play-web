@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Howl, Howler } from "howler"
 import { FactionIDs } from "../../constants"
 import { useGame, useGameServerWebsocket, useStream, WebSocketProperties } from "../../containers"
@@ -66,6 +66,28 @@ export const Music = () => {
         }
     }, [])
 
+    // Nicely transitions to play the new sound with fade
+    const playNewSound = useCallback((newSound: Sounds, onEndSound?: Sounds) => {
+        if (currentPlaying.current && currentPlaying.current != newSound) {
+            sounds.current[currentPlaying.current].fade(1, 0, 800)
+            sounds.current[currentPlaying.current].off()
+            sounds.current[newSound].stop()
+            sounds.current[newSound].play()
+            sounds.current[newSound].fade(0, 1, 800)
+        } else if (!currentPlaying.current) {
+            sounds.current[newSound].stop()
+            sounds.current[newSound].play()
+        }
+
+        if (onEndSound) {
+            sounds.current[newSound].once("end", () => {
+                playNewSound(onEndSound)
+            })
+        }
+
+        currentPlaying.current = newSound
+    }, [])
+
     useEffect(() => {
         Howler.volume(musicVolume)
     }, [musicVolume])
@@ -87,7 +109,7 @@ export const Music = () => {
                 playNewSound(Sounds.rmVictory)
                 break
         }
-    }, [battleEndDetail])
+    }, [battleEndDetail, playNewSound])
 
     // Play intro and main theme at beginning
     useEffect(() => {
@@ -95,7 +117,7 @@ export const Music = () => {
         setZhiDeathCount(0)
         setBcDeathCount(0)
         playNewSound(Sounds.generalIntro, Sounds.generalMain)
-    }, [warMachines])
+    }, [playNewSound, warMachines])
 
     // Play faction theme depending on who's winning
     useEffect(() => {
@@ -106,29 +128,7 @@ export const Music = () => {
         } else if (bcDeathCount < zhiDeathCount && bcDeathCount < rmDeathCount) {
             playNewSound(Sounds.bcMain)
         }
-    }, [rmDeathCount, zhiDeathCount, bcDeathCount])
-
-    // Nicely transitions to play the new sound with fade
-    const playNewSound = (newSound: Sounds, onEndSound?: Sounds) => {
-        if (currentPlaying.current && currentPlaying.current != newSound) {
-            sounds.current[currentPlaying.current].fade(1, 0, 800)
-            sounds.current[currentPlaying.current].off()
-            sounds.current[newSound].stop()
-            sounds.current[newSound].play()
-            sounds.current[newSound].fade(0, 1, 800)
-        } else if (!currentPlaying.current) {
-            sounds.current[newSound].stop()
-            sounds.current[newSound].play()
-        }
-
-        if (onEndSound) {
-            sounds.current[newSound].once("end", () => {
-                playNewSound(onEndSound)
-            })
-        }
-
-        currentPlaying.current = newSound
-    }
+    }, [rmDeathCount, zhiDeathCount, bcDeathCount, playNewSound])
 
     return (
         <>
@@ -173,7 +173,7 @@ const Mech = ({ state, subscribe, warMachine, setDeathCount }: MechProps) => {
             },
             { participantID },
         )
-    }, [state, subscribe, participantID, hash])
+    }, [state, subscribe, participantID])
 
     useEffect(() => {
         if (warMachineDestroyedRecord && setDeathCount) {

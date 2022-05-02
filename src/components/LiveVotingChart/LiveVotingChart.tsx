@@ -43,7 +43,7 @@ export const LiveVotingChart = () => {
         }, 250)
 
         return () => clearTimeout(timeout)
-    }, [isLiveChartOpen])
+    }, [isLiveChartOpen, toggleIsRender])
 
     const onResize = useCallback((width: number, height: number) => {
         setCurWidth(width)
@@ -77,7 +77,7 @@ export const LiveVotingChart = () => {
             tooltipText:
                 "The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.",
         }),
-        [onResize],
+        [onResize, toggleIsLiveChartOpen],
     )
 
     if (!isRender) return null

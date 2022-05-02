@@ -47,7 +47,7 @@ export const UserDetailsPopover = ({
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     if (!userStat) return null
 

@@ -53,7 +53,7 @@ export const LiveGraph = (props: LiveGraphProps) => {
                 return lvd.concat(rawData)
             })
         })
-    }, [state, subscribeNetMessage])
+    }, [maxLiveVotingDataLength, state, subscribeNetMessage])
 
     // Draw live graph
     useEffect(() => {
@@ -112,12 +112,12 @@ export const LiveGraph = (props: LiveGraphProps) => {
             newBattlePoints.forEach((loc) => {
                 context.beginPath()
                 context.setLineDash([4, 4])
-                context.moveTo(loc.x - 5, loc.y - 10)
-                context.lineTo(loc.x - 5, loc.y + 10)
+                context.moveTo(loc.x - 3, loc.y - 10)
+                context.lineTo(loc.x - 3, loc.y + 10)
                 context.stroke()
             })
         }
-    }, [liveVotingData, canvasRef.current])
+    }, [liveVotingData, maxWidthPx, maxLiveVotingDataLength])
 
     return <LiveGraphInner maxWidthPx={maxWidthPx} maxHeightPx={maxHeightPx} canvasRef={canvasRef} largest={largest} />
 }

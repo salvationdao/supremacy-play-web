@@ -112,7 +112,7 @@ import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
 import WarningIcon from "@mui/icons-material/Warning"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
 import RedMoutainMechKillIcon from "!@svgr/webpack!./svg/RedMountainKillIcon.svg"
-import EmojiSelector from "!@svgr/webpack!./svg/emojiSelector.svg"
+import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 

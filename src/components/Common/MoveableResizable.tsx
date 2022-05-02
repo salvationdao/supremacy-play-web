@@ -67,25 +67,32 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
     useEffect(() => {
         if (width <= 0 || height <= 0) return
 
-        const newPosX = curPosX > 0 ? clamp(PADDING, curPosX, width - curWidth - PADDING) : defaultPositionX + PADDING
-        const newPosY = curPosY > 0 ? clamp(PADDING, curPosY, height - curHeight - PADDING) : height - defaultPositionYBottom - curHeight
+        setCurPosX((prev) => {
+            const newPosX = prev > 0 ? clamp(PADDING, prev, width - curWidth - PADDING) : defaultPositionX + PADDING
+            localStorage.setItem(`${localStoragePrefix}PosX`, newPosX.toString())
+            return newPosX
+        })
 
-        setCurPosX(newPosX)
-        setCurPosY(newPosY)
-        localStorage.setItem(`${localStoragePrefix}PosX`, newPosX.toString())
-        localStorage.setItem(`${localStoragePrefix}PosY`, newPosY.toString())
+        setCurPosY((prev) => {
+            const newPosY = prev > 0 ? clamp(PADDING, prev, height - curHeight - PADDING) : height - defaultPositionYBottom - curHeight
+            localStorage.setItem(`${localStoragePrefix}PosY`, newPosY.toString())
+            return newPosY
+        })
 
         onReizeCallback && onReizeCallback(curWidth, curHeight)
-    }, [width, height, curWidth, curHeight])
+    }, [width, height, curWidth, curHeight, defaultPositionX, defaultPositionYBottom, localStoragePrefix, onReizeCallback])
 
     // When dragging stops, just set the position and save to local storage
     // The bounds in the  Draggable component already limits it's range of motion
-    const onDragStop = useCallback((e: DraggableEvent, data: DraggableData) => {
-        setCurPosX(data.x)
-        setCurPosY(data.y)
-        localStorage.setItem(`${localStoragePrefix}PosX`, data.x.toString())
-        localStorage.setItem(`${localStoragePrefix}PosY`, data.y.toString())
-    }, [])
+    const onDragStop = useCallback(
+        (e: DraggableEvent, data: DraggableData) => {
+            setCurPosX(data.x)
+            setCurPosY(data.y)
+            localStorage.setItem(`${localStoragePrefix}PosX`, data.x.toString())
+            localStorage.setItem(`${localStoragePrefix}PosY`, data.y.toString())
+        },
+        [localStoragePrefix],
+    )
 
     // When user resize is done, save into local storage
     const onResizeStop = useCallback(
@@ -103,7 +110,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
             localStorage.setItem(`${localStoragePrefix}SizeX`, size.width.toString())
             localStorage.setItem(`${localStoragePrefix}SizeY`, size.height.toString())
         },
-        [curWidth, curHeight, allowResizeX, allowResizeY, minSizeX, minSizeY, width, height, adjustment],
+        [curWidth, curHeight, allowResizeX, allowResizeY, minSizeX, minSizeY, width, height, adjustment, localStoragePrefix],
     )
 
     return (

@@ -59,7 +59,7 @@ const SettingsPopover = ({
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -95), [primaryColor])
 

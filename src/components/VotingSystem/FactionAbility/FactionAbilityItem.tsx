@@ -52,16 +52,16 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
 
         return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
-            if (!payload || shouldIgnore) return
+            if (!payload || (!payload.should_reset && shouldIgnore)) return
 
             let unchanged = true
             if (!progressPayload.current) {
                 unchanged = false
+            } else if (payload.should_reset !== progressPayload.current.should_reset) {
+                unchanged = false
             } else if (payload.sups_cost !== progressPayload.current.sups_cost) {
                 unchanged = false
             } else if (payload.current_sups !== progressPayload.current.current_sups) {
-                unchanged = false
-            } else if (payload.should_reset !== progressPayload.current.should_reset) {
                 unchanged = false
             }
 
@@ -69,7 +69,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
             progressPayload.current = payload
             setGameAbilityProgress(payload)
         })
-    }, [identity, state, subscribeAbilityNetMessage, factionID])
+    }, [identity, state, subscribeAbilityNetMessage, factionID, shouldIgnore])
 
     // Set states
     useEffect(() => {
@@ -80,14 +80,18 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         setSupsCost(supsCost)
         setOfferingID(gameAbilityProgress.offering_id)
 
-        if (gameAbilityProgress.should_reset || initialTargetCost.isZero()) {
-            setInitialTargetCost(supsCost)
-        }
+        setInitialTargetCost((prev) => {
+            if (gameAbilityProgress.should_reset || prev.isZero()) {
+                return supsCost
+            }
+            return prev
+        })
     }, [gameAbilityProgress])
 
-    let ignoreTimeout: boolean
     const onContribute = useCallback(
         async (amount: BigNumber, percentage: number) => {
+            let ignoreTimeout: boolean
+
             if (!send || percentage > 1 || percentage < 0) return
 
             const resp = await send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
@@ -116,7 +120,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
                 })
             }
         },
-        [send, identity, offeringID],
+        [send, identity, offeringID, supsCost],
     )
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThan(currentSups), [bribeStage, supsCost, currentSups])
