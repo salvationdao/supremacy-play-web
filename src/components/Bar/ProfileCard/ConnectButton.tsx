@@ -21,7 +21,7 @@ export const ConnectButton = () => {
         }, GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS)
 
         return () => clearTimeout(timeout)
-    }, [])
+    }, [toggleRenderConnectButton])
 
     const href = useMemo(() => `${PASSPORT_WEB}nosidebar/login?omitSideBar=true&&sessionID=${sessionID}`, [sessionID])
 
@@ -59,7 +59,7 @@ export const ConnectButton = () => {
         }
 
         setPassportPopup(popup)
-    }, [isProcessing, href])
+    }, [isProcessing, setIsOpen, href])
 
     return (
         <>

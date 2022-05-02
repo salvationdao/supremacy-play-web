@@ -17,13 +17,13 @@ export interface SaleAbilitiesModalProps {
 const modalWidth = 400
 
 export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) => {
-    const { user } = useGameServerAuth()
+    const { userID } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
+        if (state !== SocketState.OPEN || !send || !subscribe || !userID) return
 
         const fetchSaleAbilities = async () => {
             const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList, {
@@ -44,7 +44,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
         fetchSaleAbilities()
 
         return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => fetchSaleAbilities())
-    }, [state, send, subscribe, user])
+    }, [state, send, subscribe, userID])
 
     useEffect(() => {
         if (!localOpen) {
@@ -52,9 +52,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                 onClose()
             }, DRAWER_TRANSITION_DURATION + 50)
         }
-    }, [localOpen])
-
-    if (!user) return null
+    }, [localOpen, onClose])
 
     return (
         <>
@@ -115,7 +113,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                             }}
                                         >
                                             {saleAbilityIDs.map((s) => (
-                                                <SaleAbilityCard key={s} user={user} abilityID={s} />
+                                                <SaleAbilityCard key={s} abilityID={s} />
                                             ))}
                                         </Box>
                                     ) : (

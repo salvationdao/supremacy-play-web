@@ -5,21 +5,8 @@ import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { BribeStageResponse, Severity, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
 import { useToggle } from "../../hooks"
-import { colors } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension, Map, PlayerAbility } from "../../types"
-
-interface MiniMapProps {
-    map?: Map
-    winner?: WinnerAnnouncementResponse
-    setWinner: (winner?: WinnerAnnouncementResponse) => void
-    playerAbility?: PlayerAbility
-    setPlayerAbility: React.Dispatch<React.SetStateAction<PlayerAbility | undefined>>
-    bribeStage?: BribeStageResponse
-    isMapOpen: boolean
-    toggleIsMapOpen: (open?: boolean) => void
-    factionColor: string
-    newSnackbarMessage: (message: string, severity?: Severity) => void
-}
 
 export const MiniMap = () => {
     const theme = useTheme<Theme>()
@@ -27,6 +14,13 @@ export const MiniMap = () => {
     const { map, winner, setWinner, playerAbility, setPlayerAbility, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isMapOpen)
+
+    // Temp hotfix ask james ****************************
+    const [show, toggleShow] = useToggle(false)
+    useEffect(() => {
+        toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
+    }, [bribeStage, toggleShow])
+    // End ****************************************
 
     // A little timeout so fade transition can play
     useEffect(() => {
@@ -36,13 +30,13 @@ export const MiniMap = () => {
         }, 250)
 
         return () => clearTimeout(timeout)
-    }, [isMapOpen])
+    }, [isMapOpen, toggleIsRender])
 
     useEffect(() => {
         if ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) {
             toggleIsMapOpen(true)
         }
-    }, [winner, bribeStage, playerAbility])
+    }, [winner, bribeStage, playerAbility, toggleIsMapOpen])
 
     const mapRender = useMemo(
         () => (
@@ -53,17 +47,30 @@ export const MiniMap = () => {
                 playerAbility={playerAbility}
                 setPlayerAbility={setPlayerAbility}
                 bribeStage={bribeStage}
-                isMapOpen={isMapOpen}
+                isMapOpen={isMapOpen && show}
                 toggleIsMapOpen={toggleIsMapOpen}
                 newSnackbarMessage={newSnackbarMessage}
                 factionColor={theme.factionTheme.primary}
             />
         ),
-        [map, winner, setWinner, playerAbility, setPlayerAbility, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme],
+        [map, winner, setWinner, playerAbility, setPlayerAbility, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme, show],
     )
 
     if (!isRender) return null
     return <>{mapRender}</>
+}
+
+interface InnerProps {
+    map?: Map
+    winner?: WinnerAnnouncementResponse
+    setWinner: (winner?: WinnerAnnouncementResponse) => void
+    playerAbility?: PlayerAbility
+    setPlayerAbility: React.Dispatch<React.SetStateAction<PlayerAbility | undefined>>
+    bribeStage?: BribeStageResponse
+    isMapOpen: boolean
+    toggleIsMapOpen: (open?: boolean) => void
+    factionColor: string
+    newSnackbarMessage: (message: string, severity?: Severity) => void
 }
 
 const MiniMapInner = ({
@@ -77,13 +84,11 @@ const MiniMapInner = ({
     toggleIsMapOpen,
     factionColor,
     newSnackbarMessage,
-}: MiniMapProps) => {
+}: InnerProps) => {
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
     } = useDimension()
-    const theme = useTheme()
-
     const [enlarged, toggleEnlarged] = useToggle()
     const [mapHeightWidthRatio, setMapHeightWidthRatio] = useState(1)
     const [defaultDimensions, setDefaultDimensions] = useState<Dimension>({
@@ -114,17 +119,19 @@ const MiniMapInner = ({
             width: MINI_MAP_DEFAULT_SIZE * adjustment,
             height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment + 2.4 * remToPxRatio,
         }
-        const res = { width: dimensions.width, height: dimensions.width * ratio }
+
         setDefaultDimensions(defaultRes)
-        setDimensions(res)
+        setDimensions((prev) => {
+            return { width: prev.width, height: prev.width * ratio }
+        })
         setMapHeightWidthRatio(ratio)
-    }, [map, adjustment])
+    }, [map, adjustment, remToPxRatio])
 
     useEffect(() => {
         if (width <= 0 || height <= 0) return
         // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
         // 110px is approx the height of the mech stats
-        const maxWidth = Math.min(width - 25, 1200)
+        const maxWidth = Math.min(width - 25, 900)
         const maxHeight = Math.min(height - 110 - 12.5, maxWidth * mapHeightWidthRatio)
         let targetingWidth = Math.min(maxWidth, 900)
         let targetingHeight = targetingWidth * mapHeightWidthRatio
@@ -137,7 +144,7 @@ const MiniMapInner = ({
         const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width * adjustment
         const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height * adjustment
         setDimensions({ width: newWidth, height: newHeight })
-    }, [width, height, enlarged, adjustment])
+    }, [width, height, enlarged, adjustment, mapHeightWidthRatio, isTargeting, defaultDimensions])
 
     useEffect(() => {
         if (winner) {
@@ -155,7 +162,7 @@ const MiniMapInner = ({
         if ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) {
             toggleEnlarged(true)
         }
-    }, [winner, bribeStage, playerAbility])
+    }, [winner, bribeStage, playerAbility, toggleEnlarged])
 
     useEffect(() => {
         if (winner) {
@@ -175,9 +182,9 @@ const MiniMapInner = ({
                 setPlayerAbility(undefined)
             }
         }
-    }, [timeReachZero, submitted, playerAbility, winner])
+    }, [timeReachZero, submitted, playerAbility, winner, toggleEnlarged, newSnackbarMessage, setWinner])
 
-    const mainColor = useMemo(() => (isTargeting && winner ? winner.game_ability.colour : factionColor), [isTargeting, winner, theme, factionColor])
+    const mainColor = useMemo(() => (isTargeting && winner ? winner.game_ability.colour : factionColor), [isTargeting, winner, factionColor])
 
     const mapInsideRender = useMemo(() => {
         if (isTargeting) {
@@ -208,7 +215,7 @@ const MiniMapInner = ({
             return (
                 <MiniMapInside
                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                    enlarged={enlarged || dimensions.width > 450}
+                    enlarged={enlarged || dimensions.width > 388}
                     newSnackbarMessage={newSnackbarMessage}
                 />
             )
@@ -227,7 +234,7 @@ const MiniMapInner = ({
                 pointerEvents: "none",
                 filter: "drop-shadow(0 3px 3px #00000050)",
                 transition: "all .2s",
-                zIndex: 32,
+                zIndex: siteZIndex.MiniMap,
             }}
         >
             <Box sx={{ position: "relative", pointerEvents: "all" }}>
@@ -251,7 +258,7 @@ const MiniMapInner = ({
                                 cursor: "nwse-resize",
                                 color: colors.text,
                                 opacity: 0.8,
-                                zIndex: 50,
+                                zIndex: siteZIndex.MiniMap,
                             }}
                         >
                             <SvgResizeXY size="1rem" sx={{ transform: "rotate(90deg)" }} />

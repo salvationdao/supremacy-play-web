@@ -51,7 +51,7 @@ export const DimensionContainer = createContainer(() => {
         return () => {
             resize_ob.unobserve(gameUIContainer)
         }
-    }, [])
+    }, [setGameUIDimensions])
 
     useEffect(() => {
         const gameUIContainer = document.getElementById("game-ui-container")
@@ -75,7 +75,7 @@ export const DimensionContainer = createContainer(() => {
 
         setGameUIDimensions({ width: containerWidth, height: containerHeight })
         setIframeDimensions({ width: iframeWidth, height: iframeHeight })
-    }, [gameUIDimensions, remToPxRatio])
+    }, [gameUIDimensions, remToPxRatio, setGameUIDimensions])
 
     return {
         remToPxRatio,

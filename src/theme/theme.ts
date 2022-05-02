@@ -94,6 +94,34 @@ export const fonts = {
     shareTech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
 }
 
+export enum siteZIndex {
+    // Shows on top of everything
+    Modal = 299,
+    Drawer = 298,
+    Popover = 297,
+    Tooltip = 296,
+    LoadMessage = 250,
+
+    // Stream site top elements
+    Bar = 199,
+    LeftDrawer = 198,
+    RightDrawer = 197,
+    RoutePage = 101,
+
+    // Battle areana
+    Controls = 70,
+    Trailer = 69,
+    BattleHistory = 70,
+    BattleEnd = 60,
+    MiniMap = 50,
+    MoveableResizableHover = 51,
+    MoveableResizable = 20,
+    Notfications = 40,
+    MechStats = 30,
+    VotingSystem = 30,
+    Stream = 5,
+}
+
 export const theme = createTheme({
     breakpoints: {
         values: {

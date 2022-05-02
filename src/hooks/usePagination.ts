@@ -12,7 +12,7 @@ export const usePagination = ({ pageSize: _pageSize, page: _page } = { pageSize:
 
     const hasNext = useMemo(() => page + 1 <= totalPages, [page, totalPages])
 
-    const hasPrev = useMemo(() => page - 1 > 0, [page, totalPages])
+    const hasPrev = useMemo(() => page - 1 > 0, [page])
 
     const nextPage = () => {
         if (hasNext) setPage(page + 1)

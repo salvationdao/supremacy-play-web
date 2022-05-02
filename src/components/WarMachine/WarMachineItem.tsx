@@ -69,7 +69,7 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
             },
             { participantID },
         )
-    }, [state, subscribe, participantID, hash])
+    }, [state, subscribe, participantID])
 
     return (
         <WarMachineItemInner
@@ -123,14 +123,14 @@ const WarMachineItemInner = ({
         if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
         } else setHighlightedMechHash(hash)
-    }, [hash, highlightedMechHash])
+    }, [hash, highlightedMechHash, setHighlightedMechHash])
 
     const openSkillsPopover = useCallback(() => {
         // Need this time out so that it waits for it expand first then popover, else positioning is wrong
         setTimeout(() => {
             togglePopoverOpen(true)
         }, 300)
-    }, [])
+    }, [togglePopoverOpen])
 
     /* Toggle out isExpanded if other mech is highlighted */
     useEffect(() => {
@@ -140,11 +140,11 @@ const WarMachineItemInner = ({
             toggleIsExpanded(true)
             openSkillsPopover()
         }
-    }, [highlightedMechHash])
+    }, [highlightedMechHash, openSkillsPopover, shouldBeExpanded, toggleIsExpanded, warMachine.hash])
 
     useEffect(() => {
         toggleIsExpanded(shouldBeExpanded)
-    }, [shouldBeExpanded])
+    }, [shouldBeExpanded, toggleIsExpanded])
 
     return (
         <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>

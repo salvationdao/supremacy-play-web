@@ -2,7 +2,7 @@ import { Box, Modal, Stack, Theme, Typography, useTheme } from "@mui/material"
 import { useMemo } from "react"
 import { ClipThing } from ".."
 import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
-import { colors, fonts } from "../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { DamageRecord, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 
 export const WarMachineDestroyedInfo = ({
@@ -26,7 +26,7 @@ export const WarMachineDestroyedInfo = ({
                         dr.source_name == killed_by,
                 )
                 .reduce((acc, dr) => acc + dr.amount, 0) / 100,
-        [damage_records],
+        [damage_records, killed_by, killed_by_war_machine?.participantID],
     )
 
     const assistDamageMechs = useMemo(
@@ -34,7 +34,7 @@ export const WarMachineDestroyedInfo = ({
             damage_records
                 .filter((dr) => dr.caused_by_war_machine && dr.caused_by_war_machine.participantID !== killed_by_war_machine?.participantID)
                 .sort((a, b) => (b.amount > a.amount ? 1 : -1)),
-        [damage_records],
+        [damage_records, killed_by_war_machine?.participantID],
     )
 
     const assistDamageOthers = useMemo(
@@ -43,7 +43,7 @@ export const WarMachineDestroyedInfo = ({
     )
 
     return (
-        <Modal open={open} onClose={onClose} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
             <Box
                 sx={{
                     position: "absolute",

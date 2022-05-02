@@ -40,19 +40,19 @@ export const WalletDetails = () => {
                         overflowY: "hidden",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            height: ".4rem",
+                            height: ".3rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: colors.darkNeonBlue,
+                            background: "#FFFFFF50",
                             borderRadius: 3,
                         },
                     }}
                 >
-                    <Stack id="tutorial-sups" direction="row" alignItems="center">
+                    <Stack direction="row" alignItems="center">
                         <SvgWallet size="2.3rem" sx={{ mr: ".8rem" }} />
                         <WalletInfo />
                         <MultipliersInfo />

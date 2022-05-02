@@ -94,7 +94,7 @@ const MiniMapInsideInner = ({
             setSubmitted && setSubmitted(true)
             setSelection(undefined)
         }
-    }, [state, send, selection, setSubmitted, setSelection, gameAbility, playerAbility])
+    }, [state, send, selection, setSubmitted, gameAbility, playerAbility, newSnackbarMessage])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
@@ -354,13 +354,14 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
 
     // Count down starts when user has selected a location, then fires if they don't change their mind
     useEffect(() => {
-        if (!selection) {
-            setTimeRemain(-2)
-            setEndMoment(undefined)
-            return
-        }
+        setEndMoment((prev) => {
+            if (!selection) {
+                setTimeRemain(-2)
+                return undefined
+            }
 
-        if (!endMoment) return setEndMoment(moment().add(3, "seconds"))
+            if (!prev) return moment().add(3, "seconds")
+        })
     }, [selection])
 
     useEffect(() => {
@@ -379,7 +380,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
 
     useEffect(() => {
         if (selection && timeRemain == -1) onConfirm()
-    }, [timeRemain])
+    }, [onConfirm, selection, timeRemain])
 
     if (timeRemain < 0) return null
 
@@ -391,7 +392,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 pointerEvents: "none",
-                zIndex: 999,
+                zIndex: 99,
             }}
         >
             <Typography

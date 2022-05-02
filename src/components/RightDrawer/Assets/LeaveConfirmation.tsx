@@ -7,7 +7,7 @@ import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../.
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 
 export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; asset: Asset; onClose: () => void }) => {
@@ -36,10 +36,10 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
         } finally {
             toggleIsLeaving(false)
         }
-    }, [state, hash])
+    }, [state, isLeaving, toggleIsLeaving, send, hash, onClose, newSnackbarMessage])
 
     return (
-        <Modal open={open} onClose={onClose} sx={{ zIndex: 999999 }}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",

@@ -2,7 +2,7 @@ import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgClose, SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
-import { SocketState, useGame, useGameServerWebsocket } from "../../containers"
+import { SocketState, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -13,7 +13,8 @@ import { AbilityCardProps } from "./SaleAbilityCard"
 
 const activateModalWidth = 400
 
-export const PlayerAbilityCard = ({ user, abilityID, ...props }: AbilityCardProps) => {
+export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
+    const { userID } = useGameServerAuth()
     const { setPlayerAbility: submitPlayerAbility } = useGame()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility | null>(null)
@@ -45,7 +46,7 @@ export const PlayerAbilityCard = ({ user, abilityID, ...props }: AbilityCardProp
     }
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
+        if (state !== SocketState.OPEN || !send || !subscribe || !userID) return
 
         try {
             return subscribe<PlayerAbility>(
@@ -64,7 +65,7 @@ export const PlayerAbilityCard = ({ user, abilityID, ...props }: AbilityCardProp
                 setError(e)
             }
         }
-    }, [state, send, subscribe, user])
+    }, [state, send, subscribe, userID, abilityID])
 
     if (!playerAbility) {
         return <Box>Loading...</Box>

@@ -71,7 +71,7 @@ export const PlayerAbilities = () => {
                         }}
                     >
                         {playerAbilityIDs.map((s) => (
-                            <PlayerAbilityCard key={s} user={user} abilityID={s} />
+                            <PlayerAbilityCard key={s} abilityID={s} />
                         ))}
                     </Box>
                 ) : (

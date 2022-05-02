@@ -18,7 +18,7 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000) => {
             return
         }
         setDelay(null)
-    }, [endTimeState])
+    }, [endTimeState, speed])
 
     useInterval(() => {
         setTotalSecRemain((t) => Math.max(t - 1, 0))

@@ -9,7 +9,7 @@ import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsock
 import { getRarityDeets, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 
 const AmountItem = ({
@@ -71,7 +71,7 @@ export const DeployConfirmation = ({
     const { newSnackbarMessage } = useSnackbar()
     const { state, send } = useGameServerWebsocket()
     const { send: psSend } = usePassportServerWebsocket()
-    const { user } = usePassportServerAuth()
+    const { user, userID } = usePassportServerAuth()
     const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
@@ -96,7 +96,7 @@ export const DeployConfirmation = ({
         currentSettings.telegram_notifications === dbSettings.telegram_notifications
 
     useEffect(() => {
-        if (!user || !send) return
+        if (!userID || !send) return
         ;(async () => {
             try {
                 const resp = await send<NotificationsSettings | null>(GameServerKeys.GetSettings, {
@@ -113,7 +113,7 @@ export const DeployConfirmation = ({
                 newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
             }
         })()
-    }, [user, send])
+    }, [userID, send, newSnackbarMessage])
 
     useEffect(() => {
         let qc = new BigNumber(queueCost).shiftedBy(-18)
@@ -175,10 +175,24 @@ export const DeployConfirmation = ({
         } finally {
             toggleIsDeploying(false)
         }
-    }, [state, hash, currentSettings, saveMobile, mobile, saveSettings])
+    }, [
+        state,
+        user,
+        saveMobile,
+        mobile,
+        saveSettings,
+        send,
+        hash,
+        currentSettings,
+        psSend,
+        newSnackbarMessage,
+        setTelegramShortcode,
+        onClose,
+        toggleIsDeploying,
+    ])
 
     return (
-        <Modal open={open} onClose={onClose} sx={{ zIndex: 999999 }}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",
@@ -537,7 +551,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
 
             return () => clearTimeout(timeout)
         }
-    }, [copySuccess])
+    }, [copySuccess, toggleCopySuccess])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
