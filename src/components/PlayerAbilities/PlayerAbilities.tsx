@@ -44,6 +44,8 @@ export const PlayerAbilities = () => {
         return subscribe(GameServerKeys.TriggerPlayerAbilitiesListUpdated, () => fetchSaleAbilities())
     }, [state, send, subscribe, user, currentPage])
 
+    if (!user) return null
+
     return (
         <Box>
             <Stack direction="row" spacing=".48rem" alignItems="center" marginBottom="1rem">
@@ -69,7 +71,7 @@ export const PlayerAbilities = () => {
                         }}
                     >
                         {playerAbilityIDs.map((s) => (
-                            <PlayerAbilityCard key={s} abilityID={s} />
+                            <PlayerAbilityCard key={s} user={user} abilityID={s} />
                         ))}
                     </Box>
                 ) : (

@@ -2,24 +2,24 @@ import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, ButtonBaseProps, Fade, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
-import { SocketState, useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../containers"
+import { SocketState, useGameServerWebsocket, useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
-import { SaleAbility } from "../../types"
+import { SaleAbility, User } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { TooltipHelper } from "../Common/TooltipHelper"
 
 export interface AbilityCardProps extends ButtonBaseProps {
+    user: User
     abilityID: string
 }
 
 const purchaseModalWidth = 400
 
-export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
-    const { user } = useGameServerAuth()
+export const SaleAbilityCard = ({ user, abilityID, ...props }: AbilityCardProps) => {
     const { state, send, subscribe } = useGameServerWebsocket()
     const [saleAbility, setSaleAbility] = useState<SaleAbility | null>(null)
     const [price, setPrice] = useState<string | null>(null)

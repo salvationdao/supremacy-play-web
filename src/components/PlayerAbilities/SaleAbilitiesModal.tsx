@@ -54,6 +54,8 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
         }
     }, [localOpen])
 
+    if (!user) return null
+
     return (
         <>
             <Modal open={localOpen} onClose={() => toggleLocalOpen(false)} closeAfterTransition>
@@ -113,7 +115,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                             }}
                                         >
                                             {saleAbilityIDs.map((s) => (
-                                                <SaleAbilityCard key={s} abilityID={s} />
+                                                <SaleAbilityCard key={s} user={user} abilityID={s} />
                                             ))}
                                         </Box>
                                     ) : (

@@ -2,7 +2,7 @@ import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgClose, SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
-import { SocketState, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { SocketState, useGame, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -13,17 +13,14 @@ import { AbilityCardProps } from "./SaleAbilityCard"
 
 const activateModalWidth = 400
 
-export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
-    const { user } = useGameServerAuth()
+export const PlayerAbilityCard = ({ user, abilityID, ...props }: AbilityCardProps) => {
     const { setPlayerAbility: submitPlayerAbility } = useGame()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility | null>(null)
     const [error, setError] = useState<string | null>(null)
 
-    // Purchasing
+    // Activating
     const [showPurchaseModal, toggleShowActivateModal] = useToggle(false)
-    const [activateLoading, setActivateLoading] = useState(false)
-    const [activateError, setActivateError] = useState<string | null>(null)
 
     let abilityTypeIcon = <SvgQuestionMark />
     let abilityTypeDescription = "Miscellaneous ability type."
@@ -43,6 +40,7 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
 
     const onActivate = () => {
         if (!playerAbility) return
+        console.log("submitting player ability")
         submitPlayerAbility(playerAbility)
         toggleShowActivateModal(false)
     }
@@ -242,11 +240,9 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                                         },
                                     }}
                                     onClick={() => onActivate()}
-                                    loading={activateLoading}
                                 >
                                     <Typography variant="body2">Activate Ability</Typography>
                                 </LoadingButton>
-                                {activateError && <Typography color={colors.red}>Error: {activateError}</Typography>}
                                 {error && <Typography color={colors.red}>Error: Something went wrong while loading this ability.</Typography>}
                             </Box>
                         </ClipThing>
