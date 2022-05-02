@@ -22,6 +22,8 @@ export const SelectionIcon = ({
     const sizeY = useMemo(() => gridHeight * 1.5, [gridHeight])
 
     if (!selection || !gameAbility || !targeting) return null
+    if ("location_select_type" in gameAbility && (gameAbility.location_select_type === "MECH_SELECT" || gameAbility.location_select_type === "GLOBAL"))
+        return null
     const { colour, image_url } = gameAbility
 
     return (

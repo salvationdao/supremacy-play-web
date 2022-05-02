@@ -13,6 +13,7 @@ import { Dimension, GameAbility, Map, PlayerAbility, WarMachineState } from "../
 export interface MapSelection {
     x: number
     y: number
+    mechHash?: string
 }
 
 interface Props {
@@ -27,14 +28,15 @@ interface Props {
 
 export const MiniMapInside = (props: Props) => {
     const { state, send } = useGameServerWebsocket()
-    const { map, warMachines } = useGame()
+    const { map, warMachines, setHighlightedMechHash } = useGame()
 
-    return <MiniMapInsideInner {...props} state={state} send={send} map={map} warMachines={warMachines} />
+    return <MiniMapInsideInner {...props} state={state} send={send} map={map} warMachines={warMachines} setHighlightedMechHash={setHighlightedMechHash} />
 }
 
 interface PropsInner extends Props, Partial<WebSocketProperties> {
     map?: Map
     warMachines?: WarMachineState[]
+    setHighlightedMechHash: Dispatch<SetStateAction<string | undefined>>
 }
 
 const MiniMapInsideInner = ({
@@ -49,6 +51,7 @@ const MiniMapInsideInner = ({
     map,
     warMachines,
     newSnackbarMessage,
+    setHighlightedMechHash,
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
     const mapElement = useRef<HTMLDivElement>()
@@ -73,14 +76,14 @@ const MiniMapInsideInner = ({
                 })
             } else if (playerAbility) {
                 console.info("activated player ability", playerAbility.label)
-                await send<boolean, { ability_id: string; location_select_type: string; x?: number; y?: number; mech_id?: string }>(
+                await send<boolean, { ability_id: string; location_select_type: string; x?: number; y?: number; mech_hash?: string }>(
                     GameServerKeys.PlayerAbilityUse,
                     {
                         ability_id: playerAbility.id,
                         location_select_type: playerAbility.location_select_type,
-                        x: Math.floor(selection.x),
-                        y: Math.floor(selection.y),
-                        mech_id: undefined, // todo: implement this
+                        x: !selection.mechHash ? Math.floor(selection.x) : undefined,
+                        y: !selection.mechHash ? Math.floor(selection.y) : undefined,
+                        mech_hash: selection.mechHash,
                     },
                 )
             }
@@ -93,6 +96,9 @@ const MiniMapInsideInner = ({
         } finally {
             setSubmitted && setSubmitted(true)
             setSelection(undefined)
+            if (playerAbility?.location_select_type === "MECH_SELECT") {
+                setHighlightedMechHash(undefined)
+            }
         }
     }, [state, send, selection, setSubmitted, gameAbility, playerAbility, newSnackbarMessage])
 
@@ -288,6 +294,8 @@ const MiniMapInsideInner = ({
 
     if (!map) return null
 
+    const locationTargeting = targeting && !(playerAbility?.location_select_type === "MECH_SELECT" || playerAbility?.location_select_type === "GLOBAL")
+
     return (
         <>
             <Stack
@@ -323,18 +331,20 @@ const MiniMapInsideInner = ({
                         warMachines={warMachines || []}
                         enlarged={enlarged}
                         targeting={targeting}
+                        playerAbility={playerAbility}
+                        setSelection={setSelection}
                     />
 
                     {/* Map Image */}
                     <Box
                         ref={mapElement}
-                        onClick={targeting ? handleSelection : undefined}
+                        onClick={locationTargeting ? handleSelection : undefined}
                         sx={{
                             position: "absolute",
                             width: `${map.width}px`,
                             height: `${map.height}px`,
                             backgroundImage: `url(${map.image_url})`,
-                            cursor: targeting ? `url(${Crosshair}) 10 10, auto` : "move",
+                            cursor: locationTargeting ? `url(${Crosshair}) 10 10, auto` : "move",
                             borderSpacing: 0,
                         }}
                     />

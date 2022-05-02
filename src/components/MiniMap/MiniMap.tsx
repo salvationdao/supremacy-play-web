@@ -11,7 +11,7 @@ import { Dimension, Map, PlayerAbility } from "../../types"
 export const MiniMap = () => {
     const theme = useTheme<Theme>()
     const { newSnackbarMessage } = useSnackbar()
-    const { map, winner, setWinner, playerAbility, setPlayerAbility, bribeStage } = useGame()
+    const { map, winner, setWinner, playerAbility, setPlayerAbility, bribeStage, setHighlightedMechHash } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isMapOpen)
 
@@ -35,8 +35,9 @@ export const MiniMap = () => {
     useEffect(() => {
         if ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) {
             toggleIsMapOpen(true)
+            setHighlightedMechHash(undefined)
         }
-    }, [winner, bribeStage, playerAbility, toggleIsMapOpen])
+    }, [winner, bribeStage, playerAbility, toggleIsMapOpen, setHighlightedMechHash])
 
     const mapRender = useMemo(
         () => (

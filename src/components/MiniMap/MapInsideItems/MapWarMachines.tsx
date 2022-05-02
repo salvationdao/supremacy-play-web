@@ -1,9 +1,10 @@
 import { Box, Stack } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
-import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
+import { useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../../types"
+import { Map, NetMessageTickWarMachine, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
+import { MapSelection } from "../MiniMapInside"
 
 interface MapWarMachineProps {
     gridWidth: number
@@ -13,9 +14,13 @@ interface MapWarMachineProps {
     map: Map
     enlarged: boolean
     targeting?: boolean
+    playerAbility?: PlayerAbility
+    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
 }
 
-export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting }: MapWarMachineProps) => {
+export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting, playerAbility, setSelection }: MapWarMachineProps) => {
+    const { factionID } = useGameServerAuth()
+    const { highlightedMechHash, setHighlightedMechHash } = useGame()
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
@@ -29,6 +34,11 @@ export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarg
                     map={map}
                     enlarged={enlarged}
                     targeting={targeting}
+                    playerAbility={playerAbility}
+                    setSelection={setSelection}
+                    highlightedMechHash={highlightedMechHash}
+                    setHighlightedMechHash={setHighlightedMechHash}
+                    factionID={factionID}
                 />
             ))}
         </>
@@ -42,27 +52,21 @@ interface Props {
     map: Map
     enlarged: boolean
     targeting?: boolean
+    playerAbility?: PlayerAbility
+    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
+    highlightedMechHash?: string
+    setHighlightedMechHash: Dispatch<SetStateAction<string | undefined>>
+    factionID?: string
 }
 
 const MapWarMachine = (props: Props) => {
     const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
-    const { highlightedMechHash, setHighlightedMechHash } = useGame()
 
-    return (
-        <MapWarMachineInner
-            {...props}
-            state={state}
-            subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
-            highlightedMechHash={highlightedMechHash}
-            setHighlightedMechHash={setHighlightedMechHash}
-        />
-    )
+    return <MapWarMachineInner {...props} state={state} subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage} />
 }
 
 interface PropsInner extends Props, Partial<WebSocketProperties> {
     isSpawnedAI?: boolean
-    highlightedMechHash?: string
-    setHighlightedMechHash: (s?: string) => void
 }
 
 const MapWarMachineInner = ({
@@ -77,6 +81,9 @@ const MapWarMachineInner = ({
     state,
     highlightedMechHash,
     setHighlightedMechHash,
+    playerAbility,
+    setSelection,
+    factionID,
 }: PropsInner) => {
     const { hash, participantID, faction, maxHealth, maxShield, imageAvatar } = warMachine
 
@@ -109,8 +116,21 @@ const MapWarMachineInner = ({
     const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
-        } else setHighlightedMechHash(hash)
-    }, [hash, highlightedMechHash, setHighlightedMechHash])
+            if (playerAbility) {
+                setSelection(undefined)
+            }
+        } else {
+            if (playerAbility && faction.id === factionID) return
+            setHighlightedMechHash(hash)
+            if (playerAbility) {
+                setSelection({
+                    x: -1,
+                    y: -1,
+                    mechHash: hash,
+                })
+            }
+        }
+    }, [hash, highlightedMechHash, setHighlightedMechHash, setSelection, playerAbility, factionID])
 
     if (!position) return null
 
@@ -123,7 +143,7 @@ const MapWarMachineInner = ({
             onClick={handleClick}
             style={{
                 position: "absolute",
-                pointerEvents: targeting ? "none" : "all",
+                pointerEvents: targeting && playerAbility?.location_select_type !== "MECH_SELECT" ? "none" : "all",
                 cursor: "pointer",
                 transform: `translate(-50%, -50%) translate3d(${(position.x - map.left_pixels) * mapScale}px, ${
                     (position.y - map.top_pixels) * mapScale
@@ -136,6 +156,26 @@ const MapWarMachineInner = ({
                 padding: "1rem 1.3rem",
             }}
         >
+            {playerAbility && playerAbility.location_select_type === "MECH_SELECT" && hash === highlightedMechHash && (
+                <Box
+                    onClick={() => setSelection(undefined)}
+                    sx={{
+                        position: "absolute",
+                        top: "-.5rem",
+                        right: "-.5rem",
+                        height: `${SIZE}px`,
+                        width: `${SIZE}px`,
+                        cursor: "pointer",
+                        border: `2px solid ${playerAbility.colour}`,
+                        borderRadius: 1,
+                        backgroundImage: `url(${playerAbility.image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        zIndex: 100,
+                    }}
+                />
+            )}
             <Box
                 style={
                     enlarged
