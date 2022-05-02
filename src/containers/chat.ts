@@ -217,12 +217,12 @@ export const ChatContainer = createContainer(() => {
         if (!newMessage) return
         if (newMessage.m.type === "TEXT" && (newMessage.m.data as TextMessageData).from_user.id === userID) {
             saveUserStats(newMessage.m, !!newMessage.f)
+            setNewMessage(undefined)
             return
         }
         newMessageHandler(newMessage.m, newMessage.f)
         setNewMessage(undefined)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [newMessage, userID])
+    }, [newMessage, newMessageHandler, saveUserStats, userID])
 
     // Subscribe to global chat messages
     useEffect(() => {
