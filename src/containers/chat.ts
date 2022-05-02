@@ -217,9 +217,11 @@ export const ChatContainer = createContainer(() => {
         if (!newMessage) return
         if (newMessage.m.type === "TEXT" && (newMessage.m.data as TextMessageData).from_user.id === userID) {
             saveUserStats(newMessage.m, !!newMessage.f)
+            setNewMessage(undefined)
             return
         }
         newMessageHandler(newMessage.m, newMessage.f)
+        setNewMessage(undefined)
     }, [newMessage, newMessageHandler, saveUserStats, userID])
 
     // Subscribe to global chat messages

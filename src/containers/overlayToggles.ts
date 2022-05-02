@@ -34,10 +34,12 @@ const OverlayTogglesContainer = createContainer(() => {
         [setActivePanel],
     )
 
+    const toggleIsEndBattleDetailOpen = useCallback((value?: boolean) => togglePanel(LeftDrawerPanels.EndBattleDetail, value), [togglePanel])
+
     return {
         // Left side panels are a little different, only 1 can be open at a time
         isEndBattleDetailOpen: activePanel == LeftDrawerPanels.EndBattleDetail,
-        toggleIsEndBattleDetailOpen: (value?: boolean) => togglePanel(LeftDrawerPanels.EndBattleDetail, value),
+        toggleIsEndBattleDetailOpen,
 
         isLiveChartOpen,
         isEndBattleDetailEnabled,
