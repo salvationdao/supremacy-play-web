@@ -20,7 +20,7 @@ export const VotingButton = ({ displayPercentage, cost, color, textColor, isVoti
 
     const isVotable = useMemo(
         () => isVoting && onWorldSups && onWorldSups.dividedBy(1000000000000000000).isGreaterThanOrEqualTo(cost),
-        [isVoting, onWorldSups, onWorldSups],
+        [cost, isVoting, onWorldSups],
     )
 
     return (

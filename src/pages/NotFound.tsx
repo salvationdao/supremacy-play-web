@@ -3,7 +3,7 @@ import React from "react"
 import { useHistory } from "react-router-dom"
 import { Gabs } from "../assets"
 import { FancyButton } from "../components"
-import { colors } from "../theme/theme"
+import { colors, siteZIndex } from "../theme/theme"
 
 export const NotFoundPage = () => {
     const history = useHistory()
@@ -21,6 +21,7 @@ export const NotFoundPage = () => {
                 right: 0,
                 px: "5em",
                 background: colors.darkNavyBlue,
+                zIndex: siteZIndex.RoutePage,
                 "@media (max-width:1000px)": {
                     flexDirection: "column-reverse",
                     justifyContent: "flex-end",
@@ -70,12 +71,16 @@ export const NotFoundPage = () => {
                     This page does not exist.
                 </Typography>
                 <FancyButton
+                    clipThingsProps={{
+                        clipSize: "8px",
+                        backgroundColor: colors.darkerNeonBlue,
+                        border: {
+                            borderColor: colors.neonBlue,
+                        },
+                    }}
                     sx={{
                         fontSize: "3rem",
                         px: "2em",
-                        "&:hover": {
-                            background: colors.darkerNeonBlue,
-                        },
                         "@media (max-width:600px)": {
                             fontSize: "5vw",
                         },

@@ -21,7 +21,7 @@ export interface AuthContainerType {
 /**
  * A Container that handles Authorisation
  */
-const AuthContainer = createContainer((initialState?: { setLogin(user: User): void }): AuthContainerType => {
+const AuthContainer = createContainer((): AuthContainerType => {
     const isActive = useInactivity(120000)
     const { newSnackbarMessage } = useSnackbar()
     const { hasToken } = usePassportServerAuth()
@@ -53,15 +53,11 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         })
     }, [userID, subscribe, state])
 
-    useEffect(() => {
-        if (user && initialState && initialState.setLogin) initialState.setLogin(user)
-    }, [user])
-
     const [authSessionIDGetLoading, setAuthSessionIDGetLoading] = useState(true)
     const [authSessionIDGetError, setAuthSessionIDGetError] = useState()
 
     const sendFruit = useCallback(async () => {
-        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
+        if (state !== WebSocket.OPEN || !send || !user || !user.faction_id || !user.faction) return
         try {
             await send<null, { fruit: "APPLE" | "BANANA" }>(GameServerKeys.ToggleGojiBerryTea, {
                 fruit: isActive ? "APPLE" : "BANANA",
@@ -69,14 +65,14 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
         } catch (e) {
             console.debug(e)
         }
-    }, [state, user, isActive])
+    }, [state, user, send, isActive])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
         sendFruit()
         activeInterval && activeInterval.current && clearInterval(activeInterval.current)
         activeInterval.current = setInterval(sendFruit, 60000)
-    }, [state, user, isActive])
+    }, [state, user, isActive, sendFruit])
 
     // Will receive user data after server complete the "auth ring check"
     useEffect(() => {
@@ -91,7 +87,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             },
             { id: userID },
         )
-    }, [state, subscribe, userID])
+    }, [state, subscribe, updateTheme, userID])
 
     useEffect(() => {
         if (!subscribe || state !== WebSocket.OPEN) return
@@ -106,7 +102,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
             null,
             true,
         )
-    }, [state, subscribe])
+    }, [state, subscribe, updateTheme])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !send || user || !hasToken) return
@@ -128,7 +124,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                 setAuthSessionIDGetLoading(false)
             }
         })()
-    }, [hasToken, send, state, user])
+    }, [hasToken, newSnackbarMessage, send, state, user])
 
     useEffect(() => {
         if (state !== WebSocket.CLOSED) return
@@ -158,7 +154,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                 console.error(e)
             }
         })()
-    }, [state, subscribe, user])
+    }, [send, state, subscribe, user])
 
     // Listen on user punishments
     useEffect(() => {
@@ -183,7 +179,7 @@ const AuthContainer = createContainer((initialState?: { setLogin(user: User): vo
                 console.error(e)
             }
         })()
-    }, [state, subscribe, user])
+    }, [send, state, subscribe, user])
 
     return {
         user,

@@ -29,7 +29,7 @@ export const TargetTimerCountdown = ({
                 py: ".48rem",
                 backgroundColor: (theme) => `${theme.factionTheme.background}`,
                 borderRadius: 0.5,
-                zIndex: 9,
+                zIndex: 98,
             }}
         >
             <Typography variant="h6" sx={{ span: { lineHeight: 1, fontWeight: "fontWeightBold", color: colour } }}>
@@ -46,7 +46,7 @@ const CountdownText = ({ endTime, setTimeReachZero }: { endTime: Date; setTimeRe
 
     useEffect(() => {
         if (totalSecRemain <= 1) setTimeReachZero(true)
-    }, [totalSecRemain])
+    }, [setTimeReachZero, totalSecRemain])
 
     return <>{Math.max(totalSecRemain - 2, 0)}</>
 }

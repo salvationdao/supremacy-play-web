@@ -8,20 +8,20 @@ import { useSupremacy } from "."
 
 export const WalletContainer = createContainer(() => {
     const { state, subscribe } = usePassportServerWebsocket()
-    const { user } = usePassportServerAuth()
+    const { userID } = usePassportServerAuth()
     const { haveSups, toggleHaveSups } = useSupremacy()
     const [onWorldSupsRaw, setOnWorldSupsRaw] = useState<string>("")
     const [onWorldSups, setOnworldSups] = useState<BigNumber>()
     const firstIteration = useRef(true)
 
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<string>(PassportServerKeys.SubscribeWallet, (payload) => {
             if (!payload) return
             setOnWorldSupsRaw(payload)
-            setOnworldSups(new BigNumber(onWorldSupsRaw))
+            setOnworldSups(new BigNumber(payload))
         })
-    }, [state, subscribe, user])
+    }, [state, subscribe, userID])
 
     useEffect(() => {
         if (!onWorldSups || onWorldSups.isNaN()) return
@@ -37,7 +37,7 @@ export const WalletContainer = createContainer(() => {
         // Only update the have sups state when there's a change
         if (supsAboveZero && !haveSups) return toggleHaveSups(true)
         if (!supsAboveZero && haveSups) return toggleHaveSups(false)
-    }, [onWorldSups, haveSups])
+    }, [onWorldSups, haveSups, toggleHaveSups])
 
     return {
         onWorldSups,

@@ -7,7 +7,7 @@ import { SocketState, useGameServerWebsocket, usePassportServerWebsocket, useSna
 import { camelToTitle, getRarityDeets, supFormatter, timeSince } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../../types"
 import { Asset } from "../../../types/assets"
 import { UserData } from "../../../types/passport"
@@ -54,14 +54,14 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
     const [renameLoading, setRenameLoading] = useState<boolean>(false)
     // Status
     const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
-    const isRepairing = false // To be implemented on gameserver.
+    // const isRepairing = false // To be implemented on gameserver.
     const isInQueue = useMemo(() => assetQueue && assetQueue.position && assetQueue.position >= 1, [assetQueue])
 
     const { newSnackbarMessage } = useSnackbar()
 
     const rarityDeets = useMemo(() => getRarityDeets(asset.tier), [asset])
 
-    const fetchHistory = async () => {
+    const fetchHistory = useCallback(async () => {
         setHistoryLoading(true)
         try {
             const resp = await send<{
@@ -80,7 +80,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
         } finally {
             setHistoryLoading(false)
         }
-    }
+    }, [asset.id, send])
 
     useEffect(() => {
         if (state !== SocketState.OPEN || !send) return
@@ -104,7 +104,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
             })
 
         fetchHistory()
-    }, [state, send])
+    }, [state, send, asset.id, fetchHistory])
 
     // This allows the drawer transition to happen before we unmount it
     useEffect(() => {
@@ -115,7 +115,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     const renderEmptyHistory = () => {
         if (historyLoading) {
@@ -307,7 +307,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
                 </Typography>
             </Button>
         )
-    }, [isGameServerUp, isRepairing, isInQueue, assetQueue])
+    }, [isGameServerUp, assetQueue, isInQueue, openLeaveModal, openDeployModal])
 
     return (
         <Drawer
@@ -318,7 +318,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
             sx={{
                 width: `${RIGHT_DRAWER_WIDTH}rem`,
                 flexShrink: 0,
-                zIndex: 9999,
+                zIndex: siteZIndex.Drawer,
             }}
             PaperProps={{
                 sx: {

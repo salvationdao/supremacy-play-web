@@ -43,12 +43,12 @@ export const ContributorAmount = (props: ContibutorAmountProps) => {
             null,
             true,
         )
-    }, [state, subscribe])
+    }, [setContributor, state, subscribe])
 
     // When battle ends, clear the contributor number
     useEffect(() => {
         setContributor(0)
-    }, [battleEndDetail])
+    }, [battleEndDetail, setContributor])
 
     return <ContributorAmountInner rate={rate} contributor={contributor} {...props} />
 }

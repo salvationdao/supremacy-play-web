@@ -30,7 +30,7 @@ export const SupremacyContainer = createContainer(() => {
                 return false
             }
         })()
-    }, [send, state])
+    }, [newSnackbarMessage, send, state])
 
     return { factionsAll, battleIdentifier, setBattleIdentifier, haveSups, toggleHaveSups }
 })

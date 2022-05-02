@@ -31,7 +31,7 @@ export const EnlistButtonGroup = () => {
                 return false
             }
         })()
-    }, [send, state])
+    }, [newSnackbarMessage, send, state])
 
     if (!factionsData) {
         return (
@@ -73,14 +73,14 @@ export const EnlistButtonGroup = () => {
                         overflowY: "hidden",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            height: ".4rem",
+                            height: ".3rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: colors.darkNeonBlue,
+                            background: "#FFFFFF50",
                             borderRadius: 3,
                         },
                     }}

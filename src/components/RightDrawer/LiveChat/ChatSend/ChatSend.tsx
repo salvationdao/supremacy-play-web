@@ -121,7 +121,7 @@ const ChatSendInner = ({
             onFailedMessage(sentAt)
             console.debug(e)
         }
-    }, [message, user, state, send, newSnackbarMessage])
+    }, [message, user, state, send, newMessageHandler, userRank, messageColor, faction_id, onSentMessage, newSnackbarMessage, onFailedMessage])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 
@@ -151,7 +151,7 @@ const ChatSendInner = ({
                 setEmojiSelect(undefined)
             }
         },
-        [caretPosition, message],
+        [caretMsg, caretPosition, message, setMessageWithCheck],
     )
 
     // While the user is using :emoji short cut- finding the search phrase and setting caret (cursor) positioning

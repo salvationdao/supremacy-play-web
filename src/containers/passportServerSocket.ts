@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { PassportServerKeys } from "../keys"
 import { sleep } from "../helpers"
 import { PASSPORT_SERVER_HOST } from "../constants"
-import { UserData } from "../types/passport"
 import { useSnackbar } from "."
 
 // makeid is used to generate a random transaction_id for the websocket
@@ -83,7 +82,7 @@ const backoffIntervalCalc = async (num: number) => {
     return i
 }
 
-const PassportServerWebsocket = (initialState?: { host?: string; login: UserData | null }): WebSocketProperties => {
+const PassportServerWebsocket = (initialState?: { host?: string }): WebSocketProperties => {
     const { newSnackbarMessage } = useSnackbar()
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
@@ -93,7 +92,25 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
     const [isServerUp, setIsServerUp] = useState<boolean>(true)
 
     const host = initialState ? initialState.host : PASSPORT_SERVER_HOST
-    const login = initialState ? initialState.login : ""
+
+    const serverCheckInterval = useCallback(
+        async (num: number) => {
+            const i = await backoffIntervalCalc(num)
+            setTimeout(async () => {
+                try {
+                    const resp = await fetch(`${window.location.protocol}//${host}/api/check`)
+                    const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
+                    if (ok) {
+                        window.location.reload()
+                    }
+                } catch (e) {
+                    console.debug(e)
+                    serverCheckInterval(num + 1)
+                }
+            }, i)
+        },
+        [host],
+    )
 
     useEffect(() => {
         if (!reconnect) return
@@ -103,23 +120,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
         }, 90000)
 
         return () => clearTimeout(timeout)
-    }, [reconnect])
-
-    const serverCheckInterval = async (num: number) => {
-        const i = await backoffIntervalCalc(num)
-        setTimeout(async () => {
-            try {
-                const resp = await fetch(`${window.location.protocol}//${host}/api/check`)
-                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
-                if (ok) {
-                    window.location.reload()
-                }
-            } catch (e) {
-                console.debug(e)
-                serverCheckInterval(num + 1)
-            }
-        }, i)
-    }
+    }, [reconnect, serverCheckInterval])
 
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
@@ -197,7 +198,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
                 if (!listenOnly) setSubscribeState(key, false)
             }
         }
-    }, [login])
+    }, [])
 
     const setupWS = useMemo(
         () => (ws: WebSocket, onopen?: () => void) => {
@@ -248,7 +249,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
                 newSnackbarMessage("Disconnected from passport server, reconnecting...", "error")
             }
         },
-        [],
+        [newSnackbarMessage],
     )
 
     const connect = useMemo(() => {
@@ -291,7 +292,7 @@ const PassportServerWebsocket = (initialState?: { host?: string; login: UserData
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to connect to passport server, retrying...", "error")
             }
         })()
-    }, [host, setupWS])
+    }, [host, newSnackbarMessage, setupWS])
 
     return { send: send.current, state, connect, subscribe, isServerUp }
 }

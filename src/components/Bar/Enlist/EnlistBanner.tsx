@@ -40,7 +40,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
             default:
                 return <SvgDeath size="1.1rem" />
         }
-    }, [user?.faction_id])
+    }, [user])
 
     if (!user || !user.faction || !factionsAll || !userStat) {
         return (
@@ -93,14 +93,14 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
                         overflowY: "hidden",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            height: ".4rem",
+                            height: ".3rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: colors.darkNeonBlue,
+                            background: "#FFFFFF50",
                             borderRadius: 3,
                         },
                     }}

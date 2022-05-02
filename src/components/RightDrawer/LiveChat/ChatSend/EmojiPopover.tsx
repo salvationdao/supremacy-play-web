@@ -1,7 +1,7 @@
 import { Box, Popover } from "@mui/material"
 import "emoji-mart/css/emoji-mart.css"
 import { BaseEmoji, Picker } from "emoji-mart"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { useToggle } from "../../../../hooks"
 import { useEffect } from "react"
 
@@ -24,7 +24,7 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, toggleIsEmojiOpen])
 
     return (
         <Popover
@@ -41,7 +41,7 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
                 horizontal: "center",
             }}
             PaperProps={{ sx: { background: "none", boxShadow: 0, overflow: "visible" } }}
-            sx={{ zIndex: 999999, overflow: "visible" }}
+            sx={{ zIndex: siteZIndex.Popover, overflow: "visible" }}
         >
             <Box
                 sx={{

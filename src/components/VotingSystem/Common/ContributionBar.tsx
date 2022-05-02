@@ -18,10 +18,7 @@ export const ContributionBar = ({
     hideRedBar?: boolean
     forceHundredPercent: boolean
 }) => {
-    const progressPercent = useMemo(
-        () => (initialTargetCost.isZero() ? 0 : currentSups.dividedBy(initialTargetCost).toNumber() * 100),
-        [initialTargetCost, currentSups],
-    )
+    const progressPercent = useMemo(() => (initialTargetCost.isZero() ? 0 : +currentSups.dividedBy(initialTargetCost) * 100), [initialTargetCost, currentSups])
     const costPercent = useMemo(() => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100), [initialTargetCost, supsCost])
 
     return (

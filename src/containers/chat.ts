@@ -20,7 +20,7 @@ export type FontSizeType = 0.8 | 1.1 | 1.35
 
 export const ChatContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
-    const { user } = useGameServerAuth()
+    const { userID, factionID } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
 
     // Tabs: 0 is global chat, 1 is faction chat
@@ -43,6 +43,7 @@ export const ChatContainer = createContainer(() => {
     const [factionChatMessages, setFactionChatMessages] = useState<ChatMessageType[]>([])
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
+    const [newMessage, setNewMessage] = useState<{ f: string | null; m: ChatMessageType }>()
 
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
@@ -81,25 +82,6 @@ export const ChatContainer = createContainer(() => {
         [setFailedMessages],
     )
 
-    const newMessageHandler = useCallback(
-        (message: ChatMessageType, faction_id: string | null) => {
-            if (faction_id === null) {
-                setGlobalChatMessages((prev) => {
-                    // Buffer the messages
-                    const newArray = prev.concat(message)
-                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-                })
-            } else {
-                setFactionChatMessages((prev) => {
-                    // Buffer the messages
-                    const newArray = prev.concat(message)
-                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-                })
-            }
-        },
-        [setGlobalChatMessages, setFactionChatMessages],
-    )
-
     // Global announcements
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -132,18 +114,18 @@ export const ChatContainer = createContainer(() => {
             console.debug(e)
             return
         }
-    }, [state, send])
+    }, [state, send, newSnackbarMessage])
 
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
+        if (state !== WebSocket.OPEN || !userID || !factionID) return
         try {
-            send<ChatMessageType[]>(GameServerKeys.ChatPastMessages, { faction_id: user.faction_id }).then((resp) => {
+            send<ChatMessageType[]>(GameServerKeys.ChatPastMessages, { faction_id: factionID }).then((resp) => {
                 setFactionChatMessages(resp)
                 setInitialSentDate((prev) => ({
                     ...prev,
                     faction: resp.map((m) => m.sent_at),
                 }))
-                const selfMessage = resp.filter((m) => m.type === "TEXT").find((m) => (m.data as TextMessageData).from_user.id === user.id)
+                const selfMessage = resp.filter((m) => m.type === "TEXT").find((m) => (m.data as TextMessageData).from_user.id === userID)
                 if (selfMessage) {
                     setInitialMessageColor((selfMessage.data as TextMessageData).message_color)
                 }
@@ -153,7 +135,7 @@ export const ChatContainer = createContainer(() => {
             console.debug(e)
             return
         }
-    }, [state, user, send])
+    }, [state, userID, factionID, send, newSnackbarMessage])
 
     useEffect(() => {
         if (splitOption == "split") {
@@ -168,7 +150,7 @@ export const ChatContainer = createContainer(() => {
         if (tabValue === 0 && globalChatUnread !== 0) {
             setGlobalChatUnread(0)
         }
-    }, [tabValue, factionChatUnread, splitOption])
+    }, [tabValue, factionChatUnread, globalChatUnread, splitOption])
 
     const saveUserStats = useCallback(
         (message: ChatMessageType, isFaction: boolean) => {
@@ -182,7 +164,11 @@ export const ChatContainer = createContainer(() => {
             if (isFaction) {
                 setFactionChatMessages((prev) => {
                     return prev.map((m) => {
-                        if (m.type === "TEXT" && message.sent_at.getTime() - m.sent_at.getTime() < 5000) {
+                        if (
+                            m.type === "TEXT" &&
+                            (m.data as TextMessageData).from_user.id === userID &&
+                            message.sent_at.getTime() - m.sent_at.getTime() < 5000
+                        ) {
                             return { ...m, data: { ...m.data, ...newStats } }
                         }
                         return m
@@ -191,7 +177,11 @@ export const ChatContainer = createContainer(() => {
             } else {
                 setGlobalChatMessages((prev) =>
                     prev.map((m) => {
-                        if (m.type === "TEXT" && message.sent_at.getTime() - m.sent_at.getTime() < 5000) {
+                        if (
+                            m.type === "TEXT" &&
+                            (m.data as TextMessageData).from_user.id === userID &&
+                            message.sent_at.getTime() - m.sent_at.getTime() < 5000
+                        ) {
                             return { ...m, data: { ...m.data, ...newStats } }
                         }
                         return m
@@ -199,42 +189,60 @@ export const ChatContainer = createContainer(() => {
                 )
             }
         },
-        [user, setGlobalChatMessages, setFactionChatMessages],
+        [userID, setGlobalChatMessages, setFactionChatMessages],
     )
+
+    const newMessageHandler = useCallback(
+        (message: ChatMessageType, faction_id: string | null) => {
+            if (faction_id === null) {
+                if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread((prev) => prev + 1)
+                setGlobalChatMessages((prev) => {
+                    // Buffer the messages
+                    const newArray = [...prev, message]
+                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
+                })
+            } else {
+                if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread((prev) => prev + 1)
+                setFactionChatMessages((prev) => {
+                    // Buffer the messages
+                    const newArray = [...prev, message]
+                    return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
+                })
+            }
+        },
+        [tabValue, splitOption, setGlobalChatMessages, setFactionChatMessages, setGlobalChatUnread, setFactionChatUnread],
+    )
+
+    useEffect(() => {
+        if (!newMessage) return
+        if (newMessage.m.type === "TEXT" && (newMessage.m.data as TextMessageData).from_user.id === userID) {
+            saveUserStats(newMessage.m, !!newMessage.f)
+            return
+        }
+        newMessageHandler(newMessage.m, newMessage.f)
+    }, [newMessage, newMessageHandler, saveUserStats, userID])
 
     // Subscribe to global chat messages
     useEffect(() => {
-        if (state !== WebSocket.OPEN) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeGlobalChat, (m) => {
             if (!m) return
-            if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
-                saveUserStats(m, false)
-                return
-            }
-
-            newMessageHandler(m, null)
-            if (tabValue !== 0 && splitOption == "tabbed") setGlobalChatUnread(globalChatUnread + 1)
+            setNewMessage({ f: null, m })
         })
-    }, [state, user, subscribe, tabValue, globalChatUnread])
+    }, [state, subscribe])
 
     // Subscribe to faction chat messages
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !user || !user.faction_id || !user.faction) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID || !factionID) return
         return subscribe<ChatMessageType>(GameServerKeys.SubscribeFactionChat, (m) => {
             if (!m) return
-            if (m.type === "TEXT" && (m.data as TextMessageData).from_user.id === user?.id) {
-                saveUserStats(m, true)
-                return
-            }
-
-            newMessageHandler(m, "faction_id")
-            if (tabValue !== 1 && splitOption == "tabbed") setFactionChatUnread(factionChatUnread + 1)
+            setNewMessage({ f: "faction_id", m })
         })
-    }, [user, state, subscribe, tabValue, factionChatUnread])
+    }, [userID, factionID, state, subscribe])
 
     // Subscribe to ban proposals
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !user || !user.faction_id || !user.faction) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID || !factionID) return
         return subscribe<BanProposalStruct>(GameServerKeys.SubBanProposals, (payload) => {
             if (!payload) return setBanProposal(undefined)
 
@@ -261,7 +269,7 @@ export const ChatContainer = createContainer(() => {
 
             setTimeout(() => notification.close(), 10000)
         })
-    }, [user, state, subscribe])
+    }, [userID, factionID, state, subscribe])
 
     return {
         tabValue,

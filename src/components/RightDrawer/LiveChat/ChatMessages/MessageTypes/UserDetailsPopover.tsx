@@ -5,7 +5,7 @@ import { SvgSkull2, SvgAbility, SvgDeath, SvgView } from "../../../../../assets"
 import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
 import { truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
-import { colors } from "../../../../../theme/theme"
+import { colors, siteZIndex } from "../../../../../theme/theme"
 import { User, UserStat } from "../../../../../types"
 
 export const UserDetailsPopover = ({
@@ -47,7 +47,7 @@ export const UserDetailsPopover = ({
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     if (!userStat) return null
 
@@ -68,7 +68,7 @@ export const UserDetailsPopover = ({
                 sx={{
                     mt: "-.3rem",
                     ml: "-1rem",
-                    zIndex: 10000,
+                    zIndex: siteZIndex.Popover,
                     ".MuiPaper-root": {
                         background: "none",
                     },
