@@ -106,6 +106,8 @@ const MiniMapInner = ({
         [winner, playerAbility, timeReachZero, submitted, bribeStage?.phase],
     )
 
+    const isBattleAbilityAndNotPlayerAbility = !playerAbility || winner
+
     // Set initial size
     useEffect(() => {
         if (!map) return
@@ -140,7 +142,7 @@ const MiniMapInner = ({
     }, [width, height, enlarged, adjustment])
 
     useEffect(() => {
-        if (!playerAbility || winner) {
+        if (isBattleAbilityAndNotPlayerAbility) {
             const endTime = winner?.end_time
             if (endTime) {
                 setSubmitted(false)
@@ -158,8 +160,8 @@ const MiniMapInner = ({
     }, [winner, bribeStage, playerAbility])
 
     useEffect(() => {
-        console.log("test")
-        if (!playerAbility || winner) {
+        if (isBattleAbilityAndNotPlayerAbility) {
+            // If is a battle ability
             if (timeReachZero || submitted) {
                 toggleEnlarged(false)
                 setWinner(undefined)
@@ -169,6 +171,7 @@ const MiniMapInner = ({
                 newSnackbarMessage("Failed to submit target location on time.", "error")
             }
         } else {
+            // Else, its a player ability
             if (submitted) {
                 toggleEnlarged(false)
                 setPlayerAbility(undefined)
