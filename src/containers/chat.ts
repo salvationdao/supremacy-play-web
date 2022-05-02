@@ -220,6 +220,7 @@ export const ChatContainer = createContainer(() => {
             return
         }
         newMessageHandler(newMessage.m, newMessage.f)
+        setNewMessage(undefined)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newMessage, userID])
 
