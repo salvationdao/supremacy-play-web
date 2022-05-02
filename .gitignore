@@ -65,7 +65,8 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-
+# IntelliJ files
+.idea/*
 
 # Finalized files
 dist/

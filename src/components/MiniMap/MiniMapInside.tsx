@@ -371,6 +371,8 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
             }
 
             if (!prev) return moment().add(3, "seconds")
+
+            return prev
         })
     }, [selection])
 
