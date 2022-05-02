@@ -32,7 +32,7 @@ export interface FactionsAll {
 export const GameContainer = createContainer(() => {
     const { setBattleIdentifier } = useSupremacy()
     const { state, send, subscribe } = useGameServerWebsocket()
-    const { factionID, userID } = useGameServerAuth()
+    const { userID, factionID } = useGameServerAuth()
 
     // States
     const [map, setMap] = useState<Map>()
@@ -47,7 +47,7 @@ export const GameContainer = createContainer(() => {
 
     // Subscribe for game settings
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<GameSettingsResponse | undefined>(
             GameServerKeys.SubGameSettings,
             (payload) => {
@@ -56,12 +56,15 @@ export const GameContainer = createContainer(() => {
                 setMap(payload.game_map)
                 setWarMachines(payload.war_machines)
                 setSpawnedAI(payload.spawned_ai)
-
-                send(GameServerKeys.GameUserOnline)
             },
             null,
         )
-    }, [state, subscribe, userID])
+    }, [state, subscribe, setBattleIdentifier])
+
+    useEffect(() => {
+        if (!send || !userID || !map) return
+        send(GameServerKeys.GameUserOnline)
+    }, [send, map, userID])
 
     // Subscribe on battle end information
     useEffect(() => {
@@ -79,7 +82,7 @@ export const GameContainer = createContainer(() => {
 
     // Subscirbe on current voting state
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
+        if (state !== WebSocket.OPEN || !subscribe) return
         return subscribe<BribeStageResponse | undefined>(
             GameServerKeys.SubBribeStageUpdated,
             (payload) => {
@@ -90,7 +93,7 @@ export const GameContainer = createContainer(() => {
             },
             null,
         )
-    }, [state, subscribe, factionID])
+    }, [state, subscribe])
 
     // Subscribe on winner announcements
     useEffect(() => {

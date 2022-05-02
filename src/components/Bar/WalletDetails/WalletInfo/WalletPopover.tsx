@@ -2,7 +2,7 @@ import { Box, IconButton, Popover, Stack, Switch, Typography } from "@mui/materi
 import { SvgClose, SvgSupToken } from "../../../../assets"
 import { TransactionItem } from "../../.."
 import { Transaction } from "../../../../types/passport"
-import { colors } from "../../../../theme/theme"
+import { colors, siteZIndex } from "../../../../theme/theme"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useEffect, MutableRefObject } from "react"
 import BigNumber from "bignumber.js"
@@ -40,7 +40,7 @@ export const WalletPopover = ({
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen])
+    }, [localOpen, onClose])
 
     return (
         <Popover
@@ -57,7 +57,7 @@ export const WalletPopover = ({
             }}
             sx={{
                 mt: ".8rem",
-                zIndex: 10000,
+                zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
                     mt: ".8rem",
                     background: "none",

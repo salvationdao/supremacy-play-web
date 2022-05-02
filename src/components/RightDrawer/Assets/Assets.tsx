@@ -70,7 +70,7 @@ const Content = ({
     toggleIsGridView: (value?: boolean | undefined) => void
 }) => {
     const { newSnackbarMessage } = useSnackbar()
-    const { user } = useGameServerAuth()
+    const { userID } = useGameServerAuth()
     const { state, subscribe, send } = useGameServerWebsocket()
     const { battleIdentifier } = useSupremacy()
 
@@ -83,11 +83,11 @@ const Content = ({
 
     // Subscribe to queue feed
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !user) return
+        if (state !== WebSocket.OPEN || !subscribe || !userID) return
         return subscribe<QueueFeedResponse>(GameServerKeys.SubQueueFeed, (payload) => {
             if (payload) setQueueFeed(payload)
         })
-    }, [state, subscribe, user])
+    }, [state, subscribe, userID])
 
     // Get assets
     useEffect(() => {
@@ -116,7 +116,7 @@ const Content = ({
                 setIsLoading(false)
             }
         })()
-    }, [send, state, page, pageSize, queueUpdated, battleIdentifier])
+    }, [send, state, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -179,7 +179,7 @@ const Content = ({
                 </Button>
             </Stack>
         )
-    }, [isLoading, assetsQueue, queueFeed, isGridView])
+    }, [isLoading, assetsQueue, queueFeed, isGridView, telegramShortcode, setTelegramShortcode])
 
     return (
         <Stack sx={{ flex: 1 }}>

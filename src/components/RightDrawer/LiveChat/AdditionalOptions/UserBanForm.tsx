@@ -22,7 +22,7 @@ import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../..
 import { snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BanOption, BanUser } from "../../../../types/chat"
 import { User } from "../../../../types"
 
@@ -91,7 +91,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to load ban options.", "error")
             }
         })()
-    }, [])
+    }, [newSnackbarMessage, send, state])
 
     // When searching for player, update the dropdown list
     useEffect(() => {
@@ -108,7 +108,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                 toggleIsLoadingUsers(false)
             }
         })()
-    }, [search, state])
+    }, [search, send, state, toggleIsLoadingUsers])
 
     // When a player is selected, get the ban fee for that player
     useEffect(() => {
@@ -124,7 +124,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to load users from search.", "error")
             }
         })()
-    }, [selectedUser])
+    }, [newSnackbarMessage, selectedUser, send, state])
 
     // Submit the ban proposal
     const onSubmit = useCallback(async () => {
@@ -144,7 +144,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit proposal.")
         }
-    }, [selectedUser, selectedBanOptionID, reason])
+    }, [state, selectedUser, selectedBanOptionID, reason, send, onClose, newSnackbarMessage])
 
     const isDisabled = !selectedUser || !selectedBanOptionID || !reason || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100)
 
@@ -178,11 +178,11 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             pt: "1.8rem",
                             pb: "2rem",
                             ".MuiAutocomplete-popper": {
-                                zIndex: 99999,
+                                zIndex: siteZIndex.Modal,
                                 ".MuiPaper-root": {
                                     background: "none",
                                     backgroundColor: colors.darkerNeonBlue,
-                                    zIndex: 99999,
+                                    zIndex: siteZIndex.Modal,
                                 },
                             },
                         }}

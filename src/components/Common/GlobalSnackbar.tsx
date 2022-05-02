@@ -4,18 +4,22 @@ import { useSnackbar } from "../../containers"
 import { colors } from "../../theme/theme"
 import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
 import { ClipThing } from ".."
+import { DEV_ONLY } from "../../constants"
 
 export const GlobalSnackbar = () => {
     const { open, setOpen, messageInfo, setMessageInfo } = useSnackbar()
 
-    const handleClose = useCallback((_event: Event | SyntheticEvent<unknown, Event>, reason?: SnackbarCloseReason) => {
-        if (reason === "clickaway") return
-        setOpen(false)
-    }, [])
+    const handleClose = useCallback(
+        (_event: Event | SyntheticEvent<unknown, Event>, reason?: SnackbarCloseReason) => {
+            if (reason === "clickaway") return
+            setOpen(false)
+        },
+        [setOpen],
+    )
 
     const handleExited = useCallback(() => {
         setMessageInfo(undefined)
-    }, [])
+    }, [setMessageInfo])
 
     const severityDeets: { color: string; icon: ReactNode } = useMemo(() => {
         let color = colors.blue
@@ -60,7 +64,7 @@ export const GlobalSnackbar = () => {
                     }}
                     sx={{
                         mb: "1.8rem",
-                        ml: "1.9rem",
+                        ml: DEV_ONLY ? "1.9rem" : "-.9rem",
                     }}
                     backgroundColor={severityDeets.color}
                     opacity={0.9}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useSnackbar } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
@@ -99,7 +99,7 @@ const backoffIntervalCalc = async (num: number) => {
     return i
 }
 
-const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketProperties => {
+const GameServerWebsocket = (): WebSocketProperties => {
     const { newSnackbarMessage } = useSnackbar()
     const [state, setState] = useState<SocketState>(SocketState.CLOSED)
     const callbacks = useRef<{ [key: string]: WSCallback }>({})
@@ -107,198 +107,6 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
     const webSocket = useRef<WebSocket | null>(null)
     const [reconnect, setIsReconnect] = useState<boolean>(false)
     const [isServerUp, setIsServerUp] = useState<boolean>(true)
-
-    const login = initialState ? initialState.login : ""
-
-    // ******* Reconnect Logic Start ******* //
-    // Check to see if server is up, if yes conenct WS, else don't
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await fetch(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/check`)
-                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
-                if (ok) {
-                    webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
-                    webSocket.current.binaryType = "arraybuffer"
-                    setupWS(webSocket.current)
-
-                    return () => {
-                        if (webSocket.current) webSocket.current.close()
-                    }
-                }
-            } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to connect to game server, retrying...", "error")
-                console.error(e)
-                setIsReconnect(true)
-                setIsServerUp(false)
-            }
-        })()
-    }, [])
-
-    useEffect(() => {
-        if (!reconnect) return
-        const timeout = setTimeout(() => {
-            setIsServerUp(false)
-        }, 90000)
-        serverCheckInterval(1, timeout)
-    }, [reconnect])
-
-    const serverCheckInterval = async (num: number, timeout: NodeJS.Timeout) => {
-        const i = await backoffIntervalCalc(num)
-        setTimeout(async () => {
-            try {
-                const resp = await fetch(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/check`)
-                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
-                if (ok) {
-                    await connect()
-                    clearTimeout(timeout)
-                    setIsServerUp(true)
-                    setIsReconnect(false)
-                    const jwtToken = localStorage.getItem("ring_check_token")
-                    if (jwtToken) {
-                        send.current<User, { token: string }>(GameServerKeys.AuthJWTCheck, {
-                            token: jwtToken,
-                        })
-                    }
-                }
-            } catch (e) {
-                console.debug(e)
-                serverCheckInterval(num + 1, timeout)
-            }
-        }, i)
-    }
-
-    // ******* Reconnect Logic End ******* //
-
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
-        const transaction_id = makeid()
-
-        return new Promise(function (resolve, reject) {
-            callbacks.current[transaction_id] = (data: Message<Y> | HubError) => {
-                if (data.key === "HUB:ERROR") {
-                    reject((data as HubError).message)
-                    return
-                }
-                const result = (data as Message<Y>).payload
-                resolve(result)
-            }
-
-            const sendFn = () => {
-                if (!webSocket.current || webSocket.current.readyState !== WebSocket.OPEN) {
-                    setTimeout(sendFn, 500)
-                    return
-                }
-                webSocket.current.send(
-                    JSON.stringify({
-                        key,
-                        payload,
-                        transaction_id,
-                    }),
-                )
-            }
-            sendFn()
-        })
-    })
-
-    const subs = useRef<{ [key: string]: SubscribeCallback[] }>({})
-
-    const subscribe = useMemo(() => {
-        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        return <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => {
-            const transaction_id = makeid()
-
-            let subKey = key
-            if (!listenOnly) {
-                subKey = transaction_id
-            }
-
-            const callback2 = (payload: T) => {
-                callback(payload)
-            }
-
-            if (subs.current[subKey]) {
-                subs.current[subKey].push(callback2)
-            } else {
-                subs.current[subKey] = [callback2]
-            }
-
-            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-            const setSubscribeState = async (key: string, open: boolean, args?: any) => {
-                while (webSocket.current === null) {
-                    await sleep(1000)
-                }
-                webSocket.current.send(
-                    JSON.stringify({
-                        key: key + (open ? "" : ":UNSUBSCRIBE"),
-                        payload: open ? args : undefined,
-                        transaction_id,
-                    }),
-                )
-            }
-
-            if (!listenOnly) setSubscribeState(key, true, args)
-
-            return () => {
-                const i = subs.current[subKey].indexOf(callback2)
-                if (i === -1) return
-                subs.current[subKey].splice(i, 1)
-
-                if (!listenOnly) setSubscribeState(key, false)
-            }
-        }
-    }, [login])
-
-    // subscription function for Faction Ability only
-    const abilitySubs = useRef<{ [abilityIdentity: string]: SubscribeCallback[] }>({})
-    const subscribeAbilityNetMessage = useMemo(() => {
-        return <T>(abilityIdentity: string, callback: (payload: T) => void) => {
-            if (abilitySubs.current[abilityIdentity]) {
-                abilitySubs.current[abilityIdentity].push(callback)
-            } else {
-                abilitySubs.current[abilityIdentity] = [callback]
-            }
-            return () => {
-                const i = abilitySubs.current[abilityIdentity].indexOf(callback)
-                if (i === -1) return
-                abilitySubs.current[abilityIdentity].splice(i, 1)
-            }
-        }
-    }, [])
-
-    // subscription function for War Machine Stat only
-    const warMachineStatSubs = useRef<{ [participantID: number]: SubscribeCallback[] }>({})
-    const subscribeWarMachineStatNetMessage = useMemo(() => {
-        return <T>(participantID: number, callback: (payload: T) => void) => {
-            if (warMachineStatSubs.current[participantID]) {
-                warMachineStatSubs.current[participantID].push(callback)
-            } else {
-                warMachineStatSubs.current[participantID] = [callback]
-            }
-
-            return () => {
-                const i = warMachineStatSubs.current[participantID].indexOf(callback)
-                if (i === -1) return
-                warMachineStatSubs.current[participantID].splice(i, 1)
-            }
-        }
-    }, [])
-
-    const subscribeNetMessage = useMemo(() => {
-        return <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => {
-            if (subs.current[netMessageType]) {
-                subs.current[netMessageType].push(callback)
-            } else {
-                subs.current[netMessageType] = [callback]
-            }
-
-            return () => {
-                const i = subs.current[netMessageType].indexOf(callback)
-                if (i === -1) return
-                subs.current[netMessageType].splice(i, 1)
-            }
-        }
-    }, [])
 
     const setupWS = useMemo(
         () => (ws: WebSocket, onopen?: () => void) => {
@@ -382,7 +190,7 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
                 newSnackbarMessage("Disconnected from game server, reconnecting...", "error")
             }
         },
-        [],
+        [newSnackbarMessage],
     )
 
     const connect = useMemo(() => {
@@ -398,6 +206,199 @@ const GameServerWebsocket = (initialState?: { login: User | null }): WebSocketPr
             })
         }
     }, [setupWS])
+
+    // ******* Reconnect Logic Start ******* //
+    // Check to see if server is up, if yes conenct WS, else don't
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await fetch(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/check`)
+                const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
+                if (ok) {
+                    webSocket.current = new WebSocket(`${wsProtocol()}://${GAME_SERVER_HOSTNAME}/api/ws`)
+                    webSocket.current.binaryType = "arraybuffer"
+                    setupWS(webSocket.current)
+
+                    return () => {
+                        if (webSocket.current) webSocket.current.close()
+                    }
+                }
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to connect to game server, retrying...", "error")
+                console.error(e)
+                setIsReconnect(true)
+                setIsServerUp(false)
+            }
+        })()
+    }, [newSnackbarMessage, setupWS])
+
+    const serverCheckInterval = useCallback(
+        async (num: number, timeout: NodeJS.Timeout) => {
+            const i = await backoffIntervalCalc(num)
+            setTimeout(async () => {
+                try {
+                    const resp = await fetch(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/check`)
+                    const ok = (resp.status >= 200 && resp.status < 299) || resp.status === 410
+                    if (ok) {
+                        await connect()
+                        clearTimeout(timeout)
+                        setIsServerUp(true)
+                        setIsReconnect(false)
+                        const jwtToken = localStorage.getItem("ring_check_token")
+                        if (jwtToken) {
+                            send.current<User, { token: string }>(GameServerKeys.AuthJWTCheck, {
+                                token: jwtToken,
+                            })
+                        }
+                    }
+                } catch (e) {
+                    console.debug(e)
+                    serverCheckInterval(num + 1, timeout)
+                }
+            }, i)
+        },
+        [connect],
+    )
+
+    useEffect(() => {
+        if (!reconnect) return
+        const timeout = setTimeout(() => {
+            setIsServerUp(false)
+        }, 90000)
+        serverCheckInterval(1, timeout)
+    }, [reconnect, serverCheckInterval])
+
+    // ******* Reconnect Logic End ******* //
+
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const send = useRef<WSSendFn>(function send<Y = any, X = any>(key: string, payload?: X): Promise<Y> {
+        const transaction_id = makeid()
+
+        return new Promise(function (resolve, reject) {
+            callbacks.current[transaction_id] = (data: Message<Y> | HubError) => {
+                if (data.key === "HUB:ERROR") {
+                    reject((data as HubError).message)
+                    return
+                }
+                const result = (data as Message<Y>).payload
+                resolve(result)
+            }
+
+            const sendFn = () => {
+                if (!webSocket.current || webSocket.current.readyState !== WebSocket.OPEN) {
+                    setTimeout(sendFn, 500)
+                    return
+                }
+                webSocket.current.send(
+                    JSON.stringify({
+                        key,
+                        payload,
+                        transaction_id,
+                    }),
+                )
+            }
+            sendFn()
+        })
+    })
+
+    const subs = useRef<{ [key: string]: SubscribeCallback[] }>({})
+
+    const subscribe = useMemo(() => {
+        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+        return <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean) => {
+            const transaction_id = makeid()
+
+            let subKey = key
+            if (!listenOnly) {
+                subKey = transaction_id
+            }
+
+            const callback2 = (payload: T) => {
+                callback(payload)
+            }
+
+            if (subs.current[subKey]) {
+                subs.current[subKey].push(callback2)
+            } else {
+                subs.current[subKey] = [callback2]
+            }
+
+            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+            const setSubscribeState = async (key: string, open: boolean, args?: any) => {
+                while (webSocket.current === null) {
+                    await sleep(1000)
+                }
+                webSocket.current.send(
+                    JSON.stringify({
+                        key: key + (open ? "" : ":UNSUBSCRIBE"),
+                        payload: open ? args : undefined,
+                        transaction_id,
+                    }),
+                )
+            }
+
+            if (!listenOnly) setSubscribeState(key, true, args)
+
+            return () => {
+                const i = subs.current[subKey].indexOf(callback2)
+                if (i === -1) return
+                subs.current[subKey].splice(i, 1)
+
+                if (!listenOnly) setSubscribeState(key, false)
+            }
+        }
+    }, [])
+
+    // subscription function for Faction Ability only
+    const abilitySubs = useRef<{ [abilityIdentity: string]: SubscribeCallback[] }>({})
+    const subscribeAbilityNetMessage = useMemo(() => {
+        return <T>(abilityIdentity: string, callback: (payload: T) => void) => {
+            if (abilitySubs.current[abilityIdentity]) {
+                abilitySubs.current[abilityIdentity].push(callback)
+            } else {
+                abilitySubs.current[abilityIdentity] = [callback]
+            }
+            return () => {
+                const i = abilitySubs.current[abilityIdentity].indexOf(callback)
+                if (i === -1) return
+                abilitySubs.current[abilityIdentity].splice(i, 1)
+            }
+        }
+    }, [])
+
+    // subscription function for War Machine Stat only
+    const warMachineStatSubs = useRef<{ [participantID: number]: SubscribeCallback[] }>({})
+    const subscribeWarMachineStatNetMessage = useMemo(() => {
+        return <T>(participantID: number, callback: (payload: T) => void) => {
+            if (warMachineStatSubs.current[participantID]) {
+                warMachineStatSubs.current[participantID].push(callback)
+            } else {
+                warMachineStatSubs.current[participantID] = [callback]
+            }
+
+            return () => {
+                const i = warMachineStatSubs.current[participantID].indexOf(callback)
+                if (i === -1) return
+                warMachineStatSubs.current[participantID].splice(i, 1)
+            }
+        }
+    }, [])
+
+    const subscribeNetMessage = useMemo(() => {
+        return <T>(netMessageType: NetMessageType, callback: (payload: T) => void) => {
+            if (subs.current[netMessageType]) {
+                subs.current[netMessageType].push(callback)
+            } else {
+                subs.current[netMessageType] = [callback]
+            }
+
+            return () => {
+                const i = subs.current[netMessageType].indexOf(callback)
+                if (i === -1) return
+                subs.current[netMessageType].splice(i, 1)
+            }
+        }
+    }, [])
 
     const setReadyState = () => {
         if (!webSocket.current) {

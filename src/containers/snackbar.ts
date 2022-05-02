@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { createContainer } from "unstated-next"
 
 export type Severity = "error" | "info" | "success" | "warning"
@@ -14,9 +14,9 @@ export const SnackBarContainer = createContainer(() => {
     const [snackBarMessages, setSnackBarMessages] = useState<SnackBarMessage[]>([])
     const [messageInfo, setMessageInfo] = useState<SnackBarMessage | undefined>(undefined)
 
-    const newSnackbarMessage = (message: string, severity: Severity = "info") => {
+    const newSnackbarMessage = useCallback((message: string, severity: Severity = "info") => {
         setSnackBarMessages((prev) => [...prev, { key: new Date().getTime(), message, severity }])
-    }
+    }, [])
 
     useEffect(() => {
         if (snackBarMessages.length && !messageInfo) {

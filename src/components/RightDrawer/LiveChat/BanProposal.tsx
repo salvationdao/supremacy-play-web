@@ -34,7 +34,7 @@ export const BanProposal = () => {
 
             return () => clearTimeout(timeout)
         }
-    }, [outOfTime])
+    }, [outOfTime, toggleRender])
 
     if (!banProposal || !render) return null
 
@@ -231,7 +231,7 @@ const Countdown = ({ endTime, toggleOutOfTime }: { endTime: Date; toggleOutOfTim
 
     useEffect(() => {
         if (totalSecRemain <= 0) toggleOutOfTime(true)
-    }, [totalSecRemain])
+    }, [toggleOutOfTime, totalSecRemain])
 
     return <>{totalSecRemain}</>
 }
