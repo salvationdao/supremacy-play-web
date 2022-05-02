@@ -125,8 +125,7 @@ const MapWarMachine = ({
                 zIndex: isAlive ? 5 : 4,
                 opacity: isSpawnedAI ? 0.8 : 1,
                 border: highlightedMechHash === warMachine.hash ? `${primaryColor} 1rem dashed` : "unset",
-                backgroundColor: ownedByID === userID ? `${colors.neonBlue}60` : highlightedMechHash === warMachine.hash ? `${primaryColor}60` : "unset",
-                // backgroundColor: `${colors.neonBlue}60`,
+                backgroundColor: ownedByID === userID ? `${colors.neonBlue}65` : highlightedMechHash === warMachine.hash ? `${primaryColor}60` : "unset",
                 padding: "1rem 1.3rem",
             }}
         >
