@@ -1,4 +1,4 @@
-import { Box, Fade, Stack, Typography, useTheme, Theme } from "@mui/material"
+import { Box, Fade, Stack, Theme, Typography, useTheme } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BattleAbilityCountdown, ClipThing } from "../.."
