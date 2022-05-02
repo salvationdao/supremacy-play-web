@@ -92,6 +92,7 @@ const MiniMapInsideInner = ({
             console.debug(e)
         } finally {
             setSubmitted && setSubmitted(true)
+            setSelection(undefined)
         }
     }, [state, send, selection, setSubmitted, setSelection, gameAbility, playerAbility])
 

@@ -106,8 +106,6 @@ const MiniMapInner = ({
         [winner, playerAbility, timeReachZero, submitted, bribeStage?.phase],
     )
 
-    const isBattleAbilityAndNotPlayerAbility = !playerAbility || winner
-
     // Set initial size
     useEffect(() => {
         if (!map) return
@@ -142,7 +140,7 @@ const MiniMapInner = ({
     }, [width, height, enlarged, adjustment])
 
     useEffect(() => {
-        if (isBattleAbilityAndNotPlayerAbility) {
+        if (winner) {
             const endTime = winner?.end_time
             if (endTime) {
                 setSubmitted(false)
@@ -160,7 +158,7 @@ const MiniMapInner = ({
     }, [winner, bribeStage, playerAbility])
 
     useEffect(() => {
-        if (isBattleAbilityAndNotPlayerAbility) {
+        if (winner) {
             // If is a battle ability
             if (timeReachZero || submitted) {
                 toggleEnlarged(false)

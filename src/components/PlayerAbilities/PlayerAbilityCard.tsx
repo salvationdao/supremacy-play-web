@@ -40,7 +40,6 @@ export const PlayerAbilityCard = ({ user, abilityID, ...props }: AbilityCardProp
 
     const onActivate = () => {
         if (!playerAbility) return
-        console.log("submitting player ability")
         submitPlayerAbility(playerAbility)
         toggleShowActivateModal(false)
     }
