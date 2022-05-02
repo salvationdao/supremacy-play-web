@@ -44,9 +44,7 @@ export const Stream = () => {
                         width: iframeDimensions.width,
                         height: iframeDimensions.height,
                         zIndex: siteZIndex.Stream,
-                        background: isPlaying ? "unset" : `center url(${SupBackground}) ${colors.darkNavy}`,
-                        backgroundSize: "cover",
-                        backgroundRepeat: "no-repeat",
+                        background: isPlaying ? "unset" : `center url(${SupBackground}) ${colors.darkNavy} cover no-repeat`,
                     }}
                 />
             </Stack>

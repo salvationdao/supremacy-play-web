@@ -4,7 +4,7 @@ import { AssetItem } from "../.."
 import { SvgGridView, SvgListView, SvgRobot } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
 import { useGameServerAuth, useGameServerWebsocket, useSnackbar, useSupremacy } from "../../../containers"
-import { usePagination, useToggle } from "../../../hooks"
+import { useDebounce, usePagination, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { TelegramShortcodeModal } from "./DeployConfirmation"
@@ -76,7 +76,7 @@ const Content = ({
 
     const [queueFeed, setQueueFeed] = useState<QueueFeedResponse>()
     const [assetsQueue, setAssetsQueue] = useState<AssetQueue[]>()
-    const [queueUpdated, toggleQueueUpdated] = useToggle()
+    const [queueUpdated, setQueueUpdated] = useDebounce(false, 1500)
 
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 12, page: 1 })
@@ -122,9 +122,9 @@ const Content = ({
         if (state !== WebSocket.OPEN || !subscribe) return
 
         return subscribe(GameServerKeys.TriggerBattleQueueUpdated, async () => {
-            toggleQueueUpdated()
+            setQueueUpdated((prev) => !prev)
         })
-    }, [state, subscribe, toggleQueueUpdated])
+    }, [state, subscribe, setQueueUpdated])
 
     const content = useMemo(() => {
         if (isLoading || !assetsQueue || !queueFeed) {
