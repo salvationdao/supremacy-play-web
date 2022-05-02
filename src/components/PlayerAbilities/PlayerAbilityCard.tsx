@@ -76,7 +76,7 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                 setError(e)
             }
         }
-    }, [state, send, subscribe, user])
+    }, [state, send, subscribe, user, abilityID])
 
     if (!playerAbility) {
         return <Box>Loading...</Box>
