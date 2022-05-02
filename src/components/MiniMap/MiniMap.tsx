@@ -59,7 +59,7 @@ export const MiniMap = () => {
                 factionColor={theme.factionTheme.primary}
             />
         ),
-        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme],
+        [map, winner, setWinner, playerAbility, setPlayerAbility, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme],
     )
 
     if (!isRender) return null
