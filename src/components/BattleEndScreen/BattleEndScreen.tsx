@@ -17,12 +17,14 @@ export const BattleEndScreen = () => {
             toggleIsEndBattleDetailEnabled(true)
             toggleIsEndBattleDetailOpen(true)
         }
-    }, [battleEndDetail, toggleIsEndBattleDetailEnabled, toggleIsEndBattleDetailOpen])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [battleEndDetail])
 
     // New game started, so close the panel
     useEffect(() => {
         if (map) toggleIsEndBattleDetailOpen(false)
-    }, [map, toggleIsEndBattleDetailOpen])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [map])
 
     const primaryColor = useMemo(
         () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail.winning_faction.theme.primary : colors.neonBlue),
