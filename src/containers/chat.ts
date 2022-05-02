@@ -220,7 +220,8 @@ export const ChatContainer = createContainer(() => {
             return
         }
         newMessageHandler(newMessage.m, newMessage.f)
-    }, [newMessage, newMessageHandler, saveUserStats, userID])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [newMessage, userID])
 
     // Subscribe to global chat messages
     useEffect(() => {
