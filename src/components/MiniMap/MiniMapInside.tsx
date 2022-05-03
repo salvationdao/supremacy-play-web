@@ -68,8 +68,8 @@ const MiniMapInsideInner = ({
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
     const onConfirm = useCallback(async () => {
+        if (state !== WebSocket.OPEN || !selection || !send) return
         try {
-            if (state !== WebSocket.OPEN || !selection || !send) return
             if (gameAbility) {
                 console.info("activated game ability", gameAbility.label)
                 await send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
@@ -386,7 +386,7 @@ const MiniMapInsideInner = ({
                     </Typography>
                 </FancyButton>
             )}
-            <CountdownText selection={selection} onConfirm={onConfirm} />
+            <CountdownText selection={selection} onConfirm={() => onConfirm()} />
         </>
     )
 }

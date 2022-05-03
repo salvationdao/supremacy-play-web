@@ -235,7 +235,7 @@ const MiniMapInner = ({
                 />
             )
         }
-    }, [isTargeting, winner, playerAbility, setPlayerAbility, dimensions, remToPxRatio, setSubmitted, enlarged, toggleEnlarged, newSnackbarMessage])
+    }, [isTargeting, winner, playerAbility, setPlayerAbility, dimensions, remToPxRatio, enlarged, toggleEnlarged, newSnackbarMessage])
 
     if (!map) return null
 
