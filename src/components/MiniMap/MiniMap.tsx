@@ -186,7 +186,16 @@ const MiniMapInner = ({
         }
     }, [timeReachZero, submitted, playerAbility, winner, toggleEnlarged, newSnackbarMessage, setWinner])
 
-    const mainColor = useMemo(() => (isTargeting && winner ? winner.game_ability.colour : factionColor), [isTargeting, winner, factionColor])
+    const mainColor = useMemo(() => {
+        if (isTargeting) {
+            if (winner) {
+                return winner.game_ability.colour
+            } else if (playerAbility) {
+                return playerAbility.colour
+            }
+        }
+        return factionColor
+    }, [isTargeting, winner, factionColor, playerAbility])
 
     const mapInsideRender = useMemo(() => {
         if (isTargeting) {
