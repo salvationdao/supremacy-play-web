@@ -139,6 +139,7 @@ export const BattleAbilityItem = () => {
 
     return (
         <BattleAbilityItemInner
+            key={battleAbility.ability_offering_id}
             bribeStage={bribeStage}
             battleAbility={battleAbility}
             isVoting={isVoting}
@@ -221,6 +222,7 @@ const BattleAbilityItemInner = ({
 
                                     {battleAbilityFactionProgress && (
                                         <VotingButtons
+                                            key={battleAbility.ability_offering_id}
                                             battleAbilityProgress={battleAbilityFactionProgress}
                                             buttonColor={buttonColor}
                                             buttonTextColor={buttonTextColor}
