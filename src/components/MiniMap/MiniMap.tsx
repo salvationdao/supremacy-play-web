@@ -1,6 +1,6 @@
-import { Box, Fade, Theme, Typography, useTheme } from "@mui/material"
+import { Box, Fade, Theme, useTheme } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { ClipThing, FancyButton, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
+import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { BribeStageResponse, Severity, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
@@ -111,7 +111,6 @@ const MiniMapInner = ({
         () => ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) && !timeReachZero && !submitted,
         [winner, playerAbility, timeReachZero, submitted, bribeStage?.phase],
     )
-    const isPlayerAbility = useMemo(() => !winner && playerAbility, [winner, playerAbility])
 
     // Set initial size
     useEffect(() => {
@@ -210,6 +209,10 @@ const MiniMapInner = ({
                         setSubmitted={setSubmitted}
                         enlarged={enlarged || dimensions.width > 450}
                         newSnackbarMessage={newSnackbarMessage}
+                        onCancel={() => {
+                            toggleEnlarged(false)
+                            setPlayerAbility(undefined)
+                        }}
                     />
                 )
             }
@@ -298,43 +301,6 @@ const MiniMapInner = ({
                                 />
 
                                 {mapInsideRender}
-
-                                {isTargeting && isPlayerAbility && (
-                                    <FancyButton
-                                        excludeCaret
-                                        clipThingsProps={{
-                                            clipSize: "4px",
-                                            backgroundColor: colors.red,
-                                            border: { borderColor: colors.red },
-                                            sx: {
-                                                flex: 1,
-                                                position: "absolute",
-                                                bottom: "1rem",
-                                                right: "1rem",
-                                            },
-                                        }}
-                                        sx={{
-                                            pt: ".32rem",
-                                            pb: ".24rem",
-                                            minWidth: "2rem",
-                                        }}
-                                        onClick={() => {
-                                            toggleEnlarged(false)
-                                            setPlayerAbility(undefined)
-                                        }}
-                                    >
-                                        <Typography
-                                            sx={{
-                                                lineHeight: 1,
-                                                fontWeight: "fontWeightBold",
-                                                whiteSpace: "nowrap",
-                                                color: "#FFFFFF",
-                                            }}
-                                        >
-                                            Cancel
-                                        </Typography>
-                                    </FancyButton>
-                                )}
 
                                 {isTargeting && winner && (
                                     <TargetTimerCountdown gameAbility={winner.game_ability} setTimeReachZero={setTimeReachZero} endTime={winner.end_time} />

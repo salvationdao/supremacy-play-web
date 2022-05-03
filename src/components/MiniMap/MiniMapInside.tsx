@@ -2,12 +2,12 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useGesture } from "@use-gesture/react"
 import moment from "moment"
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { MapWarMachines, SelectionIcon } from ".."
+import { FancyButton, MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { Severity, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
-import { fonts } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { Dimension, GameAbility, Map, PlayerAbility, WarMachineState } from "../../types"
 
 export interface MapSelection {
@@ -24,6 +24,7 @@ interface Props {
     setSubmitted?: Dispatch<SetStateAction<boolean>>
     enlarged: boolean
     newSnackbarMessage: (message: string, severity?: Severity) => void
+    onCancel?: () => void
 }
 
 export const MiniMapInside = (props: Props) => {
@@ -52,6 +53,7 @@ const MiniMapInsideInner = ({
     warMachines,
     newSnackbarMessage,
     setHighlightedMechHash,
+    onCancel
 }: PropsInner) => {
     const [selection, setSelection] = useState<MapSelection>()
     const mapElement = useRef<HTMLDivElement>()
@@ -350,7 +352,42 @@ const MiniMapInsideInner = ({
                     />
                 </Box>
             </Stack>
-
+            {onCancel && targeting && !gameAbility && playerAbility && (
+                                    <FancyButton
+                                        excludeCaret
+                                        clipThingsProps={{
+                                            clipSize: "4px",
+                                            backgroundColor: colors.red,
+                                            border: { borderColor: colors.red },
+                                            sx: {
+                                                flex: 1,
+                                                position: "absolute",
+                                                bottom: "1rem",
+                                                right: "1rem",
+                                            },
+                                        }}
+                                        sx={{
+                                            pt: ".32rem",
+                                            pb: ".24rem",
+                                            minWidth: "2rem",
+                                        }}
+                                        onClick={() => {
+                                            onCancel()
+                                            setSelection(undefined)
+                                        }}
+                                    >
+                                        <Typography
+                                            sx={{
+                                                lineHeight: 1,
+                                                fontWeight: "fontWeightBold",
+                                                whiteSpace: "nowrap",
+                                                color: "#FFFFFF",
+                                            }}
+                                        >
+                                            Cancel
+                                        </Typography>
+                                    </FancyButton>
+                                )}
             <CountdownText selection={selection} onConfirm={onConfirm} />
         </>
     )
