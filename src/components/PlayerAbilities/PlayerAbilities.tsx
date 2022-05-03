@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Button, ButtonGroup, Link, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgGlobal, SvgMicrochip, SvgTarget } from "../../assets"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
@@ -152,7 +152,24 @@ export const PlayerAbilities = () => {
                             opacity: 0.8,
                         }}
                     >
-                        There are currently no abilities on sale.
+                        {locationSelectType ? (
+                            <>
+                                No results.&nbsp;
+                                <Link
+                                    component="button"
+                                    variant="body1"
+                                    sx={{
+                                        marginTop: "-2px",
+                                        lineHeight: 1,
+                                    }}
+                                    onClick={() => setLocationSelectType(null)}
+                                >
+                                    Click here to clear filters.
+                                </Link>
+                            </>
+                        ) : (
+                            "You do not own any abilities at the moment."
+                        )}
                     </Typography>
                 )}
             </Box>
