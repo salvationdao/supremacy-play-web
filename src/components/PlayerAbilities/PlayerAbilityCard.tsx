@@ -86,7 +86,6 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                         textAlign: "left",
                         backgroundColor: colors.navy,
                         ":hover img": {
-                            filter: "grayscale(0)",
                             transform: "scale(1.2)",
                         },
                     }}
@@ -106,7 +105,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                         >
                             <Box
                                 sx={{
-                                    zIndex: 1,
+                                    zIndex: 2,
                                     position: "absolute",
                                     top: ".2rem",
                                     right: ".2rem",
@@ -116,7 +115,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                             </Box>
                             <Box
                                 sx={{
-                                    zIndex: 1,
+                                    zIndex: 2,
                                     position: "absolute",
                                     top: ".2rem",
                                     left: ".2rem",
@@ -132,6 +131,19 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                     {count}
                                 </Typography>
                             </Box>
+                            <Box
+                                sx={{
+                                    zIndex: 1,
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    background: `center center`,
+                                    backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, .6) 20%, rgba(255, 255, 255, 0.0))`,
+                                    backgroundSize: "cover",
+                                }}
+                            />
                             <Box
                                 component="img"
                                 src={playerAbility.image_url}
