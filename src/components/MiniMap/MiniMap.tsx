@@ -7,6 +7,7 @@ import { BribeStageResponse, Severity, useDimension, useGame, useOverlayToggles,
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension, Map, PlayerAbility } from "../../types"
+import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const MiniMap = () => {
     const theme = useTheme<Theme>()
@@ -301,6 +302,8 @@ const MiniMapInner = ({
                                 />
 
                                 {mapInsideRender}
+
+                                {isTargeting && !winner && playerAbility && <TargetHint playerAbility={playerAbility} />}
 
                                 {isTargeting && winner && (
                                     <TargetTimerCountdown gameAbility={winner.game_ability} setTimeReachZero={setTimeReachZero} endTime={winner.end_time} />
