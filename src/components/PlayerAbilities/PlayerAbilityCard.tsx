@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab"
-import { Box, ButtonBase, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { Box, ButtonBase, ButtonBaseProps, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgClose, SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
 import { SocketState, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
@@ -9,11 +9,15 @@ import { colors, fonts } from "../../theme/theme"
 import { PlayerAbility } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { TooltipHelper } from "../Common/TooltipHelper"
-import { AbilityCardProps } from "./SaleAbilityCard"
+
+interface PlayerAbilityCardProps extends ButtonBaseProps {
+    blueprintAbilityID: string
+    count: number
+}
 
 const activateModalWidth = 400
 
-export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
+export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: PlayerAbilityCardProps) => {
     const { userID } = useGameServerAuth()
     const { setPlayerAbility: submitPlayerAbility } = useGame()
     const { state, send, subscribe } = useGameServerWebsocket()
@@ -55,7 +59,7 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                     setPlayerAbility(resp)
                 },
                 {
-                    ability_id: abilityID,
+                    blueprint_ability_id: blueprintAbilityID,
                 },
             )
         } catch (e) {
@@ -65,7 +69,7 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                 setError(e)
             }
         }
-    }, [state, send, subscribe, userID, abilityID])
+    }, [state, send, subscribe, userID, blueprintAbilityID])
 
     if (!playerAbility) {
         return <Box>Loading...</Box>
@@ -109,6 +113,23 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                                 }}
                             >
                                 {abilityTypeIcon}
+                            </Box>
+                            <Box
+                                sx={{
+                                    zIndex: 1,
+                                    position: "absolute",
+                                    top: ".2rem",
+                                    left: ".2rem",
+                                }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: colors.gold,
+                                    }}
+                                >
+                                    {count}
+                                </Typography>
                             </Box>
                             <Box
                                 component="img"

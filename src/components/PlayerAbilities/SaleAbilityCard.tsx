@@ -12,7 +12,7 @@ import { SaleAbility } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { TooltipHelper } from "../Common/TooltipHelper"
 
-export interface AbilityCardProps extends ButtonBaseProps {
+interface AbilityCardProps extends ButtonBaseProps {
     abilityID: string
 }
 

@@ -71,6 +71,11 @@ export interface PlayerAbility {
     purchased_at: string
 }
 
+export interface TalliedPlayerAbility {
+    blueprint_id: string
+    count: number
+}
+
 export interface SaleAbility {
     id: string
     current_price: string

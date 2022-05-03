@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
+import { TalliedPlayerAbility } from "../../types"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 const columns = 5
@@ -12,7 +13,7 @@ const pageSize = columns * rows
 export const PlayerAbilities = () => {
     const { user } = useGameServerAuth()
     const { state, send, subscribe } = useGameServerWebsocket()
-    const [playerAbilityIDs, setPlayerAbilityIDs] = useState<string[]>([])
+    const [talliedAbilityIDs, setTalliedAbilityIDs] = useState<TalliedPlayerAbility[]>([])
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
@@ -22,7 +23,7 @@ export const PlayerAbilities = () => {
         if (state !== SocketState.OPEN || !send || !subscribe || !user) return
 
         const fetchSaleAbilities = async () => {
-            const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.PlayerAbilitiesList, {
+            const resp = await send<{ total: number; tallied_ability_ids: TalliedPlayerAbility[] }>(GameServerKeys.PlayerAbilitiesList, {
                 page_size: pageSize,
                 page: currentPage - 1,
                 filter: {
@@ -35,7 +36,7 @@ export const PlayerAbilities = () => {
                     ],
                 },
             })
-            setPlayerAbilityIDs(resp.ability_ids)
+            setTalliedAbilityIDs(resp.tallied_ability_ids)
             setTotalPages(Math.ceil(resp.total / pageSize))
         }
 
@@ -61,7 +62,7 @@ export const PlayerAbilities = () => {
                 </Typography>
             </Stack>
             <Box marginBottom="1rem">
-                {playerAbilityIDs.length > 0 ? (
+                {talliedAbilityIDs.length > 0 ? (
                     <Box
                         sx={{
                             display: "grid",
@@ -70,8 +71,8 @@ export const PlayerAbilities = () => {
                             gap: ".5rem",
                         }}
                     >
-                        {playerAbilityIDs.map((s) => (
-                            <PlayerAbilityCard key={s} abilityID={s} />
+                        {talliedAbilityIDs.map((s) => (
+                            <PlayerAbilityCard key={s.blueprint_id} blueprintAbilityID={s.blueprint_id} count={s.count} />
                         ))}
                     </Box>
                 ) : (
