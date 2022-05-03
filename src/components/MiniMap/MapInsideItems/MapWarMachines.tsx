@@ -127,7 +127,7 @@ const MapWarMachine = ({
                 })
             }
         }
-    }, [hash, highlightedMechHash, setHighlightedMechHash, setSelection, playerAbility, factionID])
+    }, [hash, highlightedMechHash, setHighlightedMechHash, setSelection, playerAbility, factionID, faction.id])
 
     if (!position) return null
 

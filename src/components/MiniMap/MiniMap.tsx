@@ -184,7 +184,7 @@ const MiniMapInner = ({
                 setPlayerAbility(undefined)
             }
         }
-    }, [timeReachZero, submitted, playerAbility, winner, toggleEnlarged, newSnackbarMessage, setWinner])
+    }, [timeReachZero, submitted, playerAbility, setPlayerAbility, winner, setWinner, toggleEnlarged, newSnackbarMessage])
 
     const mainColor = useMemo(() => {
         if (isTargeting) {
@@ -235,7 +235,7 @@ const MiniMapInner = ({
                 />
             )
         }
-    }, [isTargeting, winner, playerAbility, dimensions, remToPxRatio, setSubmitted, enlarged, newSnackbarMessage])
+    }, [isTargeting, winner, playerAbility, setPlayerAbility, dimensions, remToPxRatio, setSubmitted, enlarged, toggleEnlarged, newSnackbarMessage])
 
     if (!map) return null
 

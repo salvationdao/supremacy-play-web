@@ -89,8 +89,6 @@ const MiniMapInsideInner = ({
                     },
                 )
             }
-            setSubmitted && setSubmitted(true)
-            setSelection(undefined)
             newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
@@ -102,7 +100,7 @@ const MiniMapInsideInner = ({
                 setHighlightedMechHash(undefined)
             }
         }
-    }, [state, send, selection, setSubmitted, gameAbility, playerAbility, newSnackbarMessage])
+    }, [state, send, selection, setSubmitted, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
