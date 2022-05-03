@@ -1,9 +1,10 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
+import { SvgGlobal, SvgMicrochip, SvgTarget } from "../../assets"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { TalliedPlayerAbility } from "../../types"
+import { LocationSelectType, TalliedPlayerAbility } from "../../types"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 const columns = 5
@@ -19,21 +20,31 @@ export const PlayerAbilities = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
 
+    // Filters
+    const [locationSelectType, setLocationSelectType] = useState<LocationSelectType | null>(null)
+
     useEffect(() => {
         if (state !== SocketState.OPEN || !send || !subscribe || !user) return
 
         const fetchSaleAbilities = async () => {
+            const filterItems: any[] = []
+            filterItems.push({
+                column: "owner_id",
+                operator: "=",
+                value: user.id,
+            })
+            if (locationSelectType) {
+                filterItems.push({
+                    column: "location_select_type",
+                    operator: "=",
+                    value: locationSelectType,
+                })
+            }
             const resp = await send<{ total: number; tallied_ability_ids: TalliedPlayerAbility[] }>(GameServerKeys.PlayerAbilitiesList, {
                 page_size: pageSize,
                 page: currentPage - 1,
                 filter: {
-                    items: [
-                        {
-                            column: "owner_id",
-                            operator: "=",
-                            value: user.id,
-                        },
-                    ],
+                    items: filterItems,
                 },
             })
             setTalliedAbilityIDs(resp.tallied_ability_ids)
@@ -43,13 +54,13 @@ export const PlayerAbilities = () => {
         fetchSaleAbilities()
 
         return subscribe(GameServerKeys.TriggerPlayerAbilitiesListUpdated, () => fetchSaleAbilities())
-    }, [state, send, subscribe, user, currentPage])
+    }, [state, send, subscribe, user, currentPage, locationSelectType])
 
     if (!user) return null
 
     return (
         <Box>
-            <Stack direction="row" spacing=".48rem" alignItems="center" marginBottom="1rem">
+            <Stack direction="row" spacing=".48rem" alignItems="center" justifyContent="space-between" marginBottom="1rem">
                 <Typography
                     sx={{
                         lineHeight: 1,
@@ -60,6 +71,61 @@ export const PlayerAbilities = () => {
                 >
                     Player Abilities
                 </Typography>
+                <ButtonGroup
+                    size="small"
+                    sx={(theme) => ({
+                        "& .MuiButton-root": {
+                            borderRadius: 0,
+                            "&:hover": {
+                                border: `1px solid ${theme.factionTheme.primary}65`,
+                            },
+                        },
+                    })}
+                >
+                    <Button
+                        sx={(theme) => ({
+                            "&&": {
+                                border:
+                                    locationSelectType === "GLOBAL" ? `1px solid ${theme.factionTheme.primary}65` : `1px solid ${theme.factionTheme.primary}`,
+                            },
+                        })}
+                        onClick={() => {
+                            setLocationSelectType(locationSelectType === "GLOBAL" ? null : "GLOBAL")
+                        }}
+                    >
+                        <SvgGlobal size="1.6rem" />
+                    </Button>
+                    <Button
+                        sx={(theme) => ({
+                            "&&": {
+                                border:
+                                    locationSelectType === "LOCATION_SELECT"
+                                        ? `1px solid ${theme.factionTheme.primary}65`
+                                        : `1px solid ${theme.factionTheme.primary}`,
+                            },
+                        })}
+                        onClick={() => {
+                            setLocationSelectType(locationSelectType === "LOCATION_SELECT" ? null : "LOCATION_SELECT")
+                        }}
+                    >
+                        <SvgTarget size="1.6rem" />
+                    </Button>
+                    <Button
+                        sx={(theme) => ({
+                            "&&": {
+                                border:
+                                    locationSelectType === "MECH_SELECT"
+                                        ? `1px solid ${theme.factionTheme.primary}65`
+                                        : `1px solid ${theme.factionTheme.primary}`,
+                            },
+                        })}
+                        onClick={() => {
+                            setLocationSelectType(locationSelectType === "MECH_SELECT" ? null : "MECH_SELECT")
+                        }}
+                    >
+                        <SvgMicrochip size="1.6rem" />
+                    </Button>
+                </ButtonGroup>
             </Stack>
             <Box marginBottom="1rem">
                 {talliedAbilityIDs.length > 0 ? (

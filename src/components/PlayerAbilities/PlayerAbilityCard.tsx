@@ -126,6 +126,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                     variant="caption"
                                     sx={{
                                         color: colors.gold,
+                                        fontWeight: "fontWeightBold",
                                     }}
                                 >
                                     {count}
@@ -237,6 +238,23 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                         }}
                                     >
                                         <Typography>{playerAbility.description}</Typography>
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                alignSelf: "end",
+                                            }}
+                                        >
+                                            Remaining:
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    ml: ".5rem",
+                                                    color: colors.offWhite,
+                                                }}
+                                            >
+                                                {count}
+                                            </Box>
+                                        </Typography>
                                     </Box>
                                 </Stack>
                                 <LoadingButton
