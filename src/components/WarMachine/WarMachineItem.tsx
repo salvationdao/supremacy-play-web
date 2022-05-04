@@ -121,7 +121,7 @@ const WarMachineItemInner = ({
     const isOwnFaction = useMemo(() => factionID == warMachine.factionID, [factionID, warMachine])
     const numSkillBars = useMemo(() => (gameAbilities ? gameAbilities.length : 0), [gameAbilities])
     const owned = useMemo(() => ownedByID === userID, [ownedByID, userID])
-    const isAlive = !warMachineDestroyedRecord
+    const [isAlive, toggleIsAlive] = useToggle(true)
 
     const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
@@ -327,7 +327,7 @@ const WarMachineItemInner = ({
                             spacing=".8rem"
                             sx={{ flex: 1, pl: isExpanded ? "2.8rem" : 0, pr: isExpanded ? "1.68rem" : 0 }}
                         >
-                            <HealthShieldBars warMachine={warMachine} type={isExpanded ? "horizontal" : "vertical"} />
+                            <HealthShieldBars warMachine={warMachine} type={isExpanded ? "horizontal" : "vertical"} onDeath={() => toggleIsAlive(false)} />
 
                             {isExpanded && (
                                 <Box
