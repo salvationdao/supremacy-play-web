@@ -4,7 +4,7 @@ import { UserBanForm } from "../../.."
 import { RIGHT_DRAWER_WIDTH } from "../../../../constants"
 import { useGameServerAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
-import { colors } from "../../../../theme/theme"
+import { colors, siteZIndex } from "../../../../theme/theme"
 
 export const AdditionalOptionsButton = () => {
     const { user } = useGameServerAuth()
@@ -89,7 +89,7 @@ const OptionsPopover = ({
                 horizontal: "center",
             }}
             sx={{
-                zIndex: 15,
+                zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
                     ml: 2,
                     width: `${RIGHT_DRAWER_WIDTH}rem`,
