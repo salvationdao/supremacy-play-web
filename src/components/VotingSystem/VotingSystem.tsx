@@ -5,18 +5,24 @@ import { useTheme } from "@mui/styles"
 import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
 import { DEV_ONLY } from "../../constants"
-import { BribeStageResponse, useDimension, useGame } from "../../containers"
+import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "../../containers"
 import { parseString } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension } from "../../types"
 import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
+    const { userID } = useGameServerAuth()
     const { bribeStage } = useGame()
-    return <VotingSystemInner bribeStage={bribeStage} />
+    return <VotingSystemInner userID={userID} bribeStage={bribeStage} />
 }
 
-const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
+interface VotingSystemInnerProps {
+    userID?: string
+    bribeStage?: BribeStageResponse
+}
+
+const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
     const theme = useTheme<Theme>()
     const initialSize = useMemo(() => ({ width: 390, height: 360, minWidth: 370 }), [])
     const [containerWidth, setContainerWidth] = useState<number>(parseString(localStorage.getItem("votingSystemWidth"), initialSize.width))
@@ -95,7 +101,9 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                             }}
                         >
                             <TabButton label="Battle Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
-                            <TabButton label="Player Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
+                            {userID && (
+                                <TabButton label="Player Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
+                            )}
                         </Tabs>
                     )}
                     <ClipThing

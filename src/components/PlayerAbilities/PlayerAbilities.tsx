@@ -56,7 +56,33 @@ export const PlayerAbilities = () => {
         return subscribe(GameServerKeys.TriggerPlayerAbilitiesListUpdated, () => fetchSaleAbilities())
     }, [state, send, subscribe, user, currentPage, locationSelectType])
 
-    if (!user) return null
+    if (!user)
+        return (
+            <Box>
+                <Typography
+                    sx={{
+                        lineHeight: 1,
+                        color: colors.text,
+                        fontWeight: "fontWeightBold",
+                        textTransform: "uppercase",
+                    }}
+                >
+                    Player Abilities
+                </Typography>
+                <Typography
+                    sx={{
+                        px: "1.28rem",
+                        pt: "1.28rem",
+                        mb: ".56rem",
+                        color: colors.grey,
+                        userSelect: "text !important",
+                        opacity: 0.8,
+                    }}
+                >
+                    You must be logged in to view your owned abilities.
+                </Typography>
+            </Box>
+        )
 
     return (
         <Box>
