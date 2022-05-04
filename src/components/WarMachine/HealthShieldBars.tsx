@@ -7,7 +7,15 @@ import { useGameServerWebsocket } from "../../containers"
 
 type LayoutType = "vertical" | "horizontal"
 
-export const HealthShieldBars = ({ type = "horizontal", warMachine, onDeath }: { type?: LayoutType; warMachine: WarMachineState; onDeath: () => void }) => {
+export const HealthShieldBars = ({
+    type = "horizontal",
+    warMachine,
+    toggleIsAlive,
+}: {
+    type?: LayoutType
+    warMachine: WarMachineState
+    toggleIsAlive: (value: boolean) => void
+}) => {
     const { participantID, maxHealth, maxShield } = warMachine
     const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
     const [health, setHealth] = useState<number>(warMachine.health)
@@ -23,11 +31,11 @@ export const HealthShieldBars = ({ type = "horizontal", warMachine, onDeath }: {
         return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
             if (payload?.health !== undefined) {
                 setHealth(payload.health)
-                if (payload.health <= 0) onDeath()
+                if (payload.health <= 0) toggleIsAlive(false)
             }
             if (payload?.shield !== undefined) setShield(payload.shield)
         })
-    }, [onDeath, participantID, state, subscribeWarMachineStatNetMessage])
+    }, [participantID, state, subscribeWarMachineStatNetMessage, toggleIsAlive])
 
     return <HealthShieldBarsInner type={type} health={health} healthPercent={healthPercent} shieldPercent={shieldPercent} maxHealth={maxHealth} />
 }
