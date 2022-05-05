@@ -8,7 +8,7 @@ import { camelToTitle, getRarityDeets, supFormatter, timeSince } from "../../../
 import { useToggle } from "../../../hooks"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { BattleMechHistory, BattleMechStats } from "../../../types"
+import { BattleMechHistory, BattleMechHistoryIdentifier, BattleMechStats } from "../../../types"
 import { Asset } from "../../../types/assets"
 import { UserData } from "../../../types/passport"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
@@ -34,6 +34,8 @@ export interface MechDrawerProps {
     openLeaveModal: () => void
 }
 
+const pageSize = 10
+
 export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployModal, openLeaveModal }: MechDrawerProps) => {
     const { name, label, hash, image_url, avatar_url } = asset.data.mech
 
@@ -45,9 +47,12 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
     const [statsLoading, setStatsLoading] = useState(false)
     const [statsError, setStatsError] = useState<string>()
     // Battle history
-    const [history, setHistory] = useState<BattleMechHistory[]>([])
+    const [history, setHistoryIDs] = useState<BattleMechHistoryIdentifier[]>([])
     const [historyLoading, setHistoryLoading] = useState(false)
     const [historyError, setHistoryError] = useState<string>()
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
     // Rename
     const renamingRef = useRef<HTMLInputElement>()
     const [renamedValue, setRenamedValue] = useState(name || label)
@@ -66,11 +71,22 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
         try {
             const resp = await send<{
                 total: number
-                battle_history: BattleMechHistory[]
+                battle_history_ids: BattleMechHistoryIdentifier[]
             }>(GameServerKeys.BattleMechHistoryList, {
-                mech_id: asset.id,
+                page_size: pageSize,
+                page: currentPage - 1,
+                filter: {
+                    items: [
+                        {
+                            column: "mech_id",
+                            operator: "=",
+                            value: asset.id,
+                        },
+                    ],
+                },
             })
-            setHistory(resp.battle_history)
+            setHistoryIDs(resp.battle_history_ids)
+            setTotalPages(Math.ceil(resp.total / pageSize))
         } catch (e) {
             if (typeof e === "string") {
                 setHistoryError(e)
@@ -80,7 +96,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
         } finally {
             setHistoryLoading(false)
         }
-    }, [asset.id, send])
+    }, [asset.id, send, currentPage])
 
     useEffect(() => {
         if (state !== SocketState.OPEN || !send) return
@@ -104,7 +120,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
             })
 
         fetchHistory()
-    }, [state, send, asset.id, fetchHistory])
+    }, [state, send, asset.id, fetchHistory, currentPage])
 
     // This allows the drawer transition to happen before we unmount it
     useEffect(() => {
@@ -568,16 +584,8 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
                                     },
                                 }}
                             >
-                                {history.map((h, index) => (
-                                    <HistoryEntry
-                                        key={index}
-                                        mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                                        backgroundImage={h.battle?.game_map?.image_url}
-                                        mechSurvived={!!h.mech_survived}
-                                        status={!h.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
-                                        kills={h.kills}
-                                        date={h.created_at}
-                                    />
+                                {history.map((h) => (
+                                    <HistoryEntry key={`${h.battle_id}-${h.mech_id}`} battleID={h.battle_id} mechID={h.mech_id} />
                                 ))}
                             </Stack>
                         ) : (
@@ -593,17 +601,38 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
 }
 
 interface HistoryEntryProps {
-    mapName: string
-    mechSurvived: boolean
-    backgroundImage?: string
-    status: "won" | "lost" | "pending"
-    kills: number
-    date: Date
+    battleID: string
+    mechID: string
 }
 
-const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
+// mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
+// backgroundImage={h.battle?.game_map?.image_url}
+// mechSurvived={!!h.mech_survived}
+// status={!h.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
+// kills={h.kills}
+// date={h.created_at}
+
+const HistoryEntry = ({ battleID, mechID }: HistoryEntryProps) => {
+    const { state, send } = useGameServerWebsocket()
+    const [historyEntry, setHistoryEntry] = useState<BattleMechHistory | null>(null)
+
+    useEffect(() => {
+        if (state !== SocketState.OPEN || !send) return
+        ;(async () => {
+            const resp = await send<BattleMechHistory>(GameServerKeys.BattleMechHistoryDetailed, {
+                battle_id: battleID,
+                mech_id: mechID,
+            })
+
+            setHistoryEntry(resp)
+        })()
+    }, [state, send, battleID, mechID])
+
+    if (!historyEntry) return <Box>Loading...</Box>
+
     let statusColor = colors.grey
     let statusText = "In Progress"
+    const status = historyEntry.battle?.ended_at ? "pending" : historyEntry.faction_won ? "won" : "lost"
     switch (status) {
         case "won":
             statusColor = colors.green
@@ -625,13 +654,13 @@ const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, d
                 minHeight: "70px",
                 p: "0.8rem 1.1rem",
                 background: `center center`,
-                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${statusColor}80), url(${backgroundImage})`,
+                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${statusColor}80), url(${historyEntry.battle?.game_map?.image_url})`,
                 backgroundSize: "cover",
             }}
         >
             <Box>
                 <Typography variant="subtitle2" sx={{ textTransform: "uppercase" }}>
-                    {mapName}
+                    {camelToTitle(historyEntry.battle?.game_map?.name || "Unknown")}
                 </Typography>
                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBold }}>
                     {statusText}
@@ -642,12 +671,12 @@ const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, d
                             variant="subtitle2"
                             sx={{
                                 textTransform: "uppercase",
-                                color: mechSurvived ? colors.neonBlue : colors.lightRed,
+                                color: historyEntry.mech_survived ? colors.neonBlue : colors.lightRed,
                             }}
                         >
-                            {mechSurvived ? "MECH SURVIVED" : "MECH DESTROYED"}
+                            {historyEntry.mech_survived ? "MECH SURVIVED" : "MECH DESTROYED"}
                         </Typography>
-                        {mechSurvived && <SvgGoldBars size="1.5rem" />}
+                        {historyEntry.mech_survived && <SvgGoldBars size="1.5rem" />}
                     </Stack>
                 )}
             </Box>
@@ -657,19 +686,19 @@ const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, d
                         variant="h6"
                         sx={{
                             fontFamily: fonts.nostromoBold,
-                            color: kills > 0 ? colors.gold : colors.lightGrey,
+                            color: historyEntry.kills > 0 ? colors.gold : colors.lightGrey,
                         }}
                     >
-                        {kills > 0 ? `${kills} KILL${kills > 1 ? "S" : ""}` : "NO KILLS"}
+                        {historyEntry.kills > 0 ? `${historyEntry.kills} KILL${historyEntry.kills > 1 ? "S" : ""}` : "NO KILLS"}
                     </Typography>
-                    <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
+                    <SvgDeath fill={historyEntry.kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
                 </Stack>
                 <Typography
                     sx={{
                         color: colors.offWhite,
                     }}
                 >
-                    {timeSince(date)} AGO
+                    {timeSince(historyEntry.created_at)} AGO
                 </Typography>
             </Stack>
         </Stack>

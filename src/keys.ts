@@ -66,6 +66,7 @@ export enum GameServerKeys {
     SendChatMessage = "CHAT:MESSAGE",
     ChatPastMessages = "CHAT:PAST_MESSAGES",
 
+    BattleMechHistoryDetailed = "BATTLE:MECH:HISTORY:DETAILED",
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
     BattleMechStats = "BATTLE:MECH:STATS",
 
