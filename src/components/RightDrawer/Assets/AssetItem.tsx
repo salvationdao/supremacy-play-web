@@ -398,12 +398,24 @@ export const AssetItem = ({
                     open={deployModalOpen}
                     asset={assetData}
                     queueFeed={queueFeed}
-                    onClose={() => toggleDeployModalOpen(false)}
+                    onClose={() => {
+                        toggleDeployModalOpen(false)
+                        togglePreventAssetsRefresh(false)
+                    }}
                     setTelegramShortcode={setTelegramShortcode}
                 />
             )}
 
-            {leaveModalOpen && <LeaveConfirmation open={leaveModalOpen} asset={assetData} onClose={() => toggleLeaveModalOpen(false)} />}
+            {leaveModalOpen && (
+                <LeaveConfirmation
+                    open={leaveModalOpen}
+                    asset={assetData}
+                    onClose={() => {
+                        toggleLeaveModalOpen(false)
+                        togglePreventAssetsRefresh(false)
+                    }}
+                />
+            )}
 
             {mechDrawerOpen && (
                 <MechDrawer
