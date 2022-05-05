@@ -1,6 +1,6 @@
 import { Box, Fade, Theme, useTheme } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
+import { ClipThing, MapSelection, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { BribeStageResponse, Severity, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
@@ -105,6 +105,7 @@ const MiniMapInner = ({
     // For targeting map
     const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
     const [submitted, setSubmitted] = useState<boolean>(false)
+    const [selection, setSelection] = useState<MapSelection>()
 
     const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
@@ -162,7 +163,13 @@ const MiniMapInner = ({
     }, [winner, playerAbility])
 
     useEffect(() => {
-        if ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) {
+        if (winner && bribeStage?.phase === "LOCATION_SELECT") {
+            // If battle ability is overriding player ability selection
+            toggleEnlarged(false)
+            setSelection(undefined)
+            const b = setTimeout(() => toggleEnlarged(true), 50)
+            return clearTimeout(b)
+        } else if (playerAbility) {
             toggleEnlarged(true)
         }
     }, [winner, bribeStage, playerAbility, toggleEnlarged])
@@ -208,6 +215,8 @@ const MiniMapInner = ({
                         containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
                         targeting
                         setSubmitted={setSubmitted}
+                        selection={selection}
+                        setSelection={setSelection}
                         enlarged={enlarged || dimensions.width > 450}
                         newSnackbarMessage={newSnackbarMessage}
                     />
@@ -219,6 +228,8 @@ const MiniMapInner = ({
                         containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
                         targeting
                         setSubmitted={setSubmitted}
+                        selection={selection}
+                        setSelection={setSelection}
                         enlarged={enlarged || dimensions.width > 450}
                         newSnackbarMessage={newSnackbarMessage}
                         onCancel={() => {
@@ -234,10 +245,12 @@ const MiniMapInner = ({
                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
                     enlarged={enlarged || dimensions.width > 388}
                     newSnackbarMessage={newSnackbarMessage}
+                    selection={selection}
+                    setSelection={setSelection}
                 />
             )
         }
-    }, [isTargeting, winner, playerAbility, setPlayerAbility, dimensions, remToPxRatio, enlarged, toggleEnlarged, newSnackbarMessage])
+    }, [isTargeting, winner, playerAbility, setPlayerAbility, dimensions, remToPxRatio, enlarged, toggleEnlarged, newSnackbarMessage, selection])
 
     if (!map) return null
 

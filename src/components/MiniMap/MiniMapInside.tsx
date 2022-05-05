@@ -22,6 +22,8 @@ interface Props {
     containerDimensions: Dimension
     targeting?: boolean
     setSubmitted?: Dispatch<SetStateAction<boolean>>
+    selection?: MapSelection
+    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
     enlarged: boolean
     newSnackbarMessage: (message: string, severity?: Severity) => void
     onCancel?: () => void
@@ -48,6 +50,8 @@ const MiniMapInsideInner = ({
     containerDimensions,
     targeting,
     setSubmitted,
+    selection,
+    setSelection,
     enlarged,
     map,
     warMachines,
@@ -55,7 +59,6 @@ const MiniMapInsideInner = ({
     setHighlightedMechHash,
     onCancel,
 }: PropsInner) => {
-    const [selection, setSelection] = useState<MapSelection>()
     const mapElement = useRef<HTMLDivElement>()
     // Setup use-gesture props
     const [dragX, setDragX] = useState(0)
@@ -100,7 +103,7 @@ const MiniMapInsideInner = ({
                 setHighlightedMechHash(undefined)
             }
         }
-    }, [state, send, selection, setSubmitted, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash])
+    }, [state, send, selection, setSubmitted, setSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
@@ -115,7 +118,7 @@ const MiniMapInsideInner = ({
                 })
             }
         },
-        [mapElement, gridWidth, gridHeight, mapScale],
+        [mapElement, gridWidth, gridHeight, mapScale, setSelection],
     )
 
     // Set map scale to minimum scale while staying in-bounds
