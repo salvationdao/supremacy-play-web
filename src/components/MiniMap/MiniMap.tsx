@@ -129,7 +129,9 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
         const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width * adjustment
         const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height * adjustment
         setDimensions({ width: newWidth, height: newHeight })
-    }, [width, height, enlarged, adjustment, mapHeightWidthRatio, isTargeting, defaultDimensions])
+        // NOTE: need to skip the lint or the map will keep resetting to small size on new battle
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [width, height, enlarged, adjustment])
 
     useEffect(() => {
         const endTime = winner?.end_time

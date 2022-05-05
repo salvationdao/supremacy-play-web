@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Fade, IconButton, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { AssetItem } from "../.."
 import { SvgGridView, SvgListView, SvgRobot } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
@@ -75,8 +75,10 @@ const Content = ({
     const { battleIdentifier } = useSupremacy()
 
     const [queueFeed, setQueueFeed] = useState<QueueFeedResponse>()
-    const [assetsQueue, setAssetsQueue] = useState<AssetQueue[]>()
     const [queueUpdated, setQueueUpdated] = useDebounce(false, 1500)
+    const [assetsQueue, setAssetsQueue] = useState<AssetQueue[]>()
+    const cachedAssetQueue = useRef<AssetQueue[]>()
+    const [preventAssetsRefresh, togglePreventAssetsRefresh] = useToggle()
 
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 12, page: 1 })
@@ -93,7 +95,7 @@ const Content = ({
     useEffect(() => {
         ;(async () => {
             try {
-                setIsLoading(true)
+                if (!preventAssetsRefresh) setIsLoading(true)
                 if (state !== WebSocket.OPEN || !send) return
                 const resp = await send<
                     GetAssetsResponse,
@@ -107,7 +109,11 @@ const Content = ({
                 })
 
                 if (!resp) return
-                setAssetsQueue(resp.asset_queue_list)
+                if (preventAssetsRefresh) {
+                    cachedAssetQueue.current = resp.asset_queue_list
+                } else {
+                    setAssetsQueue(resp.asset_queue_list)
+                }
                 setTotalItems(resp.total)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get assets.", "error")
@@ -116,7 +122,15 @@ const Content = ({
                 setIsLoading(false)
             }
         })()
+        // NOTE: state change of `preventAssetsRefresh` doesnt need to trigger a send
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [send, state, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
+
+    // Update assets (the page) from the cache
+    useEffect(() => {
+        if (!preventAssetsRefresh && cachedAssetQueue.current) setAssetsQueue(cachedAssetQueue.current)
+        cachedAssetQueue.current = undefined
+    }, [preventAssetsRefresh])
 
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -146,6 +160,7 @@ const Content = ({
                             assetQueue={aq}
                             queueFeed={queueFeed}
                             isGridView={isGridView}
+                            togglePreventAssetsRefresh={togglePreventAssetsRefresh}
                         />
                     ))}
                 </Stack>
@@ -179,7 +194,7 @@ const Content = ({
                 </Button>
             </Stack>
         )
-    }, [isLoading, assetsQueue, queueFeed, isGridView, telegramShortcode, setTelegramShortcode])
+    }, [isLoading, assetsQueue, queueFeed, isGridView, telegramShortcode, setTelegramShortcode, togglePreventAssetsRefresh])
 
     return (
         <Stack sx={{ flex: 1 }}>

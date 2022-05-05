@@ -37,10 +37,10 @@ export const DrawerButtons = ({
                 },
             }}
         >
-            <Tabs value={activePanel} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ height: "100%" }}>
+            <Tabs value="" orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ height: "100%" }}>
                 <TabButton
                     label="WAR ROOM"
-                    value={RightDrawerPanels.LiveChat}
+                    value=""
                     icon={<SvgChat size="1rem" sx={{ pt: ".3rem" }} />}
                     onClick={() => togglePanel(RightDrawerPanels.LiveChat)}
                     isActive={activePanel === RightDrawerPanels.LiveChat}
@@ -49,7 +49,7 @@ export const DrawerButtons = ({
                 />
                 <TabButton
                     label="ACTIVE PLAYERS"
-                    value={RightDrawerPanels.PlayerList}
+                    value=""
                     icon={
                         <Box sx={{ pb: ".2rem" }}>
                             <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
@@ -62,7 +62,7 @@ export const DrawerButtons = ({
                 />
                 <TabButton
                     label="WAR MACHINES"
-                    value={RightDrawerPanels.Assets}
+                    value=""
                     icon={<SvgRobot size="1.3rem" />}
                     onClick={() => togglePanel(RightDrawerPanels.Assets)}
                     isActive={activePanel === RightDrawerPanels.Assets}
