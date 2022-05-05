@@ -157,6 +157,7 @@ const MiniMapInner = ({
             }
         } else {
             setSubmitted(false)
+            setTimeReachZero(false)
         }
     }, [winner, playerAbility])
 
@@ -172,6 +173,7 @@ const MiniMapInner = ({
             if (timeReachZero || submitted) {
                 toggleEnlarged(false)
                 setWinner(undefined)
+                console.log("cleared winner")
             }
 
             if (timeReachZero) {
@@ -184,7 +186,7 @@ const MiniMapInner = ({
                 setPlayerAbility(undefined)
             }
         }
-    }, [timeReachZero, submitted, setPlayerAbility, winner, setWinner, toggleEnlarged, newSnackbarMessage])
+    }, [timeReachZero, submitted, setPlayerAbility, setWinner, toggleEnlarged, newSnackbarMessage])
 
     const mainColor = useMemo(() => {
         if (isTargeting) {
