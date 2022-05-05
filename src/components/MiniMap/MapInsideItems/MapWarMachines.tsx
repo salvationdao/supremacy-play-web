@@ -158,8 +158,9 @@ const MapWarMachine = ({
                     onClick={() => setSelection(undefined)}
                     sx={{
                         position: "absolute",
-                        top: "-.5rem",
-                        right: "-.5rem",
+                        top: "0",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
                         height: `${SIZE}px`,
                         width: `${SIZE}px`,
                         cursor: "pointer",
