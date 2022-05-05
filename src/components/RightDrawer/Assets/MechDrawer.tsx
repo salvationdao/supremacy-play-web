@@ -1,7 +1,10 @@
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
+import RefreshIcon from "@mui/icons-material/Refresh"
 import { Box, Button, CircularProgress, Drawer, IconButton, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { AssetQueue } from "../.."
-import { SvgBack, SvgDeath, SvgEdit, SvgGoldBars, SvgHistory, SvgRefresh, SvgSave, SvgSupToken } from "../../../assets"
+import { SvgBack, SvgDeath, SvgEdit, SvgGoldBars, SvgHistory, SvgSave, SvgSupToken } from "../../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, UNDER_MAINTENANCE } from "../../../constants"
 import { SocketState, useGameServerWebsocket, usePassportServerWebsocket, useSnackbar } from "../../../containers"
 import { camelToTitle, getRarityDeets, supFormatter, timeSince } from "../../../helpers"
@@ -120,7 +123,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
             })
 
         fetchHistory()
-    }, [state, send, asset.id, fetchHistory, currentPage])
+    }, [state, send, asset.id, fetchHistory])
 
     // This allows the drawer transition to happen before we unmount it
     useEffect(() => {
@@ -146,7 +149,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
         }
         return (
             <Typography variant="h6" sx={{ color: colors.grey }}>
-                No recent match history...
+                No recent battle history...
             </Typography>
         )
     }
@@ -550,15 +553,31 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
                     >
                         <Stack direction="row" alignItems="center" sx={{ pb: ".8rem", pl: "1.2rem", pr: ".3rem" }}>
                             <SvgHistory size="1.8rem" />
-                            <Typography variant="h6" sx={{ ml: ".8rem", fontWeight: "fontWeightBold" }}>
-                                RECENT 10 MATCHES
+                            <Typography variant="h6" sx={{ ml: ".8rem", fontWeight: "fontWeightBold", textTransform: "uppercase" }}>
+                                BATTLE HISTORY
                             </Typography>
                             <IconButton
                                 size="small"
                                 sx={{ ml: "auto", opacity: 0.4, "&:hover": { cursor: "pointer", opacity: 1 } }}
                                 onClick={() => fetchHistory()}
                             >
-                                <SvgRefresh size="1.3rem" />
+                                <RefreshIcon fontSize="medium" />
+                            </IconButton>
+                            <IconButton
+                                size="small"
+                                sx={{ opacity: 0.4, "&:hover": { cursor: "pointer", opacity: 1 } }}
+                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                disabled={totalPages <= 1 || currentPage === 1}
+                            >
+                                <ArrowBackIcon fontSize="medium" />
+                            </IconButton>
+                            <IconButton
+                                size="small"
+                                sx={{ opacity: 0.4, "&:hover": { cursor: "pointer", opacity: 1 } }}
+                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))}
+                                disabled={totalPages <= 1 || currentPage === totalPages - 1}
+                            >
+                                <ArrowForwardIcon fontSize="medium" />
                             </IconButton>
                         </Stack>
 
