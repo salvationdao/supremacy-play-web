@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup, Link, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgGlobal, SvgMicrochip, SvgTarget } from "../../assets"
+import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../assets"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
@@ -150,6 +150,21 @@ export const PlayerAbilities = () => {
                         }}
                     >
                         <SvgMicrochip size="1.6rem" />
+                    </Button>
+                    <Button
+                        sx={(theme) => ({
+                            "&&": {
+                                border:
+                                    locationSelectType === "LINE_SELECT"
+                                        ? `1px solid ${theme.factionTheme.primary}65`
+                                        : `1px solid ${theme.factionTheme.primary}`,
+                            },
+                        })}
+                        onClick={() => {
+                            setLocationSelectType(locationSelectType === "LINE_SELECT" ? null : "LINE_SELECT")
+                        }}
+                    >
+                        <SvgLine size="1.6rem" />
                     </Button>
                 </ButtonGroup>
             </Stack>

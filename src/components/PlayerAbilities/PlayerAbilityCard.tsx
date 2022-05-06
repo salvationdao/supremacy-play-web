@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, ButtonBaseProps, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgClose, SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
+import { SvgClose, SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
 import { SocketState, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -41,6 +41,11 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
         case "MECH_SELECT":
             abilityTypeDescription = "This ability will target a specific mech on the map."
             abilityTypeIcon = <SvgMicrochip />
+            break
+        case "LINE_SELECT":
+            abilityTypeDescription = "This ability will target a straight line on the map."
+            abilityTypeIcon = <SvgLine />
+            break
     }
 
     const onActivate = () => {

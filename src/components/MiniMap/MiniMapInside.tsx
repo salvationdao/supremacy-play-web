@@ -81,15 +81,17 @@ const MiniMapInsideInner = ({
                 })
             } else if (playerAbility) {
                 console.info("activated player ability", playerAbility.label)
+                const payload = {
+                    ability_id: playerAbility.id,
+                    location_select_type: playerAbility.location_select_type,
+                    x: !selection.mechHash ? Math.floor(selection.x) : undefined,
+                    y: !selection.mechHash ? Math.floor(selection.y) : undefined,
+                    mech_hash: selection.mechHash,
+                }
+                console.log(payload)
                 await send<boolean, { ability_id: string; location_select_type: string; x?: number; y?: number; mech_hash?: string }>(
                     GameServerKeys.PlayerAbilityUse,
-                    {
-                        ability_id: playerAbility.id,
-                        location_select_type: playerAbility.location_select_type,
-                        x: !selection.mechHash ? Math.floor(selection.x) : undefined,
-                        y: !selection.mechHash ? Math.floor(selection.y) : undefined,
-                        mech_hash: selection.mechHash,
-                    },
+                    payload,
                 )
             }
             newSnackbarMessage("Successfully submitted target location.", "success")

@@ -57,7 +57,7 @@ export interface GameAbility {
     ability_offering_id: string
 }
 
-export type LocationSelectType = "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
+export type LocationSelectType = "LINE_SELECT" | "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
 
 export interface PlayerAbility {
     id: string

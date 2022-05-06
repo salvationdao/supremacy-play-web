@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, ButtonBaseProps, Fade, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
+import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
 import { SocketState, useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
@@ -46,6 +46,11 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
         case "MECH_SELECT":
             abilityTypeDescription = "This ability will target a specific mech on the map."
             abilityTypeIcon = <SvgMicrochip />
+            break
+        case "LINE_SELECT":
+            abilityTypeDescription = "This ability will target a straight line on the map."
+            abilityTypeIcon = <SvgLine />
+            break
     }
 
     const onPurchase = async () => {

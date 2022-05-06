@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
+import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { colors } from "../../../theme/theme"
 import { PlayerAbility } from "../../../types"
 interface TargetHintProps {
@@ -17,6 +17,11 @@ export const TargetHint = ({ playerAbility }: TargetHintProps) => {
         case "MECH_SELECT":
             abilityType = "mech"
             abilityTypeIcon = <SvgMicrochip size="1.6rem" />
+            break
+        case "LINE_SELECT":
+            abilityType = "line"
+            abilityTypeIcon = <SvgLine size="1.6rem" />
+            break
     }
 
     return (
