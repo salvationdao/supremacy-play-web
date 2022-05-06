@@ -1,5 +1,6 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useState, SyntheticEvent } from "react"
+import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
 import { siteZIndex } from "../theme/theme"
 
 export const HangarPage = () => {
@@ -11,13 +12,14 @@ export const HangarPage = () => {
 
     return (
         <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
-            <Box sx={{ height: "100%", minWidth: "95rem", maxWidth: "70%" }}>
+            <Stack sx={{ height: "100%", minWidth: "95rem", maxWidth: "65%" }}>
                 <Tabs
                     value={currentValue}
                     onChange={handleChange}
                     variant="scrollable"
                     scrollButtons="auto"
                     sx={{
+                        ml: "1.5rem",
                         color: (theme) => theme.factionTheme.primary,
                         minHeight: 0,
                         ".MuiTab-root": { minHeight: 0, fontSize: "1.1rem" },
@@ -32,7 +34,7 @@ export const HangarPage = () => {
                 </Tabs>
 
                 <TabPanel currentValue={currentValue} index={0}>
-                    WAR MACHINE
+                    <WarMachines />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} index={1}>
                     WEAPONS
@@ -43,7 +45,7 @@ export const HangarPage = () => {
                 <TabPanel currentValue={currentValue} index={3}>
                     PAINT JOBS
                 </TabPanel>
-            </Box>
+            </Stack>
         </Stack>
     )
 }
@@ -60,8 +62,8 @@ const TabPanel = (props: TabPanelProps) => {
     if (currentValue === index) {
         return (
             <Fade in>
-                <Box id={`hangar-tabpanel-${index}`} sx={{ px: "2rem", py: "1.5rem", height: "100%" }}>
-                    <Typography>{children}</Typography>
+                <Box id={`hangar-tabpanel-${index}`} sx={{ px: "1.5rem", py: "1rem", flex: 1 }}>
+                    {children}
                 </Box>
             </Fade>
         )
