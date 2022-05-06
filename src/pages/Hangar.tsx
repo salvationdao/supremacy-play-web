@@ -40,7 +40,7 @@ export const HangarPage = () => {
                 <TabPanel currentValue={currentValue} index={2}>
                     ATTACHMENTS
                 </TabPanel>
-                <TabPanel currentValue={currentValue} index={2}>
+                <TabPanel currentValue={currentValue} index={3}>
                     PAINT JOBS
                 </TabPanel>
             </Box>
@@ -60,7 +60,7 @@ const TabPanel = (props: TabPanelProps) => {
     if (currentValue === index) {
         return (
             <Fade in>
-                <Box id={`hangar-tabpanel-${index}`} sx={{ p: 3, height: "100%" }}>
+                <Box id={`hangar-tabpanel-${index}`} sx={{ px: "2rem", py: "1.5rem", height: "100%" }}>
                     <Typography>{children}</Typography>
                 </Box>
             </Fade>
