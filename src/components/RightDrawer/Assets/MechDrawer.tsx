@@ -574,8 +574,8 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
                             <IconButton
                                 size="small"
                                 sx={{ opacity: 0.4, "&:hover": { cursor: "pointer", opacity: 1 } }}
-                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))}
-                                disabled={totalPages <= 1 || currentPage === totalPages - 1}
+                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                disabled={totalPages <= 1 || currentPage === totalPages}
                             >
                                 <ArrowForwardIcon fontSize="medium" />
                             </IconButton>
