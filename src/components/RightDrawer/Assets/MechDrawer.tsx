@@ -651,7 +651,7 @@ const HistoryEntry = ({ battleID, mechID }: HistoryEntryProps) => {
 
     let statusColor = colors.grey
     let statusText = "In Progress"
-    const status = historyEntry.battle?.ended_at ? "pending" : historyEntry.faction_won ? "won" : "lost"
+    const status = !historyEntry.battle?.ended_at ? "pending" : historyEntry.faction_won ? "won" : "lost"
     switch (status) {
         case "won":
             statusColor = colors.green
