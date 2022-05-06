@@ -19,7 +19,13 @@ export const MiniMap = () => {
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
+        if (bribeStage !== undefined && bribeStage.phase !== "HOLD") {
+            toggleShow(true)
+        } else {
+            toggleShow(false)
+            setPlayerAbility(undefined)
+            setWinner(undefined)
+        }
     }, [bribeStage, toggleShow])
     // End ****************************************
 
@@ -92,6 +98,7 @@ const MiniMapInner = ({
         gameUIDimensions: { width, height },
     } = useDimension()
     const [enlarged, toggleEnlarged] = useToggle()
+    const [isTargeting2, toggleIsTargeting2] = useToggle(true)
     const [mapHeightWidthRatio, setMapHeightWidthRatio] = useState(1)
     const [defaultDimensions, setDefaultDimensions] = useState<Dimension>({
         width: MINI_MAP_DEFAULT_SIZE,
@@ -110,8 +117,8 @@ const MiniMapInner = ({
     const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
     const isTargeting = useMemo(
-        () => ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) && !timeReachZero && !submitted,
-        [winner, playerAbility, timeReachZero, submitted, bribeStage?.phase],
+        () => isTargeting2 && ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) && !timeReachZero && !submitted,
+        [isTargeting2, winner, playerAbility, timeReachZero, submitted, bribeStage?.phase],
     )
 
     // Set initial size
@@ -152,23 +159,28 @@ const MiniMapInner = ({
     }, [width, height, enlarged, adjustment])
 
     useEffect(() => {
-        if (winner) {
-            setSubmitted(false)
-            setTimeReachZero(false)
-        } else {
-            setSubmitted(false)
-            setTimeReachZero(false)
-        }
+        setSubmitted(false)
+        setTimeReachZero(false)
     }, [winner, playerAbility])
 
     useEffect(() => {
         if (winner && bribeStage?.phase === "LOCATION_SELECT") {
             // If battle ability is overriding player ability selection
-            setSelection(undefined)
-            toggleEnlarged(true)
+            if (playerAbility) {
+                toggleIsTargeting2(false)
+                toggleEnlarged(false)
+                const t = setTimeout(() => {
+                    toggleEnlarged(true)
+                    toggleIsTargeting2(true)
+                }, 1000)
+                return () => clearTimeout(t)
+            } else {
+                toggleEnlarged(true)
+            }
         } else if (playerAbility) {
             toggleEnlarged(true)
         }
+        setSelection(undefined)
     }, [winner, bribeStage, playerAbility, toggleEnlarged])
 
     useEffect(() => {
@@ -178,6 +190,10 @@ const MiniMapInner = ({
                 toggleEnlarged(false)
                 setWinner(undefined)
                 console.log("cleared winner")
+                if (playerAbility) {
+                    setSubmitted(false)
+                    setTimeReachZero(false)
+                }
             }
 
             if (timeReachZero) {
