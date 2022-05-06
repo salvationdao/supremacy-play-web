@@ -4,7 +4,6 @@ import { DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { ChatProvider, RightDrawerPanels, useRightDrawer } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
-import { Assets } from "./Assets/Assets"
 import { DrawerButtons } from "./DrawerButtons"
 import { LiveChat } from "./LiveChat/LiveChat"
 import { PlayerList } from "./PlayerList/PlayerList"
@@ -23,8 +22,6 @@ export const RightDrawer = () => {
                 return <LiveChat />
             case RightDrawerPanels.PlayerList:
                 return <PlayerList />
-            case RightDrawerPanels.Assets:
-                return <Assets />
             default:
                 return null
         }

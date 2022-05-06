@@ -133,16 +133,6 @@ export const SetupTutorial = () => {
                     }
                 },
             },
-            {
-                selector: "#tutorial-asset",
-                content:
-                    "You'll find your on-world mechs here. These can be purchased from the Supremacy store or on the black market (OpenSea). You will be able to deploy your mechs to battle here as well as see your mech's battle history.",
-                action: () => {
-                    if (activePanel !== RightDrawerPanels.Assets) {
-                        togglePanel(RightDrawerPanels.Assets, true)
-                    }
-                },
-            },
         ]
     }, [activePanel, togglePanel])
 

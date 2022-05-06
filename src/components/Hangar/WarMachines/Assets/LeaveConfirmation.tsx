@@ -1,14 +1,14 @@
 import { Box, Button, IconButton, Link, Modal, Stack, Typography, useTheme, Theme } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { ClipThing } from "../.."
-import { SvgClose, SvgExternalLink } from "../../../assets"
-import { PASSPORT_WEB } from "../../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../../containers"
-import { getRarityDeets } from "../../../helpers"
-import { useToggle } from "../../../hooks"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { Asset } from "../../../types/assets"
+import { ClipThing } from "../../.."
+import { SvgClose, SvgExternalLink } from "../../../../assets"
+import { PASSPORT_WEB } from "../../../../constants"
+import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../../../containers"
+import { getRarityDeets } from "../../../../helpers"
+import { useToggle } from "../../../../hooks"
+import { GameServerKeys } from "../../../../keys"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { Asset } from "../../../../types/assets"
 
 export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; asset: Asset; onClose: () => void }) => {
     const theme = useTheme<Theme>()

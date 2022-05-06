@@ -1,10 +1,10 @@
 import { Button, Stack, Typography } from "@mui/material"
-import { AssetQueue } from "../../.."
-import { SvgCooldown, SvgSupToken } from "../../../../assets"
-import { supFormatter } from "../../../../helpers"
-import { useTimer } from "../../../../hooks"
-import { colors } from "../../../../theme/theme"
-import { RepairStatus } from "../../../../types"
+import { AssetQueue } from "../../../.."
+import { SvgCooldown, SvgSupToken } from "../../../../../assets"
+import { supFormatter } from "../../../../../helpers"
+import { useTimer } from "../../../../../hooks"
+import { colors } from "../../../../../theme/theme"
+import { RepairStatus } from "../../../../../types"
 
 interface StatusAreaProps {
     isGridView?: boolean

@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { SvgDeath, SvgGoldBars } from "../../../../assets"
-import { timeSince } from "../../../../helpers"
-import { colors, fonts } from "../../../../theme/theme"
+import { SvgDeath, SvgGoldBars } from "../../../../../assets"
+import { timeSince } from "../../../../../helpers"
+import { colors, fonts } from "../../../../../theme/theme"
 
 interface HistoryEntryProps {
     mapName: string

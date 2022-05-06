@@ -62,7 +62,7 @@ const TabPanel = (props: TabPanelProps) => {
     if (currentValue === index) {
         return (
             <Fade in>
-                <Box id={`hangar-tabpanel-${index}`} sx={{ px: "1.5rem", py: "1rem", flex: 1 }}>
+                <Box id={`hangar-tabpanel-${index}`} sx={{ px: "1.5rem", pt: "1rem", pb: "1.5rem", flex: 1 }}>
                     {children}
                 </Box>
             </Fade>

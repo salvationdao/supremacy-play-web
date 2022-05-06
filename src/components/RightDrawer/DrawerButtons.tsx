@@ -1,5 +1,5 @@
 import { Box, Tab, Tabs, Theme, useTheme } from "@mui/material"
-import { SvgChat, SvgRobot } from "../../assets"
+import { SvgChat } from "../../assets"
 import { RightDrawerPanels } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
@@ -57,15 +57,6 @@ export const DrawerButtons = ({
                     }
                     onClick={() => togglePanel(RightDrawerPanels.PlayerList)}
                     isActive={activePanel === RightDrawerPanels.PlayerList}
-                    primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
-                />
-                <TabButton
-                    label="WAR MACHINES"
-                    value=""
-                    icon={<SvgRobot size="1.3rem" />}
-                    onClick={() => togglePanel(RightDrawerPanels.Assets)}
-                    isActive={activePanel === RightDrawerPanels.Assets}
                     primaryColor={theme.factionTheme.primary}
                     secondaryColor={theme.factionTheme.secondary}
                 />

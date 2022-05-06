@@ -5,7 +5,6 @@ export enum RightDrawerPanels {
     None = "NONE",
     LiveChat = "LIVE_CHAT",
     PlayerList = "PLAYER_LIST",
-    Assets = "ASSETS",
 }
 
 export const RightDrawerContainer = createContainer(() => {
