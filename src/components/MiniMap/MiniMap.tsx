@@ -153,11 +153,8 @@ const MiniMapInner = ({
 
     useEffect(() => {
         if (winner) {
-            const endTime = winner?.end_time
-            if (endTime) {
-                setSubmitted(false)
-                setTimeReachZero(false)
-            }
+            setSubmitted(false)
+            setTimeReachZero(false)
         } else {
             setSubmitted(false)
             setTimeReachZero(false)
@@ -167,10 +164,8 @@ const MiniMapInner = ({
     useEffect(() => {
         if (winner && bribeStage?.phase === "LOCATION_SELECT") {
             // If battle ability is overriding player ability selection
-            toggleEnlarged(false)
             setSelection(undefined)
-            const b = setTimeout(() => toggleEnlarged(true), 50)
-            return clearTimeout(b)
+            toggleEnlarged(true)
         } else if (playerAbility) {
             toggleEnlarged(true)
         }
