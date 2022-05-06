@@ -106,6 +106,7 @@ import TrailerThumbPNG from "./images/TrailerThumb.png"
 import LogoWEBP from "./images/Logo.webp"
 import BottomMechWEBP from "./images/BottomMech.webp"
 import SupBackground from "./images/SupBackground.webp"
+import HangarBg from "./images/HangarBg.jpg"
 import Crosshair from "./images/Crosshair.png"
 import Gabs from "./images/Gabs.png"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
@@ -156,6 +157,7 @@ export {
 // End multiplier images
 
 export {
+    HangarBg,
     SupremacyPNG,
     GenericWarMachinePNG,
     FlamesPNG,

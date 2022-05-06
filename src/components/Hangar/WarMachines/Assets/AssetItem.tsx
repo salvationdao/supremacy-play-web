@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { AssetQueue, DeployConfirmation, QueueFeedResponse } from "../../.."
+import { DeployConfirmation } from "../../.."
 import { UNDER_MAINTENANCE } from "../../../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
@@ -12,6 +12,7 @@ import { LeaveConfirmation } from "./LeaveConfirmation"
 import { GameServerKeys, PassportServerKeys } from "../../../../keys"
 import { StatusArea } from "./Common/StatusArea"
 import { RepairStatus } from "../../../../types"
+import { AssetQueue, QueueFeedResponse } from "../WarMachines"
 
 export const AssetItem = ({
     assetQueue,

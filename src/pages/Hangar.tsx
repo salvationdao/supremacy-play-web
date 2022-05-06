@@ -12,40 +12,39 @@ export const HangarPage = () => {
 
     return (
         <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
-            <Stack sx={{ height: "100%", minWidth: "95rem", maxWidth: "65%" }}>
-                <Tabs
-                    value={currentValue}
-                    onChange={handleChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    sx={{
-                        ml: "1.5rem",
-                        color: (theme) => theme.factionTheme.primary,
-                        minHeight: 0,
-                        ".MuiTab-root": { minHeight: 0, fontSize: "1.1rem" },
-                        ".Mui-selected": { color: (theme) => `${theme.factionTheme.primary} !important` },
-                        ".MuiTabs-indicator": { backgroundColor: (theme) => theme.factionTheme.primary },
-                    }}
-                >
-                    <Tab label="WAR MACHINE" />
-                    <Tab label="WEAPONS" />
-                    <Tab label="ATTACHMENTS" />
-                    <Tab label="PAINT JOBS" />
-                </Tabs>
+            <Tabs
+                value={currentValue}
+                onChange={handleChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
+                    mt: ".2rem",
+                    ml: "1.5rem",
+                    color: (theme) => theme.factionTheme.primary,
+                    minHeight: 0,
+                    ".MuiTab-root": { minHeight: 0, fontSize: "1.1rem" },
+                    ".Mui-selected": { color: (theme) => `${theme.factionTheme.primary} !important` },
+                    ".MuiTabs-indicator": { backgroundColor: (theme) => theme.factionTheme.primary },
+                }}
+            >
+                <Tab label="WAR MACHINE" />
+                <Tab label="WEAPONS" />
+                <Tab label="ATTACHMENTS" />
+                <Tab label="PAINT JOBS" />
+            </Tabs>
 
-                <TabPanel currentValue={currentValue} index={0}>
-                    <WarMachines />
-                </TabPanel>
-                <TabPanel currentValue={currentValue} index={1}>
-                    WEAPONS
-                </TabPanel>
-                <TabPanel currentValue={currentValue} index={2}>
-                    ATTACHMENTS
-                </TabPanel>
-                <TabPanel currentValue={currentValue} index={3}>
-                    PAINT JOBS
-                </TabPanel>
-            </Stack>
+            <TabPanel currentValue={currentValue} index={0}>
+                <WarMachines />
+            </TabPanel>
+            <TabPanel currentValue={currentValue} index={1}>
+                WEAPONS
+            </TabPanel>
+            <TabPanel currentValue={currentValue} index={2}>
+                ATTACHMENTS
+            </TabPanel>
+            <TabPanel currentValue={currentValue} index={3}>
+                PAINT JOBS
+            </TabPanel>
         </Stack>
     )
 }

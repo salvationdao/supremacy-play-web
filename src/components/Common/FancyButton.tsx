@@ -1,28 +1,8 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
 import { Box, styled, SxProps } from "@mui/system"
+import { HTMLAttributeAnchorTarget } from "react"
 import { fonts } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
-
-const Base = styled(LoadingButton)({
-    borderRadius: 0,
-    fontFamily: fonts.shareTech,
-    fontWeight: "fontWeightBold",
-    color: "white",
-    textTransform: "uppercase",
-    "&:focus": {
-        boxShadow: "none",
-    },
-    "&:active": {
-        opacity: 0.75,
-    },
-    "& .MuiLoadingButton-loadingIndicator": {
-        color: "#FFFFFF",
-    },
-    "& > *": {
-        fontFamily: fonts.shareTech,
-        fontWeight: "fontWeightBold",
-    },
-})
 
 const Triangle = styled("div")({
     position: "absolute",
@@ -38,6 +18,8 @@ interface FancyButtonProps extends LoadingButtonProps {
     sx?: SxProps
     caretColor?: string
     clipThingsProps?: ClipThingProps
+    href?: string
+    target?: HTMLAttributeAnchorTarget | undefined
 }
 
 export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, ...props }: FancyButtonProps) => {
@@ -57,10 +39,30 @@ export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, cl
                     }}
                 />
             )}
-            <Base sx={{ ...sx }} fullWidth {...props}>
+            <LoadingButton
+                sx={{
+                    borderRadius: 0,
+                    fontFamily: fonts.shareTech,
+                    fontWeight: "fontWeightBold",
+                    color: "white",
+                    textTransform: "uppercase",
+                    "&:focus": {
+                        boxShadow: "none",
+                    },
+                    "&:active": {
+                        opacity: 0.75,
+                    },
+                    "& .MuiLoadingButton-loadingIndicator": {
+                        color: "#FFFFFF",
+                    },
+                    ...sx,
+                }}
+                fullWidth
+                {...props}
+            >
                 {children}
                 {!excludeCaret && <Triangle sx={{ backgroundColor: caretColor }} />}
-            </Base>
+            </LoadingButton>
         </ClipThing>
     )
 }
