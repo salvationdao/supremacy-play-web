@@ -1,16 +1,17 @@
-import { Box, Button, Fade, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { AssetQueue, DeployConfirmation, QueueFeedResponse } from "../.."
 import { UNDER_MAINTENANCE } from "../../../constants"
 import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
-import { getRarityDeets, supFormatter } from "../../../helpers"
+import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 import { MechDrawer } from "./MechDrawer"
 import { LeaveConfirmation } from "./LeaveConfirmation"
-import { PassportServerKeys } from "../../../keys"
-import { SvgSupToken } from "../../../assets"
+import { GameServerKeys, PassportServerKeys } from "../../../keys"
+import { StatusArea } from "./Common/StatusArea"
+import { RepairStatus } from "../../../types"
 
 export const AssetItem = ({
     assetQueue,
@@ -27,7 +28,7 @@ export const AssetItem = ({
     togglePreventAssetsRefresh: (value?: boolean | undefined) => void
 }) => {
     const { user } = usePassportServerAuth()
-    const { state } = useGameServerWebsocket()
+    const { state, send } = useGameServerWebsocket()
     const { state: psState, subscribe: psSubscribe } = usePassportServerWebsocket()
     const [assetData, setAssetData] = useState<Asset>()
 
@@ -38,6 +39,7 @@ export const AssetItem = ({
     const rarityDeets = useMemo(() => getRarityDeets(assetData?.tier || ""), [assetData])
 
     // Status
+    const [repairStatus, setRepairStatus] = useState<RepairStatus>()
     const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
     const isInQueue = useMemo(() => assetQueue && assetQueue.position && assetQueue.position >= 1, [assetQueue])
 
@@ -54,155 +56,29 @@ export const AssetItem = ({
         )
     }, [psState, psSubscribe, assetQueue])
 
-    const statusArea = useMemo(() => {
-        if (!isGameServerUp) {
-            return (
-                <Typography
-                    variant="body2"
-                    sx={{
-                        width: isGridView ? "unset" : "10rem",
-                        alignSelf: isGridView ? "stretch" : "unset",
-                        textAlign: "center",
-                        px: ".8rem",
-                        pt: ".3rem",
-                        pb: ".2rem",
-                        color: "grey",
-                        lineHeight: 1,
-                        border: `${"grey"} 1px solid`,
-                        borderRadius: 0.3,
-                        opacity: 0.6,
-                    }}
-                >
-                    GAME OFFLINE
-                </Typography>
-            )
-        }
+    // Subscribe on asset repair status
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (state !== WebSocket.OPEN || !send) return
+                const resp = await send<RepairStatus>(GameServerKeys.SubRepairStatus, {
+                    mech_id: assetQueue.mech_id,
+                })
+                if (resp) setRepairStatus(resp)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [state, send, assetQueue])
 
-        if (assetQueue && assetQueue.in_battle) {
-            return (
-                <>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            width: isGridView ? "unset" : "8.5rem",
-                            alignSelf: isGridView ? "stretch" : "unset",
-                            textAlign: "center",
-                            px: ".8rem",
-                            pt: ".3rem",
-                            pb: ".2rem",
-                            color: colors.orange,
-                            lineHeight: 1,
-                            border: `${colors.orange} 1px solid`,
-                            borderRadius: 0.3,
-                        }}
-                    >
-                        IN BATTLE
-                    </Typography>
-                    {assetQueue.contract_reward && !isGridView && (
-                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
-                            <Typography variant="caption">REWARD:&nbsp;</Typography>
-                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
-                            <Typography variant="caption" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueue.contract_reward, 2)}
-                            </Typography>
-                        </Stack>
-                    )}
-                </>
-            )
-        }
-
-        if (isInQueue && assetQueue) {
-            return (
-                <>
-                    <Button
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            toggleLeaveModalOpen(true)
-                            togglePreventAssetsRefresh(true)
-                        }}
-                        variant="contained"
-                        size="small"
-                        sx={{
-                            position: "relative",
-                            display: "inline",
-                            padding: 0,
-                            width: isGridView ? "unset" : "8.5rem",
-                            alignSelf: isGridView ? "stretch" : "unset",
-                            px: ".8rem",
-                            pt: ".3rem",
-                            pb: ".2rem",
-                            cursor: "pointer",
-                            textAlign: "center",
-                            backgroundColor: "transparent",
-                            color: colors.yellow,
-                            lineHeight: 1,
-                            border: `${colors.yellow} 1px solid`,
-                            borderRadius: 0.3,
-                            whiteSpace: "nowrap",
-                            transition: "all 0s",
-                            "& > p": {
-                                "::after": {
-                                    content: '"IN QUEUE"',
-                                },
-                            },
-                            ":hover": {
-                                color: colors.red,
-                                backgroundColor: "transparent",
-                                boxShadow: "none",
-                                opacity: 1,
-                                border: `${colors.red} 1px solid`,
-                                "& > p": {
-                                    color: `${colors.red} !important`,
-                                    "::after": {
-                                        content: '"LEAVE QUEUE"',
-                                    },
-                                },
-                            },
-                        }}
-                    >
-                        <Typography variant="body2" lineHeight={1} sx={{ color: colors.yellow }}></Typography>
-                    </Button>
-                    {assetQueue.contract_reward && !isGridView && (
-                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
-                            <Typography variant="caption">REWARD:&nbsp;</Typography>
-                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
-                            <Typography variant="caption" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueue.contract_reward, 2)}
-                            </Typography>
-                        </Stack>
-                    )}
-                </>
-            )
-        }
-
-        return (
-            <Button
-                variant="contained"
-                size="small"
-                onClick={(e) => {
-                    e.stopPropagation()
-                    toggleDeployModalOpen(true)
-                    togglePreventAssetsRefresh(true)
-                }}
-                sx={{
-                    position: "relative",
-                    width: isGridView ? "unset" : "8.5rem",
-                    alignSelf: isGridView ? "stretch" : "unset",
-                    px: ".8rem",
-                    pt: ".3rem",
-                    pb: ".2rem",
-                    boxShadow: 0,
-                    backgroundColor: colors.green,
-                    borderRadius: 0.3,
-                    ":hover": { backgroundColor: `${colors.green}90` },
-                }}
-            >
-                <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                    DEPLOY
-                </Typography>
-            </Button>
-        )
-    }, [isGameServerUp, assetQueue, isInQueue, isGridView, toggleLeaveModalOpen, toggleDeployModalOpen, togglePreventAssetsRefresh])
+    // const instantRepair = useCallback(async () => {
+    //     try {
+    //         if (state !== WebSocket.OPEN || !send || !assetQueue) return
+    //         await send<boolean>(GameServerKeys.SubmitRepair, payload, { mech_id: assetQueue.mech_id })
+    //     } catch (e) {
+    //         console.error(e)
+    //     }
+    // }, [assetQueue])
 
     const mechItem = useMemo(() => {
         if (!assetData) return <></>
@@ -283,7 +159,16 @@ export const AssetItem = ({
                             </Typography>
 
                             <Stack spacing=".3rem" alignItems="center" sx={{ mt: "auto", pt: ".7rem" }}>
-                                {statusArea}
+                                <StatusArea
+                                    isGridView={isGridView}
+                                    isGameServerUp={isGameServerUp}
+                                    isInQueue={!!isInQueue}
+                                    assetQueue={assetQueue}
+                                    repairStatus={repairStatus}
+                                    openLeaveModal={() => toggleLeaveModalOpen(true)}
+                                    openDeployModal={() => toggleDeployModalOpen(true)}
+                                    togglePreventAssetsRefresh={togglePreventAssetsRefresh}
+                                />
                             </Stack>
                         </Stack>
                     </Box>
@@ -366,7 +251,16 @@ export const AssetItem = ({
                         </Typography>
 
                         <Stack alignItems="center" direction="row" spacing=".6rem" sx={{ mt: ".1rem" }}>
-                            {statusArea}
+                            <StatusArea
+                                isGridView={isGridView}
+                                isGameServerUp={isGameServerUp}
+                                isInQueue={!!isInQueue}
+                                assetQueue={assetQueue}
+                                repairStatus={repairStatus}
+                                openLeaveModal={() => toggleLeaveModalOpen(true)}
+                                openDeployModal={() => toggleDeployModalOpen(true)}
+                                togglePreventAssetsRefresh={togglePreventAssetsRefresh}
+                            />
                         </Stack>
                     </Stack>
                 </Stack>
@@ -380,9 +274,11 @@ export const AssetItem = ({
         assetQueue,
         rarityDeets.color,
         rarityDeets.label,
-        statusArea,
+        repairStatus,
         toggleMechDrawerOpen,
         togglePreventAssetsRefresh,
+        toggleLeaveModalOpen,
+        toggleDeployModalOpen,
     ])
 
     if (!assetData || !user) return null
@@ -423,6 +319,9 @@ export const AssetItem = ({
                     open={mechDrawerOpen}
                     asset={assetData}
                     assetQueue={assetQueue}
+                    repairStatus={repairStatus}
+                    isGameServerUp={isGameServerUp}
+                    isInQueue={!!isInQueue}
                     onClose={() => {
                         toggleMechDrawerOpen(false)
                         togglePreventAssetsRefresh(false)
@@ -435,6 +334,7 @@ export const AssetItem = ({
                         toggleLeaveModalOpen(true)
                         togglePreventAssetsRefresh(true)
                     }}
+                    togglePreventAssetsRefresh={togglePreventAssetsRefresh}
                 />
             )}
         </>

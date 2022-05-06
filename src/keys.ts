@@ -50,6 +50,8 @@ export enum GameServerKeys {
     GetAssetsQueue = "ASSET:MANY",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
+    SubRepairStatus = "ASSET:REPAIR:STATUS",
+    SubmitRepair = "ASSET:REPAIR:PAY:FEE",
 
     // Player Abilities
     SaleAbilityDetailed = "SALE:ABILITY:DETAILED",

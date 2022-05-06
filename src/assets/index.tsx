@@ -39,6 +39,7 @@ import MusicMute from "!react-svg-loader!./svg/MusicMute.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
 import General from "!react-svg-loader!./svg/Ranks/General.svg"
 import Corporal from "!react-svg-loader!./svg/Ranks/Corporal.svg"
+import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Private from "!react-svg-loader!./svg/Ranks/Private.svg"
 import NewRecruit from "!react-svg-loader!./svg/Ranks/NewRecruit.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
@@ -816,5 +817,11 @@ export const SvgMicrochip: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgSupport: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Support />
+    </SvgWrapper>
+)
+
+export const SvgFilter: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Filter />
     </SvgWrapper>
 )
