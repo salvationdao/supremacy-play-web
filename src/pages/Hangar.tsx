@@ -1,4 +1,4 @@
-import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
 import { useState, SyntheticEvent } from "react"
 import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
 import { siteZIndex } from "../theme/theme"
@@ -23,7 +23,7 @@ export const HangarPage = () => {
                         color: (theme) => theme.factionTheme.primary,
                         minHeight: 0,
                         ".MuiTab-root": { minHeight: 0, fontSize: "1.1rem" },
-                        ".Mui-selected": { color: (theme) => theme.factionTheme.primary },
+                        ".Mui-selected": { color: (theme) => `${theme.factionTheme.primary} !important` },
                         ".MuiTabs-indicator": { backgroundColor: (theme) => theme.factionTheme.primary },
                     }}
                 >
