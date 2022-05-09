@@ -57,6 +57,11 @@ export interface GameAbility {
     ability_offering_id: string
 }
 
+export interface GameCoords {
+    x: number
+    y: number
+}
+
 export type LocationSelectType = "LINE_SELECT" | "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
 
 export interface PlayerAbility {

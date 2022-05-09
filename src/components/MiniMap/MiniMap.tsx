@@ -26,7 +26,7 @@ export const MiniMap = () => {
             setPlayerAbility(undefined)
             setWinner(undefined)
         }
-    }, [bribeStage, toggleShow])
+    }, [bribeStage, toggleShow, setPlayerAbility, setWinner])
     // End ****************************************
 
     // A little timeout so fade transition can play
@@ -181,7 +181,7 @@ const MiniMapInner = ({
             toggleEnlarged(true)
         }
         setSelection(undefined)
-    }, [winner, bribeStage, playerAbility, toggleEnlarged])
+    }, [winner, bribeStage, playerAbility, toggleEnlarged, toggleIsTargeting2])
 
     useEffect(() => {
         if (winner) {

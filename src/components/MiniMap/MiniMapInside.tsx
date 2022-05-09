@@ -4,11 +4,11 @@ import moment from "moment"
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FancyButton, MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
-import { Severity, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { Severity, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { Dimension, GameAbility, Map, PlayerAbility, WarMachineState } from "../../types"
+import { Dimension, GameAbility, GameCoords, Map, PlayerAbility, WarMachineState } from "../../types"
 
 export interface MapSelection {
     x: number
@@ -30,16 +30,28 @@ interface Props {
 }
 
 export const MiniMapInside = (props: Props) => {
+    const { userID } = useGameServerAuth()
     const { state, send } = useGameServerWebsocket()
     const { map, warMachines, setHighlightedMechHash } = useGame()
 
-    return <MiniMapInsideInner {...props} state={state} send={send} map={map} warMachines={warMachines} setHighlightedMechHash={setHighlightedMechHash} />
+    return (
+        <MiniMapInsideInner
+            {...props}
+            state={state}
+            send={send}
+            map={map}
+            warMachines={warMachines}
+            setHighlightedMechHash={setHighlightedMechHash}
+            userID={userID}
+        />
+    )
 }
 
 interface PropsInner extends Props, Partial<WebSocketProperties> {
     map?: Map
     warMachines?: WarMachineState[]
     setHighlightedMechHash: Dispatch<SetStateAction<string | undefined>>
+    userID?: string
 }
 
 const MiniMapInsideInner = ({
@@ -58,6 +70,7 @@ const MiniMapInsideInner = ({
     newSnackbarMessage,
     setHighlightedMechHash,
     onCancel,
+    userID,
 }: PropsInner) => {
     const mapElement = useRef<HTMLDivElement>()
     // Setup use-gesture props
@@ -71,7 +84,9 @@ const MiniMapInsideInner = ({
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
     const onConfirm = useCallback(async () => {
-        if (state !== WebSocket.OPEN || !selection || !send) return
+        if (state !== WebSocket.OPEN || !selection || !send || !userID) return
+        console.log("confirmed", playerAbility?.label)
+        // if (userID) return
         try {
             if (gameAbility) {
                 console.info("activated game ability", gameAbility.label)
@@ -81,18 +96,54 @@ const MiniMapInsideInner = ({
                 })
             } else if (playerAbility) {
                 console.info("activated player ability", playerAbility.label)
-                const payload = {
-                    ability_id: playerAbility.id,
-                    location_select_type: playerAbility.location_select_type,
-                    x: !selection.mechHash ? Math.floor(selection.x) : undefined,
-                    y: !selection.mechHash ? Math.floor(selection.y) : undefined,
-                    mech_hash: selection.mechHash,
+                let payload: {
+                    ability_id: string
+                    location_select_type: string
+                    start_coords?: GameCoords
+                    end_coords?: GameCoords
+                    mech_hash?: string
+                } | null = null
+                switch (playerAbility.location_select_type) {
+                    case "LINE_SELECT":
+                        payload = {
+                            ability_id: playerAbility.id,
+                            location_select_type: playerAbility.location_select_type,
+                            start_coords: {
+                                x: Math.floor(selection.x),
+                                y: Math.floor(selection.y),
+                            },
+                            end_coords: {
+                                // todo
+                                x: -1,
+                                y: -1,
+                            },
+                        }
+                        break
+                    case "MECH_SELECT":
+                        payload = {
+                            ability_id: playerAbility.id,
+                            location_select_type: playerAbility.location_select_type,
+                            mech_hash: selection.mechHash,
+                        }
+                        break
+                    case "LOCATION_SELECT":
+                        payload = {
+                            ability_id: playerAbility.id,
+                            location_select_type: playerAbility.location_select_type,
+                            start_coords: {
+                                x: Math.floor(selection.x),
+                                y: Math.floor(selection.y),
+                            },
+                        }
+                        break
+                    case "GLOBAL":
+                        break
                 }
-                console.log(payload)
-                await send<boolean, { ability_id: string; location_select_type: string; x?: number; y?: number; mech_hash?: string }>(
-                    GameServerKeys.PlayerAbilityUse,
-                    payload,
-                )
+
+                if (!payload) {
+                    throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                }
+                await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
             newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (e) {
@@ -105,7 +156,7 @@ const MiniMapInsideInner = ({
                 setHighlightedMechHash(undefined)
             }
         }
-    }, [state, send, selection, setSubmitted, setSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash])
+    }, [state, send, selection, setSubmitted, setSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash, userID])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
@@ -433,6 +484,13 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
     useEffect(() => {
         if (selection && timeRemain == -1) onConfirm()
     }, [onConfirm, selection, timeRemain])
+
+    useEffect(() => {
+        console.log("selection changed", selection)
+    }, [selection])
+    useEffect(() => {
+        console.log("timeRemain changed", timeRemain)
+    }, [timeRemain])
 
     if (timeRemain < 0) return null
 
