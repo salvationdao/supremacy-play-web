@@ -1,5 +1,6 @@
 import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
 import { useState, SyntheticEvent } from "react"
+import { HangarBg } from "../assets"
 import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
 import { siteZIndex } from "../theme/theme"
 
@@ -11,7 +12,16 @@ export const HangarPage = () => {
     }
 
     return (
-        <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
+        <Stack
+            sx={{
+                height: "100%",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+            }}
+        >
             <Tabs
                 value={currentValue}
                 onChange={handleChange}

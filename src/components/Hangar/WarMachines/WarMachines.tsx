@@ -1,7 +1,6 @@
 import { Box, useTheme, Theme, Stack, Typography, IconButton, Pagination, Button, CircularProgress } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { HangarBg } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
 import { useGameServerAuth, useGameServerWebsocket, useSnackbar, useSupremacy } from "../../../containers"
 import { useDebounce, usePagination, useToggle } from "../../../hooks"
@@ -172,15 +171,7 @@ export const WarMachines = () => {
 
     return (
         <>
-            <Stack
-                sx={{
-                    height: "100%",
-                    backgroundImage: `url(${HangarBg})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "contain",
-                }}
-            >
+            <Stack sx={{ height: "100%" }}>
                 <ClipThing
                     clipSize="10px"
                     border={{
@@ -199,7 +190,7 @@ export const WarMachines = () => {
                             justifyContent="space-between"
                             sx={{
                                 px: "1.5rem",
-                                pt: ".5rem",
+                                pt: ".6rem",
                                 pb: ".3rem",
                                 backgroundColor: "#00000070",
                                 borderBottom: (theme) => `${theme.factionTheme.primary}70 1px solid`,
