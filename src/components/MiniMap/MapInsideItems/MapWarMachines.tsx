@@ -121,8 +121,6 @@ const MapWarMachine = ({
             setHighlightedMechHash(hash)
             if (playerAbility) {
                 setSelection({
-                    x: -1,
-                    y: -1,
                     mechHash: hash,
                 })
             }

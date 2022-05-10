@@ -21,7 +21,7 @@ export const SelectionIcon = ({
     const sizeX = useMemo(() => gridWidth * 1.5, [gridWidth])
     const sizeY = useMemo(() => gridHeight * 1.5, [gridHeight])
 
-    if (!selection || !gameAbility || !targeting) return null
+    if (!selection?.startCoords || !gameAbility || !targeting) return null
     if ("location_select_type" in gameAbility && (gameAbility.location_select_type === "MECH_SELECT" || gameAbility.location_select_type === "GLOBAL"))
         return null
     const { colour, image_url } = gameAbility
@@ -40,7 +40,7 @@ export const SelectionIcon = ({
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
-                transform: `translate(${selection.x * gridWidth - sizeX / 2}px, ${selection.y * gridHeight - sizeY / 2}px)`,
+                transform: `translate(${selection.startCoords.x * gridWidth - sizeX / 2}px, ${selection.startCoords.y * gridHeight - sizeY / 2}px)`,
                 zIndex: 100,
             }}
         />

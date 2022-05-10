@@ -11,8 +11,11 @@ import { colors, fonts } from "../../theme/theme"
 import { Dimension, GameAbility, GameCoords, Map, PlayerAbility, WarMachineState } from "../../types"
 
 export interface MapSelection {
-    x: number
-    y: number
+    // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
+    startCoords?: GameCoords
+    // end coords (only used for LINE_SELECT abilities)
+    endCoords?: GameCoords
+    // mech hash (only used for MECH_SELECT abilities)
     mechHash?: string
 }
 
@@ -88,9 +91,12 @@ const MiniMapInsideInner = ({
         try {
             if (gameAbility) {
                 console.info("activated game ability", gameAbility.label)
+                if (!selection.startCoords) {
+                    throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                }
                 await send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
-                    x: Math.floor(selection.x),
-                    y: Math.floor(selection.y),
+                    x: Math.floor(selection.startCoords.x),
+                    y: Math.floor(selection.startCoords.y),
                 })
             } else if (playerAbility) {
                 console.info("activated player ability", playerAbility.label)
@@ -103,17 +109,19 @@ const MiniMapInsideInner = ({
                 } | null = null
                 switch (playerAbility.location_select_type) {
                     case "LINE_SELECT":
+                        if (!selection.startCoords || !selection.endCoords) {
+                            throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                        }
                         payload = {
                             ability_id: playerAbility.id,
                             location_select_type: playerAbility.location_select_type,
                             start_coords: {
-                                x: Math.floor(selection.x),
-                                y: Math.floor(selection.y),
+                                x: Math.floor(selection.startCoords.x),
+                                y: Math.floor(selection.startCoords.y),
                             },
                             end_coords: {
-                                // todo
-                                x: -1,
-                                y: -1,
+                                x: Math.floor(selection.endCoords.x),
+                                y: Math.floor(selection.endCoords.y),
                             },
                         }
                         break
@@ -125,12 +133,15 @@ const MiniMapInsideInner = ({
                         }
                         break
                     case "LOCATION_SELECT":
+                        if (!selection.startCoords) {
+                            throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                        }
                         payload = {
                             ability_id: playerAbility.id,
                             location_select_type: playerAbility.location_select_type,
                             start_coords: {
-                                x: Math.floor(selection.x),
-                                y: Math.floor(selection.y),
+                                x: Math.floor(selection.startCoords.x),
+                                y: Math.floor(selection.startCoords.y),
                             },
                         }
                         break
@@ -164,8 +175,10 @@ const MiniMapInsideInner = ({
                 const x = e.clientX - rect.left
                 const y = e.clientY - rect.top
                 setSelection({
-                    x: x / (gridWidth * mapScale),
-                    y: y / (gridHeight * mapScale),
+                    startCoords: {
+                        x: x / (gridWidth * mapScale),
+                        y: y / (gridHeight * mapScale),
+                    },
                 })
             }
         },
@@ -369,7 +382,7 @@ const MiniMapInsideInner = ({
                     }}
                 >
                     <SelectionIcon
-                        key={selection && `column-${selection.y}-row-${selection.x}`}
+                        key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`}
                         gameAbility={gameAbility || playerAbility}
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
