@@ -5,26 +5,26 @@ import { GameAbility, PlayerAbility } from "../../../types"
 
 export const SelectionIcon = ({
     selection,
-    gameAbility,
+    setSelection,
+    ability,
     gridWidth,
     gridHeight,
-    setSelection,
     targeting,
 }: {
     selection: MapSelection | undefined
+    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
     gridWidth: number
     gridHeight: number
-    gameAbility?: GameAbility | PlayerAbility
-    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
+    ability?: GameAbility | PlayerAbility
     targeting?: boolean
 }) => {
     const sizeX = useMemo(() => gridWidth * 1.5, [gridWidth])
     const sizeY = useMemo(() => gridHeight * 1.5, [gridHeight])
 
-    if (!selection?.startCoords || !gameAbility || !targeting) return null
-    if ("location_select_type" in gameAbility && (gameAbility.location_select_type === "MECH_SELECT" || gameAbility.location_select_type === "GLOBAL"))
-        return null
-    const { colour, image_url } = gameAbility
+    const coords = selection?.startCoords
+    if (!coords || !ability || !targeting) return null
+    if ("location_select_type" in ability && (ability.location_select_type === "MECH_SELECT" || ability.location_select_type === "GLOBAL")) return null
+    const { colour, image_url } = ability
 
     return (
         <Box
@@ -40,7 +40,7 @@ export const SelectionIcon = ({
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
-                transform: `translate(${selection.startCoords.x * gridWidth - sizeX / 2}px, ${selection.startCoords.y * gridHeight - sizeY / 2}px)`,
+                transform: `translate(${coords.x * gridWidth - sizeX / 2}px, ${coords.y * gridHeight - sizeY / 2}px)`,
                 zIndex: 100,
             }}
         />

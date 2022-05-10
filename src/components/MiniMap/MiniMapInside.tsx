@@ -9,6 +9,7 @@ import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { Dimension, GameAbility, GameCoords, Map, PlayerAbility, WarMachineState } from "../../types"
+import { MapCanvas } from "./MapInsideItems/MapCanvas"
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
@@ -361,7 +362,15 @@ const MiniMapInsideInner = ({
 
     if (!map) return null
 
-    const locationTargeting = targeting && !(playerAbility?.location_select_type === "MECH_SELECT" || playerAbility?.location_select_type === "GLOBAL")
+    // i.e. is battle ability or player ability of type LOCATION_SELECT
+    const isLocationSelection =
+        targeting &&
+        !(
+            playerAbility?.location_select_type === "LINE_SELECT" ||
+            playerAbility?.location_select_type === "MECH_SELECT" ||
+            playerAbility?.location_select_type === "GLOBAL"
+        )
+    const isLineSelection = targeting && playerAbility?.location_select_type === "LINE_SELECT"
 
     return (
         <>
@@ -383,7 +392,7 @@ const MiniMapInsideInner = ({
                 >
                     <SelectionIcon
                         key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`}
-                        gameAbility={gameAbility || playerAbility}
+                        ability={gameAbility || playerAbility}
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
                         selection={selection}
@@ -405,16 +414,18 @@ const MiniMapInsideInner = ({
                     {/* Map Image */}
                     <Box
                         ref={mapElement}
-                        onClick={locationTargeting ? handleSelection : undefined}
+                        onClick={isLocationSelection ? handleSelection : undefined}
                         sx={{
                             position: "absolute",
                             width: `${map.width}px`,
                             height: `${map.height}px`,
                             backgroundImage: `url(${map.image_url})`,
-                            cursor: locationTargeting ? `url(${Crosshair}) 10 10, auto` : "move",
+                            cursor: isLocationSelection ? `url(${Crosshair}) 10 10, auto` : "move",
                             borderSpacing: 0,
                         }}
-                    />
+                    >
+                        {isLineSelection && <MapCanvas />}
+                    </Box>
                 </Box>
             </Stack>
             {onCancel && targeting && !gameAbility && playerAbility && (

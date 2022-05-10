@@ -8,18 +8,18 @@ interface TargetHintProps {
 
 export const TargetHint = ({ playerAbility }: TargetHintProps) => {
     let abilityTypeIcon = <SvgQuestionMark />
-    let abilityType = "location"
+    let abilityActionDescriptor = "Select a location"
     switch (playerAbility?.location_select_type) {
         case "LOCATION_SELECT":
-            abilityType = "location"
+            abilityActionDescriptor = "Select a location"
             abilityTypeIcon = <SvgTarget size="1.6rem" />
             break
         case "MECH_SELECT":
-            abilityType = "mech"
+            abilityActionDescriptor = "Select a mech"
             abilityTypeIcon = <SvgMicrochip size="1.6rem" />
             break
         case "LINE_SELECT":
-            abilityType = "line"
+            abilityActionDescriptor = "Draw a line by selecting two locations"
             abilityTypeIcon = <SvgLine size="1.6rem" />
             break
     }
@@ -43,14 +43,13 @@ export const TargetHint = ({ playerAbility }: TargetHintProps) => {
             }}
         >
             <Typography variant="h6">
-                Select a&nbsp;
                 <Box
                     component="span"
                     sx={{
                         fontWeight: "fontWeightBold",
                     }}
                 >
-                    {abilityType}
+                    {abilityActionDescriptor}
                 </Box>
                 &nbsp;to deploy&nbsp;
                 <Box
