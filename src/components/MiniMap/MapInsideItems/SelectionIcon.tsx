@@ -23,7 +23,11 @@ export const SelectionIcon = ({
 
     const coords = selection?.startCoords
     if (!coords || !ability || !targeting) return null
-    if ("location_select_type" in ability && (ability.location_select_type === "MECH_SELECT" || ability.location_select_type === "GLOBAL")) return null
+    if (
+        "location_select_type" in ability &&
+        (ability.location_select_type === "LINE_SELECT" || ability.location_select_type === "MECH_SELECT" || ability.location_select_type === "GLOBAL")
+    )
+        return null
     const { colour, image_url } = ability
 
     return (

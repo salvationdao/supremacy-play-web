@@ -9,7 +9,7 @@ import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { Dimension, GameAbility, GameCoords, Map, PlayerAbility, WarMachineState } from "../../types"
-import { MapCanvas } from "./MapInsideItems/MapCanvas"
+import { LineSelect } from "./MapInsideItems/LineSelect"
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
@@ -420,11 +420,20 @@ const MiniMapInsideInner = ({
                             width: `${map.width}px`,
                             height: `${map.height}px`,
                             backgroundImage: `url(${map.image_url})`,
-                            cursor: isLocationSelection ? `url(${Crosshair}) 10 10, auto` : "move",
+                            cursor: isLocationSelection || isLineSelection ? `url(${Crosshair}) 10 10, auto` : "move",
                             borderSpacing: 0,
                         }}
                     >
-                        {isLineSelection && <MapCanvas />}
+                        {isLineSelection && (
+                            <LineSelect
+                                selection={selection}
+                                setSelection={setSelection}
+                                mapElement={mapElement.current}
+                                gridWidth={gridWidth}
+                                gridHeight={gridHeight}
+                                mapScale={mapScale}
+                            />
+                        )}
                     </Box>
                 </Box>
             </Stack>
@@ -464,21 +473,39 @@ const MiniMapInsideInner = ({
                     </Typography>
                 </FancyButton>
             )}
-            <CountdownText selection={selection} onConfirm={() => onConfirm()} />
+            <CountdownText playerAbility={playerAbility} selection={selection} onConfirm={() => onConfirm()} />
         </>
     )
 }
 
 // Count down timer for the selection
-const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onConfirm: () => void }) => {
+const CountdownText = ({ playerAbility, selection, onConfirm }: { playerAbility?: PlayerAbility; selection?: MapSelection; onConfirm: () => void }) => {
     const [endMoment, setEndMoment] = useState<moment.Moment>()
     const [timeRemain, setTimeRemain] = useState<number>(-2)
     const [delay, setDelay] = useState<number | null>(null)
 
+    const hasSelected = useMemo(() => {
+        let hasSelected = !!selection
+        if (playerAbility) {
+            switch (playerAbility.location_select_type) {
+                case "LINE_SELECT":
+                    hasSelected = !!(selection?.startCoords && selection?.endCoords)
+                    break
+                case "LOCATION_SELECT":
+                    hasSelected = !!selection?.startCoords
+                    break
+                case "MECH_SELECT":
+                    hasSelected = !!selection?.mechHash
+                    break
+            }
+        }
+        return hasSelected
+    }, [selection, playerAbility])
+
     // Count down starts when user has selected a location, then fires if they don't change their mind
     useEffect(() => {
         setEndMoment((prev) => {
-            if (!selection) {
+            if (!hasSelected) {
                 setTimeRemain(-2)
                 return undefined
             }
@@ -487,7 +514,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
 
             return prev
         })
-    }, [selection])
+    }, [hasSelected])
 
     useEffect(() => {
         setDelay(null)
@@ -504,8 +531,8 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
     }, delay)
 
     useEffect(() => {
-        if (selection && timeRemain == -1) onConfirm()
-    }, [selection, timeRemain])
+        if (hasSelected && timeRemain == -1) onConfirm()
+    }, [hasSelected, timeRemain])
 
     if (timeRemain < 0) return null
 
