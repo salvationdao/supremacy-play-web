@@ -481,14 +481,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
 
     useEffect(() => {
         if (selection && timeRemain == -1) onConfirm()
-    }, [onConfirm, selection, timeRemain])
-
-    useEffect(() => {
-        console.log("selection changed", selection)
-    }, [selection])
-    useEffect(() => {
-        console.log("timeRemain changed", timeRemain)
-    }, [timeRemain])
+    }, [selection, timeRemain])
 
     if (timeRemain < 0) return null
 
