@@ -21,25 +21,50 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
         const c = canvas?.getContext("2d")
         if (!c) return
 
-        let frameCount = 0
-        let animationFrameID: number | null = null
-        const render = (timestamp?: number) => {
-            frameCount++
-            animationFrameID = requestAnimationFrame(render)
+        c.clearRect(0, 0, c.canvas.width, c.canvas.height)
+        if (!selection?.startCoords || !selection?.endCoords) return
 
-            c.clearRect(0, 0, c.canvas.width, c.canvas.height)
-            c.fillStyle = "#000000"
-            c.beginPath()
-            c.arc(c.canvas.width / 2, c.canvas.height / 2, 20 * Math.sin(frameCount * 0.05) ** 2, 0, 2 * Math.PI)
-            c.fill()
+        const normalisedStartCoords = {
+            x: (selection.startCoords.x * c.canvas.width) / gridWidth,
+            y: (selection.startCoords.y * c.canvas.height) / gridHeight,
         }
-        render()
+        const normalisedEndCoords = {
+            x: (selection.endCoords.x * c.canvas.width) / gridWidth,
+            y: (selection.endCoords.y * c.canvas.height) / gridHeight,
+        }
+        const xLen = normalisedStartCoords.x - normalisedEndCoords.x
+        const yLen = normalisedStartCoords.y - normalisedEndCoords.y
 
-        return () => {
-            if (!animationFrameID) return
-            window.cancelAnimationFrame(animationFrameID)
-        }
-    }, [])
+        c.moveTo(normalisedStartCoords.x, normalisedStartCoords.y)
+        c.lineTo(normalisedEndCoords.x, normalisedEndCoords.y)
+        c.stroke()
+        console.log("line drawn", normalisedStartCoords, normalisedEndCoords)
+    }, [selection])
+
+    // useEffect(() => {
+    //     const canvas = canvasRef.current
+    //     const c = canvas?.getContext("2d")
+    //     if (!c) return
+
+    //     let frameCount = 0
+    //     let animationFrameID: number | null = null
+    //     const render = (timestamp?: number) => {
+    //         frameCount++
+    //         animationFrameID = requestAnimationFrame(render)
+
+    //         c.clearRect(0, 0, c.canvas.width, c.canvas.height)
+    //         c.fillStyle = "#000000"
+    //         c.beginPath()
+    //         c.arc(c.canvas.width / 2, c.canvas.height / 2, 20 * Math.sin(frameCount * 0.05) ** 2, 0, 2 * Math.PI)
+    //         c.fill()
+    //     }
+    //     render()
+
+    //     return () => {
+    //         if (!animationFrameID) return
+    //         window.cancelAnimationFrame(animationFrameID)
+    //     }
+    // }, [])
 
     const sizeX = gridWidth * 0.8
     const sizeY = gridHeight * 0.8
