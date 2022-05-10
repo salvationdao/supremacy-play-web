@@ -15,6 +15,7 @@ interface LineSelectProps {
 export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gridHeight, mapScale }: LineSelectProps) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
+    // https://stackoverflow.com/questions/24376951/find-new-coordinates-of-point-on-line-in-javascript
     useEffect(() => {
         const canvas = canvasRef.current
         const c = canvas?.getContext("2d")
@@ -40,8 +41,8 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
         }
     }, [])
 
-    const sizeX = gridWidth * 1.2
-    const sizeY = gridHeight * 1.2
+    const sizeX = gridWidth * 0.8
+    const sizeY = gridHeight * 0.8
 
     return (
         <>
