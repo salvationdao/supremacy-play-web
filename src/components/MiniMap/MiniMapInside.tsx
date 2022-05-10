@@ -85,8 +85,6 @@ const MiniMapInsideInner = ({
 
     const onConfirm = useCallback(async () => {
         if (state !== WebSocket.OPEN || !selection || !send || !userID) return
-        console.log("confirmed", playerAbility?.label)
-        // if (userID) return
         try {
             if (gameAbility) {
                 console.info("activated game ability", gameAbility.label)
