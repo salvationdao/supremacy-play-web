@@ -1,6 +1,7 @@
 import { Box } from "@mui/material"
-import React, { Dispatch, SetStateAction, useEffect, useRef } from "react"
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react"
 import { colors } from "../../../theme/theme"
+import { Map } from "../../../types"
 import { MapSelection } from "../MiniMapInside"
 
 interface LineSelectProps {
@@ -9,28 +10,46 @@ interface LineSelectProps {
     mapElement?: HTMLDivElement
     gridWidth: number
     gridHeight: number
+    map?: Map
     mapScale: number
 }
 
-export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gridHeight, mapScale }: LineSelectProps) => {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null)
+const minCanvasHeight = 700
+
+export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gridHeight, map, mapScale }: LineSelectProps) => {
+    const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+    const canvasRef: React.RefCallback<HTMLCanvasElement> = useCallback((node) => {
+        if (node !== null) {
+            setCanvas(node)
+        }
+    }, [])
+
+    useEffect(() => {
+        const c = canvas?.getContext("2d")
+        if (!c) return
+        if (!mapElement) return
+
+        const { width, height } = mapElement.getBoundingClientRect()
+        c.canvas.width = (width / height) * minCanvasHeight
+        c.canvas.height = minCanvasHeight
+    }, [canvas, mapElement])
 
     // https://stackoverflow.com/questions/24376951/find-new-coordinates-of-point-on-line-in-javascript
     useEffect(() => {
-        const canvas = canvasRef.current
         const c = canvas?.getContext("2d")
         if (!c) return
+        if (!map) return
 
         c.clearRect(0, 0, c.canvas.width, c.canvas.height)
         if (!selection?.startCoords || !selection?.endCoords) return
 
         const normalisedStartCoords = {
-            x: (selection.startCoords.x * c.canvas.width) / gridWidth,
-            y: (selection.startCoords.y * c.canvas.height) / gridHeight,
+            x: (selection.startCoords.x * c.canvas.width) / map.cells_x,
+            y: (selection.startCoords.y * c.canvas.height) / map.cells_y,
         }
         const normalisedEndCoords = {
-            x: (selection.endCoords.x * c.canvas.width) / gridWidth,
-            y: (selection.endCoords.y * c.canvas.height) / gridHeight,
+            x: (selection.endCoords.x * c.canvas.width) / map.cells_x,
+            y: (selection.endCoords.y * c.canvas.height) / map.cells_y,
         }
         const xLen = normalisedStartCoords.x - normalisedEndCoords.x
         const yLen = normalisedStartCoords.y - normalisedEndCoords.y
@@ -39,35 +58,9 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
         c.lineTo(normalisedEndCoords.x, normalisedEndCoords.y)
         c.stroke()
         console.log("line drawn", normalisedStartCoords, normalisedEndCoords)
-    }, [selection])
+    }, [canvas, selection, map])
 
-    // useEffect(() => {
-    //     const canvas = canvasRef.current
-    //     const c = canvas?.getContext("2d")
-    //     if (!c) return
-
-    //     let frameCount = 0
-    //     let animationFrameID: number | null = null
-    //     const render = (timestamp?: number) => {
-    //         frameCount++
-    //         animationFrameID = requestAnimationFrame(render)
-
-    //         c.clearRect(0, 0, c.canvas.width, c.canvas.height)
-    //         c.fillStyle = "#000000"
-    //         c.beginPath()
-    //         c.arc(c.canvas.width / 2, c.canvas.height / 2, 20 * Math.sin(frameCount * 0.05) ** 2, 0, 2 * Math.PI)
-    //         c.fill()
-    //     }
-    //     render()
-
-    //     return () => {
-    //         if (!animationFrameID) return
-    //         window.cancelAnimationFrame(animationFrameID)
-    //     }
-    // }, [])
-
-    const sizeX = gridWidth * 0.8
-    const sizeY = gridHeight * 0.8
+    const indicatorDiameter = useMemo(() => (map ? map.cells_x * 1.5 : 50), [map])
 
     return (
         <>
@@ -81,13 +74,15 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                     }
                     sx={{
                         position: "absolute",
-                        height: `${sizeX}px`,
-                        width: `${sizeY}px`,
+                        height: `${indicatorDiameter}px`,
+                        width: `${indicatorDiameter}px`,
                         cursor: "pointer",
                         border: `2px solid ${colors.black2}`,
                         borderRadius: "50%",
                         backgroundColor: "white",
-                        transform: `translate(${selection.startCoords.x * gridWidth - sizeX / 2}px, ${selection.startCoords.y * gridHeight - sizeY / 2}px)`,
+                        transform: `translate(${selection.startCoords.x * gridWidth - indicatorDiameter / 2}px, ${
+                            selection.startCoords.y * gridHeight - indicatorDiameter / 2
+                        }px)`,
                         zIndex: 100,
                     }}
                 >
@@ -104,14 +99,16 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                     }
                     sx={{
                         position: "absolute",
-                        height: `${sizeX}px`,
-                        width: `${sizeY}px`,
+                        height: `${indicatorDiameter}px`,
+                        width: `${indicatorDiameter}px`,
                         cursor: "pointer",
                         border: `2px solid ${colors.black2}`,
                         borderRadius: "50%",
                         backgroundColor: "white",
                         color: colors.black2,
-                        transform: `translate(${selection.endCoords.x * gridWidth - sizeX / 2}px, ${selection.endCoords.y * gridHeight - sizeY / 2}px)`,
+                        transform: `translate(${selection.endCoords.x * gridWidth - indicatorDiameter / 2}px, ${
+                            selection.endCoords.y * gridHeight - indicatorDiameter / 2
+                        }px)`,
                         zIndex: 100,
                     }}
                 >

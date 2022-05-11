@@ -431,6 +431,7 @@ const MiniMapInsideInner = ({
                                 mapElement={mapElement.current}
                                 gridWidth={gridWidth}
                                 gridHeight={gridHeight}
+                                map={map}
                                 mapScale={mapScale}
                             />
                         )}
