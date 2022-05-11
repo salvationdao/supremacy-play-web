@@ -52,8 +52,6 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
             x: (selection.endCoords.x * c.canvas.width) / map.cells_x,
             y: (selection.endCoords.y * c.canvas.height) / map.cells_y,
         }
-        const xLen = normalisedStartCoords.x - normalisedEndCoords.x
-        const yLen = normalisedStartCoords.y - normalisedEndCoords.y
 
         c.beginPath()
         c.moveTo(normalisedStartCoords.x, normalisedStartCoords.y)
