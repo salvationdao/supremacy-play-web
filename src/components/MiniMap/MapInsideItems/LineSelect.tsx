@@ -54,10 +54,10 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
         const xLen = normalisedStartCoords.x - normalisedEndCoords.x
         const yLen = normalisedStartCoords.y - normalisedEndCoords.y
 
+        c.beginPath()
         c.moveTo(normalisedStartCoords.x, normalisedStartCoords.y)
         c.lineTo(normalisedEndCoords.x, normalisedEndCoords.y)
         c.stroke()
-        console.log("line drawn", normalisedStartCoords, normalisedEndCoords)
     }, [canvas, selection, map])
 
     const indicatorDiameter = useMemo(() => (map ? map.cells_x * 1.5 : 50), [map])
