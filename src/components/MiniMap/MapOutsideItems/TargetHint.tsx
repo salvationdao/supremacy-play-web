@@ -15,7 +15,7 @@ export const TargetHint = ({ playerAbility }: TargetHintProps) => {
             abilityTypeIcon = <SvgTarget size="1.6rem" />
             break
         case "MECH_SELECT":
-            abilityActionDescriptor = "Select a mech"
+            abilityActionDescriptor = "Select an allied mech"
             abilityTypeIcon = <SvgMicrochip size="1.6rem" />
             break
         case "LINE_SELECT":

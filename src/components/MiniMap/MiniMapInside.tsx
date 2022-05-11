@@ -153,6 +153,7 @@ const MiniMapInsideInner = ({
                 if (!payload) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
+                console.log(payload)
                 await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
             newSnackbarMessage("Successfully submitted target location.", "success")

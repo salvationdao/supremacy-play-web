@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab"
-import { Box, ButtonBase, ButtonBaseProps, Fade, Modal, Stack, Typography } from "@mui/material"
+import { Box, ButtonBase, ButtonBaseProps, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
+import { SvgClose, SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
 import { SocketState, useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
@@ -213,7 +213,13 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                 isFancy: true,
                             }}
                             backgroundColor={colors.darkNavy}
+                            sx={{
+                                position: "relative",
+                            }}
                         >
+                            <IconButton size="small" onClick={() => toggleShowPurchaseModal(false)} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
+                                <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                            </IconButton>
                             <Box sx={{ px: "2rem", py: "1.5rem" }}>
                                 <Typography
                                     variant="h5"
