@@ -117,7 +117,7 @@ const MapWarMachine = ({
                 setSelection(undefined)
             }
         } else {
-            if (playerAbility && faction.id === factionID) return
+            if (playerAbility && faction.id !== factionID) return
             setHighlightedMechHash(hash)
             if (playerAbility) {
                 setSelection({
