@@ -23,6 +23,7 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
             setCanvas(node)
         }
     }, [])
+    const indicatorDiameter = useMemo(() => (map ? map.cells_x * 1.5 : 50), [map])
 
     useEffect(() => {
         const c = canvas?.getContext("2d")
@@ -57,10 +58,10 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
         c.beginPath()
         c.moveTo(normalisedStartCoords.x, normalisedStartCoords.y)
         c.lineTo(normalisedEndCoords.x, normalisedEndCoords.y)
+        c.lineWidth = indicatorDiameter * 0.1
+        c.strokeStyle = "#d40000"
         c.stroke()
-    }, [canvas, selection, map])
-
-    const indicatorDiameter = useMemo(() => (map ? map.cells_x * 1.5 : 50), [map])
+    }, [canvas, selection, map, indicatorDiameter])
 
     return (
         <>
