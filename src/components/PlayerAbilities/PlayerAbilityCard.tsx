@@ -6,7 +6,7 @@ import { SocketState, useGame, useGameServerAuth, useGameServerWebsocket } from 
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { PlayerAbility } from "../../types"
+import { LocationSelectType, PlayerAbility } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { TooltipHelper } from "../Common/TooltipHelper"
 
@@ -30,19 +30,19 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
     let abilityTypeIcon = <SvgQuestionMark />
     let abilityTypeDescription = "Miscellaneous ability type."
     switch (playerAbility?.location_select_type) {
-        case "GLOBAL":
+        case LocationSelectType.GLOBAL:
             abilityTypeDescription = "This ability will affect all units on the map."
             abilityTypeIcon = <SvgGlobal />
             break
-        case "LOCATION_SELECT":
+        case LocationSelectType.LOCATION_SELECT:
             abilityTypeDescription = "This ability will target a specific location on the map."
             abilityTypeIcon = <SvgTarget />
             break
-        case "MECH_SELECT":
+        case LocationSelectType.MECH_SELECT:
             abilityTypeDescription = "This ability will target a specific mech on the map."
             abilityTypeIcon = <SvgMicrochip />
             break
-        case "LINE_SELECT":
+        case LocationSelectType.LINE_SELECT:
             abilityTypeDescription = "This ability will target a straight line on the map."
             abilityTypeIcon = <SvgLine />
             break

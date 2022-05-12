@@ -117,11 +117,13 @@ export const PlayerAbilities = () => {
                         sx={(theme) => ({
                             "&&": {
                                 border:
-                                    locationSelectType === "GLOBAL" ? `1px solid ${theme.factionTheme.primary}65` : `1px solid ${theme.factionTheme.primary}`,
+                                    locationSelectType === LocationSelectType.GLOBAL
+                                        ? `1px solid ${theme.factionTheme.primary}65`
+                                        : `1px solid ${theme.factionTheme.primary}`,
                             },
                         })}
                         onClick={() => {
-                            setLocationSelectType(locationSelectType === "GLOBAL" ? null : "GLOBAL")
+                            setLocationSelectType(locationSelectType === LocationSelectType.GLOBAL ? null : LocationSelectType.GLOBAL)
                         }}
                     >
                         <SvgGlobal size="1.6rem" />
@@ -130,13 +132,13 @@ export const PlayerAbilities = () => {
                         sx={(theme) => ({
                             "&&": {
                                 border:
-                                    locationSelectType === "LOCATION_SELECT"
+                                    locationSelectType === LocationSelectType.LOCATION_SELECT
                                         ? `1px solid ${theme.factionTheme.primary}65`
                                         : `1px solid ${theme.factionTheme.primary}`,
                             },
                         })}
                         onClick={() => {
-                            setLocationSelectType(locationSelectType === "LOCATION_SELECT" ? null : "LOCATION_SELECT")
+                            setLocationSelectType(locationSelectType === LocationSelectType.LOCATION_SELECT ? null : LocationSelectType.LOCATION_SELECT)
                         }}
                     >
                         <SvgTarget size="1.6rem" />
@@ -145,13 +147,13 @@ export const PlayerAbilities = () => {
                         sx={(theme) => ({
                             "&&": {
                                 border:
-                                    locationSelectType === "MECH_SELECT"
+                                    locationSelectType === LocationSelectType.MECH_SELECT
                                         ? `1px solid ${theme.factionTheme.primary}65`
                                         : `1px solid ${theme.factionTheme.primary}`,
                             },
                         })}
                         onClick={() => {
-                            setLocationSelectType(locationSelectType === "MECH_SELECT" ? null : "MECH_SELECT")
+                            setLocationSelectType(locationSelectType === LocationSelectType.MECH_SELECT ? null : LocationSelectType.MECH_SELECT)
                         }}
                     >
                         <SvgMicrochip size="1.6rem" />
@@ -160,13 +162,13 @@ export const PlayerAbilities = () => {
                         sx={(theme) => ({
                             "&&": {
                                 border:
-                                    locationSelectType === "LINE_SELECT"
+                                    locationSelectType === LocationSelectType.LINE_SELECT
                                         ? `1px solid ${theme.factionTheme.primary}65`
                                         : `1px solid ${theme.factionTheme.primary}`,
                             },
                         })}
                         onClick={() => {
-                            setLocationSelectType(locationSelectType === "LINE_SELECT" ? null : "LINE_SELECT")
+                            setLocationSelectType(locationSelectType === LocationSelectType.LINE_SELECT ? null : LocationSelectType.LINE_SELECT)
                         }}
                     >
                         <SvgLine size="1.6rem" />

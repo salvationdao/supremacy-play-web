@@ -62,7 +62,12 @@ export interface GameCoords {
     y: number
 }
 
-export type LocationSelectType = "LINE_SELECT" | "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
+export enum LocationSelectType {
+    LINE_SELECT = "LINE_SELECT",
+    MECH_SELECT = "MECH_SELECT",
+    LOCATION_SELECT = "LOCATION_SELECT",
+    GLOBAL = "GLOBAL",
+}
 
 export interface PlayerAbility {
     id: string

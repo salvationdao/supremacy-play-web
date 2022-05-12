@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { PlayerAbility } from "../../../types"
+import { LocationSelectType, PlayerAbility } from "../../../types"
 interface TargetHintProps {
     playerAbility: PlayerAbility
 }
@@ -10,15 +10,15 @@ export const TargetHint = ({ playerAbility }: TargetHintProps) => {
     let abilityTypeIcon = <SvgQuestionMark />
     let abilityActionDescriptor = "Select a location"
     switch (playerAbility?.location_select_type) {
-        case "LOCATION_SELECT":
+        case LocationSelectType.LOCATION_SELECT:
             abilityActionDescriptor = "Select a location"
             abilityTypeIcon = <SvgTarget size="1.6rem" />
             break
-        case "MECH_SELECT":
+        case LocationSelectType.MECH_SELECT:
             abilityActionDescriptor = "Select an allied mech"
             abilityTypeIcon = <SvgMicrochip size="1.6rem" />
             break
-        case "LINE_SELECT":
+        case LocationSelectType.LINE_SELECT:
             abilityActionDescriptor = "Draw a line by selecting two locations"
             abilityTypeIcon = <SvgLine size="1.6rem" />
             break

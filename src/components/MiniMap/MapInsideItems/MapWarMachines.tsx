@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } f
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
 import { useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { Map, NetMessageTickWarMachine, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
+import { LocationSelectType, Map, NetMessageTickWarMachine, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
 import { MapSelection } from "../MiniMapInside"
 
 interface MapWarMachineProps {
@@ -138,7 +138,7 @@ const MapWarMachine = ({
             onClick={handleClick}
             style={{
                 position: "absolute",
-                pointerEvents: targeting && playerAbility?.location_select_type !== "MECH_SELECT" ? "none" : "all",
+                pointerEvents: targeting && playerAbility?.location_select_type !== LocationSelectType.MECH_SELECT ? "none" : "all",
                 cursor: "pointer",
                 transform: `translate(-50%, -50%) translate3d(${(position.x - map.left_pixels) * mapScale}px, ${
                     (position.y - map.top_pixels) * mapScale
@@ -151,7 +151,7 @@ const MapWarMachine = ({
                 padding: "1rem 1.3rem",
             }}
         >
-            {playerAbility && playerAbility.location_select_type === "MECH_SELECT" && hash === highlightedMechHash && (
+            {playerAbility && playerAbility.location_select_type === LocationSelectType.MECH_SELECT && hash === highlightedMechHash && (
                 <Box
                     onClick={() => setSelection(undefined)}
                     sx={{

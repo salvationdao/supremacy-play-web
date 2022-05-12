@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { Dispatch, SetStateAction, useMemo } from "react"
 import { MapSelection } from "../.."
-import { GameAbility, PlayerAbility } from "../../../types"
+import { GameAbility, LocationSelectType, PlayerAbility } from "../../../types"
 
 export const SelectionIcon = ({
     selection,
@@ -25,7 +25,9 @@ export const SelectionIcon = ({
     if (!coords || !ability || !targeting) return null
     if (
         "location_select_type" in ability &&
-        (ability.location_select_type === "LINE_SELECT" || ability.location_select_type === "MECH_SELECT" || ability.location_select_type === "GLOBAL")
+        (ability.location_select_type === LocationSelectType.LINE_SELECT ||
+            ability.location_select_type === LocationSelectType.MECH_SELECT ||
+            ability.location_select_type === LocationSelectType.GLOBAL)
     )
         return null
     const { colour, image_url } = ability

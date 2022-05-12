@@ -8,7 +8,7 @@ import { Severity, useGame, useGameServerAuth, useGameServerWebsocket, WebSocket
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { Dimension, GameAbility, GameCoords, Map, PlayerAbility, WarMachineState } from "../../types"
+import { Dimension, GameAbility, GameCoords, LocationSelectType, Map, PlayerAbility, WarMachineState } from "../../types"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 
 export interface MapSelection {
@@ -109,7 +109,7 @@ const MiniMapInsideInner = ({
                     mech_hash?: string
                 } | null = null
                 switch (playerAbility.location_select_type) {
-                    case "LINE_SELECT":
+                    case LocationSelectType.LINE_SELECT:
                         if (!selection.startCoords || !selection.endCoords) {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
@@ -126,14 +126,14 @@ const MiniMapInsideInner = ({
                             },
                         }
                         break
-                    case "MECH_SELECT":
+                    case LocationSelectType.MECH_SELECT:
                         payload = {
                             blueprint_ability_id: playerAbility.blueprint_id,
                             location_select_type: playerAbility.location_select_type,
                             mech_hash: selection.mechHash,
                         }
                         break
-                    case "LOCATION_SELECT":
+                    case LocationSelectType.LOCATION_SELECT:
                         if (!selection.startCoords) {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
@@ -146,7 +146,7 @@ const MiniMapInsideInner = ({
                             },
                         }
                         break
-                    case "GLOBAL":
+                    case LocationSelectType.GLOBAL:
                         break
                 }
 
@@ -163,7 +163,7 @@ const MiniMapInsideInner = ({
         } finally {
             setSubmitted && setSubmitted(true)
             setSelection(undefined)
-            if (playerAbility?.location_select_type === "MECH_SELECT") {
+            if (playerAbility?.location_select_type === LocationSelectType.MECH_SELECT) {
                 setHighlightedMechHash(undefined)
             }
         }
@@ -367,11 +367,11 @@ const MiniMapInsideInner = ({
     const isLocationSelection =
         targeting &&
         !(
-            playerAbility?.location_select_type === "LINE_SELECT" ||
-            playerAbility?.location_select_type === "MECH_SELECT" ||
-            playerAbility?.location_select_type === "GLOBAL"
+            playerAbility?.location_select_type === LocationSelectType.LINE_SELECT ||
+            playerAbility?.location_select_type === LocationSelectType.MECH_SELECT ||
+            playerAbility?.location_select_type === LocationSelectType.GLOBAL
         )
-    const isLineSelection = targeting && playerAbility?.location_select_type === "LINE_SELECT"
+    const isLineSelection = targeting && playerAbility?.location_select_type === LocationSelectType.LINE_SELECT
 
     return (
         <>
@@ -490,13 +490,13 @@ const CountdownText = ({ playerAbility, selection, onConfirm }: { playerAbility?
         let hasSelected = !!selection
         if (playerAbility) {
             switch (playerAbility.location_select_type) {
-                case "LINE_SELECT":
+                case LocationSelectType.LINE_SELECT:
                     hasSelected = !!(selection?.startCoords && selection?.endCoords)
                     break
-                case "LOCATION_SELECT":
+                case LocationSelectType.LOCATION_SELECT:
                     hasSelected = !!selection?.startCoords
                     break
-                case "MECH_SELECT":
+                case LocationSelectType.MECH_SELECT:
                     hasSelected = !!selection?.mechHash
                     break
             }
