@@ -94,6 +94,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                         backgroundColor: colors.navy,
                         ":hover img": {
                             transform: "scale(1.2)",
+                            filter: "brightness(2)",
                         },
                     }}
                 >
@@ -163,7 +164,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                     height: "100%",
                                     objectFit: "cover",
                                     transformOrigin: "center",
-                                    transition: "transform .1s ease-out",
+                                    transition: "transform .1s ease-out, filter .1s ease-out",
                                 }}
                             />
                         </Box>
