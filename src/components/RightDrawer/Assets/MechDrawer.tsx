@@ -624,13 +624,6 @@ interface HistoryEntryProps {
     mechID: string
 }
 
-// mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-// backgroundImage={h.battle?.game_map?.image_url}
-// mechSurvived={!!h.mech_survived}
-// status={!h.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
-// kills={h.kills}
-// date={h.created_at}
-
 const HistoryEntry = ({ battleID, mechID }: HistoryEntryProps) => {
     const { state, send } = useGameServerWebsocket()
     const [historyEntry, setHistoryEntry] = useState<BattleMechHistory | null>(null)
