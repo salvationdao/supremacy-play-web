@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
@@ -7,22 +8,25 @@ interface TargetHintProps {
 }
 
 export const TargetHint = ({ playerAbility }: TargetHintProps) => {
-    let abilityTypeIcon = <SvgQuestionMark />
-    let abilityActionDescriptor = "Select a location"
-    switch (playerAbility?.location_select_type) {
-        case LocationSelectType.LOCATION_SELECT:
-            abilityActionDescriptor = "Select a location"
-            abilityTypeIcon = <SvgTarget size="1.6rem" />
-            break
-        case LocationSelectType.MECH_SELECT:
-            abilityActionDescriptor = "Select an allied mech"
-            abilityTypeIcon = <SvgMicrochip size="1.6rem" />
-            break
-        case LocationSelectType.LINE_SELECT:
-            abilityActionDescriptor = "Draw a line by selecting two locations"
-            abilityTypeIcon = <SvgLine size="1.6rem" />
-            break
-    }
+    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
+    const [abilityActionDescriptor, setAbilityActionDescriptor] = useState("Select a location")
+
+    useEffect(() => {
+        switch (playerAbility?.location_select_type) {
+            case LocationSelectType.LOCATION_SELECT:
+                setAbilityActionDescriptor("Select a location")
+                setAbilityTypeIcon(<SvgTarget size="1.6rem" />)
+                break
+            case LocationSelectType.MECH_SELECT:
+                setAbilityActionDescriptor("Select an allied mech")
+                setAbilityTypeIcon(<SvgMicrochip size="1.6rem" />)
+                break
+            case LocationSelectType.LINE_SELECT:
+                setAbilityActionDescriptor("Draw a line by selecting two locations")
+                setAbilityTypeIcon(<SvgLine size="1.6rem" />)
+                break
+        }
+    }, [playerAbility])
 
     return (
         <Stack

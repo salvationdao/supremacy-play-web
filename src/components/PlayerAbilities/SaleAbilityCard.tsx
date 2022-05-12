@@ -25,6 +25,8 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     const [price, setPrice] = useState<string | null>(null)
     const [previousPrice, setPreviousPrice] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
+    const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
 
     // Purchasing
     const { newSnackbarMessage } = useSnackbar()
@@ -32,26 +34,26 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     const [purchaseLoading, setPurchaseLoading] = useState(false)
     const [purchaseError, setPurchaseError] = useState<string | null>(null)
 
-    let abilityTypeIcon = <SvgQuestionMark />
-    let abilityTypeDescription = "Miscellaneous ability type."
-    switch (saleAbility?.ability?.location_select_type) {
-        case LocationSelectType.GLOBAL:
-            abilityTypeDescription = "This ability will affect all units on the map."
-            abilityTypeIcon = <SvgGlobal />
-            break
-        case LocationSelectType.LOCATION_SELECT:
-            abilityTypeDescription = "This ability will target a specific location on the map."
-            abilityTypeIcon = <SvgTarget />
-            break
-        case LocationSelectType.MECH_SELECT:
-            abilityTypeDescription = "This ability will target a specific mech on the map."
-            abilityTypeIcon = <SvgMicrochip />
-            break
-        case LocationSelectType.LINE_SELECT:
-            abilityTypeDescription = "This ability will target a straight line on the map."
-            abilityTypeIcon = <SvgLine />
-            break
-    }
+    useEffect(() => {
+        switch (saleAbility?.ability?.location_select_type) {
+            case LocationSelectType.GLOBAL:
+                setAbilityTypeDescription("This ability will affect all units on the map.")
+                setAbilityTypeIcon(<SvgGlobal />)
+                break
+            case LocationSelectType.LOCATION_SELECT:
+                setAbilityTypeDescription("This ability will target a specific location on the map.")
+                setAbilityTypeIcon(<SvgTarget />)
+                break
+            case LocationSelectType.MECH_SELECT:
+                setAbilityTypeDescription("This ability will target a specific mech on the map.")
+                setAbilityTypeIcon(<SvgMicrochip />)
+                break
+            case LocationSelectType.LINE_SELECT:
+                setAbilityTypeDescription("This ability will target a straight line on the map.")
+                setAbilityTypeIcon(<SvgLine />)
+                break
+        }
+    }, [saleAbility])
 
     const onPurchase = async () => {
         try {

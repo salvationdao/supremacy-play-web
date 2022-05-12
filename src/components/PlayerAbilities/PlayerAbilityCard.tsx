@@ -23,30 +23,32 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
     const { state, send, subscribe } = useGameServerWebsocket()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
+    const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
 
     // Activating
     const [showPurchaseModal, toggleShowActivateModal] = useToggle(false)
 
-    let abilityTypeIcon = <SvgQuestionMark />
-    let abilityTypeDescription = "Miscellaneous ability type."
-    switch (playerAbility?.location_select_type) {
-        case LocationSelectType.GLOBAL:
-            abilityTypeDescription = "This ability will affect all units on the map."
-            abilityTypeIcon = <SvgGlobal />
-            break
-        case LocationSelectType.LOCATION_SELECT:
-            abilityTypeDescription = "This ability will target a specific location on the map."
-            abilityTypeIcon = <SvgTarget />
-            break
-        case LocationSelectType.MECH_SELECT:
-            abilityTypeDescription = "This ability will target a specific mech on the map."
-            abilityTypeIcon = <SvgMicrochip />
-            break
-        case LocationSelectType.LINE_SELECT:
-            abilityTypeDescription = "This ability will target a straight line on the map."
-            abilityTypeIcon = <SvgLine />
-            break
-    }
+    useEffect(() => {
+        switch (playerAbility?.location_select_type) {
+            case LocationSelectType.GLOBAL:
+                setAbilityTypeDescription("This ability will affect all units on the map.")
+                setAbilityTypeIcon(<SvgGlobal />)
+                break
+            case LocationSelectType.LOCATION_SELECT:
+                setAbilityTypeDescription("This ability will target a specific location on the map.")
+                setAbilityTypeIcon(<SvgTarget />)
+                break
+            case LocationSelectType.MECH_SELECT:
+                setAbilityTypeDescription("This ability will target a specific mech on the map.")
+                setAbilityTypeIcon(<SvgMicrochip />)
+                break
+            case LocationSelectType.LINE_SELECT:
+                setAbilityTypeDescription("This ability will target a straight line on the map.")
+                setAbilityTypeIcon(<SvgLine />)
+                break
+        }
+    }, [playerAbility])
 
     const onActivate = () => {
         if (!playerAbility) return
