@@ -102,7 +102,7 @@ const MiniMapInsideInner = ({
             } else if (playerAbility) {
                 console.info("activated player ability", playerAbility.label)
                 let payload: {
-                    ability_id: string
+                    blueprint_ability_id: string
                     location_select_type: string
                     start_coords?: GameCoords
                     end_coords?: GameCoords
@@ -114,7 +114,7 @@ const MiniMapInsideInner = ({
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
                         payload = {
-                            ability_id: playerAbility.id,
+                            blueprint_ability_id: playerAbility.blueprint_id,
                             location_select_type: playerAbility.location_select_type,
                             start_coords: {
                                 x: Math.floor(selection.startCoords.x),
@@ -128,7 +128,7 @@ const MiniMapInsideInner = ({
                         break
                     case "MECH_SELECT":
                         payload = {
-                            ability_id: playerAbility.id,
+                            blueprint_ability_id: playerAbility.blueprint_id,
                             location_select_type: playerAbility.location_select_type,
                             mech_hash: selection.mechHash,
                         }
@@ -138,7 +138,7 @@ const MiniMapInsideInner = ({
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
                         payload = {
-                            ability_id: playerAbility.id,
+                            blueprint_ability_id: playerAbility.blueprint_id,
                             location_select_type: playerAbility.location_select_type,
                             start_coords: {
                                 x: Math.floor(selection.startCoords.x),
