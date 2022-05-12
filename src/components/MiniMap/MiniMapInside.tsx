@@ -472,7 +472,7 @@ const MiniMapInsideInner = ({
                     </Typography>
                 </FancyButton>
             )}
-            <CountdownText playerAbility={playerAbility} selection={selection} onConfirm={() => onConfirm()} />
+            <CountdownText playerAbility={playerAbility} selection={selection} onConfirm={onConfirm} />
         </>
     )
 }
@@ -531,9 +531,7 @@ const CountdownText = ({ playerAbility, selection, onConfirm }: { playerAbility?
 
     useEffect(() => {
         if (hasSelected && timeRemain == -1) onConfirm()
-        // NOTE: adding onConfirm to deps will cause abilities to trigger twice when executed
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hasSelected, timeRemain])
+    }, [hasSelected, timeRemain, onConfirm])
 
     if (timeRemain < 0) return null
 
