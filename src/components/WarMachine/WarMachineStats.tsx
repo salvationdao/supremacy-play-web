@@ -18,7 +18,7 @@ export const WarMachineStats = () => {
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
+        toggleShow(bribeStage && bribeStage.phase !== "HOLD")
     }, [bribeStage, toggleShow])
     // End ****************************************
 

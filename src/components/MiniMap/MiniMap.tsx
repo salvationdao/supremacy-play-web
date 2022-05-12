@@ -19,7 +19,7 @@ export const MiniMap = () => {
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        if (bribeStage !== undefined && bribeStage.phase !== "HOLD") {
+        if (bribeStage && bribeStage.phase !== "HOLD") {
             toggleShow(true)
         } else {
             toggleShow(false)
