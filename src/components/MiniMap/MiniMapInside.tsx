@@ -534,6 +534,8 @@ const CountdownText = ({ playerAbility, selection, onConfirm }: { playerAbility?
 
     useEffect(() => {
         if (hasSelected && timeRemain == -1) onConfirm()
+        // NOTE: adding onConfirm to deps will cause abilities to trigger twice when executed
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hasSelected, timeRemain])
 
     if (timeRemain < 0) return null

@@ -27,7 +27,12 @@ export const PlayerAbilities = () => {
         if (state !== SocketState.OPEN || !send || !subscribe || !user) return
 
         const fetchSaleAbilities = async () => {
-            const filterItems: any[] = []
+            const filterItems: {
+                table?: string
+                column: string
+                operator: string
+                value: string
+            }[] = []
             filterItems.push({
                 column: "owner_id",
                 operator: "=",

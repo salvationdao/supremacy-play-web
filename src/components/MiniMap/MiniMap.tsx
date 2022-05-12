@@ -206,6 +206,8 @@ const MiniMapInner = ({
                 setPlayerAbility(undefined)
             }
         }
+        // NOTE: adding playerAbility or winner to deps will cause weird minimap behaviour
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [timeReachZero, submitted, setPlayerAbility, setWinner, toggleEnlarged, newSnackbarMessage])
 
     const mainColor = useMemo(() => {
