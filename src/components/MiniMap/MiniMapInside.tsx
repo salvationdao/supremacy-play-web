@@ -91,7 +91,6 @@ const MiniMapInsideInner = ({
         if (state !== WebSocket.OPEN || !selection || !send || !userID) return
         try {
             if (gameAbility) {
-                console.info("activated game ability", gameAbility.label)
                 if (!selection.startCoords) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
@@ -100,7 +99,6 @@ const MiniMapInsideInner = ({
                     y: Math.floor(selection.startCoords.y),
                 })
             } else if (playerAbility) {
-                console.info("activated player ability", playerAbility.label)
                 let payload: {
                     blueprint_ability_id: string
                     location_select_type: string
@@ -153,7 +151,6 @@ const MiniMapInsideInner = ({
                 if (!payload) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
-                console.log(payload)
                 await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
             newSnackbarMessage("Successfully submitted target location.", "success")
