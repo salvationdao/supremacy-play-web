@@ -11,20 +11,23 @@ import {
     VotingSystem,
     WarMachineStats,
 } from "../components"
-import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useSupremacy } from "../containers"
-import { siteZIndex } from "../theme/theme"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
+import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../containers"
+import { AssetProvider } from "../containers/asset"
 import { useToggle } from "../hooks"
+import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
     return (
         <StreamProvider>
             <GameProvider>
-                <DimensionProvider>
-                    <OverlayTogglesProvider>
-                        <BattleArenaPageInner />
-                    </OverlayTogglesProvider>
-                </DimensionProvider>
+                <AssetProvider>
+                    <DimensionProvider>
+                        <OverlayTogglesProvider>
+                            <BattleArenaPageInner />
+                        </OverlayTogglesProvider>
+                    </DimensionProvider>
+                </AssetProvider>
             </GameProvider>
         </StreamProvider>
     )

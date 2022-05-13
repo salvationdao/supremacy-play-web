@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useGameServerAuth, useGameServerWebsocket, useSupremacy } from "."
 import { NullUUID } from "../constants"
 import { GameServerKeys } from "../keys"
-import { BattleEndDetail, BribeStage, GameAbility, Map, PlayerAbility, WarMachineState } from "../types"
+import { BattleEndDetail, BribeStage, GameAbility, Map, WarMachineState } from "../types"
 import { FactionGeneralData } from "../types/passport"
 
 export interface BribeStageResponse {
@@ -39,7 +39,6 @@ export const GameContainer = createContainer(() => {
     const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
-    const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
     const [highlightedMechHash, setHighlightedMechHash] = useState<string | undefined>(undefined)
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
 
@@ -135,8 +134,6 @@ export const GameContainer = createContainer(() => {
         bribeStage,
         winner,
         setWinner,
-        playerAbility,
-        setPlayerAbility,
         map,
         setMap,
         warMachines,

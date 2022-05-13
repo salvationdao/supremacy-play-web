@@ -2,7 +2,8 @@ import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, ButtonBaseProps, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgClose, SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
-import { SocketState, useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useAsset } from "../../containers/asset"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -19,7 +20,7 @@ const activateModalWidth = 400
 
 export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: PlayerAbilityCardProps) => {
     const { userID } = useGameServerAuth()
-    const { setPlayerAbility: submitPlayerAbility } = useGame()
+    const { setPlayerAbility: submitPlayerAbility } = useAsset()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility | null>(null)
     const [error, setError] = useState<string | null>(null)
