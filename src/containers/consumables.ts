@@ -2,7 +2,7 @@ import { useState } from "react"
 import { createContainer } from "unstated-next"
 import { PlayerAbility } from "../types"
 
-export const AssetContainer = createContainer(() => {
+export const UserConsumablesContainer = createContainer(() => {
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
 
     return {
@@ -11,5 +11,5 @@ export const AssetContainer = createContainer(() => {
     }
 })
 
-export const AssetProvider = AssetContainer.Provider
-export const useAsset = AssetContainer.useContainer
+export const UserConsumablesProvider = UserConsumablesContainer.Provider
+export const useConsumables = UserConsumablesContainer.useContainer

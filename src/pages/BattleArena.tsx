@@ -13,7 +13,7 @@ import {
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../containers"
-import { AssetProvider } from "../containers/asset"
+import { UserConsumablesProvider } from "../containers/consumables"
 import { useToggle } from "../hooks"
 import { siteZIndex } from "../theme/theme"
 
@@ -21,13 +21,13 @@ export const BattleArenaPage = () => {
     return (
         <StreamProvider>
             <GameProvider>
-                <AssetProvider>
+                <UserConsumablesProvider>
                     <DimensionProvider>
                         <OverlayTogglesProvider>
                             <BattleArenaPageInner />
                         </OverlayTogglesProvider>
                     </DimensionProvider>
-                </AssetProvider>
+                </UserConsumablesProvider>
             </GameProvider>
         </StreamProvider>
     )

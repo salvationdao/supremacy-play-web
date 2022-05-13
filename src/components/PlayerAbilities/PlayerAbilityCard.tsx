@@ -3,7 +3,7 @@ import { Box, ButtonBase, ButtonBaseProps, Fade, IconButton, Modal, Stack, Typog
 import { useEffect, useState } from "react"
 import { SvgClose, SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
 import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
-import { useAsset } from "../../containers/asset"
+import { useConsumables } from "../../containers/consumables"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -20,7 +20,7 @@ const activateModalWidth = 400
 
 export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: PlayerAbilityCardProps) => {
     const { userID } = useGameServerAuth()
-    const { setPlayerAbility: submitPlayerAbility } = useAsset()
+    const { setPlayerAbility: submitPlayerAbility } = useConsumables()
     const { state, send, subscribe } = useGameServerWebsocket()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility | null>(null)
     const [error, setError] = useState<string | null>(null)
