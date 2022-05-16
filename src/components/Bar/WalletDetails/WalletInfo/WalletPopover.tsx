@@ -1,7 +1,7 @@
 import { Box, IconButton, Popover, Stack, Switch, Typography } from "@mui/material"
 import { SvgClose, SvgSupToken } from "../../../../assets"
 import { TransactionItem } from "../../.."
-import { Transaction } from "../../../../types/passport"
+import { Transaction } from "../../../../types"
 import { colors, siteZIndex } from "../../../../theme/theme"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useEffect, MutableRefObject } from "react"

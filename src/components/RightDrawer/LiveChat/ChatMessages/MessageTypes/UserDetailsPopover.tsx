@@ -2,14 +2,13 @@ import { Box, Button, Popover, Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { ClipThing } from "../../../.."
 import { SvgSkull2, SvgAbility, SvgDeath, SvgView } from "../../../../../assets"
-import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
 import { truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { colors, siteZIndex } from "../../../../../theme/theme"
 import { User, UserStat } from "../../../../../types"
 
 export const UserDetailsPopover = ({
-    factionLogoBlobID,
+    faction_logo_url,
     factionColor,
     factionSecondaryColor,
     fromUserFactionID,
@@ -23,7 +22,7 @@ export const UserDetailsPopover = ({
     user,
     toggleBanModalOpen,
 }: {
-    factionLogoBlobID?: string
+    faction_logo_url?: string
     factionColor?: string
     factionSecondaryColor?: string
     fromUserFactionID?: string
@@ -34,7 +33,7 @@ export const UserDetailsPopover = ({
     popoverRef: React.MutableRefObject<null>
     open: boolean
     onClose: () => void
-    user?: User
+    user: User
     toggleBanModalOpen: (value?: boolean | undefined) => void
 }) => {
     const [localOpen, toggleLocalOpen] = useToggle(open)
@@ -86,14 +85,14 @@ export const UserDetailsPopover = ({
                 >
                     <Stack sx={{ minWidth: "20rem", px: "1.2rem", py: ".8rem" }}>
                         <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
-                            {factionLogoBlobID && factionLogoBlobID != NullUUID && (
+                            {faction_logo_url && (
                                 <Box
                                     sx={{
                                         mt: "-0.1rem !important",
                                         width: "1.7rem",
                                         height: "1.7rem",
                                         flexShrink: 0,
-                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
+                                        backgroundImage: `url(${faction_logo_url})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
@@ -146,7 +145,7 @@ export const UserDetailsPopover = ({
                             </Stack>
                         </Stack>
 
-                        {user && fromUserFactionID === user.faction_id && (
+                        {fromUserFactionID === user.faction_id && (
                             <Button
                                 variant="contained"
                                 size="small"

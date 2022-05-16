@@ -1,4 +1,4 @@
-import { Box, Fade, Theme, useTheme } from "@mui/material"
+import { Box, Fade } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
@@ -7,9 +7,10 @@ import { useDimension, useGame, useOverlayToggles, BribeStageResponse, WinnerAnn
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension, Map } from "../../types"
+import { useTheme } from "../../containers/theme"
 
 export const MiniMap = () => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { map, winner, setWinner, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()

@@ -45,17 +45,16 @@ export const AssetItem = ({
     const isInQueue = useMemo(() => assetQueue && assetQueue.position && assetQueue.position >= 1, [assetQueue])
 
     // Subscribe on asset data
-    useEffect(() => {
-        if (psState !== WebSocket.OPEN || !psSubscribe || !assetQueue) return
-        return psSubscribe<{ purchased_item: Asset }>(
-            PassportServerKeys.SubAssetData,
-            (payload) => {
-                if (!payload || !payload.purchased_item) return
-                setAssetData(payload.purchased_item)
-            },
-            { asset_hash: assetQueue.hash },
-        )
-    }, [psState, psSubscribe, assetQueue])
+    usePassportSubscriptionUser<{ purchased_item: Asset }>(
+        {
+            URI: `/xxxxxxxxxx/${assetQueue.hash}`,
+            key: PassportServerKeys.SubAssetData,
+        },
+        (payload) => {
+            if (!payload || !payload.purchased_item) return
+            setAssetData(payload.purchased_item)
+        },
+    )
 
     // Subscribe on asset repair status
     useEffect(() => {
@@ -133,7 +132,7 @@ export const AssetItem = ({
                                     }}
                                 />
 
-                                {isGameServerUp && isInQueue && assetQueue && assetQueue.position && (
+                                {isInQueue && assetQueue && assetQueue.position && (
                                     <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{assetQueue.position}</Typography>
                                     </Box>
@@ -223,7 +222,7 @@ export const AssetItem = ({
                             }}
                         />
 
-                        {isGameServerUp && isInQueue && assetQueue && assetQueue.position && (
+                        {isInQueue && assetQueue && assetQueue.position && (
                             <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
                                 <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{assetQueue.position}</Typography>
                             </Box>
@@ -282,7 +281,7 @@ export const AssetItem = ({
         toggleDeployModalOpen,
     ])
 
-    if (!assetData || !user) return null
+    if (!assetData || !userID) return null
 
     return (
         <>
@@ -316,7 +315,6 @@ export const AssetItem = ({
 
             {mechDrawerOpen && (
                 <MechDrawer
-                    user={user}
                     open={mechDrawerOpen}
                     asset={assetData}
                     assetQueue={assetQueue}

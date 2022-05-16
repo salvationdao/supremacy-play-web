@@ -4,8 +4,10 @@ import moment from "moment"
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
-import { Severity, useGame, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { Severity, useGame } from "../../containers"
+import { SendFunc } from "../../containers/ws"
 import { useInterval, useToggle } from "../../hooks"
+import { useGameServerCommandsBattleFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
 import { Dimension, GameAbility, Map, WarMachineState } from "../../types"
@@ -25,19 +27,19 @@ interface Props {
 }
 
 export const MiniMapInside = (props: Props) => {
-    const { state, send } = useGameServerWebsocket()
+    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
     const { map, warMachines } = useGame()
 
-    return <MiniMapInsideInner {...props} state={state} send={send} map={map} warMachines={warMachines} />
+    return <MiniMapInsideInner {...props} send={send} map={map} warMachines={warMachines} />
 }
 
-interface PropsInner extends Props, Partial<WebSocketProperties> {
+interface PropsInner extends Props {
     map?: Map
     warMachines?: WarMachineState[]
+    send: SendFunc
 }
 
 const MiniMapInsideInner = ({
-    state,
     send,
     gameAbility,
     containerDimensions,
@@ -61,8 +63,9 @@ const MiniMapInsideInner = ({
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
     const onConfirm = useCallback(async () => {
+        if (!selection) return
+
         try {
-            if (state !== WebSocket.OPEN || !selection || !send) return
             send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
                 x: Math.floor(selection.x),
                 y: Math.floor(selection.y),
@@ -74,7 +77,7 @@ const MiniMapInsideInner = ({
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
             console.debug(e)
         }
-    }, [state, selection, send, setSubmitted, newSnackbarMessage])
+    }, [selection, send, setSubmitted, newSnackbarMessage])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {

@@ -1,12 +1,15 @@
-import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Theme, Typography, useTheme } from "@mui/material"
+import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, TooltipHelper } from "../../.."
 import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../../../containers"
+import { useAuth, useSnackbar } from "../../../../containers"
+import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets, supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
+import { useGameServerCommandsBattleFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { usePassportCommandsUser } from "../../../../hooks/usePassport"
 import { GameServerKeys, PassportServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { Asset } from "../../../../types/assets"
@@ -63,15 +66,16 @@ export const DeployConfirmation = ({
     onClose: () => void
     setTelegramShortcode?: (s: string) => void
 }) => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const queueLength = queueFeed?.queue_length || 0
     const queueCost = queueFeed?.queue_cost || ""
     const contractReward = queueFeed?.contract_reward || ""
 
     const { newSnackbarMessage } = useSnackbar()
-    const { state, send } = useGameServerWebsocket()
-    const { send: psSend } = usePassportServerWebsocket()
-    const { user, userID } = usePassportServerAuth()
+    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
+    const { send: sendUserCommands } = useGameServerCommandsUser("/user_commander")
+    const { send: psSend } = usePassportCommandsUser("xxxxxxxxx")
+    const { userID, user } = useAuth()
     const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
@@ -82,7 +86,7 @@ export const DeployConfirmation = ({
         push_notifications: false,
         telegram_notifications: false,
     }
-    const [mobile, setMobile] = useState(user?.mobile_number)
+    const [mobile, setMobile] = useState(user.mobile_number)
     const [saveMobile, setSaveMobile] = useState(false)
     const [dbSettings, setDbSettings] = useState<NotificationsSettings | null>(null)
     const [currentSettings, setCurrentSettings] = useState<NotificationsSettings>(initialSettings)
@@ -96,24 +100,24 @@ export const DeployConfirmation = ({
         currentSettings.telegram_notifications === dbSettings.telegram_notifications
 
     useEffect(() => {
-        if (!userID || !send) return
         ;(async () => {
             try {
-                const resp = await send<NotificationsSettings | null>(GameServerKeys.GetSettings, {
+                const resp = await sendUserCommands<NotificationsSettings | null>(GameServerKeys.GetSettings, {
                     key: "notification_settings",
                 })
 
-                if (resp === null) {
-                    setDbSettings(null)
+                if (resp) {
+                    setDbSettings(resp)
+                    setCurrentSettings(resp)
                     return
                 }
-                setDbSettings(resp)
-                setCurrentSettings(resp)
+
+                setDbSettings(null)
             } catch (err) {
                 newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
             }
         })()
-    }, [userID, send, newSnackbarMessage])
+    }, [sendUserCommands, newSnackbarMessage])
 
     useEffect(() => {
         let qc = new BigNumber(queueCost).shiftedBy(-18)
@@ -128,11 +132,11 @@ export const DeployConfirmation = ({
     }, [open])
 
     const onDeploy = useCallback(async () => {
-        if (state !== WebSocket.OPEN || !user) return
+        if (!userID) return
 
         try {
             // save mobile number if checked
-            if (saveMobile && mobile != user?.mobile_number) {
+            if (saveMobile && mobile != user.mobile_number) {
                 const saveMobileNum = await psSend<MobileNumberSave>(PassportServerKeys.UserUpdate, {
                     id: user.id,
                     mobile_number: mobile,
@@ -145,7 +149,7 @@ export const DeployConfirmation = ({
                 const updatedSettings = { key: "notification_settings", value: currentSettings }
                 ;(async () => {
                     try {
-                        const resp = await send<NotificationsSettings>(GameServerKeys.UpdateSettings, updatedSettings)
+                        const resp = await sendUserCommands<NotificationsSettings>(GameServerKeys.UpdateSettings, updatedSettings)
                         setDbSettings(resp)
                         setCurrentSettings(resp)
                     } catch (err) {
@@ -176,12 +180,13 @@ export const DeployConfirmation = ({
             toggleIsDeploying(false)
         }
     }, [
-        state,
+        userID,
         user,
         saveMobile,
         mobile,
         saveSettings,
         send,
+        sendUserCommands,
         hash,
         currentSettings,
         psSend,
@@ -260,7 +265,7 @@ export const DeployConfirmation = ({
                             <Box>
                                 <Box>
                                     <Typography sx={{ display: "inline", fontFamily: fonts.nostromoBold }}>{name || label}</Typography>
-                                    {user && (
+                                    {userID && (
                                         <span>
                                             <Link
                                                 href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
@@ -391,7 +396,7 @@ export const DeployConfirmation = ({
                                                     newSettings.sms_notifications = e.currentTarget.checked
                                                     return newSettings
                                                 })
-                                                setMobile(user?.mobile_number)
+                                                setMobile(user.mobile_number)
                                                 setSaveMobile(false)
                                             }}
                                             sx={{
@@ -451,13 +456,13 @@ export const DeployConfirmation = ({
                                                         value={mobile}
                                                         onChange={(e) => {
                                                             setMobile(e.target.value)
-                                                            if (e.target.value === user?.mobile_number) {
+                                                            if (e.target.value === user.mobile_number) {
                                                                 setSaveMobile(false)
                                                             }
                                                         }}
                                                     />
                                                 </Box>
-                                                {user?.mobile_number != mobile && (
+                                                {user.mobile_number != mobile && (
                                                     <Stack direction="row" spacing=".5rem" alignItems="center">
                                                         <Typography>Save number to profile?</Typography>
                                                         <Checkbox

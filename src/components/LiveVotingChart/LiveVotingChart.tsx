@@ -1,10 +1,9 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig } from ".."
-import { useGameServerWebsocket, useOverlayToggles, useSupremacy } from "../../containers"
+import { useOverlayToggles, useSupremacy } from "../../containers"
 import { parseString } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { BattleStats } from "../BattleStats/BattleStats"
@@ -13,7 +12,6 @@ import { LiveGraph } from "./LiveGraph"
 const DefaultMaxLiveVotingDataLength = 100
 
 export const LiveVotingChart = () => {
-    const { state, subscribe } = useGameServerWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
     const { battleIdentifier } = useSupremacy()
     const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
@@ -22,18 +20,6 @@ export const LiveVotingChart = () => {
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
         parseString(localStorage.getItem("liveVotingDataMax"), DefaultMaxLiveVotingDataLength),
     )
-
-    // DO NOT REMOVE THIS! Triggered spoil of war update
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerSpoilOfWarUpdated, () => null, null)
-    }, [state, subscribe])
-
-    // DO NOT REMOVE THIS!
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerLiveVoteCountUpdated, () => null, null)
-    }, [state, subscribe])
 
     // A little timeout so fade transition can play
     useEffect(() => {

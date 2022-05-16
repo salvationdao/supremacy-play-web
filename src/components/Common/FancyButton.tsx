@@ -60,8 +60,10 @@ export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, cl
                 fullWidth
                 {...props}
             >
-                {children}
-                {!excludeCaret && <Triangle sx={{ backgroundColor: caretColor }} />}
+                <Box sx={{ pt: ".3rem" }}>
+                    {children}
+                    {!excludeCaret && <Triangle sx={{ backgroundColor: caretColor }} />}
+                </Box>
             </LoadingButton>
         </ClipThing>
     )
