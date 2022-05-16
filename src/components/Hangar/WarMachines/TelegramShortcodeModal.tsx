@@ -4,13 +4,12 @@ import QRCode from "react-qr-code"
 import { ClipThing } from "../.."
 import { SvgContentCopyIcon } from "../../../assets"
 import { TELEGRAM_BOT_URL } from "../../../constants"
-import { useGameServerWebsocket } from "../../../containers"
 import { useToggle } from "../../../hooks"
+import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 
 export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean; onClose: () => void; code: string }) => {
-    const { state, subscribe } = useGameServerWebsocket()
     const [copySuccess, toggleCopySuccess] = useToggle()
     const [userTelegramShortcodeRegistered, setUserTelegramShortcodeRegistered] = useState<boolean | undefined>(undefined)
 
@@ -25,16 +24,13 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
         }
     }, [copySuccess, toggleCopySuccess])
 
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<boolean | undefined>(
-            GameServerKeys.UserTelegramShortcodeRegistered,
-            (payload: boolean | undefined) => {
-                setUserTelegramShortcodeRegistered(!!payload)
-            },
-            null,
-        )
-    }, [state, subscribe])
+    useGameServerSubscriptionUser<boolean | undefined>(
+        {
+            URI: "",
+            key: GameServerKeys.UserTelegramShortcodeRegistered,
+        },
+        (payload) => setUserTelegramShortcodeRegistered(payload),
+    )
 
     if (!TELEGRAM_BOT_URL) return <></>
     return (

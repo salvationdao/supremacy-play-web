@@ -8,7 +8,6 @@ import { AssetQueue } from "../../WarMachines"
 
 interface StatusAreaProps {
     isGridView?: boolean
-    isGameServerUp: boolean
     isInQueue: boolean
     assetQueue: AssetQueue
     repairStatus?: RepairStatus
@@ -19,7 +18,6 @@ interface StatusAreaProps {
 
 export const StatusArea = ({
     isGridView,
-    isGameServerUp,
     isInQueue,
     assetQueue,
     repairStatus,
@@ -27,29 +25,6 @@ export const StatusArea = ({
     openLeaveModal,
     togglePreventAssetsRefresh,
 }: StatusAreaProps) => {
-    if (!isGameServerUp) {
-        return (
-            <Typography
-                variant="body2"
-                sx={{
-                    width: isGridView ? "unset" : "10rem",
-                    alignSelf: isGridView ? "stretch" : "unset",
-                    textAlign: "center",
-                    px: ".8rem",
-                    pt: ".3rem",
-                    pb: ".2rem",
-                    color: "grey",
-                    lineHeight: 1,
-                    border: `${"grey"} 1px solid`,
-                    borderRadius: 0.3,
-                    opacity: 0.6,
-                }}
-            >
-                GAME OFFLINE
-            </Typography>
-        )
-    }
-
     if (assetQueue && assetQueue.in_battle) {
         return (
             <>

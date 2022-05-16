@@ -1,9 +1,10 @@
-import { Box, useTheme, Theme, Stack, Typography, IconButton, Pagination, Button, CircularProgress } from "@mui/material"
+import { Box, useTheme, Theme, Stack, Typography, IconButton, Pagination, CircularProgress } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
-import { useGameServerAuth, useGameServerWebsocket, useSnackbar, useSupremacy } from "../../../containers"
+import { useSnackbar, useSupremacy } from "../../../containers"
 import { useDebounce, usePagination, useToggle } from "../../../hooks"
+import { useGameServerCommandsBattleFaction, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { TelegramShortcodeModal } from "./TelegramShortcodeModal"
@@ -30,12 +31,15 @@ interface GetAssetsResponse {
 export const WarMachines = () => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme<Theme>()
-    const { userID } = useGameServerAuth()
-    const { state, subscribe, send } = useGameServerWebsocket()
+    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
     const { battleIdentifier } = useSupremacy()
     const [telegramShortcode, setTelegramShortcode] = useState("")
 
-    const [queueFeed, setQueueFeed] = useState<QueueFeedResponse>()
+    const queueFeed = useGameServerSubscriptionBattleFaction<QueueFeedResponse>({
+        URI: "/queue",
+        key: GameServerKeys.SubQueueFeed,
+    })
+
     const [queueUpdated, setQueueUpdated] = useDebounce(false, 1300)
     const [assetsQueue, setAssetsQueue] = useState<AssetQueue[]>()
     const cachedAssetQueue = useRef<AssetQueue[]>()
@@ -44,20 +48,22 @@ export const WarMachines = () => {
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 12, page: 1 })
 
-    // Subscribe to queue feed
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
-        return subscribe<QueueFeedResponse>(GameServerKeys.SubQueueFeed, (payload) => {
-            if (payload) setQueueFeed(payload)
-        })
-    }, [state, subscribe, userID])
+    useGameServerSubscriptionBattleFaction(
+        {
+            URI: "/queue",
+            key: GameServerKeys.TriggerBattleQueueUpdated,
+        },
+        (payload) => {
+            if (!payload) return
+            setQueueUpdated((prev) => !prev)
+        },
+    )
 
     // Get assets
     useEffect(() => {
         ;(async () => {
             try {
                 if (!preventAssetsRefresh) setIsLoading(true)
-                if (state !== WebSocket.OPEN || !send) return
                 const resp = await send<
                     GetAssetsResponse,
                     {
@@ -83,23 +89,15 @@ export const WarMachines = () => {
                 setIsLoading(false)
             }
         })()
-        // NOTE: state change of `preventAssetsRefresh` doesnt need to trigger a send
+        // NOTE: state change of `preventAssetsRefresh` doesn't need to trigger a send
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [send, state, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
+    }, [send, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
 
     // Update assets (the page) from the cache
     useEffect(() => {
         if (!preventAssetsRefresh && cachedAssetQueue.current) setAssetsQueue(cachedAssetQueue.current)
         cachedAssetQueue.current = undefined
     }, [preventAssetsRefresh])
-
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-
-        return subscribe(GameServerKeys.TriggerBattleQueueUpdated, async () => {
-            setQueueUpdated((prev) => !prev)
-        })
-    }, [state, subscribe, setQueueUpdated])
 
     const content = useMemo(() => {
         if (isLoading || !assetsQueue || !queueFeed) {

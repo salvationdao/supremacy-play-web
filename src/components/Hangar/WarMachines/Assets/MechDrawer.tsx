@@ -23,7 +23,6 @@ export interface MechDrawerProps {
     assetQueue: AssetQueue
     repairStatus?: RepairStatus
     isInQueue: boolean
-    isGameServerUp: boolean
     openDeployModal: () => void
     openLeaveModal: () => void
     togglePreventAssetsRefresh: (value?: boolean | undefined) => void
@@ -35,7 +34,6 @@ export const MechDrawer = ({
     asset,
     assetQueue,
     repairStatus,
-    isGameServerUp,
     isInQueue,
     openDeployModal,
     openLeaveModal,
@@ -357,7 +355,6 @@ export const MechDrawer = ({
 
                         <Stack alignItems="center" direction="row" spacing=".96rem">
                             <StatusArea
-                                isGameServerUp={isGameServerUp}
                                 isInQueue={isInQueue}
                                 assetQueue={assetQueue}
                                 repairStatus={repairStatus}

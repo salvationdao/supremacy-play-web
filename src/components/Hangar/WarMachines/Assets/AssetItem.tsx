@@ -1,18 +1,18 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { DeployConfirmation } from "../../.."
-import { UNDER_MAINTENANCE } from "../../../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
 import { Asset } from "../../../../types/assets"
 import { MechDrawer } from "./MechDrawer"
 import { LeaveConfirmation } from "./LeaveConfirmation"
-import { GameServerKeys, PassportServerKeys } from "../../../../keys"
+import { PassportServerKeys } from "../../../../keys"
 import { StatusArea } from "./Common/StatusArea"
 import { RepairStatus } from "../../../../types"
 import { AssetQueue, QueueFeedResponse } from "../WarMachines"
+import { useAuth } from "../../../../containers"
+import { usePassportSubscriptionUser } from "../../../../hooks/usePassport"
 
 export const AssetItem = ({
     assetQueue,
@@ -28,9 +28,8 @@ export const AssetItem = ({
     isGridView: boolean
     togglePreventAssetsRefresh: (value?: boolean | undefined) => void
 }) => {
-    const { user } = usePassportServerAuth()
-    const { state, send } = useGameServerWebsocket()
-    const { state: psState, subscribe: psSubscribe } = usePassportServerWebsocket()
+    const { userID } = useAuth()
+
     const [assetData, setAssetData] = useState<Asset>()
 
     const [mechDrawerOpen, toggleMechDrawerOpen] = useToggle()
@@ -41,7 +40,6 @@ export const AssetItem = ({
 
     // Status
     const [repairStatus, setRepairStatus] = useState<RepairStatus>()
-    const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
     const isInQueue = useMemo(() => assetQueue && assetQueue.position && assetQueue.position >= 1, [assetQueue])
 
     // Subscribe on asset data
@@ -57,19 +55,19 @@ export const AssetItem = ({
     )
 
     // Subscribe on asset repair status
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (state !== WebSocket.OPEN || !send) return
-                const resp = await send<RepairStatus>(GameServerKeys.SubRepairStatus, {
-                    mech_id: assetQueue.mech_id,
-                })
-                if (resp) setRepairStatus(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [state, send, assetQueue])
+    // useEffect(() => {
+    //     ;(async () => {
+    //         try {
+    //             if (state !== WebSocket.OPEN || !send) return
+    //             const resp = await send<RepairStatus>(GameServerKeys.SubRepairStatus, {
+    //                 mech_id: assetQueue.mech_id,
+    //             })
+    //             if (resp) setRepairStatus(resp)
+    //         } catch (e) {
+    //             console.error(e)
+    //         }
+    //     })()
+    // }, [state, send, assetQueue])
 
     // const instantRepair = useCallback(async () => {
     //     try {
@@ -161,7 +159,6 @@ export const AssetItem = ({
                             <Stack spacing=".3rem" alignItems="center" sx={{ mt: "auto", pt: ".7rem" }}>
                                 <StatusArea
                                     isGridView={isGridView}
-                                    isGameServerUp={isGameServerUp}
                                     isInQueue={!!isInQueue}
                                     assetQueue={assetQueue}
                                     repairStatus={repairStatus}
@@ -253,7 +250,6 @@ export const AssetItem = ({
                         <Stack alignItems="center" direction="row" spacing=".6rem" sx={{ mt: ".1rem" }}>
                             <StatusArea
                                 isGridView={isGridView}
-                                isGameServerUp={isGameServerUp}
                                 isInQueue={!!isInQueue}
                                 assetQueue={assetQueue}
                                 repairStatus={repairStatus}
@@ -269,7 +265,6 @@ export const AssetItem = ({
     }, [
         assetData,
         isGridView,
-        isGameServerUp,
         isInQueue,
         assetQueue,
         rarityDeets.color,
@@ -319,7 +314,6 @@ export const AssetItem = ({
                     asset={assetData}
                     assetQueue={assetQueue}
                     repairStatus={repairStatus}
-                    isGameServerUp={isGameServerUp}
                     isInQueue={!!isInQueue}
                     onClose={() => {
                         toggleMechDrawerOpen(false)
