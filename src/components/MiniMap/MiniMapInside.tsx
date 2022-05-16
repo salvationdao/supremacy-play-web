@@ -25,10 +25,10 @@ interface Props {
     gameAbility?: GameAbility
     playerAbility?: PlayerAbility
     containerDimensions: Dimension
-    targeting?: boolean
+    enlarged: boolean
+    targeting: boolean
     selection?: MapSelection
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
-    enlarged: boolean
     newSnackbarMessage: (message: string, severity?: Severity) => void
     onCancel?: () => void
 }
@@ -156,15 +156,14 @@ const MiniMapInsideInner = ({
                 }
                 await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
-            newSnackbarMessage(`Successfully submitted target location.`, "success")
-        } catch (e) {
-            newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
-            console.debug(e)
-        } finally {
             resetSelection()
             if (playerAbility?.location_select_type === LocationSelectType.MECH_SELECT) {
                 setHighlightedMechHash(undefined)
             }
+            newSnackbarMessage(`Successfully submitted target location.`, "success")
+        } catch (e) {
+            console.debug(e)
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
         }
     }, [state, send, selection, resetSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash, userID])
 
@@ -194,10 +193,6 @@ const MiniMapInsideInner = ({
         setDragY(0)
         setMapScale(minScale)
     }, [containerDimensions, map])
-
-    useEffect(() => {
-        console.log("rerendered")
-    }, [map])
 
     // --------------- Minimap - useGesture setup -------------------
     // Prevents map zooming from interfering with the browsers' accessibility zoom
@@ -475,7 +470,7 @@ const MiniMapInsideInner = ({
                     </Typography>
                 </FancyButton>
             )}
-            <CountdownText playerAbility={playerAbility} selection={selection} onConfirm={onConfirm} />
+            {targeting && (gameAbility || playerAbility) && <CountdownText playerAbility={playerAbility} selection={selection} onConfirm={onConfirm} />}
         </>
     )
 }
