@@ -5,6 +5,7 @@ import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { BribeStageResponse, Severity, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
 import { useConsumables } from "../../containers/consumables"
+import { useMiniMap } from "../../containers/minimap"
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension, Map, PlayerAbility } from "../../types"
@@ -13,7 +14,8 @@ import { TargetHint } from "./MapOutsideItems/TargetHint"
 export const MiniMap = () => {
     const theme = useTheme<Theme>()
     const { newSnackbarMessage } = useSnackbar()
-    const { map, winner, setWinner, bribeStage, setHighlightedMechHash } = useGame()
+    const { map, bribeStage } = useGame()
+    const { winner, setWinner, setHighlightedMechHash } = useMiniMap()
     const { playerAbility, setPlayerAbility } = useConsumables()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isMapOpen)

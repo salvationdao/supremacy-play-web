@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerAuth, useGameServerWebsocket, useSupremacy } from "."
-import { NullUUID } from "../constants"
 import { GameServerKeys } from "../keys"
 import { BattleEndDetail, BribeStage, GameAbility, Map, WarMachineState } from "../types"
 import { FactionGeneralData } from "../types/passport"
@@ -31,15 +30,13 @@ export interface FactionsAll {
 export const GameContainer = createContainer(() => {
     const { setBattleIdentifier } = useSupremacy()
     const { state, send, subscribe } = useGameServerWebsocket()
-    const { userID, factionID } = useGameServerAuth()
+    const { userID } = useGameServerAuth()
 
     // States
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
-    const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
-    const [highlightedMechHash, setHighlightedMechHash] = useState<string | undefined>(undefined)
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
 
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
@@ -94,29 +91,6 @@ export const GameContainer = createContainer(() => {
         )
     }, [state, subscribe])
 
-    // Subscribe on winner announcements
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
-        return subscribe<WinnerAnnouncementResponse | undefined>(
-            GameServerKeys.SubBribeWinnerAnnouncement,
-            (payload) => {
-                if (!payload) return
-
-                let endTime = payload.end_time
-                const dateNow = new Date()
-                const diff = endTime.getTime() - dateNow.getTime()
-
-                // Just a temp fix, if user's pc time is not correct then at least set for them
-                // Checked by seeing if they have at least 8s to do stuff
-                if (endTime < dateNow || diff < 8000 || diff > 20000) {
-                    endTime = new Date(dateNow.getTime() + 15000)
-                }
-                setWinner({ ...payload, end_time: endTime })
-            },
-            null,
-        )
-    }, [state, subscribe, factionID])
-
     // Subscribe to spawned AI events
     useEffect(() => {
         if (state !== WebSocket.OPEN || !subscribe) return
@@ -132,14 +106,10 @@ export const GameContainer = createContainer(() => {
 
     return {
         bribeStage,
-        winner,
-        setWinner,
         map,
         setMap,
         warMachines,
         spawnedAI,
-        highlightedMechHash,
-        setHighlightedMechHash,
         battleEndDetail,
         setBattleEndDetail,
         forceDisplay100Percentage,

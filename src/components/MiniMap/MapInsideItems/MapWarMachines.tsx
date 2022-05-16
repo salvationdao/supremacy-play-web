@@ -1,7 +1,8 @@
 import { Box, Stack } from "@mui/material"
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
-import { useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
+import { useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
+import { useMiniMap } from "../../../containers/minimap"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, Map, NetMessageTickWarMachine, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
 import { MapSelection } from "../MiniMapInside"
@@ -21,7 +22,7 @@ interface MapWarMachineProps {
 export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting, playerAbility, setSelection }: MapWarMachineProps) => {
     const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
     const { userID, factionID } = useGameServerAuth()
-    const { highlightedMechHash, setHighlightedMechHash } = useGame()
+    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (

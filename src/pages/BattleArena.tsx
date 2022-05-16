@@ -14,6 +14,7 @@ import {
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../containers"
 import { UserConsumablesProvider } from "../containers/consumables"
+import { MiniMapProvider } from "../containers/minimap"
 import { useToggle } from "../hooks"
 import { siteZIndex } from "../theme/theme"
 
@@ -21,13 +22,15 @@ export const BattleArenaPage = () => {
     return (
         <StreamProvider>
             <GameProvider>
-                <UserConsumablesProvider>
-                    <DimensionProvider>
-                        <OverlayTogglesProvider>
-                            <BattleArenaPageInner />
-                        </OverlayTogglesProvider>
-                    </DimensionProvider>
-                </UserConsumablesProvider>
+                <MiniMapProvider>
+                    <UserConsumablesProvider>
+                        <DimensionProvider>
+                            <OverlayTogglesProvider>
+                                <BattleArenaPageInner />
+                            </OverlayTogglesProvider>
+                        </DimensionProvider>
+                    </UserConsumablesProvider>
+                </MiniMapProvider>
             </GameProvider>
         </StreamProvider>
     )

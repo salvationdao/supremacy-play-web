@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useS
 import { FancyButton, MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { Severity, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
+import { useMiniMap } from "../../containers/minimap"
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -36,7 +37,8 @@ interface Props {
 export const MiniMapInside = (props: Props) => {
     const { userID } = useGameServerAuth()
     const { state, send } = useGameServerWebsocket()
-    const { map, warMachines, setHighlightedMechHash } = useGame()
+    const { map, warMachines } = useGame()
+    const { setHighlightedMechHash } = useMiniMap()
 
     return (
         <MiniMapInsideInner

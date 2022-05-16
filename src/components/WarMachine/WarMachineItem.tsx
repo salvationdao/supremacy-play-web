@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from ".."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull, SvgSupToken } from "../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useMiniMap } from "../../containers/minimap"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -30,7 +31,7 @@ interface WarMachineItemProps {
 
 export const WarMachineItem = (props: WarMachineItemProps) => {
     const { state, subscribe } = useGameServerWebsocket()
-    const { highlightedMechHash, setHighlightedMechHash } = useGame()
+    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
     const { userID, factionID } = useGameServerAuth()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
