@@ -458,10 +458,7 @@ const MiniMapInsideInner = ({
                         pb: ".24rem",
                         minWidth: "2rem",
                     }}
-                    onClick={() => {
-                        onCancel()
-                        setSelection(undefined)
-                    }}
+                    onClick={() => onCancel()}
                 >
                     <Typography
                         sx={{

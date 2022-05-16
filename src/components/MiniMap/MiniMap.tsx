@@ -85,24 +85,12 @@ interface InnerProps {
     newSnackbarMessage: (message: string, severity?: Severity) => void
 }
 
-const MiniMapInner = ({
-    map,
-    winner,
-    setWinner,
-    playerAbility,
-    setPlayerAbility,
-    bribeStage,
-    isMapOpen,
-    toggleIsMapOpen,
-    factionColor,
-    newSnackbarMessage,
-}: InnerProps) => {
+const MiniMapInner = ({ map, winner, playerAbility, setPlayerAbility, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: InnerProps) => {
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
     } = useDimension()
-    const { targeting, selection, setSelection, resetSelection } = useMiniMap()
-    const [enlarged, toggleEnlarged] = useToggle()
+    const { enlarged, setEnlarged, targeting, selection, setSelection, resetSelection } = useMiniMap()
     const [mapHeightWidthRatio, setMapHeightWidthRatio] = useState(1)
     const [defaultDimensions, setDefaultDimensions] = useState<Dimension>({
         width: MINI_MAP_DEFAULT_SIZE,
@@ -277,13 +265,10 @@ const MiniMapInner = ({
                 setSelection={setSelection}
                 enlarged={enlarged || dimensions.width > 400}
                 newSnackbarMessage={newSnackbarMessage}
-                onCancel={() => {
-                    toggleEnlarged(false)
-                    setPlayerAbility(undefined)
-                }}
+                onCancel={resetSelection}
             />
         )
-    }, [winner, playerAbility, dimensions, remToPxRatio, targeting, selection, enlarged, toggleEnlarged, newSnackbarMessage, setPlayerAbility])
+    }, [winner, playerAbility, dimensions, remToPxRatio, targeting, selection, enlarged, resetSelection, newSnackbarMessage, setPlayerAbility])
 
     if (!map) return null
 
@@ -354,7 +339,7 @@ const MiniMapInner = ({
                                     map={map}
                                     enlarged={enlarged}
                                     mainColor={mainColor}
-                                    toggleEnlarged={toggleEnlarged}
+                                    toggleEnlarged={() => setEnlarged((prev) => !prev)}
                                     toggleIsMapOpen={toggleIsMapOpen}
                                 />
 
