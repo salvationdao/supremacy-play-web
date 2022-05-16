@@ -28,9 +28,9 @@ export interface FactionsAll {
 
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
-    const { setBattleIdentifier } = useSupremacy()
     const { state, send, subscribe } = useGameServerWebsocket()
     const { userID } = useGameServerAuth()
+    const { setBattleIdentifier } = useSupremacy()
 
     // States
     const [map, setMap] = useState<Map>()
@@ -38,7 +38,6 @@ export const GameContainer = createContainer(() => {
     const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
-
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
 
     // Subscribe for game settings

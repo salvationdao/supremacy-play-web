@@ -114,6 +114,7 @@ const MiniMapInner = ({
     })
 
     // For targeting map
+    const [countdown, setCountdown] = useState<number>()
     const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
     const [submitted, setSubmitted] = useState<boolean>(false)
     const [selection, setSelection] = useState<MapSelection>()
@@ -167,52 +168,52 @@ const MiniMapInner = ({
         setTimeReachZero(false)
     }, [winner, playerAbility])
 
-    useEffect(() => {
-        if (winner && bribeStage?.phase === "LOCATION_SELECT") {
-            // If battle ability is overriding player ability selection
-            if (playerAbility) {
-                toggleIsTargeting2(false)
-                toggleEnlarged(false)
-                const t = setTimeout(() => {
-                    toggleEnlarged(true)
-                    toggleIsTargeting2(true)
-                }, 1000)
-                return () => clearTimeout(t)
-            } else {
-                toggleEnlarged(true)
-            }
-        } else if (playerAbility) {
-            toggleEnlarged(true)
-        }
-        setSelection(undefined)
-    }, [winner, bribeStage, playerAbility, toggleEnlarged, toggleIsTargeting2])
+    // useEffect(() => {
+    //     if (winner && bribeStage?.phase === "LOCATION_SELECT") {
+    //         // If battle ability is overriding player ability selection
+    //         if (playerAbility) {
+    //             toggleIsTargeting2(false)
+    //             toggleEnlarged(false)
+    //             const t = setTimeout(() => {
+    //                 toggleEnlarged(true)
+    //                 toggleIsTargeting2(true)
+    //             }, 1000)
+    //             return () => clearTimeout(t)
+    //         } else {
+    //             toggleEnlarged(true)
+    //         }
+    //     } else if (playerAbility) {
+    //         toggleEnlarged(true)
+    //     }
+    //     setSelection(undefined)
+    // }, [winner, bribeStage, playerAbility, toggleEnlarged, toggleIsTargeting2])
 
-    useEffect(() => {
-        if (winner) {
-            // If is a battle ability
-            if (timeReachZero || submitted) {
-                toggleEnlarged(false)
-                setWinner(undefined)
-                console.log("cleared winner")
-                if (playerAbility) {
-                    setSubmitted(false)
-                    setTimeReachZero(false)
-                }
-            }
+    // useEffect(() => {
+    //     if (winner) {
+    //         // If is a battle ability
+    //         if (timeReachZero || submitted) {
+    //             toggleEnlarged(false)
+    //             setWinner(undefined)
+    //             console.log("cleared winner")
+    //             if (playerAbility) {
+    //                 setSubmitted(false)
+    //                 setTimeReachZero(false)
+    //             }
+    //         }
 
-            if (timeReachZero) {
-                newSnackbarMessage("Failed to submit target location on time.", "error")
-            }
-        } else {
-            // Else, its a player ability
-            if (submitted) {
-                toggleEnlarged(false)
-                setPlayerAbility(undefined)
-            }
-        }
-        // NOTE: adding playerAbility or winner to deps will cause weird minimap behaviour
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [timeReachZero, submitted, setPlayerAbility, setWinner, toggleEnlarged, newSnackbarMessage])
+    //         if (timeReachZero) {
+    //             newSnackbarMessage("Failed to submit target location on time.", "error")
+    //         }
+    //     } else {
+    //         // Else, its a player ability
+    //         if (submitted) {
+    //             toggleEnlarged(false)
+    //             setPlayerAbility(undefined)
+    //         }
+    //     }
+    //     // NOTE: adding playerAbility or winner to deps will cause weird minimap behaviour
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [timeReachZero, submitted, setPlayerAbility, setWinner, toggleEnlarged, newSnackbarMessage])
 
     const mainColor = useMemo(() => {
         if (isTargeting) {
