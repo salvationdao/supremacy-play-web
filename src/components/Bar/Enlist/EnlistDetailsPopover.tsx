@@ -219,7 +219,7 @@ const PopoverContent = ({ faction }: { faction: Faction }) => {
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
-                            PURCHASE ABILITIES
+                            ENLIST
                         </Typography>
                     </FancyButton>
                 </Stack>
