@@ -2,15 +2,17 @@ import { Box, Button, CircularProgress, Drawer, IconButton, Stack, TextField, Ty
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { AssetQueue } from "../.."
 import { SvgBack, SvgDeath, SvgEdit, SvgGoldBars, SvgHistory, SvgRefresh, SvgSave, SvgSupToken } from "../../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH, UNDER_MAINTENANCE } from "../../../constants"
-import { SocketState, useGameServerWebsocket, usePassportServerWebsocket, useSnackbar } from "../../../containers"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../../constants"
+import { useSnackbar } from "../../../containers"
+import { useAuth } from "../../../containers/auth"
 import { camelToTitle, getRarityDeets, supFormatter, timeSince } from "../../../helpers"
 import { useToggle } from "../../../hooks"
+import { useGameServerCommands } from "../../../hooks/useGameServer"
+import { usePassportCommandsUser } from "../../../hooks/usePassport"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { BattleMechHistory, BattleMechStats } from "../../../types"
 import { Asset } from "../../../types/assets"
-import { UserData } from "../../../types/passport"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
 
 // const RepairCountdown = ({ endTime }: { endTime: Date }) => {
@@ -25,7 +27,6 @@ import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDispla
 // }
 
 export interface MechDrawerProps {
-    user: UserData
     open: boolean
     onClose: () => void
     asset: Asset
@@ -34,11 +35,12 @@ export interface MechDrawerProps {
     openLeaveModal: () => void
 }
 
-export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployModal, openLeaveModal }: MechDrawerProps) => {
+export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, openLeaveModal }: MechDrawerProps) => {
     const { name, label, hash, image_url, avatar_url } = asset.data.mech
 
-    const { state, send } = useGameServerWebsocket()
-    const { state: psState, send: psSend } = usePassportServerWebsocket()
+    const { userID } = useAuth()
+    const { send } = useGameServerCommands("/public/commander")
+    const { send: psSend } = usePassportCommandsUser("xxxxxxxxx")
     const [localOpen, toggleLocalOpen] = useToggle(open)
     // Mech stats
     const [stats, setStats] = useState<BattleMechStats>()
@@ -53,7 +55,6 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
     const [renamedValue, setRenamedValue] = useState(name || label)
     const [renameLoading, setRenameLoading] = useState<boolean>(false)
     // Status
-    const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
     // const isRepairing = false // To be implemented on gameserver.
     const isInQueue = useMemo(() => assetQueue && assetQueue.position && assetQueue.position >= 1, [assetQueue])
 
@@ -83,28 +84,28 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
     }, [asset.id, send])
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send) return
+        ;(async () => {
+            try {
+                setStatsLoading(true)
+                const resp = await send<BattleMechStats | undefined>(GameServerKeys.BattleMechStats, {
+                    mech_id: asset.id,
+                })
 
-        setStatsLoading(true)
-        send<BattleMechStats | undefined>(GameServerKeys.BattleMechStats, {
-            mech_id: asset.id,
-        })
-            .then((resp) => {
-                setStats(resp)
-            })
-            .catch((e) => {
+                if (resp) setStats(resp)
+            } catch (e) {
+                console.error(e)
                 if (typeof e === "string") {
                     setStatsError(e)
                 } else if (e instanceof Error) {
                     setStatsError(e.message)
                 }
-            })
-            .finally(() => {
+            } finally {
                 setStatsLoading(false)
-            })
+            }
 
-        fetchHistory()
-    }, [state, send, asset.id, fetchHistory])
+            fetchHistory()
+        })()
+    }, [send, asset.id, fetchHistory])
 
     // This allows the drawer transition to happen before we unmount it
     useEffect(() => {
@@ -146,11 +147,10 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
     const handleRename = useCallback(async () => {
         try {
             setRenameLoading(true)
-            if (psState !== WebSocket.OPEN || !psSend) return
             if (renamedValue === label || renamedValue === name) return
             await psSend<{ asset: string; user_id: string; name: string }>(PassportServerKeys.UpdateAssetName, {
                 asset_hash: hash,
-                user_id: user.id,
+                user_id: userID,
                 name: renamedValue,
             })
 
@@ -161,31 +161,9 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
         } finally {
             setRenameLoading(false)
         }
-    }, [psState, psSend, renamedValue, name, label, hash, user.id, newSnackbarMessage])
+    }, [renamedValue, label, name, psSend, hash, userID, newSnackbarMessage])
 
     const statusArea = useMemo(() => {
-        if (!isGameServerUp) {
-            return (
-                <Typography
-                    variant="body2"
-                    sx={{
-                        width: "10rem",
-                        px: ".8rem",
-                        pt: ".3rem",
-                        pb: ".2rem",
-                        color: "grey",
-                        lineHeight: 1,
-                        textAlign: "center",
-                        border: `${"grey"} 1px solid`,
-                        borderRadius: 0.3,
-                        opacity: 0.6,
-                    }}
-                >
-                    GAME OFFLINE
-                </Typography>
-            )
-        }
-
         if (assetQueue && assetQueue.in_battle) {
             return (
                 <>
@@ -307,7 +285,7 @@ export const MechDrawer = ({ user, open, onClose, asset, assetQueue, openDeployM
                 </Typography>
             </Button>
         )
-    }, [isGameServerUp, assetQueue, isInQueue, openLeaveModal, openDeployModal])
+    }, [assetQueue, isInQueue, openLeaveModal, openDeployModal])
 
     return (
         <Drawer

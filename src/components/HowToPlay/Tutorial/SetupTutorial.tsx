@@ -4,11 +4,11 @@ import { PopoverStylesObj } from "@reactour/popover"
 import { StepType, useTour } from "@reactour/tour"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
 import { useEffect, useMemo } from "react"
-import { RightDrawerPanels, useBar, usePassportServerAuth, useRightDrawer, useSupremacy } from "../../../containers"
+import { RightDrawerPanels, useBar, useAuth, useRightDrawer, useSupremacy } from "../../../containers"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 
 export const SetupTutorial = () => {
-    const { user } = usePassportServerAuth()
+    const { userID, user } = useAuth()
     const { haveSups } = useSupremacy()
 
     const { setIsOpen, setSteps, setCurrentStep } = useTour()
@@ -43,8 +43,8 @@ export const SetupTutorial = () => {
                 ],
             },
             {
-                selector: user?.faction_id ? "#tutorial-enlisted" : "#tutorial-enlist",
-                content: user?.faction_id
+                selector: user.faction_id ? "#tutorial-enlisted" : "#tutorial-enlist",
+                content: user.faction_id
                     ? "You can see your personal game stats here."
                     : "Here you can enlist into a Syndicate. Take care with who you choose to align yourself with- this will be the Syndicate you stay with for a while.",
                 action: () => {
@@ -100,7 +100,7 @@ export const SetupTutorial = () => {
                 position: "top",
             },
         ]
-    }, [toggleActiveBar, user?.faction_id])
+    }, [toggleActiveBar, user.faction_id])
 
     //only show if user is enlisted
     const enlistedSteps: StepType[] = useMemo(() => {
@@ -203,7 +203,7 @@ export const SetupTutorial = () => {
     }, [setCurrentStep, setIsOpen])
 
     useEffect(() => {
-        if (!user) {
+        if (!userID) {
             setSteps([...preAuthSteps])
             return
         }
@@ -222,7 +222,7 @@ export const SetupTutorial = () => {
         tutorialSteps = [...tutorialSteps, ...endSteps]
 
         setSteps(tutorialSteps)
-    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, user, haveSups, setSteps])
+    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, userID, user, haveSups, setSteps])
 
     return null
 }

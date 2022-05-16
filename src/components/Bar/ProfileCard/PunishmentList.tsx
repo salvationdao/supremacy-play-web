@@ -1,12 +1,19 @@
-import { Box, IconButton, Modal, Stack, Typography, useTheme, Theme } from "@mui/material"
+import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../.."
 import { SvgClose } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
 import { dateFormatter, snakeToTitle } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { PunishListItem } from "../../../types/chat"
 
-export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; onClose: () => void; punishments?: PunishListItem[] }) => {
-    const theme = useTheme<Theme>()
+interface Props {
+    open: boolean
+    onClose: () => void
+    punishments?: PunishListItem[]
+}
+
+export const PunishmentList = ({ open, onClose, punishments }: Props) => {
+    const theme = useTheme()
 
     if (!punishments || punishments.length <= 0) return null
 

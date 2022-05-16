@@ -1,6 +1,7 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useCallback, useEffect, useState } from "react"
+import { useAuth } from "../../containers/auth"
+import { useGameServerCommandsUser, useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
@@ -10,39 +11,52 @@ const rows = 2
 const pageSize = columns * rows
 
 export const PlayerAbilities = () => {
-    const { user } = useGameServerAuth()
-    const { state, send, subscribe } = useGameServerWebsocket()
+    const { userID } = useAuth()
+    const { send } = useGameServerCommandsUser("")
     const [playerAbilityIDs, setPlayerAbilityIDs] = useState<string[]>([])
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
 
+    const fetchSaleAbilities = useCallback(async () => {
+        if (!userID) return
+        ;(async () => {
+            try {
+                const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.PlayerAbilitiesList, {
+                    page_size: pageSize,
+                    page: currentPage - 1,
+                    filter: {
+                        items: [
+                            {
+                                column: "owner_id",
+                                operator: "=",
+                                value: userID,
+                            },
+                        ],
+                    },
+                })
+
+                if (!resp) return
+                setPlayerAbilityIDs(resp.ability_ids)
+                setTotalPages(Math.ceil(resp.total / pageSize))
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [currentPage, send, userID])
+
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
-
-        const fetchSaleAbilities = async () => {
-            const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.PlayerAbilitiesList, {
-                page_size: pageSize,
-                page: currentPage - 1,
-                filter: {
-                    items: [
-                        {
-                            column: "owner_id",
-                            operator: "=",
-                            value: user.id,
-                        },
-                    ],
-                },
-            })
-            setPlayerAbilityIDs(resp.ability_ids)
-            setTotalPages(Math.ceil(resp.total / pageSize))
-        }
-
         fetchSaleAbilities()
+    })
 
-        return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => fetchSaleAbilities())
-    }, [state, send, subscribe, user, currentPage])
+    useGameServerSubscription(
+        {
+            URI: "/public/live_data",
+            key: GameServerKeys.TriggerSaleAbilitiesListUpdated,
+        },
+        () => fetchSaleAbilities(),
+    )
 
     return (
         <Box>

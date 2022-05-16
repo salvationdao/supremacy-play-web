@@ -1,27 +1,29 @@
 import { Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { TooltipHelper } from ".."
 import { SvgChest, SvgGoldBars, SvgSupToken } from "../../assets"
-import { useGameServerWebsocket } from "../../containers"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { NetMessageType } from "../../types"
 
 export const SpoilOfWarAmount = () => {
-    const { state, subscribeNetMessage } = useGameServerWebsocket()
     const [nextSpoilOfWarAmount, setNextSpoilOfWarAmount] = useState<string>("0")
     const [spoilOfWarAmount, setSpoilOfWarAmount] = useState<string>("0")
 
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<string[] | undefined>(NetMessageType.SpoilOfWarTick, (payload) => {
+    useGameServerSubscription<string[] | undefined>(
+        {
+            URI: "/public/live_data",
+            key: GameServerKeys.SubSpoilsOfWar,
+        },
+        (payload) => {
             if (!payload || payload.length === 0) return
             setNextSpoilOfWarAmount(new BigNumber(payload[0]).dividedBy("1000000000000000000").toFixed(0))
             if (payload.length > 1) {
                 setSpoilOfWarAmount(new BigNumber(payload[1]).dividedBy("1000000000000000000").toFixed(0))
             }
-        })
-    }, [state, subscribeNetMessage])
+        },
+    )
 
     return <SpoilOfWarAmountInner spoilOfWarAmount={spoilOfWarAmount} nextSpoilOfWarAmount={nextSpoilOfWarAmount} />
 }

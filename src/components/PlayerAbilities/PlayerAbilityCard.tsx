@@ -1,9 +1,8 @@
 import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
 import { SvgClose, SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
-import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
+import { useGameServerSubscriptionUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { PlayerAbility } from "../../types"
@@ -14,15 +13,13 @@ import { AbilityCardProps } from "./SaleAbilityCard"
 const activateModalWidth = 400
 
 export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
-    const { user } = useGameServerAuth()
-    const { state, send, subscribe } = useGameServerWebsocket()
-    const [playerAbility, setPlayerAbility] = useState<PlayerAbility | null>(null)
-    const [error, setError] = useState<string | null>(null)
-
     // Purchasing
     const [showPurchaseModal, toggleShowActivateModal] = useToggle(false)
-    const [activateLoading, setActivateLoading] = useState(false)
-    const [activateError, setActivateError] = useState<string | null>(null)
+
+    const playerAbility = useGameServerSubscriptionUser<PlayerAbility>({
+        URI: `${abilityID}/xxxxxxxxx`,
+        key: GameServerKeys.PlayerAbilitySubscribe,
+    })
 
     let abilityTypeIcon = <SvgQuestionMark />
     let abilityTypeDescription = "Miscellaneous ability type."
@@ -39,44 +36,6 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
             abilityTypeDescription = "This ability will target a specific mech on the map."
             abilityTypeIcon = <SvgMicrochip />
     }
-
-    const onActivate = async () => {
-        try {
-            setActivateLoading(true)
-
-            toggleShowActivateModal(false)
-        } catch (e) {
-            if (e instanceof Error) {
-                setActivateError(e.message)
-            } else if (typeof e === "string") {
-                setActivateError(e)
-            }
-        } finally {
-            setActivateLoading(false)
-        }
-    }
-
-    useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
-
-        try {
-            return subscribe<PlayerAbility>(
-                GameServerKeys.PlayerAbilitySubscribe,
-                (resp) => {
-                    setPlayerAbility(resp)
-                },
-                {
-                    ability_id: abilityID,
-                },
-            )
-        } catch (e) {
-            if (e instanceof Error) {
-                setError(e.message)
-            } else if (typeof e === "string") {
-                setError(e)
-            }
-        }
-    }, [state, send, subscribe, user, abilityID])
 
     if (!playerAbility) {
         return <Box>Loading...</Box>
@@ -157,6 +116,7 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                     </Box>
                 </ButtonBase>
             </TooltipHelper>
+
             <Modal open={showPurchaseModal} onClose={() => toggleShowActivateModal(false)} closeAfterTransition>
                 <Fade in={showPurchaseModal}>
                     <Box
@@ -250,13 +210,10 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                                             backgroundColor: `${colors.green}90`,
                                         },
                                     }}
-                                    onClick={() => onActivate()}
-                                    loading={activateLoading}
+                                    onClick={() => toggleShowActivateModal(false)}
                                 >
                                     <Typography variant="body2">Activate Ability</Typography>
                                 </LoadingButton>
-                                {activateError && <Typography color={colors.red}>Error: {activateError}</Typography>}
-                                {error && <Typography color={colors.red}>Error: Something went wrong while loading this ability.</Typography>}
                             </Box>
                         </ClipThing>
                     </Box>

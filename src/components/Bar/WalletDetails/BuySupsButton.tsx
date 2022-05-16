@@ -2,14 +2,13 @@ import { Button } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { TooltipHelper } from "../.."
 import { TOKEN_SALE_PAGE } from "../../../constants"
-import { usePassportServerWebsocket } from "../../../containers"
 import { dateFormatter } from "../../../helpers"
+import { usePassportCommandsUser } from "../../../hooks/usePassport"
 import { PassportServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { UserData } from "../../../types/passport"
 
-export const BuySupsButton = ({ user }: { user?: UserData }) => {
-    const { send, state } = usePassportServerWebsocket()
+export const BuySupsButton = () => {
+    const { send } = usePassportCommandsUser("xxxxxxxxx")
     const [timeTilNextClaim, setTimeTilNextClaim] = useState<Date>()
 
     // Free sups button
@@ -19,15 +18,13 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
     )
 
     const getFreeSups = useCallback(async () => {
-        if (state !== WebSocket.OPEN || !send || !user) return
-
         try {
             const resp = await send<Date | boolean>(PassportServerKeys.GetFreeSups)
             if (resp instanceof Date) setTimeTilNextClaim(resp)
         } catch (e) {
-            console.debug(e)
+            console.error(e)
         }
-    }, [state, send, user])
+    }, [send])
 
     const tooltipText = useMemo(() => {
         if (isFreeSupsEnabled) {

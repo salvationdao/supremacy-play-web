@@ -1,20 +1,23 @@
-import { Box, Button, IconButton, Link, Modal, Stack, Typography, useTheme, Theme } from "@mui/material"
+import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { SvgClose, SvgExternalLink } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../../containers"
+import { useSnackbar } from "../../../containers"
+import { useAuth } from "../../../containers/auth"
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
+import { useGameServerCommandsBattleFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
+import { useTheme } from "../../../containers/theme"
 
 export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; asset: Asset; onClose: () => void }) => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
-    const { state, send } = useGameServerWebsocket()
-    const { user } = usePassportServerAuth()
+    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
+    const { userID, user } = useAuth()
     const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
     const [isLeaving, toggleIsLeaving] = useToggle()
     const [error, setError] = useState<string>()
@@ -22,7 +25,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
     const onLeave = useCallback(async () => {
-        if (state !== WebSocket.OPEN || isLeaving) return
+        if (isLeaving) return
         try {
             toggleIsLeaving(true)
             const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: hash })
@@ -36,7 +39,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
         } finally {
             toggleIsLeaving(false)
         }
-    }, [state, isLeaving, toggleIsLeaving, send, hash, onClose, newSnackbarMessage])
+    }, [isLeaving, toggleIsLeaving, send, hash, onClose, newSnackbarMessage])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -107,7 +110,7 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
                             <Box>
                                 <Box>
                                     <Typography sx={{ display: "inline", fontFamily: fonts.nostromoBold }}>{name || label}</Typography>
-                                    {user && (
+                                    {userID && (
                                         <span>
                                             <Link
                                                 href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}

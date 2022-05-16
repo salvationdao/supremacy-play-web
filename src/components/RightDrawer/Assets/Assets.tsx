@@ -3,8 +3,9 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { AssetItem } from "../.."
 import { SvgGridView, SvgListView, SvgRobot } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
-import { useGameServerAuth, useGameServerWebsocket, useSnackbar, useSupremacy } from "../../../containers"
+import { useSnackbar, useSupremacy } from "../../../containers"
 import { useDebounce, usePagination, useToggle } from "../../../hooks"
+import { useGameServerCommandsBattleFaction, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { TelegramShortcodeModal } from "./DeployConfirmation"
@@ -70,11 +71,13 @@ const Content = ({
     toggleIsGridView: (value?: boolean | undefined) => void
 }) => {
     const { newSnackbarMessage } = useSnackbar()
-    const { userID } = useGameServerAuth()
-    const { state, subscribe, send } = useGameServerWebsocket()
+    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
     const { battleIdentifier } = useSupremacy()
 
-    const [queueFeed, setQueueFeed] = useState<QueueFeedResponse>()
+    const queueFeed = useGameServerSubscriptionBattleFaction<QueueFeedResponse>({
+        URI: "/queue",
+        key: GameServerKeys.SubQueueFeed,
+    })
     const [queueUpdated, setQueueUpdated] = useDebounce(false, 1500)
     const [assetsQueue, setAssetsQueue] = useState<AssetQueue[]>()
     const cachedAssetQueue = useRef<AssetQueue[]>()
@@ -83,20 +86,22 @@ const Content = ({
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 12, page: 1 })
 
-    // Subscribe to queue feed
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
-        return subscribe<QueueFeedResponse>(GameServerKeys.SubQueueFeed, (payload) => {
-            if (payload) setQueueFeed(payload)
-        })
-    }, [state, subscribe, userID])
+    useGameServerSubscriptionBattleFaction(
+        {
+            URI: "/queue",
+            key: GameServerKeys.TriggerBattleQueueUpdated,
+        },
+        (payload) => {
+            if (!payload) return
+            setQueueUpdated((prev) => !prev)
+        },
+    )
 
     // Get assets
     useEffect(() => {
         ;(async () => {
             try {
                 if (!preventAssetsRefresh) setIsLoading(true)
-                if (state !== WebSocket.OPEN || !send) return
                 const resp = await send<
                     GetAssetsResponse,
                     {
@@ -124,21 +129,13 @@ const Content = ({
         })()
         // NOTE: state change of `preventAssetsRefresh` doesnt need to trigger a send
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [send, state, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
+    }, [send, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
 
     // Update assets (the page) from the cache
     useEffect(() => {
         if (!preventAssetsRefresh && cachedAssetQueue.current) setAssetsQueue(cachedAssetQueue.current)
         cachedAssetQueue.current = undefined
     }, [preventAssetsRefresh])
-
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-
-        return subscribe(GameServerKeys.TriggerBattleQueueUpdated, async () => {
-            setQueueUpdated((prev) => !prev)
-        })
-    }, [state, subscribe, setQueueUpdated])
 
     const content = useMemo(() => {
         if (isLoading || !assetsQueue || !queueFeed) {

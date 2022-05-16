@@ -1,8 +1,6 @@
 import { Box, Button, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { AssetQueue, DeployConfirmation, QueueFeedResponse } from "../.."
-import { UNDER_MAINTENANCE } from "../../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket } from "../../../containers"
 import { getRarityDeets, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
@@ -11,6 +9,8 @@ import { MechDrawer } from "./MechDrawer"
 import { LeaveConfirmation } from "./LeaveConfirmation"
 import { PassportServerKeys } from "../../../keys"
 import { SvgSupToken } from "../../../assets"
+import { usePassportSubscriptionUser } from "../../../hooks/usePassport"
+import { useAuth } from "../../../containers/auth"
 
 export const AssetItem = ({
     assetQueue,
@@ -26,9 +26,8 @@ export const AssetItem = ({
     isGridView: boolean
     togglePreventAssetsRefresh: (value?: boolean | undefined) => void
 }) => {
-    const { user } = usePassportServerAuth()
-    const { state } = useGameServerWebsocket()
-    const { state: psState, subscribe: psSubscribe } = usePassportServerWebsocket()
+    const { userID } = useAuth()
+
     const [assetData, setAssetData] = useState<Asset>()
 
     const [mechDrawerOpen, toggleMechDrawerOpen] = useToggle()
@@ -38,46 +37,21 @@ export const AssetItem = ({
     const rarityDeets = useMemo(() => getRarityDeets(assetData?.tier || ""), [assetData])
 
     // Status
-    const isGameServerUp = useMemo(() => state == WebSocket.OPEN && !UNDER_MAINTENANCE, [state])
     const isInQueue = useMemo(() => assetQueue && assetQueue.position && assetQueue.position >= 1, [assetQueue])
 
     // Subscribe on asset data
-    useEffect(() => {
-        if (psState !== WebSocket.OPEN || !psSubscribe || !assetQueue) return
-        return psSubscribe<{ purchased_item: Asset }>(
-            PassportServerKeys.SubAssetData,
-            (payload) => {
-                if (!payload || !payload.purchased_item) return
-                setAssetData(payload.purchased_item)
-            },
-            { asset_hash: assetQueue.hash },
-        )
-    }, [psState, psSubscribe, assetQueue])
+    usePassportSubscriptionUser<{ purchased_item: Asset }>(
+        {
+            URI: `/xxxxxxxxxx/${assetQueue.hash}`,
+            key: PassportServerKeys.SubAssetData,
+        },
+        (payload) => {
+            if (!payload || !payload.purchased_item) return
+            setAssetData(payload.purchased_item)
+        },
+    )
 
     const statusArea = useMemo(() => {
-        if (!isGameServerUp) {
-            return (
-                <Typography
-                    variant="body2"
-                    sx={{
-                        width: isGridView ? "unset" : "10rem",
-                        alignSelf: isGridView ? "stretch" : "unset",
-                        textAlign: "center",
-                        px: ".8rem",
-                        pt: ".3rem",
-                        pb: ".2rem",
-                        color: "grey",
-                        lineHeight: 1,
-                        border: `${"grey"} 1px solid`,
-                        borderRadius: 0.3,
-                        opacity: 0.6,
-                    }}
-                >
-                    GAME OFFLINE
-                </Typography>
-            )
-        }
-
         if (assetQueue && assetQueue.in_battle) {
             return (
                 <>
@@ -202,7 +176,7 @@ export const AssetItem = ({
                 </Typography>
             </Button>
         )
-    }, [isGameServerUp, assetQueue, isInQueue, isGridView, toggleLeaveModalOpen, toggleDeployModalOpen, togglePreventAssetsRefresh])
+    }, [assetQueue, isInQueue, isGridView, toggleLeaveModalOpen, toggleDeployModalOpen, togglePreventAssetsRefresh])
 
     const mechItem = useMemo(() => {
         if (!assetData) return <></>
@@ -256,7 +230,7 @@ export const AssetItem = ({
                                     }}
                                 />
 
-                                {isGameServerUp && isInQueue && assetQueue && assetQueue.position && (
+                                {isInQueue && assetQueue && assetQueue.position && (
                                     <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{assetQueue.position}</Typography>
                                     </Box>
@@ -337,7 +311,7 @@ export const AssetItem = ({
                             }}
                         />
 
-                        {isGameServerUp && isInQueue && assetQueue && assetQueue.position && (
+                        {isInQueue && assetQueue && assetQueue.position && (
                             <Box sx={{ position: "absolute", bottom: ".1rem", left: ".5rem" }}>
                                 <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{assetQueue.position}</Typography>
                             </Box>
@@ -372,20 +346,9 @@ export const AssetItem = ({
                 </Stack>
             </Box>
         )
-    }, [
-        assetData,
-        isGridView,
-        isGameServerUp,
-        isInQueue,
-        assetQueue,
-        rarityDeets.color,
-        rarityDeets.label,
-        statusArea,
-        toggleMechDrawerOpen,
-        togglePreventAssetsRefresh,
-    ])
+    }, [assetData, isGridView, isInQueue, assetQueue, rarityDeets.color, rarityDeets.label, statusArea, toggleMechDrawerOpen, togglePreventAssetsRefresh])
 
-    if (!assetData || !user) return null
+    if (!assetData || !userID) return null
 
     return (
         <>
@@ -419,7 +382,6 @@ export const AssetItem = ({
 
             {mechDrawerOpen && (
                 <MechDrawer
-                    user={user}
                     open={mechDrawerOpen}
                     asset={assetData}
                     assetQueue={assetQueue}
