@@ -85,7 +85,7 @@ interface InnerProps {
     newSnackbarMessage: (message: string, severity?: Severity) => void
 }
 
-const MiniMapInner = ({ map, winner, playerAbility, setPlayerAbility, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: InnerProps) => {
+const MiniMapInner = ({ map, winner, playerAbility, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: InnerProps) => {
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
@@ -268,7 +268,7 @@ const MiniMapInner = ({ map, winner, playerAbility, setPlayerAbility, isMapOpen,
                 onCancel={resetSelection}
             />
         )
-    }, [winner, playerAbility, dimensions, remToPxRatio, targeting, selection, enlarged, resetSelection, newSnackbarMessage, setPlayerAbility])
+    }, [winner, playerAbility, dimensions, remToPxRatio, targeting, enlarged, selection, setSelection, resetSelection, newSnackbarMessage])
 
     if (!map) return null
 
@@ -350,7 +350,7 @@ const MiniMapInner = ({ map, winner, playerAbility, setPlayerAbility, isMapOpen,
                                 {targeting && winner && (
                                     <TargetTimerCountdown
                                         gameAbility={winner.game_ability}
-                                        endTime={winner!.end_time}
+                                        endTime={winner.end_time}
                                         onCountdownExpired={() => {
                                             newSnackbarMessage("Failed to submit target location on time.", "error")
                                             resetSelection()

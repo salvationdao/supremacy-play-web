@@ -17,7 +17,7 @@ export const TargetTimerCountdown = ({
 
     useEffect(() => {
         if (totalSecRemain <= 1) onCountdownExpired()
-    }, [totalSecRemain])
+    }, [totalSecRemain, onCountdownExpired])
 
     return (
         <Stack

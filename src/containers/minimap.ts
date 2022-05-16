@@ -7,16 +7,12 @@ import { useConsumables } from "./consumables"
 import { useGame, WinnerAnnouncementResponse } from "./game"
 import { useGameServerAuth } from "./gameServerAuth"
 import { useGameServerWebsocket } from "./gameServerSocket"
-import { useOverlayToggles } from "./overlayToggles"
-
-type MiniMapTargetingState = "battle" | "player"
 
 export const MiniMapContainer = createContainer(() => {
     const { state, subscribe } = useGameServerWebsocket()
     const { bribeStage } = useGame()
     const { factionID } = useGameServerAuth()
     const { playerAbility, setPlayerAbility } = useConsumables()
-    const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
 
     // Map data
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
@@ -37,7 +33,7 @@ export const MiniMapContainer = createContainer(() => {
         }
         setSelection(undefined)
         setTargeting(false)
-    }, [winner, playerAbility])
+    }, [winner, playerAbility, setPlayerAbility])
 
     // Subscribe on winner announcements
     useEffect(() => {

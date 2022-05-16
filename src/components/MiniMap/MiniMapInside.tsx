@@ -37,7 +37,7 @@ export const MiniMapInside = (props: Props) => {
     const { userID } = useGameServerAuth()
     const { state, send } = useGameServerWebsocket()
     const { map, warMachines } = useGame()
-    const { setHighlightedMechHash } = useMiniMap()
+    const { setHighlightedMechHash, resetSelection } = useMiniMap()
 
     return (
         <MiniMapInsideInner
@@ -48,6 +48,7 @@ export const MiniMapInside = (props: Props) => {
             warMachines={warMachines}
             setHighlightedMechHash={setHighlightedMechHash}
             userID={userID}
+            resetSelection={resetSelection}
         />
     )
 }
@@ -57,6 +58,7 @@ interface PropsInner extends Props, Partial<WebSocketProperties> {
     warMachines?: WarMachineState[]
     setHighlightedMechHash: Dispatch<SetStateAction<string | undefined>>
     userID?: string
+    resetSelection: () => void
 }
 
 const MiniMapInsideInner = ({
@@ -75,6 +77,7 @@ const MiniMapInsideInner = ({
     setHighlightedMechHash,
     onCancel,
     userID,
+    resetSelection,
 }: PropsInner) => {
     const mapElement = useRef<HTMLDivElement>()
     // Setup use-gesture props
@@ -153,17 +156,17 @@ const MiniMapInsideInner = ({
                 }
                 await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
-            newSnackbarMessage("Successfully submitted target location.", "success")
+            newSnackbarMessage(`Successfully submitted target location.`, "success")
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
             console.debug(e)
         } finally {
-            setSelection(undefined)
+            resetSelection()
             if (playerAbility?.location_select_type === LocationSelectType.MECH_SELECT) {
                 setHighlightedMechHash(undefined)
             }
         }
-    }, [state, send, selection, setSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash, userID])
+    }, [state, send, selection, resetSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash, userID])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
