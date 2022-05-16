@@ -1,34 +1,27 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { MapSelection } from "../components"
 import { NullUUID } from "../constants"
-import { useTimer } from "../hooks"
 import { GameServerKeys } from "../keys"
 import { useConsumables } from "./consumables"
 import { useGame, WinnerAnnouncementResponse } from "./game"
 import { useGameServerAuth } from "./gameServerAuth"
 import { useGameServerWebsocket } from "./gameServerSocket"
 import { useOverlayToggles } from "./overlayToggles"
-import { useSnackbar } from "./snackbar"
 
-const MiniMapState = ""
+type MiniMapTargetingState = "battle" | "player"
 
 export const MiniMapContainer = createContainer(() => {
     const { state, subscribe } = useGameServerWebsocket()
     const { bribeStage } = useGame()
     const { factionID } = useGameServerAuth()
     const { playerAbility, setPlayerAbility } = useConsumables()
-    const { newSnackbarMessage } = useSnackbar()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
 
     // Map data
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [targeting, setTargeting] = useState(false)
-    const [targeting2, setTargeting2] = useState(false)
     const [highlightedMechHash, setHighlightedMechHash] = useState<string>()
-
-    // Battle ability countdown (reset whenever winner is changed)
-    const countdown = useMemo(() => (winner && targeting ? useTimer(winner.end_time) : null), [winner, targeting])
 
     // Map controls
     const [enlarged, setEnlarged] = useState(false)
@@ -43,6 +36,7 @@ export const MiniMapContainer = createContainer(() => {
             setEnlarged(false)
         }
         setSelection(undefined)
+        setTargeting(false)
     }, [winner, playerAbility])
 
     // Subscribe on winner announcements
@@ -73,40 +67,33 @@ export const MiniMapContainer = createContainer(() => {
         if (winner && bribeStage?.phase === "LOCATION_SELECT") {
             // If battle ability is overriding player ability selection
             if (playerAbility) {
-                setTargeting2(false)
+                setTargeting(false)
                 setEnlarged(false)
                 const t = setTimeout(() => {
                     setEnlarged(true)
-                    setTargeting2(true)
+                    setTargeting(true)
                 }, 1000)
                 return () => clearTimeout(t)
             } else {
                 setEnlarged(true)
+                setTargeting(true)
             }
         } else if (playerAbility) {
             setEnlarged(true)
+            setTargeting(true)
         }
     }, [winner, bribeStage, playerAbility])
 
-    useEffect(() => {
-        if (!countdown) return
-
-        if (countdown.totalSecRemain <= 1) {
-            newSnackbarMessage("Failed to submit target location on time.", "error")
-        }
-    }, [countdown])
-
-    useEffect(() => {
-        setTargeting(!!(targeting2 && ((winner && bribeStage?.phase === "LOCATION_SELECT") || playerAbility)))
-    }, [targeting2, winner, playerAbility, bribeStage?.phase])
-
     return {
+        enlarged,
+        setEnlarged,
         winner,
         setWinner,
         highlightedMechHash,
         setHighlightedMechHash,
         targeting,
-        countdown,
+        selection,
+        setSelection,
         resetSelection,
     }
 })

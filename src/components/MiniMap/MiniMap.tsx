@@ -1,6 +1,6 @@
 import { Box, Fade, Theme, useTheme } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { ClipThing, MapSelection, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
+import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { BribeStageResponse, Severity, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
@@ -101,8 +101,8 @@ const MiniMapInner = ({
         remToPxRatio,
         gameUIDimensions: { width, height },
     } = useDimension()
+    const { targeting, selection, setSelection, resetSelection } = useMiniMap()
     const [enlarged, toggleEnlarged] = useToggle()
-    const [isTargeting2, toggleIsTargeting2] = useToggle(true)
     const [mapHeightWidthRatio, setMapHeightWidthRatio] = useState(1)
     const [defaultDimensions, setDefaultDimensions] = useState<Dimension>({
         width: MINI_MAP_DEFAULT_SIZE,
@@ -113,18 +113,7 @@ const MiniMapInner = ({
         height: MINI_MAP_DEFAULT_SIZE,
     })
 
-    // For targeting map
-    const [countdown, setCountdown] = useState<number>()
-    const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
-    const [submitted, setSubmitted] = useState<boolean>(false)
-    const [selection, setSelection] = useState<MapSelection>()
-
     const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
-
-    const isTargeting = useMemo(
-        () => isTargeting2 && ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) && !timeReachZero && !submitted,
-        [isTargeting2, winner, playerAbility, timeReachZero, submitted, bribeStage?.phase],
-    )
 
     // Set initial size
     useEffect(() => {
@@ -156,17 +145,24 @@ const MiniMapInner = ({
             targetingWidth = targetingHeight / mapHeightWidthRatio
         }
 
-        const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width * adjustment
-        const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height * adjustment
+        let newWidth = defaultDimensions.width * adjustment
+        let newHeight = defaultDimensions.height * adjustment
+        if (targeting) {
+            newWidth = targetingWidth
+            newHeight = targetingHeight
+        } else if (enlarged) {
+            newWidth = maxWidth
+            newHeight = maxHeight
+        }
         setDimensions({ width: newWidth, height: newHeight })
         // NOTE: need to skip the lint or the map will keep resetting to small size on new battle
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [width, height, enlarged, adjustment])
 
-    useEffect(() => {
-        setSubmitted(false)
-        setTimeReachZero(false)
-    }, [winner, playerAbility])
+    // useEffect(() => {
+    //     setSubmitted(false)
+    //     setTimeReachZero(false)
+    // }, [winner, playerAbility])
 
     // useEffect(() => {
     //     if (winner && bribeStage?.phase === "LOCATION_SELECT") {
@@ -216,7 +212,7 @@ const MiniMapInner = ({
     // }, [timeReachZero, submitted, setPlayerAbility, setWinner, toggleEnlarged, newSnackbarMessage])
 
     const mainColor = useMemo(() => {
-        if (isTargeting) {
+        if (targeting) {
             if (winner) {
                 return winner.game_ability.colour
             } else if (playerAbility) {
@@ -224,53 +220,70 @@ const MiniMapInner = ({
             }
         }
         return factionColor
-    }, [isTargeting, winner, factionColor, playerAbility])
+    }, [targeting, winner, factionColor, playerAbility])
+
+    // const mapInsideRender = useMemo(() => {
+    //     if (targeting) {
+    //         if (winner) {
+    //             return (
+    //                 <MiniMapInside
+    //                     gameAbility={winner.game_ability}
+    //                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
+    //                     targeting
+    //                     selection={selection}
+    //                     setSelection={setSelection}
+    //                     enlarged={enlarged || dimensions.width > 450}
+    //                     newSnackbarMessage={newSnackbarMessage}
+    //                 />
+    //             )
+    //         } else if (playerAbility) {
+    //             return (
+    //                 <MiniMapInside
+    //                     playerAbility={playerAbility}
+    //                     containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
+    //                     targeting
+    //                     selection={selection}
+    //                     setSelection={setSelection}
+    //                     enlarged={enlarged || dimensions.width > 450}
+    //                     newSnackbarMessage={newSnackbarMessage}
+    //                     onCancel={() => {
+    //                         toggleEnlarged(false)
+    //                         setPlayerAbility(undefined)
+    //                     }}
+    //                 />
+    //             )
+    //         }
+    //     } else {
+    //         return (
+    //             <MiniMapInside
+    //                 containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
+    //                 enlarged={enlarged || dimensions.width > 388}
+    //                 newSnackbarMessage={newSnackbarMessage}
+    //                 selection={selection}
+    //                 setSelection={setSelection}
+    //             />
+    //         )
+    //     }
+    // }, [targeting, winner, playerAbility, setPlayerAbility, dimensions, remToPxRatio, enlarged, toggleEnlarged, newSnackbarMessage, selection])
 
     const mapInsideRender = useMemo(() => {
-        if (isTargeting) {
-            if (winner) {
-                return (
-                    <MiniMapInside
-                        gameAbility={winner.game_ability}
-                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                        targeting
-                        setSubmitted={setSubmitted}
-                        selection={selection}
-                        setSelection={setSelection}
-                        enlarged={enlarged || dimensions.width > 450}
-                        newSnackbarMessage={newSnackbarMessage}
-                    />
-                )
-            } else if (playerAbility) {
-                return (
-                    <MiniMapInside
-                        playerAbility={playerAbility}
-                        containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                        targeting
-                        setSubmitted={setSubmitted}
-                        selection={selection}
-                        setSelection={setSelection}
-                        enlarged={enlarged || dimensions.width > 450}
-                        newSnackbarMessage={newSnackbarMessage}
-                        onCancel={() => {
-                            toggleEnlarged(false)
-                            setPlayerAbility(undefined)
-                        }}
-                    />
-                )
-            }
-        } else {
-            return (
-                <MiniMapInside
-                    containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                    enlarged={enlarged || dimensions.width > 388}
-                    newSnackbarMessage={newSnackbarMessage}
-                    selection={selection}
-                    setSelection={setSelection}
-                />
-            )
-        }
-    }, [isTargeting, winner, playerAbility, setPlayerAbility, dimensions, remToPxRatio, enlarged, toggleEnlarged, newSnackbarMessage, selection])
+        return (
+            <MiniMapInside
+                gameAbility={winner?.game_ability}
+                playerAbility={!winner?.game_ability ? playerAbility : undefined}
+                containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
+                targeting={targeting}
+                selection={selection}
+                setSelection={setSelection}
+                enlarged={enlarged || dimensions.width > 400}
+                newSnackbarMessage={newSnackbarMessage}
+                onCancel={() => {
+                    toggleEnlarged(false)
+                    setPlayerAbility(undefined)
+                }}
+            />
+        )
+    }, [winner, playerAbility, dimensions, remToPxRatio, targeting, selection, enlarged, toggleEnlarged, newSnackbarMessage, setPlayerAbility])
 
     if (!map) return null
 
@@ -347,10 +360,17 @@ const MiniMapInner = ({
 
                                 {mapInsideRender}
 
-                                {isTargeting && !winner && playerAbility && <TargetHint playerAbility={playerAbility} />}
+                                {targeting && !winner && playerAbility && <TargetHint playerAbility={playerAbility} />}
 
-                                {isTargeting && winner && (
-                                    <TargetTimerCountdown gameAbility={winner.game_ability} setTimeReachZero={setTimeReachZero} endTime={winner.end_time} />
+                                {targeting && winner && (
+                                    <TargetTimerCountdown
+                                        gameAbility={winner.game_ability}
+                                        endTime={winner!.end_time}
+                                        onCountdownExpired={() => {
+                                            newSnackbarMessage("Failed to submit target location on time.", "error")
+                                            resetSelection()
+                                        }}
+                                    />
                                 )}
                             </Box>
                         </ClipThing>

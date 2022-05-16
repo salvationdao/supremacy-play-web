@@ -26,7 +26,6 @@ interface Props {
     playerAbility?: PlayerAbility
     containerDimensions: Dimension
     targeting?: boolean
-    setSubmitted?: Dispatch<SetStateAction<boolean>>
     selection?: MapSelection
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
     enlarged: boolean
@@ -67,7 +66,6 @@ const MiniMapInsideInner = ({
     playerAbility,
     containerDimensions,
     targeting,
-    setSubmitted,
     selection,
     setSelection,
     enlarged,
@@ -160,13 +158,12 @@ const MiniMapInsideInner = ({
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
             console.debug(e)
         } finally {
-            setSubmitted && setSubmitted(true)
             setSelection(undefined)
             if (playerAbility?.location_select_type === LocationSelectType.MECH_SELECT) {
                 setHighlightedMechHash(undefined)
             }
         }
-    }, [state, send, selection, setSubmitted, setSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash, userID])
+    }, [state, send, selection, setSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash, userID])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
@@ -193,7 +190,11 @@ const MiniMapInsideInner = ({
         setDragX(0)
         setDragY(0)
         setMapScale(minScale)
-    }, [containerDimensions, map, enlarged])
+    }, [containerDimensions, map])
+
+    useEffect(() => {
+        console.log("rerendered")
+    }, [map])
 
     // --------------- Minimap - useGesture setup -------------------
     // Prevents map zooming from interfering with the browsers' accessibility zoom
