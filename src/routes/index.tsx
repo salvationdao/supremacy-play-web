@@ -1,8 +1,15 @@
 import { BattleArenaPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
-import { RightDrawerPanels } from "../containers"
 import { SvgChat, SvgRobot } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
+
+export enum RightDrawerHashes {
+    None = "#none",
+    LiveChat = "#live_chat",
+    PlayerList = "#player_list",
+    Assets = "#assets",
+    Socials = "#socials",
+}
 
 interface RouteStruct {
     id: string
@@ -10,8 +17,6 @@ interface RouteStruct {
     exact: boolean
     Component?: () => JSX.Element
     showInLeftDrawer?: boolean
-    rightDrawerPanel?: RightDrawerPanels
-    icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     enable?: boolean
     label: string
 }
@@ -62,20 +67,32 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         enable: false,
         label: "",
     },
+}
+
+interface QueryRouteStruct {
+    id: string
+    hash: string
+    exact: boolean
+    Component?: () => JSX.Element
+    showInLeftDrawer?: boolean
+    icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
+    enable?: boolean
+    label: string
+}
+
+const QUERIES_MAP: { [name: string]: QueryRouteStruct } = {
     war_room: {
         id: "war_room",
-        path: "/war_room",
+        hash: RightDrawerHashes.LiveChat,
         exact: false,
-        rightDrawerPanel: RightDrawerPanels.LiveChat,
         icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
         enable: true,
         label: "War Room",
     },
     active_players: {
         id: "active_players",
-        path: "/active_players",
+        hash: RightDrawerHashes.PlayerList,
         exact: false,
-        rightDrawerPanel: RightDrawerPanels.PlayerList,
         icon: (
             <Box sx={{ pb: ".2rem" }}>
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
@@ -86,24 +103,28 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
     war_machines: {
         id: "war_machines",
-        path: "/war_machines",
+        hash: RightDrawerHashes.Assets,
         exact: false,
-        rightDrawerPanel: RightDrawerPanels.Assets,
         icon: <SvgRobot size="1.3rem" />,
         enable: true,
         label: "War Machines",
     },
     socials: {
         id: "socials",
-        path: "/socials",
+        hash: RightDrawerHashes.Socials,
         exact: false,
-        rightDrawerPanel: RightDrawerPanels.None,
         enable: true,
         label: "Socials",
+        icon: "",
     },
 }
 
 export const ROUTES_ARRAY: RouteStruct[] = []
 for (const [, value] of Object.entries(ROUTES_MAP)) {
     ROUTES_ARRAY.push(value)
+}
+
+export const QUERIES_ARRAY: QueryRouteStruct[] = []
+for (const [, value] of Object.entries(QUERIES_MAP)) {
+    QUERIES_ARRAY.push(value)
 }

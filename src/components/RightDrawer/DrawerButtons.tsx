@@ -1,23 +1,22 @@
 import { Box, Tabs, Theme, useTheme } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
-import { ROUTES_ARRAY } from "../../routes"
-import { RightDrawerPanels } from "../../containers"
+import { QUERIES_ARRAY, RightDrawerHashes } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
 import { TabButton } from "../LeftDrawer/DrawerButtons"
-import { useCallback } from "react"
+import { useEffect } from "react"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 
-export const DrawerButtons = ({
-    activePanel,
-    togglePanel,
-}: {
-    activePanel: RightDrawerPanels
-    togglePanel: (newPanel: RightDrawerPanels, value?: boolean | undefined) => void
-}) => {
+export const DrawerButtons = () => {
     const theme = useTheme<Theme>()
     const location = useLocation()
     const history = useHistory()
+
+    useEffect(() => {
+        if (!location.hash) {
+            history.replace({ pathname: location.pathname, hash: RightDrawerHashes.LiveChat })
+        }
+    }, [location.hash, location.pathname])
 
     return (
         <Box
@@ -42,20 +41,22 @@ export const DrawerButtons = ({
             }}
         >
             <Tabs value="" orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
-                {ROUTES_ARRAY.filter((r) => r.rightDrawerPanel).map((r) => {
+                {QUERIES_ARRAY.map((r) => {
                     return (
                         <TabButton
                             key={r.id}
                             label={r.label}
-                            enable={r.enable}
+                            enable={!!r.enable}
                             value=""
                             icon={r.icon}
                             onClick={() => {
-                                if (!r.rightDrawerPanel) return
-                                history.push(r.path)
-                                togglePanel(r.rightDrawerPanel)
+                                if (location.hash === r.hash) {
+                                    history.push(`${location.pathname}${RightDrawerHashes.None}`)
+                                    return
+                                }
+                                history.push(`${location.pathname}${r.hash}`)
                             }}
-                            isActive={activePanel === r.rightDrawerPanel}
+                            isActive={location.hash === r.hash}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
                         />
