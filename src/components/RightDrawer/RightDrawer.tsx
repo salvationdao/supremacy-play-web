@@ -10,6 +10,7 @@ import { LiveChat } from "./LiveChat/LiveChat"
 import { PlayerList } from "./PlayerList/PlayerList"
 import { useLocation } from "react-router-dom"
 import { RightDrawerHashes } from "../../routes"
+import { Socials } from "./Social/Social"
 
 export const RightDrawer = () => {
     const [isDrawerOpen, toggleIsDrawerOpen] = useToggle()
@@ -27,6 +28,8 @@ export const RightDrawer = () => {
                 return <PlayerList />
             case RightDrawerHashes.Assets:
                 return <Assets />
+            case RightDrawerHashes.Socials:
+                return <Socials />
             default:
                 return null
         }

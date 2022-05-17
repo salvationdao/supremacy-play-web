@@ -69,18 +69,18 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 }
 
-interface QueryRouteStruct {
+//specifically used for right drawer navigation
+interface HashRouteStruct {
     id: string
     hash: string
     exact: boolean
     Component?: () => JSX.Element
-    showInLeftDrawer?: boolean
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     enable?: boolean
     label: string
 }
 
-const QUERIES_MAP: { [name: string]: QueryRouteStruct } = {
+const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     war_room: {
         id: "war_room",
         hash: RightDrawerHashes.LiveChat,
@@ -124,7 +124,7 @@ for (const [, value] of Object.entries(ROUTES_MAP)) {
     ROUTES_ARRAY.push(value)
 }
 
-export const QUERIES_ARRAY: QueryRouteStruct[] = []
-for (const [, value] of Object.entries(QUERIES_MAP)) {
+export const QUERIES_ARRAY: HashRouteStruct[] = []
+for (const [, value] of Object.entries(HASH_ROUTES_MAP)) {
     QUERIES_ARRAY.push(value)
 }
