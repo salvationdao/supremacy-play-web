@@ -1,5 +1,4 @@
-import { useState, useCallback } from "react"
-import { useEffect } from "react"
+import { useCallback } from "react"
 import { SvgLogout } from "../../../../assets"
 import { PASSPORT_SERVER_HOST } from "../../../../constants"
 import { useAuth } from "../../../../containers/auth"
