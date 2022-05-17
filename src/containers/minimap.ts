@@ -63,9 +63,12 @@ export const MiniMapContainer = createContainer(() => {
         if (winner && bribeStage?.phase === "LOCATION_SELECT") {
             // If battle ability is overriding player ability selection
             if (playerAbility) {
+                // Close the map
                 setTargeting(false)
                 setEnlarged(false)
+                setSelection(undefined)
                 const t = setTimeout(() => {
+                    // Then open the map again
                     setEnlarged(true)
                     setTargeting(true)
                 }, 1000)
