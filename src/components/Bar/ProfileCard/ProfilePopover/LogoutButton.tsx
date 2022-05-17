@@ -1,58 +1,39 @@
-import { useState, useCallback } from "react"
-import { useEffect } from "react"
+import { useCallback } from "react"
 import { SvgLogout } from "../../../../assets"
 import { PASSPORT_SERVER_HOST } from "../../../../constants"
 import { useAuth } from "../../../../containers/auth"
 import { colors } from "../../../../theme/theme"
 import { NavButton } from "./NavButton"
+import { useQuery } from "react-fetching-library"
 
 export const LogoutButton = () => {
-    const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const { userID } = useAuth()
-    const [isProcessing, setIsProcessing] = useState(false)
+    const { query: gameserverLogout } = useQuery(
+        {
+            method: "GET",
+            endpoint: `/auth/logout`,
+            responseType: "json",
+            credentials: "include",
+        },
+        false,
+    )
 
-    // Check if login in the iframe has been successful (widnow closed), do clean up
-    useEffect(() => {
-        if (!passportPopup) return
-
-        const popupCheckInterval = setInterval(() => {
-            if (!passportPopup) return
-
-            if (passportPopup.closed) {
-                popupCheckInterval && clearInterval(popupCheckInterval)
-                setIsProcessing(false)
-                setPassportPopup(null)
-                window.location.reload()
-            }
-        }, 1000)
-
-        return () => clearInterval(popupCheckInterval)
-    }, [passportPopup])
+    const { query: passportLogout } = useQuery(
+        {
+            method: "GET",
+            endpoint: `${window.location.protocol}//${PASSPORT_SERVER_HOST}/api/auth/logout`,
+            responseType: "json",
+            credentials: "include",
+        },
+        false,
+    )
 
     const onClick = useCallback(async () => {
-        if (isProcessing) return
+        await passportLogout()
+        await gameserverLogout()
 
-        setIsProcessing(true)
-
-        const href = `${PASSPORT_SERVER_HOST}/api/logout`
-        const width = 520
-        const height = 730
-        const top = window.screenY + (window.outerHeight - height) / 2.5
-        const left = window.screenX + (window.outerWidth - width) / 2
-        const popup = window.open(href, "Logging out of XSYN Passport...", `width=${width},height=${height},left=${left},top=${top},popup=1`)
-        if (!popup) {
-            setIsProcessing(false)
-            return
-        }
-        window.localStorage.removeItem("ring_check_token")
-        setPassportPopup(popup)
-    }, [isProcessing])
-
-    useEffect(() => {
-        if (!userID && passportPopup) {
-            passportPopup.close()
-        }
-    }, [userID, passportPopup])
+        window.location.reload()
+    }, [passportLogout, gameserverLogout])
 
     if (!userID) return null
 
