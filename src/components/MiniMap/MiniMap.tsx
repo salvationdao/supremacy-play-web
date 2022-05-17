@@ -144,8 +144,7 @@ const MiniMapInner = ({ map, winner, playerAbility, isMapOpen, toggleIsMapOpen, 
         }
         setDimensions({ width: newWidth, height: newHeight })
         // NOTE: need to skip the lint or the map will keep resetting to small size on new battle
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [width, height, enlarged, adjustment])
+    }, [width, height, enlarged, adjustment, targeting])
 
     // useEffect(() => {
     //     setSubmitted(false)
