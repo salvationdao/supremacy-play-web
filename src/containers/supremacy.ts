@@ -13,7 +13,7 @@ export const SupremacyContainer = createContainer(() => {
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
-    const [isServerUp, toggleIsServerUp] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
+    const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
