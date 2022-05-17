@@ -4,6 +4,7 @@ import { createContainer } from "unstated-next"
 import { FallbackFaction, useSnackbar } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
+import { useToggle } from "../hooks"
 import { FactionsAll } from "../types"
 import { useWS } from "./ws/useWS"
 
@@ -13,6 +14,7 @@ export const SupremacyContainer = createContainer(() => {
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
+    const [readyToCheckServerState, toggleReadyToCheckServerState] = useToggle()
     const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
@@ -22,9 +24,14 @@ export const SupremacyContainer = createContainer(() => {
 
     // Listens on the server status
     useEffect(() => {
-        console.log({ state })
+        if (!readyToCheckServerState) {
+            setTimeout(() => {
+                toggleReadyToCheckServerState(true)
+            }, 2500)
+        }
+
         toggleIsServerUp(state === WebSocket.OPEN)
-    }, [state, toggleIsServerUp])
+    }, [readyToCheckServerState, state, toggleIsServerUp, toggleReadyToCheckServerState])
 
     // Get main color of each factions
     useEffect(() => {
