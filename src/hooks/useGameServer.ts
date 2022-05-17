@@ -7,17 +7,17 @@ import { useAuth } from "../containers/auth"
 // Fetch
 export const useGameServerCommandsUser = (URI?: string) => {
     const { userID } = useAuth()
-    return useCommands(GAME_SERVER_HOSTNAME, `/user/${userID || "noop"}${URI || "/commander"}`, !!userID)
+    return useCommands(GAME_SERVER_HOSTNAME, `/user/${userID || "noop"}${URI || "/user_commander"}`, !!userID)
 }
 
 export const useGameServerCommandsFaction = (URI?: string) => {
     const { userID, factionID } = useAuth()
-    return useCommands(GAME_SERVER_HOSTNAME, `/faction/${factionID || "noop"}${URI || "/commander"}`, !!userID && !!factionID)
+    return useCommands(GAME_SERVER_HOSTNAME, `/faction/${factionID || "noop"}${URI || "/faction_commander"}`, !!userID && !!factionID)
 }
 
 export const useGameServerCommandsBattleFaction = (URI?: string) => {
     const { userID, factionID } = useAuth()
-    return useCommands(GAME_SERVER_HOSTNAME, `/battle/faction/${factionID || "noop"}${URI || "/commander"}`, !!userID && !!factionID)
+    return useCommands(GAME_SERVER_HOSTNAME, `/battle/faction/${factionID || "noop"}${URI || "/faction_commander"}`, !!userID && !!factionID)
 }
 
 export const useGameServerCommands = (URI?: string) => {

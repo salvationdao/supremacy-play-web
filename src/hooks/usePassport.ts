@@ -7,7 +7,7 @@ import { useAuth } from "../containers/auth"
 // Fetch
 export const usePassportCommandsUser = (URI?: string) => {
     const { userID } = useAuth()
-    return useCommands(PASSPORT_SERVER_HOST, `/user/${userID || "noop"}${URI || "/commander"}`, !!userID)
+    return useCommands(PASSPORT_SERVER_HOST, `/user/${userID || "noop"}${URI || "/user_commander"}`, !!userID)
 }
 
 export const usePassportCommands = (URI?: string) => {

@@ -5,7 +5,6 @@ export enum GameServerKeys {
     SubMechLiveStats = "WAR:MACHINE:STAT:UPDATED",
     SubBattleAbilityProgress = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
     SubAbilityProgress = "ABILITY:PRICE:UPDATED",
-    SubMechAbilityProgress = "MECH:ABILITY:PRICE:UPDATED",
 
     // Auth container
     UserSubscribe = "USER:SUBSCRIBE",
