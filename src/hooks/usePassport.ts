@@ -1,6 +1,6 @@
 import { SubProps, useSubscription } from "../containers/ws"
 import { PASSPORT_SERVER_HOST } from "../constants"
-import useCommands from "../containers/ws/useCommands"
+import { useCommands } from "../containers/ws/useCommands"
 import { DataType } from "../containers/ws/util"
 import { useAuth } from "../containers/auth"
 
