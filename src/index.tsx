@@ -16,8 +16,8 @@ import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors } from "./theme/theme"
-import { WSProvider } from "./containers/ws/context"
 import { LoginRedirect } from "./pages/LoginRedirect"
+import { ws } from "./containers/ws"
 
 const AppInner = () => {
     useAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
@@ -117,6 +117,8 @@ const client = createClient({
     responseInterceptors: [],
 })
 
+ws.Initialise({ defaultHost: GAME_SERVER_HOSTNAME })
+
 const tourProviderProps = {
     children: <AppInner />,
     steps: [],
@@ -133,10 +135,9 @@ const App = () => {
             <SnackBarProvider>
                 <ClientContextProvider client={client}>
                     <AuthProvider>
-                        <WSProvider defaultHost={GAME_SERVER_HOSTNAME} commanderURI={`/user/commander`}>
-                            <SupremacyProvider>
-                                <WalletProvider>
-                                    <BarProvider>
+                        <SupremacyProvider>
+                            <WalletProvider>
+                                <BarProvider>
                                         <TourProvider {...tourProviderProps}>
                                             <UserUpdater />
                                             <BrowserRouter>
@@ -147,10 +148,9 @@ const App = () => {
                                                 </Switch>
                                             </BrowserRouter>
                                         </TourProvider>
-                                    </BarProvider>
-                                </WalletProvider>
-                            </SupremacyProvider>
-                        </WSProvider>
+                                </BarProvider>
+                            </WalletProvider>
+                        </SupremacyProvider>
                     </AuthProvider>
                 </ClientContextProvider>
             </SnackBarProvider>
