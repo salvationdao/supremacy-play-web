@@ -8,16 +8,19 @@ import { Assets } from "./Assets/Assets"
 import { DrawerButtons } from "./DrawerButtons"
 import { LiveChat } from "./LiveChat/LiveChat"
 import { PlayerList } from "./PlayerList/PlayerList"
+import { useLocation } from "react-router-dom"
 
 export const RightDrawer = () => {
     const [isDrawerOpen, toggleIsDrawerOpen] = useToggle()
     const { activePanel, togglePanel } = useRightDrawer()
+    const location = useLocation()
 
     useEffect(() => {
         toggleIsDrawerOpen(activePanel !== RightDrawerPanels.None)
     }, [activePanel, toggleIsDrawerOpen])
 
     const drawerContent = useMemo(() => {
+        console.log(activePanel)
         switch (activePanel) {
             case RightDrawerPanels.LiveChat:
                 return <LiveChat />
@@ -28,7 +31,7 @@ export const RightDrawer = () => {
             default:
                 return null
         }
-    }, [activePanel])
+    }, [activePanel, location.pathname])
 
     return (
         <ChatProvider>

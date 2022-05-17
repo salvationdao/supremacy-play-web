@@ -72,7 +72,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
     )
 }
 
-const TabButton = ({
+export const TabButton = ({
     label,
     value,
     enable,
