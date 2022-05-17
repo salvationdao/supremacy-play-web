@@ -2,7 +2,6 @@ import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { ClipThing, FactionAbilityItem } from ".."
 import { GenericWarMachinePNG } from "../../assets"
-import { GameServerKeys } from "../../keys"
 import { Faction, GameAbility, WarMachineState } from "../../types"
 import { ContributorAmount } from "../BattleStats/ContributorAmount"
 
@@ -92,7 +91,7 @@ export const WarMachineAbilitiesPopover = ({
                                             gameAbility={ga}
                                             abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
                                             clipSlantSize="5px"
-                                            progressWSKey={GameServerKeys.SubMechAbilityProgress}
+                                            progressWsURI={`/ability/mech/${warMachine.participantID}`}
                                         />
                                     </Box>
                                 ))}
