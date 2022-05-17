@@ -5,7 +5,7 @@ import { FallbackFaction, useSnackbar } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
 import { FactionsAll } from "../types"
-import useWS from "./ws/useWS"
+import { useWS } from "./ws/useWS"
 
 export const SupremacyContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
