@@ -1,11 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useGesture } from "@use-gesture/react"
 import moment from "moment"
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FancyButton, MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
-import { Severity, useGame, useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../containers"
-import { useMiniMap } from "../../containers/minimap"
+import { Severity, SocketState, WSSendFn } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -21,63 +20,52 @@ export interface MapSelection {
     mechHash?: string
 }
 
-interface Props {
+interface PropsInner {
     gameAbility?: GameAbility
-    playerAbility?: PlayerAbility
     containerDimensions: Dimension
+    // useGameServerAuth
+    userID?: string
+    factionID?: string
+    // useGameServerWebsocket
+    state: SocketState
+    send: WSSendFn
+    subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
+    // useGame
+    map?: Map
+    warMachines?: WarMachineState[]
+    // useMiniMap
     enlarged: boolean
     targeting: boolean
     selection?: MapSelection
-    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
-    newSnackbarMessage: (message: string, severity?: Severity) => void
-    onCancel?: () => void
-}
-
-export const MiniMapInside = (props: Props) => {
-    const { userID } = useGameServerAuth()
-    const { state, send } = useGameServerWebsocket()
-    const { map, warMachines } = useGame()
-    const { setHighlightedMechHash, resetSelection } = useMiniMap()
-
-    return (
-        <MiniMapInsideInner
-            {...props}
-            state={state}
-            send={send}
-            map={map}
-            warMachines={warMachines}
-            setHighlightedMechHash={setHighlightedMechHash}
-            userID={userID}
-            resetSelection={resetSelection}
-        />
-    )
-}
-
-interface PropsInner extends Props, Partial<WebSocketProperties> {
-    map?: Map
-    warMachines?: WarMachineState[]
-    setHighlightedMechHash: Dispatch<SetStateAction<string | undefined>>
-    userID?: string
+    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
     resetSelection: () => void
+    highlightedMechHash?: string
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
+    // useConsumables
+    playerAbility?: PlayerAbility
+    // useSnackbar
+    newSnackbarMessage: (message: string, severity?: Severity) => void
 }
 
-const MiniMapInsideInner = ({
+export const MiniMapInside = ({
+    gameAbility,
+    containerDimensions,
+    userID,
+    factionID,
     state,
     send,
-    gameAbility,
-    playerAbility,
-    containerDimensions,
+    subscribeWarMachineStatNetMessage,
+    map,
+    warMachines,
+    enlarged,
     targeting,
     selection,
     setSelection,
-    enlarged,
-    map,
-    warMachines,
-    newSnackbarMessage,
-    setHighlightedMechHash,
-    onCancel,
-    userID,
     resetSelection,
+    highlightedMechHash,
+    setHighlightedMechHash,
+    playerAbility,
+    newSnackbarMessage,
 }: PropsInner) => {
     const mapElement = useRef<HTMLDivElement>()
     // Setup use-gesture props
@@ -400,14 +388,20 @@ const MiniMapInsideInner = ({
                     />
 
                     <MapWarMachines
-                        map={map}
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
-                        warMachines={warMachines || []}
+                        userID={userID}
+                        factionID={factionID}
+                        state={state}
+                        subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
+                        map={map}
+                        warMachines={warMachines}
                         enlarged={enlarged}
                         targeting={targeting}
-                        playerAbility={playerAbility}
                         setSelection={setSelection}
+                        highlightedMechHash={highlightedMechHash}
+                        setHighlightedMechHash={setHighlightedMechHash}
+                        playerAbility={playerAbility}
                     />
 
                     {/* Map Image */}
@@ -437,7 +431,7 @@ const MiniMapInsideInner = ({
                     </Box>
                 </Box>
             </Stack>
-            {onCancel && targeting && !gameAbility && playerAbility && (
+            {targeting && !gameAbility && playerAbility && (
                 <FancyButton
                     excludeCaret
                     clipThingsProps={{
@@ -456,7 +450,7 @@ const MiniMapInsideInner = ({
                         pb: ".24rem",
                         minWidth: "2rem",
                     }}
-                    onClick={() => onCancel()}
+                    onClick={resetSelection}
                 >
                     <Typography
                         sx={{

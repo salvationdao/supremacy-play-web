@@ -4,8 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from ".."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull, SvgSupToken } from "../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
-import { useMiniMap } from "../../containers/minimap"
+import { SocketState } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
@@ -27,19 +26,24 @@ interface WarMachineItemProps {
     warMachine: WarMachineState
     scale: number
     shouldBeExpanded: boolean
+    // useGameServerAuth
+    userID?: string
+    factionID?: string
+    // useGameServerWebsocket
+    state: SocketState
+    subscribe: <T>(key: string, callback: (payload: T) => void, args?: any, listenOnly?: boolean | undefined) => () => void
+    // useMiniMap
+    highlightedMechHash?: string
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
 export const WarMachineItem = (props: WarMachineItemProps) => {
-    const { state, subscribe } = useGameServerWebsocket()
-    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
-    const { userID, factionID } = useGameServerAuth()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
     const [isAlive, toggleIsAlive] = useToggle(true)
 
-    const {
-        warMachine: { hash, participantID, factionID: warMachineFactionID },
-    } = props
+    const { warMachine, scale, shouldBeExpanded, userID, factionID, state, subscribe, highlightedMechHash, setHighlightedMechHash } = props
+    const { hash, participantID, factionID: warMachineFactionID } = warMachine
 
     // If warmachine is updated, reset destroy info
     useEffect(() => {
@@ -76,28 +80,35 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
 
     return (
         <WarMachineItemInner
-            {...props}
-            userID={userID}
-            factionID={factionID}
-            highlightedMechHash={highlightedMechHash}
-            setHighlightedMechHash={setHighlightedMechHash}
+            warMachine={warMachine}
+            scale={scale}
+            shouldBeExpanded={shouldBeExpanded}
             gameAbilities={gameAbilities}
             warMachineDestroyedRecord={warMachineDestroyedRecord}
             isAlive={isAlive}
             toggleIsAlive={toggleIsAlive}
+            userID={userID}
+            factionID={factionID}
+            highlightedMechHash={highlightedMechHash}
+            setHighlightedMechHash={setHighlightedMechHash}
         />
     )
 }
 
-interface WarMachineItemInnerProps extends WarMachineItemProps {
-    userID?: string
-    factionID?: string
-    highlightedMechHash?: string
-    setHighlightedMechHash: (s?: string) => void
+interface WarMachineItemInnerProps {
+    warMachine: WarMachineState
+    scale: number
+    shouldBeExpanded: boolean
     gameAbilities?: GameAbility[]
     warMachineDestroyedRecord?: WarMachineDestroyedRecord
     isAlive: boolean
     toggleIsAlive: (value: boolean) => void
+    // useGameServerAuth
+    userID?: string
+    factionID?: string
+    // useMiniMap
+    highlightedMechHash?: string
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
 const WarMachineItemInner = ({

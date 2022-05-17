@@ -1,8 +1,7 @@
 import { Box, Stack } from "@mui/material"
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
-import { useGameServerAuth, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
-import { useMiniMap } from "../../../containers/minimap"
+import { SocketState, WebSocketProperties } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, Map, NetMessageTickWarMachine, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
 import { MapSelection } from "../MiniMapInside"
@@ -10,19 +9,41 @@ import { MapSelection } from "../MiniMapInside"
 interface MapWarMachineProps {
     gridWidth: number
     gridHeight: number
-    warMachines: WarMachineState[]
-
-    map: Map
+    // useGameServerAuth
+    userID?: string
+    factionID?: string
+    // useGameServerWebsocket
+    state: SocketState
+    subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
+    // useGame
+    map?: Map
+    warMachines?: WarMachineState[]
+    // useMiniMap
     enlarged: boolean
-    targeting?: boolean
+    targeting: boolean
+    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
+    highlightedMechHash?: string
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
+    // useConsumables
     playerAbility?: PlayerAbility
-    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
 }
 
-export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting, playerAbility, setSelection }: MapWarMachineProps) => {
-    const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
-    const { userID, factionID } = useGameServerAuth()
-    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
+export const MapWarMachines = ({
+    gridWidth,
+    gridHeight,
+    userID,
+    factionID,
+    state,
+    subscribeWarMachineStatNetMessage,
+    map,
+    warMachines,
+    enlarged,
+    targeting,
+    setSelection,
+    highlightedMechHash,
+    setHighlightedMechHash,
+    playerAbility,
+}: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
@@ -54,16 +75,22 @@ interface Props extends Partial<WebSocketProperties> {
     gridWidth: number
     gridHeight: number
     warMachine: WarMachineState
+    isSpawnedAI?: boolean
     map: Map
-    enlarged: boolean
-    targeting?: boolean
+    // useGameServerAuth
     userID?: string
     factionID?: string
+    // useGameServerWebsocket
+    state: SocketState
+    subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
+    // useMiniMap
+    enlarged: boolean
+    targeting: boolean
+    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
     highlightedMechHash?: string
-    setHighlightedMechHash: Dispatch<SetStateAction<string | undefined>>
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
+    // useConsumables
     playerAbility?: PlayerAbility
-    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
-    isSpawnedAI?: boolean
 }
 
 const MapWarMachine = ({

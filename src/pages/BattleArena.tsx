@@ -9,7 +9,7 @@ import {
     Notifications,
     Stream,
     VotingSystem,
-    WarMachineStats
+    WarMachineStats,
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../containers"
@@ -22,15 +22,15 @@ export const BattleArenaPage = () => {
     return (
         <StreamProvider>
             <GameProvider>
-                    <UserConsumablesProvider>
-                        <DimensionProvider>
-                            <OverlayTogglesProvider>
-                <MiniMapProvider>
+                <UserConsumablesProvider>
+                    <DimensionProvider>
+                        <OverlayTogglesProvider>
+                            <MiniMapProvider>
                                 <BattleArenaPageInner />
-                </MiniMapProvider>
-                            </OverlayTogglesProvider>
-                        </DimensionProvider>
-                    </UserConsumablesProvider>
+                            </MiniMapProvider>
+                        </OverlayTogglesProvider>
+                    </DimensionProvider>
+                </UserConsumablesProvider>
             </GameProvider>
         </StreamProvider>
     )
