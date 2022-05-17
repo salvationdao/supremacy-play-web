@@ -17,14 +17,6 @@ export const WalletContainer = createContainer(() => {
             key: PassportServerKeys.SubscribeWallet,
         },
         (payload) => {
-            console.log(payload)
-            console.log(payload)
-            console.log(payload)
-            console.log(payload)
-            console.log(payload)
-            console.log(payload)
-            console.log(payload)
-            console.log(payload)
             setOnWorldSupsRaw(payload)
             setOnworldSups(new BigNumber(payload))
         },
