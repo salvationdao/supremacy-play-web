@@ -7,11 +7,11 @@ import { useAuth } from "../containers/auth"
 // Fetch
 export const usePassportCommandsUser = (URI?: string) => {
     const { userID } = useAuth()
-    return useCommands({ host: PASSPORT_SERVER_HOST, URI: `/user/${userID || "noop"}${URI || "/user_commander"}`, ready: !!userID })
+    return useCommands({ host: PASSPORT_SERVER_HOST, URI: `/user/${userID}${URI}`, ready: !!userID })
 }
 
 export const usePassportCommands = (URI?: string) => {
-    return useCommands({ host: PASSPORT_SERVER_HOST, URI: `${URI || "/public/commander"}` })
+    return useCommands({ host: PASSPORT_SERVER_HOST, URI: `${URI}` })
 }
 
 // Subscription
