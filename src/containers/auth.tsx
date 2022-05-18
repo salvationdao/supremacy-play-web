@@ -109,7 +109,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
-        const href = `${PASSPORT_WEB}/nosidebar/login?omitSideBar=true&&tenant=supremacy&redirectURL=${encodeURIComponent(
+        const href = `${PASSPORT_WEB}/external/login?omitSideBar=true&&tenant=supremacy&redirectURL=${encodeURIComponent(
             `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/xsyn`,
         )}`
         const popup = window.open(href, "Connect with XSYN Passport", `width=${width},height=${height},left=${left},top=${top},popup=1`)
