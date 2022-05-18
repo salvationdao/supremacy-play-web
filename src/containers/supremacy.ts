@@ -5,7 +5,7 @@ import { FallbackFaction, useSnackbar } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
 import { FactionsAll } from "../types"
-import useWS from "./ws/useWS"
+import { useWS } from "./ws/useWS"
 
 export const SupremacyContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
@@ -13,7 +13,7 @@ export const SupremacyContainer = createContainer(() => {
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
-    const [isServerUp, toggleIsServerUp] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
+    const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
