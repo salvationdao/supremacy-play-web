@@ -8,7 +8,7 @@ import { useInactivity } from "../hooks/useInactivity"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { useTheme } from "./theme"
-import { GameserverLoginCheck, PassportLoginCheck } from "../fetching"
+import { GameServerLoginCheck, PassportLoginCheck } from "../fetching"
 import { useSupremacy } from "."
 import { colors } from "../theme/theme"
 
@@ -86,9 +86,10 @@ export const AuthContext = createContext<AuthState>(initialState)
 export const AuthProvider: React.FC = ({ children }) => {
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
+    const popupCheckInterval = useRef<NodeJS.Timer>()
 
     const [userFromPassport, setUserFromPassport] = useState<User>()
-    const [isLoginGameserver, setIsLoginGameserver] = useState(false)
+    const [isLoginGameServer, setIsLoginGameServer] = useState(false)
     const [user, setUser] = useState<User>(initialState.user)
     const userID = user.id
     const factionID = user.faction_id
@@ -98,28 +99,74 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
-    const checkPassportLogin = useCallback(() => {
-        if (userFromPassport) return
-        passportLoginCheck().then((resp) => {
-            if (resp.error || !resp.payload) {
-                setUserFromPassport(undefined)
-                return
-            }
-            setUserFromPassport(resp.payload)
-        })
-    }, [passportLoginCheck, userFromPassport])
+    const { query: gameServerLoginCheck } = useQuery(GameServerLoginCheck(), false)
 
-    const { query: gameserverLoginCheck } = useQuery(GameserverLoginCheck(), false)
-    const checkGameserverLogin = useCallback(() => {
-        if (isLoginGameserver) return
-        gameserverLoginCheck().then((resp) => {
-            if (resp.error || !resp.payload) {
-                setIsLoginGameserver(false)
-                return
+    const authCheckCallback = useCallback(
+        (event?: MessageEvent) => {
+            if (event && !("token" in event.data)) return
+
+            // Check passport server login
+            if (!userFromPassport) {
+                passportLoginCheck().then((resp) => {
+                    if (resp.error || !resp.payload) {
+                        setUserFromPassport(undefined)
+                        return
+                    }
+                    setUserFromPassport(resp.payload)
+                })
             }
-            setIsLoginGameserver(true)
-        })
-    }, [gameserverLoginCheck, isLoginGameserver])
+
+            // Check game server login
+            if (!isLoginGameServer) {
+                gameServerLoginCheck().then((resp) => {
+                    if (resp.error || !resp.payload) {
+                        setIsLoginGameServer(false)
+                        return
+                    }
+                    setIsLoginGameServer(true)
+                })
+            }
+        },
+        [gameServerLoginCheck, isLoginGameServer, passportLoginCheck, userFromPassport],
+    )
+
+    useEffect(() => {
+        if (!userFromPassport || !isLoginGameServer) {
+            setIsLoggingIn(false)
+            return
+        }
+        setUser(userFromPassport)
+        setIsLoggingIn(false)
+    }, [userFromPassport, isLoginGameServer, setIsLoggingIn])
+
+    // Check if login in the iframe has been successful (window closed), if closed then do clean up
+    useEffect(() => {
+        if (!passportPopup) return
+
+        // Listening for a token coming from the iframe
+        window.addEventListener("message", authCheckCallback, false)
+
+        const clearPopupCheckInterval = () => {
+            popupCheckInterval.current && clearInterval(popupCheckInterval.current)
+        }
+
+        clearPopupCheckInterval()
+        popupCheckInterval.current = setInterval(() => {
+            if (!passportPopup) return clearPopupCheckInterval()
+            if (passportPopup.closed) {
+                clearPopupCheckInterval()
+                setIsLoggingIn(false)
+                setPassportPopup(null)
+                window.removeEventListener("message", authCheckCallback)
+            }
+        }, 1000)
+
+        return clearPopupCheckInterval
+    }, [passportPopup, authCheckCallback])
+
+    useEffect(() => {
+        authCheckCallback()
+    }, [authCheckCallback])
 
     // Open iframe to passport web to login
     const onLogInClick = useCallback(async () => {
@@ -134,52 +181,10 @@ export const AuthProvider: React.FC = ({ children }) => {
             `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/xsyn`,
         )}`
         const popup = window.open(href, "Connect with XSYN Passport", `width=${width},height=${height},left=${left},top=${top},popup=1`)
-        if (!popup) {
-            setIsLoggingIn(false)
-            return
-        }
+        if (!popup) return setIsLoggingIn(false)
 
         setPassportPopup(popup)
     }, [isLoggingIn])
-
-    const authCheckCallback = useCallback(() => {
-        checkPassportLogin()
-        checkGameserverLogin()
-    }, [checkPassportLogin, checkGameserverLogin])
-
-    useEffect(() => {
-        if (!userFromPassport || !isLoginGameserver) {
-            setIsLoggingIn(false)
-            return
-        }
-        setUser(userFromPassport)
-        setIsLoggingIn(false)
-    }, [userFromPassport, isLoginGameserver, setIsLoggingIn])
-
-    // Check if login in the iframe has been successful (window closed), if closed then do clean up
-    useEffect(() => {
-        if (!passportPopup) return
-
-        const popupCheckInterval = setInterval(() => {
-            if (!passportPopup) return
-
-            // Listening for a token coming from the iframe
-            window.addEventListener("message", authCheckCallback, false)
-
-            if (passportPopup.closed) {
-                popupCheckInterval && clearInterval(popupCheckInterval)
-                setIsLoggingIn(false)
-                setPassportPopup(null)
-                window.removeEventListener("message", authCheckCallback)
-            }
-        }, 1000)
-
-        return () => clearInterval(popupCheckInterval)
-    }, [passportPopup, authCheckCallback])
-
-    useEffect(() => {
-        authCheckCallback()
-    }, [authCheckCallback])
 
     return (
         <AuthContext.Provider
