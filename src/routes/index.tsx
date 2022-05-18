@@ -3,14 +3,6 @@ import { SvgChat, SvgRobot } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
 
-export enum RightDrawerHashes {
-    None = "#none",
-    LiveChat = "#live_chat",
-    PlayerList = "#player_list",
-    Assets = "#assets",
-    Socials = "#socials",
-}
-
 interface RouteStruct {
     id: string
     path: string
@@ -69,11 +61,19 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 }
 
-//specifically used for right drawer navigation
+// Specifically used for right drawer navigation
+
+export enum RightDrawerHashes {
+    None = "#none",
+    LiveChat = "#live_chat",
+    PlayerList = "#player_list",
+    Assets = "#assets",
+    Socials = "#socials",
+}
+
 interface HashRouteStruct {
     id: string
     hash: string
-    exact: boolean
     Component?: () => JSX.Element
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     enable?: boolean
@@ -84,7 +84,6 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     war_room: {
         id: "war_room",
         hash: RightDrawerHashes.LiveChat,
-        exact: false,
         icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
         enable: true,
         label: "War Room",
@@ -92,7 +91,6 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     active_players: {
         id: "active_players",
         hash: RightDrawerHashes.PlayerList,
-        exact: false,
         icon: (
             <Box sx={{ pb: ".2rem" }}>
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
@@ -104,7 +102,6 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     war_machines: {
         id: "war_machines",
         hash: RightDrawerHashes.Assets,
-        exact: false,
         icon: <SvgRobot size="1.3rem" />,
         enable: true,
         label: "War Machines",
@@ -112,7 +109,6 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     socials: {
         id: "socials",
         hash: RightDrawerHashes.Socials,
-        exact: false,
         enable: true,
         label: "Socials",
         icon: "",
@@ -124,7 +120,7 @@ for (const [, value] of Object.entries(ROUTES_MAP)) {
     ROUTES_ARRAY.push(value)
 }
 
-export const QUERIES_ARRAY: HashRouteStruct[] = []
+export const HASH_ROUTES_ARRAY: HashRouteStruct[] = []
 for (const [, value] of Object.entries(HASH_ROUTES_MAP)) {
-    QUERIES_ARRAY.push(value)
+    HASH_ROUTES_ARRAY.push(value)
 }
