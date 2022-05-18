@@ -4,18 +4,18 @@ import moment from "moment"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FancyButton, MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
-import { Severity, SocketState, WSSendFn } from "../../containers"
+import { Severity } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { Dimension, GameAbility, GameCoords, LocationSelectType, Map, PlayerAbility, WarMachineState } from "../../types"
+import { CellCoords, Dimension, Faction, GameAbility, LocationSelectType, Map, PlayerAbility, WarMachineState } from "../../types"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
-    startCoords?: GameCoords
+    startCoords?: CellCoords
     // end coords (only used for LINE_SELECT abilities)
-    endCoords?: GameCoords
+    endCoords?: CellCoords
     // mech hash (only used for MECH_SELECT abilities)
     mechHash?: string
 }
@@ -23,16 +23,14 @@ export interface MapSelection {
 interface PropsInner {
     gameAbility?: GameAbility
     containerDimensions: Dimension
-    // useGameServerAuth
+    // useAuth
     userID?: string
     factionID?: string
-    // useGameServerWebsocket
-    state: SocketState
-    send: WSSendFn
-    subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
     // useGame
     map?: Map
     warMachines?: WarMachineState[]
+    // useSupremacy
+    getFaction: (factionID: string) => Faction
     // useMiniMap
     enlarged: boolean
     targeting: boolean
@@ -52,11 +50,9 @@ export const MiniMapInside = ({
     containerDimensions,
     userID,
     factionID,
-    state,
-    send,
-    subscribeWarMachineStatNetMessage,
     map,
     warMachines,
+    getFaction,
     enlarged,
     targeting,
     selection,
@@ -79,7 +75,7 @@ export const MiniMapInside = ({
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
     const onConfirm = useCallback(async () => {
-        if (state !== WebSocket.OPEN || !selection || !send || !userID) return
+        if (!selection) return
         try {
             if (gameAbility) {
                 if (!selection.startCoords) {
@@ -93,8 +89,8 @@ export const MiniMapInside = ({
                 let payload: {
                     blueprint_ability_id: string
                     location_select_type: string
-                    start_coords?: GameCoords
-                    end_coords?: GameCoords
+                    start_coords?: CellCoords
+                    end_coords?: CellCoords
                     mech_hash?: string
                 } | null = null
                 switch (playerAbility.location_select_type) {
@@ -153,7 +149,7 @@ export const MiniMapInside = ({
             console.debug(e)
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
         }
-    }, [state, send, selection, resetSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash, userID])
+    }, [send, selection, resetSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
@@ -392,10 +388,9 @@ export const MiniMapInside = ({
                         gridHeight={gridHeight}
                         userID={userID}
                         factionID={factionID}
-                        state={state}
-                        subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
                         map={map}
                         warMachines={warMachines}
+                        getFaction={getFaction}
                         enlarged={enlarged}
                         targeting={targeting}
                         setSelection={setSelection}

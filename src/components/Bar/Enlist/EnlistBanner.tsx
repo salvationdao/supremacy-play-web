@@ -3,27 +3,30 @@ import { ReactNode, useMemo } from "react"
 import { BarExpandable, TooltipHelper } from "../.."
 import { SvgAbility, SvgBostonKillIcon, SvgDeath, SvgRedMoutainKillIcon, SvgView, SvgWrapperProps, SvgZaibatsuKillIcon } from "../../../assets"
 import { colors, fonts } from "../../../theme/theme"
-import { useSupremacy, useGameServerAuth, FactionsAll } from "../../../containers"
-import { FactionIDs, PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { User, UserRank, UserStat } from "../../../types"
+import { useSupremacy, useAuth } from "../../../containers"
+import { FactionIDs } from "../../../constants"
+import { Faction, User, UserRank, UserStat } from "../../../types"
 import { getUserRankDeets } from "../../../helpers"
+import { useTheme } from "../../../containers/theme"
 
 export const EnlistBanner = () => {
-    const { user, userStat, userRank } = useGameServerAuth()
-    const { battleIdentifier, factionsAll } = useSupremacy()
+    const { userID, user, userStat, userRank } = useAuth()
+    const { battleIdentifier, getFaction } = useSupremacy()
 
-    return <EnlistBannerInner user={user} userRank={userRank} battleIdentifier={battleIdentifier} factionsAll={factionsAll} userStat={userStat} />
+    return <EnlistBannerInner userID={userID} user={user} userRank={userRank} battleIdentifier={battleIdentifier} getFaction={getFaction} userStat={userStat} />
 }
 
 interface PropsInner {
-    user?: User
+    userID?: string
+    user: User
     battleIdentifier?: number
-    factionsAll?: FactionsAll
+    getFaction: (factionID: string) => Faction
     userStat: UserStat
-    userRank?: UserRank
+    userRank: UserRank
 }
 
-const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, userRank }: PropsInner) => {
+const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userStat, userRank }: PropsInner) => {
+    const theme = useTheme()
     const { total_ability_triggered, ability_kill_count, last_seven_days_kills, view_battle_count, mech_kill_count } = userStat
     const rankDeets = useMemo(() => (userRank ? getUserRankDeets(userRank, ".9rem", "1.1rem") : undefined), [userRank])
 
@@ -42,17 +45,13 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
         }
     }, [user])
 
-    if (!user || !user.faction || !factionsAll || !userStat) {
+    if (!userID) {
         return (
             <Stack alignItems="center" sx={{ width: "13rem" }}>
                 <CircularProgress size="1.8rem" sx={{ color: colors.neonBlue }} />
             </Stack>
         )
     }
-
-    const {
-        theme: { primary },
-    } = user.faction
 
     return (
         <BarExpandable
@@ -63,13 +62,13 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
                     sx={{
                         width: "2.8rem",
                         height: "2.8rem",
-                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction_id]?.logo_blob_id})`,
+                        backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "contain",
-                        backgroundColor: primary,
+                        backgroundColor: theme.factionTheme.primary,
                         borderRadius: 1,
-                        border: `${primary} 2px solid`,
+                        border: `${theme.factionTheme.primary} 2px solid`,
                     }}
                 />
             }
@@ -80,7 +79,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
                     mx: "1.2rem",
                     px: "2.24rem",
                     height: "100%",
-                    background: `${primary}10`,
+                    background: `${theme.factionTheme.primary}10`,
                 }}
             >
                 <Stack
@@ -110,7 +109,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
                             width: "3.8rem",
                             height: "3.8rem",
                             flexShrink: 0,
-                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[user.faction_id]?.logo_blob_id})`,
+                            backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
@@ -143,7 +142,7 @@ const EnlistBannerInner = ({ user, battleIdentifier, factionsAll, userStat, user
                         content={`${view_battle_count || 0}`}
                         PrefixSvg={<SvgView size="1.1rem" />}
                     />
-                    {userRank && rankDeets && <BannerInfo title={`RANK`} tooltip={rankDeets.desc} content={rankDeets.title} PrefixSvg={rankDeets.icon} />}
+                    {rankDeets && <BannerInfo title={`RANK`} tooltip={rankDeets.desc} content={rankDeets.title} PrefixSvg={rankDeets.icon} />}
                 </Stack>
             </Box>
         </BarExpandable>

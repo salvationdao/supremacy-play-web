@@ -1,14 +1,14 @@
 import { useState, useCallback } from "react"
 import { useEffect } from "react"
 import { SvgLogout } from "../../../../assets"
-import { usePassportServerAuth } from "../../../../containers"
-import { PASSPORT_WEB } from "../../../../constants"
+import { PASSPORT_SERVER_HOST } from "../../../../constants"
+import { useAuth } from "../../../../containers/auth"
 import { colors } from "../../../../theme/theme"
 import { NavButton } from "./NavButton"
 
 export const LogoutButton = () => {
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
-    const { userID, sessionID } = usePassportServerAuth()
+    const { userID } = useAuth()
     const [isProcessing, setIsProcessing] = useState(false)
 
     // Check if login in the iframe has been successful (widnow closed), do clean up
@@ -34,7 +34,7 @@ export const LogoutButton = () => {
 
         setIsProcessing(true)
 
-        const href = `${PASSPORT_WEB}nosidebar/logout?sessionID=${sessionID}`
+        const href = `${PASSPORT_SERVER_HOST}/api/logout`
         const width = 520
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5
@@ -46,7 +46,7 @@ export const LogoutButton = () => {
         }
         window.localStorage.removeItem("ring_check_token")
         setPassportPopup(popup)
-    }, [isProcessing, sessionID])
+    }, [isProcessing])
 
     useEffect(() => {
         if (!userID && passportPopup) {

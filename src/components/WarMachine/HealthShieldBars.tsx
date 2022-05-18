@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { Box, Stack } from "@mui/material"
-import { NetMessageTickWarMachine, WarMachineState } from "../../types"
+import { WarMachineLiveState, WarMachineState } from "../../types"
 import { BoxSlanted, SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
 import { colors } from "../../theme/theme"
-import { useGameServerWebsocket } from "../../containers"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
 
 type LayoutType = "vertical" | "horizontal"
 
@@ -17,7 +18,6 @@ export const HealthShieldBars = ({
     toggleIsAlive: (value: boolean) => void
 }) => {
     const { participantID, maxHealth, maxShield } = warMachine
-    const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
 
@@ -25,17 +25,19 @@ export const HealthShieldBars = ({
     const shieldPercent = useMemo(() => (shield / maxShield) * 100, [shield, maxShield])
 
     // Listen on current war machine changes
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
-
-        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
+    useGameServerSubscription<WarMachineLiveState | undefined>(
+        {
+            URI: `/battle/mech/${participantID}`,
+            key: GameServerKeys.SubMechLiveStats,
+        },
+        (payload) => {
             if (payload?.health !== undefined) {
                 setHealth(payload.health)
                 if (payload.health <= 0) toggleIsAlive(false)
             }
             if (payload?.shield !== undefined) setShield(payload.shield)
-        })
-    }, [participantID, state, subscribeWarMachineStatNetMessage, toggleIsAlive])
+        },
+    )
 
     return <HealthShieldBarsInner type={type} health={health} healthPercent={healthPercent} shieldPercent={shieldPercent} maxHealth={maxHealth} />
 }

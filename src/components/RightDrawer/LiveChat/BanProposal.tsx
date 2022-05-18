@@ -2,9 +2,10 @@ import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
 import { SvgCooldown, SvgInfoCircular } from "../../../assets"
-import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../../containers"
+import { useChat, useAuth } from "../../../containers"
 import { snakeToTitle } from "../../../helpers"
 import { useTimer, useToggle } from "../../../hooks"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { BanProposalStruct } from "../../../types/chat"
@@ -50,35 +51,33 @@ const BanProposalInner = ({
     outOfTime: boolean
     toggleOutOfTime: (value?: boolean | undefined) => void
 }) => {
-    const { state, send } = useGameServerWebsocket()
-    const { userStat } = useGameServerAuth()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { userStat } = useAuth()
     const [submitted, setSubmitted] = useState(!!banProposal.decision)
     const [submittedVote, setSubmittedVote] = useState(banProposal.decision?.is_agreed)
     const [error, setError] = useState("")
 
     const submitVote = useCallback(
         async (isAgree: boolean) => {
-            if (state !== WebSocket.OPEN || !send) return
             try {
                 const resp = await send<boolean, { punish_vote_id: string; is_agreed: boolean }>(GameServerKeys.SubmitBanVote, {
                     punish_vote_id: banProposal.id,
                     is_agreed: isAgree,
                 })
 
-                if (resp) {
-                    setSubmitted(true)
-                    setSubmittedVote(isAgree)
-                    setError("")
-                }
+                if (!resp) return
+                setSubmitted(true)
+                setSubmittedVote(isAgree)
+                setError("")
             } catch (e) {
                 setError(typeof e === "string" ? e : "Failed to submit your vote.")
             }
         },
-        [state, send, banProposal],
+        [send, banProposal],
     )
 
     const bottomSection = useMemo(() => {
-        if (!userStat || !userStat.last_seven_days_kills || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100)) {
+        if (!userStat || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100)) {
             return (
                 <Typography sx={{ opacity: 0.6 }}>
                     <i>You need at least 100 ability kills OR 5 ability kills in the past 7 days to be eligible to vote.</i>
@@ -110,7 +109,7 @@ const BanProposalInner = ({
                             border: { borderColor: colors.red },
                             sx: { flex: 1, position: "relative" },
                         }}
-                        sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
+                        sx={{ py: ".2rem", pb: 0, minWidth: "5rem" }}
                         onClick={() => submitVote(false)}
                     >
                         <Typography variant="body2">NO</Typography>
@@ -124,7 +123,7 @@ const BanProposalInner = ({
                             border: { borderColor: colors.green },
                             sx: { flex: 1, position: "relative" },
                         }}
-                        sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
+                        sx={{ py: ".2rem", pb: 0, minWidth: "5rem" }}
                         onClick={() => submitVote(true)}
                     >
                         <Typography variant="body2">YES</Typography>

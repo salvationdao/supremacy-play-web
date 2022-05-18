@@ -2,19 +2,17 @@ import { Box, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { useDimension, useGame, useGameServerAuth, useGameServerWebsocket, useOverlayToggles } from "../../containers"
-import { useMiniMap } from "../../containers/minimap"
+import { useAuth, useDimension, useGame, useMiniMap, useOverlayToggles, useSupremacy } from "../../containers"
 import { useToggle } from "../../hooks"
-import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
 import { WarMachineItem } from "./WarMachineItem"
 
 export const WarMachineStats = () => {
-    const { state, subscribe } = useGameServerWebsocket()
-    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
-    const { factionID } = useGameServerAuth()
+    const { factionID } = useAuth()
     const { warMachines, bribeStage } = useGame()
+    const { battleIdentifier, getFaction } = useSupremacy()
     const { remToPxRatio } = useDimension()
+    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
     const { isMapOpen } = useOverlayToggles()
 
     // Temp hotfix ask james ****************************
@@ -26,20 +24,8 @@ export const WarMachineStats = () => {
 
     const adjustment = useMemo(() => Math.min(remToPxRatio, 10) / 10, [remToPxRatio])
 
-    // DO NOT REMOVE THIS! Subscribe to the result of the vote
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerWarMachineLocationUpdated, () => null, null)
-    }, [state, subscribe])
-
-    const factionMechs = useMemo(
-        () => (warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID == factionID) : []),
-        [warMachines, factionID],
-    )
-    const otherMechs = useMemo(
-        () => (warMachines ? warMachines.filter((wm) => wm.faction && wm.faction.id && wm.factionID != factionID) : []),
-        [warMachines, factionID],
-    )
+    const factionMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID == factionID) : []), [warMachines, factionID])
+    const otherMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID != factionID) : []), [warMachines, factionID])
     const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
 
     if (!warMachines || warMachines.length <= 0) return null
@@ -81,8 +67,8 @@ export const WarMachineStats = () => {
                                         warMachine={wm}
                                         scale={0.75}
                                         shouldBeExpanded={false}
-                                        state={state}
-                                        subscribe={subscribe}
+                                        battleIdentifier={battleIdentifier}
+                                        getFaction={getFaction}
                                         highlightedMechHash={highlightedMechHash}
                                         setHighlightedMechHash={setHighlightedMechHash}
                                     />
@@ -113,8 +99,8 @@ export const WarMachineStats = () => {
                                                 warMachine={wm}
                                                 scale={haveFactionMechs ? 0.7 : 0.7}
                                                 shouldBeExpanded={false}
-                                                state={state}
-                                                subscribe={subscribe}
+                                                battleIdentifier={battleIdentifier}
+                                                getFaction={getFaction}
                                                 highlightedMechHash={highlightedMechHash}
                                                 setHighlightedMechHash={setHighlightedMechHash}
                                             />

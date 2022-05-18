@@ -1,20 +1,22 @@
 import { Box, Stack } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
-import { SocketState, WebSocketProperties } from "../../../containers"
+import { useGameServerSubscription } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { LocationSelectType, Map, NetMessageTickWarMachine, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
+import { LocationSelectType, Map, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
+import { WarMachineLiveState } from "../../../types/game"
+import { Faction } from "../../../types/user"
 import { MapSelection } from "../MiniMapInside"
 
 interface MapWarMachineProps {
     gridWidth: number
     gridHeight: number
-    // useGameServerAuth
+    // useAuth
     userID?: string
     factionID?: string
-    // useGameServerWebsocket
-    state: SocketState
-    subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
+    // useSupremacy
+    getFaction: (factionID: string) => Faction
     // useGame
     map?: Map
     warMachines?: WarMachineState[]
@@ -32,9 +34,7 @@ export const MapWarMachines = ({
     gridWidth,
     gridHeight,
     userID,
-    factionID,
-    state,
-    subscribeWarMachineStatNetMessage,
+    getFaction,
     map,
     warMachines,
     enlarged,
@@ -51,6 +51,7 @@ export const MapWarMachines = ({
             {warMachines.map((wm) => (
                 <MapWarMachine
                     key={`${wm.participantID} - ${wm.hash}`}
+                    getFaction={getFaction}
                     gridWidth={gridWidth}
                     gridHeight={gridHeight}
                     warMachine={wm}
@@ -58,9 +59,6 @@ export const MapWarMachines = ({
                     enlarged={enlarged}
                     targeting={targeting}
                     userID={userID}
-                    factionID={factionID}
-                    state={state}
-                    subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
                     playerAbility={playerAbility}
                     setSelection={setSelection}
                     highlightedMechHash={highlightedMechHash}
@@ -71,18 +69,15 @@ export const MapWarMachines = ({
     )
 }
 
-interface Props extends Partial<WebSocketProperties> {
+interface Props {
+    getFaction: (factionID: string) => Faction
     gridWidth: number
     gridHeight: number
     warMachine: WarMachineState
-    isSpawnedAI?: boolean
     map: Map
-    // useGameServerAuth
+    // useAuth
     userID?: string
     factionID?: string
-    // useGameServerWebsocket
-    state: SocketState
-    subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
     // useMiniMap
     enlarged: boolean
     targeting: boolean
@@ -94,23 +89,21 @@ interface Props extends Partial<WebSocketProperties> {
 }
 
 const MapWarMachine = ({
+    getFaction,
     gridWidth,
     gridHeight,
     warMachine,
     map,
     enlarged,
     targeting,
-    isSpawnedAI,
-    subscribeWarMachineStatNetMessage,
-    state,
     userID,
+    factionID,
     highlightedMechHash,
     setHighlightedMechHash,
     playerAbility,
     setSelection,
-    factionID,
 }: Props) => {
-    const { hash, participantID, faction, maxHealth, maxShield, imageAvatar, ownedByID } = warMachine
+    const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, imageAvatar, ownedByID } = warMachine
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
@@ -121,22 +114,25 @@ const MapWarMachine = ({
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const SIZE = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
-    const ICON_SIZE = useMemo(() => (isSpawnedAI ? 0.8 * SIZE : 1 * SIZE), [SIZE, isSpawnedAI])
+    const ICON_SIZE = useMemo(() => 1 * SIZE, [SIZE])
     const ARROW_LENGTH = useMemo(() => ICON_SIZE / 2 + 0.6 * SIZE, [ICON_SIZE, SIZE])
-    const DOT_SIZE = useMemo(() => (isSpawnedAI ? 0.7 * SIZE : 1.2 * SIZE), [isSpawnedAI, SIZE])
-    const primaryColor = useMemo(() => (faction && faction.theme ? faction.theme.primary : "#FFFFFF"), [faction])
+    const DOT_SIZE = useMemo(() => 1.2 * SIZE, [SIZE])
+    const primaryColor = useMemo(() => getFaction(warMachineFactionID).primary_color || "#FFFFFF", [warMachineFactionID, getFaction])
     const isAlive = useMemo(() => health > 0, [health])
 
     // Listen on current war machine changes
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
-        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
+    useGameServerSubscription<WarMachineLiveState | undefined>(
+        {
+            URI: `/battle/mech/${participantID}`,
+            key: GameServerKeys.SubMechLiveStats,
+        },
+        (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
             if (payload?.rotation !== undefined) setRotation(payload.rotation)
-        })
-    }, [participantID, state, subscribeWarMachineStatNetMessage])
+        },
+    )
 
     const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
@@ -145,7 +141,7 @@ const MapWarMachine = ({
                 setSelection(undefined)
             }
         } else {
-            if (playerAbility && faction.id !== factionID) return
+            if (playerAbility && factionID !== warMachineFactionID) return
             setHighlightedMechHash(hash)
             if (playerAbility) {
                 setSelection({
@@ -153,7 +149,7 @@ const MapWarMachine = ({
                 })
             }
         }
-    }, [hash, highlightedMechHash, setHighlightedMechHash, setSelection, playerAbility, factionID, faction.id])
+    }, [hash, highlightedMechHash, setHighlightedMechHash, setSelection, playerAbility, factionID, warMachineFactionID])
 
     if (!position) return null
 
@@ -173,7 +169,7 @@ const MapWarMachine = ({
                 }px, 0)`,
                 transition: "transform 0.2s linear",
                 zIndex: isAlive ? 5 : 4,
-                opacity: isSpawnedAI ? 0.8 : 1,
+                opacity: 1,
                 border: highlightedMechHash === warMachine.hash ? `${primaryColor} 1rem dashed` : "unset",
                 backgroundColor: ownedByID === userID ? `${colors.neonBlue}65` : highlightedMechHash === warMachine.hash ? `${primaryColor}60` : "unset",
                 padding: "1rem 1.3rem",
@@ -244,7 +240,7 @@ const MapWarMachine = ({
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size={enlarged ? `${0.8 * SIZE}px` : isSpawnedAI ? `${1 * SIZE}px` : `${1.3 * SIZE}px`}
+                            size={enlarged ? `${0.8 * SIZE}px` : `${1.3 * SIZE}px`}
                             style={{
                                 position: "absolute",
                                 top: "52%",

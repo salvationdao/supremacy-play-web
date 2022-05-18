@@ -12,7 +12,7 @@ import {
     WarMachineStats,
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
-import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../containers"
+import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useAuth, useSupremacy } from "../containers"
 import { UserConsumablesProvider } from "../containers/consumables"
 import { MiniMapProvider } from "../containers/minimap"
 import { useToggle } from "../hooks"
@@ -37,9 +37,8 @@ export const BattleArenaPage = () => {
 }
 
 const BattleArenaPageInner = () => {
-    const { state } = useGameServerWebsocket()
-    const { userID } = useGameServerAuth()
-    const { haveSups } = useSupremacy()
+    const { userID } = useAuth()
+    const { isServerUp, haveSups } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
 
     return (
@@ -48,7 +47,7 @@ const BattleArenaPageInner = () => {
                 <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
                     <Stream />
 
-                    {state === WebSocket.OPEN && (
+                    {isServerUp && (
                         <>
                             <MiniMap />
                             <Notifications />
@@ -64,7 +63,7 @@ const BattleArenaPageInner = () => {
                 <Controls />
             </Stack>
 
-            {state === WebSocket.OPEN && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
+            {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
             {userID && !noSupsModalOpen && <TutorialModal />}
         </>
     )

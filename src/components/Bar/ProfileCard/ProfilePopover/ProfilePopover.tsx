@@ -4,21 +4,11 @@ import { SvgAssets, SvgProfile, SvgShop, SvgSupport } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
-import { UserData } from "../../../../types/passport"
+import { User } from "../../../../types"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
 
-export const ProfilePopover = ({
-    open,
-    popoverRef,
-    onClose,
-    user,
-}: {
-    open: boolean
-    popoverRef: MutableRefObject<null>
-    onClose: () => void
-    user: UserData
-}) => {
+export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: User }) => {
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
     useEffect(() => {

@@ -2,7 +2,7 @@ import { Box } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useState } from "react"
 import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
-import { useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useGameServerSubscriptionBattleFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { GameAbility, GameAbilityProgress } from "../../types"
 
@@ -10,14 +10,13 @@ export const SkillBar = ({
     index,
     gameAbility,
     maxAbilityPriceMap,
+    participantID,
 }: {
     index: number
     gameAbility: GameAbility
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
+    participantID: number
 }) => {
-    const { factionID } = useGameServerAuth()
-    const { state, subscribe, subscribeAbilityNetMessage } = useGameServerWebsocket()
-
     const { identity, colour } = gameAbility
     const [supsCost, setSupsCost] = useState(new BigNumber("0"))
     const [currentSups, setCurrentSups] = useState(new BigNumber("0"))
@@ -32,21 +31,17 @@ export const SkillBar = ({
 
     const costPercent = useMemo(() => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100), [initialTargetCost, supsCost])
 
-    // DO NOT REMOVE THIS! Triggered faction ability or war machine ability price ticking
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID) return
-        return subscribe(GameServerKeys.TriggerFactionAbilityPriceUpdated, () => null, { ability_identity: identity })
-    }, [state, subscribe, factionID, identity])
-
     // Listen on current faction ability price change
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID) return
-
-        return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
-            if (!payload) return
+    useGameServerSubscriptionBattleFaction<GameAbilityProgress | undefined>(
+        {
+            URI: `/ability/mech/${participantID}`,
+            key: GameServerKeys.SubAbilityProgress,
+        },
+        (payload) => {
+            if (!payload || payload.id !== identity) return
             setGameAbilityProgress(payload)
-        })
-    }, [identity, state, subscribeAbilityNetMessage, factionID])
+        },
+    )
 
     useEffect(() => {
         if (!gameAbilityProgress) return

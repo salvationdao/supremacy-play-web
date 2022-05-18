@@ -1,31 +1,20 @@
-import { Box, Fade, Theme, useTheme } from "@mui/material"
+import { Box, Fade } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, MapSelection, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import {
-    Severity,
-    SocketState,
-    useDimension,
-    useGame,
-    useGameServerAuth,
-    useGameServerWebsocket,
-    useOverlayToggles,
-    useSnackbar,
-    WinnerAnnouncementResponse,
-    WSSendFn,
-} from "../../containers"
+import { Severity, useAuth, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
 import { useConsumables } from "../../containers/consumables"
 import { useMiniMap } from "../../containers/minimap"
+import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension, Map, PlayerAbility, WarMachineState } from "../../types"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const MiniMap = () => {
-    const theme = useTheme<Theme>()
-    const { userID, factionID } = useGameServerAuth()
-    const { state, send, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
+    const theme = useTheme()
+    const { userID, factionID } = useAuth()
     const { newSnackbarMessage } = useSnackbar()
     const { map, warMachines, bribeStage } = useGame()
     const { winner, setWinner, enlarged, setEnlarged, targeting, selection, setSelection, resetSelection, highlightedMechHash, setHighlightedMechHash } =
@@ -70,10 +59,6 @@ export const MiniMap = () => {
                 // useGameServerAuth
                 userID={userID}
                 factionID={factionID}
-                // useGameServerWebsocket
-                state={state}
-                send={send}
-                subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
                 // useOverlay
                 isMapOpen={isMapOpen && show}
                 toggleIsMapOpen={toggleIsMapOpen}
@@ -102,9 +87,6 @@ export const MiniMap = () => {
             show,
             userID,
             factionID,
-            state,
-            send,
-            subscribeWarMachineStatNetMessage,
             isMapOpen,
             toggleIsMapOpen,
             map,
@@ -132,10 +114,6 @@ interface InnerProps {
     // useGameServerAuth
     userID?: string
     factionID?: string
-    // useGameServerWebsocket
-    state: SocketState
-    send: WSSendFn
-    subscribeWarMachineStatNetMessage: <T>(participantID: number, callback: (payload: T) => void) => () => void
     // useOverlay
     isMapOpen: boolean
     toggleIsMapOpen: (open?: boolean) => void
@@ -163,9 +141,6 @@ interface InnerProps {
 const MiniMapInner = ({
     userID,
     factionID,
-    state,
-    send,
-    subscribeWarMachineStatNetMessage,
     isMapOpen,
     toggleIsMapOpen,
     map,
@@ -261,9 +236,6 @@ const MiniMapInner = ({
                 containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
                 userID={userID}
                 factionID={factionID}
-                state={state}
-                send={send}
-                subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
                 map={map}
                 warMachines={warMachines}
                 enlarged={enlarged || dimensions.width > 400}
@@ -282,9 +254,6 @@ const MiniMapInner = ({
         remToPxRatio,
         userID,
         factionID,
-        state,
-        send,
-        subscribeWarMachineStatNetMessage,
         map,
         warMachines,
         winner,

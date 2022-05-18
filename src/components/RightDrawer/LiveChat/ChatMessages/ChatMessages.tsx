@@ -2,10 +2,10 @@ import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
-import { FactionsAll, FontSizeType, SplitOptionType, useChat, useSupremacy, useGameServerAuth } from "../../../../containers"
+import { FontSizeType, SplitOptionType, useChat, useSupremacy, useAuth } from "../../../../containers"
 import { checkIfIsEmoji } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { User } from "../../../../types"
+import { Faction, User } from "../../../../types"
 import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../../types/chat"
 import { BanProposal } from "../BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
@@ -18,9 +18,9 @@ interface ChatMessagesProps {
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
-    const { user } = useGameServerAuth()
+    const { user } = useAuth()
     const { filterZerosGlobal, filterZerosFaction, filterSystemMessages, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
-    const { factionsAll } = useSupremacy()
+    const { getFaction } = useSupremacy()
 
     return (
         <ChatMessagesInner
@@ -34,13 +34,13 @@ export const ChatMessages = (props: ChatMessagesProps) => {
             splitOption={splitOption}
             fontSize={fontSize}
             globalAnnouncement={globalAnnouncement}
-            factionsAll={factionsAll}
+            getFaction={getFaction}
         />
     )
 }
 
 interface ChatMessagesInnerProps extends ChatMessagesProps {
-    user?: User
+    user: User
     filterZeros?: boolean
     filterSystemMessages?: boolean
     sentMessages: Date[]
@@ -48,7 +48,7 @@ interface ChatMessagesInnerProps extends ChatMessagesProps {
     splitOption: SplitOptionType
     fontSize: FontSizeType
     globalAnnouncement?: GlobalAnnouncementType
-    factionsAll: FactionsAll
+    getFaction: (factionID: string) => Faction
 }
 
 const ChatMessagesInner = ({
@@ -64,7 +64,7 @@ const ChatMessagesInner = ({
     splitOption,
     fontSize,
     globalAnnouncement,
-    factionsAll,
+    getFaction,
 }: ChatMessagesInnerProps) => {
     const scrollableRef = useRef<HTMLDivElement>(null)
     const [autoScroll, setAutoScroll] = useState(true)
@@ -146,7 +146,7 @@ const ChatMessagesInner = ({
                                         data={data}
                                         sentAt={message.sent_at}
                                         fontSize={fontSize}
-                                        factionsAll={factionsAll}
+                                        getFaction={getFaction}
                                     />
                                 )
                             }
@@ -162,11 +162,12 @@ const ChatMessagesInner = ({
                                         fontSize={fontSize}
                                         filterZeros={filterZeros}
                                         filterSystemMessages={filterSystemMessages}
-                                        isSent={data.from_user.id != user?.id ? true : sentMessages.includes(message.sent_at)}
-                                        isFailed={data.from_user.id != user?.id ? false : failedMessages.includes(message.sent_at)}
-                                        factionsAll={factionsAll}
+                                        isSent={message.locallySent ? sentMessages.includes(message.sent_at) : true}
+                                        isFailed={data.from_user.id === user?.id ? failedMessages.includes(message.sent_at) : false}
+                                        getFaction={getFaction}
                                         user={user}
                                         isEmoji={isEmoji}
+                                        locallySent={message.locallySent}
                                     />
                                 )
                             }

@@ -1,10 +1,13 @@
 export enum GameServerKeys {
+    // Old netMessage
+    SubSpoilsOfWar = "SPOIL:OF:WAR:UPDATED",
+    SubLiveGraph = "LIVE:VOTE:COUNT:UPDATED",
+    SubMechLiveStats = "WAR:MACHINE:STAT:UPDATED",
+    SubBattleAbilityProgress = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
+    SubAbilityProgress = "ABILITY:PRICE:UPDATED",
+
     // Auth container
-    Welcome = "WELCOME",
     UserSubscribe = "USER:SUBSCRIBE",
-    AuthSessionIDGet = "AUTH:SESSION:ID:GET",
-    AuthJWTCheck = "AUTH:JWT:CHECK",
-    RingCheck = "RING:CHECK",
     ToggleGojiBerryTea = "GOJI:BERRY:TEA",
     PlayerRank = "PLAYER:RANK:GET",
     ListPunishments = "PLAYER:PUNISHMENT:LIST",
@@ -29,21 +32,10 @@ export enum GameServerKeys {
     // Game Use
     GameUserOnline = "GAME:ONLINE",
 
-    // Net message subscription
-    TriggerWarMachineLocationUpdated = "WAR:MACHINE:LOCATION:UPDATED",
-    TriggerSpoilOfWarUpdated = "SPOIL:OF:WAR:UPDATED",
-    TriggerLiveVoteCountUpdated = "LIVE:VOTE:COUNT:UPDATED",
-    TriggerFactionAbilityPriceUpdated = "ABILITY:PRICE:UPDATED",
-    TriggerBattleAbilityProgressUpdated = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
     TriggerBattleQueueUpdated = "BATTLE:QUEUE:UPDATED",
-    TriggerPlayerAbilitiesListUpdated = "PLAYER:ABILITIES:LIST:UPDATED",
-    TriggerSaleAbilitiesListUpdated = "SALE:ABILITIES:LIST:UPDATED",
 
     // Global messages
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
-
-    // Streams
-    SubStreamList = "STREAMLIST:SUBSCRIBE",
 
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
@@ -52,6 +44,7 @@ export enum GameServerKeys {
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
 
     // Player Abilities
+    TriggerSaleAbilitiesListUpdated = "SALE:ABILITIES:LIST:UPDATED",
     SaleAbilityDetailed = "SALE:ABILITY:DETAILED",
     PlayerAbilitySubscribe = "PLAYER:ABILITY:SUBSCRIBE",
     SaleAbilityPriceSubscribe = "SALE:ABILITY:PRICE:SUBSCRIBE",
@@ -64,7 +57,6 @@ export enum GameServerKeys {
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SendChatMessage = "CHAT:MESSAGE",
-    ChatPastMessages = "CHAT:PAST_MESSAGES",
 
     BattleMechHistoryDetailed = "BATTLE:MECH:HISTORY:DETAILED",
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
@@ -72,15 +64,11 @@ export enum GameServerKeys {
 
     // Get / sub to data
     SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
-    SubAISpawned = "AI:SPAWNED",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
-    SubSupsMultiplierSignal = "USER:MULTIPLIER:SIGNAL:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
-
-    SubMultiplierMap = "MULTIPLIER:MAP:SUBSCRIBE",
 
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
     GetSettings = "PLAYER:GET_SETTINGS",
@@ -98,31 +86,18 @@ export enum GameServerKeys {
 
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
+
+    EnlistFaction = "FACTION:ENLIST",
 }
 
 export enum PassportServerKeys {
-    // Auth container
-    Welcome = "WELCOME",
-    GetSessionID = "GAMEBAR:SESSION:ID:GET",
-    AuthRingCheck = "GAMEBAR:AUTH:RING:CHECK",
-    SubscribeGamebarUser = "GAMEBAR:USER:SUBSCRIBE",
-    SubscribeUser = "USER:SUBSCRIBE",
-
     // Bar
-    GetFactionsAll = "FACTION:ALL",
-    EnlistFaction = "FACTION:ENLIST",
     SubscribeWallet = "USER:SUPS:SUBSCRIBE",
-    SubscribeUserStat = "USER:STAT:SUBSCRIBE",
-    SubscribeFactionStat = "FACTION:STAT:SUBSCRIBE",
+    SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
 
     // Assets
-    SubAssetList = "USER:ASSET:LIST",
     SubAssetData = "ASSET:SUBSCRIBE",
     UpdateAssetName = "ASSET:UPDATE:NAME",
-
-    // Transactions
-    SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
-    SubscribeUserLatestTransactions = "USER:SUPS:LATEST_TRANSACTION:SUBSCRIBE",
 
     // Misc
     GetFreeSups = "GAMEBAR:GET:SUPS",

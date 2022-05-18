@@ -1,29 +1,30 @@
 import { Box, Slide, Stack, Tab, Tabs } from "@mui/material"
-import { Theme } from "@mui/material/styles"
 import { TabProps } from "@mui/material/Tab"
-import { useTheme } from "@mui/styles"
 import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
 import { DEV_ONLY } from "../../constants"
-import { BribeStageResponse, useDimension, useGame, useGameServerAuth } from "../../containers"
+import { BribeStageResponse, useAuth, useDimension, useGame } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { parseString } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension } from "../../types"
 import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
-    const { userID } = useGameServerAuth()
+    const { userID } = useAuth()
     const { bribeStage } = useGame()
     return <VotingSystemInner userID={userID} bribeStage={bribeStage} />
 }
 
 interface VotingSystemInnerProps {
+    // useAuth
     userID?: string
+    // useGame
     bribeStage?: BribeStageResponse
 }
 
 const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const initialSize = useMemo(() => ({ width: 390, height: 360, minWidth: 370 }), [])
     const [containerWidth, setContainerWidth] = useState<number>(parseString(localStorage.getItem("votingSystemWidth"), initialSize.width))
     const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
@@ -100,7 +101,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                                 minHeight: 0,
                             }}
                         >
-                            <TabButton label="Battle Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
+                            <TabButton label="Game Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
                             {userID && (
                                 <TabButton label="Player Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
                             )}

@@ -2,13 +2,12 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgSkull2, SvgInfoCircular } from "../../../../../assets"
-import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { FactionsAll } from "../../../../../containers"
+import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { colors, fonts } from "../../../../../theme/theme"
 import { TextMessageData } from "../../../../../types/chat"
-import { User } from "../../../../../types"
+import { Faction, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { UserDetailsPopover } from "./UserDetailsPopover"
 
@@ -33,9 +32,10 @@ export const TextMessage = ({
     isFailed,
     filterZeros,
     filterSystemMessages,
-    factionsAll,
+    getFaction,
     user,
     isEmoji,
+    locallySent,
 }: {
     data: TextMessageData
     sentAt: Date
@@ -44,11 +44,12 @@ export const TextMessage = ({
     isFailed?: boolean
     filterZeros?: boolean
     filterSystemMessages?: boolean
-    factionsAll: FactionsAll
-    user?: User
+    getFaction: (factionID: string) => Faction
+    user: User
     isEmoji: boolean
+    locallySent?: boolean
 }) => {
-    const { from_user, user_rank, message_color, avatar_id, message, self, total_multiplier, is_citizen, from_user_stat } = data
+    const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat } = data
     const { id, username, gid, faction_id } = from_user
 
     const popoverRef = useRef(null)
@@ -60,9 +61,9 @@ export const TextMessage = ({
         if (from_user_stat.ability_kill_count < 0) return colors.red
         return shadeColor(message_color, 30)
     }, [from_user_stat, message_color])
-    const factionColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.primary : message_color), [faction_id, factionsAll, message_color])
-    const factionSecondaryColor = useMemo(() => (faction_id ? factionsAll[faction_id]?.theme.secondary : "#FFFFFF"), [faction_id, factionsAll])
-    const factionLogoBlobID = useMemo(() => (faction_id ? factionsAll[faction_id]?.logo_blob_id : ""), [faction_id, factionsAll])
+    const factionColor = useMemo(() => (faction_id ? getFaction(faction_id).primary_color : message_color), [faction_id, getFaction, message_color])
+    const factionSecondaryColor = useMemo(() => (faction_id ? getFaction(faction_id).secondary_color : "#FFFFFF"), [faction_id, getFaction])
+    const faction_logo_url = useMemo(() => (faction_id ? getFaction(faction_id).logo_url : ""), [faction_id, getFaction])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
     const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
 
@@ -77,7 +78,7 @@ export const TextMessage = ({
     }, [message, renderFontSize])
 
     // For the hide zero multi setting
-    if ((!self && filterZeros && (!total_multiplier || total_multiplier <= 0)) || filterSystemMessages) return null
+    if ((!locallySent && filterZeros && (!total_multiplier || total_multiplier <= 0)) || filterSystemMessages) return null
 
     return (
         <>
@@ -104,14 +105,14 @@ export const TextMessage = ({
                                     }}
                                 />
                             )}
-                            {factionLogoBlobID && factionLogoBlobID != NullUUID && (
+                            {faction_logo_url && (
                                 <Box
                                     sx={{
                                         mt: "-0.1rem !important",
                                         width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
                                         height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
                                         flexShrink: 0,
-                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
+                                        backgroundImage: `url(${faction_logo_url})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
@@ -245,7 +246,7 @@ export const TextMessage = ({
 
             {isPopoverOpen && (
                 <UserDetailsPopover
-                    factionLogoBlobID={factionLogoBlobID}
+                    faction_logo_url={faction_logo_url}
                     factionColor={factionColor}
                     factionSecondaryColor={factionSecondaryColor}
                     messageColor={message_color}

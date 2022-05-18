@@ -1,7 +1,8 @@
 import { Box, Button, ButtonGroup, Link, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../assets"
-import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useAuth } from "../../containers/auth"
+import { useGameServerCommandsUser, useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
 import { LocationSelectType, TalliedPlayerAbility } from "../../types"
@@ -12,8 +13,9 @@ const rows = 2
 const pageSize = columns * rows
 
 export const PlayerAbilities = () => {
-    const { user } = useGameServerAuth()
-    const { state, send, subscribe } = useGameServerWebsocket()
+    const { userID } = useAuth()
+    const { send } = useGameServerCommandsUser("")
+
     const [talliedAbilityIDs, setTalliedAbilityIDs] = useState<TalliedPlayerAbility[]>([])
 
     // Pagination
@@ -24,7 +26,7 @@ export const PlayerAbilities = () => {
     const [locationSelectType, setLocationSelectType] = useState<LocationSelectType | null>(null)
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !user) return
+        if (!userID) return
 
         const fetchSaleAbilities = async () => {
             const filterItems: {
@@ -36,7 +38,7 @@ export const PlayerAbilities = () => {
             filterItems.push({
                 column: "owner_id",
                 operator: "=",
-                value: user.id,
+                value: userID,
             })
             if (locationSelectType) {
                 filterItems.push({
@@ -57,11 +59,16 @@ export const PlayerAbilities = () => {
         }
 
         fetchSaleAbilities()
+        useGameServerSubscription(
+            {
+                URI: "/public/live_data",
+                key: GameServerKeys.TriggerSaleAbilitiesListUpdated,
+            },
+            () => fetchSaleAbilities(),
+        )
+    }, [send, userID, currentPage, locationSelectType])
 
-        return subscribe(GameServerKeys.TriggerPlayerAbilitiesListUpdated, () => fetchSaleAbilities())
-    }, [state, send, subscribe, user, currentPage, locationSelectType])
-
-    if (!user)
+    if (!userID)
         return (
             <Box>
                 <Typography
