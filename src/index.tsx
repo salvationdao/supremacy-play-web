@@ -4,12 +4,12 @@ import * as Sentry from "@sentry/react"
 import ReactDOM from "react-dom"
 import { Buffer } from "buffer"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
-import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom"
-import { Bar, GlobalSnackbar, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
+import { Bar, EarlyAccessWarning, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { DEV_ONLY, GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
-import { RightDrawerProvider, SnackBarProvider, SupremacyProvider, WalletProvider, BarProvider, useAuth, useSupremacy } from "./containers"
+import { BarProvider, SnackBarProvider, SupremacyProvider, useAuth, useSupremacy, WalletProvider } from "./containers"
 import { AuthProvider, UserUpdater } from "./containers/auth"
 import { ThemeProvider } from "./containers/theme"
 import { useToggle } from "./hooks"
@@ -138,18 +138,16 @@ const App = () => {
                         <SupremacyProvider>
                             <WalletProvider>
                                 <BarProvider>
-                                    <RightDrawerProvider>
-                                        <TourProvider {...tourProviderProps}>
-                                            <UserUpdater />
-                                            <BrowserRouter>
-                                                <Switch>
-                                                    <Route path="/404" exact component={NotFoundPage} />
-                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                    <Route path="" component={AppInner} />
-                                                </Switch>
-                                            </BrowserRouter>
-                                        </TourProvider>
-                                    </RightDrawerProvider>
+                                    <TourProvider {...tourProviderProps}>
+                                        <UserUpdater />
+                                        <BrowserRouter>
+                                            <Switch>
+                                                <Route path="/404" exact component={NotFoundPage} />
+                                                <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                <Route path="" component={AppInner} />
+                                            </Switch>
+                                        </BrowserRouter>
+                                    </TourProvider>
                                 </BarProvider>
                             </WalletProvider>
                         </SupremacyProvider>

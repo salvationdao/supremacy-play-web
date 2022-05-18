@@ -4,16 +4,18 @@ import { PopoverStylesObj } from "@reactour/popover"
 import { StepType, useTour } from "@reactour/tour"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
 import { useEffect, useMemo } from "react"
-import { RightDrawerPanels, useBar, useAuth, useRightDrawer, useSupremacy } from "../../../containers"
+import { useBar, useAuth, useSupremacy } from "../../../containers"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { useHistory } from "react-router-dom"
+import { RightDrawerHashes } from "../../../routes"
 
 export const SetupTutorial = () => {
     const { userID, user } = useAuth()
     const { haveSups } = useSupremacy()
+    const history = useHistory()
 
     const { setIsOpen, setSteps, setCurrentStep } = useTour()
     const { toggleActiveBar } = useBar()
-    const { activePanel, togglePanel } = useRightDrawer()
 
     // Only show if no user
     const preAuthSteps: StepType[] = useMemo(() => {
@@ -109,18 +111,14 @@ export const SetupTutorial = () => {
                 selector: "#tutorial-chat",
                 content: "This is where you can interact with other online players.",
                 action: () => {
-                    if (activePanel !== RightDrawerPanels.LiveChat) {
-                        togglePanel(RightDrawerPanels.LiveChat, true)
-                    }
+                    history.push(`${location.pathname}${RightDrawerHashes.LiveChat}`)
                 },
             },
             {
                 selector: ".tutorial-global-chat",
                 content: "Global Chat includes everyone from all syndicates.",
                 action: () => {
-                    if (activePanel !== RightDrawerPanels.LiveChat) {
-                        togglePanel(RightDrawerPanels.LiveChat, true)
-                    }
+                    history.push(`${location.pathname}${RightDrawerHashes.LiveChat}`)
                 },
             },
             {
@@ -128,13 +126,11 @@ export const SetupTutorial = () => {
                 content:
                     "Syndicate chat only includes others that are part of the same syndicate as yourself. This is the best place to get to know your fellow syndicate members, strategize and plan the best avenue of assault.",
                 action: () => {
-                    if (activePanel !== RightDrawerPanels.LiveChat) {
-                        togglePanel(RightDrawerPanels.LiveChat, true)
-                    }
+                    history.push(`${location.pathname}${RightDrawerHashes.LiveChat}`)
                 },
             },
         ]
-    }, [activePanel, togglePanel])
+    }, [history])
 
     //only show if user has sups
     const withSupsSteps: StepType[] = useMemo(() => {
