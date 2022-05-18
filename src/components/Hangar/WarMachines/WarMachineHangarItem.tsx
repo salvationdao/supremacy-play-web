@@ -2,6 +2,12 @@ import { Stack } from "@mui/material"
 import { ClipThing } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { MechBasic } from "../../../types"
+import { MechBarStats } from "./Common/MechBarStats"
+import { MechButtons } from "./Common/MechButtons"
+import { MechLoadout } from "./Common/MechLoadout"
+import { MechMiniStats } from "./Common/MechMiniStats"
+import { MechThumbnail } from "./Common/MechThumbnail"
+import { MechTitle } from "./Common/MechTitle"
 
 interface WarMachineHangarItemProps {
     mech: MechBasic
@@ -53,17 +59,20 @@ export const WarMachineHangarItem = ({ mech }: WarMachineHangarItemProps) => {
             backgroundColor={theme.factionTheme.background}
         >
             <Stack direction="row">
-                {/* <Stack>
-                    <MechTitle mech={mech} />
+                <Stack sx={{ flex: 1 }}>
+                    <MechTitle />
 
                     <Stack direction="row">
-                        <Mech />
+                        <MechThumbnail />
+                        <MechLoadout />
                     </Stack>
+
+                    <MechButtons />
                 </Stack>
 
                 <MechMiniStats />
 
-                <MechBarStats /> */}
+                <MechBarStats />
             </Stack>
         </ClipThing>
     )

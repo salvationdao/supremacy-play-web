@@ -1,14 +1,7 @@
-import { Box, Button, Modal, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import QRCode from "react-qr-code"
-import { ClipThing } from "../.."
-import { SvgContentCopyIcon } from "../../../assets"
-import { TELEGRAM_BOT_URL } from "../../../constants"
-import { useToggle } from "../../../hooks"
-import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-
+export const TelegramShortcodeModal = () => {
+    return null
+}
+/*
 export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean; onClose: () => void; code: string }) => {
     const [copySuccess, toggleCopySuccess] = useToggle()
     const [userTelegramShortcodeRegistered, setUserTelegramShortcodeRegistered] = useState<boolean | undefined>(undefined)
@@ -334,3 +327,4 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
         </Modal>
     )
 }
+*/

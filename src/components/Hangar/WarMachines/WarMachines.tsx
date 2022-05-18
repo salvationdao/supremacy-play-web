@@ -10,16 +10,8 @@ import { colors, fonts } from "../../../theme/theme"
 import { MechBasic } from "../../../types"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
-// export interface AssetQueue {
-//     mech_id: string
-//     hash: string
-//     position?: number
-//     in_battle: boolean
-//     contract_reward?: ""
-// }
-
 interface GetMechsRequest {
-    page_number: number
+    page: number
     page_size: number
 }
 
@@ -40,8 +32,8 @@ export const WarMachines = () => {
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetAssetsQueue, {
-                    page_number: page - 1, // start with 0
+                const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+                    page,
                     page_size: pageSize,
                 })
 
@@ -98,15 +90,15 @@ export const WarMachines = () => {
                     clipThingsProps={{
                         clipSize: "5px",
                         backgroundColor: theme.factionTheme.background,
-                        border: { borderColor: colors.neonBlue },
+                        border: { isFancy: true, borderColor: theme.factionTheme.primary },
                         sx: { position: "relative" },
                     }}
-                    sx={{ px: "1.8rem", py: ".5rem" }}
+                    sx={{ px: "1.8rem", py: ".5rem", color: theme.factionTheme.primary }}
                 >
                     <Typography
                         variant="body2"
                         sx={{
-                            color: colors.neonBlue,
+                            color: theme.factionTheme.primary,
                             fontFamily: fonts.nostromoBold,
                         }}
                     >
@@ -115,7 +107,7 @@ export const WarMachines = () => {
                 </FancyButton>
             </Stack>
         )
-    }, [isLoading, mechs, theme.factionTheme.background])
+    }, [isLoading, mechs, theme.factionTheme])
 
     return (
         <>

@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { colors, fonts } from "../../../theme/theme"
 import { useAuth } from "../../../containers"
@@ -18,9 +18,10 @@ export const ConnectButton = () => {
                         clipSize: "7px",
                         backgroundColor: colors.neonBlue,
                         sx: { position: "relative" },
+                        border: { isFancy: true, borderColor: colors.neonBlue },
                     }}
                     sx={{
-                        px: "1.4rem",
+                        px: "2rem",
                         py: ".3rem",
                         color: colors.darkestNeonBlue,
                     }}
@@ -42,7 +43,7 @@ export const ConnectButton = () => {
                 </FancyButton>
             ) : (
                 <Typography sx={{ ml: "2.1rem", mr: "1.6rem", fontFamily: fonts.nostromoBold }} variant="caption">
-                    Signing in...
+                    Logging in...
                 </Typography>
             )}
         </>
