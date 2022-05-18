@@ -16,7 +16,7 @@ export const DrawerButtons = () => {
         if (!location.hash) {
             history.replace({ pathname: location.pathname, hash: RightDrawerHashes.LiveChat })
         }
-    }, [location.hash, location.pathname])
+    }, [location.hash, location.pathname, history])
 
     return (
         <Box

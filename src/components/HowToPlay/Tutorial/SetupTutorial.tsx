@@ -138,7 +138,7 @@ export const SetupTutorial = () => {
                 },
             },
         ]
-    }, [])
+    }, [history])
 
     //only show if user has sups
     const withSupsSteps: StepType[] = useMemo(() => {

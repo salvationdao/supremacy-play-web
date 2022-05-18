@@ -29,6 +29,9 @@ export const RightDrawer = () => {
             case RightDrawerHashes.Assets:
                 return <Assets />
             case RightDrawerHashes.Socials:
+                if (process.env.REACT_APP_SENTRY_ENVIRONMENT !== "development") {
+                    return null
+                }
                 return <Socials />
             default:
                 return null
