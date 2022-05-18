@@ -36,7 +36,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
             }}
         >
             <Tabs value={location.pathname} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
-                {ROUTES_ARRAY.map((r) => {
+                {ROUTES_ARRAY.filter((r) => r.showInLeftDrawer).map((r) => {
                     return (
                         <TabButton
                             key={r.id}
