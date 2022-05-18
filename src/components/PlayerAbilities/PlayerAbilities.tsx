@@ -12,7 +12,7 @@ const pageSize = columns * rows
 
 export const PlayerAbilities = () => {
     const { userID } = useAuth()
-    const { send } = useGameServerCommandsUser("")
+    const { send } = useGameServerCommandsUser("/user_commander")
     const [playerAbilityIDs, setPlayerAbilityIDs] = useState<string[]>([])
 
     // Pagination

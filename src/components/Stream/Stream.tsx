@@ -1,22 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
-import { useState } from "react"
 import { SupBackground } from "../../assets"
 import { DEV_ONLY, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { Music } from "../Music/Music"
-import { Trailer } from "./Trailer"
 
 export const Stream = () => {
-    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, streamResolutions, vidRefCallback } = useStream()
     const { isOpen } = useTour()
-
-    if (!watchedTrailer) {
-        return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
-    }
 
     if (isOpen) return null
 

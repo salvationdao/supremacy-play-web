@@ -95,7 +95,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                                 opacity: 0.6,
                                 backgroundColor: theme.factionTheme.background,
                                 border: { borderColor: theme.factionTheme.primary },
-                                sx: { position: "relative" },
+                                sx: { mr: "1rem", position: "relative" },
                             }}
                             sx={{ px: "1.6rem", py: ".4rem", flexShrink: 0, color: theme.factionTheme.primary }}
                             onClick={() => toggleShowSaleAbilities(true)}

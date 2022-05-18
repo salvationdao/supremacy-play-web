@@ -21,9 +21,10 @@ interface FactionAbilityItemProps {
     gameAbility: GameAbility
     abilityMaxPrice?: BigNumber
     clipSlantSize?: string
+    progressWsURI?: string
 }
 
-export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize }: FactionAbilityItemProps) => {
+export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize, progressWsURI }: FactionAbilityItemProps) => {
     const { send } = useGameServerCommandsBattleFaction("/faction_commander")
     const { bribeStage } = useGame()
 
@@ -40,7 +41,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     // Listen on the progress of the votes
     useGameServerSubscriptionBattleFaction<GameAbilityProgress | undefined>(
         {
-            URI: "/ability/faction",
+            URI: progressWsURI || "/ability/faction",
             key: GameServerKeys.SubAbilityProgress,
         },
         (payload) => {

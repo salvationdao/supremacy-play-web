@@ -36,7 +36,7 @@ export const LoginRedirect = () => {
 
     return (
         <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh", p: "3.8rem", backgroundColor: colors.darkNavy }}>
-            <Typography variant="h6" sx={{ textAlign: "center" }}>
+            <Typography variant="h5" sx={{ textAlign: "center" }}>
                 {message}
             </Typography>
         </Stack>
