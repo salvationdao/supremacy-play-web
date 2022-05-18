@@ -17,7 +17,7 @@ export interface SaleAbilitiesModalProps {
 const modalWidth = 400
 
 export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) => {
-    const { send } = useGameServerCommandsUser("")
+    const { send } = useGameServerCommandsUser("user_commander")
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
 

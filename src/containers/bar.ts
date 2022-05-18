@@ -95,7 +95,9 @@ export const BarContainer = createContainer(() => {
                 setActiveBars((prev) => ({ ...prev, [barName]: newStatus }))
             }
         },
-        [activeBars, setActiveBars, below1350, below1500],
+        // NOTE: need `activeBars` out of the deps else render loop
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [setActiveBars, below1350, below1500],
     )
 
     return {
