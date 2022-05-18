@@ -1,12 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../.."
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
-    const { factionsAll } = useSupremacy()
+    const { getFaction } = useSupremacy()
     const { top_sups_contribute_factions } = battleEndDetail
 
     return (
@@ -29,24 +28,27 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
 
             {top_sups_contribute_factions && top_sups_contribute_factions.length > 0 ? (
                 <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
-                    {top_sups_contribute_factions.map((f, index) => (
-                        <Stack key={index} direction="row" spacing="1.04rem" alignItems="center">
-                            <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                {index + 1}.
-                            </Typography>
-                            <StyledImageText
-                                color={f.theme.primary}
-                                text={f.label}
-                                imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[f.id]?.logo_blob_id}`}
-                                variant="h6"
-                                imageSize={2.9}
-                                imageBorderThickness=".2rem"
-                                fontWeight="normal"
-                                truncateLine
-                                imageMb={-0.8}
-                            />
-                        </Stack>
-                    ))}
+                    {top_sups_contribute_factions.map((f, index) => {
+                        const faction = getFaction(f.id)
+                        return (
+                            <Stack key={index} direction="row" spacing="1.04rem" alignItems="center">
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    {index + 1}.
+                                </Typography>
+                                <StyledImageText
+                                    color={faction.primary_color}
+                                    text={faction.label}
+                                    imageUrl={faction.logo_url}
+                                    variant="h6"
+                                    imageSize={2.9}
+                                    imageBorderThickness=".2rem"
+                                    fontWeight="normal"
+                                    truncateLine
+                                    imageMb={-0.8}
+                                />
+                            </Stack>
+                        )
+                    })}
                 </Stack>
             ) : (
                 <Typography variant="h6" sx={{ pl: ".8rem", opacity: 0.8 }}>

@@ -1,14 +1,18 @@
-import { Box, Button, IconButton, Link, Modal, Stack, Theme, Typography, useTheme } from "@mui/material"
+import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, QueueFeedResponse, TooltipHelper } from "../.."
 import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
-import { useGameServerWebsocket, usePassportServerAuth, useSnackbar } from "../../../containers"
+import { useSnackbar } from "../../../containers"
+import { useAuth } from "../../../containers/auth"
+import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { useGameServerCommandsBattleFaction, useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { usePassportCommandsUser } from "../../../hooks/usePassport"
+import { GameServerKeys, PassportServerKeys } from "../../../keys"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Asset } from "../../../types/assets"
 
 const AmountItem = ({
@@ -38,24 +42,83 @@ const AmountItem = ({
     )
 }
 
-export const DeployConfirmation = ({ open, asset, queueFeed, onClose }: { open: boolean; asset: Asset; queueFeed: QueueFeedResponse; onClose: () => void }) => {
-    const theme = useTheme<Theme>()
+interface MobileNumberSave {
+    id: string
+    mobile_number: string
+}
+
+interface NotificationsSettings {
+    telegram_notifications: boolean
+    push_notifications: boolean
+    sms_notifications: boolean
+}
+
+export const DeployConfirmation = ({
+    open,
+    asset,
+    queueFeed,
+    onClose,
+    setTelegramShortcode,
+}: {
+    open: boolean
+    asset: Asset
+    queueFeed: QueueFeedResponse
+    onClose: () => void
+    setTelegramShortcode?: (s: string) => void
+}) => {
+    const theme = useTheme()
     const queueLength = queueFeed?.queue_length || 0
     const queueCost = queueFeed?.queue_cost || ""
     const contractReward = queueFeed?.contract_reward || ""
 
     const { newSnackbarMessage } = useSnackbar()
-    const { state, send } = useGameServerWebsocket()
-    const { user } = usePassportServerAuth()
+    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
+    const { send: sendUserCommands } = useGameServerCommandsUser("/user_commander")
+    const { send: psSend } = usePassportCommandsUser("xxxxxxxxx")
+    const { userID, user } = useAuth()
     const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
     const [isDeploying, toggleIsDeploying] = useToggle()
     const [deployFailed, setDeployFailed] = useState("")
     const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueCost, 2))
 
+    const initialSettings: NotificationsSettings = {
+        sms_notifications: false,
+        push_notifications: false,
+        telegram_notifications: false,
+    }
+    const [mobile, setMobile] = useState(user.mobile_number)
+    const [saveMobile, setSaveMobile] = useState(false)
+    const [dbSettings, setDbSettings] = useState<NotificationsSettings | null>(null)
+    const [currentSettings, setCurrentSettings] = useState<NotificationsSettings>(initialSettings)
+    const [saveSettings, setSaveSettings] = useState(false)
+
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
     useEffect(() => {
-        const qc = new BigNumber(queueCost).shiftedBy(-18)
+        ;(async () => {
+            try {
+                const resp = await sendUserCommands<NotificationsSettings | null>(GameServerKeys.GetSettings, {
+                    key: "notification_settings",
+                })
+
+                if (resp) {
+                    setDbSettings(resp)
+                    setCurrentSettings(resp)
+                    return
+                }
+
+                setDbSettings(null)
+            } catch (err) {
+                newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
+            }
+        })()
+    }, [sendUserCommands, newSnackbarMessage])
+
+    useEffect(() => {
+        let qc = new BigNumber(queueCost).shiftedBy(-18)
+        // if (notificationsOn) {
+        //     qc = qc.multipliedBy(1.1)
+        // }
         setActualQueueCost(qc.toFixed(3))
     }, [queueCost])
 
@@ -64,9 +127,32 @@ export const DeployConfirmation = ({ open, asset, queueFeed, onClose }: { open: 
     }, [open])
 
     const onDeploy = useCallback(async () => {
-        if (state !== WebSocket.OPEN || !user) return
+        if (!userID) return
 
         try {
+            // save mobile number if checked
+            if (saveMobile && mobile != user.mobile_number) {
+                const saveMobileNum = await psSend<MobileNumberSave>(PassportServerKeys.UserUpdate, {
+                    id: user.id,
+                    mobile_number: mobile,
+                })
+                saveMobileNum ? newSnackbarMessage("Updated mobile number", "success") : newSnackbarMessage("Issue updating mobile number.", "warning")
+            }
+
+            // if saveSettings is true, send an updated settings
+            if (saveSettings) {
+                const updatedSettings = { key: "notification_settings", value: currentSettings }
+                ;(async () => {
+                    try {
+                        const resp = await sendUserCommands<NotificationsSettings>(GameServerKeys.UpdateSettings, updatedSettings)
+                        setDbSettings(resp)
+                        setCurrentSettings(resp)
+                    } catch (err) {
+                        newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
+                    }
+                })()
+            }
+
             const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
                 asset_hash: hash,
             })
@@ -83,10 +169,25 @@ export const DeployConfirmation = ({ open, asset, queueFeed, onClose }: { open: 
         } finally {
             toggleIsDeploying(false)
         }
-    }, [state, hash])
+    }, [
+        userID,
+        user,
+        saveMobile,
+        mobile,
+        saveSettings,
+        send,
+        sendUserCommands,
+        hash,
+        currentSettings,
+        psSend,
+        newSnackbarMessage,
+        setTelegramShortcode,
+        onClose,
+        toggleIsDeploying,
+    ])
 
     return (
-        <Modal open={open} onClose={onClose} sx={{ zIndex: 999999 }}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",
@@ -154,7 +255,7 @@ export const DeployConfirmation = ({ open, asset, queueFeed, onClose }: { open: 
                             <Box>
                                 <Box>
                                     <Typography sx={{ display: "inline", fontFamily: fonts.nostromoBold }}>{name || label}</Typography>
-                                    {user && (
+                                    {userID && (
                                         <span>
                                             <Link
                                                 href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}

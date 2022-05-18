@@ -1,38 +1,65 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
-import { FactionsAll, usePassportServerWebsocket, useSnackbar } from "."
-import { PassportServerKeys } from "../keys"
-import { FactionGeneralData } from "../types/passport"
+import { FallbackFaction, useSnackbar } from "."
+import { GAME_SERVER_HOSTNAME } from "../constants"
+import { GetFactionsAll } from "../fetching"
+import { useToggle } from "../hooks"
+import { FactionsAll } from "../types"
+import { useWS } from "./ws/useWS"
 
 export const SupremacyContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
-    const { state, send } = usePassportServerWebsocket()
+    const { state } = useWS({
+        URI: "/public/online",
+        host: GAME_SERVER_HOSTNAME,
+    })
+    const [readyToCheckServerState, toggleReadyToCheckServerState] = useToggle()
+    const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
+    const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
-    const [haveSups, toggleHaveSups] = useState<boolean>()
+
+    const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
+
+    // Listens on the server status
+    useEffect(() => {
+        if (!readyToCheckServerState) {
+            setTimeout(() => {
+                toggleReadyToCheckServerState(true)
+            }, 2500)
+        }
+
+        toggleIsServerUp(state === WebSocket.OPEN)
+    }, [readyToCheckServerState, state, toggleIsServerUp, toggleReadyToCheckServerState])
 
     // Get main color of each factions
     useEffect(() => {
-        if (state !== WebSocket.OPEN) return
         ;(async () => {
             try {
-                const resp = await send<FactionGeneralData[]>(PassportServerKeys.GetFactionsAll)
-                if (resp) {
-                    const currentData = {} as FactionsAll
-                    resp.forEach((f) => {
-                        currentData[f.id] = f
-                    })
-                    setFactionsAll(currentData)
-                }
+                const resp = await queryGetFactionsAll({})
+                if (resp.error || !resp.payload) return
+                const currentData = {} as FactionsAll
+                resp.payload.forEach((f) => {
+                    currentData[f.id] = f
+                })
+                setFactionsAll(currentData)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
                 console.debug(e)
                 return false
             }
         })()
-    }, [send, state])
+    }, [newSnackbarMessage, queryGetFactionsAll])
 
-    return { factionsAll, battleIdentifier, setBattleIdentifier, haveSups, toggleHaveSups }
+    const getFaction = useCallback(
+        (factionID: string) => {
+            return factionsAll[factionID] || FallbackFaction
+        },
+        [factionsAll],
+    )
+
+    return { isServerUp, factionsAll, getFaction, battleIdentifier, setBattleIdentifier, haveSups, toggleHaveSups }
 })
 
 export const SupremacyProvider = SupremacyContainer.Provider

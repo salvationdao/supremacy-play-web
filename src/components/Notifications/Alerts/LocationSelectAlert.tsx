@@ -2,11 +2,10 @@ import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { ClipThing, StyledImageText, StyledNormalText } from "../.."
 import { SvgCancelled, SvgDeath, SvgDisconnected, SvgHourglass, SvgLocation } from "../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { FactionsAll } from "../../../containers"
+import { FallbackUser } from "../../../containers"
 import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { BattleAbility, User } from "../../../types"
+import { BattleAbility, Faction, User } from "../../../types"
 
 /*
 NOTE:
@@ -36,33 +35,14 @@ export interface LocationSelectAlertProps {
     y?: number
 }
 
-export const FallbackUser: User = {
-    id: "",
-    faction_id: "",
-    username: "Unknown user",
-    avatar_id: "",
-    sups: 0,
-    faction: {
-        id: "",
-        label: "",
-        logo_blob_id: "",
-        background_blob_id: "",
-        theme: {
-            primary: "grey !important",
-            secondary: "#FFFFFF",
-            background: "#0D0404",
-        },
-    },
-    gid: 9999,
-}
-
-export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelectAlertProps; factionsAll: FactionsAll }) => {
+export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelectAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { type, currentUser, ability } = data
     const { label, colour, image_url } = ability
-    const { username, faction, gid } = currentUser || FallbackUser
+    const { username, gid, faction_id } = currentUser || FallbackUser
 
+    const faction = getFaction(faction_id)
     const abilityImageUrl = useMemo(() => `${image_url}`, [image_url])
-    const mainColor = faction.theme.primary
+    const mainColor = faction.primary_color
 
     const Icon = () => {
         if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
@@ -107,8 +87,8 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
                                 <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
                             </>
                         }
-                        color={faction.theme.primary}
-                        imageUrl={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}` : undefined}
+                        color={mainColor}
+                        imageUrl={faction.logo_url}
                         imageMb={-0.2}
                     />
                     <StyledNormalText text=" failed to choose a target." />
@@ -126,8 +106,8 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
                                 <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
                             </>
                         }
-                        color={faction.theme.primary}
-                        imageUrl={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}` : undefined}
+                        color={mainColor}
+                        imageUrl={faction.logo_url}
                         imageMb={-0.2}
                     />
                     <StyledNormalText text=" has confirmed target." />
@@ -145,8 +125,8 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
                                 <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
                             </>
                         }
-                        color={faction.theme.primary}
-                        imageUrl={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}` : undefined}
+                        color={mainColor}
+                        imageUrl={faction.logo_url}
                         imageMb={-0.2}
                     />
                     <StyledNormalText text=" is assigned to choose a target." />
@@ -165,7 +145,7 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
                 isFancy: true,
                 borderThickness: ".15rem",
             }}
-            opacity={0.7}
+            opacity={0.8}
             backgroundColor={colors.darkNavy}
         >
             <Stack
@@ -180,7 +160,7 @@ export const LocationSelectAlert = ({ data, factionsAll }: { data: LocationSelec
                     <StyledImageText
                         text={acronym(faction.label) || "GABS"}
                         color={mainColor || "grey !important"}
-                        imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction.id]?.logo_blob_id}`}
+                        imageUrl={faction.logo_url}
                         imageMb={-0.2}
                     />
                     <Icon />

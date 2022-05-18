@@ -1,9 +1,11 @@
 import { Box, Stack } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
-import { useGame, useGameServerWebsocket, WebSocketProperties } from "../../../containers"
+import { useGame, useAuth, useSupremacy } from "../../../containers"
+import { useGameServerSubscription } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { Map, NetMessageTickWarMachine, Vector2i, WarMachineState } from "../../../types"
+import { Map, WarMachineLiveState, Vector2i, WarMachineState, Faction } from "../../../types"
 
 interface MapWarMachineProps {
     gridWidth: number
@@ -16,6 +18,10 @@ interface MapWarMachineProps {
 }
 
 export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting }: MapWarMachineProps) => {
+    const { userID } = useAuth()
+    const { getFaction } = useSupremacy()
+    const { highlightedMechHash, setHighlightedMechHash } = useGame()
+
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
@@ -23,12 +29,16 @@ export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarg
             {warMachines.map((wm) => (
                 <MapWarMachine
                     key={`${wm.participantID} - ${wm.hash}`}
+                    getFaction={getFaction}
                     gridWidth={gridWidth}
                     gridHeight={gridHeight}
                     warMachine={wm}
                     map={map}
                     enlarged={enlarged}
                     targeting={targeting}
+                    userID={userID}
+                    highlightedMechHash={highlightedMechHash}
+                    setHighlightedMechHash={setHighlightedMechHash}
                 />
             ))}
         </>
@@ -36,49 +46,31 @@ export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarg
 }
 
 interface Props {
+    getFaction: (factionID: string) => Faction
     gridWidth: number
     gridHeight: number
     warMachine: WarMachineState
     map: Map
     enlarged: boolean
     targeting?: boolean
-}
-
-const MapWarMachine = (props: Props) => {
-    const { state, subscribeWarMachineStatNetMessage } = useGameServerWebsocket()
-    const { highlightedMechHash, setHighlightedMechHash } = useGame()
-
-    return (
-        <MapWarMachineInner
-            {...props}
-            state={state}
-            subscribeWarMachineStatNetMessage={subscribeWarMachineStatNetMessage}
-            highlightedMechHash={highlightedMechHash}
-            setHighlightedMechHash={setHighlightedMechHash}
-        />
-    )
-}
-
-interface PropsInner extends Props, Partial<WebSocketProperties> {
-    isSpawnedAI?: boolean
+    userID: string
     highlightedMechHash?: string
     setHighlightedMechHash: (s?: string) => void
 }
 
-const MapWarMachineInner = ({
+const MapWarMachine = ({
+    getFaction,
     gridWidth,
     gridHeight,
     warMachine,
     map,
     enlarged,
     targeting,
-    isSpawnedAI,
-    subscribeWarMachineStatNetMessage,
-    state,
+    userID,
     highlightedMechHash,
     setHighlightedMechHash,
-}: PropsInner) => {
-    const { hash, participantID, faction, maxHealth, maxShield, imageAvatar } = warMachine
+}: Props) => {
+    const { hash, participantID, factionID, maxHealth, maxShield, imageAvatar, ownedByID } = warMachine
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
@@ -89,28 +81,31 @@ const MapWarMachineInner = ({
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const SIZE = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
-    const ICON_SIZE = useMemo(() => (isSpawnedAI ? 0.8 * SIZE : 1 * SIZE), [isSpawnedAI])
-    const ARROW_LENGTH = useMemo(() => ICON_SIZE / 2 + 0.5 * SIZE, [SIZE])
-    const DOT_SIZE = useMemo(() => (isSpawnedAI ? 0.7 * SIZE : 1.2 * SIZE), [isSpawnedAI, SIZE])
-    const primaryColor = useMemo(() => (faction && faction.theme ? faction.theme.primary : "#FFFFFF"), [faction])
+    const ICON_SIZE = useMemo(() => 1 * SIZE, [SIZE])
+    const ARROW_LENGTH = useMemo(() => ICON_SIZE / 2 + 0.6 * SIZE, [ICON_SIZE, SIZE])
+    const DOT_SIZE = useMemo(() => 1.2 * SIZE, [SIZE])
+    const primaryColor = useMemo(() => getFaction(factionID).primary_color || "#FFFFFF", [factionID, getFaction])
     const isAlive = useMemo(() => health > 0, [health])
 
     // Listen on current war machine changes
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeWarMachineStatNetMessage) return
-        return subscribeWarMachineStatNetMessage<NetMessageTickWarMachine | undefined>(participantID, (payload) => {
+    useGameServerSubscription<WarMachineLiveState | undefined>(
+        {
+            URI: `/battle/mech/${participantID}`,
+            key: GameServerKeys.SubMechLiveStats,
+        },
+        (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
             if (payload?.rotation !== undefined) setRotation(payload.rotation)
-        })
-    }, [participantID, state, subscribeWarMachineStatNetMessage])
+        },
+    )
 
     const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
         } else setHighlightedMechHash(hash)
-    }, [hash, highlightedMechHash])
+    }, [hash, highlightedMechHash, setHighlightedMechHash])
 
     if (!position) return null
 
@@ -130,9 +125,9 @@ const MapWarMachineInner = ({
                 }px, 0)`,
                 transition: "transform 0.2s linear",
                 zIndex: isAlive ? 5 : 4,
-                opacity: isSpawnedAI ? 0.8 : 1,
+                opacity: 1,
                 border: highlightedMechHash === warMachine.hash ? `${primaryColor} 1rem dashed` : "unset",
-                backgroundColor: highlightedMechHash === warMachine.hash ? `${primaryColor}60` : "unset",
+                backgroundColor: ownedByID === userID ? `${colors.neonBlue}65` : highlightedMechHash === warMachine.hash ? `${primaryColor}60` : "unset",
                 padding: "1rem 1.3rem",
             }}
         >
@@ -149,8 +144,8 @@ const MapWarMachineInner = ({
                               backgroundRepeat: "no-repeat",
                               backgroundPosition: "center",
                               backgroundSize: "cover",
-                              border: `${primaryColor} solid 3px`,
-                              borderRadius: 1,
+                              border: `${primaryColor} solid 7.5px`,
+                              borderRadius: 3,
                               opacity: isAlive ? 1 : 0.7,
                               boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
                               zIndex: 2,
@@ -180,7 +175,7 @@ const MapWarMachineInner = ({
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size={enlarged ? `${0.8 * SIZE}px` : isSpawnedAI ? `${1 * SIZE}px` : `${1.3 * SIZE}px`}
+                            size={enlarged ? `${0.8 * SIZE}px` : `${1.3 * SIZE}px`}
                             style={{
                                 position: "absolute",
                                 top: "52%",
@@ -205,7 +200,7 @@ const MapWarMachineInner = ({
                         <Box style={{ position: "relative", height: ARROW_LENGTH }}>
                             <SvgMapWarMachine
                                 fill={primaryColor}
-                                size={`${0.45 * SIZE}px`}
+                                size={`${0.6 * SIZE}px`}
                                 style={{
                                     position: "absolute",
                                     top: -6,

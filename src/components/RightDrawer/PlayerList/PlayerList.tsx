@@ -1,44 +1,35 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { Dispatch, useState } from "react"
 import { PlayerListContent } from "../.."
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGameServerAuth } from "../../../containers"
+import { useAuth, useSupremacy } from "../../../containers"
 import { acronym } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
-import { User } from "../../../types"
+import { Faction, User } from "../../../types"
 
 export const PlayerList = () => {
-    const { user } = useGameServerAuth()
+    const { getFaction } = useSupremacy()
+    const { user } = useAuth()
     const [activePlayers, setActivePlayers] = useState<User[]>([])
-    const [inactivePlayers, setInactivePlayers] = useState<User[]>([])
 
     return (
         <Fade in>
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-                <Content
-                    user={user}
-                    activePlayers={activePlayers}
-                    inactivePlayers={inactivePlayers}
-                    setActivePlayers={setActivePlayers}
-                    setInactivePlayers={setInactivePlayers}
-                />
+                <Content getFaction={getFaction} user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
             </Stack>
         </Fade>
     )
 }
 
 const Content = ({
+    getFaction,
     user,
     activePlayers,
     setActivePlayers,
-    inactivePlayers,
-    setInactivePlayers,
 }: {
-    user?: User
+    getFaction: (factionID: string) => Faction
+    user: User
     activePlayers: User[]
     setActivePlayers: Dispatch<React.SetStateAction<User[]>>
-    inactivePlayers: User[]
-    setInactivePlayers: Dispatch<React.SetStateAction<User[]>>
 }) => {
     return (
         <Stack sx={{ flex: 1 }}>
@@ -55,14 +46,14 @@ const Content = ({
                     boxShadow: 1.5,
                 }}
             >
-                {user && user.faction && (
+                {user.faction_id && (
                     <Box
                         sx={{
                             width: "3rem",
                             height: "3rem",
                             flexShrink: 0,
                             mb: ".16rem",
-                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
+                            backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
@@ -74,7 +65,7 @@ const Content = ({
                 )}
                 <Stack spacing=".1rem">
                     <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {user && user.faction ? `${acronym(user.faction.label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
+                        {user.faction_id ? `${acronym(getFaction(user.faction_id).label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing="1.3rem">
                         <Stack direction="row" alignItems="center" spacing=".4rem">
@@ -84,13 +75,6 @@ const Content = ({
                                 {activePlayers.length}
                             </Typography>
                         </Stack>
-                        {/* <Stack direction="row" alignItems="center" spacing=".4rem">
-                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.yellow }} />
-                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                <strong>Inactive: </strong>
-                                {inactivePlayers.length}
-                            </Typography>
-                        </Stack> */}
                     </Stack>
                 </Stack>
             </Stack>
@@ -120,15 +104,7 @@ const Content = ({
                     },
                 }}
             >
-                {user && (
-                    <PlayerListContent
-                        user={user}
-                        activePlayers={activePlayers}
-                        inactivePlayers={inactivePlayers}
-                        setActivePlayers={setActivePlayers}
-                        setInactivePlayers={setInactivePlayers}
-                    />
-                )}
+                <PlayerListContent user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
             </Box>
         </Stack>
     )

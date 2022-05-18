@@ -1,10 +1,11 @@
 import { Box, Button, CircularProgress, Fade, IconButton, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { AssetItem } from "../.."
 import { SvgGridView, SvgListView, SvgRobot } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
-import { useGameServerAuth, useGameServerWebsocket, useSnackbar, useSupremacy } from "../../../containers"
-import { usePagination, useToggle } from "../../../hooks"
+import { useSnackbar, useSupremacy } from "../../../containers"
+import { useDebounce, usePagination, useToggle } from "../../../hooks"
+import { useGameServerCommandsUser, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 // import { TelegramShortcodeModal } from "./DeployConfirmation"
@@ -21,11 +22,6 @@ export interface AssetQueue {
     position?: number
     in_battle: boolean
     contract_reward?: ""
-}
-
-interface GetAssetsResponse {
-    asset_queue_list: AssetQueue[]
-    total: number
 }
 
 export const Assets = () => {
@@ -62,61 +58,83 @@ const Content = ({
     toggleIsGridView: (value?: boolean | undefined) => void
 }) => {
     const { newSnackbarMessage } = useSnackbar()
-    const { user } = useGameServerAuth()
-    const { state, subscribe, send } = useGameServerWebsocket()
     const { battleIdentifier } = useSupremacy()
-
-    const [queueFeed, setQueueFeed] = useState<QueueFeedResponse>()
+    const { send: sendUser } = useGameServerCommandsUser("/user_commander")
+    const queueFeed = useGameServerSubscriptionBattleFaction<QueueFeedResponse>({
+        URI: "/queue",
+        key: GameServerKeys.SubQueueFeed,
+    })
+    const [queueUpdated, setQueueUpdated] = useDebounce(false, 1500)
     const [assetsQueue, setAssetsQueue] = useState<AssetQueue[]>()
-    const [queueUpdated, toggleQueueUpdated] = useToggle()
+    const cachedAssetQueue = useRef<AssetQueue[]>()
+    const [preventAssetsRefresh, togglePreventAssetsRefresh] = useToggle()
 
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 12, page: 1 })
 
-    // Subscribe to queue feed
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !user) return
-        return subscribe<QueueFeedResponse>(GameServerKeys.SubQueueFeed, (payload) => {
-            if (payload) setQueueFeed(payload)
-        })
-    }, [state, subscribe, user])
+    useGameServerSubscriptionBattleFaction(
+        {
+            URI: "/queue",
+            key: GameServerKeys.TriggerBattleQueueUpdated,
+        },
+        (payload) => {
+            if (!payload) return
+            setQueueUpdated((prev) => !prev)
+        },
+    )
 
     // Get assets
     useEffect(() => {
         ;(async () => {
             try {
-                setIsLoading(true)
-                if (state !== WebSocket.OPEN || !send) return
-                const resp = await send<
-                    GetAssetsResponse,
-                    {
-                        page_number: number
-                        page_size: number
-                    }
-                >(GameServerKeys.GetAssetsQueue, {
-                    page_number: page - 1, // start with 0
-                    page_size: pageSize,
+                //PLAYER:ASSET:MECH:LIST
+                console.log("here!")
+                const resp = await sendUser("PLAYER:ASSET:MECH:LIST", {
+                    search: "",
+                    // filter: "",
+                    // sort: "",
+                    page_size: 50,
+                    page: 1,
                 })
+                console.log("here1!")
+                console.log(resp)
 
-                if (!resp) return
-                setAssetsQueue(resp.asset_queue_list)
-                setTotalItems(resp.total)
+                // if (!preventAssetsRefresh) setIsLoading(true)
+                // const resp = await send<
+                //     GetAssetsResponse,
+                //     {
+                //         page_number: number
+                //         page_size: number
+                //     }
+                // >(GameServerKeys.GetAssetsQueue, {
+                //     page_number: page - 1, // start with 0
+                //     page_size: pageSize,
+                // })
+                //
+                // if (!resp) return
+                // if (preventAssetsRefresh) {
+                //     cachedAssetQueue.current = resp.asset_queue_list
+                // } else {
+                //     setAssetsQueue(resp.asset_queue_list)
+                // }
+                // setTotalItems(resp.total)
             } catch (e) {
+                console.log(e)
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get assets.", "error")
                 console.debug(e)
             } finally {
                 setIsLoading(false)
             }
         })()
-    }, [send, state, page, pageSize, queueUpdated, battleIdentifier])
+        // NOTE: state change of `preventAssetsRefresh` doesnt need to trigger a send
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sendUser, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
 
+    // Update assets (the page) from the cache
     useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-
-        return subscribe(GameServerKeys.TriggerBattleQueueUpdated, async () => {
-            toggleQueueUpdated()
-        })
-    }, [state, subscribe, toggleQueueUpdated])
+        if (!preventAssetsRefresh && cachedAssetQueue.current) setAssetsQueue(cachedAssetQueue.current)
+        cachedAssetQueue.current = undefined
+    }, [preventAssetsRefresh])
 
     const content = useMemo(() => {
         if (isLoading || !assetsQueue || !queueFeed) {
@@ -131,7 +149,16 @@ const Content = ({
             return (
                 <Stack spacing={isGridView ? 0 : ".6rem"} direction={isGridView ? "row" : "column"} flexWrap={isGridView ? "wrap" : "unset"}>
                     {assetsQueue.map((aq) => (
-                        <AssetItem key={`${aq.hash}-${aq.position}`} assetQueue={aq} queueFeed={queueFeed} isGridView={isGridView} />
+                        // <AssetItem key={`${aq.hash}-${aq.position}`} assetQueue={aq} queueFeed={queueFeed} isGridView={isGridView} />
+                        <AssetItem
+                            key={`${aq.hash}-${aq.position}`}
+                            // telegramShortcode={telegramShortcode}
+                            // setTelegramShortcode={setTelegramShortcode}
+                            assetQueue={aq}
+                            queueFeed={queueFeed}
+                            isGridView={isGridView}
+                            togglePreventAssetsRefresh={togglePreventAssetsRefresh}
+                        />
                     ))}
                 </Stack>
             )
@@ -164,7 +191,7 @@ const Content = ({
                 </Button>
             </Stack>
         )
-    }, [isLoading, assetsQueue, queueFeed, isGridView])
+    }, [isLoading, assetsQueue, queueFeed, isGridView, telegramShortcode, setTelegramShortcode, togglePreventAssetsRefresh])
 
     return (
         <Stack sx={{ flex: 1 }}>

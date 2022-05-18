@@ -20,7 +20,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
         }, 1000)
 
         return () => clearTimeout(timeout)
-    }, [])
+    }, [toggleShowSkeleton])
 
     return (
         <Modal open onClose={() => onClose()}>
@@ -103,6 +103,9 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                         "::-webkit-scrollbar-thumb": {
                                             background: `${colors.neonBlue}`,
                                             borderRadius: 3,
+                                        },
+                                        a: {
+                                            color: colors.neonBlue,
                                         },
                                     }}
                                 >

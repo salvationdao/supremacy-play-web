@@ -1,16 +1,14 @@
 import { Box, Button, Divider, Link, Modal, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../theme/theme"
-import { useToggle } from "../../hooks/useToggle"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
-import { usePassportServerAuth } from "../../containers"
+import { useAuth } from "../../containers"
 import { ClipThing } from ".."
 
-export const NoSupsModal = () => {
-    const { user } = usePassportServerAuth()
-    const [open, toggleOpen] = useToggle(true)
+export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
+    const { userID } = useAuth()
 
-    if (!user || !open) return null
+    if (!userID) return null
 
     return (
         <Modal open>
@@ -60,22 +58,18 @@ export const NoSupsModal = () => {
                             </Typography>
 
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
-                                1. Navigate to the{" "}
+                                • Navigate to the{" "}
                                 <Link target="_blank" href={TOKEN_SALE_PAGE} color={colors.neonBlue}>
                                     token sale here
                                 </Link>{" "}
                                 or click the &quot;Get SUPS&quot; button in the top right-hand corner of the stream.
                                 <br />
-                                <br />
-                                2. From PancakeSwap, the tokens will reside in your off-world wallet. To use them on-world, and in game, you will have to
+                                <br />• From PancakeSwap, the tokens will reside in your off-world wallet. To use them on-world, and in game, you will have to
                                 deposit your $SUPS into your connected account. You can{" "}
                                 <Link target="_blank" href={PASSPORT_WEB + "deposit"} color={colors.neonBlue}>
                                     deposit your tokens here
                                 </Link>
                                 .
-                                <br />
-                                <br />
-                                3. Come back and enjoy the Battle Arena to its&apos; fullest.
                             </Typography>
                         </Stack>
 
@@ -95,7 +89,7 @@ export const NoSupsModal = () => {
                                     border: `${colors.neonBlue} 1px solid`,
                                 },
                             }}
-                            onClick={() => toggleOpen(false)}
+                            onClick={onClose}
                         >
                             I just want to watch
                         </Button>

@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react"
 import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionMultipliers, SectionTopSups, SectionTopSupsFaction, SectionWinner } from ".."
 import { useGame, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
-import { colors } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 
 export const BOTTOM_BUTTONS_HEIGHT = 5 //rems
 
@@ -17,20 +17,20 @@ export const BattleEndScreen = () => {
             toggleIsEndBattleDetailEnabled(true)
             toggleIsEndBattleDetailOpen(true)
         }
-    }, [battleEndDetail])
+    }, [battleEndDetail, toggleIsEndBattleDetailEnabled, toggleIsEndBattleDetailOpen])
 
     // New game started, so close the panel
     useEffect(() => {
         if (map) toggleIsEndBattleDetailOpen(false)
-    }, [map])
+    }, [map, toggleIsEndBattleDetailOpen])
 
     const primaryColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail.winning_faction.theme.primary : colors.neonBlue),
+        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail.winning_faction.primary_color : colors.neonBlue),
         [battleEndDetail],
     )
 
     const backgroundColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96) : colors.darkNavyBlue),
+        () => (battleEndDetail && battleEndDetail.winning_faction ? shadeColor(battleEndDetail.winning_faction.primary_color, -96) : colors.darkNavyBlue),
         [battleEndDetail],
     )
 
@@ -52,7 +52,7 @@ export const BattleEndScreen = () => {
                     bottom: 0,
                     left: 0,
                     boxShadow: 20,
-                    zIndex: 999,
+                    zIndex: siteZIndex.Popover,
                     maxWidth: "48rem",
                     ...backgroundColorGradient,
                 }}

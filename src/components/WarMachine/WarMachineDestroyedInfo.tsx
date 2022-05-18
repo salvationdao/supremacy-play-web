@@ -1,49 +1,110 @@
-import { Box, Modal, Stack, Theme, Typography, useTheme } from "@mui/material"
-import { useMemo } from "react"
+import { Box, CircularProgress, Modal, Stack, Typography } from "@mui/material"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from ".."
 import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
-import { colors, fonts } from "../../theme/theme"
-import { DamageRecord, WarMachineDestroyedRecord, WarMachineState } from "../../types"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../types"
+import { useTheme } from "../../containers/theme"
+import { useSnackbar } from "../../containers"
+import { useParameterizedQuery } from "react-fetching-library"
+import { GetMechDestroyedInfo } from "../../fetching"
 
 export const WarMachineDestroyedInfo = ({
+    warMachine,
     open,
     onClose,
-    warMachineDestroyedRecord,
+    getFaction,
 }: {
+    warMachine: WarMachineState
     open: boolean
     onClose: () => void
-    warMachineDestroyedRecord: WarMachineDestroyedRecord
+    getFaction: (factionID: string) => Faction
 }) => {
-    const theme = useTheme<Theme>()
-    const { destroyed_war_machine, killed_by_war_machine, killed_by, damage_records } = warMachineDestroyedRecord
+    const theme = useTheme()
+    const { newSnackbarMessage } = useSnackbar()
+    const { query: queryGetMechDestroyedInfo } = useParameterizedQuery(GetMechDestroyedInfo)
+    const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
 
-    const killDamagePercent = useMemo(
-        () =>
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetMechDestroyedInfo(warMachine.id)
+                if (resp.error || !resp.payload) return
+                setWarMachineDestroyedRecord(resp.payload)
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve mech destroyed info.", "error")
+                console.debug(e)
+            }
+        })()
+    }, [newSnackbarMessage, queryGetMechDestroyedInfo, warMachine.id])
+
+    const content = useMemo(() => {
+        if (!warMachineDestroyedRecord)
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
+                    <CircularProgress size="1.8rem" sx={{ color: theme.factionTheme.primary }} />
+                </Stack>
+            )
+
+        const { destroyed_war_machine, killed_by_war_machine, killed_by, damage_records } = warMachineDestroyedRecord
+
+        const killDamagePercent =
             damage_records
                 .filter(
                     (dr) =>
                         (dr.caused_by_war_machine && dr.caused_by_war_machine.participantID === killed_by_war_machine?.participantID) ||
                         dr.source_name == killed_by,
                 )
-                .reduce((acc, dr) => acc + dr.amount, 0) / 100,
-        [damage_records],
-    )
+                .reduce((acc, dr) => acc + dr.amount, 0) / 100
 
-    const assistDamageMechs = useMemo(
-        () =>
-            damage_records
-                .filter((dr) => dr.caused_by_war_machine && dr.caused_by_war_machine.participantID !== killed_by_war_machine?.participantID)
-                .sort((a, b) => (b.amount > a.amount ? 1 : -1)),
-        [damage_records],
-    )
+        const assistDamageMechs = damage_records
+            .filter((dr) => dr.caused_by_war_machine && dr.caused_by_war_machine.participantID !== killed_by_war_machine?.participantID)
+            .sort((a, b) => (b.amount > a.amount ? 1 : -1))
 
-    const assistDamageOthers = useMemo(
-        () => damage_records.filter((dr) => !dr.caused_by_war_machine).sort((a, b) => (b.amount > a.amount ? 1 : -1)),
-        [damage_records],
-    )
+        const assistDamageOthers = damage_records.filter((dr) => !dr.caused_by_war_machine).sort((a, b) => (b.amount > a.amount ? 1 : -1))
+
+        return (
+            <Stack
+                spacing="3.04rem"
+                sx={{
+                    px: "4rem",
+                    py: "3.6rem",
+                    zIndex: 1,
+                }}
+            >
+                <Stack direction="row" alignItems="center">
+                    <WarMachineBig
+                        warMachine={killed_by_war_machine}
+                        name={killed_by_war_machine ? killed_by_war_machine.name || killed_by_war_machine.hash : killed_by}
+                        getFaction={getFaction}
+                    />
+
+                    <Stack alignItems="center" sx={{ flex: 1 }}>
+                        <SvgSkull size="12rem" sx={{ mb: ".8rem" }} />
+                        <Typography variant="h5" sx={{ fontFamily: fonts.nostromoHeavy }}>
+                            DESTROYED
+                        </Typography>
+                        <Typography sx={{ fontFamily: fonts.nostromoBold, color: colors.neonBlue }}>{killDamagePercent}% DAMAGE</Typography>
+                    </Stack>
+
+                    <WarMachineBig
+                        warMachine={destroyed_war_machine}
+                        name={destroyed_war_machine.name || destroyed_war_machine.hash}
+                        isDead
+                        getFaction={getFaction}
+                    />
+                </Stack>
+
+                <Stack direction="row">
+                    <DamageList title="TOP 2 ASSIST DAMAGE" damageRecords={assistDamageMechs} getFaction={getFaction} />
+                    <DamageList title="TOP 2 OTHER DAMAGE" damageRecords={assistDamageOthers} getFaction={getFaction} />
+                </Stack>
+            </Stack>
+        )
+    }, [getFaction, theme.factionTheme.primary, warMachineDestroyedRecord])
 
     return (
-        <Modal open={open} onClose={onClose} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
             <Box
                 sx={{
                     position: "absolute",
@@ -82,37 +143,7 @@ export const WarMachineDestroyedInfo = ({
                             }}
                         />
 
-                        <Box
-                            sx={{
-                                px: "4rem",
-                                py: "3.6rem",
-                                zIndex: 1,
-                            }}
-                        >
-                            <Stack spacing="3.04rem">
-                                <Stack direction="row" alignItems="center">
-                                    <WarMachineBig
-                                        warMachine={killed_by_war_machine}
-                                        name={killed_by_war_machine ? killed_by_war_machine.name || killed_by_war_machine.hash : killed_by}
-                                    />
-
-                                    <Stack alignItems="center" sx={{ flex: 1 }}>
-                                        <SvgSkull size="12rem" sx={{ mb: ".8rem" }} />
-                                        <Typography variant="h5" sx={{ fontFamily: fonts.nostromoHeavy }}>
-                                            DESTROYED
-                                        </Typography>
-                                        <Typography sx={{ fontFamily: fonts.nostromoBold, color: colors.neonBlue }}>{killDamagePercent}% DAMAGE</Typography>
-                                    </Stack>
-
-                                    <WarMachineBig warMachine={destroyed_war_machine} name={destroyed_war_machine.name || destroyed_war_machine.hash} isDead />
-                                </Stack>
-
-                                <Stack direction="row">
-                                    <DamageList title="TOP 2 ASSIST DAMAGE" damageRecords={assistDamageMechs} />
-                                    <DamageList title="TOP 2 OTHER DAMAGE" damageRecords={assistDamageOthers} />
-                                </Stack>
-                            </Stack>
-                        </Box>
+                        {content}
                     </Box>
                 </ClipThing>
             </Box>
@@ -179,8 +210,18 @@ const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imag
     )
 }
 
-const WarMachineBig = ({ warMachine, name, isDead }: { warMachine?: WarMachineState; name?: string; isDead?: boolean }) => {
-    const color = warMachine ? warMachine.faction.theme.primary : colors.text
+const WarMachineBig = ({
+    warMachine,
+    name,
+    isDead,
+    getFaction,
+}: {
+    warMachine?: WarMachineState
+    name?: string
+    isDead?: boolean
+    getFaction: (factionID: string) => Faction
+}) => {
+    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
     return (
         <Stack alignItems="center" spacing=".8rem" sx={{ width: "15rem" }}>
             {warMachine ? (
@@ -208,8 +249,18 @@ const WarMachineBig = ({ warMachine, name, isDead }: { warMachine?: WarMachineSt
     )
 }
 
-const WarMachineSmall = ({ warMachine, name, damagePercent }: { warMachine?: WarMachineState; name?: string; damagePercent: number }) => {
-    const color = warMachine ? warMachine.faction.theme.primary : colors.text
+const WarMachineSmall = ({
+    warMachine,
+    name,
+    damagePercent,
+    getFaction,
+}: {
+    warMachine?: WarMachineState
+    name?: string
+    damagePercent: number
+    getFaction: (factionID: string) => Faction
+}) => {
+    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
     return (
         <Stack direction="row" alignItems="center" spacing=".96rem">
             {warMachine ? (
@@ -242,7 +293,17 @@ const WarMachineSmall = ({ warMachine, name, damagePercent }: { warMachine?: War
     )
 }
 
-const DamageList = ({ title, damageRecords, top = 2 }: { title: string; damageRecords: DamageRecord[]; top?: number }) => {
+const DamageList = ({
+    title,
+    damageRecords,
+    top = 2,
+    getFaction,
+}: {
+    title: string
+    damageRecords: DamageRecord[]
+    top?: number
+    getFaction: (factionID: string) => Faction
+}) => {
     return (
         <Box sx={{ flex: 1 }}>
             <Box
@@ -276,6 +337,7 @@ const DamageList = ({ title, damageRecords, top = 2 }: { title: string; damageRe
                                 warMachine={dr.caused_by_war_machine}
                                 name={dr.caused_by_war_machine ? dr.caused_by_war_machine.name || dr.caused_by_war_machine.hash : dr.source_name}
                                 damagePercent={dr.amount / 100}
+                                getFaction={getFaction}
                             />
                         ))
                 ) : (

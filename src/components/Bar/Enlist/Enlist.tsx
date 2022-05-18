@@ -1,7 +1,7 @@
 import { EnlistBanner, EnlistButtonGroup } from "../.."
-import { usePassportServerAuth } from "../../../containers"
+import { useAuth } from "../../../containers"
 
 export const Enlist = () => {
-    const { factionID } = usePassportServerAuth()
+    const { factionID } = useAuth()
     return factionID ? <EnlistBanner /> : <EnlistButtonGroup />
 }

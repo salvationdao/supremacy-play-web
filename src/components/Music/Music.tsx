@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Howl, Howler } from "howler"
 import { FactionIDs } from "../../constants"
-import { useGame, useGameServerWebsocket, useStream, WebSocketProperties } from "../../containers"
+import { useGame, useStream } from "../../containers"
 import { GameServerKeys } from "../../keys"
-import { WarMachineDestroyedRecord, WarMachineState } from "../../types"
+import { WarMachineLiveState, WarMachineState } from "../../types"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { useToggle } from "../../hooks"
 
 enum Sounds {
     generalIntro = "generalIntro",
@@ -17,7 +19,6 @@ enum Sounds {
 }
 
 export const Music = () => {
-    const { state, subscribe } = useGameServerWebsocket()
     const { musicVolume, isMusicMute } = useStream()
     const { warMachines, battleEndDetail } = useGame()
     const sounds = useRef<{ [name: string]: Howl }>({})
@@ -66,6 +67,28 @@ export const Music = () => {
         }
     }, [])
 
+    // Nicely transitions to play the new sound with fade
+    const playNewSound = useCallback((newSound: Sounds, onEndSound?: Sounds) => {
+        if (currentPlaying.current && currentPlaying.current != newSound) {
+            sounds.current[currentPlaying.current].fade(1, 0, 800)
+            sounds.current[currentPlaying.current].off()
+            sounds.current[newSound].stop()
+            sounds.current[newSound].play()
+            sounds.current[newSound].fade(0, 1, 800)
+        } else if (!currentPlaying.current) {
+            sounds.current[newSound].stop()
+            sounds.current[newSound].play()
+        }
+
+        if (onEndSound) {
+            sounds.current[newSound].once("end", () => {
+                playNewSound(onEndSound)
+            })
+        }
+
+        currentPlaying.current = newSound
+    }, [])
+
     useEffect(() => {
         Howler.volume(musicVolume)
     }, [musicVolume])
@@ -87,7 +110,7 @@ export const Music = () => {
                 playNewSound(Sounds.rmVictory)
                 break
         }
-    }, [battleEndDetail])
+    }, [battleEndDetail, playNewSound])
 
     // Play intro and main theme at beginning
     useEffect(() => {
@@ -95,7 +118,7 @@ export const Music = () => {
         setZhiDeathCount(0)
         setBcDeathCount(0)
         playNewSound(Sounds.generalIntro, Sounds.generalMain)
-    }, [warMachines])
+    }, [playNewSound, warMachines])
 
     // Play faction theme depending on who's winning
     useEffect(() => {
@@ -106,29 +129,7 @@ export const Music = () => {
         } else if (bcDeathCount < zhiDeathCount && bcDeathCount < rmDeathCount) {
             playNewSound(Sounds.bcMain)
         }
-    }, [rmDeathCount, zhiDeathCount, bcDeathCount])
-
-    // Nicely transitions to play the new sound with fade
-    const playNewSound = (newSound: Sounds, onEndSound?: Sounds) => {
-        if (currentPlaying.current && currentPlaying.current != newSound) {
-            sounds.current[currentPlaying.current].fade(1, 0, 800)
-            sounds.current[currentPlaying.current].off()
-            sounds.current[newSound].stop()
-            sounds.current[newSound].play()
-            sounds.current[newSound].fade(0, 1, 800)
-        } else if (!currentPlaying.current) {
-            sounds.current[newSound].stop()
-            sounds.current[newSound].play()
-        }
-
-        if (onEndSound) {
-            sounds.current[newSound].once("end", () => {
-                playNewSound(onEndSound)
-            })
-        }
-
-        currentPlaying.current = newSound
-    }
+    }, [rmDeathCount, zhiDeathCount, bcDeathCount, playNewSound])
 
     return (
         <>
@@ -147,39 +148,37 @@ export const Music = () => {
                             break
                     }
 
-                    return <Mech key={wm.hash} state={state} subscribe={subscribe} warMachine={wm} setDeathCount={setDeathCount} />
+                    return <Mech key={wm.hash} warMachine={wm} setDeathCount={setDeathCount} />
                 })}
         </>
     )
 }
 
-interface MechProps extends Partial<WebSocketProperties> {
+interface MechProps {
     warMachine: WarMachineState
     setDeathCount?: React.Dispatch<React.SetStateAction<number>>
 }
 
-const Mech = ({ state, subscribe, warMachine, setDeathCount }: MechProps) => {
-    const { hash, participantID } = warMachine
-    const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
+const Mech = ({ warMachine, setDeathCount }: MechProps) => {
+    const { participantID } = warMachine
+    const [isDead, toggleIsDead] = useToggle()
 
-    // Subscribe to whether the war machine has been destroyed
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<WarMachineDestroyedRecord>(
-            GameServerKeys.SubWarMachineDestroyed,
-            (payload) => {
-                if (!payload) return
-                setWarMachineDestroyedRecord(payload)
-            },
-            { participantID },
-        )
-    }, [state, subscribe, participantID, hash])
+    // Listen on current war machine changes
+    useGameServerSubscription<WarMachineLiveState | undefined>(
+        {
+            URI: `/battle/mech/${participantID}`,
+            key: GameServerKeys.SubMechLiveStats,
+        },
+        (payload) => {
+            if (payload?.health !== undefined) {
+                if (payload.health <= 0) toggleIsDead(true)
+            }
+        },
+    )
 
     useEffect(() => {
-        if (warMachineDestroyedRecord && setDeathCount) {
-            setDeathCount((prev) => prev + 1)
-        }
-    }, [warMachineDestroyedRecord, hash, setDeathCount])
+        if (isDead && setDeathCount) setDeathCount((prev) => prev + 1)
+    }, [isDead, setDeathCount])
 
     return null
 }

@@ -10,7 +10,7 @@ export const useArray = (initial: any, notiID = "id") => {
         setValue,
         add: useCallback((a) => setValue((v) => [...v, a]), []),
         clear: useCallback(() => setValue(() => []), []),
-        removeByID: useCallback((id) => setValue((arr) => arr.filter((v) => v && v[notiID] !== id)), []),
+        removeByID: useCallback((id) => setValue((arr) => arr.filter((v) => v && v[notiID] !== id)), [notiID]),
         removeIndex: useCallback(
             (index) =>
                 setValue((v) => {

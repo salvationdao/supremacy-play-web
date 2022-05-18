@@ -1,12 +1,14 @@
-import { Box, Fade, Stack, Typography, useTheme, Theme } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityCountdown, ClipThing } from "../.."
-import { BribeStageResponse, FactionsAll, useGame, useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../../../containers"
+import { BribeStageResponse, useGame, useAuth, useSupremacy } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
+import { useGameServerCommandsBattleFaction, useGameServerSubscription, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { BattleAbility as BattleAbilityType, BattleAbilityProgress, NetMessageType } from "../../../types"
+import { BattleAbility as BattleAbilityType, BattleAbilityProgress, Faction } from "../../../types"
 import { BattleAbilityTextTop } from "./BattleAbilityTextTop"
 import { SupsBarStack } from "./SupsBarStack"
 import { VotingButtons } from "./VotingButtons"
@@ -18,98 +20,66 @@ export interface BattleAbilityProgressBigNum {
 }
 
 export const BattleAbilityItem = () => {
-    const theme = useTheme<Theme>()
-    const { state, send, subscribe, subscribeNetMessage } = useGameServerWebsocket()
-    const { factionID } = useGameServerAuth()
+    const theme = useTheme()
+    const { factionID } = useAuth()
+    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
     const { bribeStage, forceDisplay100Percentage } = useGame()
-    const { factionsAll } = useSupremacy()
+    const { getFaction } = useSupremacy()
 
     const [fadeEffect, toggleFadeEffect] = useToggle()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
     const [battleAbilityProgress, setBattleAbilityProgress] = useState<BattleAbilityProgressBigNum[]>([])
 
-    const progressPayload = useRef<{ [key: string]: BattleAbilityProgress }>()
-
     // Subscribe to battle ability updates
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID) return
-        return subscribe<BattleAbilityType>(
-            GameServerKeys.SubBattleAbility,
-            (payload) => {
-                setBattleAbility(payload)
-                toggleFadeEffect()
-            },
-            null,
-        )
-    }, [state, subscribe, factionID])
-
-    // DO NOT REMOVE THIS! Trigger the subscribe to the progress bars net message
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID) return
-        return subscribe(GameServerKeys.TriggerBattleAbilityProgressUpdated, () => null, null)
-    }, [state, subscribe, factionID])
+    useGameServerSubscriptionBattleFaction<BattleAbilityType>(
+        {
+            URI: "/ability",
+            key: GameServerKeys.SubBattleAbility,
+        },
+        (payload) => {
+            if (!payload) return
+            setBattleAbility(payload)
+            toggleFadeEffect()
+        },
+    )
 
     // Listen on the progress of the votes
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<BattleAbilityProgress[] | undefined>(NetMessageType.BattleAbilityProgressTick, (payload) => {
+    useGameServerSubscription<BattleAbilityProgress[] | undefined>(
+        {
+            URI: "/battle/live_data",
+            key: GameServerKeys.SubBattleAbilityProgress,
+        },
+        (payload) => {
             if (!payload) return
 
-            // Put own faction progress first, then convert string to big number and set state
-            let unchanged = true
-            const pp: { [key: string]: BattleAbilityProgress } = {}
-
-            for (let i = 0; i < payload.length; i++) {
-                const fid = payload[i].faction_id
-                pp[fid] = payload[i]
-                if (!progressPayload.current) {
-                    unchanged = false
-                } else if (progressPayload.current && progressPayload.current[fid] && payload[i].current_sups !== progressPayload.current[fid].current_sups) {
-                    unchanged = false
-                } else if (progressPayload.current && progressPayload.current[fid] && payload[i].sups_cost !== progressPayload.current[fid].sups_cost) {
-                    unchanged = false
-                }
-            }
-
-            if (!unchanged) {
-                progressPayload.current = pp
-
-                setBattleAbilityProgress(
-                    payload
-                        .sort((a, b) => a.faction_id.localeCompare(b.faction_id))
-                        .map((a) => ({
-                            faction_id: a.faction_id,
-                            sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
-                            current_sups: new BigNumber(a.current_sups).dividedBy("1000000000000000000"),
-                        })),
-                )
-            }
-        })
-    }, [state, subscribeNetMessage])
+            setBattleAbilityProgress(
+                payload
+                    .sort((a, b) => a.faction_id.localeCompare(b.faction_id))
+                    .map((a) => ({
+                        faction_id: a.faction_id,
+                        sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
+                        current_sups: new BigNumber(a.current_sups).dividedBy("1000000000000000000"),
+                    })),
+            )
+        },
+    )
 
     const onBribe = useCallback(
-        async (amount: BigNumber, votePercentage: number) => {
+        async (amount: BigNumber, percentage: number) => {
             if (!battleAbility) return
 
-            if (send) {
-                const resp = await send<boolean, { ability_offering_id: string; percentage: number }>(GameServerKeys.BribeBattleAbility, {
-                    ability_offering_id: battleAbility.ability_offering_id,
-                    percentage: votePercentage,
-                })
+            if (!send || percentage > 1 || percentage < 0) return
 
-                if (resp) {
-                    setBattleAbilityProgress((baps) => {
-                        return baps.map((bap) => {
-                            if (bap.faction_id === factionID) {
-                                return { ...bap, amount: amount.plus(bap.current_sups) }
-                            }
-                            return bap
-                        })
-                    })
-                }
+            try {
+                await send<boolean, { ability_offering_id: string; percentage: number }>(GameServerKeys.BribeBattleAbility, {
+                    ability_offering_id: battleAbility.ability_offering_id,
+                    percentage: percentage,
+                })
+            } catch (e) {
+                console.error(e)
             }
         },
-        [send, battleAbility],
+        [battleAbility, send],
     )
 
     const isVoting = useMemo(
@@ -139,11 +109,12 @@ export const BattleAbilityItem = () => {
 
     return (
         <BattleAbilityItemInner
+            key={battleAbility.ability_offering_id}
             bribeStage={bribeStage}
             battleAbility={battleAbility}
             isVoting={isVoting}
             fadeEffect={fadeEffect}
-            factionsAll={factionsAll}
+            getFaction={getFaction}
             currentFactionID={factionID}
             forceDisplay100Percentage={forceDisplay100Percentage}
             battleAbilityProgress={battleAbilityProgress}
@@ -160,7 +131,7 @@ interface InnerProps {
     isVoting: boolean
     fadeEffect: boolean
     currentFactionID?: string
-    factionsAll: FactionsAll
+    getFaction: (factionID: string) => Faction
     forceDisplay100Percentage: string
     battleAbilityProgress: BattleAbilityProgressBigNum[]
     buttonColor: string
@@ -171,7 +142,7 @@ interface InnerProps {
 const BattleAbilityItemInner = ({
     bribeStage,
     battleAbility,
-    factionsAll,
+    getFaction,
     currentFactionID,
     forceDisplay100Percentage,
     fadeEffect,
@@ -215,12 +186,13 @@ const BattleAbilityItemInner = ({
 
                                     <SupsBarStack
                                         battleAbilityProgress={battleAbilityProgress}
-                                        factionsAll={factionsAll}
+                                        getFaction={getFaction}
                                         forceDisplay100Percentage={forceDisplay100Percentage}
                                     />
 
                                     {battleAbilityFactionProgress && (
                                         <VotingButtons
+                                            key={battleAbility.ability_offering_id}
                                             battleAbilityProgress={battleAbilityFactionProgress}
                                             buttonColor={buttonColor}
                                             buttonTextColor={buttonTextColor}

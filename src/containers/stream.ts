@@ -4,8 +4,9 @@ import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { useToggle } from "../hooks"
 import { Stream } from "../types"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
-import { useGameServerWebsocket, useSnackbar } from "."
-import { GameServerKeys } from "../keys"
+import { useSnackbar } from "."
+import { useParameterizedQuery } from "react-fetching-library"
+import { GetStreamList } from "../fetching"
 
 const MAX_OPTIONS = 10
 
@@ -71,7 +72,7 @@ const blankOption: Stream = {
 
 export const StreamContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
-    const { state, subscribe } = useGameServerWebsocket()
+    const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
     const defaultResolution = 720
 
     // video
@@ -95,6 +96,19 @@ export const StreamContainer = createContainer(() => {
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
     const [, setFailedToChangeRed] = useState(false)
 
+    // Fetch stream list
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetStreamList({})
+                if (resp.error || !resp.payload) return
+                setStreams([blankOption, ...resp.payload])
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [queryGetStreamList])
+
     // When user selects a resolution, make the change into the stream
     useEffect(() => {
         if (
@@ -116,8 +130,8 @@ export const StreamContainer = createContainer(() => {
     }, [selectedResolution, currentStream, streamResolutions, currentPlayingStreamHost])
 
     useEffect(() => {
-        if (isMute) setVolume(0)
-        if (isMusicMute) setMusicVolume(0)
+        if (localStorage.getItem("isMute") == "true") setVolume(0)
+        if (localStorage.getItem("isMusicMute") == "true") setMusicVolume(0)
     }, [])
 
     useEffect(() => {
@@ -140,7 +154,7 @@ export const StreamContainer = createContainer(() => {
             vidRef.current.volume = volume
         }
         toggleIsMute(false)
-    }, [volume])
+    }, [toggleIsMute, volume])
 
     useEffect(() => {
         localStorage.setItem("musicVolume", musicVolume.toString())
@@ -151,7 +165,7 @@ export const StreamContainer = createContainer(() => {
         }
 
         toggleIsMusicMute(false)
-    }, [musicVolume])
+    }, [musicVolume, toggleIsMusicMute])
 
     const changeStream = useCallback((s: Stream) => {
         if (!s) return
@@ -159,14 +173,28 @@ export const StreamContainer = createContainer(() => {
         localStorage.setItem("new_stream_props", JSON.stringify(s))
     }, [])
 
-    // Subscribe to list of streams
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<Stream[]>(GameServerKeys.SubStreamList, (payload) => {
-            if (!payload) return
-            setStreams([blankOption, ...payload])
-        })
-    }, [state, subscribe])
+    const setNewStreamOptions = useCallback(
+        (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
+            // Limit to only a few for the dropdown and include our current selection if not already in the list
+            const temp = newStreamOptions.slice(0, MAX_OPTIONS)
+            if (currentStream && !getObjectFromArrayByKey(temp, currentStream.stream_id, "stream_id")) {
+                newStreamOptions[newStreamOptions.length - 1] = currentStream
+            }
+
+            // If there is no current stream selected then pick the US one (for now)
+            if (!dontChangeCurrentStream && !currentStream && newStreamOptions && newStreamOptions.length > 0) {
+                const usaStreams = newStreamOptions.filter((s) => s.name == "USA AZ")
+                if (usaStreams && usaStreams.length > 0) {
+                    changeStream(usaStreams[0])
+                }
+            }
+
+            // Reverse the order for rendering so best is closer to user's mouse
+            setStreamOptions(temp.reverse())
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    )
 
     // Build stream options for the drop down
     useEffect(() => {
@@ -195,29 +223,7 @@ export const StreamContainer = createContainer(() => {
         }
 
         setNewStreamOptions(quietestStreams)
-    }, [streams])
-
-    const setNewStreamOptions = useCallback(
-        (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
-            // Limit to only a few for the dropdown and include our current selection if not already in the list
-            const temp = newStreamOptions.slice(0, MAX_OPTIONS)
-            if (currentStream && !getObjectFromArrayByKey(temp, currentStream.stream_id, "stream_id")) {
-                newStreamOptions[newStreamOptions.length - 1] = currentStream
-            }
-
-            // If there is no current stream selected then pick the US one (for now)
-            if (!dontChangeCurrentStream && !currentStream && newStreamOptions && newStreamOptions.length > 0) {
-                const usaStreams = newStreamOptions.filter((s) => s.name == "USA AZ")
-                if (usaStreams && usaStreams.length > 0) {
-                    changeStream(usaStreams[0])
-                }
-            }
-
-            // Reverse the order for rendering so best is closer to user's mouse
-            setStreamOptions(temp.reverse())
-        },
-        [currentStream],
-    )
+    }, [setNewStreamOptions, streams])
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
@@ -228,7 +234,7 @@ export const StreamContainer = createContainer(() => {
             }
             try {
                 vidRef.current = vid
-                vidRef.current.volume = volume
+                vidRef.current.volume = parseString(localStorage.getItem("streamVolume"), 0.3)
 
                 webRtc.current = new WebRTCAdaptor({
                     websocket_url: currentStream.url,
@@ -278,7 +284,7 @@ export const StreamContainer = createContainer(() => {
                 webRtc.current = undefined
             }
         },
-        [currentStream],
+        [currentStream, newSnackbarMessage],
     )
 
     return {

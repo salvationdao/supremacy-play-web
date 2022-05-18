@@ -1,10 +1,9 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig } from ".."
-import { useGameServerWebsocket, useOverlayToggles } from "../../containers"
+import { useOverlayToggles, useSupremacy } from "../../containers"
 import { parseString } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { BattleStats } from "../BattleStats/BattleStats"
@@ -13,26 +12,14 @@ import { LiveGraph } from "./LiveGraph"
 const DefaultMaxLiveVotingDataLength = 100
 
 export const LiveVotingChart = () => {
-    const { state, subscribe } = useGameServerWebsocket()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
+    const { battleIdentifier } = useSupremacy()
     const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
     const [curWidth, setCurWidth] = useState(0)
     const [curHeight, setCurHeight] = useState(0)
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
         parseString(localStorage.getItem("liveVotingDataMax"), DefaultMaxLiveVotingDataLength),
     )
-
-    // DO NOT REMOVE THIS! Triggered spoil of war update
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerSpoilOfWarUpdated, () => null, null)
-    }, [state, subscribe])
-
-    // DO NOT REMOVE THIS!
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe(GameServerKeys.TriggerLiveVoteCountUpdated, () => null, null)
-    }, [state, subscribe])
 
     // A little timeout so fade transition can play
     useEffect(() => {
@@ -42,7 +29,7 @@ export const LiveVotingChart = () => {
         }, 250)
 
         return () => clearTimeout(timeout)
-    }, [isLiveChartOpen])
+    }, [isLiveChartOpen, toggleIsRender])
 
     const onResize = useCallback((width: number, height: number) => {
         setCurWidth(width)
@@ -57,10 +44,10 @@ export const LiveVotingChart = () => {
             defaultPositionX: 0,
             defaultPositionYBottom: 128,
             defaultSizeX: 415,
-            defaultSizeY: 115,
+            defaultSizeY: 120,
             // Limits
             minSizeX: 415,
-            minSizeY: 115,
+            minSizeY: 120,
             // Toggles
             allowResizeX: true,
             allowResizeY: false,
@@ -76,7 +63,7 @@ export const LiveVotingChart = () => {
             tooltipText:
                 "The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.",
         }),
-        [onResize],
+        [onResize, toggleIsLiveChartOpen],
     )
 
     if (!isRender) return null
@@ -102,7 +89,7 @@ export const LiveVotingChart = () => {
                                 height: "100%",
                                 px: ".56rem",
                                 pt: "1.6rem",
-                                background: "#00000099",
+                                background: "#000000E6",
                                 border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
                                 borderRadius: 1,
                             }}
@@ -133,7 +120,12 @@ export const LiveVotingChart = () => {
                                 </Typography>
                             </Stack>
 
-                            <LiveGraph maxWidthPx={curWidth} maxHeightPx={curHeight} maxLiveVotingDataLength={maxLiveVotingDataLength} />
+                            <LiveGraph
+                                battleIdentifier={battleIdentifier}
+                                maxWidthPx={curWidth}
+                                maxHeightPx={curHeight}
+                                maxLiveVotingDataLength={maxLiveVotingDataLength}
+                            />
                         </Box>
                     </Box>
                 </MoveableResizable>

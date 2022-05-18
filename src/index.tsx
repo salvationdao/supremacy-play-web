@@ -1,131 +1,28 @@
-import { Box, Stack, ThemeProvider, Theme } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
-import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
-import { BrowserRouter, Route, Redirect, Switch, useLocation } from "react-router-dom"
-import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
+import { Buffer } from "buffer"
+import { Action, ClientContextProvider, createClient } from "react-fetching-library"
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
+import { Bar, EarlyAccessWarning, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { DEV_ONLY, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
-import {
-    RightDrawerProvider,
-    GameServerAuthProvider,
-    GameServerSocketProvider,
-    PassportServerAuthProvider,
-    PassportServerSocketProvider,
-    SnackBarProvider,
-    SupremacyProvider,
-    useGameServerWebsocket,
-    WalletProvider,
-    BarProvider,
-    useGameServerAuth,
-} from "./containers"
-import { mergeDeep, shadeColor } from "./helpers"
+import { DEV_ONLY, GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
+import { BarProvider, SnackBarProvider, SupremacyProvider, useAuth, useSupremacy, WalletProvider } from "./containers"
+import { AuthProvider, UserUpdater } from "./containers/auth"
+import { ThemeProvider } from "./containers/theme"
 import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
-import { colors, theme } from "./theme/theme"
-import { FactionThemeColor, UpdateTheme, User } from "./types"
-import { UserData } from "./types/passport"
-
-if (SENTRY_CONFIG) {
-    Sentry.init({
-        dsn: SENTRY_CONFIG.DSN,
-        release: SENTRY_CONFIG.RELEASE,
-        environment: SENTRY_CONFIG.ENVIRONMENT,
-        tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
-    })
-}
-
-const App = () => {
-    const [currentTheme, setTheme] = useState<Theme>(theme)
-    const [factionColors, setFactionColors] = useState<FactionThemeColor>({
-        primary: colors.neonBlue,
-        secondary: "#000000",
-        background: shadeColor(colors.neonBlue, -95),
-    })
-
-    const [authLogin, setAuthLoginX] = useState<User | null>(null)
-    const [passLogin, setPassLoginX] = useState<UserData | null>(null)
-
-    const setAuthLogin = useMemo(() => {
-        return (u: User) => {
-            if (!authLogin && u) {
-                setAuthLoginX(u)
-            }
-        }
-    }, [authLogin])
-
-    const setPassLogin = useMemo(() => {
-        return (u: UserData) => {
-            if (!passLogin && u) {
-                setPassLoginX(u)
-            }
-        }
-    }, [passLogin])
-
-    useEffect(() => {
-        setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
-    }, [factionColors])
-
-    const tourProviderProps = useMemo(
-        () => ({
-            children: <AppInner />,
-            steps: [],
-            padding: 2,
-            styles: tourStyles,
-            showBadge: false,
-            disableKeyboardNavigation: false,
-            disableDotsNavigation: false,
-            afterOpen: () => {
-                if (!localStorage.getItem("visited")) {
-                    localStorage.setItem("visited", "1")
-                }
-            },
-        }),
-        [],
-    )
-
-    return (
-        <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
-            <ThemeProvider theme={currentTheme}>
-                <SnackBarProvider>
-                    <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST, login: passLogin }}>
-                        <PassportServerAuthProvider initialState={{ setLogin: setPassLogin }}>
-                            <GameServerSocketProvider initialState={{ login: authLogin }}>
-                                <GameServerAuthProvider initialState={{ setLogin: setAuthLogin }}>
-                                    <SupremacyProvider>
-                                        <WalletProvider>
-                                            <BarProvider>
-                                                <RightDrawerProvider>
-                                                    <TourProvider {...tourProviderProps}>
-                                                        <BrowserRouter>
-                                                            <AppInner />
-                                                        </BrowserRouter>
-                                                    </TourProvider>
-                                                </RightDrawerProvider>
-                                            </BarProvider>
-                                        </WalletProvider>
-                                    </SupremacyProvider>
-                                </GameServerAuthProvider>
-                            </GameServerSocketProvider>
-                        </PassportServerAuthProvider>
-                    </PassportServerSocketProvider>
-                </SnackBarProvider>
-            </ThemeProvider>
-        </UpdateTheme.Provider>
-    )
-}
+import { colors } from "./theme/theme"
+import { LoginRedirect } from "./pages/LoginRedirect"
+import { ws } from "./containers/ws"
 
 const AppInner = () => {
-    const { isServerUp } = useGameServerWebsocket()
-    useGameServerAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
-    const location = useLocation()
+    useAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
+    const { isServerUp } = useSupremacy()
     const [understand, toggleUnderstand] = useToggle()
-
-    // Dont show gamebar and left nav in 404
-    if (location.pathname === "/404") return <NotFoundPage />
 
     return (
         <>
@@ -163,7 +60,6 @@ const AppInner = () => {
                             overflow: "hidden",
                         }}
                     >
-                        <LoadMessage />
                         <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
 
                         {understand && isServerUp && !UNDER_MAINTENANCE && (
@@ -176,7 +72,7 @@ const AppInner = () => {
                             </Switch>
                         )}
 
-                        {!isServerUp || (UNDER_MAINTENANCE && <Maintenance />)}
+                        {(isServerUp === false || UNDER_MAINTENANCE) && <Maintenance />}
                     </Box>
 
                     <RightDrawer />
@@ -188,52 +84,78 @@ const AppInner = () => {
     )
 }
 
-const testUserAgent = (): boolean => {
-    if (/HeadlessChrome/.test(window.navigator.userAgent)) {
-        // Headless
-        return true
-    } else {
-        // Not Headless
-        return false
+if (SENTRY_CONFIG) {
+    Sentry.init({
+        dsn: SENTRY_CONFIG.DSN,
+        release: SENTRY_CONFIG.RELEASE,
+        environment: SENTRY_CONFIG.ENVIRONMENT,
+        tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
+    })
+}
+
+window.Buffer = Buffer
+
+if (window.location.host.includes("localhost")) {
+    alert("Please don't run on localhost.")
+    throw new Error("Please don't run on localhost.")
+}
+
+const prefixURL = (prefix: string) => () => async (action: Action) => {
+    return {
+        ...action,
+        headers: {
+            "X-AUTH-TOKEN": localStorage.getItem("auth-token") || "",
+            ...action.headers,
+        },
+        endpoint: action.endpoint.startsWith("http") ? action.endpoint : `${prefix}${action.endpoint}`,
     }
 }
 
-const testChromeWindow = (): boolean => {
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    if (eval.toString().length == 33 && !(window as any).chrome) {
-        // Headless
-        return true
-    } else {
-        // Not Headless
-        return false
-    }
-}
-
-const testAppVersion = (): boolean => {
-    const appVersion = navigator.appVersion
-    return /headless/i.test(appVersion)
-}
-
-const testNotificationPermissions = (callback: (res: boolean) => void) => {
-    navigator.permissions
-        .query({
-            name: "notifications",
-        })
-        .then(function (permissionStatus) {
-            if (Notification.permission === "denied" && permissionStatus.state === "prompt") {
-                // Headless
-                callback(true)
-            } else {
-                // Not Headless
-                callback(false)
-            }
-        })
-}
-
-testNotificationPermissions((notResult) => {
-    if (notResult || testUserAgent() || testChromeWindow() || testAppVersion()) {
-        throw new Error("unable to configure fruit punch for circuitboard exposure.")
-    }
+const client = createClient({
+    //None of the options is required
+    requestInterceptors: [prefixURL(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api`)],
+    responseInterceptors: [],
 })
+
+ws.Initialise({ defaultHost: GAME_SERVER_HOSTNAME })
+
+const tourProviderProps = {
+    children: <AppInner />,
+    steps: [],
+    padding: 2,
+    styles: tourStyles,
+    showBadge: false,
+    disableKeyboardNavigation: false,
+    disableDotsNavigation: true,
+}
+
+const App = () => {
+    return (
+        <ThemeProvider>
+            <SnackBarProvider>
+                <ClientContextProvider client={client}>
+                    <AuthProvider>
+                        <SupremacyProvider>
+                            <WalletProvider>
+                                <BarProvider>
+                                    <TourProvider {...tourProviderProps}>
+                                        <UserUpdater />
+                                        <BrowserRouter>
+                                            <Switch>
+                                                <Route path="/404" exact component={NotFoundPage} />
+                                                <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                <Route path="" component={AppInner} />
+                                            </Switch>
+                                        </BrowserRouter>
+                                    </TourProvider>
+                                </BarProvider>
+                            </WalletProvider>
+                        </SupremacyProvider>
+                    </AuthProvider>
+                </ClientContextProvider>
+            </SnackBarProvider>
+        </ThemeProvider>
+    )
+}
 
 ReactDOM.render(<App />, document.getElementById("root"))

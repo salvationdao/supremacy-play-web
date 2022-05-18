@@ -2,22 +2,22 @@ import { Avatar, IconButton, Stack, Typography } from "@mui/material"
 import { useRef } from "react"
 import { BarExpandable, ConnectButton, PunishmentList } from "../.."
 import { SvgInfoCircular } from "../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGameServerAuth, usePassportServerAuth } from "../../../containers"
+import { useAuth, useSupremacy } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
+import { User } from "../../../types"
 import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
 
-export const ProfileCard = () => {
-    const { user } = usePassportServerAuth()
-    const { punishments } = useGameServerAuth()
+export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) => {
+    const { punishments } = useAuth()
+    const { getFaction } = useSupremacy()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [isPunishmentsOpen, toggleIsPunishmentsOpen] = useToggle()
 
-    if (!user) return <ConnectButton />
+    if (!userID) return <ConnectButton />
 
-    const { username, faction } = user
+    const { username, faction_id } = user
 
     return (
         <>
@@ -26,7 +26,7 @@ export const ProfileCard = () => {
                 barName={"profile"}
                 iconComponent={
                     <Avatar
-                        src={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction.logo_blob_id}` : ""}
+                        src={getFaction(faction_id).logo_url}
                         alt={`${username}'s Avatar`}
                         sx={{
                             height: "2.9rem",
@@ -55,20 +55,20 @@ export const ProfileCard = () => {
                         overflowY: "hidden",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            height: ".4rem",
+                            height: ".3rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: colors.darkNeonBlue,
+                            background: "#FFFFFF50",
                             borderRadius: 3,
                         },
                     }}
                 >
                     <Avatar
-                        src={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction.logo_blob_id}` : ""}
+                        src={getFaction(faction_id).logo_url}
                         alt={`${username}'s Avatar`}
                         sx={{
                             height: "2.6rem",

@@ -1,39 +1,48 @@
-import { useGameServerWebsocket } from "../../containers"
-import { NetMessageType } from "../../types"
 import BigNumber from "bignumber.js"
 import { RefObject, MutableRefObject, useEffect, useRef, useState } from "react"
 import { colors } from "../../theme/theme"
 import { Box, Stack, Typography } from "@mui/material"
+import { GameServerKeys } from "../../keys"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
 
 interface LiveGraphProps {
     maxHeightPx: number
     maxWidthPx: number
     maxLiveVotingDataLength: number
-}
-
-interface LiveVotingData {
-    rawData: number
-    smoothData: number
+    battleIdentifier?: number
 }
 
 export const LiveGraph = (props: LiveGraphProps) => {
-    const { maxWidthPx, maxHeightPx, maxLiveVotingDataLength } = props
+    const { battleIdentifier, maxWidthPx, maxHeightPx, maxLiveVotingDataLength } = props
 
-    const { state, subscribeNetMessage } = useGameServerWebsocket()
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [liveVotingData, setLiveVotingData] = useState<LiveVotingData[]>([])
+    const [liveVotingData, setLiveVotingData] = useState<number[]>([])
     const largest = useRef<number>(0.1)
+    const battleID = useRef(battleIdentifier)
 
     useEffect(() => {
-        const zeroArray: LiveVotingData[] = []
-        for (let i = 0; i < maxLiveVotingDataLength; i++) zeroArray.push({ rawData: 0, smoothData: 0 })
+        if (battleIdentifier !== battleID.current) {
+            setLiveVotingData((lvd) => {
+                lvd.shift()
+                return lvd.concat(-1)
+            })
+            battleID.current = battleIdentifier
+        }
+    }, [battleIdentifier])
+
+    useEffect(() => {
+        const zeroArray: number[] = []
+        for (let i = 0; i < maxLiveVotingDataLength; i++) zeroArray.push(0)
         setLiveVotingData(zeroArray)
     }, [maxLiveVotingDataLength])
 
     // Live voting data
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<string | undefined>(NetMessageType.LiveVoting, (payload) => {
+    useGameServerSubscription<string | undefined>(
+        {
+            URI: "/public/live_data",
+            key: GameServerKeys.SubLiveGraph,
+        },
+        (payload) => {
             if (!payload) return
             const rawData = new BigNumber(payload).dividedBy(new BigNumber("1000000000000000000")).toNumber()
             setLiveVotingData((lvd) => {
@@ -43,26 +52,10 @@ export const LiveGraph = (props: LiveGraphProps) => {
                     }
                 }
 
-                // Get latest two data
-                const latestData: number[] = [rawData]
-                if (lvd.length >= 2) {
-                    latestData.concat(lvd[lvd.length - 1].rawData, lvd[lvd.length - 2].rawData)
-                } else if (lvd.length === 1) {
-                    latestData.concat(lvd[lvd.length - 1].rawData, 0)
-                } else {
-                    latestData.concat(0, 0)
-                }
-
-                let sum = 0
-                latestData.forEach((d) => {
-                    sum += d
-                })
-                const smoothData = sum / 3
-
-                return lvd.concat({ rawData, smoothData })
+                return lvd.concat(rawData)
             })
-        })
-    }, [state, subscribeNetMessage])
+        },
+    )
 
     // Draw live graph
     useEffect(() => {
@@ -70,8 +63,8 @@ export const LiveGraph = (props: LiveGraphProps) => {
         // Calculate largest piece of data
         largest.current = 0.1
         liveVotingData.forEach((lvd) => {
-            if (lvd.rawData > largest.current) {
-                largest.current = lvd.rawData
+            if (lvd > largest.current) {
+                largest.current = lvd
             }
         })
 
@@ -84,18 +77,10 @@ export const LiveGraph = (props: LiveGraphProps) => {
             context.clearRect(0, 0, canvas.width, canvas.height)
 
             const GRAPH_TOP = 0
-            const GRAPH_BOTTOM = canvas.height
             const GRAPH_LEFT = 0
-            const GRAPH_RIGHT = canvas.width
 
             const GRAPH_HEIGHT = canvas.height - 18
             const GRAPH_WIDTH = canvas.width
-
-            context.beginPath()
-            // Draw X and Y axis
-            context.moveTo(GRAPH_RIGHT, GRAPH_BOTTOM)
-            context.lineTo(GRAPH_LEFT, GRAPH_BOTTOM)
-            context.stroke()
 
             // Draw raw voting data
             context.beginPath()
@@ -103,17 +88,38 @@ export const LiveGraph = (props: LiveGraphProps) => {
             context.strokeStyle = colors.neonBlue
 
             // Add first point in the graph
-            context.moveTo(GRAPH_LEFT, GRAPH_HEIGHT - (liveVotingData[0].rawData / largest.current) * GRAPH_HEIGHT + GRAPH_TOP)
+            context.moveTo(GRAPH_LEFT, GRAPH_HEIGHT - (liveVotingData[0] / largest.current) * GRAPH_HEIGHT + GRAPH_TOP)
+
+            const newBattlePoints: { x: number; y: number }[] = []
 
             liveVotingData.forEach((lvd, i) => {
                 if (i === 0) return
-                context.lineTo((GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT, GRAPH_HEIGHT * (1 - lvd.rawData / largest.current) + GRAPH_TOP)
+
+                const locationX = (GRAPH_WIDTH * (i + 1)) / maxLiveVotingDataLength + GRAPH_LEFT
+                if (lvd === -1) {
+                    const locationY = GRAPH_HEIGHT * (1 - Math.max(0, liveVotingData[i - 1]) / largest.current) + GRAPH_TOP
+                    newBattlePoints.push({ x: locationX, y: locationY })
+                    return
+                }
+                const locationY = GRAPH_HEIGHT * (1 - Math.max(0, lvd) / largest.current) + GRAPH_TOP
+                context.lineTo(locationX, locationY)
             })
 
             // Actually draw the graph
             context.stroke()
+
+            // Draw dashed line for new battle point
+            context.strokeStyle = colors.lightRed
+            context.lineWidth = 2
+            newBattlePoints.forEach((loc) => {
+                context.beginPath()
+                context.setLineDash([4, 4])
+                context.moveTo(loc.x - 3, loc.y - 10)
+                context.lineTo(loc.x - 3, loc.y + 10)
+                context.stroke()
+            })
         }
-    }, [liveVotingData, canvasRef.current])
+    }, [liveVotingData, maxWidthPx, maxLiveVotingDataLength])
 
     return <LiveGraphInner maxWidthPx={maxWidthPx} maxHeightPx={maxHeightPx} canvasRef={canvasRef} largest={largest} />
 }
@@ -161,7 +167,7 @@ const LiveGraphInner = ({
                     my: ".72rem",
                     ml: ".48rem",
                     pl: ".48rem",
-                    zIndex: 999,
+                    zIndex: 99,
                     borderLeft: `${colors.text}80 1px dashed`,
                 }}
             >

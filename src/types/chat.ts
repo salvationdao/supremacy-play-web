@@ -73,6 +73,7 @@ export interface ChatMessageType {
     type: "TEXT" | "PUNISH_VOTE"
     data: TextMessageData | PunishMessageData
     sent_at: Date
+    locallySent?: boolean
 }
 
 export interface TextMessageData {
@@ -84,7 +85,6 @@ export interface TextMessageData {
     total_multiplier?: number
     is_citizen?: boolean
     from_user_stat?: UserStat
-    self?: boolean
 }
 
 export interface PunishMessageData {

@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { BribeStageResponse } from "../../../containers"
 import { useInterval, useTimer } from "../../../hooks"
 import { SvgBattleAbilityIcon } from "../../../assets"
@@ -26,6 +26,22 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const [sentence, setSentence] = useState<string>("Loading...")
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
 
+    const doSentence = useCallback(() => {
+        switch (bribeStage?.phase) {
+            case "BRIBE":
+                setSentence(`BATTLE ABILITY (${totalSecRemain}s)`)
+                break
+
+            case "LOCATION_SELECT":
+                setSentence("BATTLE ABILITY INITIATED...")
+                break
+
+            case "COOLDOWN":
+                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain}s)`)
+                break
+        }
+    }, [bribeStage?.phase, totalSecRemain])
+
     useEffect(() => {
         if (!bribeStage) return
 
@@ -41,27 +57,11 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
 
         setEndTimeState(endTime)
         doSentence()
-    }, [bribeStage])
+    }, [bribeStage, doSentence, setEndTimeState])
 
     useInterval(() => {
         doSentence()
     }, totalSecRemain)
-
-    const doSentence = () => {
-        switch (bribeStage?.phase) {
-            case "BRIBE":
-                setSentence(`BATTLE ABILITY (${totalSecRemain}s)`)
-                break
-
-            case "LOCATION_SELECT":
-                setSentence("BATTLE ABILITY INITIATED...")
-                break
-
-            case "COOLDOWN":
-                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain}s)`)
-                break
-        }
-    }
 
     return <>{sentence}</>
 }

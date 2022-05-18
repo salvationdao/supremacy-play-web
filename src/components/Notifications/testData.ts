@@ -1,37 +1,24 @@
 import { NotificationResponse } from ".."
+import { User, UserRank } from "../../types"
 
 const faction1 = {
     id: "aaa",
-    background_blob_id: "aaa",
+    background_url: "aaa",
     label: "Red Mountain Offworld Mining Corporation",
-    logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
-    theme: {
-        primary: "#C24242",
-        secondary: "#FFFFFF",
-        background: "#0D0404",
-    },
+    logo_url: "91dae11d-eb07-4906-bbdd-6417b880770a",
+    primary_color: "#C24242",
+    secondary_color: "#FFFFFF",
+    background_color: "#0D0404",
+    description: "aaa",
 }
 
-const faction2 = {
-    id: "aaa",
-    background_blob_id: "aaa",
-    label: "Boston Cybernetics",
-    logo_blob_id: "91dae11d-eb07-4906-bbdd-6417b880770a",
-    theme: {
-        primary: "#428EC1",
-        secondary: "#FFFFFF",
-        background: "#0D0404",
-    },
-}
-
-const user1 = {
+const user1: User = {
     id: "aaa",
     username: "johnsmith",
     avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
     faction_id: "123123",
-    faction: faction1,
-    sups: 0,
     gid: 3871,
+    rank: "NEW_RECRUIT" as UserRank,
 }
 
 const user2 = {
@@ -39,9 +26,8 @@ const user2 = {
     username: "didNot_write65",
     avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
     faction_id: "123123",
-    faction: faction2,
-    sups: 0,
     gid: 6519,
+    rank: "NEW_RECRUIT" as UserRank,
 }
 
 const ability1 = {
@@ -81,6 +67,22 @@ const wm1 = {
     shield: 1,
     position: { x: 1, y: 1 },
     rotation: 1,
+    id: "a797a8c1-157c-4540-a0e6-4b944e07f383",
+    energy: 0,
+    ownedByID: "15f29ee9-e834-4f76-aff8-31e39faabe2d",
+    description: null,
+    externalUrl: "",
+    model: "XFVS",
+    skin: "Ukraine",
+    shieldRechargeRate: 80,
+    speed: 2750,
+    durability: 1000,
+    powerGrid: 1,
+    cpu: 1,
+    weaponHardpoint: 2,
+    turretHardpoint: 0,
+    utilitySlots: 1,
+    weaponNames: ["Plasma Rifle", "Sword"],
 }
 
 const wm2 = {
@@ -98,6 +100,22 @@ const wm2 = {
     shield: 1,
     position: { x: 1, y: 1 },
     rotation: 1,
+    id: "a797a8c1-157c-4540-a0e6-4b944e07f383",
+    energy: 0,
+    ownedByID: "15f29ee9-e834-4f76-aff8-31e39faabe2d",
+    description: null,
+    externalUrl: "",
+    model: "XFVS",
+    skin: "Ukraine",
+    shieldRechargeRate: 80,
+    speed: 2750,
+    durability: 1000,
+    powerGrid: 1,
+    cpu: 1,
+    weaponHardpoint: 2,
+    turretHardpoint: 0,
+    utilitySlots: 1,
+    weaponNames: ["Plasma Rifle", "Sword"],
 }
 
 // Notifications

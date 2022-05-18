@@ -3,10 +3,10 @@ import { useEffect, useMemo } from "react"
 import Tooltip from "@mui/material/Tooltip"
 import { SvgContentCopyIcon, SvgSupToken } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
-import { Transaction } from "../../../../types/passport"
+import { Transaction } from "../../../../types"
 import { TooltipHelper } from "../../.."
 import { dateFormatter, supFormatterNoFixed } from "../../../../helpers"
-import { colors } from "../../../../theme/theme"
+import { colors, siteZIndex } from "../../../../theme/theme"
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const [copySuccess, toggleCopySuccess] = useToggle()
@@ -19,7 +19,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
 
             return () => clearTimeout(timeout)
         }
-    }, [copySuccess])
+    }, [copySuccess, toggleCopySuccess])
 
     const isCredit = useMemo(() => userID === transaction.credit, [userID, transaction])
     const color = useMemo(() => (isCredit ? colors.supsCredit : colors.supsDebit), [isCredit])
@@ -52,9 +52,9 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 placement="right"
                 open={copySuccess}
                 sx={{
-                    zIndex: "9999999 !important",
+                    zIndex: `${siteZIndex.Tooltip} !important`,
                     ".MuiTooltip-popper": {
-                        zIndex: "9999999 !important",
+                        zIndex: `${siteZIndex.Tooltip} !important`,
                     },
                 }}
                 title={
@@ -66,7 +66,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 }
                 componentsProps={{
                     popper: {
-                        style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999, opacity: 0.92 },
+                        style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: `${siteZIndex.Tooltip} !important`, opacity: 0.92 },
                     },
                     arrow: { sx: { color: "#333333" } },
                     tooltip: { sx: { maxWidth: "25rem", background: "#333333" } },

@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useRef } from "react"
 import { SvgPlay, TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
 import { useToggle } from "../../hooks"
-import { colors, fonts } from "../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 
 export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer: boolean; setWatchedTrailer: Dispatch<SetStateAction<boolean>> }) => {
     const videoRef = useRef<HTMLVideoElement>(null)
@@ -12,7 +12,7 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
     const onEnded = useCallback(() => {
         setWatchedTrailer(true)
         if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
-    }, [watchedTrailer])
+    }, [setWatchedTrailer, watchedTrailer])
 
     return (
         <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}>
@@ -31,7 +31,7 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
                     "video::-internal-media-controls-overlay-cast-button": {
                         display: "none",
                     },
-                    zIndex: 99999999,
+                    zIndex: siteZIndex.Trailer,
                 }}
             >
                 {!isPlaying ? (
@@ -77,7 +77,7 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
                             position: "absolute",
                             top: "3rem",
                             right: "3rem",
-                            zIndex: 99,
+                            zIndex: 9,
                             backgroundColor: colors.darkNavy,
                             borderRadius: 0.7,
                             fontFamily: fonts.nostromoBold,

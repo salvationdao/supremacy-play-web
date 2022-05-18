@@ -1,26 +1,17 @@
-import { Badge, Box, Fade, Stack, Tab, Tabs, Theme, Typography, useTheme } from "@mui/material"
+import { Badge, Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { AdditionalOptionsButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgInfoCircular } from "../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { ChatProvider, useChat, useGameServerAuth } from "../../../containers"
+import { useChat, useAuth, useSupremacy } from "../../../containers"
 import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
-import { User } from "../../../types"
 import { ChatMessageType } from "../../../types/chat"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
+import { useTheme } from "../../../containers/theme"
 
 export const LiveChat = () => {
-    return (
-        <ChatProvider>
-            <LiveChatInner />
-        </ChatProvider>
-    )
-}
-
-const LiveChatInner = () => {
     const { splitOption } = useChat()
     return (
         <Fade in>
@@ -33,12 +24,14 @@ const LiveChatInner = () => {
 }
 
 const TabbedLayout = () => {
-    const theme = useTheme<Theme>()
-    const { user } = useGameServerAuth()
+    const theme = useTheme()
+    const { getFaction } = useSupremacy()
+    const { userID, factionID } = useAuth()
     const { tabValue, setTabValue, globalChatMessages, factionChatMessages, factionChatUnread, globalChatUnread, banProposal } = useChat()
 
+    const faction = getFaction(factionID)
     const chatMessages = tabValue == 0 ? globalChatMessages : factionChatMessages
-    const isEnlisted = user && user.faction_id && user.faction
+    const isEnlisted = !!factionID
     let faction_id
     let primaryColor
     let secondaryColor
@@ -50,7 +43,7 @@ const TabbedLayout = () => {
         secondaryColor = "#FFFFFF"
         bannerBackgroundColor = shadeColor(colors.globalChat, -30)
     } else if (tabValue == 1 && isEnlisted) {
-        faction_id = user.faction_id
+        faction_id = factionID
         primaryColor = theme.factionTheme.primary
         secondaryColor = theme.factionTheme.secondary
         bannerBackgroundColor = `${primaryColor}25`
@@ -60,7 +53,7 @@ const TabbedLayout = () => {
 
     let factionTabLabel = ""
     if (isEnlisted) {
-        factionTabLabel = user.faction.label
+        factionTabLabel = faction.label
         if (factionTabLabel.length > 8) factionTabLabel = acronym(factionTabLabel)
         factionTabLabel += " CHAT"
     }
@@ -81,7 +74,7 @@ const TabbedLayout = () => {
                     height: `${5}rem`,
                     background: bannerBackgroundColor,
                     boxShadow: 1,
-                    zIndex: 99,
+                    zIndex: 9,
                     ".MuiButtonBase-root": {
                         height: `${5}rem`,
                     },
@@ -157,7 +150,7 @@ const TabbedLayout = () => {
                                             flexShrink: 0,
                                             mb: ".16rem",
                                             mr: ".8rem",
-                                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
+                                            backgroundImage: `url(${faction.logo_url})`,
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
                                             backgroundSize: "contain",
@@ -183,26 +176,28 @@ const TabbedLayout = () => {
                 )}
             </Tabs>
 
-            <Content user={user} faction_id={faction_id} primaryColor={primaryColor} secondaryColor={secondaryColor} chatMessages={chatMessages} />
+            <Content userID={userID} faction_id={faction_id} primaryColor={primaryColor} secondaryColor={secondaryColor} chatMessages={chatMessages} />
         </Stack>
     )
 }
 
 const SplitLayout = () => {
-    const theme = useTheme<Theme>()
-    const { user } = useGameServerAuth()
+    const theme = useTheme()
+    const { getFaction } = useSupremacy()
+    const { userID, factionID } = useAuth()
     const { globalChatMessages, factionChatMessages, banProposal } = useChat()
 
-    const isEnlisted = useMemo(() => user && user.faction_id && user.faction, [user])
+    const faction = getFaction(factionID)
+    const isEnlisted = !!factionID
     const factionTabLabel = useMemo(() => {
-        if (isEnlisted && user) {
-            let aaa = user.faction.label
+        if (isEnlisted) {
+            let aaa = faction.label
             if (aaa.length > 8) aaa = acronym(aaa)
             aaa += " CHAT"
             return aaa
         }
         return ""
-    }, [isEnlisted, user])
+    }, [faction.label, isEnlisted])
 
     return (
         <Stack sx={{ flex: 1, height: 0 }}>
@@ -223,7 +218,7 @@ const SplitLayout = () => {
                         px: "1.8rem",
                         background: shadeColor(colors.globalChat, -30),
                         boxShadow: 1,
-                        zIndex: 99,
+                        zIndex: 9,
                     }}
                 >
                     <SvgGlobal size="2rem" />
@@ -239,10 +234,10 @@ const SplitLayout = () => {
                     </Typography>
                 </Stack>
 
-                <Content user={user} faction_id={null} primaryColor={colors.globalChat} secondaryColor={"#FFFFFF"} chatMessages={globalChatMessages} />
+                <Content userID={userID} faction_id={null} primaryColor={colors.globalChat} secondaryColor={"#FFFFFF"} chatMessages={globalChatMessages} />
             </Stack>
 
-            {isEnlisted && user && (
+            {isEnlisted && (
                 <Stack
                     className="tutorial-faction-chat"
                     sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `${theme.factionTheme.primary}06` }}
@@ -254,7 +249,7 @@ const SplitLayout = () => {
                             px: "1.8rem",
                             background: (theme) => `${theme.factionTheme.primary}25`,
                             boxShadow: 1,
-                            zIndex: 99,
+                            zIndex: 9,
                         }}
                     >
                         <Stack
@@ -270,7 +265,7 @@ const SplitLayout = () => {
                                     flexShrink: 0,
                                     mb: ".16rem",
                                     mr: ".8rem",
-                                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
+                                    backgroundImage: `url(${faction.logo_url})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
@@ -293,8 +288,8 @@ const SplitLayout = () => {
                     </Stack>
 
                     <Content
-                        user={user}
-                        faction_id={user.faction_id}
+                        userID={userID}
+                        faction_id={factionID}
                         primaryColor={theme.factionTheme.primary}
                         secondaryColor={theme.factionTheme.secondary}
                         chatMessages={factionChatMessages}
@@ -306,13 +301,13 @@ const SplitLayout = () => {
 }
 
 const Content = ({
-    user,
+    userID,
     faction_id,
     primaryColor,
     secondaryColor,
     chatMessages,
 }: {
-    user?: User
+    userID?: string
     faction_id: string | null
     primaryColor: string
     secondaryColor: string
@@ -322,7 +317,7 @@ const Content = ({
         <>
             <ChatMessages primaryColor={primaryColor} secondaryColor={secondaryColor} chatMessages={chatMessages} faction_id={faction_id} />
 
-            {user ? (
+            {userID ? (
                 <ChatSend primaryColor={primaryColor} faction_id={faction_id} />
             ) : (
                 <Box sx={{ px: "1.6rem", py: ".4rem", backgroundColor: colors.red }}>

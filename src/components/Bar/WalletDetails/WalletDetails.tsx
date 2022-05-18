@@ -1,13 +1,13 @@
 import { Box, Divider, Stack } from "@mui/material"
 import { BarExpandable, BuySupsButton } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
-import { usePassportServerAuth } from "../../../containers"
+import { useAuth } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { MultipliersInfo } from "./MultipliersInfo/MultipliersInfo"
 import { WalletInfo } from "./WalletInfo/WalletInfo"
 
 export const WalletDetails = () => {
-    const { user } = usePassportServerAuth()
+    const { userID } = useAuth()
     const barName = "wallet"
 
     return (
@@ -40,25 +40,25 @@ export const WalletDetails = () => {
                         overflowY: "hidden",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
-                            height: ".4rem",
+                            height: ".3rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: colors.darkNeonBlue,
+                            background: "#FFFFFF50",
                             borderRadius: 3,
                         },
                     }}
                 >
-                    <Stack id="tutorial-sups" direction="row" alignItems="center">
+                    <Stack direction="row" alignItems="center">
                         <SvgWallet size="2.3rem" sx={{ mr: ".8rem" }} />
                         <WalletInfo />
                         <MultipliersInfo />
                     </Stack>
 
-                    {user && <BuySupsButton user={user} />}
+                    {userID && <BuySupsButton />}
                 </Stack>
 
                 <Divider

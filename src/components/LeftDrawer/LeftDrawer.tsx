@@ -1,16 +1,17 @@
-import { Button, Drawer, Stack, Typography, useTheme, Theme } from "@mui/material"
+import { Button, Drawer, Stack, Typography } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgBack } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useToggle } from "../../hooks"
 import { ROUTES_ARRAY } from "../../routes"
-import { colors, fonts } from "../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
+import { useTheme } from "../../containers/theme"
 
 const EXPAND_DRAWER_WIDTH = 30 //rem
 
 export const LeftDrawer = () => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
     const [isExpanded, toggleIsExpanded] = useToggle(false)
@@ -29,7 +30,7 @@ export const LeftDrawer = () => {
                     flexShrink: 0,
                     width: isExpanded ? `${EXPAND_DRAWER_WIDTH}rem` : 0,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
-                    zIndex: 9999999999,
+                    zIndex: siteZIndex.LeftDrawer,
                     "& .MuiDrawer-paper": {
                         width: `${EXPAND_DRAWER_WIDTH}rem`,
                         background: "none",
