@@ -5,7 +5,7 @@ import { Faction, Stream, User, WarMachineDestroyedRecord } from "../types"
 export const APICheck = (token: string): Action<User> => {
     return {
         method: "GET",
-        endpoint: `${window.location.protocol}//${PASSPORT_SERVER_HOST}/api/auth/check?token=${encodeURIComponent(token)}`,
+        endpoint: `${window.location.protocol}//${PASSPORT_SERVER_HOST}/api/auth/check${token ? `?token=${encodeURIComponent(token)}` : ""}`,
         credentials: "include",
         responseType: "json",
     }
