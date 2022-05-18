@@ -37,7 +37,7 @@ export const ConnectButton = () => {
                             whiteSpace: "nowrap",
                         }}
                     >
-                        CONNECT
+                        LOG IN
                     </Typography>
                 </FancyButton>
             ) : (
@@ -46,32 +46,5 @@ export const ConnectButton = () => {
                 </Typography>
             )}
         </>
-    )
-    return (
-        <Button
-            id="tutorial-connect"
-            sx={{
-                px: "1.76rem",
-                pt: ".32rem",
-                pb: ".16rem",
-                flexShrink: 0,
-                justifyContent: "flex-start",
-                borderRadius: 0.2,
-                border: `1px solid ${colors.neonBlue}`,
-                backgroundColor: colors.neonBlue,
-                ":hover": {
-                    opacity: 0.75,
-                    color: colors.darkestNeonBlue,
-                    backgroundColor: colors.neonBlue,
-                    transition: "all .2s",
-                },
-            }}
-            onClick={() => {
-                setIsOpen(false)
-                onLogInClick()
-            }}
-        >
-            Connect
-        </Button>
     )
 }
