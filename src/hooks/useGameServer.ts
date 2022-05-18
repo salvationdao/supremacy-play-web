@@ -1,27 +1,31 @@
 import { SubProps, useSubscription } from "../containers/ws"
 import { GAME_SERVER_HOSTNAME } from "../constants"
-import useCommands from "../containers/ws/useCommands"
+import { useCommands } from "../containers/ws/useCommands"
 import { DataType } from "../containers/ws/util"
 import { useAuth } from "../containers/auth"
 
 // Fetch
 export const useGameServerCommandsUser = (URI?: string) => {
     const { userID } = useAuth()
-    return useCommands(GAME_SERVER_HOSTNAME, `/user/${userID || "noop"}${URI || "/user_commander"}`, !!userID)
+    return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `/user/${userID}${URI}`, ready: !!userID })
 }
 
 export const useGameServerCommandsFaction = (URI?: string) => {
     const { userID, factionID } = useAuth()
-    return useCommands(GAME_SERVER_HOSTNAME, `/faction/${factionID || "noop"}${URI || "/faction_commander"}`, !!userID && !!factionID)
+    return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `/faction/${factionID}${URI}`, ready: !!userID && !!factionID })
 }
 
 export const useGameServerCommandsBattleFaction = (URI?: string) => {
     const { userID, factionID } = useAuth()
-    return useCommands(GAME_SERVER_HOSTNAME, `/battle/faction/${factionID || "noop"}${URI || "/faction_commander"}`, !!userID && !!factionID)
+    return useCommands({
+        host: GAME_SERVER_HOSTNAME,
+        URI: `/battle/faction/${factionID}${URI}`,
+        ready: !!userID && !!factionID,
+    })
 }
 
 export const useGameServerCommands = (URI?: string) => {
-    return useCommands(GAME_SERVER_HOSTNAME, `${URI || "/public/commander"}`)
+    return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `${URI}` })
 }
 
 // Subscription
