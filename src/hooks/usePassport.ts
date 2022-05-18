@@ -5,12 +5,12 @@ import { DataType } from "../containers/ws/util"
 import { useAuth } from "../containers/auth"
 
 // Fetch
-export const usePassportCommandsUser = (URI?: string) => {
+export const usePassportCommandsUser = (URI: string) => {
     const { userID } = useAuth()
     return useCommands({ host: PASSPORT_SERVER_HOST, URI: `/user/${userID}${URI}`, ready: !!userID })
 }
 
-export const usePassportCommands = (URI?: string) => {
+export const usePassportCommands = (URI: string) => {
     return useCommands({ host: PASSPORT_SERVER_HOST, URI: `${URI}` })
 }
 
