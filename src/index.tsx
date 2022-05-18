@@ -138,16 +138,16 @@ const App = () => {
                         <SupremacyProvider>
                             <WalletProvider>
                                 <BarProvider>
-                                        <TourProvider {...tourProviderProps}>
-                                            <UserUpdater />
-                                            <BrowserRouter>
-                                                <Switch>
-                                                    <Route path="/404" exact component={NotFoundPage} />
-                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                    <Route path="" component={AppInner} />
-                                                </Switch>
-                                            </BrowserRouter>
-                                        </TourProvider>
+                                    <TourProvider {...tourProviderProps}>
+                                        <UserUpdater />
+                                        <BrowserRouter>
+                                            <Switch>
+                                                <Route path="/404" exact component={NotFoundPage} />
+                                                <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                <Route path="" component={AppInner} />
+                                            </Switch>
+                                        </BrowserRouter>
+                                    </TourProvider>
                                 </BarProvider>
                             </WalletProvider>
                         </SupremacyProvider>
