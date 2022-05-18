@@ -5,7 +5,7 @@ import { SvgGridView, SvgListView, SvgRobot } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
 import { useSnackbar, useSupremacy } from "../../../containers"
 import { useDebounce, usePagination, useToggle } from "../../../hooks"
-import { useGameServerCommandsBattleFaction, useGameServerCommandsUser, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { TelegramShortcodeModal } from "./DeployConfirmation"
@@ -22,11 +22,6 @@ export interface AssetQueue {
     position?: number
     in_battle: boolean
     contract_reward?: ""
-}
-
-interface GetAssetsResponse {
-    asset_queue_list: AssetQueue[]
-    total: number
 }
 
 export const Assets = () => {
@@ -71,7 +66,6 @@ const Content = ({
     toggleIsGridView: (value?: boolean | undefined) => void
 }) => {
     const { newSnackbarMessage } = useSnackbar()
-    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
     const { battleIdentifier } = useSupremacy()
     const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     const queueFeed = useGameServerSubscriptionBattleFaction<QueueFeedResponse>({

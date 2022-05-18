@@ -1,6 +1,6 @@
 import { Box, Tabs, Theme, useTheme } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
-import { QUERIES_ARRAY, RightDrawerHashes } from "../../routes"
+import { HASH_ROUTES_ARRAY, RightDrawerHashes } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
 import { TabButton } from "../LeftDrawer/DrawerButtons"
 import { useEffect } from "react"
@@ -41,7 +41,7 @@ export const DrawerButtons = () => {
             }}
         >
             <Tabs value="" orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
-                {QUERIES_ARRAY.map((r) => {
+                {HASH_ROUTES_ARRAY.map((r) => {
                     return (
                         <TabButton
                             key={r.id}
