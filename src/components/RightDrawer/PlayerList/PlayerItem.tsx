@@ -1,14 +1,14 @@
-import { Box, Button, Stack, Theme, Typography, useTheme } from "@mui/material"
+import { Box, Button, Stack, Typography } from "@mui/material"
 import { StyledImageText, UserBanForm } from "../.."
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { truncate } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { User } from "../../../types"
-import { FactionGeneralData } from "../../../types/passport"
+import { Faction } from "../../../types"
+import { useTheme } from "../../../containers/theme"
 
-export const PlayerItem = ({ player, faction, user, isActive }: { player: User; faction: FactionGeneralData; user: User; isActive?: boolean }) => {
-    const theme = useTheme<Theme>()
+export const PlayerItem = ({ player, faction, user, isActive }: { player: User; faction: Faction; user: User; isActive?: boolean }) => {
+    const theme = useTheme()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
 
     return (
@@ -35,7 +35,7 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                             </>
                         }
                         color={theme.factionTheme.primary}
-                        imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction?.logo_blob_id}`}
+                        imageUrl={faction.logo_url}
                         imageMb={-0.2}
                     />
                 </Box>

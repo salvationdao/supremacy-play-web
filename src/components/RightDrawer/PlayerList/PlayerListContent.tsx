@@ -1,7 +1,8 @@
 import { Stack } from "@mui/material"
-import { useEffect, useMemo, Dispatch } from "react"
+import { useMemo, Dispatch } from "react"
 import { PlayerItem } from "../.."
-import { useSupremacy, useGameServerWebsocket } from "../../../containers"
+import { useSupremacy } from "../../../containers"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { User } from "../../../types"
 
@@ -14,18 +15,20 @@ export const PlayerListContent = ({
     activePlayers: User[]
     setActivePlayers: Dispatch<React.SetStateAction<User[]>>
 }) => {
-    const { state, subscribe } = useGameServerWebsocket()
-    const { factionsAll } = useSupremacy()
+    const { getFaction } = useSupremacy()
 
-    const faction = useMemo(() => factionsAll[user.faction_id], [factionsAll, user.faction_id])
+    const faction = useMemo(() => getFaction(user.faction_id), [getFaction, user.faction_id])
 
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<User[]>(GameServerKeys.SubPlayerList, (payload) => {
+    useGameServerSubscriptionFaction<User[]>(
+        {
+            URI: "",
+            key: GameServerKeys.SubPlayerList,
+        },
+        (payload) => {
             if (!payload) return
             setActivePlayers(payload.sort((a, b) => a.username.localeCompare(b.username)))
-        })
-    }, [setActivePlayers, state, subscribe])
+        },
+    )
 
     return (
         <Stack spacing=".5rem">

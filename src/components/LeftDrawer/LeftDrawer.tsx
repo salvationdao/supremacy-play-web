@@ -1,4 +1,4 @@
-import { Button, Drawer, Stack, Typography, useTheme, Theme } from "@mui/material"
+import { Button, Drawer, Stack, Typography } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgBack } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
@@ -6,11 +6,12 @@ import { useToggle } from "../../hooks"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
+import { useTheme } from "../../containers/theme"
 
 const EXPAND_DRAWER_WIDTH = 30 //rem
 
 export const LeftDrawer = () => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
     const [isExpanded, toggleIsExpanded] = useToggle(false)

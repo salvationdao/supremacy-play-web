@@ -1,6 +1,6 @@
 [context.production.environment] 
   CI="false"
-  REACT_APP_TOKEN_SALE_PAGE="https://passport.xsyn.io/nosidebar/buy"
+  REACT_APP_TOKEN_SALE_PAGE="https://passport.xsyn.io/external/buy"
   REACT_APP_SUPREMACY_PAGE="https://supremacy.game/"
   REACT_APP_GAME_SERVER_HOSTNAME = "api.supremacy.game"
   REACT_APP_PASSPORT_WEB = "https://passport.xsyn.io/"
@@ -16,7 +16,7 @@
   REACT_APP_TELEGRAM_BOT_URL="https://t.me/SupremacyNotificationsBot"
 [context.staging.environment]
   CI="false"
-  REACT_APP_TOKEN_SALE_PAGE="https://passport.xsyn.io/nosidebar/buy"
+  REACT_APP_TOKEN_SALE_PAGE="https://passport.xsyn.io/external/buy"
   REACT_APP_SUPREMACY_PAGE="https://supremacy.game/"
   REACT_APP_GAME_SERVER_HOSTNAME = "staging-api.supremacy.game"
   REACT_APP_PASSPORT_WEB = "https://staging.xsyn.dev/"

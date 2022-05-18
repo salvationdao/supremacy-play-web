@@ -1,9 +1,9 @@
 import { Box, Fade, Stack } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, ContributionBar } from "../.."
-import { NullUUID } from "../../../constants"
-import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../../containers"
+import { useGame } from "../../../containers"
+import { useGameServerCommandsBattleFaction, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { GameAbility, GameAbilityProgress } from "../../../types"
@@ -21,14 +21,13 @@ interface FactionAbilityItemProps {
     gameAbility: GameAbility
     abilityMaxPrice?: BigNumber
     clipSlantSize?: string
+    progressWsURI?: string
 }
 
-export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize }: FactionAbilityItemProps) => {
-    const { state, send, subscribe, subscribeAbilityNetMessage } = useGameServerWebsocket()
-    const { factionID } = useGameServerAuth()
+export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize, progressWsURI }: FactionAbilityItemProps) => {
+    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
     const { bribeStage } = useGame()
 
-    const [shouldIgnore, setIgnore] = useState<boolean>(false)
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
     const [offeringID, setOfferingID] = useState<string>(gameAbility.ability_offering_id)
     const [currentSups, setCurrentSups] = useState(new BigNumber(gameAbility.current_sups).dividedBy("1000000000000000000"))
@@ -37,39 +36,19 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         abilityMaxPrice || new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"),
     )
 
-    const progressPayload = useRef<GameAbilityProgress>()
-
     const { identity } = gameAbility
 
-    // DO NOT REMOVE THIS! Triggered faction ability or war machine ability price ticking
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !factionID || factionID === NullUUID) return
-        return subscribe(GameServerKeys.TriggerFactionAbilityPriceUpdated, () => null, { ability_identity: identity })
-    }, [state, subscribe, factionID, identity])
-
     // Listen on the progress of the votes
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeAbilityNetMessage || !factionID || factionID === NullUUID) return
-
-        return subscribeAbilityNetMessage<GameAbilityProgress | undefined>(identity, (payload) => {
-            if (!payload || (!payload.should_reset && shouldIgnore)) return
-
-            let unchanged = true
-            if (!progressPayload.current) {
-                unchanged = false
-            } else if (payload.should_reset !== progressPayload.current.should_reset) {
-                unchanged = false
-            } else if (payload.sups_cost !== progressPayload.current.sups_cost) {
-                unchanged = false
-            } else if (payload.current_sups !== progressPayload.current.current_sups) {
-                unchanged = false
-            }
-
-            if (unchanged) return
-            progressPayload.current = payload
+    useGameServerSubscriptionBattleFaction<GameAbilityProgress | undefined>(
+        {
+            URI: progressWsURI || "/ability/faction",
+            key: GameServerKeys.SubAbilityProgress,
+        },
+        (payload) => {
+            if (!payload || payload.id !== identity) return
             setGameAbilityProgress(payload)
-        })
-    }, [identity, state, subscribeAbilityNetMessage, factionID, shouldIgnore])
+        },
+    )
 
     // Set states
     useEffect(() => {
@@ -90,37 +69,19 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
 
     const onContribute = useCallback(
         async (amount: BigNumber, percentage: number) => {
-            let ignoreTimeout: boolean
+            if (percentage > 1 || percentage < 0) return
 
-            if (!send || percentage > 1 || percentage < 0) return
-
-            const resp = await send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
-                ability_identity: identity,
-                ability_offering_id: offeringID,
-                percentage,
-            })
-
-            if (resp) {
-                setGameAbilityProgress((gap: GameAbilityProgress | undefined): GameAbilityProgress | undefined => {
-                    if (!gap) return gap
-                    const current_sups = new BigNumber(gap.current_sups).plus(amount.multipliedBy("1000000000000000000")).toString()
-                    return { ...gap, current_sups }
+            try {
+                await send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
+                    ability_identity: identity,
+                    ability_offering_id: offeringID,
+                    percentage,
                 })
-                setCurrentSups((cs) => {
-                    if (!ignoreTimeout) {
-                        setIgnore(true)
-                        ignoreTimeout = true
-                        setTimeout(() => {
-                            ignoreTimeout = false
-                            setIgnore(false)
-                        }, 150)
-                    }
-
-                    return BigNumber.minimum(cs.plus(amount), supsCost)
-                })
+            } catch (e) {
+                console.error(e)
             }
         },
-        [send, identity, offeringID, supsCost],
+        [send, identity, offeringID],
     )
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThan(currentSups), [bribeStage, supsCost, currentSups])

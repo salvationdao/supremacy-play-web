@@ -4,16 +4,18 @@ import { PopoverStylesObj } from "@reactour/popover"
 import { StepType, useTour } from "@reactour/tour"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
 import { useEffect, useMemo } from "react"
-import { RightDrawerPanels, useBar, usePassportServerAuth, useRightDrawer, useSupremacy } from "../../../containers"
+import { useBar, useAuth, useSupremacy } from "../../../containers"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { useHistory } from "react-router-dom"
+import { RightDrawerHashes } from "../../../routes"
 
 export const SetupTutorial = () => {
-    const { user } = usePassportServerAuth()
+    const { userID, user } = useAuth()
     const { haveSups } = useSupremacy()
+    const history = useHistory()
 
     const { setIsOpen, setSteps, setCurrentStep } = useTour()
     const { toggleActiveBar } = useBar()
-    const { activePanel, togglePanel } = useRightDrawer()
 
     // Only show if no user
     const preAuthSteps: StepType[] = useMemo(() => {
@@ -43,8 +45,8 @@ export const SetupTutorial = () => {
                 ],
             },
             {
-                selector: user?.faction_id ? "#tutorial-enlisted" : "#tutorial-enlist",
-                content: user?.faction_id
+                selector: user.faction_id ? "#tutorial-enlisted" : "#tutorial-enlist",
+                content: user.faction_id
                     ? "You can see your personal game stats here."
                     : "Here you can enlist into a Syndicate. Take care with who you choose to align yourself with- this will be the Syndicate you stay with for a while.",
                 action: () => {
@@ -100,7 +102,7 @@ export const SetupTutorial = () => {
                 position: "top",
             },
         ]
-    }, [toggleActiveBar, user?.faction_id])
+    }, [toggleActiveBar, user.faction_id])
 
     //only show if user is enlisted
     const enlistedSteps: StepType[] = useMemo(() => {
@@ -109,18 +111,14 @@ export const SetupTutorial = () => {
                 selector: "#tutorial-chat",
                 content: "This is where you can interact with other online players.",
                 action: () => {
-                    if (activePanel !== RightDrawerPanels.LiveChat) {
-                        togglePanel(RightDrawerPanels.LiveChat, true)
-                    }
+                    history.push(`${location.pathname}${RightDrawerHashes.LiveChat}`)
                 },
             },
             {
                 selector: ".tutorial-global-chat",
                 content: "Global Chat includes everyone from all syndicates.",
                 action: () => {
-                    if (activePanel !== RightDrawerPanels.LiveChat) {
-                        togglePanel(RightDrawerPanels.LiveChat, true)
-                    }
+                    history.push(`${location.pathname}${RightDrawerHashes.LiveChat}`)
                 },
             },
             {
@@ -128,9 +126,7 @@ export const SetupTutorial = () => {
                 content:
                     "Syndicate chat only includes others that are part of the same syndicate as yourself. This is the best place to get to know your fellow syndicate members, strategize and plan the best avenue of assault.",
                 action: () => {
-                    if (activePanel !== RightDrawerPanels.LiveChat) {
-                        togglePanel(RightDrawerPanels.LiveChat, true)
-                    }
+                    history.push(`${location.pathname}${RightDrawerHashes.LiveChat}`)
                 },
             },
             {
@@ -138,13 +134,11 @@ export const SetupTutorial = () => {
                 content:
                     "You'll find your on-world mechs here. These can be purchased from the Supremacy store or on the black market (OpenSea). You will be able to deploy your mechs to battle here as well as see your mech's battle history.",
                 action: () => {
-                    if (activePanel !== RightDrawerPanels.Assets) {
-                        togglePanel(RightDrawerPanels.Assets, true)
-                    }
+                    history.push(`${location.pathname}${RightDrawerHashes.Assets}`)
                 },
             },
         ]
-    }, [activePanel, togglePanel])
+    }, [history])
 
     //only show if user has sups
     const withSupsSteps: StepType[] = useMemo(() => {
@@ -203,7 +197,7 @@ export const SetupTutorial = () => {
     }, [setCurrentStep, setIsOpen])
 
     useEffect(() => {
-        if (!user) {
+        if (!userID) {
             setSteps([...preAuthSteps])
             return
         }
@@ -222,7 +216,7 @@ export const SetupTutorial = () => {
         tutorialSteps = [...tutorialSteps, ...endSteps]
 
         setSteps(tutorialSteps)
-    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, user, haveSups, setSteps])
+    }, [preAuthSteps, baseSteps, enlistedSteps, withSupsSteps, endSteps, userID, user, haveSups, setSteps])
 
     return null
 }

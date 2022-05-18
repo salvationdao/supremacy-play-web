@@ -11,10 +11,12 @@ import {
     VotingSystem,
     WarMachineStats,
 } from "../components"
-import { GameProvider, StreamProvider, useGameServerAuth, useGameServerWebsocket, DimensionProvider, OverlayTogglesProvider, useSupremacy } from "../containers"
+import { GameProvider, StreamProvider, useAuth, DimensionProvider, OverlayTogglesProvider, useSupremacy } from "../containers"
 import { siteZIndex } from "../theme/theme"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { useToggle } from "../hooks"
+import { useState } from "react"
+import { Trailer } from "../components/Stream/Trailer"
 
 export const BattleArenaPage = () => {
     return (
@@ -31,18 +33,18 @@ export const BattleArenaPage = () => {
 }
 
 const BattleArenaPageInner = () => {
-    const { state } = useGameServerWebsocket()
-    const { userID } = useGameServerAuth()
-    const { haveSups } = useSupremacy()
+    const { userID } = useAuth()
+    const { isServerUp, haveSups } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
+    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
     return (
         <>
             <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
                 <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
-                    <Stream />
+                    {!watchedTrailer ? <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} /> : <Stream />}
 
-                    {state === WebSocket.OPEN && (
+                    {isServerUp && watchedTrailer && (
                         <>
                             <MiniMap />
                             <Notifications />
@@ -51,15 +53,15 @@ const BattleArenaPageInner = () => {
                             <LiveVotingChart />
                             <BattleHistory />
                             <VotingSystem />
+
+                            {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
+                            {userID && !noSupsModalOpen && <TutorialModal />}
                         </>
                     )}
                 </Box>
 
                 <Controls />
             </Stack>
-
-            {state === WebSocket.OPEN && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
-            {userID && !noSupsModalOpen && <TutorialModal />}
         </>
     )
 }

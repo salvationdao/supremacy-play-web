@@ -1,16 +1,17 @@
 import { Box, IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
 import { BaseEmoji, emojiIndex } from "emoji-mart"
 import { useCallback, useMemo, useRef, useState } from "react"
-import { ChatSettings, EmojiPopover } from "../../.."
+import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
 import { SvgEmoji, SvgEmojiSelector, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
-import { useChat, useGameServerAuth, useSnackbar, WebSocketProperties, useGameServerWebsocket } from "../../../../containers"
+import { useChat, useAuth, useSnackbar, IncomingMessages } from "../../../../containers"
+import { SendFunc } from "../../../../containers/ws"
 import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { User, UserRank } from "../../../../types"
-import { ChatMessageType } from "../../../../types/chat"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 
 interface ChatSendProps {
@@ -19,46 +20,33 @@ interface ChatSendProps {
 }
 
 export const ChatSend = (props: ChatSendProps) => {
-    const { state, send } = useGameServerWebsocket()
-    const { user, userRank } = useGameServerAuth()
-    const { onSentMessage, onFailedMessage, newMessageHandler, initialMessageColor } = useChat()
+    const { send } = useGameServerCommandsUser("/user_commander")
+    const { user, userRank } = useAuth()
+    const { onSentMessage, onFailedMessage, newMessageHandler } = useChat()
 
     return (
         <ChatSendInner
             {...props}
-            state={state}
             send={send}
             user={user}
             userRank={userRank}
             onSentMessage={onSentMessage}
             onFailedMessage={onFailedMessage}
             newMessageHandler={newMessageHandler}
-            initialMessageColor={initialMessageColor}
         />
     )
 }
 
-interface ChatSendInnerProps extends ChatSendProps, Partial<WebSocketProperties> {
-    user?: User
+interface ChatSendInnerProps extends ChatSendProps {
+    user: User
     userRank?: UserRank
     onSentMessage: (sentAt: Date) => void
     onFailedMessage: (sentAt: Date) => void
-    newMessageHandler: (message: ChatMessageType, faction_id: string | null) => void
-    initialMessageColor?: string
+    newMessageHandler: ({ messages, faction }: IncomingMessages) => void
+    send: SendFunc
 }
 
-const ChatSendInner = ({
-    primaryColor,
-    faction_id,
-    state,
-    send,
-    user,
-    userRank,
-    onSentMessage,
-    onFailedMessage,
-    newMessageHandler,
-    initialMessageColor,
-}: ChatSendInnerProps) => {
+const ChatSendInner = ({ primaryColor, faction_id, send, user, userRank, onSentMessage, onFailedMessage, newMessageHandler }: ChatSendInnerProps) => {
     const { newSnackbarMessage } = useSnackbar()
     // Message field
     const [message, setMessage] = useState("")
@@ -74,7 +62,7 @@ const ChatSendInner = ({
     const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
     const popoverRef = useRef(null)
 
-    const messageColor = useMemo(() => initialMessageColor || getRandomColor(), [initialMessageColor])
+    const messageColor = useMemo(() => getRandomColor(), [])
 
     const setMessageWithCheck = useCallback(
         (newMessage: string, append?: boolean) => {
@@ -88,25 +76,27 @@ const ChatSendInner = ({
     )
 
     const sendMessage = useCallback(async () => {
-        if (!message.trim() || !user || state !== WebSocket.OPEN || !send) return
+        if (!message.trim()) return
 
         const sentAt = new Date()
 
-        newMessageHandler(
-            {
-                data: {
-                    from_user: user,
-                    user_rank: userRank,
-                    message_color: messageColor,
-                    avatar_id: user.avatar_id,
-                    message,
-                    self: true,
+        newMessageHandler({
+            messages: [
+                {
+                    data: {
+                        from_user: user,
+                        user_rank: userRank,
+                        message_color: messageColor,
+                        avatar_id: user.avatar_id,
+                        message,
+                    },
+                    type: "TEXT",
+                    sent_at: sentAt,
+                    locallySent: true,
                 },
-                type: "TEXT",
-                sent_at: sentAt,
-            },
-            faction_id,
-        )
+            ],
+            faction: faction_id,
+        })
 
         try {
             setMessage("")
@@ -121,7 +111,7 @@ const ChatSendInner = ({
             onFailedMessage(sentAt)
             console.debug(e)
         }
-    }, [message, user, state, send, newMessageHandler, userRank, messageColor, faction_id, onSentMessage, newSnackbarMessage, onFailedMessage])
+    }, [message, user, send, newMessageHandler, userRank, messageColor, faction_id, onSentMessage, newSnackbarMessage, onFailedMessage])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 
@@ -316,108 +306,121 @@ const ChatSendInner = ({
                     </Box>
                 )}
 
-                <TextField
-                    id={`message-textfield-${faction_id}`}
-                    value={message}
-                    placeholder="Send a message..."
-                    inputRef={textfieldRef}
-                    onChange={(e) => {
-                        const msg = e.currentTarget.value
-                        setEmojis([])
-                        setEmojiSelect(undefined)
-                        setMessageWithCheck(msg)
-
-                        handleEmojiShortcut(e.target.selectionStart, msg)
+                <ClipThing
+                    clipSize="8px"
+                    border={{
+                        isFancy: true,
+                        borderColor: primaryColor,
+                        borderThickness: ".2rem",
                     }}
-                    onFocus={(e) => {
-                        e.preventDefault()
-                        focusCaretTextField()
-                    }}
-                    type="text"
-                    multiline
-                    maxRows={4}
-                    hiddenLabel
-                    size="small"
-                    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-                        e.stopPropagation()
-                        switch (e.key) {
-                            case "Enter": {
-                                e.preventDefault()
-                                sendMessage()
+                    opacity={0.6}
+                    backgroundColor="#494949"
+                >
+                    <Stack sx={{ height: "100%" }}>
+                        <TextField
+                            id={`message-textfield-${faction_id}`}
+                            value={message}
+                            placeholder="Send a message..."
+                            inputRef={textfieldRef}
+                            onChange={(e) => {
+                                const msg = e.currentTarget.value
                                 setEmojis([])
-                                break
-                            }
-                            case "ArrowUp": {
-                                e.preventDefault()
-                                if (emojis.length < 1) return
-                                document.getElementById(`emoji-index-${faction_id}-0`)?.focus()
-                                break
-                            }
-                            case "Tab": {
-                                if (emojis.length < 1) return
-                                e.preventDefault()
-                                const emoji = emojis[0]
-                                handleOnEmojiSelect(emoji)
+                                setEmojiSelect(undefined)
+                                setMessageWithCheck(msg)
 
-                                if (caretPosition) {
-                                    textfieldRef.current?.setSelectionRange(caretPosition, caretPosition)
+                                handleEmojiShortcut(e.target.selectionStart, msg)
+                            }}
+                            onFocus={(e) => {
+                                e.preventDefault()
+                                focusCaretTextField()
+                            }}
+                            type="text"
+                            multiline
+                            maxRows={4}
+                            hiddenLabel
+                            size="small"
+                            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                                e.stopPropagation()
+                                switch (e.key) {
+                                    case "Enter": {
+                                        e.preventDefault()
+                                        sendMessage()
+                                        setEmojis([])
+                                        break
+                                    }
+                                    case "ArrowUp": {
+                                        e.preventDefault()
+                                        if (emojis.length < 1) return
+                                        document.getElementById(`emoji-index-${faction_id}-0`)?.focus()
+                                        break
+                                    }
+                                    case "Tab": {
+                                        if (emojis.length < 1) return
+                                        e.preventDefault()
+                                        const emoji = emojis[0]
+                                        handleOnEmojiSelect(emoji)
+
+                                        if (caretPosition) {
+                                            textfieldRef.current?.setSelectionRange(caretPosition, caretPosition)
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                    }}
-                    sx={{
-                        borderRadius: 1,
-                        boxShadow: 1,
-                        "& .MuiInputBase-root": {
-                            backgroundColor: "#49494970",
-                            fontFamily: fonts.shareTech,
-                            pt: "1rem",
-                            pb: ".8rem",
-                        },
-                        ".Mui-disabled": {
-                            WebkitTextFillColor: "unset",
-                            color: "#FFFFFF70",
-                        },
-                        ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: `${primaryColor} !important`,
-                        },
-                        textarea: {
-                            color: "#FFFFFF",
-                            overflow: "hidden",
-                        },
-                    }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
-                                <TooltipHelper placement="top-end" text="Use keyboard shortcut ' : '">
-                                    <IconButton
-                                        ref={popoverRef}
-                                        onClick={() => toggleIsEmojiOpen()}
-                                        edge="end"
-                                        size="small"
-                                        sx={{
-                                            mr: 0,
-                                            opacity: isEmojiOpen ? 1 : 0.5,
-                                            ":hover": { opacity: 1 },
-                                            transition: "all .1s",
-                                        }}
-                                    >
-                                        <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                                    </IconButton>
-                                </TooltipHelper>
-                                <IconButton
-                                    onClick={sendMessage}
-                                    edge="end"
-                                    size="small"
-                                    sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
-                                >
-                                    <SvgSend size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                />
+                            }}
+                            sx={{
+                                borderRadius: 0,
+                                "& .MuiInputBase-root": {
+                                    fontFamily: fonts.shareTech,
+                                    pt: "1rem",
+                                    pb: ".8rem",
+                                    borderRadius: 0,
+                                },
+                                ".Mui-disabled": {
+                                    WebkitTextFillColor: "unset",
+                                    color: "#FFFFFF70",
+                                },
+                                ".MuiOutlinedInput-notchedOutline": {
+                                    outline: "none !important",
+                                    border: `none !important`,
+                                },
+                                textarea: {
+                                    color: "#FFFFFF",
+                                    overflow: "hidden",
+                                },
+                            }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
+                                        <TooltipHelper placement="top-end" text="Use keyboard shortcut ' : '">
+                                            <IconButton
+                                                ref={popoverRef}
+                                                onClick={() => toggleIsEmojiOpen()}
+                                                edge="end"
+                                                size="small"
+                                                sx={{
+                                                    mr: 0,
+                                                    opacity: isEmojiOpen ? 1 : 0.5,
+                                                    ":hover": { opacity: 1 },
+                                                    transition: "all .1s",
+                                                }}
+                                            >
+                                                <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                            </IconButton>
+                                        </TooltipHelper>
+                                        <IconButton
+                                            onClick={sendMessage}
+                                            edge="end"
+                                            size="small"
+                                            sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
+                                        >
+                                            <SvgSend size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Stack>
+                </ClipThing>
 
                 {showCharCount && (
                     <Typography

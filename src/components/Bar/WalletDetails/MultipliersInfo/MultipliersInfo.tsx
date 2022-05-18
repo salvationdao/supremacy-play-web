@@ -1,15 +1,15 @@
 import { Badge, Stack, Typography } from "@mui/material"
 import { useEffect, useRef, useState } from "react"
-import { useGameServerAuth, useGameServerWebsocket, useSupremacy } from "../../../../containers"
+import { useAuth, useSupremacy } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
+import { useGameServerSubscriptionUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { BattleMultipliers, MultiplierUpdateResp, User } from "../../../../types"
+import { BattleMultipliers, MultiplierUpdateResp } from "../../../../types"
 import { MultipliersPopover } from "./MultiplierPopover"
 
 export const MultipliersInfo = () => {
-    const { state, subscribe } = useGameServerWebsocket()
-    const { user, userID } = useGameServerAuth()
+    const { userID } = useAuth()
     const { battleIdentifier } = useSupremacy()
     // Multipliers
     const [multipliers, setMultipliers] = useState<BattleMultipliers[]>([])
@@ -17,21 +17,18 @@ export const MultipliersInfo = () => {
     const [totalBattleMultipliers, setTotalBattleMultipliers] = useState(0)
 
     // Subscribe to multipliers
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (state !== WebSocket.OPEN || !subscribe || !userID) return
-                return subscribe<MultiplierUpdateResp>(GameServerKeys.SubscribeSupsMultiplier, (payload) => {
-                    if (!payload) return
-                    const battles = payload.battles
-                    const sorted = battles.sort((a, b) => (a.battle_number < b.battle_number ? 1 : -1))
-                    setMultipliers(sorted)
-                })
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [state, subscribe, userID])
+    useGameServerSubscriptionUser<MultiplierUpdateResp>(
+        {
+            URI: "/multipliers",
+            key: GameServerKeys.SubscribeSupsMultiplier,
+        },
+        (payload) => {
+            if (!payload) return
+            const battles = payload.battles
+            const sorted = battles.sort((a, b) => (a.battle_number < b.battle_number ? 1 : -1))
+            setMultipliers(sorted)
+        },
+    )
 
     // Current battle multiplier should say update to 0 if battleID was in the payload
     useEffect(() => {
@@ -45,7 +42,7 @@ export const MultipliersInfo = () => {
         <MultipliersInfoInner
             currentBattleMultiplier={currentBattleMultiplier}
             totalBattleMultipliers={totalBattleMultipliers}
-            user={user}
+            userID={userID}
             multipliers={multipliers}
         />
     )
@@ -54,12 +51,12 @@ export const MultipliersInfo = () => {
 const MultipliersInfoInner = ({
     currentBattleMultiplier,
     totalBattleMultipliers,
-    user,
+    userID,
     multipliers,
 }: {
     currentBattleMultiplier: number
     totalBattleMultipliers: number
-    user?: User
+    userID?: string
     multipliers: BattleMultipliers[]
 }) => {
     const multipliersPopoverRef = useRef(null)
@@ -120,7 +117,7 @@ const MultipliersInfoInner = ({
                 </Badge>
             </Stack>
 
-            {isMultipliersPopoverOpen && user && (
+            {isMultipliersPopoverOpen && userID && (
                 <MultipliersPopover
                     open={isMultipliersPopoverOpen}
                     multipliers={multipliers}
