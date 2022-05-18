@@ -1,5 +1,5 @@
 import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, useState } from "react"
-import { useParameterizedQuery } from "react-fetching-library"
+import { useParameterizedQuery, useQuery } from "react-fetching-library"
 import { Faction, User, UserRank, UserStat } from "../types"
 import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../constants"
 import { PunishListItem } from "../types/chat"
@@ -8,7 +8,7 @@ import { useInactivity } from "../hooks/useInactivity"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { useTheme } from "./theme"
-import { APICheck } from "../fetching"
+import { GameserverLoginCheck, PassportLoginCheck } from "../fetching"
 import { useSupremacy } from "."
 import { colors } from "../theme/theme"
 
@@ -35,7 +35,6 @@ export const FallbackFaction: Faction = {
 export interface AuthState {
     isLoggingIn: boolean
     onLogInClick: () => void
-    token: string
 
     user: User
     userID: string
@@ -54,7 +53,6 @@ const initialState: AuthState = {
     onLogInClick: () => {
         return
     },
-    token: "",
 
     user: FallbackUser,
     userID: FallbackUser.id,
@@ -86,10 +84,11 @@ const initialState: AuthState = {
 export const AuthContext = createContext<AuthState>(initialState)
 
 export const AuthProvider: React.FC = ({ children }) => {
-    const [token, setToken] = useState<string>("")
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
 
+    const [userFromPassport, setUserFromPassport] = useState<User>()
+    const [isLoginGameserver, setIsLoginGameserver] = useState(false)
     const [user, setUser] = useState<User>(initialState.user)
     const userID = user.id
     const factionID = user.faction_id
@@ -98,7 +97,29 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [userRank, setUserRank] = useState<UserRank>(initialState.userRank)
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
 
-    const { query: queryAPICheck } = useParameterizedQuery(APICheck)
+    const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
+    const checkPassportLogin = useCallback(() => {
+        if (userFromPassport) return
+        passportLoginCheck().then((resp) => {
+            if (resp.error || !resp.payload) {
+                setUserFromPassport(undefined)
+                return
+            }
+            setUserFromPassport(resp.payload)
+        })
+    }, [passportLoginCheck])
+
+    const { query: gameserverLoginCheck } = useQuery(GameserverLoginCheck(), false)
+    const checkGameserverLogin = useCallback(() => {
+        if (isLoginGameserver) return
+        gameserverLoginCheck().then((resp) => {
+            if (resp.error || !resp.payload) {
+                setIsLoginGameserver(false)
+                return
+            }
+            setIsLoginGameserver(true)
+        })
+    }, [gameserverLoginCheck])
 
     // Open iframe to passport web to login
     const onLogInClick = useCallback(async () => {
@@ -109,7 +130,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
-        const href = `${PASSPORT_WEB}/external/login?omitSideBar=true&&tenant=supremacy&redirectURL=${encodeURIComponent(
+        const href = `${PASSPORT_WEB}external/login?tenant=supremacy&redirectURL=${encodeURIComponent(
             `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/xsyn`,
         )}`
         const popup = window.open(href, "Connect with XSYN Passport", `width=${width},height=${height},left=${left},top=${top},popup=1`)
@@ -121,12 +142,22 @@ export const AuthProvider: React.FC = ({ children }) => {
         setPassportPopup(popup)
     }, [isLoggingIn])
 
-    const postMessageCallback = useCallback(
-        (event: MessageEvent) => {
-            if ("token" in event.data) setToken(event.data.token)
+    const authCheckCallback = useCallback(
+        (event?: MessageEvent) => {
+            checkPassportLogin()
+            checkGameserverLogin()
         },
-        [setToken],
+        [checkPassportLogin, checkGameserverLogin],
     )
+
+    useEffect(() => {
+        if (!userFromPassport || !isLoginGameserver) {
+            setIsLoggingIn(false)
+            return
+        }
+        setUser(userFromPassport)
+        setIsLoggingIn(false)
+    }, [userFromPassport, isLoginGameserver, setIsLoggingIn])
 
     // Check if login in the iframe has been successful (window closed), if closed then do clean up
     useEffect(() => {
@@ -136,46 +167,28 @@ export const AuthProvider: React.FC = ({ children }) => {
             if (!passportPopup) return
 
             // Listening for a token coming from the iframe
-            window.addEventListener("message", postMessageCallback, false)
+            window.addEventListener("message", authCheckCallback, false)
 
             if (passportPopup.closed) {
                 popupCheckInterval && clearInterval(popupCheckInterval)
                 setIsLoggingIn(false)
                 setPassportPopup(null)
-                window.removeEventListener("message", postMessageCallback)
+                window.removeEventListener("message", authCheckCallback)
             }
         }, 1000)
 
         return () => clearInterval(popupCheckInterval)
-    }, [passportPopup, postMessageCallback])
+    }, [passportPopup, authCheckCallback])
 
     useEffect(() => {
-        ;(async () => {
-            try {
-                setIsLoggingIn(true)
-                const resp = await queryAPICheck(token)
-
-                if (resp.error || !resp.payload) {
-                    setUser(FallbackUser)
-                    return
-                }
-
-                const user = resp.payload
-                setUser(user)
-            } catch (e) {
-                console.error(e)
-            } finally {
-                setIsLoggingIn(false)
-            }
-        })()
-    }, [queryAPICheck, token])
+        authCheckCallback()
+    }, [authCheckCallback])
 
     return (
         <AuthContext.Provider
             value={{
                 isLoggingIn,
                 onLogInClick,
-                token,
                 user,
                 userID,
                 factionID,
