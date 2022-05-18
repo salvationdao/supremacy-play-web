@@ -105,8 +105,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         (event?: MessageEvent) => {
             if (event && !("token" in event.data)) return
 
-            console.log(event?.data)
-
             // Check passport server login
             if (!userFromPassport) {
                 passportLoginCheck().then((resp) => {

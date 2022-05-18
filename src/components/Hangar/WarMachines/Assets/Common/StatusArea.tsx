@@ -1,11 +1,8 @@
-import { Button, Stack, Typography } from "@mui/material"
-import { SvgCooldown, SvgSupToken } from "../../../../../assets"
-import { supFormatter } from "../../../../../helpers"
-import { useTimer } from "../../../../../hooks"
-import { colors } from "../../../../../theme/theme"
-import { RepairStatus } from "../../../../../types"
-import { AssetQueue } from "../../WarMachines"
+export const StatusArea = () => {
+    return null
+}
 
+/*
 interface StatusAreaProps {
     isGridView?: boolean
     isInQueue: boolean
@@ -205,3 +202,4 @@ const RepairCountdown = ({ endTime }: { endTime: Date }) => {
         </>
     )
 }
+*/

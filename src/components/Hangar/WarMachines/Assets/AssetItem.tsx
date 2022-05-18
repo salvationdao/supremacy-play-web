@@ -1,19 +1,7 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
-import { DeployConfirmation } from "../../.."
-import { getRarityDeets } from "../../../../helpers"
-import { useToggle } from "../../../../hooks"
-import { colors, fonts } from "../../../../theme/theme"
-import { Asset } from "../../../../types/assets"
-import { MechDrawer } from "./MechDrawer"
-import { LeaveConfirmation } from "./LeaveConfirmation"
-import { PassportServerKeys } from "../../../../keys"
-import { StatusArea } from "./Common/StatusArea"
-import { RepairStatus } from "../../../../types"
-import { AssetQueue, QueueFeedResponse } from "../WarMachines"
-import { useAuth } from "../../../../containers"
-import { usePassportSubscriptionUser } from "../../../../hooks/usePassport"
-
+export const AssetItem = () => {
+    return null
+}
+/*
 export const AssetItem = ({
     assetQueue,
     queueFeed,
@@ -22,7 +10,7 @@ export const AssetItem = ({
     togglePreventAssetsRefresh,
 }: {
     assetQueue: AssetQueue
-    queueFeed: QueueFeedResponse
+    queueFeed: QueueFeed
     telegramShortcode?: string
     setTelegramShortcode?: (s: string) => void
     isGridView: boolean
@@ -284,30 +272,6 @@ export const AssetItem = ({
                 {mechItem}
             </Fade>
 
-            {deployModalOpen && (
-                <DeployConfirmation
-                    open={deployModalOpen}
-                    asset={assetData}
-                    queueFeed={queueFeed}
-                    onClose={() => {
-                        toggleDeployModalOpen(false)
-                        togglePreventAssetsRefresh(false)
-                    }}
-                    setTelegramShortcode={setTelegramShortcode}
-                />
-            )}
-
-            {leaveModalOpen && (
-                <LeaveConfirmation
-                    open={leaveModalOpen}
-                    asset={assetData}
-                    onClose={() => {
-                        toggleLeaveModalOpen(false)
-                        togglePreventAssetsRefresh(false)
-                    }}
-                />
-            )}
-
             {mechDrawerOpen && (
                 <MechDrawer
                     open={mechDrawerOpen}
@@ -333,3 +297,4 @@ export const AssetItem = ({
         </>
     )
 }
+*/

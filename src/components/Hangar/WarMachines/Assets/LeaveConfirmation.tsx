@@ -1,17 +1,8 @@
-import { Box, Button, IconButton, Link, Modal, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
-import { ClipThing } from "../../.."
-import { SvgClose, SvgExternalLink } from "../../../../assets"
-import { PASSPORT_WEB } from "../../../../constants"
-import { useAuth, useSnackbar } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets } from "../../../../helpers"
-import { useToggle } from "../../../../hooks"
-import { useGameServerCommandsBattleFaction } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { Asset } from "../../../../types/assets"
+export const LeaveConfirmation = () => {
+    return null
+}
 
+/*
 export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; asset: Asset; onClose: () => void }) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
@@ -195,3 +186,4 @@ export const LeaveConfirmation = ({ open, asset, onClose }: { open: boolean; ass
         </Modal>
     )
 }
+*/

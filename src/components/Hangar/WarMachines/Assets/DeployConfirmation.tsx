@@ -1,20 +1,8 @@
-import { Box, Button, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
-import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { ClipThing, TooltipHelper } from "../../.."
-import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../../../assets"
-import { PASSPORT_WEB } from "../../../../constants"
-import { useAuth, useSnackbar } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets, supFormatter } from "../../../../helpers"
-import { useToggle } from "../../../../hooks"
-import { useGameServerCommandsBattleFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
-import { usePassportCommandsUser } from "../../../../hooks/usePassport"
-import { GameServerKeys, PassportServerKeys } from "../../../../keys"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { Asset } from "../../../../types/assets"
-import { QueueFeedResponse } from "../WarMachines"
+export const DeployConfirmation = () => {
+    return null
+}
 
+/*
 const AmountItem = ({
     title,
     color,
@@ -62,7 +50,7 @@ export const DeployConfirmation = ({
 }: {
     open: boolean
     asset: Asset
-    queueFeed: QueueFeedResponse
+    queueFeed: QueueFeed
     onClose: () => void
     setTelegramShortcode?: (s: string) => void
 }) => {
@@ -541,3 +529,4 @@ export const DeployConfirmation = ({
         </Modal>
     )
 }
+*/

@@ -1,86 +1,52 @@
 import { Box, useTheme, Theme, Stack, Typography, IconButton, Pagination, CircularProgress } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
-import { useSnackbar, useSupremacy } from "../../../containers"
-import { useDebounce, usePagination, useToggle } from "../../../hooks"
-import { useGameServerCommandsBattleFaction, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
+import { useSnackbar } from "../../../containers"
+import { usePagination } from "../../../hooks"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { TelegramShortcodeModal } from "./TelegramShortcodeModal"
+import { MechBasic } from "../../../types"
+import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
-export interface QueueFeedResponse {
-    queue_length: number
-    queue_cost: string
-    contract_reward: string
-}
+// export interface AssetQueue {
+//     mech_id: string
+//     hash: string
+//     position?: number
+//     in_battle: boolean
+//     contract_reward?: ""
+// }
 
-export interface AssetQueue {
-    mech_id: string
-    hash: string
-    position?: number
-    in_battle: boolean
-    contract_reward?: ""
+interface GetMechsRequest {
+    page_number: number
+    page_size: number
 }
 
 interface GetAssetsResponse {
-    asset_queue_list: AssetQueue[]
+    mechs: MechBasic[]
     total: number
 }
 
 export const WarMachines = () => {
     const { newSnackbarMessage } = useSnackbar()
+    const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme<Theme>()
-    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
-    const { battleIdentifier } = useSupremacy()
-    const [telegramShortcode, setTelegramShortcode] = useState("")
-
-    const queueFeed = useGameServerSubscriptionBattleFaction<QueueFeedResponse>({
-        URI: "/queue",
-        key: GameServerKeys.SubQueueFeed,
-    })
-
-    const [queueUpdated, setQueueUpdated] = useDebounce(false, 1300)
-    const [assetsQueue, setAssetsQueue] = useState<AssetQueue[]>()
-    const cachedAssetQueue = useRef<AssetQueue[]>()
-    const [preventAssetsRefresh, togglePreventAssetsRefresh] = useToggle()
-
+    const [mechs, setMechs] = useState<MechBasic[]>()
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 12, page: 1 })
 
-    useGameServerSubscriptionBattleFaction(
-        {
-            URI: "/queue",
-            key: GameServerKeys.TriggerBattleQueueUpdated,
-        },
-        (payload) => {
-            if (!payload) return
-            setQueueUpdated((prev) => !prev)
-        },
-    )
-
-    // Get assets
+    // Get mechs
     useEffect(() => {
         ;(async () => {
             try {
-                if (!preventAssetsRefresh) setIsLoading(true)
-                const resp = await send<
-                    GetAssetsResponse,
-                    {
-                        page_number: number
-                        page_size: number
-                    }
-                >(GameServerKeys.GetAssetsQueue, {
+                const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetAssetsQueue, {
                     page_number: page - 1, // start with 0
                     page_size: pageSize,
                 })
 
                 if (!resp) return
-                if (preventAssetsRefresh) {
-                    cachedAssetQueue.current = resp.asset_queue_list
-                } else {
-                    setAssetsQueue(resp.asset_queue_list)
-                }
+                setMechs(resp.mechs)
                 setTotalItems(resp.total)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
@@ -89,38 +55,22 @@ export const WarMachines = () => {
                 setIsLoading(false)
             }
         })()
-        // NOTE: state change of `preventAssetsRefresh` doesn't need to trigger a send
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [send, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
-
-    // Update assets (the page) from the cache
-    useEffect(() => {
-        if (!preventAssetsRefresh && cachedAssetQueue.current) setAssetsQueue(cachedAssetQueue.current)
-        cachedAssetQueue.current = undefined
-    }, [preventAssetsRefresh])
+    }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
 
     const content = useMemo(() => {
-        if (isLoading || !assetsQueue || !queueFeed) {
+        if (isLoading || !mechs) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <CircularProgress size="2rem" sx={{ color: colors.neonBlue }} />
+                    <CircularProgress size="2.2rem" sx={{ color: colors.neonBlue }} />
                 </Stack>
             )
         }
 
-        if (assetsQueue && assetsQueue.length > 0) {
+        if (mechs && mechs.length > 0) {
             return (
                 <Stack spacing=".6rem">
-                    {assetsQueue.map((aq) => (
-                        // <AssetItem
-                        //     key={`${aq.hash}-${aq.position}`}
-                        //     telegramShortcode={telegramShortcode}
-                        //     setTelegramShortcode={setTelegramShortcode}
-                        //     assetQueue={aq}
-                        //     queueFeed={queueFeed}
-                        //     togglePreventAssetsRefresh={togglePreventAssetsRefresh}
-                        // />
-                        <></>
+                    {mechs.map((mech) => (
+                        <WarMachineHangarItem key={`hangar-mech-${mech.id}`} mech={mech} />
                     ))}
                 </Stack>
             )
@@ -165,7 +115,7 @@ export const WarMachines = () => {
                 </FancyButton>
             </Stack>
         )
-    }, [isLoading, assetsQueue, queueFeed, telegramShortcode, setTelegramShortcode, togglePreventAssetsRefresh])
+    }, [isLoading, mechs, theme.factionTheme.background])
 
     return (
         <>
@@ -179,7 +129,7 @@ export const WarMachines = () => {
                     }}
                     opacity={0.7}
                     backgroundColor={theme.factionTheme.background}
-                    sx={{ height: "100%", minWidth: "95rem", maxWidth: "65%" }}
+                    sx={{ height: "100%", minWidth: "65rem", maxWidth: "65%" }}
                 >
                     <Stack sx={{ height: "100%" }}>
                         <Stack
@@ -198,7 +148,7 @@ export const WarMachines = () => {
                             }}
                         >
                             <Typography variant="caption">
-                                <strong>DISPLAYING:</strong> {assetsQueue?.length || 0} of {totalItems}
+                                <strong>DISPLAYING:</strong> {mechs?.length || 0} of {totalItems}
                             </Typography>
                             <Stack direction="row" alignItems="center">
                                 <IconButton
@@ -265,7 +215,7 @@ export const WarMachines = () => {
                             {content}
                         </Box>
 
-                        {assetsQueue && totalPages > 1 && (
+                        {mechs && totalPages > 1 && (
                             <Box sx={{ px: "1rem", py: ".5rem", backgroundColor: "#00000050" }}>
                                 <Pagination size="small" count={totalPages} page={page} onChange={(e, p) => changePage(p)} showFirstButton showLastButton />
                             </Box>
@@ -274,7 +224,31 @@ export const WarMachines = () => {
                 </ClipThing>
             </Stack>
 
-            <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
+            {/* <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
+
+            {deployModalOpen && (
+                <DeployConfirmation
+                    open={deployModalOpen}
+                    asset={assetData}
+                    queueFeed={queueFeed}
+                    onClose={() => {
+                        toggleDeployModalOpen(false)
+                        togglePreventAssetsRefresh(false)
+                    }}
+                    setTelegramShortcode={setTelegramShortcode}
+                />
+            )}
+
+            {leaveModalOpen && (
+                <LeaveConfirmation
+                    open={leaveModalOpen}
+                    asset={assetData}
+                    onClose={() => {
+                        toggleLeaveModalOpen(false)
+                        togglePreventAssetsRefresh(false)
+                    }}
+                />
+            )} */}
         </>
     )
 }

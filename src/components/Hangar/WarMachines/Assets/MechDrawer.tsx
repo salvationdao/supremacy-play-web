@@ -1,21 +1,8 @@
-import { Box, Button, CircularProgress, Drawer, IconButton, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgBack, SvgEdit, SvgHistory, SvgRefresh, SvgSave } from "../../../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../../../constants"
-import { useAuth, useSnackbar } from "../../../../containers"
-import { camelToTitle, getRarityDeets } from "../../../../helpers"
-import { useToggle } from "../../../../hooks"
-import { useGameServerCommands } from "../../../../hooks/useGameServer"
-import { usePassportCommandsUser } from "../../../../hooks/usePassport"
-import { GameServerKeys, PassportServerKeys } from "../../../../keys"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { BattleMechHistory, BattleMechStats } from "../../../../types"
-import { Asset, RepairStatus } from "../../../../types/assets"
-import { AssetQueue } from "../WarMachines"
-import { HistoryEntry } from "./Common/HistoryEntry"
-import { PercentageDisplay, PercentageDisplaySkeleton } from "./Common/PercentageDisplay"
-import { StatusArea } from "./Common/StatusArea"
+export const MechDrawer = () => {
+    return null
+}
 
+/*
 export interface MechDrawerProps {
     open: boolean
     onClose: () => void
@@ -440,3 +427,4 @@ export const MechDrawer = ({
         </Drawer>
     )
 }
+*/
