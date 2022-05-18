@@ -27,7 +27,7 @@ export const SupremacyContainer = createContainer(() => {
         if (!readyToCheckServerState) {
             setTimeout(() => {
                 toggleReadyToCheckServerState(true)
-            }, 2500)
+            }, 3600)
         }
 
         toggleIsServerUp(state === WebSocket.OPEN)
