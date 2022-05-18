@@ -87,6 +87,11 @@ export interface BattleMechHistory {
     battle?: Battle
 }
 
+export interface BattleMechHistoryIdentifier {
+    battle_id: string
+    mech_id: string
+}
+
 export interface BattleMechStats {
     mech_id: string
     total_wins: number

@@ -13,7 +13,7 @@ import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { usePassportCommandsUser } from "../../../hooks/usePassport"
 import { GameServerKeys, PassportServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { BattleMechHistory, BattleMechHistoryIdentifier, BattleMechStats } from "../../../types"
+import { BattleMechHistory, BattleMechStats } from "../../../types"
 import { Asset } from "../../../types/assets"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
 
@@ -51,7 +51,7 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
     const [statsLoading, setStatsLoading] = useState(false)
     const [statsError, setStatsError] = useState<string>()
     // Battle history
-    const [history, setHistoryIDs] = useState<BattleMechHistoryIdentifier[]>([])
+    const [history, setHistoryEntries] = useState<BattleMechHistory[]>([])
     const [historyLoading, setHistoryLoading] = useState(false)
     const [historyError, setHistoryError] = useState<string>()
     // Pagination
@@ -74,7 +74,7 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
         try {
             const resp = await send<{
                 total: number
-                battle_history_ids: BattleMechHistoryIdentifier[]
+                battle_history: BattleMechHistory[]
             }>(GameServerKeys.BattleMechHistoryList, {
                 page_size: pageSize,
                 page: currentPage - 1,
@@ -88,7 +88,7 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
                     ],
                 },
             })
-            setHistoryIDs(resp.battle_history_ids)
+            setHistoryEntries(resp.battle_history)
             setTotalPages(Math.ceil(resp.total / pageSize))
         } catch (e) {
             if (typeof e === "string") {
@@ -581,7 +581,7 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
                                 }}
                             >
                                 {history.map((h) => (
-                                    <HistoryEntry key={`${h.battle_id}-${h.mech_id}`} battleID={h.battle_id} mechID={h.mech_id} />
+                                    <HistoryEntry key={`${h.battle_id}-${h.mech_id}`} historyEntry={h} />
                                 ))}
                             </Stack>
                         ) : (
@@ -597,28 +597,10 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
 }
 
 interface HistoryEntryProps {
-    battleID: string
-    mechID: string
+    historyEntry: BattleMechHistory
 }
 
-const HistoryEntry = ({ battleID, mechID }: HistoryEntryProps) => {
-    const { state, send } = useGameServerWebsocket()
-    const [historyEntry, setHistoryEntry] = useState<BattleMechHistory | null>(null)
-
-    useEffect(() => {
-        if (state !== SocketState.OPEN || !send) return
-        ;(async () => {
-            const resp = await send<BattleMechHistory>(GameServerKeys.BattleMechHistoryDetailed, {
-                battle_id: battleID,
-                mech_id: mechID,
-            })
-
-            setHistoryEntry(resp)
-        })()
-    }, [state, send, battleID, mechID])
-
-    if (!historyEntry) return <Box>Loading...</Box>
-
+const HistoryEntry = ({ historyEntry }: HistoryEntryProps) => {
     let statusColor = colors.grey
     let statusText = "In Progress"
     const status = !historyEntry.battle?.ended_at ? "pending" : historyEntry.faction_won ? "won" : "lost"
