@@ -81,7 +81,7 @@ export const WarMachines = () => {
                         opacity: 0.8,
                     }}
                 >
-                    {"You don't own any war machines yet."}
+                    {"You don't own any mechs yet."}
                 </Typography>
                 <FancyButton
                     href={`${PASSPORT_WEB}stores`}
