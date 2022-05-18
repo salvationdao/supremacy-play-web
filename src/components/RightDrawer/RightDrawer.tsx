@@ -1,38 +1,46 @@
 import { Drawer } from "@mui/material"
 import { useEffect, useMemo } from "react"
 import { DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH } from "../../constants"
-import { ChatProvider, RightDrawerPanels, useRightDrawer } from "../../containers"
+import { ChatProvider } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Assets } from "./Assets/Assets"
 import { DrawerButtons } from "./DrawerButtons"
 import { LiveChat } from "./LiveChat/LiveChat"
 import { PlayerList } from "./PlayerList/PlayerList"
+import { useLocation } from "react-router-dom"
+import { RightDrawerHashes } from "../../routes"
+import { Socials } from "./Social/Social"
 
 export const RightDrawer = () => {
     const [isDrawerOpen, toggleIsDrawerOpen] = useToggle()
-    const { activePanel, togglePanel } = useRightDrawer()
+    const location = useLocation()
 
     useEffect(() => {
-        toggleIsDrawerOpen(activePanel !== RightDrawerPanels.None)
-    }, [activePanel, toggleIsDrawerOpen])
+        toggleIsDrawerOpen(location.hash !== RightDrawerHashes.None)
+    }, [location.hash, toggleIsDrawerOpen])
 
     const drawerContent = useMemo(() => {
-        switch (activePanel) {
-            case RightDrawerPanels.LiveChat:
+        switch (location.hash) {
+            case RightDrawerHashes.LiveChat:
                 return <LiveChat />
-            case RightDrawerPanels.PlayerList:
+            case RightDrawerHashes.PlayerList:
                 return <PlayerList />
-            case RightDrawerPanels.Assets:
+            case RightDrawerHashes.Assets:
                 return <Assets />
+            case RightDrawerHashes.Socials:
+                if (process.env.REACT_APP_SENTRY_ENVIRONMENT !== "development") {
+                    return null
+                }
+                return <Socials />
             default:
                 return null
         }
-    }, [activePanel])
+    }, [location.hash])
 
     return (
         <ChatProvider>
-            <DrawerButtons activePanel={activePanel} togglePanel={togglePanel} />
+            <DrawerButtons />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
                 open={isDrawerOpen}
