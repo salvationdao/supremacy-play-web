@@ -1,5 +1,5 @@
 import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, useState } from "react"
-import { useParameterizedQuery, useQuery } from "react-fetching-library"
+import { useQuery } from "react-fetching-library"
 import { Faction, User, UserRank, UserStat } from "../types"
 import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../constants"
 import { PunishListItem } from "../types/chat"
@@ -107,7 +107,7 @@ export const AuthProvider: React.FC = ({ children }) => {
             }
             setUserFromPassport(resp.payload)
         })
-    }, [passportLoginCheck])
+    }, [passportLoginCheck, userFromPassport])
 
     const { query: gameserverLoginCheck } = useQuery(GameserverLoginCheck(), false)
     const checkGameserverLogin = useCallback(() => {
@@ -119,7 +119,7 @@ export const AuthProvider: React.FC = ({ children }) => {
             }
             setIsLoginGameserver(true)
         })
-    }, [gameserverLoginCheck])
+    }, [gameserverLoginCheck, isLoginGameserver])
 
     // Open iframe to passport web to login
     const onLogInClick = useCallback(async () => {
@@ -142,13 +142,10 @@ export const AuthProvider: React.FC = ({ children }) => {
         setPassportPopup(popup)
     }, [isLoggingIn])
 
-    const authCheckCallback = useCallback(
-        (event?: MessageEvent) => {
-            checkPassportLogin()
-            checkGameserverLogin()
-        },
-        [checkPassportLogin, checkGameserverLogin],
-    )
+    const authCheckCallback = useCallback(() => {
+        checkPassportLogin()
+        checkGameserverLogin()
+    }, [checkPassportLogin, checkGameserverLogin])
 
     useEffect(() => {
         if (!userFromPassport || !isLoginGameserver) {
