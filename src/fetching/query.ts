@@ -11,7 +11,7 @@ export const PassportLoginCheck = (): Action<User> => {
     }
 }
 
-export const GameserverLoginCheck = (): Action<boolean> => {
+export const GameServerLoginCheck = (): Action<boolean> => {
     return {
         method: "GET",
         endpoint: `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/check`,
