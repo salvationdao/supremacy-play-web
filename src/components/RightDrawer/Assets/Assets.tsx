@@ -5,7 +5,7 @@ import { SvgGridView, SvgListView, SvgRobot } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
 import { useSnackbar, useSupremacy } from "../../../containers"
 import { useDebounce, usePagination, useToggle } from "../../../hooks"
-import { useGameServerCommandsBattleFaction, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsBattleFaction, useGameServerCommandsUser, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { TelegramShortcodeModal } from "./DeployConfirmation"
@@ -73,7 +73,7 @@ const Content = ({
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsBattleFaction("/faction_commander")
     const { battleIdentifier } = useSupremacy()
-
+    const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     const queueFeed = useGameServerSubscriptionBattleFaction<QueueFeedResponse>({
         URI: "/queue",
         key: GameServerKeys.SubQueueFeed,
@@ -101,26 +101,39 @@ const Content = ({
     useEffect(() => {
         ;(async () => {
             try {
-                if (!preventAssetsRefresh) setIsLoading(true)
-                const resp = await send<
-                    GetAssetsResponse,
-                    {
-                        page_number: number
-                        page_size: number
-                    }
-                >(GameServerKeys.GetAssetsQueue, {
-                    page_number: page - 1, // start with 0
-                    page_size: pageSize,
+                //PLAYER:ASSET:MECH:LIST
+                console.log("here!")
+                const resp = await sendUser("PLAYER:ASSET:MECH:LIST", {
+                    search: "",
+                    // filter: "",
+                    // sort: "",
+                    page_size: 50,
+                    page: 1,
                 })
+                console.log("here1!")
+                console.log(resp)
 
-                if (!resp) return
-                if (preventAssetsRefresh) {
-                    cachedAssetQueue.current = resp.asset_queue_list
-                } else {
-                    setAssetsQueue(resp.asset_queue_list)
-                }
-                setTotalItems(resp.total)
+                // if (!preventAssetsRefresh) setIsLoading(true)
+                // const resp = await send<
+                //     GetAssetsResponse,
+                //     {
+                //         page_number: number
+                //         page_size: number
+                //     }
+                // >(GameServerKeys.GetAssetsQueue, {
+                //     page_number: page - 1, // start with 0
+                //     page_size: pageSize,
+                // })
+                //
+                // if (!resp) return
+                // if (preventAssetsRefresh) {
+                //     cachedAssetQueue.current = resp.asset_queue_list
+                // } else {
+                //     setAssetsQueue(resp.asset_queue_list)
+                // }
+                // setTotalItems(resp.total)
             } catch (e) {
+                console.log(e)
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get assets.", "error")
                 console.debug(e)
             } finally {
@@ -129,7 +142,7 @@ const Content = ({
         })()
         // NOTE: state change of `preventAssetsRefresh` doesnt need to trigger a send
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [send, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
+    }, [sendUser, page, pageSize, queueUpdated, battleIdentifier, setTotalItems, newSnackbarMessage])
 
     // Update assets (the page) from the cache
     useEffect(() => {
