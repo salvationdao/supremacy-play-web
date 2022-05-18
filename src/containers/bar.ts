@@ -70,32 +70,34 @@ export const BarContainer = createContainer(() => {
     // Make sure that the bar is limited to only 1, 2, or 3 things expanded at the same time, depending on screen size
     const toggleActiveBar = useCallback(
         (barName: keyof ActiveBars, newStatus: boolean) => {
-            const newState = { ...activeBars, [barName]: newStatus }
-            const count = Object.values(newState).filter(Boolean).length
+            setActiveBars((prev) => {
+                const newState = { ...prev, [barName]: newStatus }
+                const count = Object.values(newState).filter(Boolean).length
 
-            if (newStatus) {
-                if (below1350) {
-                    setActiveBars({
-                        enlist: false,
-                        wallet: false,
-                        profile: false,
-                        [barName]: newStatus,
-                    })
-                } else if (below1500 && count > 2) {
-                    setActiveBars({
-                        enlist: barName !== "profile",
-                        wallet: true,
-                        profile: barName === "profile",
-                        [barName]: newStatus,
-                    })
+                if (newStatus) {
+                    if (below1350) {
+                        return {
+                            enlist: false,
+                            wallet: false,
+                            profile: false,
+                            [barName]: newStatus,
+                        }
+                    } else if (below1500 && count > 2) {
+                        return {
+                            enlist: barName !== "profile",
+                            wallet: true,
+                            profile: barName === "profile",
+                            [barName]: newStatus,
+                        }
+                    } else {
+                        return { ...prev, [barName]: newStatus }
+                    }
                 } else {
-                    setActiveBars((prev) => ({ ...prev, [barName]: newStatus }))
+                    return { ...prev, [barName]: newStatus }
                 }
-            } else {
-                setActiveBars((prev) => ({ ...prev, [barName]: newStatus }))
-            }
+            })
         },
-        [activeBars, setActiveBars, below1350, below1500],
+        [setActiveBars, below1350, below1500],
     )
 
     return {
