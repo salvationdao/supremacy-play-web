@@ -91,6 +91,11 @@ import View from "!@svgr/webpack!./svg/View.svg"
 import Death from "!@svgr/webpack!./svg/Death.svg"
 import PowerCore from "!@svgr/webpack!./svg/PowerCore.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
+import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
+import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
+import Skin from "!@svgr/webpack!./svg/Skin.svg"
+import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
+import Weapons from "!@svgr/webpack!./svg/Weapons.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Chest from "!@svgr/webpack!./svg/Chest.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
@@ -832,5 +837,35 @@ export const SvgFilter: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgPowerCore: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <PowerCore />
+    </SvgWrapper>
+)
+
+export const SvgIntroAnimation: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <IntroAnimation />
+    </SvgWrapper>
+)
+
+export const SvgOutroAnimation: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <OutroAnimation />
+    </SvgWrapper>
+)
+
+export const SvgSkin: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Skin />
+    </SvgWrapper>
+)
+
+export const SvgUtilities: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Utilities />
+    </SvgWrapper>
+)
+
+export const SvgWeapons: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Weapons />
     </SvgWrapper>
 )
