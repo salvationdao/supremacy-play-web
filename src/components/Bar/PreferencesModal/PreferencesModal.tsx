@@ -4,7 +4,7 @@ import { SvgInfoCircular, SvgSupToken } from "../../../assets"
 import { useAuth, useSnackbar } from "../../../containers"
 import { SendFunc } from "../../../containers/ws"
 import { useToggle } from "../../../hooks"
-import { useGameServerCommands, useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
@@ -26,7 +26,7 @@ export interface PlayerProfile {
 
 export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: PreferencesModalProps) => {
     const { user } = useAuth()
-    const { send } =useGameServerCommandsUser("/user_commander")
+    const { send } = useGameServerCommandsUser("/user_commander")
     const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>()
     const { newSnackbarMessage } = useSnackbar()
 
@@ -42,7 +42,7 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
                 newSnackbarMessage(typeof err === "string" ? err : "Issue getting player preferences", "error")
             }
         })()
-    }, [user, send])
+    }, [user, send, newSnackbarMessage])
     useCallback(async () => {
         if (!user || !send) return
 
@@ -53,9 +53,6 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
     }, [user, send])
 
     const primaryColor =  colors.neonBlue
-    // const primaryColor = "black"
-
-
     return (
         <Modal open={open} onClose={toggle}>
             <Box
@@ -144,6 +141,8 @@ export const BattleQueueNotifications = ({ playerProfile,  setTelegramShortcode,
                 enable_push_notifications: newPlayerProfile.enable_push_notifications,
                 mobile_number: newPlayerProfile.mobile_number,
             })
+            console.log("this isa resp", resp);
+            
 
             if (!resp) {
                 setError("Unable to update preferences, please try again or contact support.")
@@ -224,7 +223,7 @@ export const BattleQueueNotifications = ({ playerProfile,  setTelegramShortcode,
                             pl: "1rem",
                             input: { px: ".5rem", py: "1px" },
                         }}
-                        defaultValue={newPlayerProfile.mobile_number}
+                        // defaultValue={newPlayerProfile.mobile_number}
                         value={newPlayerProfile.mobile_number}
                         onChange={(e) => {
                             setNewPlayerProfile({ ...newPlayerProfile, mobile_number: e.currentTarget.value })
@@ -309,7 +308,7 @@ interface PreferenceToggleProps {
     title: string
     checked: boolean
     disabled: boolean
-    onChangeFunction: (e: any) => void
+    onChangeFunction: (e:  React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {

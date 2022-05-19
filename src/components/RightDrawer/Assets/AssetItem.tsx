@@ -86,7 +86,7 @@ export const AssetItem = ({
             return (
                 <>
                     <Button
-                        onClick={(e: any) => {
+                        onClick={(e) => {
                             e.stopPropagation()
                             toggleLeaveModalOpen(true)
                             togglePreventAssetsRefresh(true)
@@ -150,7 +150,7 @@ export const AssetItem = ({
             <Button
                 variant="contained"
                 size="small"
-                onClick={(e: any) => {
+                onClick={(e) => {
                     e.stopPropagation()
                     toggleDeployModalOpen(true)
                     togglePreventAssetsRefresh(true)

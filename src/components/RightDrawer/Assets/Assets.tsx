@@ -8,7 +8,7 @@ import { useDebounce, usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-// import { TelegramShortcodeModal } from "./DeployConfirmation"
+
 
 export interface QueueFeedResponse {
     queue_length: number
