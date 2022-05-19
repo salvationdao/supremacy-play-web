@@ -5,31 +5,31 @@ import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechButtons = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+    const theme = useTheme()
+
     return (
         <Stack direction="row" spacing=".8rem">
-            <ReusableButton label="DEPLOY" />
-            <ReusableButton label="REPAIR" />
-            <ReusableButton label="HISTORY" />
-            <ReusableButton label="SELL" />
-            <ReusableButton label="RENT" />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="DEPLOY" />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="HISTORY" />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="SELL" />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="RENT" />
         </Stack>
     )
 }
 
-const ReusableButton = ({ label }: { label: string }) => {
-    const theme = useTheme()
-
+const ReusableButton = ({ primaryColor, backgroundColor, label }: { primaryColor: string; backgroundColor: string; label: string }) => {
     return (
         <FancyButton
             excludeCaret
             clipThingsProps={{
                 clipSize: "8px",
-                backgroundColor: theme.factionTheme.background,
+                backgroundColor: backgroundColor,
                 opacity: 0.8,
-                border: { borderColor: theme.factionTheme.primary, borderThickness: "1.5px" },
+                border: { borderColor: primaryColor, borderThickness: "1.5px" },
                 sx: { flex: 1, position: "relative" },
             }}
-            sx={{ px: "1.3rem", py: ".3rem", color: theme.factionTheme.primary }}
+            sx={{ px: "1.3rem", py: ".3rem", color: primaryColor }}
             // onClick={onClick}
         >
             <Typography

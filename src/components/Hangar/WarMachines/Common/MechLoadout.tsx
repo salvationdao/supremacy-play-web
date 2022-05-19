@@ -50,7 +50,7 @@ const LoadoutItem = ({ imageUrl, primaryColor }: { imageUrl: string; primaryColo
     const hasItem = false
 
     return (
-        <Box sx={{ flex: "0 0 50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
+        <Box sx={{ flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
             <ClipThing
                 clipSize="10px"
                 border={{
