@@ -9,7 +9,6 @@ export const MechButtons = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
         <Stack direction="row" spacing=".8rem">
             <ReusableButton label="DEPLOY" />
             <ReusableButton label="REPAIR" />
-            <ReusableButton label="LOADOUT" />
             <ReusableButton label="HISTORY" />
             <ReusableButton label="SELL" />
             <ReusableButton label="RENT" />

@@ -3,6 +3,8 @@ import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
+const ITEM_WIDTH = 7.5 //rem
+
 export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
@@ -13,6 +15,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
             sx={{
                 flex: 1,
                 height: "100%",
+                minWidth: `${3 * ITEM_WIDTH}rem`,
                 pb: ".6rem",
                 overflowY: "hidden",
                 overflowX: "auto",
@@ -31,10 +34,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 },
             }}
         >
-            <Stack sx={{ flexWrap: "wrap", height: "100%" }}>
-                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
-                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
-                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+            <Stack sx={{ flexWrap: "wrap", height: "100%", width: "fit-content" }}>
                 <LoadoutItem imageUrl="" primaryColor={primaryColor} />
                 <LoadoutItem imageUrl="" primaryColor={primaryColor} />
                 <LoadoutItem imageUrl="" primaryColor={primaryColor} />
@@ -50,7 +50,7 @@ const LoadoutItem = ({ imageUrl, primaryColor }: { imageUrl: string; primaryColo
     const hasItem = false
 
     return (
-        <Box sx={{ height: "50%", width: "7.5rem", p: ".3rem" }}>
+        <Box sx={{ flex: "0 0 50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
             <ClipThing
                 clipSize="10px"
                 border={{

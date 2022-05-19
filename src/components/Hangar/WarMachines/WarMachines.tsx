@@ -121,7 +121,7 @@ export const WarMachines = () => {
                     }}
                     opacity={0.7}
                     backgroundColor={theme.factionTheme.background}
-                    sx={{ height: "100%", minWidth: "65rem", maxWidth: "65%" }}
+                    sx={{ height: "100%", width: "fit-content" }}
                 >
                     <Stack sx={{ height: "100%" }}>
                         <Stack
