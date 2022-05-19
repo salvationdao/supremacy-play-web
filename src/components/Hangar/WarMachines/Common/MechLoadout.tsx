@@ -13,7 +13,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
             sx={{
                 flex: 1,
                 height: "100%",
-                pb: ".8rem",
+                pb: ".6rem",
                 overflowY: "hidden",
                 overflowX: "auto",
                 direction: "ltr",

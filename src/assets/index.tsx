@@ -89,6 +89,7 @@ import Ability from "!@svgr/webpack!./svg/Ability.svg"
 import Save from "!@svgr/webpack!./svg/Save.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Death from "!@svgr/webpack!./svg/Death.svg"
+import PowerCore from "!@svgr/webpack!./svg/PowerCore.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Chest from "!@svgr/webpack!./svg/Chest.svg"
@@ -825,5 +826,11 @@ export const SvgSupport: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
 export const SvgFilter: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Filter />
+    </SvgWrapper>
+)
+
+export const SvgPowerCore: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <PowerCore />
     </SvgWrapper>
 )

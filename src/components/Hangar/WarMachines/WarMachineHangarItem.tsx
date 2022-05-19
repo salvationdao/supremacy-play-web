@@ -55,12 +55,11 @@ export const WarMachineHangarItem = ({ mech }: WarMachineHangarItemProps) => {
                         <Stack direction="row" spacing="1rem" sx={{ flex: 1, height: 0 }}>
                             <MechThumbnail mech={mech} mechDetails={mechDetails} />
                             <MechLoadout mech={mech} mechDetails={mechDetails} />
+                            <MechMiniStats mech={mech} mechDetails={mechDetails} />
                         </Stack>
 
                         <MechButtons mech={mech} mechDetails={mechDetails} />
                     </Stack>
-
-                    <MechMiniStats mech={mech} mechDetails={mechDetails} />
 
                     <MechBarStats mech={mech} mechDetails={mechDetails} />
                 </Stack>
