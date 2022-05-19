@@ -60,7 +60,7 @@ export const WarMachines = () => {
 
         if (mechs && mechs.length > 0) {
             return (
-                <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.3rem" }}>
+                <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem", height: 0 }}>
                     {mechs.map((mech) => (
                         <WarMachineHangarItem key={`hangar-mech-${mech.id}`} mech={mech} />
                     ))}
@@ -182,10 +182,9 @@ export const WarMachines = () => {
                         <Box
                             sx={{
                                 my: ".8rem",
-                                ml: ".3rem",
-                                pl: ".5rem",
-                                mr: ".3rem",
-                                pr: ".5rem",
+                                ml: ".8rem",
+                                mr: ".4rem",
+                                pr: ".4rem",
                                 flex: 1,
                                 overflowY: "auto",
                                 overflowX: "hidden",
@@ -199,7 +198,7 @@ export const WarMachines = () => {
                                     borderRadius: 3,
                                 },
                                 "::-webkit-scrollbar-thumb": {
-                                    background: colors.assetsBanner,
+                                    background: theme.factionTheme.primary,
                                     borderRadius: 3,
                                 },
                             }}

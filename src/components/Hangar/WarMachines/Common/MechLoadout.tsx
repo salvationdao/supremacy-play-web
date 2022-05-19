@@ -1,20 +1,85 @@
-import { Box, Stack } from "@mui/material"
+import { Box, CircularProgress, Stack } from "@mui/material"
+import { ClipThing } from "../../.."
+import { useTheme } from "../../../../containers/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+    const theme = useTheme()
+    const primaryColor = theme.factionTheme.primary
+    const skin = mechDetails ? mechDetails.chassis_skin : undefined
+
     return (
-        <Stack sx={{ flexWrap: "wrap" }}>
-            <LoadoutItem />
-            <LoadoutItem />
-            <LoadoutItem />
-            <LoadoutItem />
-            <LoadoutItem />
-            <LoadoutItem />
-            <LoadoutItem />
-        </Stack>
+        <Box
+            sx={{
+                flex: 1,
+                height: "100%",
+                pb: ".8rem",
+                overflowY: "hidden",
+                overflowX: "auto",
+                direction: "ltr",
+                scrollbarWidth: "none",
+                "::-webkit-scrollbar": {
+                    height: ".4rem",
+                },
+                "::-webkit-scrollbar-track": {
+                    background: "#FFFFFF15",
+                    borderRadius: 3,
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: (theme) => theme.factionTheme.primary,
+                    borderRadius: 3,
+                },
+            }}
+        >
+            <Stack sx={{ flexWrap: "wrap", height: "100%" }}>
+                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+                <LoadoutItem imageUrl="" primaryColor={primaryColor} />
+            </Stack>
+        </Box>
     )
 }
 
-const LoadoutItem = () => {
-    return <Box sx={{ height: "50%", width: "7.5rem", backgroundColor: "green", border: "#FF0000 1px solid" }}></Box>
+const LoadoutItem = ({ imageUrl, primaryColor }: { imageUrl: string; primaryColor: string }) => {
+    const hasItem = false
+
+    return (
+        <Box sx={{ height: "50%", width: "7.5rem", p: ".3rem" }}>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    isFancy: true,
+                    borderColor: primaryColor,
+                    borderThickness: hasItem ? "0" : ".15rem",
+                }}
+                opacity={0.15}
+                backgroundColor={primaryColor}
+                sx={{ height: "100%" }}
+            >
+                <Box
+                    sx={{
+                        height: "100%",
+                        width: "100%",
+                        overflow: "hidden",
+                        background: `url(${imageUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                    }}
+                >
+                    {!hasItem && (
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                            <CircularProgress size="2.2rem" sx={{ color: primaryColor }} />
+                        </Stack>
+                    )}
+                </Box>
+            </ClipThing>
+        </Box>
+    )
 }

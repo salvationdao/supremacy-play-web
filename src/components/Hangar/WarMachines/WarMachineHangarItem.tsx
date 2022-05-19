@@ -52,7 +52,7 @@ export const WarMachineHangarItem = ({ mech }: WarMachineHangarItemProps) => {
             >
                 <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>
                     <Stack spacing="1.1rem" sx={{ flex: 1, height: "100%" }}>
-                        <Stack direction="row" spacing="1rem" sx={{ flex: 1 }}>
+                        <Stack direction="row" spacing="1rem" sx={{ flex: 1, height: 0 }}>
                             <MechThumbnail mech={mech} mechDetails={mechDetails} />
                             <MechLoadout mech={mech} mechDetails={mechDetails} />
                         </Stack>

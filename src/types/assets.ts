@@ -16,6 +16,11 @@ interface Collection {
     tier: string
     owner_id: string
     on_chain_status: string
+    image_url?: string
+    animation_url?: string
+    card_animation_url?: string
+    avatar_url?: string
+    large_image_url?: string
 }
 
 export interface MechBasic extends Collection {
@@ -323,7 +328,7 @@ export interface BattleMechStats {
 }
 
 export interface WarMachineState {
-    // One off fetch on inital load
+    // One off fetch on initial load
     id: string
     hash: string
     participantID: number

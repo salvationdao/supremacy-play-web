@@ -5,17 +5,16 @@ import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechThumbnail = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
-
     const primaryColor = theme.factionTheme.primary
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
+    const imageUrl = skin?.avatar_url || skin?.image_url || mech.avatar_url || mech.image_url
 
     return (
         <ClipThing
             clipSize="10px"
             border={{
-                isFancy: true,
                 borderColor: primaryColor,
-                borderThickness: mechDetails ? "0" : ".15rem",
+                borderThickness: imageUrl ? "0" : ".15rem",
             }}
             backgroundColor={theme.factionTheme.background}
         >
@@ -24,13 +23,13 @@ export const MechThumbnail = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
                     height: "100%",
                     width: "16.8rem",
                     overflow: "hidden",
-                    background: `url(${skin?.avatar_url || skin?.image_url})`,
+                    background: `url(${imageUrl})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "top",
                     backgroundSize: "cover",
                 }}
             >
-                {!mechDetails && (
+                {!imageUrl && (
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                         <CircularProgress size="2.2rem" sx={{ color: primaryColor }} />
                     </Stack>
