@@ -3,7 +3,7 @@ import Slide from "@mui/material/Slide"
 import { useEffect, useState } from "react"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useToggle } from "../../hooks"
-import { useGameServerSubscriptionUser } from "../../hooks/useGameServer"
+import { useGameServerSubscriptionSecurePublic } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { SaleAbility } from "../../types"
@@ -22,9 +22,9 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
 
-    useGameServerSubscriptionUser<SaleAbility[]>(
+    useGameServerSubscriptionSecurePublic<SaleAbility[]>(
         {
-            URI: "/secure_public/sale_abilities",
+            URI: "/sale_abilities",
             key: GameServerKeys.SaleAbilitiesList,
         },
         (payload) => {
@@ -33,9 +33,9 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
         },
     )
 
-    useGameServerSubscriptionUser<{ id: string; price: string }>(
+    useGameServerSubscriptionSecurePublic<{ id: string; price: string }>(
         {
-            URI: "/secure_public/sale_abilities",
+            URI: "/sale_abilities",
             key: GameServerKeys.SaleAbilitiesPriceSubscribe,
         },
         (payload) => {

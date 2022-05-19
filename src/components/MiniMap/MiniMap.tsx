@@ -3,18 +3,19 @@ import { useEffect, useMemo, useState } from "react"
 import { ClipThing, MapSelection, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { Severity, useAuth, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
+import { Severity, useAuth, useDimension, useGame, useOverlayToggles, useSnackbar, useSupremacy, WinnerAnnouncementResponse } from "../../containers"
 import { useConsumables } from "../../containers/consumables"
 import { useMiniMap } from "../../containers/minimap"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
-import { Dimension, Map, PlayerAbility, WarMachineState } from "../../types"
+import { Dimension, Faction, Map, PlayerAbility, WarMachineState } from "../../types"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const MiniMap = () => {
     const theme = useTheme()
     const { userID, factionID } = useAuth()
+    const { getFaction } = useSupremacy()
     const { newSnackbarMessage } = useSnackbar()
     const { map, warMachines, bribeStage } = useGame()
     const { winner, setWinner, enlarged, setEnlarged, targeting, selection, setSelection, resetSelection, highlightedMechHash, setHighlightedMechHash } =
@@ -65,6 +66,8 @@ export const MiniMap = () => {
                 // useGame
                 map={map}
                 warMachines={warMachines}
+                // useSupremacy
+                getFaction={getFaction}
                 // useMiniMap
                 winner={winner}
                 enlarged={enlarged}
@@ -91,6 +94,7 @@ export const MiniMap = () => {
             toggleIsMapOpen,
             map,
             warMachines,
+            getFaction,
             winner,
             enlarged,
             setEnlarged,
@@ -120,6 +124,8 @@ interface InnerProps {
     // useGame
     map?: Map
     warMachines?: WarMachineState[]
+    // useSupremacy
+    getFaction: (factionID: string) => Faction
     // useMiniMap
     winner?: WinnerAnnouncementResponse
     enlarged: boolean
@@ -145,6 +151,7 @@ const MiniMapInner = ({
     toggleIsMapOpen,
     map,
     warMachines,
+    getFaction,
     winner,
     enlarged,
     setEnlarged,
@@ -223,7 +230,7 @@ const MiniMapInner = ({
             if (winner) {
                 return winner.game_ability.colour
             } else if (playerAbility) {
-                return playerAbility.colour
+                return playerAbility.ability.colour
             }
         }
         return factionColor
@@ -238,6 +245,7 @@ const MiniMapInner = ({
                 factionID={factionID}
                 map={map}
                 warMachines={warMachines}
+                getFaction={getFaction}
                 enlarged={enlarged || dimensions.width > 400}
                 targeting={targeting}
                 selection={selection}
@@ -256,6 +264,7 @@ const MiniMapInner = ({
         factionID,
         map,
         warMachines,
+        getFaction,
         winner,
         enlarged,
         targeting,

@@ -6,6 +6,7 @@ import { FancyButton, MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { Severity } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
+import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { CellCoords, Dimension, Faction, GameAbility, LocationSelectType, Map, PlayerAbility, WarMachineState } from "../../types"
@@ -73,6 +74,7 @@ export const MiniMapInside = ({
 
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const onConfirm = useCallback(async () => {
         if (!selection) return
@@ -93,14 +95,14 @@ export const MiniMapInside = ({
                     end_coords?: CellCoords
                     mech_hash?: string
                 } | null = null
-                switch (playerAbility.location_select_type) {
+                switch (playerAbility.ability.location_select_type) {
                     case LocationSelectType.LINE_SELECT:
                         if (!selection.startCoords || !selection.endCoords) {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
                         payload = {
-                            blueprint_ability_id: playerAbility.blueprint_id,
-                            location_select_type: playerAbility.location_select_type,
+                            blueprint_ability_id: playerAbility.ability.id,
+                            location_select_type: playerAbility.ability.location_select_type,
                             start_coords: {
                                 x: Math.floor(selection.startCoords.x),
                                 y: Math.floor(selection.startCoords.y),
@@ -113,8 +115,8 @@ export const MiniMapInside = ({
                         break
                     case LocationSelectType.MECH_SELECT:
                         payload = {
-                            blueprint_ability_id: playerAbility.blueprint_id,
-                            location_select_type: playerAbility.location_select_type,
+                            blueprint_ability_id: playerAbility.ability.id,
+                            location_select_type: playerAbility.ability.location_select_type,
                             mech_hash: selection.mechHash,
                         }
                         break
@@ -123,8 +125,8 @@ export const MiniMapInside = ({
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
                         payload = {
-                            blueprint_ability_id: playerAbility.blueprint_id,
-                            location_select_type: playerAbility.location_select_type,
+                            blueprint_ability_id: playerAbility.ability.id,
+                            location_select_type: playerAbility.ability.location_select_type,
                             start_coords: {
                                 x: Math.floor(selection.startCoords.x),
                                 y: Math.floor(selection.startCoords.y),
@@ -141,7 +143,7 @@ export const MiniMapInside = ({
                 await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
             resetSelection()
-            if (playerAbility?.location_select_type === LocationSelectType.MECH_SELECT) {
+            if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
                 setHighlightedMechHash(undefined)
             }
             newSnackbarMessage(`Successfully submitted target location.`, "success")
@@ -349,11 +351,11 @@ export const MiniMapInside = ({
     const isLocationSelection =
         targeting &&
         !(
-            playerAbility?.location_select_type === LocationSelectType.LINE_SELECT ||
-            playerAbility?.location_select_type === LocationSelectType.MECH_SELECT ||
-            playerAbility?.location_select_type === LocationSelectType.GLOBAL
+            playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT ||
+            playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT ||
+            playerAbility?.ability.location_select_type === LocationSelectType.GLOBAL
         )
-    const isLineSelection = targeting && playerAbility?.location_select_type === LocationSelectType.LINE_SELECT
+    const isLineSelection = targeting && playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT
 
     return (
         <>
@@ -473,7 +475,7 @@ const CountdownText = ({ playerAbility, selection, onConfirm }: { playerAbility?
     const hasSelected = useMemo(() => {
         let hasSelected = !!selection
         if (playerAbility) {
-            switch (playerAbility.location_select_type) {
+            switch (playerAbility.ability.location_select_type) {
                 case LocationSelectType.LINE_SELECT:
                     hasSelected = !!(selection?.startCoords && selection?.endCoords)
                     break

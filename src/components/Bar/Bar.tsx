@@ -2,10 +2,8 @@ import { Box, Stack, Theme, Typography, useTheme } from "@mui/material"
 import { Enlist, FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
-import { useAuth, useSnackbar, useSupremacy } from "../../containers"
+import { useAuth, useSupremacy } from "../../containers"
 import { useToggle } from "../../hooks"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
 import { fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
@@ -13,18 +11,6 @@ import { SaleAbilitiesModal } from "../PlayerAbilities/SaleAbilitiesModal"
 
 export const Bar = () => {
     const { userID, user } = useAuth()
-    const { newSnackbarMessage } = useSnackbar()
-
-    useGameServerSubscription(
-        {
-            URI: "xxxxxxxxx",
-            key: GameServerKeys.TriggerSaleAbilitiesListUpdated,
-        },
-        () => {
-            if (DEV_ONLY) return
-            newSnackbarMessage("Player abilities market has been refreshed.", "info")
-        },
-    )
 
     return (
         <Stack
