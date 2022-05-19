@@ -1,6 +1,8 @@
 import { Stack } from "@mui/material"
+import { useEffect } from "react"
 import { ClipThing } from "../.."
 import { useTheme } from "../../../containers/theme"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { MechBasic } from "../../../types"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechButtons } from "./Common/MechButtons"
@@ -14,7 +16,6 @@ interface WarMachineHangarItemProps {
 }
 
 export const WarMachineHangarItem = ({ mech }: WarMachineHangarItemProps) => {
-    const theme = useTheme()
     const {
         collection_slug,
         hash,
@@ -46,6 +47,24 @@ export const WarMachineHangarItem = ({ mech }: WarMachineHangarItemProps) => {
         outro_animation_id,
         power_core_id,
     } = mech
+
+    const theme = useTheme()
+    const { send } = useGameServerCommandsUser("/user_commander")
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await send<RESPONSE_TYPE>(GameServerKeys.XXXXXX, {
+                    payload: something,
+                })
+
+                if (!resp) return
+                setFactionsData(resp)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [send])
 
     return (
         <ClipThing
