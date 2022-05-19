@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { Dispatch, SetStateAction, useMemo } from "react"
 import { MapSelection } from "../.."
-import { GameAbility, LocationSelectType, PlayerAbility } from "../../../types"
+import { BlueprintPlayerAbility, GameAbility, LocationSelectType } from "../../../types"
 
 export const SelectionIcon = ({
     selection,
@@ -15,7 +15,7 @@ export const SelectionIcon = ({
     setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
     gridWidth: number
     gridHeight: number
-    ability?: GameAbility | PlayerAbility
+    ability?: GameAbility | BlueprintPlayerAbility
     targeting?: boolean
 }) => {
     const sizeX = useMemo(() => gridWidth * 1.5, [gridWidth])

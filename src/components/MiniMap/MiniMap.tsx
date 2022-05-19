@@ -352,7 +352,7 @@ const MiniMapInner = ({
 
                                 {mapInsideRender}
 
-                                {targeting && !winner && playerAbility && <TargetHint playerAbility={playerAbility} />}
+                                {targeting && !winner && playerAbility && <TargetHint ability={playerAbility.ability} />}
 
                                 {targeting && winner && (
                                     <TargetTimerCountdown

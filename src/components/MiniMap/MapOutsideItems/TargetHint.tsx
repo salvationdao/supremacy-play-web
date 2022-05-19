@@ -2,17 +2,17 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { LocationSelectType, PlayerAbility } from "../../../types"
+import { BlueprintPlayerAbility, LocationSelectType } from "../../../types"
 interface TargetHintProps {
-    playerAbility: PlayerAbility
+    ability: BlueprintPlayerAbility
 }
 
-export const TargetHint = ({ playerAbility }: TargetHintProps) => {
+export const TargetHint = ({ ability }: TargetHintProps) => {
     const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
     const [abilityActionDescriptor, setAbilityActionDescriptor] = useState("Select a location")
 
     useEffect(() => {
-        switch (playerAbility?.location_select_type) {
+        switch (ability.location_select_type) {
             case LocationSelectType.LOCATION_SELECT:
                 setAbilityActionDescriptor("Select a location")
                 setAbilityTypeIcon(<SvgTarget size="1.6rem" />)
@@ -26,7 +26,7 @@ export const TargetHint = ({ playerAbility }: TargetHintProps) => {
                 setAbilityTypeIcon(<SvgLine size="1.6rem" />)
                 break
         }
-    }, [playerAbility])
+    }, [ability])
 
     return (
         <Stack
@@ -70,7 +70,7 @@ export const TargetHint = ({ playerAbility }: TargetHintProps) => {
                 >
                     {abilityTypeIcon}
                     &nbsp;
-                    {playerAbility.label}
+                    {ability.label}
                 </Box>
             </Typography>
         </Stack>

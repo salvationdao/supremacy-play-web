@@ -162,7 +162,7 @@ const MapWarMachine = ({
             onClick={handleClick}
             style={{
                 position: "absolute",
-                pointerEvents: targeting && playerAbility?.location_select_type !== LocationSelectType.MECH_SELECT ? "none" : "all",
+                pointerEvents: targeting && playerAbility?.ability.location_select_type !== LocationSelectType.MECH_SELECT ? "none" : "all",
                 cursor: "pointer",
                 transform: `translate(-50%, -50%) translate3d(${(position.x - map.left_pixels) * mapScale}px, ${
                     (position.y - map.top_pixels) * mapScale
@@ -175,7 +175,7 @@ const MapWarMachine = ({
                 padding: "1rem 1.3rem",
             }}
         >
-            {playerAbility && playerAbility.location_select_type === LocationSelectType.MECH_SELECT && hash === highlightedMechHash && (
+            {playerAbility && playerAbility.ability.location_select_type === LocationSelectType.MECH_SELECT && hash === highlightedMechHash && (
                 <Box
                     onClick={() => setSelection(undefined)}
                     sx={{
@@ -186,9 +186,9 @@ const MapWarMachine = ({
                         height: `${SIZE}px`,
                         width: `${SIZE}px`,
                         cursor: "pointer",
-                        border: `2px solid ${playerAbility.colour}`,
+                        border: `2px solid ${playerAbility.ability.colour}`,
                         borderRadius: 1,
-                        backgroundImage: `url(${playerAbility.image_url})`,
+                        backgroundImage: `url(${playerAbility.ability.image_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",

@@ -377,7 +377,7 @@ export const MiniMapInside = ({
                 >
                     <SelectionIcon
                         key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`}
-                        ability={gameAbility || playerAbility}
+                        ability={gameAbility || playerAbility?.ability}
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
                         selection={selection}
