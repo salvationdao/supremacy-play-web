@@ -4,21 +4,18 @@ import { useEffect, useState } from "react"
 import { SvgClose, SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
 import { useConsumables } from "../../containers/consumables"
 import { useToggle } from "../../hooks"
-import { useGameServerSubscriptionUser } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { TooltipHelper } from "../Common/TooltipHelper"
 
 interface PlayerAbilityCardProps extends ButtonBaseProps {
-    blueprintAbilityID: string
-    count: number
+    playerAbility: PlayerAbility
 }
 
 const activateModalWidth = 400
 
-export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: PlayerAbilityCardProps) => {
+export const PlayerAbilityCard = ({ playerAbility, ...props }: PlayerAbilityCardProps) => {
     const { setPlayerAbility: submitPlayerAbility } = useConsumables()
     const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
     const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
@@ -26,13 +23,8 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
     // Activating
     const [showPurchaseModal, toggleShowActivateModal] = useToggle(false)
 
-    const playerAbility = useGameServerSubscriptionUser<PlayerAbility>({
-        URI: `${blueprintAbilityID}/xxxxxxxxx`,
-        key: GameServerKeys.PlayerAbilitySubscribe,
-    })
-
     useEffect(() => {
-        switch (playerAbility?.location_select_type) {
+        switch (playerAbility.ability.location_select_type) {
             case LocationSelectType.GLOBAL:
                 setAbilityTypeDescription("This ability will affect all units on the map.")
                 setAbilityTypeIcon(<SvgGlobal />)
@@ -58,35 +50,9 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
         toggleShowActivateModal(false)
     }
 
-    // useEffect(() => {
-    //     if (state !== SocketState.OPEN || !send || !subscribe || !userID) return
-
-    //     try {
-    //         return subscribe<PlayerAbility>(
-    //             GameServerKeys.PlayerAbilitySubscribe,
-    //             (resp) => {
-    //                 setPlayerAbility(resp)
-    //             },
-    //             {
-    //                 blueprint_ability_id: blueprintAbilityID,
-    //             },
-    //         )
-    //     } catch (e) {
-    //         if (e instanceof Error) {
-    //             setError(e.message)
-    //         } else if (typeof e === "string") {
-    //             setError(e)
-    //         }
-    //     }
-    // }, [userID, blueprintAbilityID])
-
-    if (!playerAbility) {
-        return <Box>Loading...</Box>
-    }
-
     return (
         <>
-            <TooltipHelper text={playerAbility.description}>
+            <TooltipHelper text={playerAbility.ability.description}>
                 <ButtonBase
                     {...props}
                     onClick={() => toggleShowActivateModal(true)}
@@ -138,7 +104,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                         fontWeight: "fontWeightBold",
                                     }}
                                 >
-                                    {count}
+                                    {playerAbility.count}
                                 </Typography>
                             </Box>
                             <Box
@@ -156,8 +122,8 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                             />
                             <Box
                                 component="img"
-                                src={playerAbility.image_url}
-                                alt={`Thumbnail image for ${playerAbility.label}`}
+                                src={playerAbility.ability.image_url}
+                                alt={`Thumbnail image for ${playerAbility.ability.label}`}
                                 sx={{
                                     position: "absolute",
                                     top: 0,
@@ -185,7 +151,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                 textDecoration: "ellipsis",
                             }}
                         >
-                            {playerAbility.label}
+                            {playerAbility.ability.label}
                         </Typography>
                     </Box>
                 </ButtonBase>
@@ -205,7 +171,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                     >
                         <ClipThing
                             border={{
-                                borderColor: playerAbility.colour,
+                                borderColor: playerAbility.ability.colour,
                                 borderThickness: ".15rem",
                                 isFancy: true,
                             }}
@@ -224,7 +190,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                         textTransform: "uppercase",
                                     }}
                                 >
-                                    Activate {playerAbility.label || "Ability"}
+                                    Activate {playerAbility.ability.label || "Ability"}
                                 </Typography>
                                 <Stack direction="row" spacing="1rem">
                                     <ClipThing sx={{ flexShrink: 0 }} backgroundColor={colors.darkNavy}>
@@ -234,7 +200,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                                 height: "60px",
                                                 width: "60px",
                                                 background: `center center`,
-                                                backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${playerAbility.image_url})`,
+                                                backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${playerAbility.ability.image_url})`,
                                                 backgroundSize: "cover",
                                             }}
                                         >
@@ -260,7 +226,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                             justifyContent: "space-between",
                                         }}
                                     >
-                                        <Typography>{playerAbility.description}</Typography>
+                                        <Typography>{playerAbility.ability.description}</Typography>
                                         <Typography
                                             variant="caption"
                                             sx={{
@@ -275,7 +241,7 @@ export const PlayerAbilityCard = ({ blueprintAbilityID, count, ...props }: Playe
                                                     color: colors.offWhite,
                                                 }}
                                             >
-                                                {count}
+                                                {playerAbility.count}
                                             </Box>
                                         </Typography>
                                     </Box>

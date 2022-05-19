@@ -2,10 +2,10 @@ import { Box, Button, ButtonGroup, Link, Pagination, Stack, Typography } from "@
 import { useEffect, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../assets"
 import { useAuth } from "../../containers/auth"
-import { useGameServerCommandsUser, useGameServerSubscription } from "../../hooks/useGameServer"
+import { useGameServerSubscriptionUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { LocationSelectType, TalliedPlayerAbility } from "../../types"
+import { LocationSelectType, PlayerAbility } from "../../types"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 const columns = 5
@@ -14,9 +14,9 @@ const pageSize = columns * rows
 
 export const PlayerAbilities = () => {
     const { userID } = useAuth()
-    const { send } = useGameServerCommandsUser("")
 
-    const [talliedAbilityIDs, setTalliedAbilityIDs] = useState<TalliedPlayerAbility[]>([])
+    const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
+    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
@@ -25,48 +25,25 @@ export const PlayerAbilities = () => {
     // Filters
     const [locationSelectType, setLocationSelectType] = useState<LocationSelectType | null>(null)
 
+    useGameServerSubscriptionUser<PlayerAbility[]>(
+        {
+            URI: "/player_abilities",
+            key: GameServerKeys.PlayerAbilitiesList,
+        },
+        (payload) => {
+            if (!payload) return
+            setPlayerAbilities(payload)
+            setTotalPages(Math.ceil(payload.length / pageSize))
+        },
+    )
+
     useEffect(() => {
-        if (!userID) return
+        setShownPlayerAbilities(playerAbilities.slice((currentPage - 1) * pageSize, currentPage * pageSize + 1))
+    }, [playerAbilities, currentPage])
 
-        const fetchSaleAbilities = async () => {
-            const filterItems: {
-                table?: string
-                column: string
-                operator: string
-                value: string
-            }[] = []
-            filterItems.push({
-                column: "owner_id",
-                operator: "=",
-                value: userID,
-            })
-            if (locationSelectType) {
-                filterItems.push({
-                    column: "location_select_type",
-                    operator: "=",
-                    value: locationSelectType,
-                })
-            }
-            const resp = await send<{ total: number; tallied_ability_ids: TalliedPlayerAbility[] }>(GameServerKeys.PlayerAbilitiesList, {
-                page_size: pageSize,
-                page: currentPage - 1,
-                filter: {
-                    items: filterItems,
-                },
-            })
-            setTalliedAbilityIDs(resp.tallied_ability_ids)
-            setTotalPages(Math.ceil(resp.total / pageSize))
-        }
-
-        fetchSaleAbilities()
-        useGameServerSubscription(
-            {
-                URI: "/public/live_data",
-                key: GameServerKeys.TriggerSaleAbilitiesListUpdated,
-            },
-            () => fetchSaleAbilities(),
-        )
-    }, [send, userID, currentPage, locationSelectType])
+    useEffect(() => {
+        setShownPlayerAbilities(playerAbilities.filter((p) => p.ability.location_select_type === locationSelectType))
+    }, [playerAbilities, locationSelectType])
 
     if (!userID)
         return (
@@ -183,7 +160,7 @@ export const PlayerAbilities = () => {
                 </ButtonGroup>
             </Stack>
             <Box marginBottom="1rem">
-                {talliedAbilityIDs.length > 0 ? (
+                {playerAbilities.length > 0 ? (
                     <Box
                         sx={{
                             display: "grid",
@@ -192,8 +169,8 @@ export const PlayerAbilities = () => {
                             gap: ".5rem",
                         }}
                     >
-                        {talliedAbilityIDs.map((s) => (
-                            <PlayerAbilityCard key={s.blueprint_id} blueprintAbilityID={s.blueprint_id} count={s.count} />
+                        {shownPlayerAbilities.map((p) => (
+                            <PlayerAbilityCard key={p.ability.id} playerAbility={p} />
                         ))}
                     </Box>
                 ) : (
