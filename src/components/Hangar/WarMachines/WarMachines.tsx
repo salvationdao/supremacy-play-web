@@ -60,7 +60,7 @@ export const WarMachines = () => {
 
         if (mechs && mechs.length > 0) {
             return (
-                <Stack spacing=".6rem">
+                <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.3rem" }}>
                     {mechs.map((mech) => (
                         <WarMachineHangarItem key={`hangar-mech-${mech.id}`} mech={mech} />
                     ))}

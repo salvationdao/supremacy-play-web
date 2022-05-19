@@ -40,6 +40,8 @@ export interface MechBasic extends Collection {
     intro_animation_id: string
     outro_animation_id: string
     power_core_id: string
+    updated_at: Date
+    created_at: Date
 }
 
 export interface MechDetails extends MechBasic {
@@ -55,8 +57,6 @@ export interface MechDetails extends MechBasic {
     power_core?: PowerCore
     weapons: Weapon[]
     utility: Utility[]
-    updated_at: Date
-    created_at: Date
 }
 
 export interface BlueprintMech {
@@ -79,121 +79,152 @@ export interface BlueprintMech {
 }
 
 export interface Brand {
-	id: string   
-	faction_id: string   
-	label: string   
-	deleted_at?: Date
-	updated_at: Date
-	created_at: Date
+    id: string
+    faction_id: string
+    label: string
+    deleted_at?: Date
+    updated_at: Date
+    created_at: Date
 }
 
 export interface MechModel extends Collection {
-	ID               string              id: string              
-	BlueprintID      string              blueprint_id: string              
-	GenesisTokenID   decimal.NullDecimal genesis_token_id?: NullDecimal 
-	Label            string              label: string              
-	MechModel        string              mech_model: string              
-	EquippedOn       null.String         equipped_on?: String         
-	ImageURL         null.String         image_url?: String         
-	AnimationURL     null.String         animation_url?: String         
-	CardAnimationURL null.String         card_animation_url?: String         
-	AvatarURL        null.String         avatar_url?: String         
-	LargeImageURL    null.String         large_image_url?: String         
-	CreatedAt        time.Time           created_at: Time           
+    id: string
+    blueprint_id: string
+    genesis_token_id?: number
+    label: string
+    mech_model: string
+    equipped_on?: string
+    image_url?: string
+    animation_url?: string
+    card_animation_url?: string
+    avatar_url?: string
+    large_image_url?: string
+    created_at: Date
 }
 
 export interface BlueprintMechSkin extends Collection {
-	ID               string      id: string      
-	Collection       string      collection: string      
-	MechModel        string      mech_model: string      
-	Label            string      label: string      
-	Tier             string      tier?: string      
-	ImageURL         null.String image_url?: String 
-	AnimationURL     null.String animation_url?: String 
-	CardAnimationURL null.String card_animation_url?: String 
-	LargeImageURL    null.String large_image_url?: String 
-	AvatarURL        null.String avatar_url?: String 
-	CreatedAt        time.Time   created_at: Time   
+    id: string
+    collection: string
+    mech_model: string
+    label: string
+    image_url?: string
+    animation_url?: string
+    card_animation_url?: string
+    large_image_url?: string
+    avatar_url?: string
+    created_at: Date
 }
 
 export interface MechSkin extends Collection {
-	label:string      
-	image_url?:string 
-	animation_url?:string 
-	card_animation_url?:string 
-	large_image_url?:string 
-	avatar_url?:string 
-	created_at:Date   
+    label: string
+    image_url?: string
+    animation_url?: string
+    card_animation_url?: string
+    large_image_url?: string
+    avatar_url?: string
+    created_at: Date
 }
 
 export interface MechAnimation extends Collection {
-	*CollectionDetails
-	ID             string      id: string      
-	BlueprintID    string      blueprint_id: string      
-	Label          string      label: string      
-	MechModel      string      mech_model: string      
-	EquippedOn     null.String equipped_on?: String 
-	IntroAnimation null.Bool   intro_animation?: Bool   
-	OutroAnimation null.Bool   outro_animation?: Bool   
-	CreatedAt      time.Time   created_at: Time   
+    id: string
+    blueprint_id: string
+    label: string
+    mech_model: string
+    equipped_on?: string
+    intro_animation?: boolean
+    outro_animation?: boolean
+    created_at: Date
 }
 
 export interface PowerCore extends Collection {
-	*CollectionDetails
-	ID           string          id: string          
-	Label        string          label: string          
-	Size         string          size: string          
-	Capacity     decimal.Decimal capacity: Decimal 
-	MaxDrawRate  decimal.Decimal max_draw_rate: Decimal 
-	RechargeRate decimal.Decimal recharge_rate: Decimal 
-	Armour       decimal.Decimal armour: Decimal 
-	MaxHitpoints decimal.Decimal max_hitpoints: Decimal 
-	EquippedOn   null.String     equipped_on?: String     
-	CreatedAt    time.Time       created_at: Time       
+    id: string
+    label: string
+    size: string
+    capacity: number
+    max_draw_rate: number
+    recharge_rate: number
+    armour: number
+    max_hitpoints: number
+    equipped_on?: string
+    created_at: Date
 }
 
 export interface Weapon extends Collection {
-	*CollectionDetails
-	ID                  string              id: string              
-	BrandID             null.String         brand_id?: String         
-	Label               string              label: string              
-	Slug                string              slug: string              
-	Damage              int                 damage: int                 
-	BlueprintID         string              blueprint_id: string              
-	DefaultDamageType   string              default_damage_type: string              
-	GenesisTokenID      decimal.NullDecimal genesis_token_id?: NullDecimal 
-	WeaponType          string              weapon_type: string              
-	DamageFalloff       null.Int            damage_falloff?: Int            
-	DamageFalloffRate   null.Int            damage_falloff_rate?: Int            
-	Spread              decimal.NullDecimal spread?: NullDecimal 
-	RateOfFire          decimal.NullDecimal rate_of_fire?: NullDecimal 
-	Radius              null.Int            radius?: Int            
-	RadiusDamageFalloff null.Int            radius_damage_falloff?: Int            
-	ProjectileSpeed     decimal.NullDecimal projectile_speed?: NullDecimal 
-	EnergyCost          decimal.NullDecimal energy_cost?: NullDecimal 
-	MaxAmmo             null.Int            max_ammo?: Int            
-
-	UpdatedAt time.Time updated_at: Time 
-	CreatedAt time.Time created_at: Time 
+    id: string
+    brand_id?: string
+    label: string
+    slug: string
+    damage: number
+    blueprint_id: string
+    default_damage_type: string
+    genesis_token_id?: number
+    weapon_type: string
+    damage_falloff?: number
+    damage_falloff_rate?: number
+    spread?: number
+    rate_of_fire?: number
+    radius?: number
+    radius_damage_falloff?: number
+    projectile_speed?: number
+    energy_cost?: number
+    max_ammo?: number
+    updated_at: Date
+    created_at: Date
 }
 
 export interface Utility extends Collection {
-	*CollectionDetails
-	ID             string              id: string              
-	BrandID        null.String         brand_id?: String         
-	Label          string              label: string              
-	UpdatedAt      time.Time           updated_at: Time           
-	CreatedAt      time.Time           created_at: Time           
-	BlueprintID    string              blueprint_id: string              
-	GenesisTokenID decimal.NullDecimal genesis_token_id?: NullDecimal 
-	EquippedOn     null.String         equipped_on?: String         
-	Type           string              type: string              
+    id: string
+    brand_id?: string
+    label: string
+    updated_at: Date
+    created_at: Date
+    blueprint_id: string
+    genesis_token_id?: number
+    equipped_on?: string
+    type: string
 
-	Shield      *UtilityShield      shield?: UtilityShield      
-	AttackDrone *UtilityAttackDrone attack_drone?: UtilityAttackDrone 
-	RepairDrone *UtilityRepairDrone repair_drone?: UtilityRepairDrone 
-	Accelerator *UtilityAccelerator accelerator?: UtilityAccelerator 
-	AntiMissile *UtilityAntiMissile anti_missile?: UtilityAntiMissile 
+    shield?: UtilityShield
+    attack_drone?: UtilityAttackDrone
+    repair_drone?: UtilityRepairDrone
+    accelerator?: UtilityAccelerator
+    anti_missile?: UtilityAntiMissile
+}
+
+export interface UtilityShield {
+    utility_id: string
+    hitpoints: number
+    recharge_rate: number
+    recharge_energy_cost: number
+}
+
+export interface UtilityAttackDrone {
+    utility_id: string
+    damage: number
+    rate_of_fire: number
+    hitpoints: number
+    lifespan_seconds: number
+    deploy_energy_cost: number
+}
+
+export interface UtilityRepairDrone {
+    utility_id: string
+    repair_type?: string
+    repair_amount: number
+    deploy_energy_cost: number
+    lifespan_seconds: number
+}
+
+export interface UtilityAccelerator {
+    utility_id: string
+    energy_cost: number
+    boost_seconds: number
+    boost_amount: number
+}
+
+export interface UtilityAntiMissile {
+    utility_id: string
+    rate_of_fire: number
+    fire_energy_cost: number
 }
 
 // export interface Asset {

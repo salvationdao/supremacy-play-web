@@ -1,9 +1,10 @@
-import { Stack } from "@mui/material"
-import { useEffect } from "react"
+import { Box, Stack } from "@mui/material"
+import { useEffect, useState } from "react"
 import { ClipThing } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
-import { MechBasic } from "../../../types"
+import { GameServerKeys } from "../../../keys"
+import { MechBasic, MechDetails } from "../../../types"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechButtons } from "./Common/MechButtons"
 import { MechLoadout } from "./Common/MechLoadout"
@@ -16,83 +17,54 @@ interface WarMachineHangarItemProps {
 }
 
 export const WarMachineHangarItem = ({ mech }: WarMachineHangarItemProps) => {
-    const {
-        collection_slug,
-        hash,
-        token_id,
-        item_type,
-        item_id,
-        tier,
-        owner_id,
-        on_chain_status,
-        id,
-        label,
-        weapon_hardpoints,
-        utility_slots,
-        speed,
-        max_hitpoints,
-        is_default,
-        is_insured,
-        name,
-        genesis_token_id,
-        limited_release_token_id,
-        power_core_size,
-        blueprint_id,
-        brand_id,
-        faction_id,
-        model_id,
-        default_chassis_skin_id,
-        chassis_skin_id,
-        intro_animation_id,
-        outro_animation_id,
-        power_core_id,
-    } = mech
-
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
+    const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<RESPONSE_TYPE>(GameServerKeys.XXXXXX, {
-                    payload: something,
+                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
+                    mech_id: mech.id,
                 })
 
                 if (!resp) return
-                setFactionsData(resp)
+                setMechDetails(resp)
             } catch (e) {
                 console.error(e)
             }
         })()
-    }, [send])
+    }, [mech.id, send])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                isFancy: true,
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".15rem",
-            }}
-            opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
-        >
-            <Stack direction="row">
-                <Stack sx={{ flex: 1 }}>
-                    <MechTitle />
+        <Box sx={{ position: "relative", overflow: "visible" }}>
+            <MechTitle mech={mech} mechDetails={mechDetails} />
 
-                    <Stack direction="row">
-                        <MechThumbnail />
-                        <MechLoadout />
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    isFancy: true,
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".15rem",
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+            >
+                <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>
+                    <Stack spacing="1.1rem" sx={{ flex: 1, height: "100%" }}>
+                        <Stack direction="row" spacing="1rem" sx={{ flex: 1 }}>
+                            <MechThumbnail mech={mech} mechDetails={mechDetails} />
+                            <MechLoadout mech={mech} mechDetails={mechDetails} />
+                        </Stack>
+
+                        <MechButtons mech={mech} mechDetails={mechDetails} />
                     </Stack>
 
-                    <MechButtons />
+                    <MechMiniStats mech={mech} mechDetails={mechDetails} />
+
+                    <MechBarStats mech={mech} mechDetails={mechDetails} />
                 </Stack>
-
-                <MechMiniStats />
-
-                <MechBarStats />
-            </Stack>
-        </ClipThing>
+            </ClipThing>
+        </Box>
     )
 }
