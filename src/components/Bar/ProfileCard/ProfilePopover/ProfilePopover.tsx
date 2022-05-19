@@ -1,10 +1,11 @@
 import { Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect, useState } from "react"
-import { SvgAssets, SvgProfile, SvgShop, SvgSupport } from "../../../../assets"
+import { SvgAssets, SvgProfile, SvgSettings, SvgShop, SvgSupport } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
 import { User } from "../../../../types"
+import { PreferencesModal } from "../../PreferencesModal/PreferencesModal"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
 
@@ -24,7 +25,8 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
     }, [localOpen, onClose])
 
     return (
-        <Popover
+        <>
+         <Popover
             open={localOpen}
             anchorEl={popoverRef.current}
             onClose={() => toggleLocalOpen(false)}
@@ -59,8 +61,26 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                 <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />}>
                     SUPPORT
                 </NavButton>
+
+                <NavButton onClick={()=> {togglePreferencesModalOpen(true)}} startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}>
+                    Preferences
+                </NavButton>
                 <LogoutButton />
             </Stack>
         </Popover>
+
+
+            {/* preferences modal */}
+            <PreferencesModal
+                open={preferencesModalOpen}
+                toggle={() => {
+                    togglePreferencesModalOpen(false)
+                    toggleLocalOpen(false)
+                    onClose()
+                }}
+                setTelegramShortcode={setTelegramShortcode}
+            />
+        </>
+       
     )
 }

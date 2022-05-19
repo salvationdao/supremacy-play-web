@@ -89,7 +89,7 @@ const Content = ({
             try {
                 //PLAYER:ASSET:MECH:LIST
                 console.log("here!")
-                const resp = await sendUser("PLAYER:ASSET:MECH:LIST", {
+                const resp = await sendUser<{total: number, mechs: any[]}>("PLAYER:ASSET:MECH:LIST", {
                     search: "",
                     // filter: "",
                     // sort: "",
