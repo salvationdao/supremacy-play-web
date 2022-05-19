@@ -1,11 +1,12 @@
 import { Box, Modal, Typography } from "@mui/material"
 import Slide from "@mui/material/Slide"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useToggle } from "../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscription } from "../../hooks/useGameServer"
+import { useGameServerSubscriptionUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
+import { SaleAbility } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { SaleAbilityCard } from "../PlayerAbilities/SaleAbilityCard"
 
@@ -17,43 +18,32 @@ export interface SaleAbilitiesModalProps {
 const modalWidth = 400
 
 export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) => {
-    const { send } = useGameServerCommandsUser("")
     const [localOpen, toggleLocalOpen] = useToggle(open)
-    const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
+    const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
+    const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
 
-    const fetchSaleAbilities = useCallback(async () => {
-        ;(async () => {
-            try {
-                const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList, {
-                    filter: {
-                        items: [
-                            {
-                                table: "sale_player_abilities",
-                                column: "available_until",
-                                operator: "after",
-                                value: "now()",
-                            },
-                        ],
-                    },
-                })
-                if (!resp) return
-                setSaleAbilityIDs(resp.ability_ids)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [send])
-
-    useEffect(() => {
-        fetchSaleAbilities()
-    }, [fetchSaleAbilities])
-
-    useGameServerSubscription(
+    useGameServerSubscriptionUser<SaleAbility[]>(
         {
-            URI: "/public/live_data",
-            key: GameServerKeys.TriggerSaleAbilitiesListUpdated,
+            URI: "/secure_public/sale_abilities",
+            key: GameServerKeys.SaleAbilitiesList,
         },
-        () => fetchSaleAbilities(),
+        (payload) => {
+            if (!payload) return
+            setSaleAbilities(payload)
+        },
+    )
+
+    useGameServerSubscriptionUser<{ id: string; price: string }>(
+        {
+            URI: "/secure_public/sale_abilities",
+            key: GameServerKeys.SaleAbilitiesPriceSubscribe,
+        },
+        (payload) => {
+            if (!payload) return
+            setPriceMap((prev) => {
+                return new Map(prev.set(payload.id, payload.price))
+            })
+        },
     )
 
     useEffect(() => {
@@ -114,7 +104,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                         },
                                     }}
                                 >
-                                    {saleAbilityIDs.length > 0 ? (
+                                    {saleAbilities.length > 0 ? (
                                         <Box
                                             sx={{
                                                 display: "grid",
@@ -122,8 +112,8 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                                 gap: ".5rem",
                                             }}
                                         >
-                                            {saleAbilityIDs.map((s) => (
-                                                <SaleAbilityCard key={s} abilityID={s} />
+                                            {saleAbilities.map((s) => (
+                                                <SaleAbilityCard key={s.id} saleAbility={s} updatedPrice={priceMap.get(s.id) || s.current_price} />
                                             ))}
                                         </Box>
                                     ) : (

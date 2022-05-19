@@ -44,12 +44,9 @@ export enum GameServerKeys {
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
 
     // Player Abilities
-    TriggerSaleAbilitiesListUpdated = "SALE:ABILITIES:LIST:UPDATED",
-    SaleAbilityDetailed = "SALE:ABILITY:DETAILED",
-    PlayerAbilitySubscribe = "PLAYER:ABILITY:SUBSCRIBE",
-    SaleAbilityPriceSubscribe = "SALE:ABILITY:PRICE:SUBSCRIBE",
-    PlayerAbilitiesList = "PLAYER:ABILITIES:LIST",
-    SaleAbilitiesList = "SALE:ABILITIES:LIST",
+    SaleAbilitiesPriceSubscribe = "SALE:ABILITIES:PRICE:SUBSCRIBE",
+    PlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
+    SaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
 
