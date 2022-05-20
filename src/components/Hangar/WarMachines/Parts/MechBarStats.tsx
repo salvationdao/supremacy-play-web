@@ -1,12 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { ReactNode } from "react"
-import { SvgPowerCore } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
+
+    const { speed, max_hitpoints } = mech
+    const powerCore = mechDetails?.power_core
+    const utilities = mechDetails?.utility
+    const weapons = mechDetails?.weapons
 
     return (
         <Box
@@ -32,9 +35,9 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
             }}
         >
             <Stack spacing=".8rem" sx={{ height: "100%", width: "26rem", flexShrink: 0 }}>
-                <BarStat primaryColor={theme.factionTheme.primary} label="ENERGY" current={800} total={1000} />
-                <BarStat primaryColor={theme.factionTheme.primary} label="ARMOUR" current={500} total={1000} />
+                <BarStat primaryColor={theme.factionTheme.primary} label="HEALTH" current={800} total={1000} />
                 <BarStat primaryColor={theme.factionTheme.primary} label="SPEED" current={20} total={50} unit="M/S" />
+                <BarStat primaryColor={theme.factionTheme.primary} label="ARMOUR" current={500} total={1000} />
                 <BarStat primaryColor={theme.factionTheme.primary} label="WEIGHT" current={200} total={1000} unit="KG" />
                 <BarStat primaryColor={theme.factionTheme.primary} label="DAMAGE" current={800} total={1000} />
             </Stack>
@@ -63,7 +66,7 @@ const BarStat = ({ primaryColor, label, current, total, unit }: { primaryColor: 
                 {label}
             </Typography>
 
-            <Box sx={{ flex: 1, height: "1rem", backgroundColor: "#FFFFFF25" }}>
+            <Box sx={{ flex: 1, height: ".9rem", backgroundColor: "#FFFFFF25" }}>
                 <Box
                     sx={{
                         width: `${(100 * current) / total}%`,

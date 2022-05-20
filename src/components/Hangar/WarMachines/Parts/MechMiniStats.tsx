@@ -54,7 +54,11 @@ const SingleStat = ({ Icon, current, total, tooltipText }: { Icon: ReactNode; cu
 
                 <Typography
                     variant="caption"
-                    sx={{ "&, *": { fontSize: "1.1rem", fontFamily: fonts.nostromoBold }, span: { color: current === 0 ? colors.red : "unset" } }}
+                    sx={{
+                        letterSpacing: "2px",
+                        "&, *": { fontSize: "1.1rem", fontFamily: fonts.nostromoBold },
+                        span: { color: current === 0 ? colors.red : "unset" },
+                    }}
                 >
                     <span>{current === undefined ? "?" : current}</span>/{total}
                 </Typography>
