@@ -4,8 +4,6 @@ import { useHangarWarMachine } from "../../../containers/hangar/hangarWarMachine
 export const MechViewer = () => {
     const { selectedMechDetails } = useHangarWarMachine()
 
-    console.log({ selectedMechDetails })
-
     if (!selectedMechDetails) return null
 
     const skin = selectedMechDetails.chassis_skin || selectedMechDetails.default_chassis_skin

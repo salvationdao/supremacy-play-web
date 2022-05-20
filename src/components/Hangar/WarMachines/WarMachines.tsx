@@ -9,7 +9,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic } from "../../../types"
-import { LeaveModal } from "./Common/LeaveModal"
+import { LeaveModal } from "./Parts/LeaveModal"
 import { MechViewer } from "./MechViewer"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
