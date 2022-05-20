@@ -222,7 +222,7 @@ export const WarMachines = () => {
                             {content}
                         </Box>
 
-                        {mechs && totalPages > 1 && (
+                        {mechs && (
                             <Box
                                 sx={{
                                     px: "1rem",
