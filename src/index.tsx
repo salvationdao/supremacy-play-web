@@ -9,7 +9,7 @@ import { Bar, EarlyAccessWarning, GlobalSnackbar, Maintenance, RightDrawer } fro
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { DEV_ONLY, GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
-import { BarProvider, SnackBarProvider, SupremacyProvider, useAuth, useSupremacy, WalletProvider } from "./containers"
+import { BarProvider, SnackBarProvider, SupremacyProvider, useSupremacy, WalletProvider } from "./containers"
 import { AuthProvider, UserUpdater } from "./containers/auth"
 import { ThemeProvider } from "./containers/theme"
 import { useToggle } from "./hooks"
@@ -20,7 +20,6 @@ import { LoginRedirect } from "./pages/LoginRedirect"
 import { ws } from "./containers/ws"
 
 const AppInner = () => {
-    useAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
     const { isServerUp } = useSupremacy()
     const [understand, toggleUnderstand] = useToggle()
 

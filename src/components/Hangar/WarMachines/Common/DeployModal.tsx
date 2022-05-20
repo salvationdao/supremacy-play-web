@@ -320,7 +320,6 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                                             pl: "1rem",
                                                             input: { px: ".5rem", py: "1px" },
                                                         }}
-                                                        defaultValue={mobile}
                                                         value={mobile}
                                                         onChange={(e) => {
                                                             setMobile(e.target.value)
@@ -420,7 +419,7 @@ const AmountItem = ({
             {!disableIcon && <SvgSupToken size="1.4rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
 
             <Typography variant="caption" sx={{ mr: "3.2rem", color: color, fontFamily: fonts.nostromoBold }}>
-                {value}
+                {value || "---"}
             </Typography>
 
             <TooltipHelper placement="right-start" text={tooltip}>

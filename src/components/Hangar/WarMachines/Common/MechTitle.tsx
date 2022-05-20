@@ -1,17 +1,15 @@
 import { Stack, Link, Typography } from "@mui/material"
-import { useRef } from "react"
 import { SvgExternalLink } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechTitle = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const { userID, user } = useAuth()
     const theme = useTheme()
-    const { label, name, tier } = mech
+    const { label, name } = mech
     const hash = mech.hash || mechDetails?.hash
 
     return (
