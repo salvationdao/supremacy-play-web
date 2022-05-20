@@ -9,20 +9,26 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
     const theme = useTheme()
 
     return (
-        <Stack sx={{ height: "100%", width: "26rem", flexShrink: 0 }}>
-            <BarStat primaryColor={theme.factionTheme.primary} label="SPEED" current={800} total={1000} />
+        <Stack spacing=".8rem" sx={{ height: "100%", width: "26rem", flexShrink: 0 }}>
+            <BarStat primaryColor={theme.factionTheme.primary} label="ENERGY" current={800} total={1000} />
+            <BarStat primaryColor={theme.factionTheme.primary} label="ARMOUR" current={500} total={1000} />
+            <BarStat primaryColor={theme.factionTheme.primary} label="SPEED" current={20} total={50} unit="M/S" />
+            <BarStat primaryColor={theme.factionTheme.primary} label="WEIGHT" current={200} total={1000} unit="KG" />
+            <BarStat primaryColor={theme.factionTheme.primary} label="DAMAGE" current={800} total={1000} />
         </Stack>
     )
 }
 
-const BarStat = ({ primaryColor, label, current, total }: { primaryColor: string; label: string; current: number; total: number }) => {
+const BarStat = ({ primaryColor, label, current, total, unit }: { primaryColor: string; label: string; current: number; total: number; unit?: string }) => {
     return (
-        <Stack direction="row">
+        <Stack direction="row" spacing=".8rem" alignItems="center">
             <Typography
+                variant="caption"
                 sx={{
-                    width: "8rem",
+                    width: "6.5rem",
                     textAlign: "end",
-                    fontFamily: fonts.nostromoBold,
+                    fontSize: "1.1rem",
+                    fontFamily: fonts.nostromoBlack,
                     display: "-webkit-box",
                     overflow: "hidden",
                     overflowWrap: "anywhere",
@@ -34,7 +40,7 @@ const BarStat = ({ primaryColor, label, current, total }: { primaryColor: string
                 {label}
             </Typography>
 
-            <Box sx={{ flex: 1, backgroundColor: "#FFFFFF20" }}>
+            <Box sx={{ flex: 1, height: "1rem", backgroundColor: "#FFFFFF25" }}>
                 <Box
                     sx={{
                         width: `${(100 * current) / total}%`,
@@ -46,8 +52,10 @@ const BarStat = ({ primaryColor, label, current, total }: { primaryColor: string
             </Box>
 
             <Typography
+                variant="caption"
                 sx={{
-                    width: "8rem",
+                    width: "5rem",
+                    fontSize: "1.1rem",
                     fontFamily: fonts.nostromoBold,
                     display: "-webkit-box",
                     overflow: "hidden",
@@ -58,6 +66,7 @@ const BarStat = ({ primaryColor, label, current, total }: { primaryColor: string
                 }}
             >
                 {current}
+                {unit}
             </Typography>
         </Stack>
     )
