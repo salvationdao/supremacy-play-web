@@ -1,16 +1,23 @@
-import { Box, Typography } from "@mui/material"
+import { Stack, Link, Typography } from "@mui/material"
 import { useRef } from "react"
+import { SvgExternalLink } from "../../../../assets"
+import { PASSPORT_WEB } from "../../../../constants"
+import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechTitle = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+    const { userID, user } = useAuth()
     const theme = useTheme()
     const { label, name, tier } = mech
+    const hash = mech.hash || mechDetails?.hash
 
     return (
-        <Box
+        <Stack
+            direction="row"
+            alignItems="center"
             sx={{
                 position: "absolute",
                 top: 0,
@@ -38,6 +45,14 @@ export const MechTitle = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?
             >
                 {label || name}
             </Typography>
-        </Box>
+
+            {userID && hash && (
+                <span>
+                    <Link href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`} target="_blank" sx={{ display: "inline", ml: ".7rem" }}>
+                        <SvgExternalLink size="1.2rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.8 } }} />
+                    </Link>
+                </span>
+            )}
+        </Stack>
     )
 }

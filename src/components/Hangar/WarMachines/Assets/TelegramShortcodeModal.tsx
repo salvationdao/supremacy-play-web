@@ -40,11 +40,10 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                         }}
                     >
                         <ClipThing
-                            clipSize="10px"
+                            clipSize="8px"
                             border={{
-                                isFancy: true,
                                 borderColor: colors.neonBlue,
-                                borderThickness: ".15rem",
+                                borderThickness: ".2rem",
                             }}
                             backgroundColor={colors.darkNavyBlue}
                         >

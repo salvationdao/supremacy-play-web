@@ -23,11 +23,10 @@ export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={colors.darkNavyBlue}

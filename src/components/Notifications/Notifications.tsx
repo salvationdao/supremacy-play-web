@@ -214,7 +214,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                 position: "absolute",
                 top: "1rem",
                 right: "1rem",
-                zIndex: siteZIndex.Notfications,
+                zIndex: siteZIndex.Notifications,
                 overflow: "hidden",
             }}
         >

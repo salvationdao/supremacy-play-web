@@ -1,8 +1,9 @@
 import { Box, useTheme, Theme, Stack, Typography, IconButton, Pagination, CircularProgress } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing, FancyButton } from "../.."
+import { useEffect, useMemo, useState } from "react"
+import { ClipThing, DeployModal, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useSnackbar } from "../../../containers"
+import { HangarWarMachineProvider } from "../../../containers/hangar/hangarWarMachines"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -26,7 +27,7 @@ export const WarMachines = () => {
     const theme = useTheme<Theme>()
     const [mechs, setMechs] = useState<MechBasic[]>()
     const [isLoading, setIsLoading] = useState(true)
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 12, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 6, page: 1 })
 
     // Get mechs
     useEffect(() => {
@@ -107,7 +108,7 @@ export const WarMachines = () => {
     }, [mechs, theme.factionTheme])
 
     return (
-        <>
+        <HangarWarMachineProvider>
             <Stack sx={{ height: "100%" }}>
                 <ClipThing
                     clipSize="10px"
@@ -130,7 +131,7 @@ export const WarMachines = () => {
                                     transform: "translate(-50%, -50%)",
                                     p: "3rem",
                                     backgroundColor: theme.factionTheme.background,
-                                    border: `${theme.factionTheme.primary} 2px solid`,
+                                    border: `${theme.factionTheme.primary}50 2px solid`,
                                     boxShadow: 3,
                                     zIndex: 10,
                                 }}
@@ -161,6 +162,17 @@ export const WarMachines = () => {
                                 <IconButton
                                     size="small"
                                     onClick={() => {
+                                        setPageSize(6)
+                                        changePage(1)
+                                    }}
+                                >
+                                    <Typography variant="caption" sx={{ opacity: pageSize === 6 ? 1 : 0.3 }}>
+                                        6
+                                    </Typography>
+                                </IconButton>
+                                <IconButton
+                                    size="small"
+                                    onClick={() => {
                                         setPageSize(12)
                                         changePage(1)
                                     }}
@@ -172,23 +184,12 @@ export const WarMachines = () => {
                                 <IconButton
                                     size="small"
                                     onClick={() => {
-                                        setPageSize(24)
+                                        setPageSize(18)
                                         changePage(1)
                                     }}
                                 >
-                                    <Typography variant="caption" sx={{ opacity: pageSize === 24 ? 1 : 0.3 }}>
-                                        24
-                                    </Typography>
-                                </IconButton>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => {
-                                        setPageSize(36)
-                                        changePage(1)
-                                    }}
-                                >
-                                    <Typography variant="caption" sx={{ opacity: pageSize === 36 ? 1 : 0.3 }}>
-                                        36
+                                    <Typography variant="caption" sx={{ opacity: pageSize === 18 ? 1 : 0.3 }}>
+                                        18
                                     </Typography>
                                 </IconButton>
                             </Stack>
@@ -246,20 +247,10 @@ export const WarMachines = () => {
                 </ClipThing>
             </Stack>
 
+            <DeployModal />
+
             {/* <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
 
-            {deployModalOpen && (
-                <DeployConfirmation
-                    open={deployModalOpen}
-                    asset={assetData}
-                    queueFeed={queueFeed}
-                    onClose={() => {
-                        toggleDeployModalOpen(false)
-                        togglePreventAssetsRefresh(false)
-                    }}
-                    setTelegramShortcode={setTelegramShortcode}
-                />
-            )}
 
             {leaveModalOpen && (
                 <LeaveConfirmation
@@ -271,7 +262,7 @@ export const WarMachines = () => {
                     }}
                 />
             )} */}
-        </>
+        </HangarWarMachineProvider>
     )
 }
 

@@ -1,207 +1,60 @@
-export const DeployConfirmation = () => {
-    return null
+import { Box, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
+import { useMemo, useState } from "react"
+import { ClipThing, FancyButton, TooltipHelper } from "../../.."
+import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../../../assets"
+import { PASSPORT_WEB } from "../../../../constants"
+import { useAuth } from "../../../../containers"
+import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
+import { useTheme } from "../../../../containers/theme"
+import { getRarityDeets, supFormatter } from "../../../../helpers"
+import { useToggle } from "../../../../hooks"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { MechDetails } from "../../../../types"
+
+export const DeployModal = () => {
+    const { deployMechDetails } = useHangarWarMachine()
+
+    if (!deployMechDetails) return null
+    return <DeployModalInner mechDetails={deployMechDetails} />
 }
 
-/*
-const AmountItem = ({
-    title,
-    color,
-    value,
-    tooltip,
-    disableIcon,
-}: {
-    title: string
-    color: string
-    value: string | number
-    tooltip: string
-    disableIcon?: boolean
-}) => {
-    return (
-        <Stack direction="row" alignItems="center">
-            <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
-            {!disableIcon && <SvgSupToken size="1.4rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
-            <Typography sx={{ mr: "3.2rem", color: color }}>{value}</Typography>
-            <TooltipHelper placement="right-start" text={tooltip}>
-                <Box sx={{ ml: "auto" }}>
-                    <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
-                </Box>
-            </TooltipHelper>
-        </Stack>
-    )
-}
-
-interface MobileNumberSave {
-    id: string
-    mobile_number: string
-}
-
-interface NotificationsSettings {
-    telegram_notifications: boolean
-    push_notifications: boolean
-    sms_notifications: boolean
-}
-
-export const DeployConfirmation = ({
-    open,
-    asset,
-    queueFeed,
-    onClose,
-    setTelegramShortcode,
-}: {
-    open: boolean
-    asset: Asset
-    queueFeed: QueueFeed
-    onClose: () => void
-    setTelegramShortcode?: (s: string) => void
-}) => {
+const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
+    const { queueFeed, actualQueueCost, onDeploy, deployError, setDeployMechDetails, settingsMatch, currentSettings, setCurrentSettings } =
+        useHangarWarMachine()
     const theme = useTheme()
-    const queueLength = queueFeed?.queue_length || 0
-    const queueCost = queueFeed?.queue_cost || ""
-    const contractReward = queueFeed?.contract_reward || ""
-
-    const { newSnackbarMessage } = useSnackbar()
-    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
-    const { send: sendUserCommands } = useGameServerCommandsUser("/user_commander")
-    const { send: psSend } = usePassportCommandsUser("xxxxxxxxx")
     const { userID, user } = useAuth()
-    const { hash, name, label, image_url, avatar_url, tier } = asset.data.mech
-    const [isDeploying, toggleIsDeploying] = useToggle()
-    const [deployFailed, setDeployFailed] = useState("")
-    const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueCost, 2))
 
-    const initialSettings: NotificationsSettings = {
-        sms_notifications: false,
-        push_notifications: false,
-        telegram_notifications: false,
-    }
     const [mobile, setMobile] = useState(user.mobile_number)
-    const [saveMobile, setSaveMobile] = useState(false)
-    const [dbSettings, setDbSettings] = useState<NotificationsSettings | null>(null)
-    const [currentSettings, setCurrentSettings] = useState<NotificationsSettings>(initialSettings)
-    const [saveSettings, setSaveSettings] = useState(false)
+    const [saveSettings, toggleSaveSettings] = useToggle(false)
+    const [saveMobile, toggleSaveMobile] = useToggle(false)
+
+    const { hash, tier, name, label } = mechDetails
+    const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
+    const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
+    const imageUrl = skin?.image_url || mechDetails.image_url
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
-    const notificationsOn = currentSettings.push_notifications || currentSettings.sms_notifications || currentSettings.telegram_notifications
-    const settingsMatch =
-        currentSettings.push_notifications === dbSettings?.push_notifications &&
-        currentSettings.sms_notifications === dbSettings.sms_notifications &&
-        currentSettings.telegram_notifications === dbSettings.telegram_notifications
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await sendUserCommands<NotificationsSettings | null>(GameServerKeys.GetSettings, {
-                    key: "notification_settings",
-                })
-
-                if (resp) {
-                    setDbSettings(resp)
-                    setCurrentSettings(resp)
-                    return
-                }
-
-                setDbSettings(null)
-            } catch (err) {
-                newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
-            }
-        })()
-    }, [sendUserCommands, newSnackbarMessage])
-
-    useEffect(() => {
-        let qc = new BigNumber(queueCost).shiftedBy(-18)
-        if (notificationsOn) {
-            qc = qc.multipliedBy(1.1)
-        }
-        setActualQueueCost(qc.toFixed(3))
-    }, [notificationsOn, queueCost])
-
-    useEffect(() => {
-        if (!open) setDeployFailed("")
-    }, [open])
-
-    const onDeploy = useCallback(async () => {
-        if (!userID) return
-
-        try {
-            // save mobile number if checked
-            if (saveMobile && mobile != user.mobile_number) {
-                const saveMobileNum = await psSend<MobileNumberSave>(PassportServerKeys.UserUpdate, {
-                    id: user.id,
-                    mobile_number: mobile,
-                })
-                saveMobileNum ? newSnackbarMessage("Updated mobile number", "success") : newSnackbarMessage("Issue updating mobile number.", "warning")
-            }
-
-            // if saveSettings is true, send an updated settings
-            if (saveSettings) {
-                const updatedSettings = { key: "notification_settings", value: currentSettings }
-                ;(async () => {
-                    try {
-                        const resp = await sendUserCommands<NotificationsSettings>(GameServerKeys.UpdateSettings, updatedSettings)
-                        setDbSettings(resp)
-                        setCurrentSettings(resp)
-                    } catch (err) {
-                        newSnackbarMessage(typeof err === "string" ? err : "Issue getting settings, try again or contact support.", "error")
-                    }
-                })()
-            }
-
-            const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                asset_hash: hash,
-                enable_push_notifications: currentSettings.push_notifications,
-                mobile_number: currentSettings.sms_notifications ? mobile : undefined,
-                enable_telegram_notifications: currentSettings.telegram_notifications,
-            })
-            if (resp && resp.success) {
-                if (resp.code !== "" && setTelegramShortcode) {
-                    setTelegramShortcode(resp.code)
-                }
-                onClose()
-                newSnackbarMessage("Successfully deployed war machine.", "success")
-                setDeployFailed("")
-            }
-        } catch (e) {
-            setDeployFailed(typeof e === "string" ? e : "Failed to deploy war machine.")
-            console.debug(e)
-            return
-        } finally {
-            toggleIsDeploying(false)
-        }
-    }, [
-        userID,
-        user,
-        saveMobile,
-        mobile,
-        saveSettings,
-        send,
-        sendUserCommands,
-        hash,
-        currentSettings,
-        psSend,
-        newSnackbarMessage,
-        setTelegramShortcode,
-        onClose,
-        toggleIsDeploying,
-    ])
+    const queueLength = queueFeed?.queue_length || 0
+    const contractReward = queueFeed?.contract_reward || ""
 
     return (
-        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal open onClose={() => setDeployMechDetails(undefined)} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "36rem",
+                    width: "43rem",
                     boxShadow: 6,
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
@@ -226,33 +79,51 @@ export const DeployConfirmation = ({
                             <Box
                                 sx={{
                                     width: "100%",
-                                    height: "13.8rem",
-                                    backgroundImage: `url(${image_url})`,
+                                    height: "19rem",
+                                    backgroundImage: `url(${imageUrl})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "top center",
                                     backgroundSize: "contain",
                                 }}
                             />
+
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    left: "2rem",
+                                    left: "1.6rem",
                                     bottom: "1.3rem",
-                                    width: "5rem",
-                                    height: "5rem",
-                                    border: "#FFFFFF60 1px solid",
-                                    backgroundImage: `url(${avatar_url})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "top center",
-                                    backgroundSize: "contain",
                                 }}
-                            />
+                            >
+                                <ClipThing
+                                    clipSize="6px"
+                                    border={{
+                                        isFancy: true,
+                                        borderColor: theme.factionTheme.primary,
+                                        borderThickness: ".15rem",
+                                    }}
+                                    opacity={0.7}
+                                    backgroundColor={theme.factionTheme.background}
+                                    sx={{ height: "100%" }}
+                                >
+                                    <Box
+                                        sx={{
+                                            width: "5.5rem",
+                                            height: "5.5rem",
+                                            border: "#FFFFFF60 1px solid",
+                                            backgroundImage: `url(${avatarUrl})`,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "top center",
+                                            backgroundSize: "contain",
+                                        }}
+                                    />
+                                </ClipThing>
+                            </Box>
                         </Box>
 
-                        <Stack spacing=".8rem">
+                        <Stack spacing="1.5rem">
                             <Box>
                                 <Box>
-                                    <Typography sx={{ display: "inline", fontFamily: fonts.nostromoBold }}>{name || label}</Typography>
+                                    <Typography sx={{ display: "inline", fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
                                     {userID && (
                                         <span>
                                             <Link
@@ -310,11 +181,12 @@ export const DeployConfirmation = ({
                             <Stack>
                                 <Stack direction="row" alignItems="center">
                                     <Typography
+                                        variant="caption"
                                         sx={{
                                             pt: ".08rem",
                                             lineHeight: 1,
                                             color: colors.green,
-                                            fontWeight: "fontWeightBold",
+                                            fontFamily: fonts.nostromoBlack,
                                         }}
                                     >
                                         Enable Telegram notifications:
@@ -345,7 +217,7 @@ export const DeployConfirmation = ({
                                             <>
                                                 Enabling notifications will add&nbsp;<strong>10%</strong> to the queue cost. We will notify you via your chosen
                                                 notification preference when your war machine is within the top 10 in queue. The notification fee{" "}
-                                                <strong>will not</strong> be refunded if your war marchine exits the queue.
+                                                <strong>will not</strong> be refunded if your war machine exits the queue.
                                             </>
                                         }
                                     >
@@ -366,11 +238,13 @@ export const DeployConfirmation = ({
                                 <Box>
                                     <Stack direction="row" alignItems="center">
                                         <Typography
+                                            variant="caption"
                                             sx={{
                                                 pt: ".08rem",
                                                 lineHeight: 1,
                                                 color: colors.green,
                                                 fontWeight: "fontWeightBold",
+                                                fontFamily: fonts.nostromoBlack,
                                             }}
                                         >
                                             Enable SMS notifications:
@@ -385,7 +259,7 @@ export const DeployConfirmation = ({
                                                     return newSettings
                                                 })
                                                 setMobile(user.mobile_number)
-                                                setSaveMobile(false)
+                                                toggleSaveMobile(false)
                                             }}
                                             sx={{
                                                 transform: "scale(.6)",
@@ -401,7 +275,7 @@ export const DeployConfirmation = ({
                                                 <>
                                                     Enabling notifications will add&nbsp;<strong>10%</strong> to the queue fee. We will notify you via your
                                                     chosen notification preference when your war machine is within top 10 in queue. The notification fee{" "}
-                                                    <strong>will not</strong> be refunded if your war marchine exits the queue.
+                                                    <strong>will not</strong> be refunded if your war machine exits the queue.
                                                 </>
                                             }
                                         >
@@ -445,7 +319,7 @@ export const DeployConfirmation = ({
                                                         onChange={(e) => {
                                                             setMobile(e.target.value)
                                                             if (e.target.value === user.mobile_number) {
-                                                                setSaveMobile(false)
+                                                                toggleSaveMobile(false)
                                                             }
                                                         }}
                                                     />
@@ -455,8 +329,8 @@ export const DeployConfirmation = ({
                                                         <Typography>Save number to profile?</Typography>
                                                         <Checkbox
                                                             checked={saveMobile}
-                                                            onClick={() => setSaveMobile((prev) => !prev)}
-                                                            sx={{ m: 0, p: 0, color: (theme) => theme.factionTheme.primary }}
+                                                            onClick={() => toggleSaveMobile()}
+                                                            sx={{ m: 0, p: 0, color: colors.green }}
                                                         />
                                                     </Stack>
                                                 )}
@@ -468,8 +342,8 @@ export const DeployConfirmation = ({
                                                 <Typography>Save notification settings as default?</Typography>
                                                 <Checkbox
                                                     checked={saveSettings}
-                                                    onClick={() => setSaveSettings((prev) => !prev)}
-                                                    sx={{ m: 0, p: 0, color: (theme) => theme.factionTheme.primary }}
+                                                    onClick={() => toggleSaveSettings()}
+                                                    sx={{ m: 0, p: 0, color: colors.green }}
                                                 />
                                             </Stack>
                                         )}
@@ -478,36 +352,24 @@ export const DeployConfirmation = ({
                             </Stack>
 
                             <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
-                                <Button
-                                    variant="contained"
-                                    size="small"
-                                    disabled={isDeploying}
-                                    onClick={onDeploy}
-                                    sx={{
-                                        flex: 1,
-                                        minWidth: 0,
-                                        px: ".8rem",
-                                        py: ".6rem",
+                                <FancyButton
+                                    excludeCaret
+                                    clipThingsProps={{
+                                        clipSize: "5px",
                                         backgroundColor: colors.green,
-                                        border: `${colors.green} 1px solid`,
-                                        borderRadius: 0.3,
-                                        ":hover": { backgroundColor: `${colors.green}90` },
+                                        border: { isFancy: true, borderColor: colors.green },
+                                        sx: { position: "relative", width: "100%" },
                                     }}
+                                    sx={{ px: "1.6rem", py: ".5rem", color: "#FFFFFF" }}
+                                    onClick={() => onDeploy({ hash, mobile, saveMobile, saveSettings })}
                                 >
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            lineHeight: 1,
-                                            fontWeight: "fontWeightBold",
-                                            color: isDeploying ? colors.green : "#FFFFFF",
-                                        }}
-                                    >
-                                        {isDeploying ? "DEPLOYING..." : "DEPLOY"}
+                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        DEPLOY
                                     </Typography>
-                                </Button>
+                                </FancyButton>
                             </Stack>
 
-                            {deployFailed && (
+                            {deployError && (
                                 <Typography
                                     variant="body2"
                                     sx={{
@@ -515,18 +377,51 @@ export const DeployConfirmation = ({
                                         color: "red",
                                     }}
                                 >
-                                    {deployFailed}
+                                    {deployError}
                                 </Typography>
                             )}
                         </Stack>
                     </Stack>
 
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
-                        <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    <IconButton size="small" onClick={() => setDeployMechDetails(undefined)} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>
         </Modal>
     )
 }
-*/
+
+const AmountItem = ({
+    title,
+    color,
+    value,
+    tooltip,
+    disableIcon,
+}: {
+    title: string
+    color: string
+    value: string | number
+    tooltip: string
+    disableIcon?: boolean
+}) => {
+    return (
+        <Stack direction="row" alignItems="center">
+            <Typography variant="caption" sx={{ mr: ".4rem", fontFamily: fonts.nostromoBlack }}>
+                {title}
+            </Typography>
+
+            {!disableIcon && <SvgSupToken size="1.4rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
+
+            <Typography variant="caption" sx={{ mr: "3.2rem", color: color, fontFamily: fonts.nostromoBold }}>
+                {value}
+            </Typography>
+
+            <TooltipHelper placement="right-start" text={tooltip}>
+                <Box sx={{ ml: "auto" }}>
+                    <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
+                </Box>
+            </TooltipHelper>
+        </Stack>
+    )
+}
