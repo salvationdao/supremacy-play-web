@@ -38,7 +38,6 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
     const { hash, tier, name, label } = mechDetails
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
-    const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
@@ -100,38 +99,6 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                     backgroundSize: "contain",
                                 }}
                             />
-
-                            <Box
-                                sx={{
-                                    position: "absolute",
-                                    left: "2rem",
-                                    bottom: "1.3rem",
-                                }}
-                            >
-                                <ClipThing
-                                    clipSize="6px"
-                                    border={{
-                                        isFancy: true,
-                                        borderColor: theme.factionTheme.primary,
-                                        borderThickness: ".15rem",
-                                    }}
-                                    opacity={0.7}
-                                    backgroundColor={theme.factionTheme.background}
-                                    sx={{ height: "100%" }}
-                                >
-                                    <Box
-                                        sx={{
-                                            width: "5.5rem",
-                                            height: "5.5rem",
-                                            border: "#FFFFFF60 1px solid",
-                                            backgroundImage: `url(${avatarUrl})`,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "top center",
-                                            backgroundSize: "contain",
-                                        }}
-                                    />
-                                </ClipThing>
-                            </Box>
                         </Box>
 
                         <Stack spacing="1.5rem">
