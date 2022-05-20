@@ -5,7 +5,7 @@ import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
-export const MechButtons = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
     const { setDeployMechDetails } = useHangarWarMachine()
 

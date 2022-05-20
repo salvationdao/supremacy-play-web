@@ -62,9 +62,12 @@ export const HangarWarMachineContainer = createContainer(() => {
         [currentSettings, dbSettings],
     )
 
-    // Modals
+    // Deploying
     const [deployMechDetails, setDeployMechDetails] = useState<MechDetails>()
     const [deployError, setDeployError] = useState<string>()
+
+    // Right side mech viewer
+    const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
 
     // Fetch user notification settings
     useEffect(() => {
@@ -152,13 +155,18 @@ export const HangarWarMachineContainer = createContainer(() => {
         settingsMatch,
         currentSettings,
         setCurrentSettings,
+
+        selectedMechDetails,
+        setSelectedMechDetails,
+
         deployMechDetails,
         setDeployMechDetails,
         setDeployError,
-        actualQueueCost,
-        telegramShortcode,
         deployError,
         onDeploy,
+
+        actualQueueCost,
+        telegramShortcode,
     }
 })
 

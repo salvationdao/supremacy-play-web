@@ -1,9 +1,11 @@
 import { Box, Stack } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../.."
+import { useHangarWarMachine } from "../../../containers/hangar/hangarWarMachines"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechButtons } from "./Common/MechButtons"
@@ -15,12 +17,16 @@ import { MechTitle } from "./Common/MechTitle"
 
 interface WarMachineHangarItemProps {
     mech: MechBasic
+    index: number
 }
 
-export const WarMachineHangarItem = ({ mech }: WarMachineHangarItemProps) => {
+export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
+    const { selectedMechDetails, setSelectedMechDetails } = useHangarWarMachine()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+
+    const isSelected = useMemo(() => selectedMechDetails?.id === mech.id, [mech.id, selectedMechDetails?.id])
 
     useEffect(() => {
         ;(async () => {
@@ -31,24 +37,25 @@ export const WarMachineHangarItem = ({ mech }: WarMachineHangarItemProps) => {
 
                 if (!resp) return
                 setMechDetails(resp)
+                if (index === 0) setSelectedMechDetails(resp)
             } catch (e) {
                 console.error(e)
             }
         })()
-    }, [mech.id, send])
+    }, [index, mech.id, send, setSelectedMechDetails])
 
     return (
-        <Box sx={{ position: "relative", overflow: "visible" }}>
+        <Box sx={{ position: "relative", overflow: "visible", cursor: "pointer" }} onClick={() => setSelectedMechDetails(mechDetails)}>
             <MechTitle mech={mech} mechDetails={mechDetails} />
 
             <ClipThing
                 clipSize="10px"
                 border={{
-                    isFancy: true,
+                    isFancy: isSelected ? false : true,
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".15rem",
+                    borderThickness: isSelected ? ".4rem" : ".15rem",
                 }}
-                opacity={0.7}
+                opacity={isSelected ? 1 : 0.7}
                 backgroundColor={theme.factionTheme.background}
             >
                 <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>

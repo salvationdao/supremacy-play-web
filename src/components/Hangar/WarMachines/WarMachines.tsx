@@ -9,6 +9,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic } from "../../../types"
+import { MechViewer } from "./MechViewer"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
 interface GetMechsRequest {
@@ -59,8 +60,8 @@ export const WarMachines = () => {
         if (mechs && mechs.length > 0) {
             return (
                 <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem", height: 0 }}>
-                    {mechs.map((mech) => (
-                        <WarMachineHangarItem key={`hangar-mech-${mech.id}`} mech={mech} />
+                    {mechs.map((mech, i) => (
+                        <WarMachineHangarItem key={`hangar-mech-${mech.id}`} index={i} mech={mech} />
                     ))}
                 </Stack>
             )
@@ -109,7 +110,7 @@ export const WarMachines = () => {
 
     return (
         <HangarWarMachineProvider>
-            <Stack sx={{ height: "100%" }}>
+            <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
                 <ClipThing
                     clipSize="10px"
                     border={{
@@ -245,6 +246,8 @@ export const WarMachines = () => {
                         )}
                     </Stack>
                 </ClipThing>
+
+                <MechViewer />
             </Stack>
 
             <DeployModal />
