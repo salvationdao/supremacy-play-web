@@ -1,5 +1,5 @@
 import { Box, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
 import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
@@ -19,7 +19,7 @@ export const DeployModal = () => {
 }
 
 const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
-    const { queueFeed, actualQueueCost, onDeploy, deployError, setDeployMechDetails, settingsMatch, currentSettings, setCurrentSettings } =
+    const { queueFeed, actualQueueCost, onDeploy, deployError, setDeployMechDetails, setDeployError, settingsMatch, currentSettings, setCurrentSettings } =
         useHangarWarMachine()
     const theme = useTheme()
     const { userID, user } = useAuth()
@@ -38,8 +38,13 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const queueLength = queueFeed?.queue_length || 0
     const contractReward = queueFeed?.contract_reward || ""
 
+    const onClose = useCallback(() => {
+        setDeployMechDetails(undefined)
+        setDeployError("")
+    }, [setDeployError, setDeployMechDetails])
+
     return (
-        <Modal open onClose={() => setDeployMechDetails(undefined)} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",
@@ -74,6 +79,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                 py: "1rem",
                                 borderRadius: 0.6,
                                 boxShadow: "inset 0 0 12px 6px #00000040",
+                                background: `radial-gradient(#FFFFFF20 1px, ${theme.factionTheme.background})`,
                             }}
                         >
                             <Box
@@ -90,7 +96,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    left: "1.6rem",
+                                    left: "2rem",
                                     bottom: "1.3rem",
                                 }}
                             >
@@ -383,7 +389,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         </Stack>
                     </Stack>
 
-                    <IconButton size="small" onClick={() => setDeployMechDetails(undefined)} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
                         <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>

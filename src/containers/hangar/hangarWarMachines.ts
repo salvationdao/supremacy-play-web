@@ -154,6 +154,7 @@ export const HangarWarMachineContainer = createContainer(() => {
         setCurrentSettings,
         deployMechDetails,
         setDeployMechDetails,
+        setDeployError,
         actualQueueCost,
         telegramShortcode,
         deployError,
