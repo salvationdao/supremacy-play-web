@@ -1,5 +1,5 @@
 import { Box, useTheme, Theme, Stack, Typography, IconButton, Pagination, CircularProgress } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useSnackbar } from "../../../containers"
@@ -32,6 +32,7 @@ export const WarMachines = () => {
     useEffect(() => {
         ;(async () => {
             try {
+                setIsLoading(true)
                 const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                     page,
                     page_size: pageSize,
@@ -50,12 +51,8 @@ export const WarMachines = () => {
     }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
 
     const content = useMemo(() => {
-        if (isLoading || !mechs) {
-            return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <CircularProgress size="2.2rem" sx={{ color: colors.neonBlue }} />
-                </Stack>
-            )
+        if (!mechs) {
+            return <LoadingSpinner primaryColor={theme.factionTheme.primary} />
         }
 
         if (mechs && mechs.length > 0) {
@@ -107,7 +104,7 @@ export const WarMachines = () => {
                 </FancyButton>
             </Stack>
         )
-    }, [isLoading, mechs, theme.factionTheme])
+    }, [mechs, theme.factionTheme])
 
     return (
         <>
@@ -123,7 +120,25 @@ export const WarMachines = () => {
                     backgroundColor={theme.factionTheme.background}
                     sx={{ height: "100%", width: "fit-content", minWidth: "60rem" }}
                 >
-                    <Stack sx={{ height: "100%" }}>
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        {isLoading && (
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    left: "50%",
+                                    top: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    p: "3rem",
+                                    backgroundColor: theme.factionTheme.background,
+                                    border: `${theme.factionTheme.primary} 2px solid`,
+                                    boxShadow: 3,
+                                    zIndex: 10,
+                                }}
+                            >
+                                <LoadingSpinner primaryColor={theme.factionTheme.primary} />
+                            </Box>
+                        )}
+
                         <Stack
                             direction="row"
                             alignItems="center"
@@ -181,6 +196,7 @@ export const WarMachines = () => {
 
                         <Box
                             sx={{
+                                filter: isLoading ? "blur(3px)" : "unset",
                                 my: ".8rem",
                                 ml: ".8rem",
                                 mr: ".4rem",
@@ -207,8 +223,23 @@ export const WarMachines = () => {
                         </Box>
 
                         {mechs && totalPages > 1 && (
-                            <Box sx={{ px: "1rem", py: ".5rem", backgroundColor: "#00000050" }}>
-                                <Pagination size="small" count={totalPages} page={page} onChange={(e, p) => changePage(p)} showFirstButton showLastButton />
+                            <Box
+                                sx={{
+                                    px: "1rem",
+                                    py: ".5rem",
+                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                                    backgroundColor: "#00000070",
+                                }}
+                            >
+                                <Pagination
+                                    size="medium"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{ ".MuiButtonBase-root": { fontFamily: fonts.nostromoBold } }}
+                                    onChange={(e, p) => changePage(p)}
+                                    showFirstButton
+                                    showLastButton
+                                />
                             </Box>
                         )}
                     </Stack>
@@ -241,5 +272,13 @@ export const WarMachines = () => {
                 />
             )} */}
         </>
+    )
+}
+
+const LoadingSpinner = ({ primaryColor }: { primaryColor: string }) => {
+    return (
+        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+            <CircularProgress size="3.4rem" sx={{ color: primaryColor }} />
+        </Stack>
     )
 }
