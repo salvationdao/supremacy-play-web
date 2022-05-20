@@ -6,7 +6,7 @@ import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
-export const MechTitle = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+export const MechTitle = ({ mech, mechDetails, isSelected }: { mech: MechBasic; mechDetails?: MechDetails; isSelected: boolean }) => {
     const { userID, user } = useAuth()
     const theme = useTheme()
     const { label, name } = mech
@@ -26,7 +26,7 @@ export const MechTitle = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?
                 maxWidth: "70%",
                 overflow: "visible",
                 backgroundColor: theme.factionTheme.background,
-                border: `${theme.factionTheme.primary}90 .2rem solid`,
+                border: isSelected ? `${theme.factionTheme.primary} .3rem solid` : `${theme.factionTheme.primary}90 .2rem solid`,
                 zIndex: 9,
             }}
         >

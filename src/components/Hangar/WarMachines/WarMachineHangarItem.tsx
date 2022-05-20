@@ -46,7 +46,7 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", cursor: "pointer" }} onClick={() => setSelectedMechDetails(mechDetails)}>
-            <MechTitle mech={mech} mechDetails={mechDetails} />
+            <MechTitle mech={mech} mechDetails={mechDetails} isSelected={isSelected} />
 
             <ClipThing
                 clipSize="10px"

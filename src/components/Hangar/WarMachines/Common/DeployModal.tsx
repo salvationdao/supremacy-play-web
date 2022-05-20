@@ -85,7 +85,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                             <Box
                                 sx={{
                                     width: "100%",
-                                    height: "19rem",
+                                    height: "21rem",
                                     backgroundImage: `url(${imageUrl})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "top center",
