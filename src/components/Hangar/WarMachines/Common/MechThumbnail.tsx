@@ -17,6 +17,7 @@ export const MechThumbnail = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
                 borderThickness: imageUrl ? "0" : ".15rem",
             }}
             backgroundColor={theme.factionTheme.background}
+            sx={{ flex: 1 }}
         >
             <Box
                 sx={{

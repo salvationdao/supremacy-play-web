@@ -8,7 +8,6 @@ import { MechBasic, MechDetails } from "../../../../types"
 export const MechTitle = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
     const { label, name, tier } = mech
-    const rarityDeets = useRef(getRarityDeets(tier || ""))
 
     return (
         <Box
