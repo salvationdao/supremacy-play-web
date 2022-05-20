@@ -1,8 +1,7 @@
-import { Box, Checkbox, IconButton, Link, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
+import { Box, Checkbox, IconButton, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
-import { SvgClose, SvgExternalLink, SvgInfoCircular, SvgSupToken } from "../../../../assets"
-import { PASSPORT_WEB } from "../../../../constants"
+import { SvgClose, SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { useTheme } from "../../../../containers/theme"
@@ -19,10 +18,19 @@ export const DeployModal = () => {
 }
 
 const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
-    const { queueFeed, actualQueueCost, onDeploy, deployError, setDeployMechDetails, setDeployError, settingsMatch, currentSettings, setCurrentSettings } =
-        useHangarWarMachine()
+    const {
+        queueFeed,
+        actualQueueCost,
+        onDeployQueue,
+        deployQueueError,
+        setDeployMechDetails,
+        setDeployQueueError,
+        settingsMatch,
+        currentSettings,
+        setCurrentSettings,
+    } = useHangarWarMachine()
     const theme = useTheme()
-    const { userID, user } = useAuth()
+    const { user } = useAuth()
 
     const [mobile, setMobile] = useState(user.mobile_number)
     const [saveSettings, toggleSaveSettings] = useToggle(false)
@@ -40,8 +48,8 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
     const onClose = useCallback(() => {
         setDeployMechDetails(undefined)
-        setDeployError("")
-    }, [setDeployError, setDeployMechDetails])
+        setDeployQueueError("")
+    }, [setDeployQueueError, setDeployMechDetails])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -128,20 +136,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
                         <Stack spacing="1.5rem">
                             <Box>
-                                <Box>
-                                    <Typography sx={{ display: "inline", fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
-                                    {userID && (
-                                        <span>
-                                            <Link
-                                                href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                                                target="_blank"
-                                                sx={{ display: "inline", ml: ".7rem" }}
-                                            >
-                                                <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
-                                            </Link>
-                                        </span>
-                                    )}
-                                </Box>
+                                <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
 
                                 <Typography
                                     variant="caption"
@@ -366,7 +361,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                         sx: { position: "relative", width: "100%" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".5rem", color: "#FFFFFF" }}
-                                    onClick={() => onDeploy({ hash, mobile, saveMobile, saveSettings })}
+                                    onClick={() => onDeployQueue({ hash, mobile, saveMobile, saveSettings })}
                                 >
                                     <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                                         DEPLOY
@@ -374,7 +369,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                 </FancyButton>
                             </Stack>
 
-                            {deployError && (
+                            {deployQueueError && (
                                 <Typography
                                     variant="body2"
                                     sx={{
@@ -382,7 +377,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                         color: "red",
                                     }}
                                 >
-                                    {deployError}
+                                    {deployQueueError}
                                 </Typography>
                             )}
                         </Stack>

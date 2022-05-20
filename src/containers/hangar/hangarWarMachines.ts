@@ -62,9 +62,13 @@ export const HangarWarMachineContainer = createContainer(() => {
         [currentSettings, dbSettings],
     )
 
-    // Deploying
+    // Deploying to queue
     const [deployMechDetails, setDeployMechDetails] = useState<MechDetails>()
-    const [deployError, setDeployError] = useState<string>()
+    const [deployQueueError, setDeployQueueError] = useState<string>()
+
+    // Leaving from queue
+    const [leaveMechDetails, setLeaveMechDetails] = useState<MechDetails>()
+    const [leaveQueueError, setLeaveQueueError] = useState<string>()
 
     // Right side mech viewer
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
@@ -94,7 +98,7 @@ export const HangarWarMachineContainer = createContainer(() => {
         setActualQueueCost(qc.toFixed(3))
     }, [notificationsOn, queueFeed?.queue_cost])
 
-    const onDeploy = useCallback(
+    const onDeployQueue = useCallback(
         async ({ hash, mobile, saveMobile, saveSettings }: { hash: string; mobile?: string; saveMobile?: boolean; saveSettings?: boolean }) => {
             if (!userID) return
 
@@ -137,12 +141,12 @@ export const HangarWarMachineContainer = createContainer(() => {
                         setTelegramShortcode(resp.code)
                     }
 
-                    setDeployMechDetails(undefined)
                     newSnackbarMessage("Successfully deployed war machine.", "success")
-                    setDeployError("")
+                    setDeployMechDetails(undefined)
+                    setDeployQueueError("")
                 }
             } catch (e) {
-                setDeployError(typeof e === "string" ? e : "Failed to deploy war machine.")
+                setDeployQueueError(typeof e === "string" ? e : "Failed to deploy war machine.")
                 console.error(e)
                 return
             }
@@ -150,23 +154,48 @@ export const HangarWarMachineContainer = createContainer(() => {
         [currentSettings, newSnackbarMessage, sendFactionCommander, sendPassportUser, sendUserCommander, user.id, user.mobile_number, userID],
     )
 
+    const onLeaveQueue = useCallback(
+        async (hash: string) => {
+            try {
+                const resp = await sendFactionCommander(GameServerKeys.LeaveQueue, { asset_hash: hash })
+                if (resp) {
+                    newSnackbarMessage("Successfully removed war machine from queue.", "success")
+                    setLeaveMechDetails(undefined)
+                    setLeaveQueueError("")
+                }
+            } catch (e) {
+                setLeaveQueueError(typeof e === "string" ? e : "Failed to leave queue.")
+                console.error(e)
+            }
+        },
+        [newSnackbarMessage, sendFactionCommander],
+    )
+
     return {
         queueFeed,
+        actualQueueCost,
         settingsMatch,
         currentSettings,
         setCurrentSettings,
+        telegramShortcode,
 
+        // Mech viewer
         selectedMechDetails,
         setSelectedMechDetails,
 
+        // Deploying to queue
+        onDeployQueue,
         deployMechDetails,
         setDeployMechDetails,
-        setDeployError,
-        deployError,
-        onDeploy,
+        deployQueueError,
+        setDeployQueueError,
 
-        actualQueueCost,
-        telegramShortcode,
+        // Leaving from queue
+        onLeaveQueue,
+        leaveMechDetails,
+        setLeaveMechDetails,
+        leaveQueueError,
+        setLeaveQueueError,
     }
 })
 

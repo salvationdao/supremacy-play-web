@@ -5,7 +5,6 @@ import { useHangarWarMachine } from "../../../containers/hangar/hangarWarMachine
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechButtons } from "./Common/MechButtons"
