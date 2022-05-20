@@ -11,7 +11,7 @@ export const MechThumbnail = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
 
     return (
         <ClipThing
-            clipSize="10px"
+            clipSize="5px"
             border={{
                 borderColor: primaryColor,
                 borderThickness: imageUrl ? "0" : ".15rem",
