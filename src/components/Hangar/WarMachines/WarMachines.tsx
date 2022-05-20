@@ -131,10 +131,6 @@ export const WarMachines = () => {
                                     left: "50%",
                                     top: "50%",
                                     transform: "translate(-50%, -50%)",
-                                    p: "3rem",
-                                    backgroundColor: theme.factionTheme.background,
-                                    border: `${theme.factionTheme.primary}50 2px solid`,
-                                    boxShadow: 3,
                                     zIndex: 10,
                                 }}
                             >

@@ -32,7 +32,7 @@ export const HangarPage = () => {
                     ml: "1.5rem",
                     color: (theme) => theme.factionTheme.primary,
                     minHeight: 0,
-                    ".MuiTab-root": { minHeight: 0, fontSize: "1.1rem" },
+                    ".MuiTab-root": { minHeight: 0, fontSize: "1.2rem" },
                     ".Mui-selected": { color: (theme) => `${theme.factionTheme.primary} !important` },
                     ".MuiTabs-indicator": { backgroundColor: (theme) => theme.factionTheme.primary },
                 }}
