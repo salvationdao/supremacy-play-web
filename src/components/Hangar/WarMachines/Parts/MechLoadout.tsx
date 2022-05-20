@@ -1,5 +1,6 @@
 import { Box, CircularProgress, Stack } from "@mui/material"
-import { ClipThing, TooltipHelper } from "../../.."
+import { FancyButton, TooltipHelper } from "../../.."
+import { SvgPlus } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
@@ -53,6 +54,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 {utilities?.map((u) => (
                     <LoadoutItem key={`mech-loadout-utility-${u.id}`} imageUrl={u?.image_url} primaryColor={primaryColor} tooltipText={u.label} />
                 ))}
+                <AddLoadoutItem primaryColor={primaryColor} />
             </Stack>
         </Box>
     )
@@ -61,16 +63,22 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
 const LoadoutItem = ({ imageUrl, primaryColor, tooltipText }: { imageUrl?: string; primaryColor: string; tooltipText?: string }) => {
     return (
         <Box sx={{ flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    isFancy: true,
-                    borderColor: primaryColor,
-                    borderThickness: imageUrl ? "0" : ".15rem",
+            <FancyButton
+                excludeCaret
+                clipThingsProps={{
+                    clipSize: "10px",
+                    backgroundColor: primaryColor,
+                    opacity: 0.15,
+                    border: {
+                        isFancy: true,
+                        borderColor: primaryColor,
+                        borderThickness: ".15rem",
+                    },
+                    sx: { height: "100%" },
                 }}
-                opacity={0.15}
-                backgroundColor={primaryColor}
-                sx={{ height: "100%", p: ".5rem" }}
+                sx={{ height: "100%", color: primaryColor }}
+                innerSx={{ p: 0 }}
+                onClick={() => alert("TODO: open loadout menu modal.")}
             >
                 <TooltipHelper placement="bottom" text={tooltipText}>
                     <Box
@@ -91,7 +99,35 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText }: { imageUrl?: strin
                         )}
                     </Box>
                 </TooltipHelper>
-            </ClipThing>
+            </FancyButton>
+        </Box>
+    )
+}
+
+const AddLoadoutItem = ({ primaryColor }: { primaryColor: string }) => {
+    return (
+        <Box sx={{ flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
+            <FancyButton
+                excludeCaret
+                clipThingsProps={{
+                    clipSize: "10px",
+                    backgroundColor: primaryColor,
+                    opacity: 0.15,
+                    border: {
+                        isFancy: true,
+                        borderColor: primaryColor,
+                        borderThickness: ".15rem",
+                    },
+                    sx: { height: "100%" },
+                }}
+                sx={{ height: "100%", color: primaryColor }}
+                innerSx={{ p: 0 }}
+                onClick={() => alert("TODO: open loadout menu modal.")}
+            >
+                <Stack justifyContent="center" sx={{ height: "100%" }}>
+                    <SvgPlus sx={{ opacity: 0.15 }} />
+                </Stack>
+            </FancyButton>
         </Box>
     )
 }

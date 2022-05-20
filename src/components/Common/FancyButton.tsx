@@ -16,13 +16,14 @@ const Triangle = styled("div")({
 interface FancyButtonProps extends LoadingButtonProps {
     excludeCaret?: boolean
     sx?: SxProps
+    innerSx?: SxProps
     caretColor?: string
     clipThingsProps?: ClipThingProps
     href?: string
     target?: HTMLAttributeAnchorTarget | undefined
 }
 
-export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, ...props }: FancyButtonProps) => {
+export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, ...props }: FancyButtonProps) => {
     return (
         <ClipThing {...clipThingsProps}>
             {disabled && (
@@ -60,7 +61,7 @@ export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, cl
                 fullWidth
                 {...props}
             >
-                <Box sx={{ pt: ".3rem" }}>
+                <Box sx={{ pt: ".3rem", height: "100%", width: "100%", ...innerSx }}>
                     {children}
                     {!excludeCaret && <Triangle sx={{ backgroundColor: caretColor }} />}
                 </Box>
