@@ -1,4 +1,4 @@
-import { Box } from "@mui/material"
+import { Box, Fade } from "@mui/material"
 import { useHangarWarMachine } from "../../../containers/hangar/hangarWarMachines"
 
 export const MechViewer = () => {
@@ -11,17 +11,19 @@ export const MechViewer = () => {
 
     return (
         <Box sx={{ height: "100%", flex: 1, boxShadow: 3 }}>
-            <Box
-                sx={{
-                    height: "100%",
-                    width: "100%",
-                    overflow: "hidden",
-                    background: `url(${imageUrl})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "top",
-                    backgroundSize: "cover",
-                }}
-            />
+            <Fade in key={`mech-viewer-${selectedMechDetails.id}`}>
+                <Box
+                    sx={{
+                        height: "100%",
+                        width: "100%",
+                        overflow: "hidden",
+                        background: `url(${imageUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "top",
+                        backgroundSize: "cover",
+                    }}
+                />
+            </Fade>
         </Box>
     )
 }
