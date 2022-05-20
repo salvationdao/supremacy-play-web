@@ -9,13 +9,36 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
     const theme = useTheme()
 
     return (
-        <Stack spacing=".8rem" sx={{ height: "100%", width: "26rem", flexShrink: 0 }}>
-            <BarStat primaryColor={theme.factionTheme.primary} label="ENERGY" current={800} total={1000} />
-            <BarStat primaryColor={theme.factionTheme.primary} label="ARMOUR" current={500} total={1000} />
-            <BarStat primaryColor={theme.factionTheme.primary} label="SPEED" current={20} total={50} unit="M/S" />
-            <BarStat primaryColor={theme.factionTheme.primary} label="WEIGHT" current={200} total={1000} unit="KG" />
-            <BarStat primaryColor={theme.factionTheme.primary} label="DAMAGE" current={800} total={1000} />
-        </Stack>
+        <Box
+            sx={{
+                height: "100%",
+                overflowY: "auto",
+                overflowX: "hidden",
+                pr: ".8rem",
+                py: ".16rem",
+                direction: "ltr",
+                scrollbarWidth: "none",
+                "::-webkit-scrollbar": {
+                    width: ".4rem",
+                },
+                "::-webkit-scrollbar-track": {
+                    background: "#FFFFFF15",
+                    borderRadius: 3,
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: (theme) => theme.factionTheme.primary,
+                    borderRadius: 3,
+                },
+            }}
+        >
+            <Stack spacing=".8rem" sx={{ height: "100%", width: "26rem", flexShrink: 0 }}>
+                <BarStat primaryColor={theme.factionTheme.primary} label="ENERGY" current={800} total={1000} />
+                <BarStat primaryColor={theme.factionTheme.primary} label="ARMOUR" current={500} total={1000} />
+                <BarStat primaryColor={theme.factionTheme.primary} label="SPEED" current={20} total={50} unit="M/S" />
+                <BarStat primaryColor={theme.factionTheme.primary} label="WEIGHT" current={200} total={1000} unit="KG" />
+                <BarStat primaryColor={theme.factionTheme.primary} label="DAMAGE" current={800} total={1000} />
+            </Stack>
+        </Box>
     )
 }
 
