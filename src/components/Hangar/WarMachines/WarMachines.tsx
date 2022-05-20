@@ -54,9 +54,7 @@ export const WarMachines = () => {
     }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
 
     const content = useMemo(() => {
-        if (!mechs) {
-            return <LoadingSpinner primaryColor={theme.factionTheme.primary} />
-        }
+        if (!mechs) return
 
         if (mechs && mechs.length > 0) {
             return (
@@ -90,7 +88,7 @@ export const WarMachines = () => {
                     clipThingsProps={{
                         clipSize: "5px",
                         backgroundColor: theme.factionTheme.background,
-                        border: { isFancy: true, borderColor: theme.factionTheme.primary },
+                        border: { borderColor: theme.factionTheme.primary },
                         sx: { position: "relative" },
                     }}
                     sx={{ px: "1.8rem", py: ".5rem", color: theme.factionTheme.primary }}

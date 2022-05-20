@@ -1,13 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
-import { ClipThing } from "../../.."
+import { ClipThing, TooltipHelper } from "../../.."
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
-import { useTheme } from "../../../../containers/theme"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
-    const theme = useTheme()
+    const { weapon_hardpoints, utility_slots, chassis_skin_id, intro_animation_id, outro_animation_id, power_core_id } = mech
+    const weapons = mechDetails?.weapons.length
+    const utilities = mechDetails?.utility.length
 
     return (
         <ClipThing clipSize="10px" opacity={0.08} backgroundColor="#FFFFFF" sx={{ height: "100%", flexShrink: 0 }}>
@@ -33,26 +34,31 @@ export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
                 }}
             >
                 <Stack alignItems="center" justifyContent="center" spacing=".4rem" sx={{ height: "100%", px: "1rem", py: ".8rem" }}>
-                    <SingleStat Icon={<SvgPowerCore size="1.5rem" />} current={3} total={5} />
-                    <SingleStat Icon={<SvgOutroAnimation size="1.5rem" />} current={3} total={5} />
-                    <SingleStat Icon={<SvgIntroAnimation size="1.5rem" />} current={3} total={5} />
-                    <SingleStat Icon={<SvgWeapons size="1.5rem" />} current={3} total={5} />
-                    <SingleStat Icon={<SvgUtilities size="1.5rem" />} current={3} total={5} />
-                    <SingleStat Icon={<SvgSkin size="1.5rem" />} current={3} total={5} />
+                    <SingleStat Icon={<SvgSkin size="1.5rem" />} current={chassis_skin_id ? 1 : 0} total={1} tooltipText="Custom chassis skin." />
+                    <SingleStat Icon={<SvgIntroAnimation size="1.5rem" />} current={intro_animation_id ? 1 : 0} total={1} tooltipText="Intro animation." />
+                    <SingleStat Icon={<SvgOutroAnimation size="1.5rem" />} current={outro_animation_id ? 1 : 0} total={1} tooltipText="Outro animation." />
+                    <SingleStat Icon={<SvgPowerCore size="1.5rem" />} current={power_core_id ? 1 : 0} total={1} tooltipText="Power core." />
+                    <SingleStat Icon={<SvgWeapons size="1.5rem" />} current={weapons} total={weapon_hardpoints} tooltipText="Weapons equipped." />
+                    <SingleStat Icon={<SvgUtilities size="1.5rem" />} current={utilities} total={utility_slots} tooltipText="Utilities equipped." />
                 </Stack>
             </Box>
         </ClipThing>
     )
 }
 
-const SingleStat = ({ Icon, current, total }: { Icon: ReactNode; current: number; total: number }) => {
+const SingleStat = ({ Icon, current, total, tooltipText }: { Icon: ReactNode; current?: number; total: number; tooltipText: string }) => {
     return (
-        <Stack alignItems="center" spacing=".7rem" direction="row">
-            {Icon}
+        <TooltipHelper placement="right" text={tooltipText}>
+            <Stack alignItems="center" spacing=".7rem" direction="row">
+                {Icon}
 
-            <Typography variant="caption" sx={{ fontSize: "1.1rem", fontFamily: fonts.nostromoBold }}>
-                {current}/{total}
-            </Typography>
-        </Stack>
+                <Typography
+                    variant="caption"
+                    sx={{ "&, *": { fontSize: "1.1rem", fontFamily: fonts.nostromoBold }, span: { color: current === 0 ? colors.red : "unset" } }}
+                >
+                    <span>{current === undefined ? "?" : current}</span>/{total}
+                </Typography>
+            </Stack>
+        </TooltipHelper>
     )
 }
