@@ -9,7 +9,6 @@ import { useGameServerCommandsUser, useGameServerSubscriptionBattleFaction } fro
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 
-
 export interface QueueFeedResponse {
     queue_length: number
     queue_cost: string
@@ -89,7 +88,7 @@ const Content = ({
             try {
                 //PLAYER:ASSET:MECH:LIST
                 console.log("here!")
-                const resp = await sendUser<{total: number, mechs: any[]}>("PLAYER:ASSET:MECH:LIST", {
+                const resp = await sendUser<{ total: number; mechs: any[] }>("PLAYER:ASSET:MECH:LIST", {
                     search: "",
                     // filter: "",
                     // sort: "",
@@ -152,8 +151,6 @@ const Content = ({
                         // <AssetItem key={`${aq.hash}-${aq.position}`} assetQueue={aq} queueFeed={queueFeed} isGridView={isGridView} />
                         <AssetItem
                             key={`${aq.hash}-${aq.position}`}
-                            // telegramShortcode={telegramShortcode}
-                            // setTelegramShortcode={setTelegramShortcode}
                             assetQueue={aq}
                             queueFeed={queueFeed}
                             isGridView={isGridView}
