@@ -24,10 +24,11 @@ export const SupremacyContainer = createContainer(() => {
 
     // Listens on the server status
     useEffect(() => {
-        if (!readyToCheckServerState) {
+        if (!readyToCheckServerState && state !== WebSocket.OPEN) {
             setTimeout(() => {
                 toggleReadyToCheckServerState(true)
-            }, 2500)
+            }, 3600)
+            return
         }
 
         toggleIsServerUp(state === WebSocket.OPEN)
