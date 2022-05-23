@@ -6,7 +6,7 @@ import { SendFunc } from "../../../containers/ws"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
@@ -251,7 +251,7 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
                         color: borderColour,
                         backgroundColor: colors.darkNavy,
                         borderRadius: 0.7,
-                        fontFamily: "Nostromo Regular Bold",
+                        fontFamily: fonts.nostromoBold,
                         border: `${borderColour} 1px solid`,
                         ":hover": {
                             opacity: 0.8,
@@ -277,7 +277,7 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
                         color: borderColour,
                         backgroundColor: colors.darkNavy,
                         borderRadius: 0.7,
-                        fontFamily: "Nostromo Regular Bold",
+                        fontFamily: fonts.nostromoBold,
                         border: `${borderColour} 1px solid`,
                         ":hover": {
                             opacity: 0.8,

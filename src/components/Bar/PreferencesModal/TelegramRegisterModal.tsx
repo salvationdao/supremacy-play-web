@@ -6,7 +6,7 @@ import { TELEGRAM_BOT_URL } from "../../../constants"
 import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 
 export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; onClose: () => void; code: string }) => {
@@ -94,7 +94,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 marginBottom: "1rem",
                                                 fontSize: "2rem",
                                             }}
@@ -119,7 +119,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                             color: colors.neonBlue,
                                             backgroundColor: colors.darkNavy,
                                             borderRadius: 0.7,
-                                            fontFamily: "Nostromo Regular Bold",
+                                            fontFamily: fonts.nostromoBold,
                                             border: `${colors.neonBlue} 1px solid`,
                                             ":hover": {
                                                 opacity: 0.8,
@@ -189,7 +189,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 marginBottom: "1rem",
                                                 fontSize: "2rem",
                                             }}
@@ -201,7 +201,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 marginBottom: "1rem",
                                             }}
                                         >
@@ -212,7 +212,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                     <Box sx={{ display: "flex" }}>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 marginRight: ".3rem",
                                             }}
                                         >
@@ -221,7 +221,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                         <a href={TELEGRAM_BOT_URL} rel="noreferrer" target="_blank">
                                             <Typography
                                                 sx={{
-                                                    fontFamily: "Nostromo Regular Bold",
+                                                    fontFamily: fonts.nostromoBold,
                                                     WebkitBoxOrient: "vertical",
                                                     textDecoration: "underline",
                                                     ":hover": {
@@ -234,7 +234,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                         </a>
                                     </Box>
                                     <Box>
-                                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Or Scan QR code:</Typography>
+                                        <Typography sx={{ fontFamily: fonts.nostromoBold }}>Or Scan QR code:</Typography>
                                     </Box>
 
                                     <Box style={{ textAlign: "center", marginBottom: "1rem" }}>
@@ -244,7 +244,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                             }}
                                         >
                                             2) Click Start (if first time using the bot)
@@ -254,7 +254,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                             }}
                                         >
                                             3) type /register
@@ -278,7 +278,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                     >
                                         <Typography
                                             sx={{
-                                                fontFamily: "Nostromo Regular Bold",
+                                                fontFamily: fonts.nostromoBold,
                                                 display: "-webkit-box",
                                             }}
                                         >
@@ -292,7 +292,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                         {copySuccess && (
                                             <Typography
                                                 sx={{
-                                                    fontFamily: "Nostromo Regular Bold",
+                                                    fontFamily: fonts.nostromoBold,
                                                     marginTop: ".5rem",
                                                     marginLeft: "1rem",
                                                 }}
@@ -317,7 +317,7 @@ export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; 
                                             color: colors.neonBlue,
                                             backgroundColor: colors.darkNavy,
                                             borderRadius: 0.7,
-                                            fontFamily: "Nostromo Regular Bold",
+                                            fontFamily: fonts.nostromoBold,
                                             border: `${colors.neonBlue} 1px solid`,
                                             ":hover": {
                                                 opacity: 0.8,
