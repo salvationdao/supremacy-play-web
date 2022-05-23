@@ -21,7 +21,7 @@ export const HangarPage = () => {
             }}
         >
             {!userID ? (
-                <Stack spacing="1.3rem" alignItems="center" sx={{ my: "auto", px: "3.6rem", py: "2.8rem", backgroundColor: "#00000060" }}>
+                <Stack spacing="1.3rem" alignItems="center" sx={{ alignSelf: "center", my: "auto", px: "3.6rem", py: "2.8rem", backgroundColor: "#00000060" }}>
                     <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                         You need to be logged in to view this page.
                     </Typography>

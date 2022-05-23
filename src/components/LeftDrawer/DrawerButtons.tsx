@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Tab, Tabs, useTheme, Theme } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgNext } from "../../assets"
+import { useAuth } from "../../containers"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
@@ -8,6 +9,7 @@ const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
 
 export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }) => {
+    const { userID } = useAuth()
     const theme = useTheme<Theme>()
     const location = useLocation()
     const history = useHistory()
@@ -36,7 +38,9 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
             }}
         >
             <Tabs value={location.pathname} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
-                {ROUTES_ARRAY.filter((r) => r.showInLeftDrawer).map((r) => {
+                {ROUTES_ARRAY.map((r) => {
+                    if (!r.showInLeftDrawer) return null
+                    if (r.requireAuth && !userID) return null
                     return (
                         <TabButton
                             key={r.id}
