@@ -49,6 +49,7 @@ const HangarPageInner = () => {
                 variant="scrollable"
                 scrollButtons="auto"
                 sx={{
+                    flexShrink: 0,
                     mt: ".2rem",
                     ml: "1.5rem",
                     color: (theme) => theme.factionTheme.primary,
