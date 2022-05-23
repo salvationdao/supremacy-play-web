@@ -97,6 +97,8 @@ export interface MechModel extends Collection {
     blueprint_id: string
     genesis_token_id?: number
     label: string
+    description: string
+    background_color: string
     mech_model: string
     equipped_on?: string
     image_url?: string
@@ -104,6 +106,8 @@ export interface MechModel extends Collection {
     card_animation_url?: string
     avatar_url?: string
     large_image_url?: string
+    external_url?: string
+    youtube_url?: string
     created_at: Date
 }
 

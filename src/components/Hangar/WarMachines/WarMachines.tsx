@@ -109,7 +109,7 @@ export const WarMachines = () => {
 
     return (
         <HangarWarMachineProvider>
-            <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+            <Stack direction="row" sx={{ height: "100%" }}>
                 <ClipThing
                     clipSize="10px"
                     border={{
