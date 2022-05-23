@@ -45,17 +45,7 @@ export const Assets = () => {
     )
 }
 
-const Content = ({
-    telegramShortcode,
-    setTelegramShortcode,
-    isGridView,
-    toggleIsGridView,
-}: {
-    telegramShortcode?: string
-    setTelegramShortcode?: (s: string) => void
-    isGridView: boolean
-    toggleIsGridView: (value?: boolean | undefined) => void
-}) => {
+const Content = ({ isGridView, toggleIsGridView }: { isGridView: boolean; toggleIsGridView: (value?: boolean | undefined) => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { battleIdentifier } = useSupremacy()
     const { send: sendUser } = useGameServerCommandsUser("/user_commander")
@@ -88,7 +78,7 @@ const Content = ({
             try {
                 //PLAYER:ASSET:MECH:LIST
                 console.log("here!")
-                const resp = await sendUser<{ total: number; mechs: any[] }>("PLAYER:ASSET:MECH:LIST", {
+                const resp = await sendUser("PLAYER:ASSET:MECH:LIST", {
                     search: "",
                     // filter: "",
                     // sort: "",
@@ -148,7 +138,6 @@ const Content = ({
             return (
                 <Stack spacing={isGridView ? 0 : ".6rem"} direction={isGridView ? "row" : "column"} flexWrap={isGridView ? "wrap" : "unset"}>
                     {assetsQueue.map((aq) => (
-                        // <AssetItem key={`${aq.hash}-${aq.position}`} assetQueue={aq} queueFeed={queueFeed} isGridView={isGridView} />
                         <AssetItem
                             key={`${aq.hash}-${aq.position}`}
                             assetQueue={aq}
@@ -188,7 +177,7 @@ const Content = ({
                 </Button>
             </Stack>
         )
-    }, [isLoading, assetsQueue, queueFeed, isGridView, telegramShortcode, setTelegramShortcode, togglePreventAssetsRefresh])
+    }, [isLoading, assetsQueue, queueFeed, isGridView, togglePreventAssetsRefresh])
 
     return (
         <Stack sx={{ flex: 1 }}>
