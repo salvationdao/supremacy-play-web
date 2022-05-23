@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Skeleton, Stack } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
@@ -75,5 +75,63 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
                 </Stack>
             </ClipThing>
         </Box>
+    )
+}
+
+export const WarMachineHangarItemLoadingSkeleton = () => {
+    const theme = useTheme()
+
+    return (
+        <ClipThing
+            clipSize="10px"
+            border={{
+                isFancy: true,
+                borderColor: theme.factionTheme.primary,
+                borderThickness: ".15rem",
+            }}
+            opacity={0.7}
+            backgroundColor={theme.factionTheme.background}
+        >
+            <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>
+                <Stack spacing="1rem" sx={{ height: "100%" }}>
+                    <Skeleton variant="rectangular" width="17.5rem" sx={{ flex: 1 }} />
+                    <Skeleton variant="rectangular" width="100%" height="4rem" />
+                </Stack>
+
+                <Stack spacing="1rem" sx={{ flex: 1, height: "100%" }}>
+                    <Stack direction="row" spacing="1rem" sx={{ flex: 1, height: 0 }}>
+                        <Stack sx={{ height: "100%", flex: 1 }}>
+                            {new Array(2).fill(0).map((_, index) => (
+                                <Stack key={index} direction="row" sx={{ flexWrap: "wrap", flexBasis: "50%" }}>
+                                    {new Array(3).fill(0).map((_, index) => (
+                                        <Box key={index} sx={{ flexBasis: "33.33%", p: ".4rem" }}>
+                                            <Skeleton variant="rectangular" height="100%" />
+                                        </Box>
+                                    ))}
+                                </Stack>
+                            ))}
+                        </Stack>
+
+                        <Stack spacing=".6rem">
+                            {new Array(4).fill(0).map((_, index) => (
+                                <Skeleton key={index} variant="rectangular" width="6rem" sx={{ flex: 1 }} />
+                            ))}
+                        </Stack>
+
+                        <Stack spacing="1rem" sx={{ flex: 1 }}>
+                            {new Array(4).fill(0).map((_, index) => (
+                                <Skeleton key={index} variant="rectangular" height="1.8rem" />
+                            ))}
+                        </Stack>
+                    </Stack>
+
+                    <Stack direction="row" spacing="1rem">
+                        {new Array(5).fill(0).map((_, index) => (
+                            <Skeleton key={index} variant="rectangular" height="3.8rem" sx={{ flex: 1 }} />
+                        ))}
+                    </Stack>
+                </Stack>
+            </Stack>
+        </ClipThing>
     )
 }
