@@ -139,7 +139,7 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
         }
 
         if (settingsChanged && hadNotificationsTurnedOff && hasAnyNotifications && !agreeToBeCharged) {
-            setError("Must agree 'You have read and agreed to be charge 5 sups per notification'")
+            setError("Please agree to 'You have read and agreed to be charge 5 sups per notification'")
             return
         }
 
@@ -250,22 +250,20 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
                     <br />
                     <Stack direction="column">
                         <Box>
-                            <Typography>
-                                You will be notified you via your chosen notification preference(s) when your war machine is within the top 10 in queue. Once
-                                the notification is sent you will be charged
-                                <SvgSupToken
-                                    sx={{
-                                        width: "10px",
-                                        display: "inline",
-                                        marginTop: "10px",
-                                        marginLeft: "5px",
-                                    }}
-                                    size="1.2rem"
-                                    fill={colors.yellow}
-                                    margin={0}
-                                />
-                                5{" "}
-                            </Typography>
+                            You will be notified you via your chosen notification preference(s) when your war machine is within the top 10 in queue. Once the
+                            notification is sent you will be charged
+                            <SvgSupToken
+                                sx={{
+                                    width: "10px",
+                                    display: "inline",
+                                    marginTop: "10px",
+                                    marginLeft: "5px",
+                                }}
+                                size="1.2rem"
+                                fill={colors.yellow}
+                                margin={0}
+                            />
+                            5{" "}
                         </Box>
                         <Box display="flex" alignItems="center">
                             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
