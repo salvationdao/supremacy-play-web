@@ -1,14 +1,27 @@
-import { Box, IconButton, Modal, Stack } from "@mui/material"
-import { ReactNode } from "react"
+import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { ReactNode, useMemo } from "react"
 import { ClipThing } from "../../.."
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { siteZIndex } from "../../../../theme/theme"
+import { getRarityDeets } from "../../../../helpers"
+import { fonts, siteZIndex } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 
-export const MechModal = ({ mechDetails, onClose, children }: { mechDetails: MechDetails; onClose: () => void; children: ReactNode }) => {
+export const MechModal = ({
+    mechDetails,
+    onClose,
+    width,
+    children,
+}: {
+    mechDetails: MechDetails
+    onClose: () => void
+    width?: string
+    children: ReactNode
+}) => {
     const theme = useTheme()
 
+    const { name, label, tier } = mechDetails
+    const rarityDeets = useMemo(() => getRarityDeets(tier || ""), [tier])
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl = skin?.image_url || mechDetails.image_url
 
@@ -20,7 +33,7 @@ export const MechModal = ({ mechDetails, onClose, children }: { mechDetails: Mec
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "43rem",
+                    width: width || "43rem",
                     boxShadow: 6,
                 }}
             >
@@ -39,6 +52,8 @@ export const MechModal = ({ mechDetails, onClose, children }: { mechDetails: Mec
                             position: "relative",
                             px: "2.5rem",
                             py: "2.4rem",
+                            maxHeight: "calc(100vh - 5rem)",
+                            overflow: "hidden",
                         }}
                     >
                         <Box
@@ -54,13 +69,29 @@ export const MechModal = ({ mechDetails, onClose, children }: { mechDetails: Mec
                             <Box
                                 sx={{
                                     width: "100%",
-                                    height: "21rem",
+                                    height: "19rem",
                                     backgroundImage: `url(${imageUrl})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "top center",
                                     backgroundSize: "contain",
                                 }}
                             />
+                        </Box>
+
+                        <Box>
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
+
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    mt: ".4rem",
+                                    lineHeight: 1,
+                                    color: rarityDeets.color,
+                                    fontFamily: fonts.nostromoHeavy,
+                                }}
+                            >
+                                {rarityDeets.label}
+                            </Typography>
                         </Box>
 
                         {children}

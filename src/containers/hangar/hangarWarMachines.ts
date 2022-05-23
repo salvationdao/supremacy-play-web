@@ -73,6 +73,9 @@ export const HangarWarMachineContainer = createContainer(() => {
     // Right side mech viewer
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
 
+    // Mech history
+    const [historyMechDetails, setHistoryMechDetails] = useState<MechDetails>()
+
     // Fetch user notification settings
     useEffect(() => {
         ;(async () => {
@@ -196,6 +199,10 @@ export const HangarWarMachineContainer = createContainer(() => {
         setLeaveMechDetails,
         leaveQueueError,
         setLeaveQueueError,
+
+        // Mech history
+        historyMechDetails,
+        setHistoryMechDetails,
     }
 })
 

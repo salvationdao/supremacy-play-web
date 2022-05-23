@@ -1,4 +1,4 @@
-import { Box, useTheme, Theme, Stack, Typography, IconButton, Pagination, CircularProgress } from "@mui/material"
+import { Box, useTheme, Theme, Stack, Typography, IconButton, Pagination } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, DeployModal, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
@@ -9,9 +9,10 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic } from "../../../types"
-import { LeaveModal } from "./Parts/LeaveModal"
-import { MechViewer } from "./MechViewer"
-import { WarMachineHangarItem } from "./WarMachineHangarItem"
+import { LeaveModal } from "./LeaveQueue/LeaveModal"
+import { HistoryModal } from "./MechHistory/HistoryModal"
+import { MechViewer } from "./MechViewer/MechViewer"
+import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./WarMachineHangarItem/WarMachineHangarItem"
 
 interface GetMechsRequest {
     page: number
@@ -54,7 +55,15 @@ export const WarMachines = () => {
     }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
 
     const content = useMemo(() => {
-        if (!mechs) return
+        if (!mechs || isLoading) {
+            return (
+                <Stack spacing="1.6rem" sx={{ width: "80rem", px: "1rem", py: ".8rem", height: 0 }}>
+                    {new Array(5).fill(0).map((_, index) => (
+                        <WarMachineHangarItemLoadingSkeleton key={index} />
+                    ))}
+                </Stack>
+            )
+        }
 
         if (mechs && mechs.length > 0) {
             return (
@@ -105,7 +114,7 @@ export const WarMachines = () => {
                 </FancyButton>
             </Stack>
         )
-    }, [mechs, theme.factionTheme])
+    }, [mechs, isLoading, theme.factionTheme])
 
     return (
         <HangarWarMachineProvider>
@@ -122,20 +131,6 @@ export const WarMachines = () => {
                     sx={{ height: "100%", width: "fit-content", minWidth: "60rem" }}
                 >
                     <Stack sx={{ position: "relative", height: "100%" }}>
-                        {isLoading && (
-                            <Box
-                                sx={{
-                                    position: "absolute",
-                                    left: "50%",
-                                    top: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                    zIndex: 10,
-                                }}
-                            >
-                                <LoadingSpinner primaryColor={theme.factionTheme.primary} />
-                            </Box>
-                        )}
-
                         <Stack
                             direction="row"
                             alignItems="center"
@@ -193,7 +188,6 @@ export const WarMachines = () => {
 
                         <Box
                             sx={{
-                                filter: isLoading ? "blur(3px)" : "unset",
                                 my: ".8rem",
                                 ml: ".8rem",
                                 mr: ".4rem",
@@ -247,28 +241,7 @@ export const WarMachines = () => {
 
             <DeployModal />
             <LeaveModal />
-
-            {/* <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
-
-
-            {leaveModalOpen && (
-                <LeaveConfirmation
-                    open={leaveModalOpen}
-                    asset={assetData}
-                    onClose={() => {
-                        toggleLeaveModalOpen(false)
-                        togglePreventAssetsRefresh(false)
-                    }}
-                />
-            )} */}
+            <HistoryModal />
         </HangarWarMachineProvider>
-    )
-}
-
-const LoadingSpinner = ({ primaryColor }: { primaryColor: string }) => {
-    return (
-        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-            <CircularProgress size="3.4rem" sx={{ color: primaryColor }} />
-        </Stack>
     )
 }
