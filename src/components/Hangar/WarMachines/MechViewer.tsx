@@ -13,26 +13,47 @@ export const MechViewer = () => {
     const animationUrl = skin?.animation_url || selectedMechDetails.animation_url
 
     return (
-        <Box sx={{ height: "100%", flex: 1, py: "1.5rem", boxShadow: 3 }}>
+        <Box sx={{ height: "100%", flex: 1, py: "1.5rem" }}>
             <Fade in key={`mech-viewer-${selectedMechDetails.id}`}>
                 <Box
-                    component="video"
                     sx={{
+                        position: "relative",
                         height: "100%",
                         width: "100%",
                         overflow: "hidden",
-                        background: `url(${imageUrl})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "top",
-                        backgroundSize: "cover",
                         border: `${theme.factionTheme.primary}90 1px solid`,
+                        boxShadow: 3,
                     }}
-                    loop
-                    muted
-                    autoPlay
-                    poster={`${imageUrl}`}
                 >
-                    <source src={animationUrl} type="video/mp4" />
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            height: "100%",
+                            width: "100%",
+                            background: `url(${imageUrl})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            filter: "blur(2px)",
+                            zIndex: 2,
+                        }}
+                    />
+
+                    <Box
+                        component="video"
+                        sx={{
+                            position: "absolute",
+                            height: "100%",
+                            width: "100%",
+                            zIndex: 3,
+                        }}
+                        loop
+                        muted
+                        autoPlay
+                        poster={`${imageUrl}`}
+                    >
+                        <source src={animationUrl} type="video/mp4" />
+                    </Box>
                 </Box>
             </Fade>
         </Box>
