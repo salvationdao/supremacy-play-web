@@ -57,8 +57,8 @@ export const WarMachines = () => {
     const content = useMemo(() => {
         if (!mechs || isLoading) {
             return (
-                <Stack spacing="1.6rem" sx={{ width: "80rem", px: "1rem", py: ".8rem" }}>
-                    {new Array(3).fill(0).map((_, index) => (
+                <Stack spacing="1.6rem" sx={{ width: "80rem", px: "1rem", py: ".8rem", height: 0 }}>
+                    {new Array(5).fill(0).map((_, index) => (
                         <WarMachineHangarItemLoadingSkeleton key={index} />
                     ))}
                 </Stack>
