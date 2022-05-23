@@ -248,9 +248,7 @@ export const WarMachines = () => {
             <DeployModal />
             <LeaveModal />
 
-            {/* <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
-
-
+            {/* 
             {leaveModalOpen && (
                 <LeaveConfirmation
                     open={leaveModalOpen}
