@@ -203,6 +203,7 @@ const PopoverContent = ({ faction }: { faction: Faction }) => {
                             sx: { ml: "auto !important" },
                             backgroundColor: primary_color,
                             border: {
+                                isFancy: true,
                                 borderColor: primary_color,
                             },
                         }}

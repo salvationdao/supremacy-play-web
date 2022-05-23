@@ -78,10 +78,10 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                         }}
                     >
                         <ClipThing
+                            clipSize="8px"
                             border={{
-                                borderThickness: ".15rem",
+                                borderThickness: ".2rem",
                                 borderColor: colors.blue2,
-                                isFancy: true,
                             }}
                             skipRightCorner
                             backgroundColor={colors.darkNavy}

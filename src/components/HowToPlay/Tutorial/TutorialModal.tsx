@@ -23,11 +23,10 @@ export const TutorialModal = () => {
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
                     }}
                     backgroundColor={colors.darkNavyBlue}
                 >

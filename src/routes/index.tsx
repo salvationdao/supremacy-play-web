@@ -1,5 +1,5 @@
 import { BattleArenaPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
-import { SvgChat, SvgRobot } from "../assets"
+import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
 
@@ -11,6 +11,7 @@ interface RouteStruct {
     showInLeftDrawer?: boolean
     enable?: boolean
     label: string
+    requireAuth?: boolean
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
@@ -22,6 +23,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         showInLeftDrawer: true,
         enable: true,
         label: "Battle Arena",
+        requireAuth: false,
     },
     hangar: {
         id: "hangar",
@@ -31,6 +33,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         showInLeftDrawer: true,
         enable: true,
         label: "Hangar",
+        requireAuth: true,
     },
     marketplace: {
         id: "marketplace",
@@ -40,6 +43,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         showInLeftDrawer: true,
         enable: true,
         label: "Marketplace",
+        requireAuth: false,
     },
     contracts: {
         id: "contracts",
@@ -49,6 +53,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         showInLeftDrawer: true,
         enable: false,
         label: "Contracts",
+        requireAuth: false,
     },
     not_found_page: {
         id: "not_found_page",
@@ -58,6 +63,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         showInLeftDrawer: false,
         enable: false,
         label: "",
+        requireAuth: false,
     },
 }
 
@@ -67,7 +73,6 @@ export enum RightDrawerHashes {
     None = "#none",
     LiveChat = "#live_chat",
     PlayerList = "#player_list",
-    Assets = "#assets",
     Socials = "#socials",
 }
 
@@ -98,13 +103,6 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
         ),
         enable: true,
         label: "Active Players",
-    },
-    war_machines: {
-        id: "war_machines",
-        hash: RightDrawerHashes.Assets,
-        icon: <SvgRobot size="1.3rem" />,
-        enable: true,
-        label: "War Machines",
     },
     socials: {
         id: "socials",

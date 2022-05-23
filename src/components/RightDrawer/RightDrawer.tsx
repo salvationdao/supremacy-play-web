@@ -4,7 +4,6 @@ import { DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { ChatProvider } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
-import { Assets } from "./Assets/Assets"
 import { DrawerButtons } from "./DrawerButtons"
 import { LiveChat } from "./LiveChat/LiveChat"
 import { PlayerList } from "./PlayerList/PlayerList"
@@ -22,19 +21,16 @@ export const RightDrawer = () => {
 
     const drawerContent = useMemo(() => {
         switch (location.hash) {
-            case RightDrawerHashes.LiveChat:
-                return <LiveChat />
             case RightDrawerHashes.PlayerList:
                 return <PlayerList />
-            case RightDrawerHashes.Assets:
-                return <Assets />
             case RightDrawerHashes.Socials:
                 if (process.env.REACT_APP_SENTRY_ENVIRONMENT !== "development") {
                     return null
                 }
                 return <Socials />
+            case RightDrawerHashes.LiveChat:
             default:
-                return null
+                return <LiveChat />
         }
     }, [location.hash])
 

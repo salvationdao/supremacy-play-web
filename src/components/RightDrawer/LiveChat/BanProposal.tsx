@@ -106,7 +106,7 @@ const BanProposalInner = ({
                         clipThingsProps={{
                             clipSize: "4px",
                             backgroundColor: colors.red,
-                            border: { borderColor: colors.red },
+                            border: { isFancy: true, borderColor: colors.red },
                             sx: { flex: 1, position: "relative" },
                         }}
                         sx={{ py: ".2rem", pb: 0, minWidth: "5rem" }}
