@@ -1,15 +1,12 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo } from "react"
+import { Stack, Typography } from "@mui/material"
+import { useCallback } from "react"
 import { FancyButton } from "../../.."
 import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
-import { getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechModal } from "../Common/MechModal"
 
 export const LeaveModal = () => {
     const { onLeaveQueue, leaveQueueError, leaveMechDetails, setLeaveMechDetails, setLeaveQueueError } = useHangarWarMachine()
-
-    const rarityDeets = useMemo(() => getRarityDeets(leaveMechDetails?.tier || ""), [leaveMechDetails?.tier])
 
     const onClose = useCallback(() => {
         setLeaveMechDetails(undefined)
@@ -23,22 +20,6 @@ export const LeaveModal = () => {
     return (
         <MechModal mechDetails={leaveMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
-                <Box>
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
-
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            mt: ".4rem",
-                            lineHeight: 1,
-                            color: rarityDeets.color,
-                            fontFamily: fonts.nostromoHeavy,
-                        }}
-                    >
-                        {rarityDeets.label}
-                    </Typography>
-                </Box>
-
                 <Typography sx={{ fontSize: "1.6rem", strong: { color: colors.neonBlue } }}>
                     Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle queue? Your will be refunded the initial queuing
                     fee.

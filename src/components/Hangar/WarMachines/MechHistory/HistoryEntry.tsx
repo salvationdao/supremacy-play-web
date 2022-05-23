@@ -33,7 +33,6 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
             direction="row"
             sx={{
                 flexShrink: 0,
-                minHeight: "70px",
                 p: "0.8rem 1.1rem",
                 background: `center center`,
                 backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${statusColor}80), url(${backgroundImage})`,
@@ -41,16 +40,18 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
             }}
         >
             <Box>
-                <Typography variant="subtitle2" sx={{ textTransform: "uppercase" }}>
+                <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
                     {mapName}
                 </Typography>
-                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBold }}>
+
+                <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                     {statusText}
                 </Typography>
+
                 {status !== "pending" && (
                     <Stack direction="row" alignItems="center" spacing=".5rem">
                         <Typography
-                            variant="subtitle2"
+                            variant="body2"
                             sx={{
                                 textTransform: "uppercase",
                                 color: mechSurvived ? colors.neonBlue : colors.lightRed,
@@ -62,12 +63,12 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                     </Stack>
                 )}
             </Box>
+
             <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
                 <Stack direction="row" spacing=".5rem" alignItems="center">
                     <Typography
-                        variant="h6"
                         sx={{
-                            fontFamily: fonts.nostromoBold,
+                            fontFamily: fonts.nostromoBlack,
                             color: kills > 0 ? colors.gold : colors.lightGrey,
                         }}
                     >
@@ -75,13 +76,8 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                     </Typography>
                     <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
                 </Stack>
-                <Typography
-                    sx={{
-                        color: colors.offWhite,
-                    }}
-                >
-                    {timeSince(date)} AGO
-                </Typography>
+
+                <Typography sx={{ color: colors.offWhite }}>{timeSince(date)} AGO</Typography>
             </Stack>
         </Stack>
     )

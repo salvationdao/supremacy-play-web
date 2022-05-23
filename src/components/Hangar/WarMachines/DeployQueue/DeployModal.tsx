@@ -1,10 +1,10 @@
 import { Box, Checkbox, Stack, Switch, TextField, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
-import { getRarityDeets, supFormatter } from "../../../../helpers"
+import { supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechModal } from "../Common/MechModal"
@@ -28,8 +28,6 @@ export const DeployModal = () => {
     const [saveSettings, toggleSaveSettings] = useToggle(false)
     const [saveMobile, toggleSaveMobile] = useToggle(false)
 
-    const rarityDeets = useMemo(() => getRarityDeets(deployMechDetails?.tier || ""), [deployMechDetails?.tier])
-
     const onClose = useCallback(() => {
         setDeployMechDetails(undefined)
         setDeployQueueError("")
@@ -39,27 +37,11 @@ export const DeployModal = () => {
 
     const queueLength = queueFeed?.queue_length || 0
     const contractReward = queueFeed?.contract_reward || ""
-    const { hash, name, label } = deployMechDetails
+    const { hash } = deployMechDetails
 
     return (
         <MechModal mechDetails={deployMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
-                <Box>
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
-
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            mt: ".4rem",
-                            lineHeight: 1,
-                            color: rarityDeets.color,
-                            fontFamily: fonts.nostromoHeavy,
-                        }}
-                    >
-                        {rarityDeets.label}
-                    </Typography>
-                </Box>
-
                 <Stack spacing=".2rem">
                     {queueLength >= 0 && (
                         <AmountItem
