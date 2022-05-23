@@ -1,29 +1,38 @@
-export const TelegramShortcodeModal = () => {
-    return null
-}
-/*
-export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean; onClose: () => void; code: string }) => {
+import { Modal, Box, Stack, Typography, Button } from "@mui/material"
+import { useEffect, useState } from "react"
+import QRCode from "react-qr-code"
+import { SvgContentCopyIcon } from "../../../assets"
+import { TELEGRAM_BOT_URL } from "../../../constants"
+import { useToggle } from "../../../hooks"
+import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors } from "../../../theme/theme"
+import { ClipThing } from "../../Common/ClipThing"
+
+export const TelegramRegisterModal = ({ open, onClose, code }: { open: boolean; onClose: () => void; code: string }) => {
     const [copySuccess, toggleCopySuccess] = useToggle()
     const [userTelegramShortcodeRegistered, setUserTelegramShortcodeRegistered] = useState<boolean | undefined>(undefined)
 
-    // copy shortcode
-    useEffect(() => {
-        if (copySuccess) {
-            const timeout = setTimeout(() => {
-                toggleCopySuccess(false)
-            }, 900)
-
-            return () => clearTimeout(timeout)
-        }
-    }, [copySuccess, toggleCopySuccess])
-
-    useGameServerSubscriptionUser<boolean | undefined>(
+    // Subscribe on telegram shortcode registered status
+    useGameServerSubscriptionUser<string>(
         {
             URI: "",
             key: GameServerKeys.UserTelegramShortcodeRegistered,
         },
-        (payload) => setUserTelegramShortcodeRegistered(payload),
+        (payload) => {
+            if (!payload) return
+            setUserTelegramShortcodeRegistered(!!payload)
+        },
     )
+
+    // copy shortcode
+    useEffect(() => {
+        if (copySuccess) {
+            setTimeout(() => {
+                toggleCopySuccess(false)
+            }, 900)
+        }
+    }, [copySuccess, toggleCopySuccess])
 
     if (!TELEGRAM_BOT_URL) return <></>
     return (
@@ -40,12 +49,12 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                         }}
                     >
                         <ClipThing
-                            clipSize="8px"
+                            clipSize="10px"
                             border={{
+                                isFancy: true,
                                 borderColor: colors.neonBlue,
-                                borderThickness: ".2rem",
+                                borderThickness: ".3rem",
                             }}
-                            backgroundColor={colors.darkNavyBlue}
                         >
                             <Stack
                                 direction="row"
@@ -55,6 +64,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     pl: "1.76rem",
                                     pr: "2.56rem",
                                     py: "2.4rem",
+                                    backgroundColor: colors.darkNavyBlue,
                                 }}
                             >
                                 <Box
@@ -84,12 +94,12 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: fonts.nostromoBold,
+                                                fontFamily: "Nostromo Regular Bold",
                                                 marginBottom: "1rem",
                                                 fontSize: "2rem",
                                             }}
                                         >
-                                            Shortcode Registered Successfully
+                                            Registered Successfully!
                                         </Typography>
                                     </Box>
 
@@ -109,7 +119,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                             color: colors.neonBlue,
                                             backgroundColor: colors.darkNavy,
                                             borderRadius: 0.7,
-                                            fontFamily: fonts.nostromoBold,
+                                            fontFamily: "Nostromo Regular Bold",
                                             border: `${colors.neonBlue} 1px solid`,
                                             ":hover": {
                                                 opacity: 0.8,
@@ -138,9 +148,8 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                             border={{
                                 isFancy: true,
                                 borderColor: colors.neonBlue,
-                                borderThickness: ".15rem",
+                                borderThickness: ".3rem",
                             }}
-                            backgroundColor={colors.darkNavyBlue}
                         >
                             <Stack
                                 direction="row"
@@ -150,6 +159,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     pl: "1.76rem",
                                     pr: "2.56rem",
                                     py: "2.4rem",
+                                    backgroundColor: colors.darkNavyBlue,
                                 }}
                             >
                                 <Box
@@ -179,7 +189,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: fonts.nostromoBold,
+                                                fontFamily: "Nostromo Regular Bold",
                                                 marginBottom: "1rem",
                                                 fontSize: "2rem",
                                             }}
@@ -191,18 +201,18 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: fonts.nostromoBold,
+                                                fontFamily: "Nostromo Regular Bold",
                                                 marginBottom: "1rem",
                                             }}
                                         >
-                                            Steps to enable Telegram notification:
+                                            Steps to enable Telegram notifications:
                                         </Typography>
                                     </Box>
 
                                     <Box sx={{ display: "flex" }}>
                                         <Typography
                                             sx={{
-                                                fontFamily: fonts.nostromoBold,
+                                                fontFamily: "Nostromo Regular Bold",
                                                 marginRight: ".3rem",
                                             }}
                                         >
@@ -211,7 +221,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                         <a href={TELEGRAM_BOT_URL} rel="noreferrer" target="_blank">
                                             <Typography
                                                 sx={{
-                                                    fontFamily: fonts.nostromoBold,
+                                                    fontFamily: "Nostromo Regular Bold",
                                                     WebkitBoxOrient: "vertical",
                                                     textDecoration: "underline",
                                                     ":hover": {
@@ -224,7 +234,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                         </a>
                                     </Box>
                                     <Box>
-                                        <Typography sx={{ fontFamily: fonts.nostromoBold }}>Or Scan QR code:</Typography>
+                                        <Typography sx={{ fontFamily: "Nostromo Regular Bold" }}>Or Scan QR code:</Typography>
                                     </Box>
 
                                     <Box style={{ textAlign: "center", marginBottom: "1rem" }}>
@@ -234,7 +244,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: fonts.nostromoBold,
+                                                fontFamily: "Nostromo Regular Bold",
                                             }}
                                         >
                                             2) Click Start (if first time using the bot)
@@ -244,7 +254,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     <Box>
                                         <Typography
                                             sx={{
-                                                fontFamily: fonts.nostromoBold,
+                                                fontFamily: "Nostromo Regular Bold",
                                             }}
                                         >
                                             3) type /register
@@ -268,7 +278,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                     >
                                         <Typography
                                             sx={{
-                                                fontFamily: fonts.nostromoBold,
+                                                fontFamily: "Nostromo Regular Bold",
                                                 display: "-webkit-box",
                                             }}
                                         >
@@ -282,7 +292,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                         {copySuccess && (
                                             <Typography
                                                 sx={{
-                                                    fontFamily: fonts.nostromoBold,
+                                                    fontFamily: "Nostromo Regular Bold",
                                                     marginTop: ".5rem",
                                                     marginLeft: "1rem",
                                                 }}
@@ -307,7 +317,7 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
                                             color: colors.neonBlue,
                                             backgroundColor: colors.darkNavy,
                                             borderRadius: 0.7,
-                                            fontFamily: fonts.nostromoBold,
+                                            fontFamily: "Nostromo Regular Bold",
                                             border: `${colors.neonBlue} 1px solid`,
                                             ":hover": {
                                                 opacity: 0.8,
@@ -326,4 +336,3 @@ export const TelegramShortcodeModal = ({ open, onClose, code }: { open: boolean;
         </Modal>
     )
 }
-*/

@@ -10,7 +10,6 @@ import { colors } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
-
 interface PreferencesModalProps {
     open: boolean
     toggle: () => void
@@ -43,16 +42,14 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
             }
         })()
     }, [user, send, newSnackbarMessage])
+
     useCallback(async () => {
         if (!user || !send) return
-
         const res = await send<PlayerProfile | null>(GameServerKeys.GetPlayerProfile)
-        console.log("bruh, ", res)
-
         setPlayerProfile(res)
     }, [user, send])
 
-    const primaryColor =  colors.neonBlue
+    const primaryColor = colors.neonBlue
     return (
         <Modal open={open} onClose={toggle}>
             <Box
@@ -80,7 +77,7 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
                             px: "1.8rem",
                             py: "1.6rem",
                             pb: "1.6rem",
-                            backgroundColor:  colors.darkNavyBlue,
+                            backgroundColor: colors.darkNavyBlue,
                         }}
                     >
                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
@@ -102,7 +99,6 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
             </Box>
         </Modal>
     )
-
 }
 
 interface BattleQueueNotificationsProps {
@@ -114,11 +110,11 @@ interface BattleQueueNotificationsProps {
 }
 
 interface ProfileResponse {
-    shortcode : string
+    shortcode: string
     telegram_id: string
 }
 
-export const BattleQueueNotifications = ({ playerProfile,  setTelegramShortcode, toggle, borderColour, send }: BattleQueueNotificationsProps) => {
+export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, toggle, borderColour, send }: BattleQueueNotificationsProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const [newPlayerProfile, setNewPlayerProfile] = useState<PlayerProfile>(playerProfile)
     const [loading, setLoading] = useToggle(false)
@@ -141,8 +137,6 @@ export const BattleQueueNotifications = ({ playerProfile,  setTelegramShortcode,
                 enable_push_notifications: newPlayerProfile.enable_push_notifications,
                 mobile_number: newPlayerProfile.mobile_number,
             })
-            console.log("this isa resp", resp);
-            
 
             if (!resp) {
                 setError("Unable to update preferences, please try again or contact support.")
@@ -180,13 +174,14 @@ export const BattleQueueNotifications = ({ playerProfile,  setTelegramShortcode,
                                     sx={{
                                         width: "10px",
                                         display: "inline",
-                                        mt: "3rem",
+                                        marginTop: "10px",
+                                        marginLeft: "5px",
                                     }}
                                     size="1.2rem"
                                     fill={colors.yellow}
                                     margin={0}
                                 />
-                                5 $SUPS
+                                5
                             </p>
                         </Box>
                     }
@@ -223,7 +218,6 @@ export const BattleQueueNotifications = ({ playerProfile,  setTelegramShortcode,
                             pl: "1rem",
                             input: { px: ".5rem", py: "1px" },
                         }}
-                        // defaultValue={newPlayerProfile.mobile_number}
                         value={newPlayerProfile.mobile_number}
                         onChange={(e) => {
                             setNewPlayerProfile({ ...newPlayerProfile, mobile_number: e.currentTarget.value })
@@ -308,7 +302,7 @@ interface PreferenceToggleProps {
     title: string
     checked: boolean
     disabled: boolean
-    onChangeFunction: (e:  React.ChangeEvent<HTMLInputElement>) => void
+    onChangeFunction: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {
