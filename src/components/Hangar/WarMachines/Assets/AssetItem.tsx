@@ -1,24 +1,7 @@
-<<<<<<< HEAD:src/components/RightDrawer/Assets/AssetItem.tsx
-import { useMemo, useState } from "react"
-import { AssetQueue, DeployConfirmation, QueueFeedResponse } from "../.."
-import { getRarityDeets, supFormatter } from "../../../helpers"
-import { useToggle } from "../../../hooks"
-import { colors, fonts } from "../../../theme/theme"
-import { Asset } from "../../../types/assets"
-import { MechDrawer } from "./MechDrawer"
-import { LeaveConfirmation } from "./LeaveConfirmation"
-import { PassportServerKeys } from "../../../keys"
-import { SvgSupToken } from "../../../assets"
-import { usePassportSubscriptionUser } from "../../../hooks/usePassport"
-import { useAuth } from "../../../containers/auth"
-import { Box, Button, Fade, Stack, Typography } from "@mui/material"
-
-=======
 export const AssetItem = () => {
     return null
 }
 /*
->>>>>>> develop:src/components/Hangar/WarMachines/Assets/AssetItem.tsx
 export const AssetItem = ({
     assetQueue,
     queueFeed,
@@ -26,13 +9,9 @@ export const AssetItem = ({
     togglePreventAssetsRefresh,
 }: {
     assetQueue: AssetQueue
-<<<<<<< HEAD:src/components/RightDrawer/Assets/AssetItem.tsx
-    queueFeed: QueueFeedResponse
-=======
     queueFeed: QueueFeed
     telegramShortcode?: string
     setTelegramShortcode?: (s: string) => void
->>>>>>> develop:src/components/Hangar/WarMachines/Assets/AssetItem.tsx
     isGridView: boolean
     togglePreventAssetsRefresh: (value?: boolean | undefined) => void
 }) => {
@@ -292,33 +271,6 @@ export const AssetItem = ({
                 {mechItem}
             </Fade>
 
-<<<<<<< HEAD:src/components/RightDrawer/Assets/AssetItem.tsx
-            {deployModalOpen && (
-                // <DeployConfirmation open={deployModalOpen} asset={assetData} queueFeed={queueFeed} onClose={() => toggleDeployModalOpen(false)} />
-                <DeployConfirmation
-                    open={deployModalOpen}
-                    asset={assetData}
-                    queueFeed={queueFeed}
-                    onClose={() => {
-                        toggleDeployModalOpen(false)
-                        togglePreventAssetsRefresh(false)
-                    }}
-                />
-            )}
-
-            {leaveModalOpen && (
-                <LeaveConfirmation
-                    open={leaveModalOpen}
-                    asset={assetData}
-                    onClose={() => {
-                        toggleLeaveModalOpen(false)
-                        togglePreventAssetsRefresh(false)
-                    }}
-                />
-            )}
-
-=======
->>>>>>> develop:src/components/Hangar/WarMachines/Assets/AssetItem.tsx
             {mechDrawerOpen && (
                 <MechDrawer
                     open={mechDrawerOpen}
