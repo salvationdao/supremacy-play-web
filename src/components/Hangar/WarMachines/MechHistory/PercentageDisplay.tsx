@@ -1,20 +1,21 @@
 import { keyframes } from "@emotion/react"
 import { Box, Skeleton, Stack, styled, Typography } from "@mui/material"
-import { colors, fonts } from "../../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 
 interface PercentageDisplayProps {
     displayValue: string
     percentage: number
     label: string
+    circleSize?: number
     size?: number
     color?: string
 }
 
-export const PercentageDisplay = ({ displayValue, percentage, label, size, color }: PercentageDisplayProps) => {
-    const radius = size ? size / (2 * 1.11) : 20
+export const PercentageDisplay = ({ displayValue, percentage, label, circleSize, size, color }: PercentageDisplayProps) => {
+    const radius = circleSize ? circleSize / (2 * 1.11) : 20
     const circumference = Math.PI * 2 * radius
     return (
-        <Stack alignItems="center">
+        <Stack alignItems="center" spacing=".2rem" sx={{ width: size }}>
             <Box
                 sx={{
                     position: "relative",
@@ -66,7 +67,21 @@ export const PercentageDisplay = ({ displayValue, percentage, label, size, color
                     {displayValue}
                 </Typography>
             </Box>
-            <Typography variant="body2" textAlign="center" sx={{ lineHeight: 1.2 }}>
+            <Typography
+                variant="caption"
+                textAlign="center"
+                sx={{
+                    lineHeight: 1.2,
+                    fontSize: "1.1rem",
+                    fontFamily: fonts.nostromoBold,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
                 {label}
             </Typography>
         </Stack>
@@ -89,10 +104,10 @@ const generateStrokeKeyframes = (percentage: number, circumference: number) => {
 }
 
 export interface PercentageDisplaySkeletonProps {
-    size?: number
+    circleSize?: number
 }
 
-export const PercentageDisplaySkeleton = ({ size }: PercentageDisplaySkeletonProps) => {
-    const radius = size ? size / (2 * 1.11) : 20
+export const PercentageDisplaySkeleton = ({ circleSize }: PercentageDisplaySkeletonProps) => {
+    const radius = circleSize ? circleSize / (2 * 1.11) : 20
     return <Skeleton variant="circular" width={1.11 * radius * 2} height={1.11 * radius * 2} />
 }

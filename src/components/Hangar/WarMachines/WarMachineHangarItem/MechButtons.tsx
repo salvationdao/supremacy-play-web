@@ -7,7 +7,7 @@ import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
-    const { setDeployMechDetails } = useHangarWarMachine()
+    const { setDeployMechDetails, setHistoryMechDetails } = useHangarWarMachine()
 
     return (
         <Stack direction="row" spacing=".8rem">
@@ -15,13 +15,19 @@ export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: Me
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
                 label="DEPLOY"
-                onClick={() => mechDetails && setDeployMechDetails(mechDetails)}
                 disabled={!mechDetails}
+                onClick={() => mechDetails && setDeployMechDetails(mechDetails)}
             />
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" />
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="HISTORY" />
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="SELL" />
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="RENT" />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechDetails} />
+            <ReusableButton
+                primaryColor={theme.factionTheme.primary}
+                backgroundColor={theme.factionTheme.background}
+                label="HISTORY"
+                disabled={!mechDetails}
+                onClick={() => mechDetails && setHistoryMechDetails(mechDetails)}
+            />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="SELL" disabled={!mechDetails} />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="RENT" disabled={!mechDetails} />
         </Stack>
     )
 }

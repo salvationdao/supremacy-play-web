@@ -39,6 +39,9 @@ export const HangarWarMachineContainer = createContainer(() => {
     // Right side mech viewer
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
 
+    // Mech history
+    const [historyMechDetails, setHistoryMechDetails] = useState<MechDetails>()
+
     // If notification is turned on, add 10% to the queue cost
     useEffect(() => {
         const qc = new BigNumber(queueFeed?.queue_cost || "0").shiftedBy(-18)
@@ -107,6 +110,10 @@ export const HangarWarMachineContainer = createContainer(() => {
         setLeaveMechDetails,
         leaveQueueError,
         setLeaveQueueError,
+
+        // Mech history
+        historyMechDetails,
+        setHistoryMechDetails,
     }
 })
 
