@@ -9,9 +9,10 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic } from "../../../types"
-import { LeaveModal } from "./Parts/LeaveModal"
-import { MechViewer } from "./MechViewer"
-import { WarMachineHangarItem } from "./WarMachineHangarItem"
+import { LeaveModal } from "./LeaveQueue/LeaveModal"
+import { HistoryModal } from "./MechHistory/HistoryModal"
+import { MechViewer } from "./MechViewer/MechViewer"
+import { WarMachineHangarItem } from "./WarMachineHangarItem/WarMachineHangarItem"
 
 interface GetMechsRequest {
     page: number
@@ -247,20 +248,7 @@ export const WarMachines = () => {
 
             <DeployModal />
             <LeaveModal />
-
-            {/* <TelegramShortcodeModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} open={!!telegramShortcode} />
-
-
-            {leaveModalOpen && (
-                <LeaveConfirmation
-                    open={leaveModalOpen}
-                    asset={assetData}
-                    onClose={() => {
-                        toggleLeaveModalOpen(false)
-                        togglePreventAssetsRefresh(false)
-                    }}
-                />
-            )} */}
+            <HistoryModal />
         </HangarWarMachineProvider>
     )
 }

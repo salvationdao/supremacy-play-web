@@ -1,6 +1,6 @@
 import { Box, Fade } from "@mui/material"
-import { useHangarWarMachine } from "../../../containers/hangar/hangarWarMachines"
-import { useTheme } from "../../../containers/theme"
+import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
+import { useTheme } from "../../../../containers/theme"
 
 export const MechViewer = () => {
     const theme = useTheme()

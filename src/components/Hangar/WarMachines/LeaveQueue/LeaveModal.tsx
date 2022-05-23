@@ -4,29 +4,24 @@ import { FancyButton } from "../../.."
 import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
 import { MechModal } from "../Common/MechModal"
 
 export const LeaveModal = () => {
-    const { leaveMechDetails } = useHangarWarMachine()
+    const { onLeaveQueue, leaveQueueError, leaveMechDetails, setLeaveMechDetails, setLeaveQueueError } = useHangarWarMachine()
 
-    if (!leaveMechDetails) return null
-    return <LeaveModalInner mechDetails={leaveMechDetails} />
-}
-
-const LeaveModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
-    const { onLeaveQueue, leaveQueueError, setLeaveMechDetails, setLeaveQueueError } = useHangarWarMachine()
-
-    const { hash, tier, name, label } = mechDetails
-    const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
+    const rarityDeets = useMemo(() => getRarityDeets(leaveMechDetails?.tier || ""), [leaveMechDetails?.tier])
 
     const onClose = useCallback(() => {
         setLeaveMechDetails(undefined)
         setLeaveQueueError("")
     }, [setLeaveQueueError, setLeaveMechDetails])
 
+    if (!leaveMechDetails) return null
+
+    const { hash, name, label } = leaveMechDetails
+
     return (
-        <MechModal mechDetails={mechDetails} onClose={onClose}>
+        <MechModal mechDetails={leaveMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Box>
                     <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>

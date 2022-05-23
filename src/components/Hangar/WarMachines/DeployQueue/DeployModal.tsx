@@ -7,22 +7,15 @@ import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMach
 import { getRarityDeets, supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
 import { MechModal } from "../Common/MechModal"
 
 export const DeployModal = () => {
-    const { deployMechDetails } = useHangarWarMachine()
-
-    if (!deployMechDetails) return null
-    return <DeployModalInner mechDetails={deployMechDetails} />
-}
-
-const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const {
         queueFeed,
         actualQueueCost,
         onDeployQueue,
         deployQueueError,
+        deployMechDetails,
         setDeployMechDetails,
         setDeployQueueError,
         settingsMatch,
@@ -35,19 +28,21 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const [saveSettings, toggleSaveSettings] = useToggle(false)
     const [saveMobile, toggleSaveMobile] = useToggle(false)
 
-    const { hash, tier, name, label } = mechDetails
-
-    const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
-    const queueLength = queueFeed?.queue_length || 0
-    const contractReward = queueFeed?.contract_reward || ""
+    const rarityDeets = useMemo(() => getRarityDeets(deployMechDetails?.tier || ""), [deployMechDetails?.tier])
 
     const onClose = useCallback(() => {
         setDeployMechDetails(undefined)
         setDeployQueueError("")
     }, [setDeployQueueError, setDeployMechDetails])
 
+    if (!deployMechDetails) return null
+
+    const queueLength = queueFeed?.queue_length || 0
+    const contractReward = queueFeed?.contract_reward || ""
+    const { hash, name, label } = deployMechDetails
+
     return (
-        <MechModal mechDetails={mechDetails} onClose={onClose}>
+        <MechModal mechDetails={deployMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Box>
                     <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
