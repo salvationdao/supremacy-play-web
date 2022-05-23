@@ -1,8 +1,3 @@
-export const MechDrawer = () => {
-    return null
-}
-
-/*
 export interface MechDrawerProps {
     open: boolean
     onClose: () => void
@@ -427,4 +422,3 @@ export const MechDrawer = ({
         </Drawer>
     )
 }
-*/
