@@ -41,6 +41,18 @@ export const MechViewer = () => {
                     />
 
                     <Box
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            boxShadow: "inset 0 0 50px 60px #00000090",
+                            zIndex: 4,
+                        }}
+                    />
+
+                    <Box
                         component="video"
                         sx={{
                             position: "absolute",
