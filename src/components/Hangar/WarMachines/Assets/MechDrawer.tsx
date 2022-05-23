@@ -1,41 +1,31 @@
-import { Box, Button, CircularProgress, Drawer, IconButton, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { AssetQueue } from "../.."
-import { SvgBack, SvgDeath, SvgEdit, SvgGoldBars, SvgHistory, SvgRefresh, SvgSave, SvgSupToken } from "../../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, RIGHT_DRAWER_WIDTH } from "../../../constants"
-import { useSnackbar } from "../../../containers"
-import { useAuth } from "../../../containers/auth"
-import { camelToTitle, getRarityDeets, supFormatter, timeSince } from "../../../helpers"
-import { useToggle } from "../../../hooks"
-import { useGameServerCommands } from "../../../hooks/useGameServer"
-import { usePassportCommandsUser } from "../../../hooks/usePassport"
-import { GameServerKeys, PassportServerKeys } from "../../../keys"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { BattleMechHistory, BattleMechStats } from "../../../types"
-import { Asset } from "../../../types/assets"
-import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
+export const MechDrawer = () => {
+    return null
+}
 
-// const RepairCountdown = ({ endTime }: { endTime: Date }) => {
-//     const { hours, minutes, seconds } = useTimer(endTime)
-
-//     return (
-//         <>
-//             {hours && hours > 0 ? `${hours}h` : ""} {minutes && minutes > 0 ? `${minutes}h` : ""}{" "}
-//             {seconds && seconds > 0 ? `${seconds}h` : ""}
-//         </>
-//     )
-// }
-
+/*
 export interface MechDrawerProps {
     open: boolean
     onClose: () => void
     asset: Asset
     assetQueue: AssetQueue
+    repairStatus?: RepairStatus
+    isInQueue: boolean
     openDeployModal: () => void
     openLeaveModal: () => void
+    togglePreventAssetsRefresh: (value?: boolean | undefined) => void
 }
 
-export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, openLeaveModal }: MechDrawerProps) => {
+export const MechDrawer = ({
+    open,
+    onClose,
+    asset,
+    assetQueue,
+    repairStatus,
+    isInQueue,
+    openDeployModal,
+    openLeaveModal,
+    togglePreventAssetsRefresh,
+}: MechDrawerProps) => {
     const { name, label, hash, image_url, avatar_url } = asset.data.mech
 
     const { userID } = useAuth()
@@ -54,9 +44,6 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
     const renamingRef = useRef<HTMLInputElement>()
     const [renamedValue, setRenamedValue] = useState(name || label)
     const [renameLoading, setRenameLoading] = useState<boolean>(false)
-    // Status
-    // const isRepairing = false // To be implemented on gameserver.
-    const isInQueue = useMemo(() => assetQueue && assetQueue.position && assetQueue.position >= 1, [assetQueue])
 
     const { newSnackbarMessage } = useSnackbar()
 
@@ -162,130 +149,6 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
             setRenameLoading(false)
         }
     }, [renamedValue, label, name, psSend, hash, userID, newSnackbarMessage])
-
-    const statusArea = useMemo(() => {
-        if (assetQueue && assetQueue.in_battle) {
-            return (
-                <>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            width: "10rem",
-                            px: ".8rem",
-                            pt: ".5rem",
-                            pb: ".4rem",
-                            color: colors.orange,
-                            lineHeight: 1,
-                            textAlign: "center",
-                            border: `${colors.orange} 1px solid`,
-                            borderRadius: 0.3,
-                        }}
-                    >
-                        IN BATTLE
-                    </Typography>
-                    {assetQueue.contract_reward && (
-                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
-                            <Typography variant="body2">REWARD:&nbsp;</Typography>
-                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
-                            <Typography variant="body2" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueue.contract_reward, 2)}
-                            </Typography>
-                        </Stack>
-                    )}
-                </>
-            )
-        }
-
-        if (isInQueue && assetQueue) {
-            return (
-                <>
-                    <Button
-                        onClick={() => openLeaveModal()}
-                        variant="contained"
-                        size="small"
-                        sx={{
-                            position: "relative",
-                            display: "inline",
-                            padding: 0,
-                            width: "10rem",
-                            px: ".8rem",
-                            pt: ".5rem",
-                            pb: ".4rem",
-                            cursor: "pointer",
-                            textAlign: "center",
-                            backgroundColor: "transparent",
-                            color: colors.yellow,
-                            lineHeight: 1,
-                            border: `${colors.yellow} 1px solid`,
-                            borderRadius: 0.3,
-                            whiteSpace: "nowrap",
-                            transition: "all 0s",
-                            "& > p": {
-                                "::after": {
-                                    content: '"IN QUEUE"',
-                                },
-                            },
-                            ":hover": {
-                                color: colors.red,
-                                backgroundColor: "transparent",
-                                boxShadow: "none",
-                                opacity: 1,
-                                border: `${colors.red} 1px solid`,
-                                "& > p": {
-                                    color: `${colors.red} !important`,
-                                    "::after": {
-                                        content: '"LEAVE QUEUE"',
-                                    },
-                                },
-                            },
-                        }}
-                    >
-                        <Typography variant="body2" lineHeight={1} sx={{ color: colors.yellow }}></Typography>
-                    </Button>
-                    {assetQueue.position && (
-                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
-                            <Typography variant="body2">POSITION:&nbsp;</Typography>
-                            <Typography variant="body2" sx={{ color: colors.neonBlue }}>
-                                {assetQueue.position}
-                            </Typography>
-                        </Stack>
-                    )}
-                    {assetQueue.contract_reward && (
-                        <Stack direction="row" alignItems="center" sx={{ pt: ".24rem" }}>
-                            <Typography variant="body2">REWARD:&nbsp;</Typography>
-                            <SvgSupToken size="1.2rem" fill={colors.yellow} sx={{ pb: 0.4 }} />
-                            <Typography variant="body2" sx={{ color: colors.yellow }}>
-                                {supFormatter(assetQueue.contract_reward, 2)}
-                            </Typography>
-                        </Stack>
-                    )}
-                </>
-            )
-        }
-
-        return (
-            <Button
-                variant="contained"
-                size="small"
-                onClick={() => openDeployModal()}
-                sx={{
-                    position: "relative",
-                    width: "10rem",
-                    px: ".8rem",
-                    pt: ".5rem",
-                    pb: ".4rem",
-                    boxShadow: 0,
-                    backgroundColor: colors.green,
-                    borderRadius: 0.3,
-                    ":hover": { backgroundColor: `${colors.green}90` },
-                }}
-            >
-                <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                    DEPLOY
-                </Typography>
-            </Button>
-        )
-    }, [assetQueue, isInQueue, openLeaveModal, openDeployModal])
 
     return (
         <Drawer
@@ -393,18 +256,6 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
                                         <SvgEdit size="1.3rem" fill="#FFFFFF" />
                                     </IconButton>
                                 )}
-
-                                {/* {user && (
-                                <span>
-                                    <Link
-                                        href={`${PASSPORT_WEB}profile/${user.username}/asset/${asset.hash}`}
-                                        target="_blank"
-                                        sx={{ display: "inline", ml: ".7rem" }}
-                                    >
-                                        <SvgExternalLink size="1rem" sx={{ display: "inline", opacity: 0.2, ":hover": { opacity: 0.6 } }} />
-                                    </Link>
-                                </span>
-                            )} */}
                             </Stack>
                             <Typography
                                 variant="body2"
@@ -490,7 +341,14 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
                         </Stack>
 
                         <Stack alignItems="center" direction="row" spacing=".96rem">
-                            {statusArea}
+                            <StatusArea
+                                isInQueue={isInQueue}
+                                assetQueue={assetQueue}
+                                repairStatus={repairStatus}
+                                openLeaveModal={openLeaveModal}
+                                openDeployModal={openDeployModal}
+                                togglePreventAssetsRefresh={togglePreventAssetsRefresh}
+                            />
                         </Stack>
                     </Stack>
 
@@ -569,87 +427,4 @@ export const MechDrawer = ({ open, onClose, asset, assetQueue, openDeployModal, 
         </Drawer>
     )
 }
-
-interface HistoryEntryProps {
-    mapName: string
-    mechSurvived: boolean
-    backgroundImage?: string
-    status: "won" | "lost" | "pending"
-    kills: number
-    date: Date
-}
-
-const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
-    let statusColor = colors.grey
-    let statusText = "In Progress"
-    switch (status) {
-        case "won":
-            statusColor = colors.green
-            statusText = "Victory"
-            break
-        case "lost":
-            statusColor = colors.red
-            statusText = "Defeat"
-            break
-        case "pending":
-        default:
-    }
-
-    return (
-        <Stack
-            direction="row"
-            sx={{
-                flexShrink: 0,
-                minHeight: "70px",
-                p: "0.8rem 1.1rem",
-                background: `center center`,
-                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${statusColor}80), url(${backgroundImage})`,
-                backgroundSize: "cover",
-            }}
-        >
-            <Box>
-                <Typography variant="subtitle2" sx={{ textTransform: "uppercase" }}>
-                    {mapName}
-                </Typography>
-                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBold }}>
-                    {statusText}
-                </Typography>
-                {status !== "pending" && (
-                    <Stack direction="row" alignItems="center" spacing=".5rem">
-                        <Typography
-                            variant="subtitle2"
-                            sx={{
-                                textTransform: "uppercase",
-                                color: mechSurvived ? colors.neonBlue : colors.lightRed,
-                            }}
-                        >
-                            {mechSurvived ? "MECH SURVIVED" : "MECH DESTROYED"}
-                        </Typography>
-                        {mechSurvived && <SvgGoldBars size="1.5rem" />}
-                    </Stack>
-                )}
-            </Box>
-            <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
-                <Stack direction="row" spacing=".5rem" alignItems="center">
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            fontFamily: fonts.nostromoBold,
-                            color: kills > 0 ? colors.gold : colors.lightGrey,
-                        }}
-                    >
-                        {kills > 0 ? `${kills} KILL${kills > 1 ? "S" : ""}` : "NO KILLS"}
-                    </Typography>
-                    <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
-                </Stack>
-                <Typography
-                    sx={{
-                        color: colors.offWhite,
-                    }}
-                >
-                    {timeSince(date)} AGO
-                </Typography>
-            </Stack>
-        </Stack>
-    )
-}
+*/

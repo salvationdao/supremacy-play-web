@@ -116,7 +116,7 @@ export enum siteZIndex {
     MiniMap = 50,
     MoveableResizableHover = 51,
     MoveableResizable = 20,
-    Notfications = 40,
+    Notifications = 40,
     MechStats = 30,
     VotingSystem = 30,
     Stream = 5,
@@ -196,7 +196,7 @@ export const theme = createTheme({
         },
         caption: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
+            fontSize: "1.16rem",
         },
     },
     components: {

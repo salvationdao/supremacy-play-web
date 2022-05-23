@@ -47,6 +47,7 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     clipSize: "8px",
                     backgroundColor: primaryColor,
                     border: {
+                        isFancy: true,
                         borderColor: primaryColor,
                     },
                 }}

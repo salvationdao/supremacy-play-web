@@ -1,10 +1,10 @@
-import { Button, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { colors, fonts } from "../../../theme/theme"
 import { useAuth } from "../../../containers"
 import { FancyButton } from "../.."
 
-export const ConnectButton = () => {
+export const ConnectButton = ({ width }: { width?: string }) => {
     const { isLoggingIn, onLogInClick } = useAuth()
     const { setIsOpen } = useTour()
 
@@ -17,10 +17,11 @@ export const ConnectButton = () => {
                     clipThingsProps={{
                         clipSize: "7px",
                         backgroundColor: colors.neonBlue,
-                        sx: { position: "relative" },
+                        sx: { position: "relative", width },
+                        border: { isFancy: true, borderColor: colors.neonBlue },
                     }}
                     sx={{
-                        px: "1.4rem",
+                        px: "2rem",
                         py: ".3rem",
                         color: colors.darkestNeonBlue,
                     }}
@@ -37,41 +38,14 @@ export const ConnectButton = () => {
                             whiteSpace: "nowrap",
                         }}
                     >
-                        CONNECT
+                        LOG IN
                     </Typography>
                 </FancyButton>
             ) : (
                 <Typography sx={{ ml: "2.1rem", mr: "1.6rem", fontFamily: fonts.nostromoBold }} variant="caption">
-                    Signing in...
+                    Logging in...
                 </Typography>
             )}
         </>
-    )
-    return (
-        <Button
-            id="tutorial-connect"
-            sx={{
-                px: "1.76rem",
-                pt: ".32rem",
-                pb: ".16rem",
-                flexShrink: 0,
-                justifyContent: "flex-start",
-                borderRadius: 0.2,
-                border: `1px solid ${colors.neonBlue}`,
-                backgroundColor: colors.neonBlue,
-                ":hover": {
-                    opacity: 0.75,
-                    color: colors.darkestNeonBlue,
-                    backgroundColor: colors.neonBlue,
-                    transition: "all .2s",
-                },
-            }}
-            onClick={() => {
-                setIsOpen(false)
-                onLogInClick()
-            }}
-        >
-            Connect
-        </Button>
     )
 }

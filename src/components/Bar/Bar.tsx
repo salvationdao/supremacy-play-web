@@ -94,10 +94,10 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                                 clipSize: "5px",
                                 opacity: 0.6,
                                 backgroundColor: theme.factionTheme.background,
-                                border: { borderColor: theme.factionTheme.primary },
-                                sx: { mr: "1rem", position: "relative" },
+                                border: { isFancy: true, borderColor: theme.factionTheme.primary },
+                                sx: { mr: "1rem", position: "relative", flexShrink: 0 },
                             }}
-                            sx={{ px: "1.6rem", py: ".4rem", flexShrink: 0, color: theme.factionTheme.primary }}
+                            sx={{ px: "1.6rem", py: ".4rem", color: theme.factionTheme.primary }}
                             onClick={() => toggleShowSaleAbilities(true)}
                         >
                             <Typography

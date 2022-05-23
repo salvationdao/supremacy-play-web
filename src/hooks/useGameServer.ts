@@ -5,17 +5,17 @@ import { DataType } from "../containers/ws/util"
 import { useAuth } from "../containers/auth"
 
 // Fetch
-export const useGameServerCommandsUser = (URI?: string) => {
+export const useGameServerCommandsUser = (URI: string) => {
     const { userID } = useAuth()
     return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `/user/${userID}${URI}`, ready: !!userID })
 }
 
-export const useGameServerCommandsFaction = (URI?: string) => {
+export const useGameServerCommandsFaction = (URI: string) => {
     const { userID, factionID } = useAuth()
     return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `/faction/${factionID}${URI}`, ready: !!userID && !!factionID })
 }
 
-export const useGameServerCommandsBattleFaction = (URI?: string) => {
+export const useGameServerCommandsBattleFaction = (URI: string) => {
     const { userID, factionID } = useAuth()
     return useCommands({
         host: GAME_SERVER_HOSTNAME,
@@ -24,7 +24,7 @@ export const useGameServerCommandsBattleFaction = (URI?: string) => {
     })
 }
 
-export const useGameServerCommands = (URI?: string) => {
+export const useGameServerCommands = (URI: string) => {
     return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `${URI}` })
 }
 

@@ -74,11 +74,10 @@ export const UserDetailsPopover = ({
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: factionColor || colors.neonBlue,
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={colors.darkNavy}

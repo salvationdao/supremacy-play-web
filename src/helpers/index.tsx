@@ -404,3 +404,14 @@ export const getRandomColor = () => {
     for (let i = 0; i < 3; i++) color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2)
     return color
 }
+
+export const equalsIgnoreOrder = (a: unknown[], b: unknown[]) => {
+    if (a.length !== b.length) return false
+    const uniqueValues = new Set([...a, ...b])
+    for (const v of uniqueValues) {
+        const aCount = a.filter((e) => e === v).length
+        const bCount = b.filter((e) => e === v).length
+        if (aCount !== bCount) return false
+    }
+    return true
+}

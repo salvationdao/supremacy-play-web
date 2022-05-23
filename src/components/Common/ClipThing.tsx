@@ -100,7 +100,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
                     }
                 />
             </Box>
-            <Box sx={{ ...innerClipStyles }}>{children}</Box>
+            <Box sx={{ height: "100%", ...innerClipStyles }}>{children}</Box>
         </Box>
     )
 }

@@ -35,11 +35,10 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: "#FFFFFF",
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={colors.darkNavyBlue}
@@ -121,7 +120,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                                                 return (
                                                                     <ClipThing
                                                                         key={i}
-                                                                        clipSize="0"
+                                                                        clipSize="4px"
                                                                         border={{
                                                                             isFancy: true,
                                                                             borderColor: colors.offWhite,

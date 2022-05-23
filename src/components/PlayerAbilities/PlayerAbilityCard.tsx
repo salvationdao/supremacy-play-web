@@ -130,16 +130,16 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                         }}
                     >
                         <ClipThing
+                            clipSlantSize="8px"
                             border={{
                                 borderColor: playerAbility.colour,
-                                borderThickness: ".15rem",
-                                isFancy: true,
+                                borderThickness: ".2rem",
                             }}
                             backgroundColor={colors.darkNavy}
                             sx={{ position: "relative" }}
                         >
-                            <IconButton size="small" onClick={() => toggleShowActivateModal(false)} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
-                                <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                            <IconButton size="small" onClick={() => toggleShowActivateModal(false)} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                                <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                             </IconButton>
                             <Box sx={{ px: "2rem", py: "1.5rem" }}>
                                 <Typography

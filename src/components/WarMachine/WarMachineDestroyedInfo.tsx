@@ -118,11 +118,10 @@ export const WarMachineDestroyedInfo = ({
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
                     }}
                     backgroundColor={theme.factionTheme.background}
                 >
@@ -157,7 +156,6 @@ const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imag
             <ClipThing
                 clipSize="6px"
                 border={{
-                    isFancy: false,
                     borderThickness: ".15rem",
                     borderColor: color,
                 }}
