@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
+import { Box, Button, Checkbox, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { SvgInfoCircular, SvgSupToken } from "../../../assets"
 import { useAuth, useSnackbar } from "../../../containers"
@@ -27,6 +27,7 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
     const { user } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>()
+
     const { newSnackbarMessage } = useSnackbar()
 
     // get player profile
@@ -58,7 +59,7 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "40rem",
+                    width: "67rem",
                     boxShadow: 24,
                 }}
             >
@@ -117,15 +118,28 @@ interface ProfileResponse {
 export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, toggle, borderColour, send }: BattleQueueNotificationsProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const [newPlayerProfile, setNewPlayerProfile] = useState<PlayerProfile>(playerProfile)
+    const [agreeToBeCharged, setAgreeToBeCharged] = useState<boolean>(false)
     const [loading, setLoading] = useToggle(false)
-
     const [error, setError] = useState<string>()
+
+    const settingsChanged =
+        playerProfile.enable_telegram_notifications != newPlayerProfile.enable_telegram_notifications ||
+        playerProfile.enable_sms_notifications != newPlayerProfile.enable_sms_notifications
+
+    const hasAnyNotifications = newPlayerProfile.enable_telegram_notifications || newPlayerProfile.enable_sms_notifications
+
+    const hadNotificationsTurnedOff = !playerProfile.enable_telegram_notifications && !playerProfile.enable_sms_notifications
 
     const updatePlayerProfile = async () => {
         if (!send || !newPlayerProfile) return
 
         if (newPlayerProfile.enable_sms_notifications && !newPlayerProfile.mobile_number) {
             setError("Please enter mobile number to enable sms notifications")
+            return
+        }
+
+        if (settingsChanged && hadNotificationsTurnedOff && hasAnyNotifications && !agreeToBeCharged) {
+            setError("Must agree 'You have read and agreed to be charge 5 sups per notification'")
             return
         }
 
@@ -167,22 +181,20 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
                     placement="right-start"
                     text={
                         <Box>
-                            <p>
-                                Enabling notifications. We will notify you via your chosen notification preference when your war machine is within the top 10 in
-                                queue. Once the notification is sent you will be charged
-                                <SvgSupToken
-                                    sx={{
-                                        width: "10px",
-                                        display: "inline",
-                                        marginTop: "10px",
-                                        marginLeft: "5px",
-                                    }}
-                                    size="1.2rem"
-                                    fill={colors.yellow}
-                                    margin={0}
-                                />
-                                5
-                            </p>
+                            You will be notified you via your chosen notification preference(s) when your war machine is within the top 10 in queue. Once the
+                            notification is sent you will be charged
+                            <SvgSupToken
+                                sx={{
+                                    width: "10px",
+                                    display: "inline",
+                                    marginTop: "10px",
+                                    marginLeft: "5px",
+                                }}
+                                size="1.2rem"
+                                fill={colors.yellow}
+                                margin={0}
+                            />
+                            5
                         </Box>
                     }
                 >
@@ -233,9 +245,53 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
                 onChangeFunction={(e) => setNewPlayerProfile({ ...newPlayerProfile, enable_telegram_notifications: e.currentTarget.checked })}
             />
 
+            {settingsChanged && hadNotificationsTurnedOff && hasAnyNotifications && (
+                <>
+                    <br />
+                    <Stack direction="column">
+                        <Box>
+                            <Typography>
+                                You will be notified you via your chosen notification preference(s) when your war machine is within the top 10 in queue. Once
+                                the notification is sent you will be charged
+                                <SvgSupToken
+                                    sx={{
+                                        width: "10px",
+                                        display: "inline",
+                                        marginTop: "10px",
+                                        marginLeft: "5px",
+                                    }}
+                                    size="1.2rem"
+                                    fill={colors.yellow}
+                                    margin={0}
+                                />
+                                5{" "}
+                            </Typography>
+                        </Box>
+                        <Box display="flex" alignItems="center">
+                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                You have read and agreed to be charge 5 sups per notification
+                            </Typography>
+                            <Checkbox
+                                disabled={loading}
+                                size="small"
+                                checked={agreeToBeCharged}
+                                onChange={(e) => {
+                                    setAgreeToBeCharged(e.currentTarget.checked)
+                                }}
+                                sx={{
+                                    transform: "scale(1.2)",
+                                    ".Mui-checked": { color: colors.neonBlue },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                                }}
+                            />
+                        </Box>
+                    </Stack>
+                </>
+            )}
+
             <Box>
                 <Button
-                    disabled={loading}
+                    disabled={loading || !settingsChanged}
                     variant="outlined"
                     onClick={() => {
                         updatePlayerProfile()
