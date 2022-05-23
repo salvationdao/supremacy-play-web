@@ -31,7 +31,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
     } = useHangarWarMachine()
     const { user } = useAuth()
 
-    const [mobile, setMobile] = useState(user.mobile_number)
+    const [mobile, setMobile] = useState(user.mobile_number || "")
     const [saveSettings, toggleSaveSettings] = useToggle(false)
     const [saveMobile, toggleSaveMobile] = useToggle(false)
 
@@ -168,7 +168,7 @@ const DeployModalInner = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                         newSettings.sms_notifications = e.currentTarget.checked
                                         return newSettings
                                     })
-                                    setMobile(user.mobile_number)
+                                    setMobile(user.mobile_number || "")
                                     toggleSaveMobile(false)
                                 }}
                                 sx={{
