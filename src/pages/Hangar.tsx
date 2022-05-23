@@ -1,15 +1,13 @@
-import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
+import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useState, SyntheticEvent } from "react"
 import { HangarBg } from "../assets"
+import { ConnectButton } from "../components"
 import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
-import { siteZIndex } from "../theme/theme"
+import { useAuth } from "../containers"
+import { fonts, siteZIndex } from "../theme/theme"
 
 export const HangarPage = () => {
-    const [currentValue, setCurrentValue] = useState(0)
-
-    const handleChange = (event: SyntheticEvent, newValue: number) => {
-        setCurrentValue(newValue)
-    }
+    const { userID } = useAuth()
 
     return (
         <Stack
@@ -22,6 +20,29 @@ export const HangarPage = () => {
                 backgroundSize: "cover",
             }}
         >
+            {!userID ? (
+                <Stack spacing="1.3rem" alignItems="center" sx={{ my: "auto", px: "3.6rem", py: "2.8rem", backgroundColor: "#00000060" }}>
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        You need to be logged in to view this page.
+                    </Typography>
+                    <ConnectButton width="12rem" />
+                </Stack>
+            ) : (
+                <HangarPageInner />
+            )}
+        </Stack>
+    )
+}
+
+const HangarPageInner = () => {
+    const [currentValue, setCurrentValue] = useState(0)
+
+    const handleChange = (event: SyntheticEvent, newValue: number) => {
+        setCurrentValue(newValue)
+    }
+
+    return (
+        <>
             <Tabs
                 value={currentValue}
                 onChange={handleChange}
@@ -55,7 +76,7 @@ export const HangarPage = () => {
             <TabPanel currentValue={currentValue} index={3}>
                 PAINT JOBS
             </TabPanel>
-        </Stack>
+        </>
     )
 }
 

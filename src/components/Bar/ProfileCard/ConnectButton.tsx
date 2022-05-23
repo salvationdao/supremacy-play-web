@@ -4,7 +4,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { useAuth } from "../../../containers"
 import { FancyButton } from "../.."
 
-export const ConnectButton = () => {
+export const ConnectButton = ({ width }: { width?: string }) => {
     const { isLoggingIn, onLogInClick } = useAuth()
     const { setIsOpen } = useTour()
 
@@ -17,7 +17,7 @@ export const ConnectButton = () => {
                     clipThingsProps={{
                         clipSize: "7px",
                         backgroundColor: colors.neonBlue,
-                        sx: { position: "relative" },
+                        sx: { position: "relative", width },
                         border: { isFancy: true, borderColor: colors.neonBlue },
                     }}
                     sx={{
