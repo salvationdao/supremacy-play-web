@@ -77,7 +77,7 @@ export const HangarWarMachineContainer = createContainer(() => {
     const [historyMechDetails, setHistoryMechDetails] = useState<MechDetails>()
 
     // Mech rental
-    const [rentalMechDetails, setRentalMechDetails] = useState<MechDetails>()
+    // const [rentalMechDetails, setRentalMechDetails] = useState<MechDetails>()
 
     // Fetch user notification settings
     useEffect(() => {
