@@ -7,7 +7,7 @@ import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
-    const { setDeployMechDetails, setHistoryMechDetails } = useHangarWarMachine()
+    const { setDeployMechDetails, setHistoryMechDetails, setRentalMechDetails } = useHangarWarMachine()
 
     return (
         <Stack direction="row" spacing=".8rem">
@@ -27,7 +27,13 @@ export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: Me
                 onClick={() => mechDetails && setHistoryMechDetails(mechDetails)}
             />
             <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="SELL" disabled={!mechDetails} />
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="RENT" disabled={!mechDetails} />
+            <ReusableButton
+                primaryColor={theme.factionTheme.primary}
+                backgroundColor={theme.factionTheme.background}
+                label="RENT"
+                disabled={!mechDetails}
+                onClick={() => mechDetails && setRentalMechDetails(mechDetails)}
+            />
         </Stack>
     )
 }
