@@ -10,7 +10,7 @@ export const MechViewer = () => {
 
     const skin = selectedMechDetails.chassis_skin || selectedMechDetails.default_chassis_skin
     const imageUrl = skin?.large_image_url || selectedMechDetails.large_image_url
-    const animationUrl = skin?.card_animation_url || selectedMechDetails.card_animation_url
+    const animationUrl = skin?.animation_url || selectedMechDetails.animation_url
 
     return (
         <Box sx={{ height: "100%", flex: 1, py: "1.5rem" }}>
@@ -26,7 +26,7 @@ export const MechViewer = () => {
                         boxShadow: 2,
                     }}
                 >
-                    {/* <Box
+                    <Box
                         sx={{
                             position: "absolute",
                             height: "100%",
@@ -38,7 +38,7 @@ export const MechViewer = () => {
                             filter: "blur(2px)",
                             zIndex: 2,
                         }}
-                    /> */}
+                    />
 
                     <Box
                         sx={{
