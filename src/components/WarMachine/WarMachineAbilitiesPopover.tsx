@@ -91,7 +91,7 @@ export const WarMachineAbilitiesPopover = ({
                                             gameAbility={ga}
                                             abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
                                             clipSlantSize="5px"
-                                            progressWsURI={`/ability/mech/${warMachine.participantID}`}
+                                            progressWsURI={`/mech/${warMachine.participantID}`}
                                         />
                                     </Box>
                                 ))}

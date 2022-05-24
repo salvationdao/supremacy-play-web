@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from ".."
 import { supFormatter } from "../../helpers"
-import { useGameServerCommandsBattleFaction, useGameServerCommandsUser, useGameServerSubscriptionBattleFaction } from "../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { usePassportCommandsUser } from "../../hooks/usePassport"
 import { GameServerKeys, PassportServerKeys } from "../../keys"
 import { MechDetails } from "../../types"
@@ -34,12 +34,12 @@ const initialSettings: NotificationSettings = {
 export const HangarWarMachineContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
     const { userID, user } = useAuth()
-    const { send: sendFactionCommander } = useGameServerCommandsBattleFaction("/faction_commander")
+    const { send: sendFactionCommander } = useGameServerCommandsFaction("/faction_commander")
     const { send: sendUserCommander } = useGameServerCommandsUser("/user_commander")
     const { send: sendPassportUser } = usePassportCommandsUser("xxxxxxxxx")
 
     // Queuing cost, queue length win reward etc.
-    const queueFeed = useGameServerSubscriptionBattleFaction<QueueFeed>({
+    const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
         URI: "/queue",
         key: GameServerKeys.SubQueueFeed,
     })

@@ -7,7 +7,7 @@ import { Crosshair } from "../../assets"
 import { Severity, useGame } from "../../containers"
 import { SendFunc } from "../../containers/ws"
 import { useInterval, useToggle } from "../../hooks"
-import { useGameServerCommandsBattleFaction } from "../../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
 import { Dimension, GameAbility, Map, WarMachineState } from "../../types"
@@ -27,7 +27,7 @@ interface Props {
 }
 
 export const MiniMapInside = (props: Props) => {
-    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { map, warMachines } = useGame()
 
     return <MiniMapInsideInner {...props} send={send} map={map} warMachines={warMachines} />

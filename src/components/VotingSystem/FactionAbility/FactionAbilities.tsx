@@ -1,7 +1,7 @@
 import { Box, Fade, Divider, Stack, Typography } from "@mui/material"
 import { FactionAbilityItem } from "../.."
 import { useSupremacy, useAuth } from "../../../containers"
-import { useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { GameAbility } from "../../../types"
@@ -11,8 +11,8 @@ export const FactionAbilities = () => {
     const { getFaction } = useSupremacy()
 
     // Subscribe to faction ability updates
-    const factionAbilities = useGameServerSubscriptionBattleFaction<GameAbility[] | undefined>({
-        URI: "/ability/faction",
+    const factionAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
+        URI: "/faction",
         key: GameServerKeys.SubFactionUniqueAbilities,
     })
 

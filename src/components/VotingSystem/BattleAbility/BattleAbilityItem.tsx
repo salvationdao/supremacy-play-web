@@ -5,7 +5,7 @@ import { BattleAbilityCountdown, ClipThing } from "../.."
 import { BribeStageResponse, useGame, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
-import { useGameServerCommandsBattleFaction, useGameServerSubscription, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { BattleAbility as BattleAbilityType, BattleAbilityProgress, Faction } from "../../../types"
@@ -22,7 +22,7 @@ export interface BattleAbilityProgressBigNum {
 export const BattleAbilityItem = () => {
     const theme = useTheme()
     const { factionID } = useAuth()
-    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { bribeStage, forceDisplay100Percentage } = useGame()
     const { getFaction } = useSupremacy()
 
@@ -31,9 +31,9 @@ export const BattleAbilityItem = () => {
     const [battleAbilityProgress, setBattleAbilityProgress] = useState<BattleAbilityProgressBigNum[]>([])
 
     // Subscribe to battle ability updates
-    useGameServerSubscriptionBattleFaction<BattleAbilityType>(
+    useGameServerSubscriptionAbilityFaction<BattleAbilityType>(
         {
-            URI: "/ability",
+            URI: "",
             key: GameServerKeys.SubBattleAbility,
         },
         (payload) => {
