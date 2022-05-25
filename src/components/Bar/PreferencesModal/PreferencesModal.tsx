@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
+import { Alert, Box, Button, Checkbox, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { SvgInfoCircular, SvgSupToken } from "../../../assets"
 import { useAuth, useSnackbar } from "../../../containers"
@@ -16,7 +16,7 @@ interface PreferencesModalProps {
     setTelegramShortcode: (code: string) => void
 }
 
-export interface PlayerProfile {
+export interface PlayerPreferences {
     enable_telegram_notifications: boolean
     enable_sms_notifications: boolean
     enable_push_notifications: boolean
@@ -26,29 +26,22 @@ export interface PlayerProfile {
 export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: PreferencesModalProps) => {
     const { user } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>()
+    const [playerPreferences, setPlayerPreferences] = useState<PlayerPreferences | null>()
 
     const { newSnackbarMessage } = useSnackbar()
 
-    // get player profile
+    // get player preferences
     useEffect(() => {
         if (!user || !send) return
         ;(async () => {
             try {
-                const resp = await send<PlayerProfile | null>(GameServerKeys.GetPlayerProfile)
-
-                setPlayerProfile(resp)
+                const resp = await send<PlayerPreferences | null>(GameServerKeys.GetPlayerPreferences)
+                setPlayerPreferences(resp)
             } catch (err) {
                 newSnackbarMessage(typeof err === "string" ? err : "Issue getting player preferences", "error")
             }
         })()
     }, [user, send, newSnackbarMessage])
-
-    useCallback(async () => {
-        if (!user || !send) return
-        const res = await send<PlayerProfile | null>(GameServerKeys.GetPlayerProfile)
-        setPlayerProfile(res)
-    }, [user, send])
 
     const primaryColor = colors.neonBlue
     return (
@@ -59,7 +52,7 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "67rem",
+                    width: "69rem",
                     boxShadow: 24,
                 }}
             >
@@ -84,11 +77,12 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                             PREFERENCES
                         </Typography>
-                        {playerProfile ? (
+                        {playerPreferences ? (
                             <BattleQueueNotifications
                                 borderColour={primaryColor}
                                 setTelegramShortcode={setTelegramShortcode}
-                                playerProfile={playerProfile}
+                                playerPreferences={playerPreferences}
+                                setPlayerPreferences={setPlayerPreferences}
                                 send={send}
                                 toggle={toggle}
                             />
@@ -103,7 +97,8 @@ export const PreferencesModal = ({ open, toggle, setTelegramShortcode }: Prefere
 }
 
 interface BattleQueueNotificationsProps {
-    playerProfile: PlayerProfile
+    playerPreferences: PlayerPreferences
+    setPlayerPreferences: (p: PlayerPreferences) => void
     setTelegramShortcode: (code: string) => void
     borderColour: string
     toggle: (value: boolean) => void
@@ -115,25 +110,32 @@ interface ProfileResponse {
     telegram_id: string
 }
 
-export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, toggle, borderColour, send }: BattleQueueNotificationsProps) => {
+export const BattleQueueNotifications = ({
+    playerPreferences,
+    setPlayerPreferences,
+    setTelegramShortcode,
+    toggle,
+    borderColour,
+    send,
+}: BattleQueueNotificationsProps) => {
     const { newSnackbarMessage } = useSnackbar()
-    const [newPlayerProfile, setNewPlayerProfile] = useState<PlayerProfile>(playerProfile)
+    const [newPlayerPreferences, setNewPlayerPreferences] = useState<PlayerPreferences>(playerPreferences)
     const [agreeToBeCharged, setAgreeToBeCharged] = useState<boolean>(false)
     const [loading, setLoading] = useToggle(false)
     const [error, setError] = useState<string>()
 
     const settingsChanged =
-        playerProfile.enable_telegram_notifications != newPlayerProfile.enable_telegram_notifications ||
-        playerProfile.enable_sms_notifications != newPlayerProfile.enable_sms_notifications
+        playerPreferences.enable_telegram_notifications != newPlayerPreferences.enable_telegram_notifications ||
+        playerPreferences.enable_sms_notifications != newPlayerPreferences.enable_sms_notifications
 
-    const hasAnyNotifications = newPlayerProfile.enable_telegram_notifications || newPlayerProfile.enable_sms_notifications
+    const hasAnyNotifications = newPlayerPreferences.enable_telegram_notifications || newPlayerPreferences.enable_sms_notifications
 
-    const hadNotificationsTurnedOff = !playerProfile.enable_telegram_notifications && !playerProfile.enable_sms_notifications
+    const hadNotificationsTurnedOff = !playerPreferences.enable_telegram_notifications && !playerPreferences.enable_sms_notifications
 
     const updatePlayerProfile = async () => {
-        if (!send || !newPlayerProfile) return
+        if (!send || !newPlayerPreferences) return
 
-        if (newPlayerProfile.enable_sms_notifications && !newPlayerProfile.mobile_number) {
+        if (newPlayerPreferences.enable_sms_notifications && !newPlayerPreferences.mobile_number) {
             setError("Please enter mobile number to enable sms notifications")
             return
         }
@@ -145,18 +147,21 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
 
         try {
             setLoading(true)
-            const resp = await send<ProfileResponse>(GameServerKeys.UpdatePlayerProfile, {
-                enable_telegram_notifications: newPlayerProfile.enable_telegram_notifications,
-                enable_sms_notifications: newPlayerProfile.enable_sms_notifications,
-                enable_push_notifications: newPlayerProfile.enable_push_notifications,
-                mobile_number: newPlayerProfile.mobile_number,
-            })
+            const prefs = {
+                enable_telegram_notifications: newPlayerPreferences.enable_telegram_notifications,
+                enable_sms_notifications: newPlayerPreferences.enable_sms_notifications,
+                enable_push_notifications: newPlayerPreferences.enable_push_notifications,
+                mobile_number: newPlayerPreferences.mobile_number,
+            }
+            const resp = await send<ProfileResponse>(GameServerKeys.UpdatePlayerPreferences, prefs)
 
             if (!resp) {
                 setError("Unable to update preferences, please try again or contact support.")
                 setLoading(false)
                 return
             }
+
+            console.log("this is respo", resp)
 
             if (resp.shortcode && !resp.telegram_id) {
                 setTelegramShortcode(resp.shortcode)
@@ -165,6 +170,7 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
             setLoading(false)
             setError(undefined)
             newSnackbarMessage("Saved notification preference.", "success")
+            setPlayerPreferences(prefs)
         } catch (e) {
             setError(typeof e === "string" ? e : "Unable to update preferences, please try again or contact support.")
             setLoading(false)
@@ -216,10 +222,10 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
             <PreferenceToggle
                 disabled={loading}
                 title="Enable battle queue SMS notifications:"
-                checked={!!newPlayerProfile?.enable_sms_notifications}
-                onChangeFunction={(e) => setNewPlayerProfile({ ...newPlayerProfile, enable_sms_notifications: e.currentTarget.checked })}
+                checked={!!newPlayerPreferences?.enable_sms_notifications}
+                onChangeFunction={(e) => setNewPlayerPreferences({ ...newPlayerPreferences, enable_sms_notifications: e.currentTarget.checked })}
             />
-            {newPlayerProfile.enable_sms_notifications && (
+            {newPlayerPreferences.enable_sms_notifications && (
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography>Phone number: </Typography>
                     <TextField
@@ -230,9 +236,9 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
                             pl: "1rem",
                             input: { px: ".5rem", py: "1px" },
                         }}
-                        value={newPlayerProfile.mobile_number}
+                        value={newPlayerPreferences.mobile_number}
                         onChange={(e) => {
-                            setNewPlayerProfile({ ...newPlayerProfile, mobile_number: e.currentTarget.value })
+                            setNewPlayerPreferences({ ...newPlayerPreferences, mobile_number: e.currentTarget.value })
                         }}
                     />
                 </Box>
@@ -241,15 +247,33 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
             <PreferenceToggle
                 disabled={loading}
                 title="Enable battle queue Telegram notifications:"
-                checked={!!newPlayerProfile?.enable_telegram_notifications}
-                onChangeFunction={(e) => setNewPlayerProfile({ ...newPlayerProfile, enable_telegram_notifications: e.currentTarget.checked })}
+                checked={!!newPlayerPreferences?.enable_telegram_notifications}
+                onChangeFunction={(e) => setNewPlayerPreferences({ ...newPlayerPreferences, enable_telegram_notifications: e.currentTarget.checked })}
             />
 
             {settingsChanged && hadNotificationsTurnedOff && hasAnyNotifications && (
                 <>
                     <br />
-                    <Stack direction="column">
-                        <Box>
+                    <Alert
+                        severity="warning"
+                        sx={{
+                            alignItems: "center",
+                            ".MuiAlert-message": {
+                                pt: "1.12rem",
+                                fontSize: "1.3rem",
+                                fontWeight: "fontWeightBold",
+                                fontFamily: fonts.nostromoBold,
+                            },
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                fontFamily: fonts.shareTech,
+                                fontSize: "12.35px",
+                                fontWeight: "bold",
+                                color: "white",
+                            }}
+                        >
                             You will be notified you via your chosen notification preference(s) when your war machine is within the top 10 in queue. Once the
                             notification is sent you will be charged
                             <SvgSupToken
@@ -283,7 +307,7 @@ export const BattleQueueNotifications = ({ playerProfile, setTelegramShortcode, 
                                 }}
                             />
                         </Box>
-                    </Stack>
+                    </Alert>
                 </>
             )}
 

@@ -6,7 +6,7 @@ import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull, SvgSupToken } from "..
 import { useGame, useAuth, useSupremacy } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { useGameServerSubscriptionBattleFaction } from "../../hooks/useGameServer"
+import { useGameServerSubscriptionAbilityFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
 import { Faction, GameAbility, WarMachineState } from "../../types"
@@ -38,10 +38,10 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
     } = props
 
     // Subscribe to war machine ability updates
-    const gameAbilities = useGameServerSubscriptionBattleFaction<GameAbility[] | undefined>({
-        URI: `/ability/mech/${participantID}`,
+    const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
+        URI: `/mech/${participantID}`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
-        ready: factionID === warMachineFactionID,
+        ready: factionID === warMachineFactionID && !!participantID,
     })
 
     return (

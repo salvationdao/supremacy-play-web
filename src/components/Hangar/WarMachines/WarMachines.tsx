@@ -12,6 +12,7 @@ import { MechBasic } from "../../../types"
 import { DeployModal } from "./DeployQueue/DeployModal"
 import { LeaveModal } from "./LeaveQueue/LeaveModal"
 import { HistoryModal } from "./MechHistory/HistoryModal"
+import { RentalModal } from "./MechRental/RentalModal"
 import { MechViewer } from "./MechViewer/MechViewer"
 import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./WarMachineHangarItem/WarMachineHangarItem"
 
@@ -243,6 +244,7 @@ export const WarMachines = () => {
             <DeployModal />
             <LeaveModal />
             <HistoryModal />
+            <RentalModal />
         </HangarWarMachineProvider>
     )
 }

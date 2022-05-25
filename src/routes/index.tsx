@@ -70,7 +70,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
 // Specifically used for right drawer navigation
 
 export enum RightDrawerHashes {
-    None = "#none",
+    None = "",
     LiveChat = "#live_chat",
     PlayerList = "#player_list",
     Socials = "#socials",

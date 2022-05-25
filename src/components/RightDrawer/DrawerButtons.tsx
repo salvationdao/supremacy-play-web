@@ -3,7 +3,6 @@ import { useHistory, useLocation } from "react-router-dom"
 import { HASH_ROUTES_ARRAY, RightDrawerHashes } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
 import { TabButton } from "../LeftDrawer/DrawerButtons"
-import { useEffect } from "react"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 
@@ -11,12 +10,6 @@ export const DrawerButtons = () => {
     const theme = useTheme<Theme>()
     const location = useLocation()
     const history = useHistory()
-
-    useEffect(() => {
-        if (!location.hash) {
-            history.replace({ pathname: location.pathname, hash: RightDrawerHashes.LiveChat })
-        }
-    }, [location.hash, location.pathname, history])
 
     return (
         <Box

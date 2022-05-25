@@ -165,6 +165,7 @@ export const HistoryModal = () => {
                         <Stack
                             spacing=".6rem"
                             sx={{
+                                width: "calc(100% + 1rem)",
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 pr: ".6rem",
