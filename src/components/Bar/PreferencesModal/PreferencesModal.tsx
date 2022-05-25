@@ -161,8 +161,6 @@ export const BattleQueueNotifications = ({
                 return
             }
 
-            console.log("this is respo", resp)
-
             if (resp.shortcode && !resp.telegram_id) {
                 setTelegramShortcode(resp.shortcode)
             }
