@@ -150,8 +150,9 @@ export const WarMachines = () => {
                             <Typography variant="caption">
                                 <strong>DISPLAYING:</strong> {mechs?.length || 0} of {totalItems}
                             </Typography>
-                            <Stack direction="row" alignItems="center">
+                            <Stack direction="row" spacing=".3rem" alignItems="center">
                                 <IconButton
+                                    sx={{ minWidth: "3rem" }}
                                     size="small"
                                     onClick={() => {
                                         setPageSize(6)
@@ -163,6 +164,7 @@ export const WarMachines = () => {
                                     </Typography>
                                 </IconButton>
                                 <IconButton
+                                    sx={{ minWidth: "3rem" }}
                                     size="small"
                                     onClick={() => {
                                         setPageSize(12)
@@ -174,6 +176,7 @@ export const WarMachines = () => {
                                     </Typography>
                                 </IconButton>
                                 <IconButton
+                                    sx={{ minWidth: "3rem" }}
                                     size="small"
                                     onClick={() => {
                                         setPageSize(18)
@@ -229,7 +232,7 @@ export const WarMachines = () => {
                                     page={page}
                                     sx={{
                                         ".MuiButtonBase-root": { fontFamily: fonts.nostromoBold },
-                                        ".Mui-selected": { backgroundColor: theme.factionTheme.primary },
+                                        ".Mui-selected": { backgroundColor: `${theme.factionTheme.primary} !important` },
                                     }}
                                     onChange={(e, p) => changePage(p)}
                                     showFirstButton
