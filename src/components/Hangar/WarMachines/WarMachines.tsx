@@ -227,7 +227,10 @@ export const WarMachines = () => {
                                     size="medium"
                                     count={totalPages}
                                     page={page}
-                                    sx={{ ".MuiButtonBase-root": { fontFamily: fonts.nostromoBold } }}
+                                    sx={{
+                                        ".MuiButtonBase-root": { fontFamily: fonts.nostromoBold },
+                                        ".Mui-selected": { backgroundColor: theme.factionTheme.primary },
+                                    }}
                                     onChange={(e, p) => changePage(p)}
                                     showFirstButton
                                     showLastButton

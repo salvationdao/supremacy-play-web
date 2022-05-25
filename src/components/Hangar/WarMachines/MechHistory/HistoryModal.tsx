@@ -93,8 +93,8 @@ export const HistoryModal = () => {
 
     return (
         <MechModal mechDetails={historyMechDetails} onClose={onClose} width="50rem">
-            <Stack spacing="1.6rem">
-                <Stack direction="row" justifyContent="space-between" sx={{ px: ".5rem" }}>
+            <Stack spacing="1.6rem" sx={{ pt: ".4rem" }}>
+                <Stack direction="row" justifyContent="space-between" sx={{ px: "1.3rem" }}>
                     {statsLoading ? (
                         <>
                             <PercentageDisplaySkeleton circleSize={55} />
