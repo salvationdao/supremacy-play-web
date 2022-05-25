@@ -7,8 +7,8 @@ import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const { weapon_hardpoints, utility_slots, chassis_skin_id, intro_animation_id, outro_animation_id, power_core_id } = mech
-    const weapons = mechDetails?.weapons.length
-    const utilities = mechDetails?.utility.length
+    const weapons = mechDetails?.weapons?.length
+    const utilities = mechDetails?.utility?.length
 
     return (
         <ClipThing clipSize="10px" opacity={0.08} backgroundColor="#FFFFFF" sx={{ height: "100%", flexShrink: 0 }}>
