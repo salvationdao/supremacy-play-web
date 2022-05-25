@@ -82,7 +82,7 @@ export const MechModal = ({
                             <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
 
                             <Typography
-                                variant="caption"
+                                variant="body2"
                                 sx={{
                                     mt: ".4rem",
                                     lineHeight: 1,

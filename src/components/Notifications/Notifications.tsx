@@ -140,7 +140,7 @@ export const Notifications = () => {
 
     // Notifications
     const incomingNotification = useGameServerSubscription<NotificationResponse | undefined>({
-        URI: "/battle/notification",
+        URI: "/public/notification",
         key: GameServerKeys.SubGameNotification,
     })
 

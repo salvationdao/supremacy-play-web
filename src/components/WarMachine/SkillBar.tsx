@@ -2,7 +2,7 @@ import { Box } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useState } from "react"
 import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
-import { useGameServerSubscriptionBattleFaction } from "../../hooks/useGameServer"
+import { useGameServerSubscriptionAbilityFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { GameAbility, GameAbilityProgress } from "../../types"
 
@@ -32,10 +32,11 @@ export const SkillBar = ({
     const costPercent = useMemo(() => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100), [initialTargetCost, supsCost])
 
     // Listen on current faction ability price change
-    useGameServerSubscriptionBattleFaction<GameAbilityProgress | undefined>(
+    useGameServerSubscriptionAbilityFaction<GameAbilityProgress | undefined>(
         {
-            URI: `/ability/mech/${participantID}`,
+            URI: `/mech/${participantID}`,
             key: GameServerKeys.SubAbilityProgress,
+            ready: !!participantID,
         },
         (payload) => {
             if (!payload || payload.id !== identity) return

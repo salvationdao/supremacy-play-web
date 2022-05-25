@@ -15,15 +15,6 @@ export const useGameServerCommandsFaction = (URI: string) => {
     return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `/faction/${factionID}${URI}`, ready: !!userID && !!factionID })
 }
 
-export const useGameServerCommandsBattleFaction = (URI: string) => {
-    const { userID, factionID } = useAuth()
-    return useCommands({
-        host: GAME_SERVER_HOSTNAME,
-        URI: `/battle/faction/${factionID}${URI}`,
-        ready: !!userID && !!factionID,
-    })
-}
-
 export const useGameServerCommands = (URI: string) => {
     return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `${URI}` })
 }
@@ -39,12 +30,9 @@ export function useGameServerSubscriptionFaction<T = DataType>({ URI, key, args,
     return useSubscription({ URI: `/faction/${factionID}${URI}`, key, host: GAME_SERVER_HOSTNAME, args, ready: !!userID && !!factionID && ready }, callback)
 }
 
-export function useGameServerSubscriptionBattleFaction<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
+export function useGameServerSubscriptionAbilityFaction<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
     const { userID, factionID } = useAuth()
-    return useSubscription(
-        { URI: `/battle/faction/${factionID}${URI}`, key, host: GAME_SERVER_HOSTNAME, args, ready: !!userID && !!factionID && ready },
-        callback,
-    )
+    return useSubscription({ URI: `/ability/${factionID}${URI}`, key, host: GAME_SERVER_HOSTNAME, args, ready: !!userID && !!factionID && ready }, callback)
 }
 
 export function useGameServerSubscription<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
