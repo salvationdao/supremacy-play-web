@@ -43,7 +43,7 @@ const WarMachinesInner = () => {
     const theme = useTheme<Theme>()
     const [mechs, setMechs] = useState<MechBasic[]>()
     const [isLoading, setIsLoading] = useState(true)
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 6, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
 
     // Get mechs
     useEffect(() => {
@@ -193,36 +193,36 @@ const WarMachinesInner = () => {
                                 sx={{ minWidth: "3rem" }}
                                 size="small"
                                 onClick={() => {
-                                    setPageSize(6)
+                                    setPageSize(5)
                                     changePage(1)
                                 }}
                             >
-                                <Typography variant="caption" sx={{ opacity: pageSize === 6 ? 1 : 0.3 }}>
-                                    6
+                                <Typography variant="caption" sx={{ opacity: pageSize === 5 ? 1 : 0.3 }}>
+                                    5
                                 </Typography>
                             </IconButton>
                             <IconButton
                                 sx={{ minWidth: "3rem" }}
                                 size="small"
                                 onClick={() => {
-                                    setPageSize(12)
+                                    setPageSize(10)
                                     changePage(1)
                                 }}
                             >
-                                <Typography variant="caption" sx={{ opacity: pageSize === 12 ? 1 : 0.3 }}>
-                                    12
+                                <Typography variant="caption" sx={{ opacity: pageSize === 10 ? 1 : 0.3 }}>
+                                    10
                                 </Typography>
                             </IconButton>
                             <IconButton
                                 sx={{ minWidth: "3rem" }}
                                 size="small"
                                 onClick={() => {
-                                    setPageSize(18)
+                                    setPageSize(15)
                                     changePage(1)
                                 }}
                             >
-                                <Typography variant="caption" sx={{ opacity: pageSize === 18 ? 1 : 0.3 }}>
-                                    18
+                                <Typography variant="caption" sx={{ opacity: pageSize === 15 ? 1 : 0.3 }}>
+                                    15
                                 </Typography>
                             </IconButton>
                         </Stack>
