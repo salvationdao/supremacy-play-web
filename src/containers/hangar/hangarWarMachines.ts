@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from ".."
 import { supFormatter } from "../../helpers"
-import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
-import { usePassportCommandsUser } from "../../hooks/usePassport"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { MechDetails } from "../../types"
 
@@ -16,10 +15,8 @@ export interface QueueFeed {
 
 export const HangarWarMachineContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
-    const { userID, user } = useAuth()
+    const { userID } = useAuth()
     const { send: sendFactionCommander } = useGameServerCommandsFaction("/faction_commander")
-    const { send: sendUserCommander } = useGameServerCommandsUser("/user_commander")
-    const { send: sendPassportUser } = usePassportCommandsUser("xxxxxxxxx")
 
     // Queuing cost, queue length win reward etc.
     const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
@@ -72,7 +69,7 @@ export const HangarWarMachineContainer = createContainer(() => {
                 return
             }
         },
-        [newSnackbarMessage, sendFactionCommander, sendPassportUser, sendUserCommander, user.id, user.mobile_number, userID],
+        [newSnackbarMessage, sendFactionCommander, userID],
     )
 
     const onLeaveQueue = useCallback(
