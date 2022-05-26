@@ -35,7 +35,7 @@ export const MechViewer = () => {
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
-                            filter: "blur(2px)",
+                            filter: "blur(20px)",
                             zIndex: 2,
                         }}
                     />
@@ -56,8 +56,10 @@ export const MechViewer = () => {
                         component="video"
                         sx={{
                             position: "absolute",
-                            height: "100%",
-                            width: "100%",
+                            height: "calc(100% - 8rem)",
+                            width: "calc(100% - 10rem)",
+                            left: "5rem",
+                            top: "4rem",
                             zIndex: 3,
                         }}
                         loop
