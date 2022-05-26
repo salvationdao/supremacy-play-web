@@ -131,6 +131,7 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?:
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
+                            borderRadius: 1,
                         }}
                     >
                         {!imageUrl && (
