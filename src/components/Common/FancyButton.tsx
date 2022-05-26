@@ -52,7 +52,7 @@ export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, cl
                         left: 0,
                         right: 0,
                         backgroundColor: "#050c12",
-                        opacity: 0.5,
+                        opacity: 0.3,
                         zIndex: 99,
                     }}
                 />
