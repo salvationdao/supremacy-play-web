@@ -1,9 +1,9 @@
 import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
-import { SvgCooldown, SvgInfoCircular } from "../../../assets"
+import { SvgCooldown, SvgInfoCircular, SvgSupToken } from "../../../assets"
 import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../../containers"
-import { getUserRankDeets, snakeToTitle } from "../../../helpers"
+import { getUserRankDeets, snakeToTitle, supFormatterNoFixed } from "../../../helpers"
 import { useTimer, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -130,7 +130,7 @@ const BanProposalInner = ({
                             clipSize: "4px",
                             backgroundColor: colors.darkNavyBlue,
                             border: { borderColor: userRank !== "GENERAL" ? "#FFFFFF90" : "#FFFFFF", borderThickness: "2px" },
-                            sx: { flex: 1, position: "relative" },
+                            sx: { flex: 1.5, position: "relative" },
                         }}
                         sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                         onClick={() => submitInstantBan(true)}
@@ -139,6 +139,11 @@ const BanProposalInner = ({
                         {rankDeets?.icon}
                         <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
                             INSTANT BAN
+                        </Typography>
+
+                        <SvgSupToken size="1.2rem" sx={{ ml: ".5rem" }} />
+                        <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
+                            ({supFormatterNoFixed(banProposal.instant_pass_fee, 0)})
                         </Typography>
                     </FancyButton>
 
@@ -178,7 +183,7 @@ const BanProposalInner = ({
                 )}
             </>
         )
-    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, submitVote, submitInstantBan])
+    }, [userStat, userRank, submitted, rankDeets?.icon, banProposal.instant_pass_fee, error, submittedVote, submitInstantBan, submitVote])
 
     return (
         <Grow in={!outOfTime} timeout={250}>
