@@ -103,7 +103,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
 
 const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?: string; primaryColor: string; tooltipText?: string; Icon: ReactNode }) => {
     return (
-        <Box sx={{ position: "relative", flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".2rem" }}>
+        <Box sx={{ position: "relative", flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
             <FancyButton
                 excludeCaret
                 clipThingsProps={{
@@ -117,7 +117,7 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?:
                     },
                     sx: { height: "100%" },
                 }}
-                sx={{ height: "100%", color: primaryColor }}
+                sx={{ height: "100%", color: primaryColor, p: ".5rem", minWidth: 0 }}
                 innerSx={{ p: 0 }}
                 onClick={() => alert("TODO: open loadout menu modal.")}
             >
