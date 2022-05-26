@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
 import { SvgCooldown, SvgInfoCircular } from "../../../assets"
 import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../../containers"
-import { snakeToTitle } from "../../../helpers"
+import { getUserRankDeets, snakeToTitle } from "../../../helpers"
 import { useTimer, useToggle } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -51,10 +51,12 @@ const BanProposalInner = ({
     toggleOutOfTime: (value?: boolean | undefined) => void
 }) => {
     const { state, send } = useGameServerWebsocket()
-    const { userStat } = useGameServerAuth()
+    const { userStat, userRank } = useGameServerAuth()
     const [submitted, setSubmitted] = useState(!!banProposal.decision)
     const [submittedVote, setSubmittedVote] = useState(banProposal.decision?.is_agreed)
     const [error, setError] = useState("")
+
+    const rankDeets = useMemo(() => (userRank ? getUserRankDeets(userRank, "1rem", "1.2rem") : undefined), [userRank])
 
     const submitVote = useCallback(
         async (isAgree: boolean) => {
@@ -77,8 +79,28 @@ const BanProposalInner = ({
         [state, send, banProposal],
     )
 
+    const submitInstantBan = useCallback(
+        async (isAgree: boolean) => {
+            if (state !== WebSocket.OPEN || !send) return
+            try {
+                const resp = await send<boolean, { punish_vote_id: string }>(GameServerKeys.SubmitInstantBan, {
+                    punish_vote_id: banProposal.id,
+                })
+
+                if (resp) {
+                    setSubmitted(true)
+                    setSubmittedVote(isAgree)
+                    setError("")
+                }
+            } catch (e) {
+                setError(typeof e === "string" ? e : "Failed to submit your vote.")
+            }
+        },
+        [banProposal.id, send, state],
+    )
+
     const bottomSection = useMemo(() => {
-        if (!userStat || !userStat.last_seven_days_kills || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100)) {
+        if (!userStat || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && userRank !== "GENERAL")) {
             return (
                 <Typography sx={{ opacity: 0.6 }}>
                     <i>You need at least 100 ability kills OR 5 ability kills in the past 7 days to be eligible to vote.</i>
@@ -106,14 +128,18 @@ const BanProposalInner = ({
                         excludeCaret
                         clipThingsProps={{
                             clipSize: "4px",
-                            backgroundColor: colors.red,
-                            border: { borderColor: colors.red },
+                            backgroundColor: colors.darkNavyBlue,
+                            border: { borderColor: userRank !== "GENERAL" ? "#FFFFFF90" : "#FFFFFF", borderThickness: "2px" },
                             sx: { flex: 1, position: "relative" },
                         }}
                         sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
-                        onClick={() => submitVote(false)}
+                        onClick={() => submitInstantBan(true)}
+                        disabled={userRank !== "GENERAL"}
                     >
-                        <Typography variant="body2">NO</Typography>
+                        {rankDeets?.icon}
+                        <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
+                            INSTANT BAN
+                        </Typography>
                     </FancyButton>
 
                     <FancyButton
@@ -121,13 +147,27 @@ const BanProposalInner = ({
                         clipThingsProps={{
                             clipSize: "4px",
                             backgroundColor: colors.green,
-                            border: { borderColor: colors.green },
+                            border: { borderColor: colors.green, borderThickness: "2px" },
                             sx: { flex: 1, position: "relative" },
                         }}
                         sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                         onClick={() => submitVote(true)}
                     >
                         <Typography variant="body2">YES</Typography>
+                    </FancyButton>
+
+                    <FancyButton
+                        excludeCaret
+                        clipThingsProps={{
+                            clipSize: "4px",
+                            backgroundColor: colors.red,
+                            border: { borderColor: colors.red, borderThickness: "2px" },
+                            sx: { flex: 1, position: "relative" },
+                        }}
+                        sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
+                        onClick={() => submitVote(false)}
+                    >
+                        <Typography variant="body2">NO</Typography>
                     </FancyButton>
                 </Stack>
 
@@ -138,7 +178,7 @@ const BanProposalInner = ({
                 )}
             </>
         )
-    }, [submitted, submittedVote, submitVote, error, userStat])
+    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, submitVote, submitInstantBan])
 
     return (
         <Grow in={!outOfTime} timeout={250}>
@@ -219,7 +259,7 @@ export const LineItem = ({ title, children, color }: { title: string; children: 
             >
                 {title}
             </Typography>
-            <Stack direction="row" spacing=".7rem" alignItems="center" sx={{ mt: ".2rem !important" }}>
+            <Stack direction="row" spacing=".7rem" alignItems="center" sx={{ mt: ".2rem !important", alignSelf: "stretch" }}>
                 {children}
             </Stack>
         </Stack>
