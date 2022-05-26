@@ -130,7 +130,7 @@ const BanProposalInner = ({
                             clipSize: "4px",
                             backgroundColor: colors.darkNavyBlue,
                             border: { borderColor: userRank !== "GENERAL" ? "#FFFFFF90" : "#FFFFFF", borderThickness: "2px" },
-                            sx: { flex: 1.5, position: "relative" },
+                            sx: { flex: 1.8, position: "relative" },
                         }}
                         sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                         onClick={() => submitInstantBan(true)}
