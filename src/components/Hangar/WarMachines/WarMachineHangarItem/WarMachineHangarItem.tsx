@@ -67,7 +67,11 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
                         <Stack direction="row" spacing="1rem" sx={{ flex: 1, height: 0 }}>
                             <MechLoadout mech={mech} mechDetails={mechDetails} />
                             <MechMiniStats mech={mech} mechDetails={mechDetails} />
-                            <MechBarStats mech={mech} mechDetails={mechDetails} />
+                            <MechBarStats
+                            // note: commented out to resolve lint warnings
+                            // mech={mech}
+                            // mechDetails={mechDetails}
+                            />
                         </Stack>
 
                         <MechButtons mech={mech} mechDetails={mechDetails} />

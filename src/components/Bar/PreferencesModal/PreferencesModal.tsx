@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Checkbox, Modal, Stack, Switch, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { SvgInfoCircular, SvgSupToken } from "../../../assets"
 import { useAuth, useSnackbar } from "../../../containers"
 import { SendFunc } from "../../../containers/ws"
