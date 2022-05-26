@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
+import React from "react"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
@@ -11,7 +12,7 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
     const utilities = mechDetails?.utility
     const weapons = mechDetails?.weapons
 
-    // console.log({ speed, max_hitpoints, powerCore, utilities, weapons })
+    if (!mech) console.log({ speed, max_hitpoints, powerCore, utilities, weapons })
 
     return (
         <Box
@@ -47,7 +48,19 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
     )
 }
 
-const BarStat = ({ primaryColor, label, current, total, unit }: { primaryColor: string; label: string; current: number; total: number; unit?: string }) => {
+const BarStatInner = ({
+    primaryColor,
+    label,
+    current,
+    total,
+    unit,
+}: {
+    primaryColor: string
+    label: string
+    current: number
+    total: number
+    unit?: string
+}) => {
     return (
         <Stack direction="row" spacing=".8rem" alignItems="center">
             <Typography
@@ -99,3 +112,5 @@ const BarStat = ({ primaryColor, label, current, total, unit }: { primaryColor: 
         </Stack>
     )
 }
+
+const BarStat = React.memo(BarStatInner)

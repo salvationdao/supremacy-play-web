@@ -58,8 +58,6 @@ const WarMachineHangarItemInner = ({
 }) => {
     const theme = useTheme()
 
-    console.log("render")
-
     return (
         <Box sx={{ position: "relative", overflow: "visible", cursor: "pointer" }} onClick={() => setSelectedMechDetails(mechDetails)}>
             <MechTitle mech={mech} mechDetails={mechDetails} isSelected={isSelected} />

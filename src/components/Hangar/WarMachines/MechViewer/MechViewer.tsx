@@ -47,7 +47,7 @@ export const MechViewer = () => {
                             bottom: 0,
                             left: 0,
                             right: 0,
-                            boxShadow: "inset 0 0 50px 60px #00000090",
+                            boxShadow: `inset 0 0 50px 60px ${theme.factionTheme.background}90`,
                             zIndex: 4,
                         }}
                     />
