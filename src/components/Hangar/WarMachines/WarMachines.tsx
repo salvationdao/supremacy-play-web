@@ -26,12 +26,24 @@ interface GetAssetsResponse {
 }
 
 export const WarMachines = () => {
+    return (
+        <HangarWarMachineProvider>
+            <WarMachinesInner />
+            <DeployModal />
+            <LeaveModal />
+            <HistoryModal />
+            <RentalModal />
+        </HangarWarMachineProvider>
+    )
+}
+
+const WarMachinesInner = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme<Theme>()
     const [mechs, setMechs] = useState<MechBasic[]>()
     const [isLoading, setIsLoading] = useState(true)
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 6, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
 
     // Get mechs
     useEffect(() => {
@@ -77,173 +89,199 @@ export const WarMachines = () => {
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }} spacing=".5rem">
-                <Typography
-                    sx={{
-                        px: "1.28rem",
-                        pt: "1.28rem",
-                        mb: ".56rem",
-                        color: colors.grey,
-                        fontFamily: fonts.nostromoBold,
-                        userSelect: "text !important",
-                        opacity: 0.8,
-                    }}
-                >
-                    {"You don't own any mechs yet."}
-                </Typography>
-                <FancyButton
-                    href={`${PASSPORT_WEB}stores`}
-                    target="_blank"
-                    excludeCaret
-                    clipThingsProps={{
-                        clipSize: "5px",
-                        backgroundColor: theme.factionTheme.background,
-                        border: { borderColor: theme.factionTheme.primary },
-                        sx: { position: "relative" },
-                    }}
-                    sx={{ px: "1.8rem", py: ".5rem", color: theme.factionTheme.primary }}
-                >
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }} spacing="1rem">
                     <Typography
-                        variant="body2"
                         sx={{
-                            color: theme.factionTheme.primary,
+                            px: "1.28rem",
+                            pt: "1.28rem",
+
+                            color: colors.grey,
                             fontFamily: fonts.nostromoBold,
+                            userSelect: "text !important",
+                            opacity: 0.9,
+                            textAlign: "center",
                         }}
                     >
-                        GO TO ASSET STORE
+                        {"You don't have assets in Supremacy, go to Marketplace or go to Xsyn to transfer your assets to Supremacy."}
                     </Typography>
-                </FancyButton>
+                    <FancyButton
+                        href={`${PASSPORT_WEB}profile`}
+                        target="_blank"
+                        excludeCaret
+                        clipThingsProps={{
+                            clipSize: "5px",
+                            backgroundColor: theme.factionTheme.background,
+                            border: { borderColor: theme.factionTheme.primary },
+                            sx: { position: "relative", width: "88%" },
+                        }}
+                        sx={{ px: "1.8rem", py: ".5rem", color: theme.factionTheme.primary }}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                textAlign: "center",
+                                color: theme.factionTheme.primary,
+                                fontFamily: fonts.nostromoBold,
+                            }}
+                        >
+                            GO TO MARKETPLACE
+                        </Typography>
+                    </FancyButton>
+                    <FancyButton
+                        href={`${PASSPORT_WEB}profile`}
+                        target="_blank"
+                        excludeCaret
+                        clipThingsProps={{
+                            clipSize: "5px",
+                            backgroundColor: theme.factionTheme.background,
+                            border: { borderColor: colors.neonPink },
+                            sx: { position: "relative", width: "88%" },
+                        }}
+                        sx={{ px: "1.8rem", py: ".5rem", color: colors.neonPink }}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                textAlign: "center",
+                                color: colors.neonPink,
+                                fontFamily: fonts.nostromoBold,
+                            }}
+                        >
+                            GO TO XSYN
+                        </Typography>
+                    </FancyButton>
+                </Stack>
             </Stack>
         )
     }, [mechs, isLoading, theme.factionTheme])
 
     return (
-        <HangarWarMachineProvider>
-            <Stack direction="row" sx={{ height: "100%" }}>
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        isFancy: true,
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".15rem",
-                    }}
-                    opacity={0.7}
-                    backgroundColor={theme.factionTheme.background}
-                    sx={{ height: "100%", width: "fit-content", minWidth: "60rem" }}
-                >
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            sx={{
-                                px: "1.5rem",
-                                pt: ".6rem",
-                                pb: ".3rem",
-                                backgroundColor: "#00000070",
-                                borderBottom: (theme) => `${theme.factionTheme.primary}70 1px solid`,
-                                span: {
-                                    fontFamily: fonts.nostromoBold,
-                                },
-                            }}
-                        >
-                            <Typography variant="caption">
-                                <strong>DISPLAYING:</strong> {mechs?.length || 0} of {totalItems}
-                            </Typography>
-                            <Stack direction="row" alignItems="center">
-                                <IconButton
-                                    size="small"
-                                    onClick={() => {
-                                        setPageSize(6)
-                                        changePage(1)
-                                    }}
-                                >
-                                    <Typography variant="caption" sx={{ opacity: pageSize === 6 ? 1 : 0.3 }}>
-                                        6
-                                    </Typography>
-                                </IconButton>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => {
-                                        setPageSize(12)
-                                        changePage(1)
-                                    }}
-                                >
-                                    <Typography variant="caption" sx={{ opacity: pageSize === 12 ? 1 : 0.3 }}>
-                                        12
-                                    </Typography>
-                                </IconButton>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => {
-                                        setPageSize(18)
-                                        changePage(1)
-                                    }}
-                                >
-                                    <Typography variant="caption" sx={{ opacity: pageSize === 18 ? 1 : 0.3 }}>
-                                        18
-                                    </Typography>
-                                </IconButton>
-                            </Stack>
-                        </Stack>
-
-                        <Box
-                            sx={{
-                                my: ".8rem",
-                                ml: ".8rem",
-                                mr: ".4rem",
-                                pr: ".4rem",
-                                flex: 1,
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-                                scrollbarWidth: "none",
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            {content}
-                        </Box>
-
-                        {mechs && (
-                            <Box
-                                sx={{
-                                    px: "1rem",
-                                    py: ".5rem",
-                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
-                                    backgroundColor: "#00000070",
+        <Stack direction="row" sx={{ height: "100%" }}>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    isFancy: true,
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".15rem",
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%", width: "fit-content", minWidth: "60rem" }}
+            >
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{
+                            px: "1.5rem",
+                            pt: ".6rem",
+                            pb: ".3rem",
+                            backgroundColor: "#00000070",
+                            borderBottom: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                            span: {
+                                fontFamily: fonts.nostromoBold,
+                            },
+                        }}
+                    >
+                        <Typography variant="caption">
+                            <strong>DISPLAYING:</strong> {mechs?.length || 0} of {totalItems}
+                        </Typography>
+                        <Stack direction="row" spacing=".3rem" alignItems="center">
+                            <IconButton
+                                sx={{ minWidth: "3rem" }}
+                                size="small"
+                                onClick={() => {
+                                    setPageSize(5)
+                                    changePage(1)
                                 }}
                             >
-                                <Pagination
-                                    size="medium"
-                                    count={totalPages}
-                                    page={page}
-                                    sx={{ ".MuiButtonBase-root": { fontFamily: fonts.nostromoBold } }}
-                                    onChange={(e, p) => changePage(p)}
-                                    showFirstButton
-                                    showLastButton
-                                />
-                            </Box>
-                        )}
+                                <Typography variant="caption" sx={{ opacity: pageSize === 5 ? 1 : 0.3 }}>
+                                    5
+                                </Typography>
+                            </IconButton>
+                            <IconButton
+                                sx={{ minWidth: "3rem" }}
+                                size="small"
+                                onClick={() => {
+                                    setPageSize(10)
+                                    changePage(1)
+                                }}
+                            >
+                                <Typography variant="caption" sx={{ opacity: pageSize === 10 ? 1 : 0.3 }}>
+                                    10
+                                </Typography>
+                            </IconButton>
+                            <IconButton
+                                sx={{ minWidth: "3rem" }}
+                                size="small"
+                                onClick={() => {
+                                    setPageSize(15)
+                                    changePage(1)
+                                }}
+                            >
+                                <Typography variant="caption" sx={{ opacity: pageSize === 15 ? 1 : 0.3 }}>
+                                    15
+                                </Typography>
+                            </IconButton>
+                        </Stack>
                     </Stack>
-                </ClipThing>
 
-                <MechViewer />
-            </Stack>
+                    <Box
+                        sx={{
+                            my: ".8rem",
+                            ml: ".8rem",
+                            mr: ".4rem",
+                            pr: ".4rem",
+                            flex: 1,
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            direction: "ltr",
+                            scrollbarWidth: "none",
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: theme.factionTheme.primary,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        {content}
+                    </Box>
 
-            <DeployModal />
-            <LeaveModal />
-            <HistoryModal />
-            <RentalModal />
-        </HangarWarMachineProvider>
+                    {mechs && (
+                        <Box
+                            sx={{
+                                px: "1rem",
+                                py: ".5rem",
+                                borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                                backgroundColor: "#00000070",
+                            }}
+                        >
+                            <Pagination
+                                size="medium"
+                                count={totalPages}
+                                page={page}
+                                sx={{
+                                    ".MuiButtonBase-root": { fontFamily: fonts.nostromoBold },
+                                    ".Mui-selected": { backgroundColor: `${theme.factionTheme.primary} !important` },
+                                }}
+                                onChange={(e, p) => changePage(p)}
+                                showFirstButton
+                                showLastButton
+                            />
+                        </Box>
+                    )}
+                </Stack>
+            </ClipThing>
+
+            <MechViewer />
+        </Stack>
     )
 }

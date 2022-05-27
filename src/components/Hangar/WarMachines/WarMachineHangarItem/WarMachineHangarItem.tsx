@@ -20,7 +20,6 @@ interface WarMachineHangarItemProps {
 }
 
 export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps) => {
-    const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { selectedMechDetails, setSelectedMechDetails } = useHangarWarMachine()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -42,6 +41,22 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
             }
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
+
+    return <WarMachineHangarItemInner mech={mech} mechDetails={mechDetails} isSelected={isSelected} setSelectedMechDetails={setSelectedMechDetails} />
+}
+
+const WarMachineHangarItemInner = ({
+    mech,
+    mechDetails,
+    isSelected,
+    setSelectedMechDetails,
+}: {
+    mech: MechBasic
+    mechDetails?: MechDetails
+    isSelected: boolean
+    setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
+}) => {
+    const theme = useTheme()
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", cursor: "pointer" }} onClick={() => setSelectedMechDetails(mechDetails)}>

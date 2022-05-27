@@ -40,6 +40,7 @@ export const colors = {
     black2: "#13161B",
     black3: "#080303",
 
+    neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
