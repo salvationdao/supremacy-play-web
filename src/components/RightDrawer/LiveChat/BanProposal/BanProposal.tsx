@@ -123,23 +123,25 @@ const BanProposalInner = ({
                 <Typography>Do you agree with this proposal?</Typography>
 
                 <Stack direction="row" spacing=".6rem">
-                    <FancyButton
-                        excludeCaret
-                        clipThingsProps={{
-                            clipSize: "4px",
-                            backgroundColor: colors.darkNavyBlue,
-                            border: { borderColor: userRank !== "GENERAL" ? "#FFFFFF90" : "#FFFFFF", borderThickness: "2px" },
-                            sx: { flex: 1.6, position: "relative" },
-                        }}
-                        sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
-                        onClick={() => toggleInstantPunishModalOpen(true)}
-                        disabled={userRank !== "GENERAL"}
-                    >
-                        {rankDeets?.icon}
-                        <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
-                            INSTANT PUNISH
-                        </Typography>
-                    </FancyButton>
+                    <TooltipHelper placement="bottom" text="GENERALS can skip the voting process and instantly punish a player.">
+                        <FancyButton
+                            excludeCaret
+                            clipThingsProps={{
+                                clipSize: "4px",
+                                backgroundColor: colors.darkNavyBlue,
+                                border: { borderColor: userRank !== "GENERAL" ? "#FFFFFF90" : "#FFFFFF", borderThickness: "2px" },
+                                sx: { flex: 1.6, position: "relative" },
+                            }}
+                            sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
+                            onClick={() => toggleInstantPunishModalOpen(true)}
+                            disabled={userRank !== "GENERAL"}
+                        >
+                            {rankDeets?.icon}
+                            <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
+                                INSTANT PUNISH
+                            </Typography>
+                        </FancyButton>
+                    </TooltipHelper>
 
                     <FancyButton
                         excludeCaret
