@@ -88,6 +88,10 @@ export enum GameServerKeys {
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
 
+    // Player Profile
+    GetPlayerPreferences = "PLAYER:PREFERENCES_GET",
+    UpdatePlayerPreferences = "PLAYER:PREFERENCES_UPDATE",
+
     EnlistFaction = "FACTION:ENLIST",
 }
 

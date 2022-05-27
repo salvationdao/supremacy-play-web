@@ -6,7 +6,6 @@ import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
-
     const { speed, max_hitpoints } = mech
     const powerCore = mechDetails?.power_core
     const utilities = mechDetails?.utility
