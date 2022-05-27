@@ -5,7 +5,17 @@ import { SvgSupToken } from "../../../../assets"
 import { getUserRankDeets, supFormatterNoFixed } from "../../../../helpers"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 
-export const InstantPunishConfirmModal = ({ submitInstantPunish, onClose, cost }: { submitInstantPunish: () => void; onClose: () => void; cost: string }) => {
+export const InstantPunishConfirmModal = ({
+    submitInstantPunish,
+    onClose,
+    cost,
+    punishPlayer,
+}: {
+    submitInstantPunish: () => void
+    onClose: () => void
+    cost: string
+    punishPlayer: string
+}) => {
     const theme = useTheme<Theme>()
 
     const rankDeets = useMemo(() => getUserRankDeets("GENERAL", "1rem", "1.6rem"), [])
@@ -53,7 +63,7 @@ export const InstantPunishConfirmModal = ({ submitInstantPunish, onClose, cost }
 
                         <Typography>
                             As a GENERAL, you have the privilege to instantly punish a player. Do you wish to spend <span>{supFormatterNoFixed(cost, 0)}</span>{" "}
-                            SUPS to instantly punish the player?
+                            SUPS to instantly punish player [{punishPlayer}]?
                         </Typography>
 
                         <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>

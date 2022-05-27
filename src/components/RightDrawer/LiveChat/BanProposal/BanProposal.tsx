@@ -1,9 +1,9 @@
 import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
-import { SvgCooldown, SvgInfoCircular, SvgSupToken } from "../../../../assets"
+import { SvgCooldown, SvgInfoCircular } from "../../../../assets"
 import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../../../containers"
-import { getUserRankDeets, snakeToTitle, supFormatterNoFixed } from "../../../../helpers"
+import { getUserRankDeets, snakeToTitle } from "../../../../helpers"
 import { useTimer, useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
@@ -247,6 +247,7 @@ const BanProposalInner = ({
                     submitInstantPunish={submitInstantPunish}
                     onClose={() => toggleInstantPunishModalOpen(false)}
                     cost={banProposal.instant_pass_fee}
+                    punishPlayer={`${banProposal.reported_player_username}#${banProposal.reported_player_gid}`}
                 />
             )}
         </>
