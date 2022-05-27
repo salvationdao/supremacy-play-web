@@ -46,15 +46,17 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
-    return <WarMachineHangarItemInner mech={mech} mechDetails={mechDetails} isSelected={isSelected} setSelectedMechDetails={setSelectedMechDetails} />
+    return <WarMachineHangarItemInner loadingDetails={loadingDetails} mech={mech} mechDetails={mechDetails} isSelected={isSelected} setSelectedMechDetails={setSelectedMechDetails} />
 }
 
 const WarMachineHangarItemInner = ({
+   loadingDetails,
     mech,
     mechDetails,
     isSelected,
     setSelectedMechDetails,
 }: {
+    loadingDetails: boolean,
     mech: MechBasic
     mechDetails?: MechDetails
     isSelected: boolean
