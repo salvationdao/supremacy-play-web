@@ -24,12 +24,14 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
     const { send } = useGameServerCommandsUser("/user_commander")
     const { selectedMechDetails, setSelectedMechDetails } = useHangarWarMachine()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [loadingDetails, setLoadingDetails] = useState<boolean>(true)
 
     const isSelected = useMemo(() => selectedMechDetails?.id === mech.id, [mech.id, selectedMechDetails?.id])
 
     useEffect(() => {
         ;(async () => {
             try {
+                setLoadingDetails(true)
                 const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
                     mech_id: mech.id,
                 })
@@ -39,6 +41,8 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
                 if (index === 0) setSelectedMechDetails(resp)
             } catch (e) {
                 console.error(e)
+            } finally {
+                setLoadingDetails(false)
             }
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
@@ -65,7 +69,7 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
 
                     <Stack spacing="1.1rem" sx={{ flex: 1, height: "100%" }}>
                         <Stack direction="row" spacing="1rem" sx={{ flex: 1, height: 0 }}>
-                            <MechLoadout mech={mech} mechDetails={mechDetails} />
+                            <MechLoadout loading={loadingDetails} mech={mech} mechDetails={mechDetails} />
                             <MechMiniStats mech={mech} mechDetails={mechDetails} />
                             <MechBarStats mech={mech} mechDetails={mechDetails} />
                         </Stack>

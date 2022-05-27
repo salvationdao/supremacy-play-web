@@ -7,7 +7,7 @@ import { MechBasic, MechDetails } from "../../../../types"
 
 const ITEM_WIDTH = 7.5 //rem
 
-export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
 
@@ -47,6 +47,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
             <Stack sx={{ flexWrap: "wrap", height: "100%", width: "fit-content" }}>
                 {power_core_id && (
                     <LoadoutItem
+                        loading={loading}
                         imageUrl={powerCore?.image_url}
                         Icon={<SvgPowerCore size="1.1rem" />}
                         primaryColor={primaryColor}
@@ -55,6 +56,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 )}
                 {chassis_skin_id && (
                     <LoadoutItem
+                        loading={loading}
                         imageUrl={chassisSkin?.image_url}
                         Icon={<SvgSkin size="1.1rem" />}
                         primaryColor={primaryColor}
@@ -63,6 +65,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 )}
                 {intro_animation_id && (
                     <LoadoutItem
+                        loading={loading}
                         imageUrl={introAnimation?.image_url}
                         Icon={<SvgIntroAnimation size="1.1rem" />}
                         primaryColor={primaryColor}
@@ -71,6 +74,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 )}
                 {outro_animation_id && (
                     <LoadoutItem
+                        loading={loading}
                         imageUrl={outroAnimation?.image_url}
                         Icon={<SvgOutroAnimation size="1.1rem" />}
                         primaryColor={primaryColor}
@@ -79,6 +83,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 )}
                 {weapons?.map((w) => (
                     <LoadoutItem
+                        loading={loading}
                         key={`mech-loadout-weapon-${w.id}`}
                         imageUrl={w?.image_url}
                         Icon={<SvgWeapons size="1.1rem" />}
@@ -88,6 +93,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 ))}
                 {utilities?.map((u) => (
                     <LoadoutItem
+                        loading={loading}
                         key={`mech-loadout-utility-${u.id}`}
                         imageUrl={u?.image_url}
                         Icon={<SvgUtilities size="1.1rem" />}
@@ -101,7 +107,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
     )
 }
 
-const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?: string; primaryColor: string; tooltipText?: string; Icon: ReactNode }) => {
+const LoadoutItem = ({ loading, imageUrl, primaryColor, tooltipText, Icon }: { loading: boolean, imageUrl?: string; primaryColor: string; tooltipText?: string; Icon: ReactNode }) => {
     return (
         <Box sx={{ position: "relative", flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".2rem" }}>
             <FancyButton
@@ -133,7 +139,7 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?:
                             backgroundSize: "cover",
                         }}
                     >
-                        {!imageUrl && (
+                        {!imageUrl && loading && (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <CircularProgress size="2.2rem" sx={{ color: primaryColor }} />
                             </Stack>
