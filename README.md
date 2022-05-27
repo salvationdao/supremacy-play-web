@@ -4,13 +4,56 @@
 
 [CD Docs](.github/workflows/README.md)
 
+## Common Components (templates)
+
 ```
-npm start
-play-web: https://play.supremacygame.io
-passport-web: https://passport.xsyndev.io
+<ClipThing
+	clipSize="10px"
+	border={{
+		isFancy: true,
+		borderColor: "#FF0000",
+		borderThickness: ".15rem",
+	}}
+	opacity={0.7}
+	backgroundColor="#333333"
+	sx={{ height: "100%" }}
+>
+	<Stack sx={{ height: "100%" }}>
+		CONTENT
+	</Stack>
+</ClipThing>
+
+
+<FancyButton
+	excludeCaret
+	clipThingsProps={{
+		clipSize: "5px",
+		backgroundColor: "#333333",
+		opacity: 1,
+		border: { isFancy: true, borderColor: "#FF0000" },
+		sx: { position: "relative" },
+	}}
+	sx={{ px: "1.6rem", py: ".6rem", color: '#FF0000' }}
+	onClick={onClick}
+>
+	<Typography
+		variant="caption"
+		sx={{
+			color: '#FF0000',
+			fontFamily: fonts.nostromoBold,
+		}}
+	>
+		GO TO ASSET STORE
+	</Typography>
+</FancyButton>
 ```
 
-### New WS System Examples
+## Dev Links
+
+-   play-web: `https://play.supremacygame.io`
+-   passport-web: `https://passport.xsyndev.io`
+
+## New WS System Examples
 
 -   replace the `xxxxxxxxx` with the ws URI
 -   replace `YYY` with the corresponding hook of your need, see `src/hooks/useGameServer.ts`
@@ -63,7 +106,7 @@ useGameServerSubscriptionYYY<RESPONSE_TYPE>(
 
 ```
 
-### Environment:
+## Environment:
 
 ```
 export NINJA_NPM_TOKEN=[get from BitWarden, string]

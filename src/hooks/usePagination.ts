@@ -23,7 +23,7 @@ export const usePagination = ({ pageSize: _pageSize, page: _page } = { pageSize:
     }
 
     const changePage = (newPage: number) => {
-        setPage((curPage) => (newPage != curPage ? newPage : curPage))
+        setPage((curPage) => (newPage !== curPage ? newPage : curPage))
     }
 
     return {

@@ -1,14 +1,66 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback } from "react"
+import BigNumber from "bignumber.js"
+import { useCallback, useEffect, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../assets"
+import { useAuth, useSnackbar } from "../../../../containers"
 import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { supFormatter } from "../../../../helpers"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechModal } from "../Common/MechModal"
 
+export interface QueueFeed {
+    queue_length: number
+    queue_cost: string
+    contract_reward: string
+}
+
 export const DeployModal = () => {
-    const { queueFeed, actualQueueCost, onDeployQueue, deployQueueError, deployMechDetails, setDeployMechDetails, setDeployQueueError } = useHangarWarMachine()
+    const { deployMechDetails, setDeployMechDetails } = useHangarWarMachine()
+    const { newSnackbarMessage } = useSnackbar()
+    const { userID } = useAuth()
+    const { send: sendFactionCommander } = useGameServerCommandsFaction("/faction_commander")
+
+    // Queuing cost, queue length win reward etc.
+    const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
+        URI: "/queue",
+        key: GameServerKeys.SubQueueFeed,
+    })
+
+    const [deployQueueError, setDeployQueueError] = useState<string>()
+    const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueFeed?.queue_cost || "0", 2))
+
+    // If notification is turned on, add 10% to the queue cost
+    useEffect(() => {
+        const qc = new BigNumber(queueFeed?.queue_cost || "0").shiftedBy(-18)
+        setActualQueueCost(qc.toFixed(3))
+    }, [queueFeed?.queue_cost])
+
+    const onDeployQueue = useCallback(
+        async ({ hash }: { hash: string }) => {
+            if (!userID) return
+
+            try {
+                // Deploy the mech into queue, with the notification settings
+                const resp = await sendFactionCommander<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
+                    asset_hash: hash,
+                })
+
+                if (resp && resp.success) {
+                    newSnackbarMessage("Successfully deployed war machine.", "success")
+                    setDeployMechDetails(undefined)
+                    setDeployQueueError("")
+                }
+            } catch (e) {
+                setDeployQueueError(typeof e === "string" ? e : "Failed to deploy war machine.")
+                console.error(e)
+                return
+            }
+        },
+        [newSnackbarMessage, sendFactionCommander, setDeployMechDetails, userID],
+    )
 
     const onClose = useCallback(() => {
         setDeployMechDetails(undefined)

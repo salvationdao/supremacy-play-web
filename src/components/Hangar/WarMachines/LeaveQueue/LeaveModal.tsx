@@ -1,12 +1,35 @@
 import { Stack, Typography } from "@mui/material"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { FancyButton } from "../../.."
+import { useSnackbar } from "../../../../containers"
 import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechModal } from "../Common/MechModal"
 
 export const LeaveModal = () => {
-    const { onLeaveQueue, leaveQueueError, leaveMechDetails, setLeaveMechDetails, setLeaveQueueError } = useHangarWarMachine()
+    const { newSnackbarMessage } = useSnackbar()
+    const { send: sendFactionCommander } = useGameServerCommandsFaction("/faction_commander")
+    const { leaveMechDetails, setLeaveMechDetails } = useHangarWarMachine()
+    const [leaveQueueError, setLeaveQueueError] = useState<string>()
+
+    const onLeaveQueue = useCallback(
+        async (hash: string) => {
+            try {
+                const resp = await sendFactionCommander(GameServerKeys.LeaveQueue, { asset_hash: hash })
+                if (resp) {
+                    newSnackbarMessage("Successfully removed war machine from queue.", "success")
+                    setLeaveMechDetails(undefined)
+                    setLeaveQueueError("")
+                }
+            } catch (e) {
+                setLeaveQueueError(typeof e === "string" ? e : "Failed to leave queue.")
+                console.error(e)
+            }
+        },
+        [newSnackbarMessage, sendFactionCommander, setLeaveMechDetails],
+    )
 
     const onClose = useCallback(() => {
         setLeaveMechDetails(undefined)

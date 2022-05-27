@@ -105,7 +105,7 @@ interface BattleQueueNotificationsProps {
     send: SendFunc
 }
 
-interface ProfileResponse {
+interface PreferencesResponse {
     shortcode: string
     telegram_id: string
 }
@@ -132,7 +132,7 @@ export const BattleQueueNotifications = ({
 
     const hadNotificationsTurnedOff = !playerPreferences.enable_telegram_notifications && !playerPreferences.enable_sms_notifications
 
-    const updatePlayerProfile = async () => {
+    const updatePlayerPreferences = async () => {
         if (!send || !newPlayerPreferences) return
 
         if (newPlayerPreferences.enable_sms_notifications && !newPlayerPreferences.mobile_number) {
@@ -153,8 +153,7 @@ export const BattleQueueNotifications = ({
                 enable_push_notifications: newPlayerPreferences.enable_push_notifications,
                 mobile_number: newPlayerPreferences.mobile_number,
             }
-            const resp = await send<ProfileResponse>(GameServerKeys.UpdatePlayerPreferences, prefs)
-
+            const resp = await send<PreferencesResponse>(GameServerKeys.UpdatePlayerPreferences, prefs)
             if (!resp) {
                 setError("Unable to update preferences, please try again or contact support.")
                 setLoading(false)
@@ -314,7 +313,7 @@ export const BattleQueueNotifications = ({
                     disabled={loading || !settingsChanged}
                     variant="outlined"
                     onClick={() => {
-                        updatePlayerProfile()
+                        updatePlayerPreferences()
                         setTelegramShortcode("")
                     }}
                     sx={{
