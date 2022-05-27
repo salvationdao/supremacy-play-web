@@ -41,13 +41,6 @@ export const NotificationPreferences = (props: NotificationPreferencesProps) => 
             } catch (err) {
                 newSnackbarMessage(typeof err === "string" ? err : "Failed to get player preferences.", "error")
                 console.error(err)
-            } finally {
-                setNotificationPreferences({
-                    enable_telegram_notifications: false,
-                    enable_sms_notifications: false,
-                    enable_push_notifications: false,
-                    mobile_number: "",
-                })
             }
         })()
     }, [send, newSnackbarMessage])
