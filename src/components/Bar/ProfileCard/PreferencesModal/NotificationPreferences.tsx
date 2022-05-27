@@ -1,4 +1,4 @@
-import { Box, Checkbox, Stack, Switch, TextField, Typography } from "@mui/material"
+import { Box, Checkbox, CircularProgress, Stack, Switch, TextField, Typography } from "@mui/material"
 import { Dispatch, useEffect, useState } from "react"
 import { FancyButton } from "../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../assets"
@@ -46,7 +46,12 @@ export const NotificationPreferences = (props: NotificationPreferencesProps) => 
     }, [send, newSnackbarMessage])
 
     if (!notificationPreferences) {
-        return <Typography>Loading...</Typography>
+        return (
+            <Stack direction="row" alignItems="center" spacing=".6rem">
+                <CircularProgress size="1.3rem" sx={{ color: "#FFFFFF" }} />
+                <Typography sx={{ color: colors.lightGrey }}>LOADING...</Typography>
+            </Stack>
+        )
     }
 
     return <NotificationPreferencesInner notificationPreferences={notificationPreferences} setNotificationPreferences={setNotificationPreferences} {...props} />
