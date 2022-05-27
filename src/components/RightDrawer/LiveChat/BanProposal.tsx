@@ -130,7 +130,7 @@ const BanProposalInner = ({
                             clipSize: "4px",
                             backgroundColor: colors.darkNavyBlue,
                             border: { borderColor: userRank !== "GENERAL" ? "#FFFFFF90" : "#FFFFFF", borderThickness: "2px" },
-                            sx: { flex: 1.8, position: "relative" },
+                            sx: { flex: 2.8, position: "relative" },
                         }}
                         sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                         onClick={() => submitInstantBan(true)}
@@ -138,7 +138,7 @@ const BanProposalInner = ({
                     >
                         {rankDeets?.icon}
                         <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
-                            INSTANT BAN
+                            INSTANT PUNISH
                         </Typography>
 
                         <SvgSupToken size="1.2rem" sx={{ ml: ".5rem" }} />
