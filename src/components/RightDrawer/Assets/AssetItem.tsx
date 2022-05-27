@@ -17,12 +17,14 @@ export const AssetItem = ({
     queueFeed,
     setTelegramShortcode,
     isGridView,
+    togglePreventAssetsRefresh,
 }: {
     assetQueue: AssetQueue
     queueFeed: QueueFeedResponse
     telegramShortcode?: string
     setTelegramShortcode?: (s: string) => void
     isGridView: boolean
+    togglePreventAssetsRefresh: (value?: boolean | undefined) => void
 }) => {
     const { user } = usePassportServerAuth()
     const { state } = useGameServerWebsocket()
@@ -116,6 +118,7 @@ export const AssetItem = ({
                         onClick={(e) => {
                             e.stopPropagation()
                             toggleLeaveModalOpen(true)
+                            togglePreventAssetsRefresh(true)
                         }}
                         variant="contained"
                         size="small"
@@ -179,6 +182,7 @@ export const AssetItem = ({
                 onClick={(e) => {
                     e.stopPropagation()
                     toggleDeployModalOpen(true)
+                    togglePreventAssetsRefresh(true)
                 }}
                 sx={{
                     position: "relative",
@@ -198,7 +202,7 @@ export const AssetItem = ({
                 </Typography>
             </Button>
         )
-    }, [isGameServerUp, assetQueue, isInQueue, isGridView, toggleLeaveModalOpen, toggleDeployModalOpen])
+    }, [isGameServerUp, assetQueue, isInQueue, isGridView, toggleLeaveModalOpen, toggleDeployModalOpen, togglePreventAssetsRefresh])
 
     const mechItem = useMemo(() => {
         if (!assetData) return <></>
@@ -208,7 +212,10 @@ export const AssetItem = ({
             return (
                 <Box sx={{ p: ".4rem", width: "33.33%" }}>
                     <Box
-                        onClick={() => toggleMechDrawerOpen()}
+                        onClick={() => {
+                            toggleMechDrawerOpen()
+                            togglePreventAssetsRefresh(true)
+                        }}
                         sx={{
                             height: "100%",
                             borderRadius: 0.2,
@@ -286,7 +293,10 @@ export const AssetItem = ({
 
         return (
             <Box
-                onClick={() => toggleMechDrawerOpen()}
+                onClick={() => {
+                    toggleMechDrawerOpen()
+                    togglePreventAssetsRefresh(true)
+                }}
                 sx={{
                     cursor: "pointer",
                     ":hover": { backgroundColor: `#FFFFFF20` },
@@ -362,7 +372,18 @@ export const AssetItem = ({
                 </Stack>
             </Box>
         )
-    }, [assetData, isGridView, isGameServerUp, isInQueue, assetQueue, rarityDeets.color, rarityDeets.label, statusArea, toggleMechDrawerOpen])
+    }, [
+        assetData,
+        isGridView,
+        isGameServerUp,
+        isInQueue,
+        assetQueue,
+        rarityDeets.color,
+        rarityDeets.label,
+        statusArea,
+        toggleMechDrawerOpen,
+        togglePreventAssetsRefresh,
+    ])
 
     if (!assetData || !user) return null
 
@@ -377,12 +398,24 @@ export const AssetItem = ({
                     open={deployModalOpen}
                     asset={assetData}
                     queueFeed={queueFeed}
-                    onClose={() => toggleDeployModalOpen(false)}
+                    onClose={() => {
+                        toggleDeployModalOpen(false)
+                        togglePreventAssetsRefresh(false)
+                    }}
                     setTelegramShortcode={setTelegramShortcode}
                 />
             )}
 
-            {leaveModalOpen && <LeaveConfirmation open={leaveModalOpen} asset={assetData} onClose={() => toggleLeaveModalOpen(false)} />}
+            {leaveModalOpen && (
+                <LeaveConfirmation
+                    open={leaveModalOpen}
+                    asset={assetData}
+                    onClose={() => {
+                        toggleLeaveModalOpen(false)
+                        togglePreventAssetsRefresh(false)
+                    }}
+                />
+            )}
 
             {mechDrawerOpen && (
                 <MechDrawer
@@ -390,9 +423,18 @@ export const AssetItem = ({
                     open={mechDrawerOpen}
                     asset={assetData}
                     assetQueue={assetQueue}
-                    onClose={() => toggleMechDrawerOpen(false)}
-                    openDeployModal={() => toggleDeployModalOpen(true)}
-                    openLeaveModal={() => toggleLeaveModalOpen(true)}
+                    onClose={() => {
+                        toggleMechDrawerOpen(false)
+                        togglePreventAssetsRefresh(false)
+                    }}
+                    openDeployModal={() => {
+                        toggleDeployModalOpen(true)
+                        togglePreventAssetsRefresh(true)
+                    }}
+                    openLeaveModal={() => {
+                        toggleLeaveModalOpen(true)
+                        togglePreventAssetsRefresh(true)
+                    }}
                 />
             )}
         </>

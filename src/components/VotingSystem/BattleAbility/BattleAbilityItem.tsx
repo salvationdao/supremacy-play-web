@@ -41,7 +41,7 @@ export const BattleAbilityItem = () => {
             },
             null,
         )
-    }, [state, subscribe, toggleFadeEffect])
+    }, [state, subscribe, factionID, toggleFadeEffect])
 
     // DO NOT REMOVE THIS! Trigger the subscribe to the progress bars net message
     useEffect(() => {
@@ -113,11 +113,7 @@ export const BattleAbilityItem = () => {
     )
 
     const isVoting = useMemo(
-        () =>
-            bribeStage?.phase == "BRIBE" &&
-            battleAbilityProgress &&
-            battleAbilityProgress.length > 0 &&
-            battleAbilityProgress[0].sups_cost.isGreaterThan(battleAbilityProgress[0].current_sups),
+        () => bribeStage?.phase == "BRIBE" && battleAbilityProgress && battleAbilityProgress.length > 0,
         [battleAbilityProgress, bribeStage],
     )
 
@@ -139,6 +135,7 @@ export const BattleAbilityItem = () => {
 
     return (
         <BattleAbilityItemInner
+            key={battleAbility.ability_offering_id}
             bribeStage={bribeStage}
             battleAbility={battleAbility}
             isVoting={isVoting}
@@ -221,6 +218,7 @@ const BattleAbilityItemInner = ({
 
                                     {battleAbilityFactionProgress && (
                                         <VotingButtons
+                                            key={battleAbility.ability_offering_id}
                                             battleAbilityProgress={battleAbilityFactionProgress}
                                             buttonColor={buttonColor}
                                             buttonTextColor={buttonTextColor}

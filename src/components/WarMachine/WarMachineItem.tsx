@@ -34,6 +34,7 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
     const { userID, factionID } = useGameServerAuth()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
+    const [isAlive, toggleIsAlive] = useToggle(true)
 
     const {
         warMachine: { hash, participantID, factionID: warMachineFactionID },
@@ -66,10 +67,11 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
             (payload) => {
                 if (!payload) return
                 setWarMachineDestroyedRecord(payload)
+                toggleIsAlive(false)
             },
             { participantID },
         )
-    }, [state, subscribe, participantID])
+    }, [state, subscribe, participantID, toggleIsAlive])
 
     return (
         <WarMachineItemInner
@@ -80,6 +82,8 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
             setHighlightedMechHash={setHighlightedMechHash}
             gameAbilities={gameAbilities}
             warMachineDestroyedRecord={warMachineDestroyedRecord}
+            isAlive={isAlive}
+            toggleIsAlive={toggleIsAlive}
         />
     )
 }
@@ -91,6 +95,8 @@ interface WarMachineItemInnerProps extends WarMachineItemProps {
     setHighlightedMechHash: (s?: string) => void
     gameAbilities?: GameAbility[]
     warMachineDestroyedRecord?: WarMachineDestroyedRecord
+    isAlive: boolean
+    toggleIsAlive: (value: boolean) => void
 }
 
 const WarMachineItemInner = ({
@@ -103,6 +109,8 @@ const WarMachineItemInner = ({
     setHighlightedMechHash,
     gameAbilities,
     warMachineDestroyedRecord,
+    isAlive,
+    toggleIsAlive,
 }: WarMachineItemInnerProps) => {
     const { hash, participantID, faction, name, imageAvatar, tier, ownedByID } = warMachine
     const {
@@ -121,7 +129,6 @@ const WarMachineItemInner = ({
     const isOwnFaction = useMemo(() => factionID == warMachine.factionID, [factionID, warMachine])
     const numSkillBars = useMemo(() => (gameAbilities ? gameAbilities.length : 0), [gameAbilities])
     const owned = useMemo(() => ownedByID === userID, [ownedByID, userID])
-    const isAlive = !warMachineDestroyedRecord
 
     const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
@@ -327,7 +334,7 @@ const WarMachineItemInner = ({
                             spacing=".8rem"
                             sx={{ flex: 1, pl: isExpanded ? "2.8rem" : 0, pr: isExpanded ? "1.68rem" : 0 }}
                         >
-                            <HealthShieldBars warMachine={warMachine} type={isExpanded ? "horizontal" : "vertical"} />
+                            <HealthShieldBars warMachine={warMachine} type={isExpanded ? "horizontal" : "vertical"} toggleIsAlive={toggleIsAlive} />
 
                             {isExpanded && (
                                 <Box
