@@ -271,7 +271,10 @@ const WarMachinesInner = () => {
                                 page={page}
                                 sx={{
                                     ".MuiButtonBase-root": { fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": { backgroundColor: `${theme.factionTheme.primary} !important` },
+                                    ".Mui-selected": {
+                                        color: (theme) => theme.factionTheme.secondary,
+                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                                    },
                                 }}
                                 onChange={(e, p) => changePage(p)}
                                 showFirstButton

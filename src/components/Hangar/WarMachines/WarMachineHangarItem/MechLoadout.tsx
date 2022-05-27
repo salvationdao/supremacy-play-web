@@ -1,13 +1,13 @@
-import { Box, CircularProgress, Stack } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { ReactNode } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
-import { SvgPlus, SvgPowerCore, SvgSkin, SvgIntroAnimation, SvgOutroAnimation, SvgWeapons, SvgUtilities } from "../../../../assets"
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPlus, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 const ITEM_WIDTH = 7.5 //rem
 
-export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, mech: MechBasic; mechDetails?: MechDetails }) => {
+export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
 
@@ -47,7 +47,6 @@ export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, 
             <Stack sx={{ flexWrap: "wrap", height: "100%", width: "fit-content" }}>
                 {power_core_id && (
                     <LoadoutItem
-                        loading={loading}
                         imageUrl={powerCore?.image_url}
                         Icon={<SvgPowerCore size="1.1rem" />}
                         primaryColor={primaryColor}
@@ -56,7 +55,6 @@ export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, 
                 )}
                 {chassis_skin_id && (
                     <LoadoutItem
-                        loading={loading}
                         imageUrl={chassisSkin?.image_url}
                         Icon={<SvgSkin size="1.1rem" />}
                         primaryColor={primaryColor}
@@ -65,7 +63,6 @@ export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, 
                 )}
                 {intro_animation_id && (
                     <LoadoutItem
-                        loading={loading}
                         imageUrl={introAnimation?.image_url}
                         Icon={<SvgIntroAnimation size="1.1rem" />}
                         primaryColor={primaryColor}
@@ -74,7 +71,6 @@ export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, 
                 )}
                 {outro_animation_id && (
                     <LoadoutItem
-                        loading={loading}
                         imageUrl={outroAnimation?.image_url}
                         Icon={<SvgOutroAnimation size="1.1rem" />}
                         primaryColor={primaryColor}
@@ -83,7 +79,6 @@ export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, 
                 )}
                 {weapons?.map((w) => (
                     <LoadoutItem
-                        loading={loading}
                         key={`mech-loadout-weapon-${w.id}`}
                         imageUrl={w?.image_url}
                         Icon={<SvgWeapons size="1.1rem" />}
@@ -93,7 +88,6 @@ export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, 
                 ))}
                 {utilities?.map((u) => (
                     <LoadoutItem
-                        loading={loading}
                         key={`mech-loadout-utility-${u.id}`}
                         imageUrl={u?.image_url}
                         Icon={<SvgUtilities size="1.1rem" />}
@@ -107,7 +101,7 @@ export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, 
     )
 }
 
-const LoadoutItem = ({ loading, imageUrl, primaryColor, tooltipText, Icon }: { loading: boolean, imageUrl?: string; primaryColor: string; tooltipText?: string; Icon: ReactNode }) => {
+const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?: string; primaryColor: string; tooltipText?: string; Icon: ReactNode }) => {
     return (
         <Box sx={{ position: "relative", flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
             <FancyButton
@@ -139,13 +133,7 @@ const LoadoutItem = ({ loading, imageUrl, primaryColor, tooltipText, Icon }: { l
                             backgroundSize: "cover",
                             borderRadius: 1,
                         }}
-                    >
-                        {!imageUrl && loading && (
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                <CircularProgress size="2.2rem" sx={{ color: primaryColor }} />
-                            </Stack>
-                        )}
-                    </Box>
+                    />
                 </TooltipHelper>
             </FancyButton>
 
