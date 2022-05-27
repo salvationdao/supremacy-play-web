@@ -30,16 +30,16 @@
 		clipSize: "5px",
 		backgroundColor: "#333333",
 		opacity: 1,
-		border: { isFancy: true, borderColor: "#FF0000" },
+		border: { isFancy: true, borderColor: "#FF0000", borderThickness: "1.5px" },
 		sx: { position: "relative" },
 	}}
-	sx={{ px: "1.6rem", py: ".6rem", color: '#FF0000' }}
+	sx={{ px: "1.6rem", py: ".6rem", color: "#FF0000" }}
 	onClick={onClick}
 >
 	<Typography
 		variant="caption"
 		sx={{
-			color: '#FF0000',
+			color: "#FF0000",
 			fontFamily: fonts.nostromoBold,
 		}}
 	>

@@ -28,7 +28,7 @@ declare module "@mui/material/styles" {
 export const colors = {
     text: "#FFFFFF",
     offWhite: "#D4FFFF",
-    red: "#C24242",
+    red: "#D12A2A",
     lightRed: "#E83200",
     green: "#2BA172",
     yellow: "#FFE200",

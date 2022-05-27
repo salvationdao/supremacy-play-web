@@ -57,7 +57,7 @@ export const LeaveModal = () => {
                             border: { isFancy: true, borderColor: colors.red },
                             sx: { position: "relative", width: "100%" },
                         }}
-                        sx={{ px: "1.6rem", py: ".5rem", color: "#FFFFFF" }}
+                        sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
                         onClick={() => onLeaveQueue(hash)}
                     >
                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
