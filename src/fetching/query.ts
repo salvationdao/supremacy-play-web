@@ -12,11 +12,14 @@ export const PassportLoginCheck = (): Action<User> => {
 }
 
 export const GameServerLoginCheck = (): Action<boolean> => {
+    console.log("checking ")
+
     return {
-        method: "GET",
+        method: "POST",
         endpoint: `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/check`,
         credentials: "include",
         responseType: "json",
+        body: { thing: "thing" },
     }
 }
 
