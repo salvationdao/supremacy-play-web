@@ -32,12 +32,12 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
     const { sold, amount } = mysteryCrate
 
     return (
-        <Box sx={{ p: "1.5rem", width: "30rem" }}>
+        <Box sx={{ p: "1.2rem", width: "30rem" }}>
             <ClipThing
                 clipSize="10px"
                 border={{
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
+                    borderThickness: ".2rem",
                 }}
                 opacity={0.9}
                 backgroundColor={theme.factionTheme.background}

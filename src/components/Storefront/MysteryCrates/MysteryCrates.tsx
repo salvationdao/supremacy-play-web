@@ -99,7 +99,7 @@ export const MysteryCrates = () => {
 
         if (crates && crates.length > 0) {
             return (
-                <Stack direction="row" justifyContent="center" flexWrap="wrap" sx={{ px: ".5rem", py: "1.5rem", height: 0 }}>
+                <Stack direction="row" justifyContent="center" flexWrap="wrap" sx={{ height: 0 }}>
                     {crates.map((crate, i) => (
                         <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}`} crate={crate} />
                     ))}
