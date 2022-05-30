@@ -52,6 +52,7 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
                             borderRadius: 1,
                             boxShadow: "inset 0 0 12px 6px #00000040",
                             background: `radial-gradient(#FFFFFF20 1px, ${theme.factionTheme.background})`,
+                            border: "#00000060 1px solid",
                         }}
                     >
                         <Box
