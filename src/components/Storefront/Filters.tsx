@@ -2,7 +2,7 @@ import { Stack } from "@mui/material"
 import { ClipThing } from ".."
 import { useTheme } from "../../containers/theme"
 
-export const Filter = () => {
+export const Filters = () => {
     const theme = useTheme()
 
     return (

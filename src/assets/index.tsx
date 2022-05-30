@@ -114,6 +114,8 @@ import BottomMechWEBP from "./images/BottomMech.webp"
 import SupBackground from "./images/SupBackground.webp"
 import HangarBg from "./images/HangarBg.jpg"
 import Crosshair from "./images/Crosshair.png"
+import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
+import SafePNG from "./images/Safe.png"
 import Gabs from "./images/Gabs.png"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
@@ -177,6 +179,8 @@ export {
     SupBackground,
     Crosshair,
     Gabs,
+    EmptyWarMachinesPNG,
+    SafePNG,
 }
 
 export interface SvgWrapperProps extends BoxProps {
