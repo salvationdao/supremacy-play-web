@@ -7,7 +7,7 @@ import { MechBasic, MechDetails } from "../../../../types"
 
 const ITEM_WIDTH = 7.5 //rem
 
-export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, mech: MechBasic; mechDetails?: MechDetails }) => {
+export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean; mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
 
@@ -107,7 +107,19 @@ export const MechLoadout = ({ loading, mech, mechDetails }: { loading: boolean, 
     )
 }
 
-const LoadoutItem = ({ loading, imageUrl, primaryColor, tooltipText, Icon }: { loading: boolean, imageUrl?: string; primaryColor: string; tooltipText?: string; Icon: ReactNode }) => {
+const LoadoutItem = ({
+    loading,
+    imageUrl,
+    primaryColor,
+    tooltipText,
+    Icon,
+}: {
+    loading: boolean
+    imageUrl?: string
+    primaryColor: string
+    tooltipText?: string
+    Icon: ReactNode
+}) => {
     return (
         <Box sx={{ position: "relative", flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
             <FancyButton

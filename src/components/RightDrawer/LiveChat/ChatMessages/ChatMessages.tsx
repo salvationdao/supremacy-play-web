@@ -7,7 +7,7 @@ import { checkIfIsEmoji } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
 import { Faction, User } from "../../../../types"
 import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../../types/chat"
-import { BanProposal } from "../BanProposal"
+import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 
 interface ChatMessagesProps {

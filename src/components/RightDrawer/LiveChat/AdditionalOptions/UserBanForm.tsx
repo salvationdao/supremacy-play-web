@@ -50,7 +50,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { userStat } = useAuth()
+    const { userStat, userRank } = useAuth()
     // Options and display only
     const [searchText, setSearchText] = useState(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "")
     const [search, setSearch] = useDebounce(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "", 300)
@@ -134,7 +134,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
         }
     }, [selectedUser, selectedBanOptionID, reason, send, onClose, newSnackbarMessage])
 
-    const isDisabled = !selectedUser || !selectedBanOptionID || !reason || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100)
+    const isDisabled =
+        !selectedUser || !selectedBanOptionID || !reason || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && userRank !== "GENERAL")
 
     return (
         <Modal open={open} onClose={onClose}>
