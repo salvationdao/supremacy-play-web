@@ -2,6 +2,7 @@ import { BattleArenaPage, HangarPage, MarketplacePage, NotFoundPage } from "../p
 import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
+import { StorefrontPage } from "../pages/Storefront"
 
 interface RouteStruct {
     id: string
@@ -34,6 +35,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         enable: true,
         label: "Hangar",
         requireAuth: true,
+    },
+    storefront: {
+        id: "storefront",
+        path: "/storefront",
+        exact: true,
+        Component: StorefrontPage,
+        showInLeftDrawer: true,
+        enable: true,
+        label: "Storefront",
+        requireAuth: false,
     },
     marketplace: {
         id: "marketplace",
