@@ -1,17 +1,15 @@
-import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
+import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useState, SyntheticEvent } from "react"
 import { HangarBg } from "../assets"
+import { ConnectButton } from "../components"
 import { MysteryCrates } from "../components/Storefront/MysteryCrates/MysteryCrates"
-import { siteZIndex } from "../theme/theme"
+import { useAuth } from "../containers"
+import { fonts, siteZIndex } from "../theme/theme"
 
 type tabs = "mystery-crates" | "skins" | "merchandise"
 
 export const StorefrontPage = () => {
-    const [currentValue, setCurrentValue] = useState<tabs>("mystery-crates")
-
-    const handleChange = (event: SyntheticEvent, newValue: tabs) => {
-        setCurrentValue(newValue)
-    }
+    const { userID } = useAuth()
 
     return (
         <Stack
@@ -24,6 +22,29 @@ export const StorefrontPage = () => {
                 backgroundSize: "cover",
             }}
         >
+            {!userID ? (
+                <Stack spacing="1.3rem" alignItems="center" sx={{ alignSelf: "center", my: "auto", px: "3.6rem", py: "2.8rem", backgroundColor: "#00000060" }}>
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        You need to be logged in to view this page.
+                    </Typography>
+                    <ConnectButton width="12rem" />
+                </Stack>
+            ) : (
+                <StorefrontPageInner />
+            )}
+        </Stack>
+    )
+}
+
+const StorefrontPageInner = () => {
+    const [currentValue, setCurrentValue] = useState<tabs>("mystery-crates")
+
+    const handleChange = (event: SyntheticEvent, newValue: tabs) => {
+        setCurrentValue(newValue)
+    }
+
+    return (
+        <>
             <Tabs
                 value={currentValue}
                 onChange={handleChange}
@@ -54,7 +75,7 @@ export const StorefrontPage = () => {
             <TabPanel currentValue={currentValue} value="merchandise">
                 MERCHANDISE
             </TabPanel>
-        </Stack>
+        </>
     )
 }
 

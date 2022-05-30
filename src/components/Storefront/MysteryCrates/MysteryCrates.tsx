@@ -2,19 +2,20 @@ import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { ClipThing } from "../.."
 import { useTheme } from "../../../containers/theme"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { Filter } from "../Filter"
 
 export const MysteryCrates = () => {
     const theme = useTheme()
-    // const { send } = useGameServerCommandsYYY("xxxxxxxxx")
+    const { send } = useGameServerCommandsFaction("xxxxxxxxx")
     const [crates, setCrates] = useState<MysteryCrate>()
 
     // useEffect(() => {
     //     ;(async () => {
     //         try {
-    //             const resp = await send<RESPONSE_TYPE>(GameServerKeys.XXXXXX, {
+    //             const resp = await send<MysteryCrate[]>(GameServerKeys.XXXXXX, {
     //                 payload: something,
     //             })
 

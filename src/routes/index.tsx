@@ -44,7 +44,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         showInLeftDrawer: true,
         enable: true,
         label: "Storefront",
-        requireAuth: false,
+        requireAuth: true,
     },
     marketplace: {
         id: "marketplace",
