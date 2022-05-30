@@ -7,9 +7,11 @@ import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { Filters } from "../Filters"
+import { MysteryCrateItem } from "./MysteryCrateItem/MysteryCrateItem"
 
 const placeholderCrates: MysteryCrate[] = [
     {
@@ -32,7 +34,18 @@ export const MysteryCrates = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("xxxxxxxxx")
     const theme = useTheme()
-    const [crates, setCrates] = useState<MysteryCrate[]>(placeholderCrates)
+    const [crates, setCrates] = useState<MysteryCrate[]>([
+        ...placeholderCrates,
+        ...placeholderCrates,
+        ...placeholderCrates,
+        ...placeholderCrates,
+        ...placeholderCrates,
+        ...placeholderCrates,
+        ...placeholderCrates,
+        ...placeholderCrates,
+        ...placeholderCrates,
+        ...placeholderCrates,
+    ])
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
 
@@ -84,15 +97,15 @@ export const MysteryCrates = () => {
         //     )
         // }
 
-        // if (crates && crates.length > 0) {
-        //     return (
-        //         <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem", height: 0 }}>
-        //             {crates.map((mech, i) => (
-        //                 <MysteryCrateItem key={`hangar-mech-${mech.id}`} index={i} mech={mech} />
-        //             ))}
-        //         </Stack>
-        //     )
-        // }
+        if (crates && crates.length > 0) {
+            return (
+                <Stack direction="row" justifyContent="center" flexWrap="wrap" sx={{ px: ".5rem", py: "1.5rem", height: 0 }}>
+                    {crates.map((crate, i) => (
+                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}`} crate={crate} />
+                    ))}
+                </Stack>
+            )
+        }
 
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
@@ -101,6 +114,7 @@ export const MysteryCrates = () => {
                         sx={{
                             width: "9rem",
                             height: "9rem",
+                            opacity: 0.6,
                             filter: "grayscale(100%)",
                             background: `url(${SafePNG})`,
                             backgroundRepeat: "no-repeat",
@@ -124,7 +138,7 @@ export const MysteryCrates = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, isLoading])
+    }, [crates])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
@@ -133,7 +147,6 @@ export const MysteryCrates = () => {
             <ClipThing
                 clipSize="10px"
                 border={{
-                    isFancy: true,
                     borderColor: theme.factionTheme.primary,
                     borderThickness: ".3rem",
                 }}
@@ -142,10 +155,11 @@ export const MysteryCrates = () => {
                 sx={{ flex: 1, height: "100%", width: "45rem" }}
             >
                 <Stack spacing="2rem" sx={{ position: "relative", height: "100%", px: "2.68em", py: "2.2rem" }}>
-                    <Stack direction="row" spacing="1.2rem">
+                    <Stack direction="row" alignItems="center">
                         <Box
                             sx={{
-                                width: "6rem",
+                                mr: "1.2rem",
+                                width: "6.5rem",
                                 height: "100%",
                                 background: `url(${SafePNG})`,
                                 backgroundRepeat: "no-repeat",
@@ -154,10 +168,22 @@ export const MysteryCrates = () => {
                             }}
                         />
                         <Box>
-                            <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 MYSTERY CRATES
                             </Typography>
-                            <Typography sx={{ fontSize: "1.6rem" }}>Gear up for the battle areana with a variety of War Machines and Weapons.</Typography>
+                            <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle areana with a variety of War Machines and Weapons.</Typography>
+                        </Box>
+
+                        <Box
+                            sx={{
+                                ml: "auto",
+                                px: "1.6rem",
+                                py: ".8rem",
+                                border: `${colors.neonBlue} 2px dashed`,
+                                animation: `${zoomEffect(1.01)} 3s infinite`,
+                            }}
+                        >
+                            <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>LIMITED AMOUNTS AVAILABLE</Typography>
                         </Box>
                     </Stack>
 

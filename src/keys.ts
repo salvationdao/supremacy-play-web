@@ -96,6 +96,7 @@ export enum GameServerKeys {
 
     // Storefront
     GetMysteryCrates = "XXXXXXXXX",
+    SubMysteryCrate = "XXXXXXXXX",
 }
 
 export enum PassportServerKeys {
