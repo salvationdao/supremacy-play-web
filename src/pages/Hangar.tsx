@@ -6,6 +6,8 @@ import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
 import { useAuth } from "../containers"
 import { fonts, siteZIndex } from "../theme/theme"
 
+type tabs = "war-machines" | "weapons" | "attachments" | "paint-jobs"
+
 export const HangarPage = () => {
     const { userID } = useAuth()
 
@@ -35,9 +37,9 @@ export const HangarPage = () => {
 }
 
 const HangarPageInner = () => {
-    const [currentValue, setCurrentValue] = useState(0)
+    const [currentValue, setCurrentValue] = useState<tabs>("war-machines")
 
-    const handleChange = (event: SyntheticEvent, newValue: number) => {
+    const handleChange = (event: SyntheticEvent, newValue: tabs) => {
         setCurrentValue(newValue)
     }
 
@@ -59,22 +61,22 @@ const HangarPageInner = () => {
                     ".MuiTabs-indicator": { backgroundColor: (theme) => theme.factionTheme.primary },
                 }}
             >
-                <Tab label="WAR MACHINE" />
-                <Tab label="WEAPONS" />
-                <Tab label="ATTACHMENTS" />
-                <Tab label="PAINT JOBS" />
+                <Tab label="WAR MACHINE" value="war-machines" />
+                <Tab label="WEAPONS" value="weapons" />
+                <Tab label="ATTACHMENTS" value="attachments" />
+                <Tab label="PAINT JOBS" value="paint-jobs" />
             </Tabs>
 
-            <TabPanel currentValue={currentValue} index={0}>
+            <TabPanel currentValue={currentValue} value={"war-machines"}>
                 <WarMachines />
             </TabPanel>
-            <TabPanel currentValue={currentValue} index={1}>
+            <TabPanel currentValue={currentValue} value={"weapons"}>
                 WEAPONS
             </TabPanel>
-            <TabPanel currentValue={currentValue} index={2}>
+            <TabPanel currentValue={currentValue} value={"attachments"}>
                 ATTACHMENTS
             </TabPanel>
-            <TabPanel currentValue={currentValue} index={3}>
+            <TabPanel currentValue={currentValue} value={"paint-jobs"}>
                 PAINT JOBS
             </TabPanel>
         </>
@@ -83,17 +85,17 @@ const HangarPageInner = () => {
 
 interface TabPanelProps {
     children?: React.ReactNode
-    index: number
-    currentValue: number
+    value: tabs
+    currentValue: tabs
 }
 
 const TabPanel = (props: TabPanelProps) => {
-    const { children, currentValue, index } = props
+    const { children, currentValue, value } = props
 
-    if (currentValue === index) {
+    if (currentValue === value) {
         return (
             <Fade in>
-                <Box id={`hangar-tabpanel-${index}`} sx={{ px: "1.5rem", pt: "1rem", pb: "1.5rem", flex: 1 }}>
+                <Box id={`hangar-tabpanel-${value}`} sx={{ px: "1.5rem", pt: "1rem", pb: "1.5rem", flex: 1 }}>
                     {children}
                 </Box>
             </Fade>
