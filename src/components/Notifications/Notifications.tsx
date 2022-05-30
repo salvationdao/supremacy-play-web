@@ -13,7 +13,7 @@ import {
     WarMachineAbilityAlert,
 } from ".."
 import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
-import { makeid, useGameServerAuth, useDimension, useGameServerWebsocket, useSupremacy, useGame } from "../../containers"
+import { useDimension, useSupremacy, useGame } from "../../containers"
 import { useCallback, useEffect, useMemo } from "react"
 import { GameServerKeys } from "../../keys"
 import { useArray } from "../../hooks"
@@ -32,6 +32,8 @@ import {
     killNoti3,
 } from "./testData"
 import { siteZIndex } from "../../theme/theme"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { makeid } from "../../containers/ws/util"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -52,9 +54,7 @@ export interface NotificationResponse {
 }
 
 export const Notifications = () => {
-    const { factionsAll } = useSupremacy()
-    const { state, subscribe } = useGameServerWebsocket()
-    const { user } = useGameServerAuth()
+    const { getFaction } = useSupremacy()
     const { setForceDisplay100Percentage } = useGame()
     const {
         gameUIDimensions: { height },
@@ -139,21 +139,19 @@ export const Notifications = () => {
     }, [newNotification])
 
     // Notifications
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<NotificationResponse | undefined>(
-            GameServerKeys.SubGameNotification,
-            (payload) => {
-                newNotification(payload)
+    const incomingNotification = useGameServerSubscription<NotificationResponse | undefined>({
+        URI: "/public/notification",
+        key: GameServerKeys.SubGameNotification,
+    })
 
-                if (payload?.type === "BATTLE_ABILITY") {
-                    const p = payload as { type: NotificationType; data: BattleFactionAbilityAlertProps }
-                    setForceDisplay100Percentage(p?.data?.user?.faction_id || "")
-                }
-            },
-            null,
-        )
-    }, [newNotification, setForceDisplay100Percentage, state, subscribe, user])
+    useEffect(() => {
+        newNotification(incomingNotification)
+
+        if (incomingNotification?.type === "BATTLE_ABILITY") {
+            const p = incomingNotification as { type: NotificationType; data: BattleFactionAbilityAlertProps }
+            setForceDisplay100Percentage(p?.data?.user?.faction_id || "")
+        }
+    }, [incomingNotification, newNotification, setForceDisplay100Percentage])
 
     const notificationsJsx = useMemo(
         () =>
@@ -174,36 +172,36 @@ export const Notifications = () => {
                         case "LOCATION_SELECT":
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <LocationSelectAlert data={n.data} factionsAll={factionsAll} />
+                                    <LocationSelectAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                         case "BATTLE_ABILITY":
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <BattleAbilityAlert data={n.data} factionsAll={factionsAll} />
+                                    <BattleAbilityAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                         case "FACTION_ABILITY":
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <FactionAbilityAlert data={n.data} factionsAll={factionsAll} />
+                                    <FactionAbilityAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                         case "WAR_MACHINE_ABILITY":
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <WarMachineAbilityAlert data={n.data} factionsAll={factionsAll} />
+                                    <WarMachineAbilityAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                         case "WAR_MACHINE_DESTROYED":
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <KillAlert data={n.data} factionsAll={factionsAll} />
+                                    <KillAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                     }
                 }),
-        [factionsAll, notifications],
+        [getFaction, notifications],
     )
 
     return <NotificationsInner height={height} notificationsJsx={notificationsJsx} />
@@ -216,7 +214,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                 position: "absolute",
                 top: "1rem",
                 right: "1rem",
-                zIndex: siteZIndex.Notfications,
+                zIndex: siteZIndex.Notifications,
                 overflow: "hidden",
             }}
         >

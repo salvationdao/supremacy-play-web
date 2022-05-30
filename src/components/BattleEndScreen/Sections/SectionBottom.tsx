@@ -11,12 +11,12 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
     const { battle_identifier, started_at, ended_at } = battleEndDetail
 
     const primaryColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.theme.primary : colors.darkNavyBlue),
+        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.primary_color : colors.darkNavyBlue),
         [battleEndDetail],
     )
 
     const secondaryColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.theme.secondary : colors.text),
+        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.secondary_color : colors.text),
         [battleEndDetail],
     )
 
@@ -47,19 +47,25 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     clipSize: "8px",
                     backgroundColor: primaryColor,
                     border: {
+                        isFancy: true,
                         borderColor: primaryColor,
                     },
                 }}
                 sx={{
-                    py: ".16rem",
-                    pt: ".3rem",
+                    py: ".2rem",
                     width: "9rem",
-                    color: secondaryColor,
-                    fontFamily: fonts.nostromoBlack,
                 }}
                 onClick={() => toggleIsEndBattleDetailOpen(false)}
             >
-                CLOSE
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: secondaryColor,
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    CLOSE
+                </Typography>
             </FancyButton>
         </Stack>
     )

@@ -28,16 +28,15 @@ export const InstantPunishConfirmModal = ({
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "36rem",
+                    width: "38rem",
                     boxShadow: 6,
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
@@ -78,13 +77,15 @@ export const InstantPunishConfirmModal = ({
                                 sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                                 onClick={submitInstantPunish}
                             >
-                                <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
-                                    CONFIRM (
-                                </Typography>
-                                <SvgSupToken size="1.4rem" />
-                                <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
-                                    {supFormatterNoFixed(cost, 0)})
-                                </Typography>
+                                <Stack direction="row" justifyContent="center">
+                                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
+                                        CONFIRM (
+                                    </Typography>
+                                    <SvgSupToken size="1.4rem" />
+                                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
+                                        {supFormatterNoFixed(cost, 0)})
+                                    </Typography>
+                                </Stack>
                             </FancyButton>
 
                             <FancyButton

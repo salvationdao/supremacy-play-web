@@ -1,9 +1,9 @@
 import { Box, Modal, Typography } from "@mui/material"
 import Slide from "@mui/material/Slide"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
-import { SocketState, useGameServerAuth, useGameServerWebsocket } from "../../containers"
 import { useToggle } from "../../hooks"
+import { useGameServerCommandsUser, useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { ClipThing } from "../Common/ClipThing"
@@ -17,34 +17,44 @@ export interface SaleAbilitiesModalProps {
 const modalWidth = 400
 
 export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) => {
-    const { userID } = useGameServerAuth()
-    const { state, send, subscribe } = useGameServerWebsocket()
+    const { send } = useGameServerCommandsUser("user_commander")
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [saleAbilityIDs, setSaleAbilityIDs] = useState<string[]>([])
 
+    const fetchSaleAbilities = useCallback(async () => {
+        ;(async () => {
+            try {
+                const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList, {
+                    filter: {
+                        items: [
+                            {
+                                table: "sale_player_abilities",
+                                column: "available_until",
+                                operator: "after",
+                                value: "now()",
+                            },
+                        ],
+                    },
+                })
+                if (!resp) return
+                setSaleAbilityIDs(resp.ability_ids)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [send])
+
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !userID) return
-
-        const fetchSaleAbilities = async () => {
-            const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.SaleAbilitiesList, {
-                filter: {
-                    items: [
-                        {
-                            table: "sale_player_abilities",
-                            column: "available_until",
-                            operator: "after",
-                            value: "now()",
-                        },
-                    ],
-                },
-            })
-            setSaleAbilityIDs(resp.ability_ids)
-        }
-
         fetchSaleAbilities()
+    }, [fetchSaleAbilities])
 
-        return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => fetchSaleAbilities())
-    }, [state, send, subscribe, userID])
+    useGameServerSubscription(
+        {
+            URI: "/public/live_data",
+            key: GameServerKeys.TriggerSaleAbilitiesListUpdated,
+        },
+        () => fetchSaleAbilities(),
+    )
 
     useEffect(() => {
         if (!localOpen) {
@@ -68,10 +78,10 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                         }}
                     >
                         <ClipThing
+                            clipSize="8px"
                             border={{
-                                borderThickness: ".15rem",
+                                borderThickness: ".2rem",
                                 borderColor: colors.blue2,
-                                isFancy: true,
                             }}
                             skipRightCorner
                             backgroundColor={colors.darkNavy}

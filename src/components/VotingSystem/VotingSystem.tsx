@@ -1,7 +1,5 @@
 import { Box, Slide, Stack, Tab, Tabs } from "@mui/material"
-import { Theme } from "@mui/material/styles"
 import { TabProps } from "@mui/material/Tab"
-import { useTheme } from "@mui/styles"
 import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
 import { DEV_ONLY } from "../../constants"
@@ -10,6 +8,7 @@ import { parseString } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension } from "../../types"
 import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
+import { useTheme } from "../../containers/theme"
 
 export const VotingSystem = () => {
     const { bribeStage } = useGame()
@@ -17,7 +16,7 @@ export const VotingSystem = () => {
 }
 
 const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const initialSize = useMemo(() => ({ width: 390, height: 360, minWidth: 370 }), [])
     const [containerWidth, setContainerWidth] = useState<number>(parseString(localStorage.getItem("votingSystemWidth"), initialSize.width))
     const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
@@ -94,7 +93,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                                 minHeight: 0,
                             }}
                         >
-                            <TabButton label="Battle Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
+                            <TabButton label="Game Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
                             <TabButton label="Player Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
                         </Tabs>
                     )}

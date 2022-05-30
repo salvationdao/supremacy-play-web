@@ -40,6 +40,7 @@ export const colors = {
     black2: "#13161B",
     black3: "#080303",
 
+    neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
@@ -116,7 +117,7 @@ export enum siteZIndex {
     MiniMap = 50,
     MoveableResizableHover = 51,
     MoveableResizable = 20,
-    Notfications = 40,
+    Notifications = 40,
     MechStats = 30,
     VotingSystem = 30,
     Stream = 5,
@@ -196,7 +197,7 @@ export const theme = createTheme({
         },
         caption: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
+            fontSize: "1.16rem",
         },
     },
     components: {

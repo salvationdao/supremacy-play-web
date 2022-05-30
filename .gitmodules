@@ -1,0 +1,3 @@
+[submodule "src/containers/ws"]
+	path = src/containers/ws
+	url = git@github.com:ninja-syndicate/ws-client.git

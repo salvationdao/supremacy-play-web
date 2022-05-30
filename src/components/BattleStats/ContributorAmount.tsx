@@ -2,8 +2,9 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { TooltipHelper } from ".."
 import { MultiplierContributor, SvgGraph } from "../../assets"
-import { useGame, useGameServerWebsocket } from "../../containers"
+import { useGame } from "../../containers"
 import { useDebounce } from "../../hooks"
+import { useGameServerSubscriptionUser, useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
@@ -15,35 +16,30 @@ export interface ContibutorAmountProps {
 
 export const ContributorAmount = (props: ContibutorAmountProps) => {
     const { battleEndDetail } = useGame()
-    const { state, subscribe } = useGameServerWebsocket()
     const [contributor, setContributor] = useDebounce(0, 350)
     const [rate, setRate] = useState(0)
 
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<string>(
-            GameServerKeys.ListenContributorRate,
-            (payload) => {
-                if (!payload) return
-                setRate(parseFloat(payload))
-            },
-            null,
-            true,
-        )
-    }, [state, subscribe])
+    useGameServerSubscriptionUser<string>(
+        {
+            URI: "",
+            key: GameServerKeys.ListenContributorMulti,
+        },
+        (payload) => {
+            if (!payload) return
+            setContributor((prev) => prev + parseFloat(payload))
+        },
+    )
 
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<string>(
-            GameServerKeys.ListenContributorMulti,
-            (payload) => {
-                if (!payload) return
-                setContributor((prev) => prev + parseFloat(payload))
-            },
-            null,
-            true,
-        )
-    }, [setContributor, state, subscribe])
+    useGameServerSubscription<string>(
+        {
+            URI: "/public/live_data",
+            key: GameServerKeys.ListenContributorRate,
+        },
+        (payload) => {
+            if (!payload) return
+            setRate(parseFloat(payload))
+        },
+    )
 
     // When battle ends, clear the contributor number
     useEffect(() => {

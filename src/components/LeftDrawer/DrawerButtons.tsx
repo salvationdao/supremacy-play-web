@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Tab, Tabs, useTheme, Theme } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgNext } from "../../assets"
+import { useAuth } from "../../containers"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
@@ -8,6 +9,7 @@ const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
 
 export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }) => {
+    const { userID } = useAuth()
     const theme = useTheme<Theme>()
     const location = useLocation()
     const history = useHistory()
@@ -36,14 +38,17 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
             }}
         >
             <Tabs value={location.pathname} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
-                {ROUTES_ARRAY.filter((r) => r.showInLeftDrawer).map((r) => {
+                {ROUTES_ARRAY.map((r) => {
+                    if (!r.showInLeftDrawer) return null
+                    const disable = r.requireAuth && !userID
                     return (
                         <TabButton
                             key={r.id}
                             label={r.label}
-                            enable={r.enable}
+                            enable={r.enable && !disable}
+                            isComingSoon={!r.enable}
                             value={r.path}
-                            onClick={() => history.push(r.path)}
+                            onClick={() => history.push(`${r.path}${location.hash}`)}
                             isActive={location.pathname === r.path}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
@@ -72,10 +77,11 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
     )
 }
 
-const TabButton = ({
+export const TabButton = ({
     label,
     value,
     enable,
+    isComingSoon,
     icon,
     isActive,
     primaryColor,
@@ -84,6 +90,7 @@ const TabButton = ({
     label: string
     value: string
     enable?: boolean
+    isComingSoon?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
@@ -100,7 +107,7 @@ const TabButton = ({
         >
             <Tab
                 label={
-                    enable ? (
+                    !isComingSoon ? (
                         label
                     ) : (
                         <Stack>
@@ -124,8 +131,8 @@ const TabButton = ({
                     fontSize: "1.1rem",
                     lineHeight: 1,
                     color: "#FFFFFF",
-                    backgroundColor: enable ? (isActive ? `${primaryColor}60` : `${primaryColor}25`) : `${primaryColor}20`,
-                    opacity: isActive ? 0.9 : 0.6,
+                    backgroundColor: enable ? (isActive ? `${primaryColor}80` : `${primaryColor}25`) : `${primaryColor}20`,
+                    opacity: isActive ? 1 : 0.6,
                     transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,
                     ":hover": {
                         opacity: 1,

@@ -1,30 +1,17 @@
-import {
-    Autocomplete,
-    Box,
-    Button,
-    CircularProgress,
-    IconButton,
-    MenuItem,
-    Modal,
-    Select,
-    Stack,
-    SxProps,
-    TextField,
-    Typography,
-    useTheme,
-    Theme,
-} from "@mui/material"
+import { Autocomplete, Box, Button, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
-import { MAX_BAN_PROPOSAL_REASON_LENGTH, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
-import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../../../containers"
+import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../../constants"
+import { useAuth, useSnackbar, useSupremacy } from "../../../../containers"
 import { snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BanOption, BanUser } from "../../../../types/chat"
-import { User } from "../../../../types"
+import { Faction, User } from "../../../../types"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useTheme } from "../../../../containers/theme"
 
 interface SubmitRequest {
     intend_to_punish_player_id: string
@@ -32,7 +19,7 @@ interface SubmitRequest {
     reason: string
 }
 
-const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: SxProps }) => {
+const UserItem = ({ getFaction, user, banUser, sx }: { getFaction: (factionID: string) => Faction; user: User; banUser: BanUser; sx?: SxProps }) => {
     return (
         <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
             <Box
@@ -41,7 +28,7 @@ const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: Sx
                     width: "1.7rem",
                     height: "1.7rem",
                     flexShrink: 0,
-                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
+                    backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "contain",
@@ -58,11 +45,12 @@ const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: Sx
     )
 }
 
-export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User; open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
-    const theme = useTheme<Theme>()
+export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
+    const { getFaction } = useSupremacy()
+    const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
-    const { state, send } = useGameServerWebsocket()
-    const { userStat, userRank } = useGameServerAuth()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { userStat, userRank } = useAuth()
     // Options and display only
     const [searchText, setSearchText] = useState(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "")
     const [search, setSearch] = useDebounce(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "", 300)
@@ -83,73 +71,71 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
     useEffect(() => {
         ;(async () => {
             try {
-                if (state !== WebSocket.OPEN) return
                 const resp = await send<BanOption[], null>(GameServerKeys.GetBanOptions, null)
 
-                if (resp) setBanOptions(resp)
+                if (!resp) return
+                setBanOptions(resp)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to load ban options.", "error")
             }
         })()
-    }, [newSnackbarMessage, send, state])
+    }, [newSnackbarMessage, send])
 
     // When searching for player, update the dropdown list
     useEffect(() => {
         ;(async () => {
             toggleIsLoadingUsers(true)
             try {
-                if (state !== WebSocket.OPEN) return
                 const resp = await send<BanUser[], { search: string }>(GameServerKeys.GetPlayerList, {
                     search: search || "",
                 })
 
-                if (resp) setUserDropdown(resp)
+                if (!resp) return
+                setUserDropdown(resp)
             } finally {
                 toggleIsLoadingUsers(false)
             }
         })()
-    }, [search, send, state, toggleIsLoadingUsers])
+    }, [search, send, toggleIsLoadingUsers])
 
     // When a player is selected, get the ban fee for that player
     useEffect(() => {
         ;(async () => {
             try {
-                if (state !== WebSocket.OPEN || !selectedUser) return
+                if (!selectedUser) return
                 const resp = await send<string, { intend_to_punish_player_id: string }>(GameServerKeys.GetBanPlayerCost, {
                     intend_to_punish_player_id: selectedUser.id,
                 })
 
-                if (resp) setFee(resp)
+                if (!resp) return
+                setFee(resp)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to load users from search.", "error")
             }
         })()
-    }, [newSnackbarMessage, selectedUser, send, state])
+    }, [newSnackbarMessage, selectedUser, send])
 
     // Submit the ban proposal
     const onSubmit = useCallback(async () => {
         try {
-            if (state !== WebSocket.OPEN || !selectedUser || !selectedBanOptionID || !reason) throw new Error()
+            if (!selectedUser || !selectedBanOptionID || !reason) throw new Error()
             const resp = await send<boolean, SubmitRequest>(GameServerKeys.SubmitBanProposal, {
                 intend_to_punish_player_id: selectedUser.id,
                 punish_option_id: selectedBanOptionID,
                 reason,
             })
 
-            if (resp) {
-                onClose()
-                setError("")
-                newSnackbarMessage("Successfully submitted proposal.", "success")
-            }
+            if (!resp) return
+            onClose()
+            setError("")
+            newSnackbarMessage("Successfully submitted proposal.", "success")
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit proposal.")
         }
-    }, [state, selectedUser, selectedBanOptionID, reason, send, onClose, newSnackbarMessage])
+    }, [selectedUser, selectedBanOptionID, reason, send, onClose, newSnackbarMessage])
 
     const isDisabled =
         !selectedUser || !selectedBanOptionID || !reason || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && userRank !== "GENERAL")
-
-    if (!user) return null
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -164,11 +150,10 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: primaryColor,
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
@@ -203,7 +188,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             onChange={(e, value) => setSelectedUser(value)}
                             renderOption={(props, u) => (
                                 <Box key={u.id} component="li" {...props}>
-                                    <UserItem user={user} banUser={u} />
+                                    <UserItem getFaction={getFaction} user={user} banUser={u} />
                                 </Box>
                             )}
                             getOptionLabel={(u) => `${u.username}#${u.gid}`}
@@ -258,7 +243,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             <Stack spacing=".1rem">
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>USER:</Typography>
                                 {selectedUser ? (
-                                    <UserItem user={user} banUser={selectedUser} sx={{ pl: ".2rem" }} />
+                                    <UserItem getFaction={getFaction} user={user} banUser={selectedUser} sx={{ pl: ".2rem" }} />
                                 ) : (
                                     <Typography sx={{ opacity: 0.6 }}>
                                         <i>Use the search box to find a user...</i>
@@ -414,8 +399,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                         )}
                     </Stack>
 
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
-                        <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>

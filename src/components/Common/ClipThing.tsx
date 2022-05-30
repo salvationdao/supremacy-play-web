@@ -72,6 +72,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
             }}
         >
             <Box
+                className="clip-thing-outer"
                 sx={{
                     ...borderStyles,
                     ...outerClipStyles,
@@ -88,6 +89,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
                 }}
             >
                 <Box
+                    className="clip-thing-inner"
                     sx={
                         {
                             ...innerSx,
@@ -98,7 +100,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
                     }
                 />
             </Box>
-            <Box sx={{ ...innerClipStyles }}>{children}</Box>
+            <Box sx={{ height: "100%", ...innerClipStyles }}>{children}</Box>
         </Box>
     )
 }

@@ -2,28 +2,27 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { LineItem, StyledImageText, TooltipHelper } from "../../../.."
 import { SvgAnnouncement, SvgCooldown, SvgFastRepair, SvgInfoCircular } from "../../../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { FactionsAll } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, snakeToTitle } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { colors } from "../../../../../theme/theme"
+import { Faction } from "../../../../../types"
 import { PunishMessageData } from "../../../../../types/chat"
 
 export const PunishMessage = ({
     data,
     sentAt,
     fontSize,
-    factionsAll,
+    getFaction,
 }: {
     data?: PunishMessageData
     sentAt: Date
     fontSize: number
-    factionsAll: FactionsAll
+    getFaction: (factionID: string) => Faction
 }) => {
     const [isExpanded, toggleIsExpanded] = useToggle()
     const factionColor = useMemo(
-        () => (data?.issued_by_user.faction_id ? factionsAll[data?.issued_by_user.faction_id]?.theme.primary : "#FFFFFF"),
-        [data?.issued_by_user.faction_id, factionsAll],
+        () => (data?.issued_by_user.faction_id ? getFaction(data?.issued_by_user.faction_id).primary_color : "#FFFFFF"),
+        [data?.issued_by_user.faction_id, getFaction],
     )
 
     const votedByRender = useMemo(() => {
@@ -102,11 +101,7 @@ export const PunishMessage = ({
                                 </>
                             }
                             color={factionColor || "#FFFFFF"}
-                            imageUrl={
-                                factionsAll[issued_by_user.faction_id]
-                                    ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[issued_by_user.faction_id].logo_blob_id}`
-                                    : undefined
-                            }
+                            imageUrl={getFaction(issued_by_user.faction_id).logo_url}
                             imageMb={-0.2}
                             imageSize={1.4}
                         />

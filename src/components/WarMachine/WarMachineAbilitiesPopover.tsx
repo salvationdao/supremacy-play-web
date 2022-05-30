@@ -2,7 +2,7 @@ import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { ClipThing, FactionAbilityItem } from ".."
 import { GenericWarMachinePNG } from "../../assets"
-import { GameAbility, WarMachineState } from "../../types"
+import { Faction, GameAbility, WarMachineState } from "../../types"
 import { ContributorAmount } from "../BattleStats/ContributorAmount"
 
 interface WarMachineAbilitiesPopoverProps {
@@ -12,10 +12,19 @@ interface WarMachineAbilitiesPopoverProps {
     warMachine: WarMachineState
     gameAbilities: GameAbility[]
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
+    getFaction: (factionID: string) => Faction
 }
 
-export const WarMachineAbilitiesPopover = ({ popoverRef, open, onClose, warMachine, gameAbilities, maxAbilityPriceMap }: WarMachineAbilitiesPopoverProps) => {
-    const factionTheme = warMachine.faction.theme
+export const WarMachineAbilitiesPopover = ({
+    popoverRef,
+    open,
+    onClose,
+    warMachine,
+    gameAbilities,
+    maxAbilityPriceMap,
+    getFaction,
+}: WarMachineAbilitiesPopoverProps) => {
+    const faction = getFaction(warMachine.factionID)
 
     return (
         <Popover
@@ -45,10 +54,10 @@ export const WarMachineAbilitiesPopover = ({ popoverRef, open, onClose, warMachi
                     border={{
                         isFancy: true,
                         borderThickness: ".14rem",
-                        borderColor: factionTheme.primary,
+                        borderColor: faction.primary_color,
                     }}
                     opacity={0.8}
-                    backgroundColor={factionTheme.background}
+                    backgroundColor={faction.background_color}
                 >
                     <Box sx={{ px: "1.28rem", pt: "1.28rem", pb: "1.28rem" }}>
                         <Stack spacing=".72rem">
@@ -62,13 +71,13 @@ export const WarMachineAbilitiesPopover = ({ popoverRef, open, onClose, warMachi
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
                                             backgroundSize: "cover",
-                                            backgroundColor: factionTheme.primary,
+                                            backgroundColor: faction.primary_color,
                                             mb: ".12rem",
-                                            border: `${factionTheme.primary} 1px solid`,
+                                            border: `${faction.primary_color} 1px solid`,
                                             borderRadius: 0.5,
                                         }}
                                     />
-                                    <Typography sx={{ lineHeight: 1, color: factionTheme.primary, fontWeight: "fontWeightBold" }}>
+                                    <Typography sx={{ lineHeight: 1, color: faction.primary_color, fontWeight: "fontWeightBold" }}>
                                         WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
                                     </Typography>
                                 </Stack>
@@ -82,6 +91,7 @@ export const WarMachineAbilitiesPopover = ({ popoverRef, open, onClose, warMachi
                                             gameAbility={ga}
                                             abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
                                             clipSlantSize="5px"
+                                            progressWsURI={`/mech/${warMachine.participantID}`}
                                         />
                                     </Box>
                                 ))}

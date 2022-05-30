@@ -1,15 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from ".."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull, SvgSupToken } from "../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../constants"
-import { useGame, useGameServerAuth, useGameServerWebsocket } from "../../containers"
+import { useGame, useAuth, useSupremacy } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
+import { useGameServerSubscriptionAbilityFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
-import { GameAbility, WarMachineDestroyedRecord, WarMachineState } from "../../types"
+import { Faction, GameAbility, WarMachineState } from "../../types"
 
 // in rems
 const WIDTH_WM_IMAGE = 9.2
@@ -29,77 +29,48 @@ interface WarMachineItemProps {
 }
 
 export const WarMachineItem = (props: WarMachineItemProps) => {
-    const { state, subscribe } = useGameServerWebsocket()
+    const { battleIdentifier, getFaction } = useSupremacy()
     const { highlightedMechHash, setHighlightedMechHash } = useGame()
-    const { userID, factionID } = useGameServerAuth()
-    const [gameAbilities, setGameAbilities] = useState<GameAbility[]>()
-    const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
-    const [isAlive, toggleIsAlive] = useToggle(true)
+    const { userID, factionID } = useAuth()
 
     const {
-        warMachine: { hash, participantID, factionID: warMachineFactionID },
+        warMachine: { participantID, factionID: warMachineFactionID },
     } = props
 
-    // If warmachine is updated, reset destroy info
-    useEffect(() => {
-        setWarMachineDestroyedRecord(undefined)
-    }, [props.warMachine])
-
     // Subscribe to war machine ability updates
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !factionID || factionID !== warMachineFactionID || !subscribe) return
-        return subscribe<GameAbility[] | undefined>(
-            GameServerKeys.SubWarMachineAbilitiesUpdated,
-            (payload) => {
-                if (payload) setGameAbilities(payload)
-            },
-            {
-                hash,
-            },
-        )
-    }, [subscribe, state, hash, factionID, warMachineFactionID])
-
-    // Subscribe to whether the war machine has been destroyed
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<WarMachineDestroyedRecord>(
-            GameServerKeys.SubWarMachineDestroyed,
-            (payload) => {
-                if (!payload) return
-                setWarMachineDestroyedRecord(payload)
-                toggleIsAlive(false)
-            },
-            { participantID },
-        )
-    }, [state, subscribe, participantID, toggleIsAlive])
+    const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
+        URI: `/mech/${participantID}`,
+        key: GameServerKeys.SubWarMachineAbilitiesUpdated,
+        ready: factionID === warMachineFactionID && !!participantID,
+    })
 
     return (
         <WarMachineItemInner
             {...props}
+            battleIdentifier={battleIdentifier}
+            getFaction={getFaction}
             userID={userID}
             factionID={factionID}
             highlightedMechHash={highlightedMechHash}
             setHighlightedMechHash={setHighlightedMechHash}
             gameAbilities={gameAbilities}
-            warMachineDestroyedRecord={warMachineDestroyedRecord}
-            isAlive={isAlive}
-            toggleIsAlive={toggleIsAlive}
         />
     )
 }
 
 interface WarMachineItemInnerProps extends WarMachineItemProps {
-    userID?: string
+    battleIdentifier?: number
+    getFaction: (factionID: string) => Faction
+    userID: string
     factionID?: string
     highlightedMechHash?: string
     setHighlightedMechHash: (s?: string) => void
     gameAbilities?: GameAbility[]
-    warMachineDestroyedRecord?: WarMachineDestroyedRecord
-    isAlive: boolean
-    toggleIsAlive: (value: boolean) => void
 }
 
 const WarMachineItemInner = ({
+    battleIdentifier,
+    getFaction,
     warMachine,
     scale,
     shouldBeExpanded,
@@ -108,15 +79,11 @@ const WarMachineItemInner = ({
     highlightedMechHash,
     setHighlightedMechHash,
     gameAbilities,
-    warMachineDestroyedRecord,
-    isAlive,
-    toggleIsAlive,
 }: WarMachineItemInnerProps) => {
-    const { hash, participantID, faction, name, imageAvatar, tier, ownedByID } = warMachine
-    const {
-        logo_blob_id,
-        theme: { primary, secondary, background },
-    } = faction
+    const [isAlive, toggleIsAlive] = useToggle(true)
+    const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
+    const faction = getFaction(wmFactionID)
+    const primaryColor = faction.primary_color
 
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
@@ -142,6 +109,10 @@ const WarMachineItemInner = ({
             togglePopoverOpen(true)
         }, 300)
     }, [togglePopoverOpen])
+
+    useEffect(() => {
+        if (battleIdentifier) toggleIsAlive(true)
+    }, [battleIdentifier, toggleIsAlive])
 
     /* Toggle out isExpanded if other mech is highlighted */
     useEffect(() => {
@@ -228,7 +199,7 @@ const WarMachineItemInner = ({
                         right: 0,
                         left: "1rem",
                         height: ".3rem",
-                        backgroundColor: primary,
+                        backgroundColor: primaryColor,
                         zIndex: 9,
                         opacity: isAlive ? 1 : DEAD_OPACITY,
                     }}
@@ -237,10 +208,10 @@ const WarMachineItemInner = ({
                 <ClipThing
                     clipSize="8px"
                     clipSlantSize="18px"
-                    border={{ isFancy: false, borderColor: primary, borderThickness: ".4rem" }}
+                    border={{ isFancy: false, borderColor: primaryColor, borderThickness: ".4rem" }}
                     sx={{ zIndex: 2 }}
                     skipRightCorner={!isExpanded}
-                    innerSx={{ background: `linear-gradient(${primary}, #000000)` }}
+                    innerSx={{ background: `linear-gradient(${primaryColor}, #000000)` }}
                 >
                     <Box>
                         <Box
@@ -323,7 +294,7 @@ const WarMachineItemInner = ({
                             alignSelf: "stretch",
                             ml: "-2rem",
 
-                            backgroundColor: !isExpanded ? "transparent" : highlightedMechHash === warMachine.hash ? `${primary}60` : "#00000056",
+                            backgroundColor: !isExpanded ? "transparent" : highlightedMechHash === warMachine.hash ? `${primaryColor}60` : "#00000056",
                             opacity: isAlive ? 1 : DEAD_OPACITY,
                             zIndex: 1,
                         }}
@@ -341,7 +312,7 @@ const WarMachineItemInner = ({
                                     sx={{
                                         width: "2.6rem",
                                         height: "2.6rem",
-                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
+                                        backgroundImage: `url(${faction.logo_url})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
@@ -358,7 +329,7 @@ const WarMachineItemInner = ({
                                     pr: "1.84rem",
                                     py: ".56rem",
                                     height: "3.3rem",
-                                    backgroundColor: `${background}95`,
+                                    backgroundColor: `${faction.background_color}95`,
                                 }}
                             >
                                 <Typography
@@ -399,7 +370,7 @@ const WarMachineItemInner = ({
                                     width: `${WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR}rem`,
                                     alignSelf: "stretch",
                                     ml: "-2rem",
-                                    backgroundColor: primary,
+                                    backgroundColor: primaryColor,
                                     boxShadow: 3,
                                     cursor: isAlive ? "pointer" : "auto",
                                     ":hover #warMachineSkillsText": {
@@ -423,7 +394,7 @@ const WarMachineItemInner = ({
                                         variant="body1"
                                         sx={{
                                             fontWeight: "fontWeightBold",
-                                            color: secondary,
+                                            color: faction.secondary_color,
                                             letterSpacing: 1,
                                             transition: "all .2s",
                                         }}
@@ -437,7 +408,13 @@ const WarMachineItemInner = ({
                                 .slice()
                                 .reverse()
                                 .map((ga, index) => (
-                                    <SkillBar key={ga.identity} index={index} gameAbility={ga} maxAbilityPriceMap={maxAbilityPriceMap} />
+                                    <SkillBar
+                                        key={ga.identity}
+                                        participantID={warMachine.participantID}
+                                        index={index}
+                                        gameAbility={ga}
+                                        maxAbilityPriceMap={maxAbilityPriceMap}
+                                    />
                                 ))}
                         </>
                     )}
@@ -452,14 +429,16 @@ const WarMachineItemInner = ({
                     warMachine={warMachine}
                     gameAbilities={gameAbilities}
                     maxAbilityPriceMap={maxAbilityPriceMap}
+                    getFaction={getFaction}
                 />
             )}
 
-            {!isAlive && warMachineDestroyedRecord && isDestroyedInfoOpen && (
+            {!isAlive && isDestroyedInfoOpen && (
                 <WarMachineDestroyedInfo
+                    warMachine={warMachine}
                     open={isDestroyedInfoOpen}
                     onClose={() => toggleIsDestroyedInfoOpen(false)}
-                    warMachineDestroyedRecord={warMachineDestroyedRecord}
+                    getFaction={getFaction}
                 />
             )}
         </BoxSlanted>

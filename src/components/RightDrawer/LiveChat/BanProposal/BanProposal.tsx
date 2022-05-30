@@ -2,9 +2,10 @@ import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgCooldown, SvgInfoCircular } from "../../../../assets"
-import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../../../containers"
+import { useAuth, useChat } from "../../../../containers"
 import { getUserRankDeets, snakeToTitle } from "../../../../helpers"
 import { useTimer, useToggle } from "../../../../hooks"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { BanProposalStruct } from "../../../../types/chat"
@@ -51,8 +52,8 @@ const BanProposalInner = ({
     outOfTime: boolean
     toggleOutOfTime: (value?: boolean | undefined) => void
 }) => {
-    const { state, send } = useGameServerWebsocket()
-    const { userStat, userRank } = useGameServerAuth()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { userStat, userRank } = useAuth()
     const [submitted, setSubmitted] = useState(!!banProposal.decision)
     const [submittedVote, setSubmittedVote] = useState(banProposal.decision?.is_agreed)
     const [error, setError] = useState("")
@@ -62,41 +63,37 @@ const BanProposalInner = ({
 
     const submitVote = useCallback(
         async (isAgree: boolean) => {
-            if (state !== WebSocket.OPEN || !send) return
             try {
                 const resp = await send<boolean, { punish_vote_id: string; is_agreed: boolean }>(GameServerKeys.SubmitBanVote, {
                     punish_vote_id: banProposal.id,
                     is_agreed: isAgree,
                 })
 
-                if (resp) {
-                    setSubmitted(true)
-                    setSubmittedVote(isAgree)
-                    setError("")
-                }
+                if (!resp) return
+                setSubmitted(true)
+                setSubmittedVote(isAgree)
+                setError("")
             } catch (e) {
                 setError(typeof e === "string" ? e : "Failed to submit your vote.")
             }
         },
-        [state, send, banProposal],
+        [send, banProposal],
     )
 
     const submitInstantPunish = useCallback(async () => {
-        if (state !== WebSocket.OPEN || !send) return
         try {
             const resp = await send<boolean, { punish_vote_id: string }>(GameServerKeys.SubmitInstantBan, {
                 punish_vote_id: banProposal.id,
             })
 
-            if (resp) {
-                setSubmitted(true)
-                setSubmittedVote(true)
-                setError("")
-            }
+            if (!resp) return
+            setSubmitted(true)
+            setSubmittedVote(true)
+            setError("")
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit your vote.")
         }
-    }, [banProposal.id, send, state])
+    }, [send, banProposal.id])
 
     const bottomSection = useMemo(() => {
         if (!userStat || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && userRank !== "GENERAL")) {
@@ -136,10 +133,12 @@ const BanProposalInner = ({
                             onClick={() => toggleInstantPunishModalOpen(true)}
                             disabled={userRank !== "GENERAL"}
                         >
-                            {rankDeets?.icon}
-                            <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
-                                INSTANT PUNISH
-                            </Typography>
+                            <Stack direction="row" justifyContent="center">
+                                {rankDeets?.icon}
+                                <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
+                                    INSTANT PUNISH
+                                </Typography>
+                            </Stack>
                         </FancyButton>
                     </TooltipHelper>
 

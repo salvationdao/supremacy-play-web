@@ -2,17 +2,17 @@ import { Button, Popover, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useRef } from "react"
 import { UserBanForm } from "../../.."
 import { RIGHT_DRAWER_WIDTH } from "../../../../constants"
-import { useGameServerAuth } from "../../../../containers"
+import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
 import { colors, siteZIndex } from "../../../../theme/theme"
 
 export const AdditionalOptionsButton = () => {
-    const { user } = useGameServerAuth()
+    const { userID, user } = useAuth()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
 
-    if (!user) return null
+    if (!userID) return null
 
     return (
         <>
