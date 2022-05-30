@@ -1,9 +1,10 @@
-import { Box, IconButton, Pagination, Stack, Theme, Typography, useTheme } from "@mui/material"
+import { Box, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useSnackbar } from "../../../containers"
 import { HangarWarMachineProvider } from "../../../containers/hangar/hangarWarMachines"
+import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -41,7 +42,7 @@ export const WarMachines = () => {
 const WarMachinesInner = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const [mechs, setMechs] = useState<MechBasic[]>()
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })

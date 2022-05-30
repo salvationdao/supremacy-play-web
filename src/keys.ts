@@ -93,6 +93,9 @@ export enum GameServerKeys {
     UpdateNotificationPreferences = "PLAYER:PREFERENCES_UPDATE",
 
     EnlistFaction = "FACTION:ENLIST",
+
+    // Storefront
+    GetMysteryCrates = "XXXXXXXXX",
 }
 
 export enum PassportServerKeys {

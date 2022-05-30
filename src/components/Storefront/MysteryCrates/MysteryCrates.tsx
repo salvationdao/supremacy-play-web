@@ -1,31 +1,38 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ClipThing } from "../.."
+import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { usePagination } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { Filter } from "../Filter"
 
 export const MysteryCrates = () => {
-    const theme = useTheme()
+    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("xxxxxxxxx")
-    const [crates, setCrates] = useState<MysteryCrate>()
+    const theme = useTheme()
+    const [crates, setCrates] = useState<MysteryCrate[]>()
+    const [isLoading, setIsLoading] = useState(true)
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
 
-    // useEffect(() => {
-    //     ;(async () => {
-    //         try {
-    //             const resp = await send<MysteryCrate[]>(GameServerKeys.XXXXXX, {
-    //                 payload: something,
-    //             })
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await send<MysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
+                    page,
+                    page_size: pageSize,
+                })
 
-    //             if (!resp) return
-    //             setFactionsData(resp)
-    //         } catch (e) {
-    //             console.error(e)
-    //         }
-    //     })()
-    // }, [send])
+                if (!resp) return
+                setCrates(resp)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [send])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>

@@ -1,7 +1,8 @@
-import { Box, Button, Stack, Tab, Tabs, useTheme, Theme } from "@mui/material"
+import { Box, Button, Stack, Tab, Tabs } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { SvgNext } from "../../assets"
 import { useAuth } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
@@ -10,7 +11,7 @@ const BUTTON_WIDTH = 17 //rem
 
 export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }) => {
     const { userID } = useAuth()
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
 
