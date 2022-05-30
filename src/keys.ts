@@ -90,6 +90,7 @@ export enum GameServerKeys {
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
     SubmitBanVote = "PUNISH:VOTE",
+    SubmitInstantBan = "PUNISH:VOTE:INSTANT:PASS",
 
     // Player list
     SubPlayerList = "FACTION:ACTIVE:PLAYER:SUBSCRIBE",

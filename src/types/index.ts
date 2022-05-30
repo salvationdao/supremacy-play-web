@@ -14,6 +14,7 @@ export interface User {
     faction: Faction
     sups: number
     gid: number
+    rank?: UserRank
 }
 
 export type UserRank = "NEW_RECRUIT" | "PRIVATE" | "CORPORAL" | "GENERAL"

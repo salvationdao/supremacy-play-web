@@ -113,11 +113,7 @@ export const BattleAbilityItem = () => {
     )
 
     const isVoting = useMemo(
-        () =>
-            bribeStage?.phase == "BRIBE" &&
-            battleAbilityProgress &&
-            battleAbilityProgress.length > 0 &&
-            battleAbilityProgress[0].sups_cost.isGreaterThan(battleAbilityProgress[0].current_sups),
+        () => bribeStage?.phase == "BRIBE" && battleAbilityProgress && battleAbilityProgress.length > 0,
         [battleAbilityProgress, bribeStage],
     )
 
