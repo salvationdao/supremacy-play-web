@@ -49,7 +49,7 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                             {punishments.map((p) => {
                                 if (p.related_punish_vote.status !== "PASSED") return null
                                 return (
-                                    <Stack key={p.id} spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#00000030" }}>
+                                    <Stack key={p.id} spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
                                         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
                                             <Typography sx={{ color: colors.lightNeonBlue }}>
                                                 <strong>{snakeToTitle(p.punish_option.key).toUpperCase()}</strong>
