@@ -164,7 +164,7 @@ const WarMachinesInner = () => {
                 border={{
                     isFancy: true,
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".15rem",
+                    borderThickness: ".2rem",
                 }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}

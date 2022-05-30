@@ -52,7 +52,7 @@ const HangarPageInner = () => {
                 scrollButtons="auto"
                 sx={{
                     flexShrink: 0,
-                    mt: ".2rem",
+                    mt: ".5rem",
                     ml: "1.5rem",
                     color: (theme) => theme.factionTheme.primary,
                     minHeight: 0,

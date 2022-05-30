@@ -1,6 +1,7 @@
 import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
 import { useState, SyntheticEvent } from "react"
 import { HangarBg } from "../assets"
+import { MysteryCrates } from "../components/Storefront/MysteryCrates/MysteryCrates"
 import { siteZIndex } from "../theme/theme"
 
 type tabs = "mystery-crates" | "skins" | "merchandise"
@@ -30,7 +31,7 @@ export const StorefrontPage = () => {
                 scrollButtons="auto"
                 sx={{
                     flexShrink: 0,
-                    mt: ".2rem",
+                    mt: ".5rem",
                     ml: "1.5rem",
                     color: (theme) => theme.factionTheme.primary,
                     minHeight: 0,
@@ -45,7 +46,7 @@ export const StorefrontPage = () => {
             </Tabs>
 
             <TabPanel currentValue={currentValue} value="mystery-crates">
-                MYSTERY CRATES
+                <MysteryCrates />
             </TabPanel>
             <TabPanel currentValue={currentValue} value="skins">
                 SKINS
