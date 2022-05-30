@@ -28,7 +28,7 @@ export const DimensionContainer = createContainer(() => {
     useEffect(() => {
         if (below900) return setRemToPxRatio(0.44 * 16)
         if (below1500) return setRemToPxRatio(0.5 * 16)
-        if (below1920) return setRemToPxRatio(0.54 * 16)
+        if (below1920) return setRemToPxRatio(0.56 * 16)
         setRemToPxRatio(0.625 * 16)
     }, [below1920, below1500, below900])
 

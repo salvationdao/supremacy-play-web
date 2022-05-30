@@ -21,7 +21,7 @@ export const MechViewer = () => {
                         height: "100%",
                         width: "100%",
                         overflow: "hidden",
-                        border: `${theme.factionTheme.primary}90 1.5px solid`,
+                        border: `${theme.factionTheme.primary}90 .3rem solid`,
                         borderLeft: "none",
                         boxShadow: 2,
                     }}

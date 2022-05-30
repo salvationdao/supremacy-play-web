@@ -96,7 +96,6 @@ const WarMachinesInner = () => {
                         sx={{
                             px: "1.28rem",
                             pt: "1.28rem",
-
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
                             userSelect: "text !important",
@@ -164,7 +163,7 @@ const WarMachinesInner = () => {
                 border={{
                     isFancy: true,
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".2rem",
+                    borderThickness: ".3rem",
                 }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
