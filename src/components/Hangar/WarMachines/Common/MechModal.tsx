@@ -43,6 +43,12 @@ export const MechModal = ({
                         borderColor: theme.factionTheme.primary,
                         borderThickness: ".2rem",
                     }}
+                    corners={{
+                        topLeft: true,
+                        topRight: true,
+                        bottomLeft: true,
+                        bottomRight: true,
+                    }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
                 >

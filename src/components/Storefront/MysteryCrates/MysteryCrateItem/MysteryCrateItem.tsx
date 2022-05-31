@@ -39,12 +39,6 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
                     borderColor: theme.factionTheme.primary,
                     borderThickness: ".2rem",
                 }}
-                corners={{
-                    topLeft: true,
-                    topRight: true,
-                    bottomLeft: true,
-                    bottomRight: true,
-                }}
                 opacity={0.9}
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}

@@ -14,6 +14,12 @@
 		borderColor: "#FF0000",
 		borderThickness: ".15rem",
 	}}
+	corners={{
+		topLeft: true,
+		topRight: true,
+		bottomLeft: true,
+		bottomRight: true,
+	}}
 	opacity={0.7}
 	backgroundColor="#333333"
 	sx={{ height: "100%" }}

@@ -51,6 +51,10 @@ export const TooltipHelper = ({
                         borderColor: theme.factionTheme.primary,
                         borderThickness: ".1rem",
                     }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                    }}
                     opacity={0.99}
                     backgroundColor={theme.factionTheme.background}
                     sx={{ height: "100%" }}

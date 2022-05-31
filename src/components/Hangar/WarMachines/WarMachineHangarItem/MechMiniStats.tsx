@@ -11,7 +11,16 @@ export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
     const utilities = mechDetails?.utility?.length
 
     return (
-        <ClipThing clipSize="10px" opacity={0.08} backgroundColor="#FFFFFF" sx={{ height: "100%", flexShrink: 0 }}>
+        <ClipThing
+            clipSize="10px"
+            opacity={0.08}
+            corners={{
+                topRight: true,
+                bottomLeft: true,
+            }}
+            backgroundColor="#FFFFFF"
+            sx={{ height: "100%", flexShrink: 0 }}
+        >
             <Box
                 sx={{
                     flex: 1,

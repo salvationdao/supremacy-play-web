@@ -32,8 +32,10 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     innerSx,
     outerSx,
     corners = {
+        topLeft: true,
         topRight: true,
         bottomLeft: true,
+        bottomRight: true,
     },
     opacity,
     backgroundColor,
@@ -47,11 +49,11 @@ export const ClipThing: React.FC<ClipThingProps> = ({
             polygon(
                 ${isSlanted ? `${clipSlantSize} 0` : topLeft ? `${clipSize} 0` : "0 0"}
                 ${topRight ? `,calc(100% - ${clipSize}) 0` : ",100% 0"}
-                ${topRight ? `,100% ${clipSize}` : ""}
+                ${topRight ? `,${isSlanted ? "calc(100% - 2px)" : "100%"} ${clipSize}` : ""}
                 ${isSlanted ? `,calc(100% - ${clipSlantSize}) 100%` : bottomRight ? `,100% calc(100% - ${clipSize})` : ",100% 100%"}
                 ${!isSlanted && bottomRight ? `,calc(100% - ${clipSize}) 100%` : ""}
                 ${bottomLeft ? `,${clipSize} 100%` : ",0 100%"}
-                ${bottomLeft ? `,${isSlanted ? "3px" : "0"} calc(100% - ${clipSize})` : ""}
+                ${bottomLeft ? `,${isSlanted ? "2px" : "0"} calc(100% - ${clipSize})` : ""}
                 ${topLeft ? `,0 ${clipSize}` : ""}
             )
         `,
