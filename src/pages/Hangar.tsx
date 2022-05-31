@@ -61,7 +61,7 @@ const HangarPageInner = () => {
                             minHeight: 0,
                             ".MuiTab-root": { minHeight: 0, fontSize: "1.2rem", py: "1rem" },
                             ".Mui-selected": {
-                                color: (theme) => `${theme.factionTheme.secondary}`,
+                                color: (theme) => `${theme.factionTheme.secondary} !important`,
                                 backgroundColor: (theme) => `${theme.factionTheme.primary}CC !important`,
                             },
                             ".MuiTabs-indicator": { display: "none" },
