@@ -39,7 +39,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
     return (
         <Box
             sx={{
-                height: enlargedView ? "88%" : "unset",
+                height: enlargedView ? "88%" : "100%",
                 width: "100%",
                 transition: "all .15s",
                 ":hover": {
@@ -73,7 +73,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                         <Box
                             sx={{
                                 width: "100%",
-                                height: enlargedView ? "100%" : "16rem",
+                                height: enlargedView ? "100%" : "22rem",
                                 background: `url(${crateDeets.image})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",

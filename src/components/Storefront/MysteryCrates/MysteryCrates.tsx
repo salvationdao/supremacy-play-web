@@ -109,7 +109,7 @@ export const MysteryCrates = () => {
                         width: "100%",
                         pt: ".5rem",
                         display: "grid",
-                        gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(60rem, 46%))" : "repeat(auto-fill, minmax(30rem, 1fr))",
+                        gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(60rem, 46%))" : "repeat(auto-fill, minmax(32rem, 1fr))",
                         gap: enlargedView ? "4rem" : "2.4rem",
                         alignItems: "center",
                         justifyContent: "center",
