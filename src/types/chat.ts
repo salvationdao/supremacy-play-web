@@ -16,6 +16,9 @@ export interface BanProposalStruct {
     ended_at: Date
     punish_option: BanOption
     decision?: { is_agreed: boolean }
+    instant_pass_by_id?: string
+    instant_pass_fee: string
+    instant_pass_tx_id?: string
 }
 
 export interface PunishListItem {
@@ -91,6 +94,7 @@ export interface PunishMessageData {
     issued_by_user: User
     reported_user: User
     is_passed: boolean
+    instant_pass_by_user: User
     total_player_number: number
     agreed_player_number: number
     disagreed_player_number: number
