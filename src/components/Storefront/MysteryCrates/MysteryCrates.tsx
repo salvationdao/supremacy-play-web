@@ -150,12 +150,17 @@ export const MysteryCrates = () => {
                 borderColor: theme.factionTheme.primary,
                 borderThickness: ".3rem",
             }}
+            corners={{
+                topRight: true,
+                bottomLeft: true,
+                bottomRight: true,
+            }}
             opacity={0.7}
             backgroundColor={theme.factionTheme.background}
             sx={{ height: "100%" }}
         >
             <Stack sx={{ position: "relative", height: "100%" }}>
-                <Stack spacing="2rem" sx={{ flex: 1, px: "2.68em", py: "2.2rem" }}>
+                <Stack spacing="2rem" sx={{ flex: 1, px: "2rem", py: "2.2rem" }}>
                     <Stack direction="row" alignItems="center">
                         <Box
                             sx={{

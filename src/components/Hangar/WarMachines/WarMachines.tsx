@@ -168,6 +168,11 @@ const WarMachinesInner = () => {
                     borderColor: theme.factionTheme.primary,
                     borderThickness: ".3rem",
                 }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%", width: "fit-content", minWidth: "60rem" }}

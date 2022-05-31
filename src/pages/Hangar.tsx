@@ -2,6 +2,7 @@ import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useState, SyntheticEvent } from "react"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
+import { useTheme } from "../containers/theme"
 import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
 import { useAuth } from "../containers"
 import { fonts, siteZIndex } from "../theme/theme"
@@ -37,6 +38,7 @@ export const HangarPage = () => {
 }
 
 const HangarPageInner = () => {
+    const theme = useTheme()
     const [currentValue, setCurrentValue] = useState<tabs>("war-machines")
 
     const handleChange = (event: SyntheticEvent, newValue: tabs) => {
@@ -45,40 +47,46 @@ const HangarPageInner = () => {
 
     return (
         <>
-            <Tabs
-                value={currentValue}
-                onChange={handleChange}
-                variant="scrollable"
-                scrollButtons="auto"
-                sx={{
-                    flexShrink: 0,
-                    mt: ".5rem",
-                    ml: "1.5rem",
-                    color: (theme) => theme.factionTheme.primary,
-                    minHeight: 0,
-                    ".MuiTab-root": { minHeight: 0, fontSize: "1.2rem" },
-                    ".Mui-selected": { color: (theme) => `${theme.factionTheme.primary} !important` },
-                    ".MuiTabs-indicator": { backgroundColor: (theme) => theme.factionTheme.primary },
-                }}
-            >
-                <Tab label="WAR MACHINE" value="war-machines" />
-                <Tab label="WEAPONS" value="weapons" />
-                <Tab label="ATTACHMENTS" value="attachments" />
-                <Tab label="PAINT JOBS" value="paint-jobs" />
-            </Tabs>
+            <Stack sx={{ m: "1.5rem", height: "100%" }}>
+                <Box sx={{ width: "fit-content", mb: ".8rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
+                    <Tabs
+                        value={currentValue}
+                        onChange={handleChange}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                        sx={{
+                            width: "fit-content",
+                            flexShrink: 0,
+                            color: (theme) => theme.factionTheme.primary,
+                            minHeight: 0,
+                            ".MuiTab-root": { minHeight: 0, fontSize: "1.2rem" },
+                            ".Mui-selected": {
+                                color: (theme) => `${theme.factionTheme.secondary}`,
+                                backgroundColor: (theme) => `${theme.factionTheme.primary}CC !important`,
+                            },
+                            ".MuiTabs-indicator": { display: "none" },
+                        }}
+                    >
+                        <Tab label="WAR MACHINE" value="war-machines" />
+                        <Tab label="WEAPONS" value="weapons" />
+                        <Tab label="ATTACHMENTS" value="attachments" />
+                        <Tab label="PAINT JOBS" value="paint-jobs" />
+                    </Tabs>
+                </Box>
 
-            <TabPanel currentValue={currentValue} value={"war-machines"}>
-                <WarMachines />
-            </TabPanel>
-            <TabPanel currentValue={currentValue} value={"weapons"}>
-                WEAPONS
-            </TabPanel>
-            <TabPanel currentValue={currentValue} value={"attachments"}>
-                ATTACHMENTS
-            </TabPanel>
-            <TabPanel currentValue={currentValue} value={"paint-jobs"}>
-                PAINT JOBS
-            </TabPanel>
+                <TabPanel currentValue={currentValue} value={"war-machines"}>
+                    <WarMachines />
+                </TabPanel>
+                <TabPanel currentValue={currentValue} value={"weapons"}>
+                    WEAPONS
+                </TabPanel>
+                <TabPanel currentValue={currentValue} value={"attachments"}>
+                    ATTACHMENTS
+                </TabPanel>
+                <TabPanel currentValue={currentValue} value={"paint-jobs"}>
+                    PAINT JOBS
+                </TabPanel>
+            </Stack>
         </>
     )
 }
@@ -95,7 +103,7 @@ const TabPanel = (props: TabPanelProps) => {
     if (currentValue === value) {
         return (
             <Fade in>
-                <Box id={`hangar-tabpanel-${value}`} sx={{ px: "1.5rem", pt: "1rem", pb: "1.5rem", flex: 1 }}>
+                <Box id={`hangar-tabpanel-${value}`} sx={{ flex: 1 }}>
                     {children}
                 </Box>
             </Fade>
