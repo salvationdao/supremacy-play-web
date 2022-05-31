@@ -66,7 +66,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                             py: enlargedView ? "8rem" : "2rem",
                             borderRadius: 1,
                             boxShadow: "inset 0 0 12px 6px #00000040",
-                            background: `radial-gradient(#FFFFFF20 1px, ${backgroundColor})`,
+                            background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
                             border: "#00000060 1px solid",
                         }}
                     >
@@ -94,7 +94,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                             <Typography
                                 sx={{
                                     lineHeight: 1,
-                                    fontSize: enlargedView ? "1.6rem" : "1.22rem",
+                                    fontSize: enlargedView ? "1.5rem" : "1.22rem",
                                     fontFamily: fonts.nostromoBold,
                                     span: {
                                         fontFamily: "inherit",
@@ -106,26 +106,20 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                             </Typography>
                         </Box>
 
-                        {enlargedView && (
-                            <Stack direction="row" alignItems="center" spacing=".1rem" sx={{ position: "absolute", left: "1.4rem", bottom: ".6rem" }}>
-                                <SvgSupToken size={enlargedView ? "2.6rem" : "1.6rem"} fill={colors.yellow} />
-                                <Typography sx={{ fontSize: enlargedView ? "2.1rem" : "1.6rem", fontWeight: "fontWeightBold" }}>
-                                    {supFormatterNoFixed(price, 2)}
-                                </Typography>
-                            </Stack>
-                        )}
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing=".1rem"
+                            sx={{ position: "absolute", left: enlargedView ? "1.4rem" : ".5rem", bottom: enlargedView ? ".6rem" : ".2rem" }}
+                        >
+                            <SvgSupToken size={enlargedView ? "2.3rem" : "1.6rem"} fill={colors.yellow} />
+                            <Typography sx={{ fontSize: enlargedView ? "1.9rem" : "1.6rem", fontWeight: "fontWeightBold" }}>
+                                {supFormatterNoFixed(price, 2)}
+                            </Typography>
+                        </Stack>
                     </Box>
 
                     <Stack alignItems={enlargedView ? "center" : "flex-start"} sx={{ flex: enlargedView ? "unset" : 1, px: ".4rem", py: ".3rem" }}>
-                        {!enlargedView && (
-                            <Stack direction="row" alignItems="center" spacing=".1rem">
-                                <SvgSupToken size={enlargedView ? "2.6rem" : "1.6rem"} fill={colors.yellow} />
-                                <Typography sx={{ fontSize: enlargedView ? "2.1rem" : "1.6rem", fontWeight: "fontWeightBold" }}>
-                                    {supFormatterNoFixed(price, 2)}
-                                </Typography>
-                            </Stack>
-                        )}
-
                         <Typography
                             variant={enlargedView ? "h4" : "h6"}
                             sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack, textAlign: enlargedView ? "center" : "start" }}
