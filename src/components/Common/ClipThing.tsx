@@ -54,7 +54,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
                 ${!isSlanted && bottomRight ? `,calc(100% - ${clipSize}) 100%` : ""}
                 ${bottomLeft ? `,${clipSize} 100%` : ",0 100%"}
                 ${bottomLeft ? `,${isSlanted ? "2px" : "0"} calc(100% - ${clipSize})` : ""}
-                ${topLeft ? `,0 ${clipSize}` : ""}
+                ${!isSlanted && topLeft ? `,0 ${clipSize}` : ""}
             )
         `,
     }
@@ -70,7 +70,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
                 ${!isSlanted && bottomRight ? `,calc(100% - ${clipSize}) 100%` : ""}
                 ${bottomLeft ? `,${clipSize} 100%` : ",0 100%"}
                 ${bottomLeft ? `,0 calc(100% - ${clipSize})` : ""}
-                ${topLeft ? `,0 ${clipSize}` : ""}
+                ${!isSlanted && topLeft ? `,0 ${clipSize}` : ""}
             )
         `,
     }
