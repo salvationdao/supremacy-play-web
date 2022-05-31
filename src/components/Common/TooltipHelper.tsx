@@ -49,7 +49,7 @@ export const TooltipHelper = ({
                     clipSlantSize="3px"
                     border={{
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".1rem",
+                        borderThickness: ".15rem",
                     }}
                     corners={{
                         topRight: true,
