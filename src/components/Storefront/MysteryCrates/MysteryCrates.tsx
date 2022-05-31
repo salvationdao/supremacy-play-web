@@ -109,7 +109,7 @@ export const MysteryCrates = () => {
                         width: "100%",
                         pt: ".5rem",
                         display: "grid",
-                        gridTemplateColumns: enlargedView ? "repeat(auto-fill, 46%)" : "repeat(auto-fill, minmax(30rem, 1fr))",
+                        gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(60rem, 46%))" : "repeat(auto-fill, minmax(30rem, 1fr))",
                         gap: enlargedView ? "4rem" : "2.4rem",
                         alignItems: "center",
                         justifyContent: "center",
@@ -178,9 +178,10 @@ export const MysteryCrates = () => {
                     <Stack direction="row" alignItems="center">
                         <Box
                             sx={{
+                                flexShrink: 0,
                                 mr: "1.2rem",
                                 width: "6.5rem",
-                                height: "100%",
+                                height: "6.5rem",
                                 background: `url(${SafePNG})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",
@@ -196,6 +197,7 @@ export const MysteryCrates = () => {
 
                         <Box
                             sx={{
+                                flexShrink: 0,
                                 ml: "auto",
                                 px: "1.6rem",
                                 py: ".8rem",
