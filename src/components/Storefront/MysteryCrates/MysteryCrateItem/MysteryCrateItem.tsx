@@ -51,7 +51,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                 clipSize="12px"
                 border={{
                     borderColor: primaryColor,
-                    borderThickness: ".2rem",
+                    borderThickness: enlargedView ? ".3rem" : ".2rem",
                 }}
                 opacity={0.9}
                 backgroundColor={backgroundColor}
