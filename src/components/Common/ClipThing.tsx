@@ -13,7 +13,12 @@ export interface ClipThingProps {
     sx?: SxProps
     outerSx?: SxProps
     innerSx?: SxProps
-    skipRightCorner?: boolean
+    corners?: {
+        topLeft?: boolean
+        topRight?: boolean
+        bottomLeft?: boolean
+        bottomRight?: boolean
+    }
     opacity?: number
     backgroundColor?: string
 }
@@ -26,22 +31,46 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     sx,
     innerSx,
     outerSx,
-    skipRightCorner,
+    corners = {
+        topRight: true,
+        bottomLeft: true,
+    },
     opacity,
     backgroundColor,
 }) => {
+    const { topLeft, topRight, bottomLeft, bottomRight } = corners
+    const isSlanted = clipSlantSize !== "0" && clipSlantSize !== "0px"
+
     const innerClipStyles: SxProps = {
         lineHeight: 1,
-        clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
-            skipRightCorner ? "0%" : clipSize
-        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, ${clipSlantSize != "0px" ? "2px" : "0%"} calc(100% - ${clipSize}))`,
+        clipPath: `
+            polygon(
+                ${isSlanted ? `${clipSlantSize} 0` : topLeft ? `${clipSize} 0` : "0 0"}
+                ${topRight ? `,calc(100% - ${clipSize}) 0` : ",100% 0"}
+                ${topRight ? `,100% ${clipSize}` : ""}
+                ${isSlanted ? `,calc(100% - ${clipSlantSize}) 100%` : bottomRight ? `,100% calc(100% - ${clipSize})` : ",100% 100%"}
+                ${!isSlanted && bottomRight ? `,calc(100% - ${clipSize}) 100%` : ""}
+                ${bottomLeft ? `,${clipSize} 100%` : ",0 100%"}
+                ${bottomLeft ? `,${isSlanted ? "3px" : "0"} calc(100% - ${clipSize})` : ""}
+                ${topLeft ? `,0 ${clipSize}` : ""}
+            )
+        `,
     }
 
     const outerClipStyles: SxProps = {
         lineHeight: 1,
-        clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
-            skipRightCorner ? "0%" : clipSize
-        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, 0% calc(100% - ${clipSize}))`,
+        clipPath: `
+            polygon(
+                ${isSlanted ? `${clipSlantSize} 0` : topLeft ? `${clipSize} 0` : "0 0"}
+                ${topRight ? `,calc(100% - ${clipSize}) 0` : ",100% 0"}
+                ${topRight ? `,100% ${clipSize}` : ""}
+                ${isSlanted ? `,calc(100% - ${clipSlantSize}) 100%` : bottomRight ? `,100% calc(100% - ${clipSize})` : ",100% 100%"}
+                ${!isSlanted && bottomRight ? `,calc(100% - ${clipSize}) 100%` : ""}
+                ${bottomLeft ? `,${clipSize} 100%` : ",0 100%"}
+                ${bottomLeft ? `,0 calc(100% - ${clipSize})` : ""}
+                ${topLeft ? `,0 ${clipSize}` : ""}
+            )
+        `,
     }
 
     const borderStyles: SxProps = {

@@ -92,11 +92,14 @@ const WarMachinesInner = () => {
 
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }} spacing="1rem">
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                    spacing="1.5rem"
+                >
                     <Typography
                         sx={{
-                            px: "1.28rem",
-                            pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
                             userSelect: "text !important",
@@ -114,9 +117,9 @@ const WarMachinesInner = () => {
                             clipSize: "5px",
                             backgroundColor: theme.factionTheme.background,
                             border: { borderColor: theme.factionTheme.primary },
-                            sx: { position: "relative", width: "88%" },
+                            sx: { position: "relative", width: "50%" },
                         }}
-                        sx={{ px: "1.8rem", py: ".5rem", color: theme.factionTheme.primary }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.primary }}
                     >
                         <Typography
                             variant="body2"
@@ -137,9 +140,9 @@ const WarMachinesInner = () => {
                             clipSize: "5px",
                             backgroundColor: theme.factionTheme.background,
                             border: { borderColor: colors.neonPink },
-                            sx: { position: "relative", width: "88%" },
+                            sx: { position: "relative", width: "50%" },
                         }}
-                        sx={{ px: "1.8rem", py: ".5rem", color: colors.neonPink }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: colors.neonPink }}
                     >
                         <Typography
                             variant="body2"
