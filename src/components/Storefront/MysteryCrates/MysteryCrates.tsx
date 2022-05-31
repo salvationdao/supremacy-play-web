@@ -33,23 +33,27 @@ export const MysteryCrates = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("xxxxxxxxx")
     const theme = useTheme()
-    const [crates, setCrates] = useState<MysteryCrate[]>([
-        ...placeholderCrates,
-        ...placeholderCrates,
-        ...placeholderCrates,
-        ...placeholderCrates,
-        ...placeholderCrates,
-        ...placeholderCrates,
-        ...placeholderCrates,
-        ...placeholderCrates,
-        ...placeholderCrates,
-        ...placeholderCrates,
-    ])
+    const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
 
     // Get mystery crates
     useEffect(() => {
+        // TODO: remove later
+        setCrates([
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+        ])
+        setIsLoading(false)
+        return
         ;(async () => {
             try {
                 setIsLoading(true)
