@@ -42,18 +42,18 @@ export const MysteryCrates = () => {
     // Get mystery crates
     useEffect(() => {
         // TODO: remove later
-        // setCrates([...placeholderCrates])
-        setCrates([
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-        ])
+        setCrates([...placeholderCrates])
+        // setCrates([
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        // ])
         setIsLoading(false)
         return
         ;(async () => {
@@ -109,10 +109,11 @@ export const MysteryCrates = () => {
                         width: "100%",
                         pt: ".5rem",
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gap: "2.4rem",
-                        justifyItems: "center",
-                        height: 0,
+                        gridTemplateColumns: enlargedView ? "repeat(auto-fill, 46%)" : "repeat(auto-fill, minmax(30rem, 1fr))",
+                        gap: enlargedView ? "4rem" : "2.4rem",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: enlargedView ? "100%" : 0,
                         overflow: "visible",
                     }}
                 >
@@ -235,7 +236,7 @@ export const MysteryCrates = () => {
                     </Box>
                 </Stack>
 
-                {crates && (
+                {totalPages > 1 && (
                     <Box
                         sx={{
                             px: "1rem",

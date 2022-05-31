@@ -263,7 +263,7 @@ const WarMachinesInner = () => {
                         {content}
                     </Box>
 
-                    {mechs && (
+                    {totalPages > 1 && (
                         <Box
                             sx={{
                                 px: "1rem",

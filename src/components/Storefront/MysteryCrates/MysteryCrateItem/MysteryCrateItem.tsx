@@ -39,6 +39,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
     return (
         <Box
             sx={{
+                height: enlargedView ? "88%" : "unset",
                 width: "100%",
                 transition: "all .15s",
                 ":hover": {
@@ -54,14 +55,15 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                 }}
                 opacity={0.9}
                 backgroundColor={backgroundColor}
-                sx={{ height: "100%", transform: enlargedView ? "scale(1.3)" : "unset" }}
+                sx={{ height: "100%" }}
             >
-                <Stack spacing="1.5rem" sx={{ height: "100%", px: "1.5rem", py: "1.5rem" }}>
+                <Stack spacing={enlargedView ? "2.5rem" : "1.5rem"} justifyContent="center" sx={{ height: "100%", p: enlargedView ? "3rem" : "1.5rem" }}>
                     <Box
                         sx={{
                             position: "relative",
-                            px: ".6rem",
-                            py: "1.5rem",
+                            flex: enlargedView ? 1 : "unset",
+                            px: enlargedView ? "5rem" : ".6rem",
+                            py: enlargedView ? "8rem" : "1.5rem",
                             borderRadius: 1,
                             boxShadow: "inset 0 0 12px 6px #00000040",
                             background: `radial-gradient(#FFFFFF20 1px, ${backgroundColor})`,
@@ -71,19 +73,28 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                         <Box
                             sx={{
                                 width: "100%",
-                                height: "11rem",
+                                height: enlargedView ? "100%" : "11rem",
                                 background: `url(${crateDeets.image})`,
                                 backgroundRepeat: "no-repeat",
-                                backgroundPosition: "top center",
+                                backgroundPosition: "center",
                                 backgroundSize: "contain",
                             }}
                         />
 
-                        <Box sx={{ position: "absolute", right: ".5rem", bottom: ".2rem", px: ".2rem", py: ".5rem", backgroundColor: "#00000095" }}>
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                right: enlargedView ? "1.4rem" : ".5rem",
+                                bottom: enlargedView ? ".6rem" : ".2rem",
+                                px: ".2rem",
+                                py: ".5rem",
+                                backgroundColor: "#00000095",
+                            }}
+                        >
                             <Typography
                                 sx={{
                                     lineHeight: 1,
-                                    fontSize: "1.22rem",
+                                    fontSize: enlargedView ? "1.6rem" : "1.22rem",
                                     fontFamily: fonts.nostromoBold,
                                     span: {
                                         fontFamily: "inherit",
@@ -94,21 +105,34 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                 <span>{numberCommaFormatter(amount - sold)}</span> / {numberCommaFormatter(amount)}
                             </Typography>
                         </Box>
+
+                        {enlargedView && (
+                            <Stack direction="row" alignItems="center" spacing=".1rem" sx={{ position: "absolute", left: "1.4rem", bottom: ".6rem" }}>
+                                <SvgSupToken size={enlargedView ? "2.6rem" : "1.6rem"} fill={colors.yellow} />
+                                <Typography sx={{ fontSize: enlargedView ? "2.1rem" : "1.6rem", fontWeight: "fontWeightBold" }}>
+                                    {supFormatterNoFixed(price, 2)}
+                                </Typography>
+                            </Stack>
+                        )}
                     </Box>
 
-                    <Stack sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
-                        <Typography variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                    <Stack alignItems={enlargedView ? "center" : "flex-start"} sx={{ flex: enlargedView ? "unset" : 1, px: ".4rem", py: ".3rem" }}>
+                        {!enlargedView && (
+                            <Stack direction="row" alignItems="center" spacing=".1rem">
+                                <SvgSupToken size={enlargedView ? "2.6rem" : "1.6rem"} fill={colors.yellow} />
+                                <Typography sx={{ fontSize: enlargedView ? "2.1rem" : "1.6rem", fontWeight: "fontWeightBold" }}>
+                                    {supFormatterNoFixed(price, 2)}
+                                </Typography>
+                            </Stack>
+                        )}
+
+                        <Typography variant={enlargedView ? "h4" : "h6"} sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                             {crateDeets.label}
                         </Typography>
 
-                        <Typography sx={{ fontSize: "1.6rem" }}>{crateDeets.desc}</Typography>
+                        <Typography sx={{ fontSize: enlargedView ? "2.1rem" : "1.6rem" }}>{crateDeets.desc}</Typography>
 
-                        <Box sx={{ mt: "auto", pt: ".8rem" }}>
-                            <Stack direction="row" alignItems="center" spacing=".1rem">
-                                <SvgSupToken size="1.6rem" fill={colors.yellow} />
-                                <Typography sx={{ fontWeight: "fontWeightBold" }}>{supFormatterNoFixed(price, 2)}</Typography>
-                            </Stack>
-
+                        <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
                                 excludeCaret
                                 clipThingsProps={{
@@ -116,15 +140,15 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                     backgroundColor: primaryColor,
                                     opacity: 1,
                                     border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                    sx: { position: "relative", mt: "1rem" },
+                                    sx: { position: "relative", mt: "1rem", width: enlargedView ? "50%" : "100%" },
                                 }}
-                                sx={{ px: "1.6rem", py: ".6rem" }}
+                                sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
                             >
-                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
+                                <Typography variant={enlargedView ? "body1" : "caption"} sx={{ fontFamily: fonts.nostromoBlack }}>
                                     BUY NOW
                                 </Typography>
                             </FancyButton>
-                        </Box>
+                        </Stack>
                     </Stack>
                 </Stack>
             </ClipThing>
