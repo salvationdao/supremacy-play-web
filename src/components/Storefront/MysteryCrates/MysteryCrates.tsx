@@ -245,7 +245,7 @@ export const MysteryCrates = () => {
                             count={totalPages}
                             page={page}
                             sx={{
-                                ".MuiButtonBase-root": { borderRadius: 1, fontFamily: fonts.nostromoBold },
+                                ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                 ".Mui-selected": {
                                     color: (theme) => theme.factionTheme.secondary,
                                     backgroundColor: `${theme.factionTheme.primary} !important`,
