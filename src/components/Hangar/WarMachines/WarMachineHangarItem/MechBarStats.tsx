@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import React from "react"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
@@ -36,13 +36,25 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
                 },
             }}
         >
-            <Stack spacing=".8rem" sx={{ height: "100%", width: "26rem", flexShrink: 0 }}>
+            <Box
+                sx={{
+                    height: "100%",
+                    width: "26rem",
+                    flexShrink: 0,
+                    display: "grid",
+                    gridTemplateColumns: "max-content 1fr max-content",
+                    alignItems: "center",
+                    gridColumnGap: ".8rem",
+                    gridRowGap: ".8rem",
+                    gridAutoRows: "min-content",
+                }}
+            >
                 <BarStat primaryColor={theme.factionTheme.primary} label="HEALTH" current={800} total={1000} />
                 <BarStat primaryColor={theme.factionTheme.primary} label="SPEED" current={20} total={50} unit="M/S" />
                 <BarStat primaryColor={theme.factionTheme.primary} label="ARMOUR" current={500} total={1000} />
                 <BarStat primaryColor={theme.factionTheme.primary} label="WEIGHT" current={200} total={1000} unit="KG" />
                 <BarStat primaryColor={theme.factionTheme.primary} label="DAMAGE" current={800} total={1000} />
-            </Stack>
+            </Box>
         </Box>
     )
 }
@@ -61,11 +73,10 @@ const BarStatInner = ({
     unit?: string
 }) => {
     return (
-        <Stack direction="row" spacing=".8rem" alignItems="center">
+        <>
             <Typography
                 variant="caption"
                 sx={{
-                    width: "6.5rem",
                     textAlign: "end",
                     fontSize: "1.1rem",
                     fontFamily: fonts.nostromoBlack,
@@ -80,7 +91,7 @@ const BarStatInner = ({
                 {label}
             </Typography>
 
-            <Box sx={{ flex: 1, height: ".9rem", backgroundColor: "#FFFFFF25" }}>
+            <Box sx={{ height: ".9rem", backgroundColor: "#FFFFFF25" }}>
                 <Box
                     sx={{
                         width: `${(100 * current) / total}%`,
@@ -94,7 +105,6 @@ const BarStatInner = ({
             <Typography
                 variant="caption"
                 sx={{
-                    width: "5rem",
                     fontSize: "1.1rem",
                     fontFamily: fonts.nostromoBold,
                     display: "-webkit-box",
@@ -108,7 +118,7 @@ const BarStatInner = ({
                 {current}
                 {unit}
             </Typography>
-        </Stack>
+        </>
     )
 }
 

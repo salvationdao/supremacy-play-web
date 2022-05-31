@@ -135,7 +135,7 @@ export const MysteryCrates = () => {
                             filter: "grayscale(100%)",
                             background: `url(${SafePNG})`,
                             backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
+                            backgroundPosition: "top center",
                             backgroundSize: "contain",
                         }}
                     />
@@ -200,6 +200,7 @@ export const MysteryCrates = () => {
                                 ml: "auto",
                                 px: "1.6rem",
                                 py: ".8rem",
+                                backgroundColor: `${colors.neonBlue}10`,
                                 border: `${colors.neonBlue} 2px dashed`,
                                 animation: `${zoomEffect(1.01)} 3s infinite`,
                             }}
