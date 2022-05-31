@@ -1,4 +1,4 @@
-import { Box, Divider, Stack, Typography } from "@mui/material"
+import { Box, Divider, Pagination, Stack, Typography } from "@mui/material"
 import { useState, useEffect, useMemo } from "react"
 import { ClipThing } from "../.."
 import { SafePNG } from "../../../assets"
@@ -10,21 +10,20 @@ import { GameServerKeys } from "../../../keys"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
-import { Filters } from "../Filters"
-import { MysteryCrateItem } from "./MysteryCrateItem/MysteryCrateItem"
+import { MysteryCrateItem, MysteryCrateItemLoadingSkeleton } from "./MysteryCrateItem/MysteryCrateItem"
 
 const placeholderCrates: MysteryCrate[] = [
     {
         id: "1",
         mystery_crate_type: "MECH",
-        price: 3200,
+        price: "3200000000000000000000",
         amount: 10000,
         sold: 6080,
     },
     {
         id: "2",
         mystery_crate_type: "WEAPON",
-        price: 2200,
+        price: "2200000000000000000000",
         amount: 10000,
         sold: 3610,
     },
@@ -47,7 +46,7 @@ export const MysteryCrates = () => {
         ...placeholderCrates,
     ])
     const [isLoading, setIsLoading] = useState(true)
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
 
     // Get mystery crates
     useEffect(() => {
@@ -87,20 +86,20 @@ export const MysteryCrates = () => {
     }, [page, pageSize, send])
 
     const content = useMemo(() => {
-        // if (!crates || isLoading) {
-        //     return (
-        //         <Stack spacing="1.6rem" sx={{ width: "80rem", px: "1rem", py: ".8rem", height: 0 }}>
-        //             {new Array(5).fill(0).map((_, index) => (
-        //                 <MysteryCrateItemLoadingSkeleton key={index} />
-        //             ))}
-        //         </Stack>
-        //     )
-        // }
+        if (!crates || isLoading) {
+            return (
+                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
+                    {new Array(6).fill(0).map((_, index) => (
+                        <MysteryCrateItemLoadingSkeleton key={index} />
+                    ))}
+                </Stack>
+            )
+        }
 
         if (crates && crates.length > 0) {
             return (
-                <Stack direction="row" justifyContent="center" flexWrap="wrap" sx={{ height: 0 }}>
-                    {crates.map((crate, i) => (
+                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
+                    {crates.map((crate) => (
                         <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}`} crate={crate} />
                     ))}
                 </Stack>
@@ -138,23 +137,21 @@ export const MysteryCrates = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates])
+    }, [crates, isLoading])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <Filters />
-
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
-                }}
-                opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ flex: 1, height: "100%", width: "45rem" }}
-            >
-                <Stack spacing="2rem" sx={{ position: "relative", height: "100%", px: "2.68em", py: "2.2rem" }}>
+        <ClipThing
+            clipSize="10px"
+            border={{
+                borderColor: theme.factionTheme.primary,
+                borderThickness: ".3rem",
+            }}
+            opacity={0.7}
+            backgroundColor={theme.factionTheme.background}
+            sx={{ height: "100%" }}
+        >
+            <Stack sx={{ position: "relative", height: "100%" }}>
+                <Stack spacing="2rem" sx={{ flex: 1, px: "2.68em", py: "2.2rem" }}>
                     <Stack direction="row" alignItems="center">
                         <Box
                             sx={{
@@ -216,7 +213,34 @@ export const MysteryCrates = () => {
                         {content}
                     </Box>
                 </Stack>
-            </ClipThing>
-        </Stack>
+
+                {crates && (
+                    <Box
+                        sx={{
+                            px: "1rem",
+                            py: ".5rem",
+                            borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                            backgroundColor: "#00000070",
+                        }}
+                    >
+                        <Pagination
+                            size="medium"
+                            count={totalPages}
+                            page={page}
+                            sx={{
+                                ".MuiButtonBase-root": { fontFamily: fonts.nostromoBold },
+                                ".Mui-selected": {
+                                    color: (theme) => theme.factionTheme.secondary,
+                                    backgroundColor: `${theme.factionTheme.primary} !important`,
+                                },
+                            }}
+                            onChange={(e, p) => changePage(p)}
+                            showFirstButton
+                            showLastButton
+                        />
+                    </Box>
+                )}
+            </Stack>
+        </ClipThing>
     )
 }

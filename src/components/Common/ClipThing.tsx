@@ -1,5 +1,5 @@
 import { Box, SxProps } from "@mui/system"
-import React from "react"
+import React, { useMemo } from "react"
 import { colors } from "../../theme/theme"
 
 export interface ClipThingProps {
@@ -41,11 +41,12 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     backgroundColor,
 }) => {
     const { topLeft, topRight, bottomLeft, bottomRight } = corners
-    const isSlanted = clipSlantSize !== "0" && clipSlantSize !== "0px"
+    const isSlanted = useMemo(() => clipSlantSize !== "0" && clipSlantSize !== "0px", [clipSlantSize])
 
-    const innerClipStyles: SxProps = {
-        lineHeight: 1,
-        clipPath: `
+    const innerClipStyles: SxProps = useMemo(
+        () => ({
+            lineHeight: 1,
+            clipPath: `
             polygon(
                 ${isSlanted ? `${clipSlantSize} 0` : topLeft ? `${clipSize} 0` : "0 0"}
                 ${topRight ? `,calc(100% - ${clipSize}) 0` : ",100% 0"}
@@ -57,11 +58,14 @@ export const ClipThing: React.FC<ClipThingProps> = ({
                 ${!isSlanted && topLeft ? `,0 ${clipSize}` : ""}
             )
         `,
-    }
+        }),
+        [bottomLeft, bottomRight, clipSize, clipSlantSize, isSlanted, topLeft, topRight],
+    )
 
-    const outerClipStyles: SxProps = {
-        lineHeight: 1,
-        clipPath: `
+    const outerClipStyles: SxProps = useMemo(
+        () => ({
+            lineHeight: 1,
+            clipPath: `
             polygon(
                 ${isSlanted ? `${clipSlantSize} 0` : topLeft ? `${clipSize} 0` : "0 0"}
                 ${topRight ? `,calc(100% - ${clipSize}) 0` : ",100% 0"}
@@ -73,12 +77,17 @@ export const ClipThing: React.FC<ClipThingProps> = ({
                 ${!isSlanted && topLeft ? `,0 ${clipSize}` : ""}
             )
         `,
-    }
+        }),
+        [bottomLeft, bottomRight, clipSize, clipSlantSize, isSlanted, topLeft, topRight],
+    )
 
-    const borderStyles: SxProps = {
-        borderTopLeftRadius: "2px",
-        borderBottomRightRadius: "2px",
-    }
+    const borderStyles: SxProps = useMemo(
+        () => ({
+            borderTopLeftRadius: "2px",
+            borderBottomRightRadius: "2px",
+        }),
+        [],
+    )
 
     if (border) {
         if (border) {

@@ -1,8 +1,9 @@
 import { Box, Skeleton, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { ClipThing } from "../../.."
+import { ClipThing, FancyButton } from "../../.."
+import { SvgSupToken } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { getMysteryCrateDeets, numberCommaFormatter } from "../../../../helpers"
+import { getMysteryCrateDeets, numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -18,6 +19,9 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
 
     const crateDeets = useMemo(() => getMysteryCrateDeets(mysteryCrate.mystery_crate_type), [mysteryCrate])
 
+    const primaryColor = theme.factionTheme.primary
+    const backgroundColor = theme.factionTheme.background
+
     useGameServerSubscriptionFaction<MysteryCrate>(
         {
             URI: "/xxxxxxxxx",
@@ -29,18 +33,18 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
         },
     )
 
-    const { sold, amount } = mysteryCrate
+    const { price, sold, amount } = mysteryCrate
 
     return (
         <Box sx={{ p: "1.2rem", width: "30rem" }}>
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: theme.factionTheme.primary,
+                    borderColor: primaryColor,
                     borderThickness: ".2rem",
                 }}
                 opacity={0.9}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={backgroundColor}
                 sx={{ height: "100%" }}
             >
                 <Stack spacing="1.5rem" sx={{ height: "100%", px: "1.5rem", py: "1.5rem" }}>
@@ -51,7 +55,7 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
                             py: "1.5rem",
                             borderRadius: 1,
                             boxShadow: "inset 0 0 12px 6px #00000040",
-                            background: `radial-gradient(#FFFFFF20 1px, ${theme.factionTheme.background})`,
+                            background: `radial-gradient(#FFFFFF20 1px, ${backgroundColor})`,
                             border: "#00000060 1px solid",
                         }}
                     >
@@ -73,7 +77,7 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
                                     fontSize: "1.22rem",
                                     fontFamily: fonts.nostromoBold,
                                     span: {
-                                        fontFamily: fonts.nostromoBlack,
+                                        fontFamily: "inherit",
                                         color: sold >= amount ? colors.red : colors.neonBlue,
                                     },
                                 }}
@@ -83,10 +87,33 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
                         </Box>
                     </Box>
 
-                    <Stack spacing=".3rem" sx={{ px: ".4rem", py: ".3rem" }}>
-                        <Typography sx={{ color: theme.factionTheme.primary, fontFamily: fonts.nostromoBlack }}>{crateDeets.label}</Typography>
+                    <Stack spacing=".4rem" sx={{ px: ".4rem", py: ".3rem" }}>
+                        <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>{crateDeets.label}</Typography>
 
                         <Typography>{crateDeets.desc}</Typography>
+
+                        <Box sx={{ pt: ".3rem" }}>
+                            <Stack direction="row" alignItems="center" spacing=".1rem">
+                                <SvgSupToken size="1.6rem" fill={colors.yellow} />
+                                <Typography sx={{ fontWeight: "fontWeightBold" }}>{supFormatterNoFixed(price, 2)}</Typography>
+                            </Stack>
+
+                            <FancyButton
+                                excludeCaret
+                                clipThingsProps={{
+                                    clipSize: "5px",
+                                    backgroundColor: primaryColor,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                                    sx: { position: "relative", mt: "1rem" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".4rem" }}
+                            >
+                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
+                                    BUY NOW
+                                </Typography>
+                            </FancyButton>
+                        </Box>
                     </Stack>
                 </Stack>
             </ClipThing>
@@ -98,19 +125,23 @@ export const MysteryCrateItemLoadingSkeleton = () => {
     const theme = useTheme()
 
     return (
-        <Box sx={{ position: "relative", overflow: "visible" }}>
+        <Box sx={{ p: "1.2rem", width: "30rem" }}>
             <ClipThing
                 clipSize="10px"
                 border={{
-                    isFancy: true,
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".15rem",
+                    borderThickness: ".2rem",
                 }}
-                opacity={0.7}
+                opacity={0.5}
                 backgroundColor={theme.factionTheme.background}
             >
-                <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "22rem", px: "1.8rem", py: "1.6rem" }}>
-                    <Skeleton variant="rectangular" width="100%" height="4rem" />
+                <Stack spacing=".7rem" sx={{ px: "1.8rem", py: "1.6rem" }}>
+                    <Skeleton variant="rectangular" width="100%" height="12rem" sx={{ mb: ".3rem !important" }} />
+                    <Skeleton variant="rectangular" width="80%" height="2.2rem" />
+                    <Skeleton variant="rectangular" width="100%" height="1.5rem" />
+                    <Skeleton variant="rectangular" width="100%" height="1.5rem" />
+                    <Skeleton variant="rectangular" width="100%" height="1.5rem" />
+                    <Skeleton variant="rectangular" width="100%" height="4rem" sx={{ mt: "1rem !important" }} />
                 </Stack>
             </ClipThing>
         </Box>

@@ -320,7 +320,7 @@ export type MysteryCrateType = "MECH" | "WEAPON"
 export interface MysteryCrate {
     id: string
     mystery_crate_type: MysteryCrateType
-    price: number
+    price: string
     amount: number
     sold: number
 }

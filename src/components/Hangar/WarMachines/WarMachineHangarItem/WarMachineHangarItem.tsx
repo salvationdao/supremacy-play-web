@@ -113,7 +113,7 @@ export const WarMachineHangarItemLoadingSkeleton = () => {
                     topRight: true,
                     bottomLeft: true,
                 }}
-                opacity={0.7}
+                opacity={0.5}
                 backgroundColor={theme.factionTheme.background}
             >
                 <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "22rem", px: "1.8rem", py: "1.6rem" }}>
