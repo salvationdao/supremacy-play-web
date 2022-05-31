@@ -160,9 +160,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                 >
                     <Stack
                         sx={{
-                            px: "2rem",
-                            pt: "1.8rem",
-                            pb: "2rem",
+                            px: "2.2rem",
+                            py: "2.1rem",
                             ".MuiAutocomplete-popper": {
                                 zIndex: siteZIndex.Modal,
                                 ".MuiPaper-root": {
@@ -173,7 +172,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                             },
                         }}
                     >
-                        <Typography sx={{ mb: ".9rem", fontFamily: fonts.nostromoBlack }}>PROPOSE TO PUNISH A PLAYER</Typography>
+                        <Typography sx={{ mb: "1.2rem", fontFamily: fonts.nostromoBlack }}>PROPOSE TO PUNISH A PLAYER</Typography>
 
                         <Autocomplete
                             options={userDropdown}

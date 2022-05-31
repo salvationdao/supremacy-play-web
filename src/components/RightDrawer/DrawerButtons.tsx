@@ -1,5 +1,6 @@
-import { Box, Tabs, Theme, useTheme } from "@mui/material"
+import { Box, Tabs } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
+import { useTheme } from "../../containers/theme"
 import { HASH_ROUTES_ARRAY, RightDrawerHashes } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
 import { TabButton } from "../LeftDrawer/DrawerButtons"
@@ -7,7 +8,7 @@ import { TabButton } from "../LeftDrawer/DrawerButtons"
 const DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
 

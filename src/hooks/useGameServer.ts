@@ -4,7 +4,9 @@ import { useCommands } from "../containers/ws/useCommands"
 import { DataType } from "../containers/ws/util"
 import { useAuth } from "../containers/auth"
 
-// Fetch
+// ***********
+// ** Fetch **
+// ***********
 export const useGameServerCommandsUser = (URI: string) => {
     const { userID } = useAuth()
     return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `/user/${userID}${URI}`, ready: !!userID })
@@ -19,7 +21,9 @@ export const useGameServerCommands = (URI: string) => {
     return useCommands({ host: GAME_SERVER_HOSTNAME, URI: `${URI}` })
 }
 
-// Subscription
+// ******************
+// ** Subscription **
+// ******************
 export function useGameServerSubscriptionUser<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
     const { userID } = useAuth()
     return useSubscription({ URI: `/user/${userID}${URI}`, key, host: GAME_SERVER_HOSTNAME, args, ready: !!userID && ready }, callback)

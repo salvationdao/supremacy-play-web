@@ -43,6 +43,12 @@ export const MechModal = ({
                         borderColor: theme.factionTheme.primary,
                         borderThickness: ".2rem",
                     }}
+                    corners={{
+                        topLeft: true,
+                        topRight: true,
+                        bottomLeft: true,
+                        bottomRight: true,
+                    }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
                 >
@@ -61,9 +67,10 @@ export const MechModal = ({
                                 position: "relative",
                                 px: ".6rem",
                                 py: "1rem",
-                                borderRadius: 0.6,
+                                borderRadius: 1,
                                 boxShadow: "inset 0 0 12px 6px #00000040",
                                 background: `radial-gradient(#FFFFFF20 1px, ${theme.factionTheme.background})`,
+                                border: "#00000060 1px solid",
                             }}
                         >
                             <Box

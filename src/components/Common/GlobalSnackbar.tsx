@@ -62,6 +62,10 @@ export const GlobalSnackbar = () => {
                         borderThickness: ".15rem",
                         borderColor: "#FFFFFF",
                     }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                    }}
                     sx={{
                         mb: "1.8rem",
                         ml: DEV_ONLY ? "1.9rem" : "-.9rem",

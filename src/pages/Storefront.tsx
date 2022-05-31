@@ -2,14 +2,14 @@ import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useState, SyntheticEvent } from "react"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
-import { useTheme } from "../containers/theme"
-import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
+import { MysteryCrates } from "../components/Storefront/MysteryCrates/MysteryCrates"
 import { useAuth } from "../containers"
+import { useTheme } from "../containers/theme"
 import { fonts, siteZIndex } from "../theme/theme"
 
-type tabs = "war-machines" | "weapons" | "attachments" | "paint-jobs"
+type tabs = "mystery-crates" | "skins" | "merchandise"
 
-export const HangarPage = () => {
+export const StorefrontPage = () => {
     const { userID } = useAuth()
 
     return (
@@ -31,15 +31,15 @@ export const HangarPage = () => {
                     <ConnectButton width="12rem" />
                 </Stack>
             ) : (
-                <HangarPageInner />
+                <StorefrontPageInner />
             )}
         </Stack>
     )
 }
 
-const HangarPageInner = () => {
+const StorefrontPageInner = () => {
     const theme = useTheme()
-    const [currentValue, setCurrentValue] = useState<tabs>("war-machines")
+    const [currentValue, setCurrentValue] = useState<tabs>("mystery-crates")
 
     const handleChange = (event: SyntheticEvent, newValue: tabs) => {
         setCurrentValue(newValue)
@@ -67,24 +67,20 @@ const HangarPageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="WAR MACHINE" value="war-machines" />
-                        <Tab label="WEAPONS" value="weapons" />
-                        <Tab label="ATTACHMENTS" value="attachments" />
-                        <Tab label="PAINT JOBS" value="paint-jobs" />
+                        <Tab label="MYSTERY CRATES" value="mystery-crates" />
+                        <Tab label="SKINS" value="skins" />
+                        <Tab label="MERCHANDISE" value="merchandise" />
                     </Tabs>
                 </Box>
 
-                <TabPanel currentValue={currentValue} value={"war-machines"}>
-                    <WarMachines />
+                <TabPanel currentValue={currentValue} value="mystery-crates">
+                    <MysteryCrates />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={"weapons"}>
-                    WEAPONS
+                <TabPanel currentValue={currentValue} value="skins">
+                    SKINS
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={"attachments"}>
-                    ATTACHMENTS
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value={"paint-jobs"}>
-                    PAINT JOBS
+                <TabPanel currentValue={currentValue} value="merchandise">
+                    MERCHANDISE
                 </TabPanel>
             </Stack>
         </>

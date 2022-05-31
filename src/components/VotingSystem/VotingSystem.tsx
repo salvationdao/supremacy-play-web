@@ -109,6 +109,10 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                             borderThickness: ".15rem",
                             borderColor: theme.factionTheme.primary,
                         }}
+                        corners={{
+                            topRight: true,
+                            bottomLeft: true,
+                        }}
                         clipSize="10px"
                         backgroundColor={theme.factionTheme.background}
                         opacity={0.8}
