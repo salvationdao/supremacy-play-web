@@ -48,7 +48,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
             }}
         >
             <ClipThing
-                clipSize="10px"
+                clipSize="12px"
                 border={{
                     borderColor: primaryColor,
                     borderThickness: ".2rem",

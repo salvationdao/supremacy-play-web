@@ -43,17 +43,17 @@ export const MysteryCrates = () => {
     useEffect(() => {
         // TODO: remove later
         setCrates([...placeholderCrates])
-        setCrates([
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-            ...placeholderCrates,
-        ])
+        // setCrates([
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        //     ...placeholderCrates,
+        // ])
         setIsLoading(false)
         return
         ;(async () => {
