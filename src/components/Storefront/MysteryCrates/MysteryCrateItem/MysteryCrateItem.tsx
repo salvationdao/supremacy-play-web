@@ -10,10 +10,11 @@ import { colors, fonts } from "../../../../theme/theme"
 import { MysteryCrate } from "../../../../types"
 
 interface MysteryCrateItemProps {
+    enlargedView?: boolean
     crate: MysteryCrate
 }
 
-export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
+export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps) => {
     const theme = useTheme()
     const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>(crate)
 
@@ -36,7 +37,16 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
     const { price, sold, amount } = mysteryCrate
 
     return (
-        <Box sx={{ p: "1.2rem", width: "30rem" }}>
+        <Box
+            sx={{
+                m: enlargedView ? "10rem" : "1.2rem",
+                width: "30rem",
+                transition: "all .15s",
+                ":hover": {
+                    transform: "translateY(-.4rem)",
+                },
+            }}
+        >
             <ClipThing
                 clipSize="10px"
                 border={{
@@ -45,7 +55,7 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
                 }}
                 opacity={0.9}
                 backgroundColor={backgroundColor}
-                sx={{ height: "100%" }}
+                sx={{ height: "100%", transform: enlargedView ? "scale(1.3)" : "unset" }}
             >
                 <Stack spacing="1.5rem" sx={{ height: "100%", px: "1.5rem", py: "1.5rem" }}>
                     <Box
@@ -107,7 +117,7 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateItemProps) => {
                                     border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                                     sx: { position: "relative", mt: "1rem" },
                                 }}
-                                sx={{ px: "1.6rem", py: ".4rem" }}
+                                sx={{ px: "1.6rem", py: ".45rem" }}
                             >
                                 <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
                                     BUY NOW

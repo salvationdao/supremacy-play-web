@@ -37,11 +37,13 @@ export const MysteryCrates = () => {
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
 
+    const enlargedView = crates ? crates.length <= 2 : false
+
     // Get mystery crates
     useEffect(() => {
         // TODO: remove later
+        // setCrates([...placeholderCrates])
         setCrates([
-            ...placeholderCrates,
             ...placeholderCrates,
             ...placeholderCrates,
             ...placeholderCrates,
@@ -102,9 +104,15 @@ export const MysteryCrates = () => {
 
         if (crates && crates.length > 0) {
             return (
-                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
+                <Stack
+                    direction="row"
+                    flexWrap="wrap"
+                    alignItems={enlargedView ? "center" : "flex-start"}
+                    justifyContent={enlargedView ? "center" : "flex-start"}
+                    sx={{ height: enlargedView ? "80%" : 0 }}
+                >
                     {crates.map((crate) => (
-                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}`} crate={crate} />
+                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}`} enlargedView={enlargedView} crate={crate} />
                     ))}
                 </Stack>
             )
@@ -141,7 +149,7 @@ export const MysteryCrates = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, isLoading])
+    }, [crates, enlargedView, isLoading])
 
     return (
         <ClipThing
