@@ -62,8 +62,8 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                         sx={{
                             position: "relative",
                             flex: enlargedView ? 1 : "unset",
-                            px: enlargedView ? "5rem" : ".6rem",
-                            py: enlargedView ? "8rem" : "1.5rem",
+                            px: enlargedView ? "5rem" : ".8rem",
+                            py: enlargedView ? "8rem" : "2rem",
                             borderRadius: 1,
                             boxShadow: "inset 0 0 12px 6px #00000040",
                             background: `radial-gradient(#FFFFFF20 1px, ${backgroundColor})`,
@@ -73,7 +73,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                         <Box
                             sx={{
                                 width: "100%",
-                                height: enlargedView ? "100%" : "11rem",
+                                height: enlargedView ? "100%" : "16rem",
                                 background: `url(${crateDeets.image})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",
