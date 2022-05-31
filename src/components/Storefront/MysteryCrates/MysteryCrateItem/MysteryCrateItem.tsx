@@ -126,11 +126,16 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                             </Stack>
                         )}
 
-                        <Typography variant={enlargedView ? "h4" : "h6"} sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                        <Typography
+                            variant={enlargedView ? "h4" : "h6"}
+                            sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack, textAlign: enlargedView ? "center" : "start" }}
+                        >
                             {crateDeets.label}
                         </Typography>
 
-                        <Typography sx={{ fontSize: enlargedView ? "2.1rem" : "1.6rem" }}>{crateDeets.desc}</Typography>
+                        <Typography sx={{ fontSize: enlargedView ? "2.1rem" : "1.6rem", textAlign: enlargedView ? "center" : "start" }}>
+                            {crateDeets.desc}
+                        </Typography>
 
                         <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
