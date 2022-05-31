@@ -175,7 +175,7 @@ export const MysteryCrates = () => {
         >
             <Stack sx={{ position: "relative", height: "100%" }}>
                 <Stack spacing="2rem" sx={{ flex: 1, px: "2rem", py: "2.2rem" }}>
-                    <Stack direction="row" alignItems="center">
+                    <Stack direction="row" alignItems="flex-start">
                         <Box
                             sx={{
                                 flexShrink: 0,
@@ -188,7 +188,7 @@ export const MysteryCrates = () => {
                                 backgroundSize: "cover",
                             }}
                         />
-                        <Box>
+                        <Box sx={{ mr: "2rem" }}>
                             <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 MYSTERY CRATES
                             </Typography>
@@ -197,7 +197,6 @@ export const MysteryCrates = () => {
 
                         <Box
                             sx={{
-                                flexShrink: 0,
                                 ml: "auto",
                                 px: "1.6rem",
                                 py: ".8rem",
@@ -205,7 +204,7 @@ export const MysteryCrates = () => {
                                 animation: `${zoomEffect(1.01)} 3s infinite`,
                             }}
                         >
-                            <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>LIMITED AMOUNTS AVAILABLE</Typography>
+                            <Typography sx={{ textAlign: "center", color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>LIMITED AMOUNTS</Typography>
                         </Box>
                     </Stack>
 
