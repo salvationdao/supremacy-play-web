@@ -104,17 +104,22 @@ export const MysteryCrates = () => {
 
         if (crates && crates.length > 0) {
             return (
-                <Stack
-                    direction="row"
-                    flexWrap="wrap"
-                    alignItems={enlargedView ? "center" : "flex-start"}
-                    justifyContent={enlargedView ? "center" : "flex-start"}
-                    sx={{ height: enlargedView ? "80%" : 0 }}
+                <Box
+                    sx={{
+                        width: "100%",
+                        pt: ".5rem",
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
+                        gap: "2.4rem",
+                        justifyItems: "center",
+                        height: 0,
+                        overflow: "visible",
+                    }}
                 >
                     {crates.map((crate) => (
                         <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}`} enlargedView={enlargedView} crate={crate} />
                     ))}
-                </Stack>
+                </Box>
             )
         }
 
@@ -208,7 +213,7 @@ export const MysteryCrates = () => {
                             my: ".8rem",
                             ml: ".8rem",
                             mr: ".4rem",
-                            pr: ".4rem",
+                            pr: "1.2rem",
                             flex: 1,
                             overflowY: "auto",
                             overflowX: "hidden",

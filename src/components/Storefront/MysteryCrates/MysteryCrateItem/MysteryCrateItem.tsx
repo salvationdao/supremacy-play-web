@@ -39,8 +39,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
     return (
         <Box
             sx={{
-                m: enlargedView ? "10rem" : "1.2rem",
-                width: "30rem",
+                width: "100%",
                 transition: "all .15s",
                 ":hover": {
                     transform: "translateY(-.4rem)",
@@ -72,7 +71,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                         <Box
                             sx={{
                                 width: "100%",
-                                height: "9.5rem",
+                                height: "11rem",
                                 background: `url(${crateDeets.image})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "top center",
@@ -97,12 +96,14 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                         </Box>
                     </Box>
 
-                    <Stack spacing=".4rem" sx={{ px: ".4rem", py: ".3rem" }}>
-                        <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>{crateDeets.label}</Typography>
+                    <Stack sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
+                        <Typography variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                            {crateDeets.label}
+                        </Typography>
 
-                        <Typography>{crateDeets.desc}</Typography>
+                        <Typography sx={{ fontSize: "1.6rem" }}>{crateDeets.desc}</Typography>
 
-                        <Box sx={{ pt: ".3rem" }}>
+                        <Box sx={{ mt: "auto", pt: ".8rem" }}>
                             <Stack direction="row" alignItems="center" spacing=".1rem">
                                 <SvgSupToken size="1.6rem" fill={colors.yellow} />
                                 <Typography sx={{ fontWeight: "fontWeightBold" }}>{supFormatterNoFixed(price, 2)}</Typography>
@@ -117,7 +118,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                     border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                                     sx: { position: "relative", mt: "1rem" },
                                 }}
-                                sx={{ px: "1.6rem", py: ".45rem" }}
+                                sx={{ px: "1.6rem", py: ".6rem" }}
                             >
                                 <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
                                     BUY NOW
