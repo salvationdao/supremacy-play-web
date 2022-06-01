@@ -47,14 +47,13 @@ const MarketplacePageInner = () => {
     return (
         <>
             <Stack sx={{ m: "1.5rem", height: "100%" }}>
-                <Box sx={{ width: "fit-content", mb: ".8rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
+                <Box sx={{ maxWidth: "fit-content", mb: ".8rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
                     <Tabs
                         value={currentValue}
                         onChange={handleChange}
                         variant="scrollable"
                         scrollButtons="auto"
                         sx={{
-                            width: "fit-content",
                             flexShrink: 0,
                             color: (theme) => theme.factionTheme.primary,
                             minHeight: 0,
@@ -66,13 +65,13 @@ const MarketplacePageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="MYSTERY CRATES" value="war-machines" />
-                        <Tab label="SKINS" value="key-cards" />
-                        <Tab label="MERCHANDISE" value="weapons" />
-                        <Tab label="MERCHANDISE" value="attachments" />
-                        <Tab label="MERCHANDISE" value="cores" />
-                        <Tab label="MERCHANDISE" value="paint-jobs" />
-                        <Tab label="MERCHANDISE" value="bundles" />
+                        <Tab label="WAR MACHINES" value="war-machines" />
+                        <Tab label="KEY CARDS" value="key-cards" />
+                        <Tab label="WEAPONS" value="weapons" />
+                        <Tab label="ATTACHMENTS" value="attachments" />
+                        <Tab label="CORES" value="cores" />
+                        <Tab label="PAINT JOBS" value="paint-jobs" />
+                        <Tab label="BUNDLES" value="bundles" />
                     </Tabs>
                 </Box>
 

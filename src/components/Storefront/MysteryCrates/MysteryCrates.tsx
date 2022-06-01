@@ -1,4 +1,4 @@
-import { Box, Divider, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useState, useEffect, useMemo } from "react"
 import { ClipThing } from "../.."
 import { SafePNG } from "../../../assets"
@@ -43,17 +43,17 @@ export const MysteryCrates = () => {
     useEffect(() => {
         // TODO: remove later
         setCrates([...placeholderCrates])
-        // setCrates([
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        // ])
+        setCrates([
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+            ...placeholderCrates,
+        ])
         setIsLoading(false)
         return
         ;(async () => {
@@ -174,14 +174,24 @@ export const MysteryCrates = () => {
             sx={{ height: "100%" }}
         >
             <Stack sx={{ position: "relative", height: "100%" }}>
-                <Stack spacing="2rem" sx={{ flex: 1, px: "2rem", py: "2.2rem" }}>
-                    <Stack direction="row" alignItems="flex-start">
+                <Stack sx={{ flex: 1 }}>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        sx={{
+                            px: "2rem",
+                            py: "2.2rem",
+                            backgroundColor: "#00000070",
+                            borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                        }}
+                    >
                         <Box
                             sx={{
+                                alignSelf: "flex-start",
                                 flexShrink: 0,
                                 mr: "1.2rem",
                                 width: "6.5rem",
-                                height: "6.5rem",
+                                height: "5rem",
                                 background: `url(${SafePNG})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",
@@ -209,34 +219,34 @@ export const MysteryCrates = () => {
                         </Box>
                     </Stack>
 
-                    <Divider />
-
-                    <Box
-                        sx={{
-                            my: ".8rem",
-                            ml: ".8rem",
-                            pl: "1rem",
-                            pr: "1.5rem",
-                            flex: 1,
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: theme.factionTheme.primary,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        {content}
-                    </Box>
+                    <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                        <Box
+                            sx={{
+                                my: ".8rem",
+                                ml: ".8rem",
+                                pl: "1rem",
+                                pr: "1.5rem",
+                                flex: 1,
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                direction: "ltr",
+                                scrollbarWidth: "none",
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: theme.factionTheme.primary,
+                                    borderRadius: 3,
+                                },
+                            }}
+                        >
+                            {content}
+                        </Box>
+                    </Stack>
                 </Stack>
 
                 {totalPages > 1 && (

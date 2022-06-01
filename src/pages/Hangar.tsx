@@ -48,14 +48,13 @@ const HangarPageInner = () => {
     return (
         <>
             <Stack sx={{ m: "1.5rem", height: "100%" }}>
-                <Box sx={{ width: "fit-content", mb: ".8rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
+                <Box sx={{ maxWidth: "fit-content", mb: ".8rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
                     <Tabs
                         value={currentValue}
                         onChange={handleChange}
                         variant="scrollable"
                         scrollButtons="auto"
                         sx={{
-                            width: "fit-content",
                             flexShrink: 0,
                             color: (theme) => theme.factionTheme.primary,
                             minHeight: 0,

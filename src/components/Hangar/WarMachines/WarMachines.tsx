@@ -10,6 +10,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic } from "../../../types"
+import { TotalAndPageSizeOptions } from "../../Marketplace/TotalAndPageSizeOptions"
 import { DeployModal } from "./DeployQueue/DeployModal"
 import { LeaveModal } from "./LeaveQueue/LeaveModal"
 import { HistoryModal } from "./MechHistory/HistoryModal"
@@ -178,63 +179,13 @@ const WarMachinesInner = () => {
                 sx={{ height: "100%", width: "fit-content", minWidth: "60rem" }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        sx={{
-                            px: "1.5rem",
-                            pt: ".6rem",
-                            pb: ".3rem",
-                            backgroundColor: "#00000070",
-                            borderBottom: (theme) => `${theme.factionTheme.primary}70 1px solid`,
-                            span: {
-                                fontFamily: fonts.nostromoBold,
-                            },
-                        }}
-                    >
-                        <Typography variant="caption">
-                            <strong>DISPLAYING:</strong> {mechs?.length || 0} of {totalItems}
-                        </Typography>
-                        <Stack direction="row" spacing=".3rem" alignItems="center">
-                            <IconButton
-                                sx={{ minWidth: "3rem" }}
-                                size="small"
-                                onClick={() => {
-                                    setPageSize(5)
-                                    changePage(1)
-                                }}
-                            >
-                                <Typography variant="caption" sx={{ opacity: pageSize === 5 ? 1 : 0.3 }}>
-                                    5
-                                </Typography>
-                            </IconButton>
-                            <IconButton
-                                sx={{ minWidth: "3rem" }}
-                                size="small"
-                                onClick={() => {
-                                    setPageSize(10)
-                                    changePage(1)
-                                }}
-                            >
-                                <Typography variant="caption" sx={{ opacity: pageSize === 10 ? 1 : 0.3 }}>
-                                    10
-                                </Typography>
-                            </IconButton>
-                            <IconButton
-                                sx={{ minWidth: "3rem" }}
-                                size="small"
-                                onClick={() => {
-                                    setPageSize(15)
-                                    changePage(1)
-                                }}
-                            >
-                                <Typography variant="caption" sx={{ opacity: pageSize === 15 ? 1 : 0.3 }}>
-                                    15
-                                </Typography>
-                            </IconButton>
-                        </Stack>
-                    </Stack>
+                    <TotalAndPageSizeOptions
+                        countItems={mechs?.length}
+                        totalItems={totalItems}
+                        pageSize={pageSize}
+                        setPageSize={setPageSize}
+                        changePage={changePage}
+                    />
 
                     <Box
                         sx={{
@@ -268,7 +219,7 @@ const WarMachinesInner = () => {
                             sx={{
                                 px: "1rem",
                                 py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
                                 backgroundColor: "#00000070",
                             }}
                         >

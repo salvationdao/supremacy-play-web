@@ -108,6 +108,7 @@ import GenericWarMachinePNG from "./images/GenericWarMachine.png"
 import SupremacyPNG from "./images/Supremacy.png"
 import FlamesPNG from "./images/Flames.png"
 import MaintenancePNG from "./images/Maintenance.png"
+import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import LogoWEBP from "./images/Logo.webp"
 import BottomMechWEBP from "./images/BottomMech.webp"
@@ -181,6 +182,7 @@ export {
     Gabs,
     EmptyWarMachinesPNG,
     SafePNG,
+    WarMachineIconPNG,
 }
 
 export interface SvgWrapperProps extends BoxProps {
