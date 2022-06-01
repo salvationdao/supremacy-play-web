@@ -83,8 +83,8 @@ export const ClipThing: React.FC<ClipThingProps> = ({
 
     const borderStyles: SxProps = useMemo(
         () => ({
-            borderTopLeftRadius: "2px",
-            borderBottomRightRadius: "2px",
+            borderTopLeftRadius: "1.5px",
+            borderBottomRightRadius: "1.5px",
         }),
         [],
     )

@@ -304,6 +304,10 @@ export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
     return Capitalize(result)
 }
 
+export const snakeToSlug = (str: string): string => {
+    return str.split("_").join("-").toLowerCase()
+}
+
 export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: SvgWrapperProps; title: string; desc: string } => {
     let icon = null
     let title = ""

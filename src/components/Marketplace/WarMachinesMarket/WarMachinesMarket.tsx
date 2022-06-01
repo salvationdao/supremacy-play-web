@@ -142,9 +142,9 @@ export const WarMachinesMarket = () => {
                                 excludeCaret
                                 clipThingsProps={{
                                     clipSize: "9px",
-                                    backgroundColor: theme.factionTheme.primary,
+                                    backgroundColor: colors.red,
                                     opacity: 1,
-                                    border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
                                     sx: { position: "relative", ml: "auto" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: theme.factionTheme.secondary }}

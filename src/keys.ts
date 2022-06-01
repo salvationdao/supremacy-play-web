@@ -98,6 +98,13 @@ export enum GameServerKeys {
     // Storefront
     GetMysteryCrates = "XXXXXXXXX",
     SubMysteryCrate = "XXXXXXXXX",
+
+    // Marketplace
+    MarketplaceSalesList = "MARKETPLACE:SALES:LIST",
+    MarketplaceSalesCreate = "MARKETPLACE:SALES:CREATE",
+    MarketplaceSalesBuy = "MARKETPLACE:SALES:BUY",
+    MarketplaceSalesBid = "MARKETPLACE:SALES:BID",
+    GetKeycards = "PLAYER:ASSET:KEYCARD:LIST",
 }
 
 export enum PassportServerKeys {
