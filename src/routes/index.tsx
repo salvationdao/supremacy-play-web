@@ -9,8 +9,8 @@ interface RouteStruct {
     path: string
     exact: boolean
     Component?: () => JSX.Element
-    showInLeftDrawer?: boolean
-    enable?: boolean
+    showInLeftDrawer: boolean
+    enable: boolean
     label: string
     requireAuth?: boolean
 }
@@ -92,7 +92,7 @@ interface HashRouteStruct {
     hash: string
     Component?: () => JSX.Element
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    enable?: boolean
+    enable: boolean
     label: string
 }
 

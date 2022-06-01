@@ -1,5 +1,6 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useState, SyntheticEvent } from "react"
+import { useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
 import { MysteryCrates } from "../components/Storefront/MysteryCrates/MysteryCrates"
@@ -39,7 +40,10 @@ export const StorefrontPage = () => {
 
 const StorefrontPageInner = () => {
     const theme = useTheme()
+    const { type } = useParams<{ type: string }>()
     const [currentValue, setCurrentValue] = useState<tabs>("mystery-crates")
+
+    console.log({ type })
 
     const handleChange = (event: SyntheticEvent, newValue: tabs) => {
         setCurrentValue(newValue)

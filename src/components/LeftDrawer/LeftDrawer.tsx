@@ -76,7 +76,7 @@ export const LeftDrawer = () => {
                         }}
                     >
                         <SvgBack size="1.6rem" fill="#FFFFFF" />
-                        <Typography sx={{ ml: "1rem", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>MINIMISE</Typography>
+                        <Typography sx={{ ml: "1rem", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>MINIMIZE</Typography>
                     </Button>
                 </Stack>
             </Drawer>

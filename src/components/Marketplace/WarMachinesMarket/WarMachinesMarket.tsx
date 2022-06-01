@@ -13,10 +13,11 @@ import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
 
 export const WarMachinesMarket = () => {
     const { newSnackbarMessage } = useSnackbar()
-    const { send } = useGameServerCommandsFaction("xxxxxxxxx")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
     const [mechItems, setMechItems] = useState<string[]>()
     const [isLoading, setIsLoading] = useState(true)
+    const [loadError, setLoadError] = useState<string>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
 
     // useEffect(() => {
@@ -28,14 +29,42 @@ export const WarMachinesMarket = () => {
     //             })
 
     //             if (!resp) return
+    //             setLoadError(undefined)
     //             // setMechItems(resp)
     //         } catch (e) {
+    //             setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
+    //             newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
     //             console.error(e)
+    //         } finally {
+    //             setIsLoading(false)
     //         }
     //     })()
     // }, [page, pageSize, send])
 
     const content = useMemo(() => {
+        if (loadError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {loadError}
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
         if (!mechItems || isLoading) {
             return (
                 <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
