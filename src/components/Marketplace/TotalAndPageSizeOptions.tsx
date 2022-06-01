@@ -21,6 +21,7 @@ export const TotalAndPageSizeOptions = ({ countItems, totalItems, pageSize, setP
                 backgroundColor: "#00000070",
                 borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
                 span: { fontFamily: fonts.nostromoBold },
+                strong: { fontFamily: fonts.nostromoBlack },
             }}
         >
             <Typography variant="caption" sx={{ lineHeight: 1 }}>
