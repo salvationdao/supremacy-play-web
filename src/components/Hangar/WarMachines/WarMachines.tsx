@@ -1,4 +1,4 @@
-import { Box, IconButton, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
@@ -46,6 +46,7 @@ const WarMachinesInner = () => {
     const theme = useTheme()
     const [mechs, setMechs] = useState<MechBasic[]>()
     const [isLoading, setIsLoading] = useState(true)
+    const [loadError, setLoadError] = useState<string>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
 
     // Get mechs
@@ -59,11 +60,13 @@ const WarMachinesInner = () => {
                 })
 
                 if (!resp) return
+                setLoadError(undefined)
                 setMechs(resp.mechs)
                 setTotalItems(resp.total)
             } catch (e) {
+                setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
-                console.debug(e)
+                console.error(e)
             } finally {
                 setIsLoading(false)
             }
@@ -71,6 +74,29 @@ const WarMachinesInner = () => {
     }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
 
     const content = useMemo(() => {
+        if (loadError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {loadError}
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
         if (!mechs || isLoading) {
             return (
                 <Stack spacing="1.6rem" sx={{ width: "80rem", px: "1rem", py: ".8rem", height: 0 }}>
@@ -159,7 +185,7 @@ const WarMachinesInner = () => {
                 </Stack>
             </Stack>
         )
-    }, [mechs, isLoading, theme.factionTheme])
+    }, [loadError, mechs, isLoading, theme.factionTheme.background, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>

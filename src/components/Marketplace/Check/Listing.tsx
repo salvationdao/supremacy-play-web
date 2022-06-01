@@ -35,7 +35,7 @@ export const MarketplaceListing = (props: Props) => {
     const [assetList, setAssetList] = useState<ItemSale[]>([])
     const [error, setError] = useState<string | null>(null)
     const [buyError, setBuyError] = useState<string | null>(null)
-    const { state, send } = useGameServerCommandsFaction("/faction_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { page, changePage, totalItems, setTotalItems, pageSize } = usePagination({ pageSize: 12, page: 1 })
 
     const listQuery = useCallback(async () => {
@@ -61,7 +61,7 @@ export const MarketplaceListing = (props: Props) => {
         } catch (err) {
             setError(err as string)
         }
-    }, [state, send, search, rarities, sort, page, pageSize, setTotalItems])
+    }, [send, search, rarities, sort, page, pageSize, setTotalItems])
 
     useEffect(() => {
         listQuery()

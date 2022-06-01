@@ -35,6 +35,7 @@ export const MysteryCrates = () => {
     const theme = useTheme()
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
+    const [loadError, setLoadError] = useState<string>()
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
 
     const enlargedView = crates ? crates.length <= 2 : false
@@ -65,10 +66,12 @@ export const MysteryCrates = () => {
                 })
 
                 if (!resp) return
+                setLoadError(undefined)
                 setCrates(resp)
             } catch (e) {
+                setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
-                console.debug(e)
+                console.error(e)
             } finally {
                 setIsLoading(false)
             }
@@ -92,6 +95,29 @@ export const MysteryCrates = () => {
     }, [page, pageSize, send])
 
     const content = useMemo(() => {
+        if (loadError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {loadError}
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
         if (!crates || isLoading) {
             return (
                 <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
@@ -155,7 +181,7 @@ export const MysteryCrates = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, enlargedView, isLoading])
+    }, [crates, enlargedView, isLoading, loadError])
 
     return (
         <ClipThing
