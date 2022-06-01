@@ -1,6 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useState, useEffect, useMemo } from "react"
-import { ClipThing } from "../.."
+import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -137,6 +137,28 @@ export const WarMachinesMarket = () => {
                                 </Typography>
                                 <Typography sx={{ fontSize: "1.85rem" }}>Explore what other citizens have to offer.</Typography>
                             </Box>
+
+                            <FancyButton
+                                excludeCaret
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: theme.factionTheme.primary,
+                                    opacity: 1,
+                                    border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                    sx: { position: "relative", ml: "auto" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".4rem", color: theme.factionTheme.secondary }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: theme.factionTheme.secondary,
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    SELL WAR MACHINE
+                                </Typography>
+                            </FancyButton>
                         </Stack>
 
                         <TotalAndPageSizeOptions
