@@ -67,7 +67,7 @@ const WarMachineHangarItemInner = ({
                 border={{
                     isFancy: isSelected ? false : true,
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: isSelected ? ".4rem" : ".15rem",
+                    borderThickness: isSelected ? ".4rem" : ".2rem",
                 }}
                 corners={{
                     topRight: true,
@@ -107,7 +107,7 @@ export const WarMachineHangarItemLoadingSkeleton = () => {
                 border={{
                     isFancy: true,
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".15rem",
+                    borderThickness: ".2rem",
                 }}
                 corners={{
                     topRight: true,

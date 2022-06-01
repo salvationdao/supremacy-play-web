@@ -25,7 +25,7 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                     clipSize="8px"
                     border={{
                         borderColor: "#FFFFFF",
-                        borderThickness: ".2rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={colors.darkNavyBlue}

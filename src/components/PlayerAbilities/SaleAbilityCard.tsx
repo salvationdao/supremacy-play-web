@@ -201,7 +201,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                         <ClipThing
                             border={{
                                 borderColor: saleAbility.ability?.colour || colors.neonBlue,
-                                borderThickness: ".15rem",
+                                borderThickness: ".2rem",
                                 isFancy: true,
                             }}
                             backgroundColor={colors.darkNavy}

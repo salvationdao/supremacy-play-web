@@ -41,7 +41,7 @@ export const MechModal = ({
                     clipSize="8px"
                     border={{
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".2rem",
+                        borderThickness: ".3rem",
                     }}
                     corners={{
                         topLeft: true,

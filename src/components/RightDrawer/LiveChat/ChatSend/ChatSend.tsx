@@ -311,7 +311,7 @@ const ChatSendInner = ({ primaryColor, faction_id, send, user, userRank, onSentM
                     border={{
                         isFancy: true,
                         borderColor: primaryColor,
-                        borderThickness: ".2rem",
+                        borderThickness: ".25rem",
                     }}
                     corners={{
                         topRight: true,

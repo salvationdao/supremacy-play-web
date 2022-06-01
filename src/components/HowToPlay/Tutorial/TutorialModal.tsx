@@ -26,7 +26,7 @@ export const TutorialModal = () => {
                     clipSize="8px"
                     border={{
                         borderColor: "#FFFFFF",
-                        borderThickness: ".2rem",
+                        borderThickness: ".3rem",
                     }}
                     backgroundColor={colors.darkNavyBlue}
                 >

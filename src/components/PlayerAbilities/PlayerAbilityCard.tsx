@@ -133,7 +133,7 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                             clipSlantSize="8px"
                             border={{
                                 borderColor: playerAbility.colour,
-                                borderThickness: ".2rem",
+                                borderThickness: ".3rem",
                             }}
                             backgroundColor={colors.darkNavy}
                             sx={{ position: "relative" }}

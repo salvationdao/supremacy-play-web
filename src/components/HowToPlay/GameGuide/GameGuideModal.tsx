@@ -38,7 +38,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                     clipSize="8px"
                     border={{
                         borderColor: "#FFFFFF",
-                        borderThickness: ".2rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={colors.darkNavyBlue}
@@ -124,7 +124,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                                                         border={{
                                                                             isFancy: true,
                                                                             borderColor: colors.offWhite,
-                                                                            borderThickness: ".1rem",
+                                                                            borderThickness: ".15rem",
                                                                         }}
                                                                         backgroundColor={colors.darkNavyBlue}
                                                                     >

@@ -80,7 +80,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                         <ClipThing
                             clipSize="8px"
                             border={{
-                                borderThickness: ".2rem",
+                                borderThickness: ".3rem",
                                 borderColor: colors.blue2,
                             }}
                             corners={{

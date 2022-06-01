@@ -153,7 +153,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                     clipSize="8px"
                     border={{
                         borderColor: primaryColor,
-                        borderThickness: ".2rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}

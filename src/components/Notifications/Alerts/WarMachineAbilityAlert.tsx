@@ -27,7 +27,7 @@ export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineA
             border={{
                 borderColor: mainColor || colors.grey,
                 isFancy: true,
-                borderThickness: ".15rem",
+                borderThickness: ".2rem",
             }}
             opacity={0.8}
             backgroundColor={colors.darkNavy}

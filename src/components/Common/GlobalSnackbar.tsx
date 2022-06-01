@@ -59,7 +59,7 @@ export const GlobalSnackbar = () => {
                     clipSize=".5rem"
                     border={{
                         isFancy: true,
-                        borderThickness: ".15rem",
+                        borderThickness: ".3rem",
                         borderColor: "#FFFFFF",
                     }}
                     corners={{

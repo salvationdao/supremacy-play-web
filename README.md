@@ -12,7 +12,7 @@
 	border={{
 		isFancy: true,
 		borderColor: "#FF0000",
-		borderThickness: ".15rem",
+		borderThickness: ".3rem",
 	}}
 	corners={{
 		topLeft: true,
