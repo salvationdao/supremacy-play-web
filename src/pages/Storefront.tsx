@@ -7,7 +7,7 @@ import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
 import { fonts, siteZIndex } from "../theme/theme"
 
-type tabs = "mystery-crates" | "skins" | "merchandise"
+type tabs = "mystery-crates" | "skins" | "abilities" | "merchandise"
 
 export const StorefrontPage = () => {
     const { userID } = useAuth()
@@ -69,6 +69,7 @@ const StorefrontPageInner = () => {
                     >
                         <Tab label="MYSTERY CRATES" value="mystery-crates" />
                         <Tab label="SKINS" value="skins" />
+                        <Tab label="ABILITIES" value="abilities" />
                         <Tab label="MERCHANDISE" value="merchandise" />
                     </Tabs>
                 </Box>
@@ -78,6 +79,9 @@ const StorefrontPageInner = () => {
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value="skins">
                     SKINS
+                </TabPanel>
+                <TabPanel currentValue={currentValue} value="abilities">
+                    ABILITIES
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value="merchandise">
                     MERCHANDISE
@@ -99,7 +103,7 @@ const TabPanel = (props: TabPanelProps) => {
     if (currentValue === value) {
         return (
             <Fade in>
-                <Box id={`hangar-tabpanel-${value}`} sx={{ flex: 1 }}>
+                <Box id={`storefront-tabpanel-${value}`} sx={{ flex: 1 }}>
                     {children}
                 </Box>
             </Fade>

@@ -215,6 +215,7 @@ export const MysteryCrates = () => {
                         sx={{
                             my: ".8rem",
                             ml: ".8rem",
+                            pl: "1rem",
                             pr: "1.5rem",
                             flex: 1,
                             overflowY: "auto",
