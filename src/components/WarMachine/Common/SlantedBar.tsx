@@ -5,7 +5,7 @@ import { BoxSlanted } from "./BoxSlanted"
 export const SlantedBar = ({ backgroundColor, progressPercent, costPercent }: { backgroundColor: string; progressPercent: number; costPercent?: number }) => {
     return (
         <BoxSlanted
-            clipSlantSize="20px"
+            clipSlantSize="14px"
             style={{
                 height: "100%",
                 width: "100%",

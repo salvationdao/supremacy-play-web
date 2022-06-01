@@ -50,6 +50,7 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
     return (
         <ClipThing
             clipSize="3px"
+            clipSlantSize="2px"
             border={{
                 borderColor: mainColor || colors.grey,
                 isFancy: true,

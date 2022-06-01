@@ -14,12 +14,12 @@ import { Faction, GameAbility, WarMachineState } from "../../types"
 // in rems
 const WIDTH_WM_IMAGE = 9.2
 const WIDTH_CENTER = 14.2
-export const WIDTH_PER_SLANTED_BAR = 1.2
-export const WIDTH_PER_SLANTED_BAR_ACTUAL = 3.2
+export const WIDTH_PER_SLANTED_BAR = 1
+export const WIDTH_PER_SLANTED_BAR_ACTUAL = 2.4
 const WIDTH_SKILL_BUTTON = 4.3
 const HEIGHT = 7.6
 
-const SKILL_BUTTON_TEXT_ROTATION = 76.5
+const SKILL_BUTTON_TEXT_ROTATION = 78.5
 const DEAD_OPACITY = 0.6
 
 interface WarMachineItemProps {
@@ -129,7 +129,7 @@ const WarMachineItemInner = ({
     }, [shouldBeExpanded, toggleIsExpanded])
 
     return (
-        <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
+        <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="14px" sx={{ transform: `scale(${scale})` }}>
             <Stack
                 ref={popoverRef}
                 direction="row"
@@ -207,7 +207,7 @@ const WarMachineItemInner = ({
 
                 <ClipThing
                     clipSize="8px"
-                    clipSlantSize="18px"
+                    clipSlantSize="12px"
                     border={{ isFancy: false, borderColor: primaryColor, borderThickness: ".4rem" }}
                     sx={{ zIndex: 2 }}
                     corners={{
@@ -359,7 +359,7 @@ const WarMachineItemInner = ({
                     {gameAbilities && gameAbilities.length > 0 && (
                         <>
                             <BoxSlanted
-                                clipSlantSize="20px"
+                                clipSlantSize="14px"
                                 onClick={
                                     isAlive
                                         ? () => {
@@ -372,7 +372,7 @@ const WarMachineItemInner = ({
                                     position: "relative",
                                     width: `${WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR}rem`,
                                     alignSelf: "stretch",
-                                    ml: "-2rem",
+                                    ml: "-1.5rem",
                                     backgroundColor: primaryColor,
                                     boxShadow: 3,
                                     cursor: isAlive ? "pointer" : "auto",

@@ -24,6 +24,7 @@ export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineA
     return (
         <ClipThing
             clipSize="3px"
+            clipSlantSize="2px"
             border={{
                 borderColor: mainColor || colors.grey,
                 isFancy: true,

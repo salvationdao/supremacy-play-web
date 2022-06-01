@@ -15,6 +15,7 @@ export const FactionAbilityAlert = ({ data, getFaction }: { data: BattleFactionA
     return (
         <ClipThing
             clipSize="3px"
+            clipSlantSize="2px"
             border={{
                 borderColor: mainColor || colors.grey,
                 isFancy: true,

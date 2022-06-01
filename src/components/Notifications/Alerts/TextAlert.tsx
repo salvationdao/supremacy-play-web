@@ -6,6 +6,7 @@ export const TextAlert = ({ data }: { data: string }) => {
     return (
         <ClipThing
             clipSize="3px"
+            clipSlantSize="2px"
             border={{
                 borderColor: colors.offWhite,
                 isFancy: true,

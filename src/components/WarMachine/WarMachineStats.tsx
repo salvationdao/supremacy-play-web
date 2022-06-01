@@ -47,7 +47,7 @@ export const WarMachineStats = () => {
                 {haveFactionMechs && (
                     <BoxSlanted
                         clipSize="9px"
-                        clipSlantSize="26px"
+                        clipSlantSize="20px"
                         skipLeft
                         sx={{
                             pl: ".5rem",
