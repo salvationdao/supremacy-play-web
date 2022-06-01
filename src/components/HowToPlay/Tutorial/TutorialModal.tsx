@@ -71,6 +71,7 @@ export const TutorialModal = () => {
                             >
                                 <Typography sx={{ color: colors.darkNavy, fontFamily: fonts.nostromoBlack }}>Tutorial</Typography>
                             </Button>
+
                             <Button
                                 variant="outlined"
                                 onClick={() => {

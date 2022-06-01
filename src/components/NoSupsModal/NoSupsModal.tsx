@@ -1,9 +1,9 @@
-import { Box, Button, Divider, Link, Modal, Stack, Typography } from "@mui/material"
+import { Box, Divider, Link, Modal, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../theme/theme"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
 import { useAuth } from "../../containers"
-import { ClipThing } from ".."
+import { ClipThing, FancyButton } from ".."
 
 export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
     const { userID } = useAuth()
@@ -72,26 +72,28 @@ export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
                             </Typography>
                         </Stack>
 
-                        <Button
-                            variant="outlined"
-                            sx={{
-                                mt: "2.3rem",
-                                py: ".8rem",
-                                width: "100%",
-                                color: colors.neonBlue,
+                        <FancyButton
+                            excludeCaret
+                            clipThingsProps={{
+                                clipSize: "9px",
                                 backgroundColor: colors.darkNavy,
-                                borderRadius: 0.7,
-                                fontFamily: fonts.nostromoBold,
-                                border: `${colors.neonBlue} 1px solid`,
-                                ":hover": {
-                                    opacity: 0.8,
-                                    border: `${colors.neonBlue} 1px solid`,
-                                },
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: colors.neonBlue, borderThickness: "2px" },
+                                sx: { position: "relative", mt: "2.3rem", width: "100%" },
                             }}
+                            sx={{ px: "1.6rem", py: ".6rem", color: colors.neonBlue }}
                             onClick={onClose}
                         >
-                            I just want to watch
-                        </Button>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: colors.neonBlue,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                I JUST WANT TO WATCH
+                            </Typography>
+                        </FancyButton>
                     </Box>
                 </ClipThing>
             </Box>

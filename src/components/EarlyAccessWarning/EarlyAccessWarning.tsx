@@ -1,8 +1,8 @@
-import { Box, Button, Modal, Stack, Typography } from "@mui/material"
+import { Box, Modal, Stack, Typography } from "@mui/material"
 import { Alert } from "@mui/lab"
 import { colors, fonts } from "../../theme/theme"
 import { useToggle } from "../../hooks"
-import { ClipThing } from ".."
+import { ClipThing, FancyButton } from ".."
 
 export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => void }) => {
     const [closed, toggleClosed] = useToggle()
@@ -66,29 +66,32 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                             </Typography>
                         </Stack>
 
-                        <Button
-                            variant="outlined"
-                            sx={{
-                                mt: "2.4rem",
-                                py: ".64rem",
-                                width: "100%",
-                                color: colors.neonBlue,
+                        <FancyButton
+                            excludeCaret
+                            clipThingsProps={{
+                                clipSize: "9px",
                                 backgroundColor: colors.darkNavy,
-                                borderRadius: 0.7,
-                                border: `${colors.neonBlue} 1px solid`,
-                                ":hover": {
-                                    opacity: 0.8,
-                                    border: `${colors.neonBlue} 1px solid`,
-                                },
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: colors.neonBlue, borderThickness: "2px" },
+                                sx: { position: "relative", mt: "2.4rem" },
                             }}
+                            sx={{ px: "1.6rem", py: ".6rem", color: colors.neonBlue }}
                             onClick={() => {
                                 toggleClosed(true)
                                 onAcknowledged()
                                 Notification.requestPermission()
                             }}
                         >
-                            <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }}>I AGREE, LET ME IN!</Typography>
-                        </Button>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: colors.neonBlue,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                I AGREE, LET ME IN!
+                            </Typography>
+                        </FancyButton>
                     </Box>
                 </ClipThing>
             </Box>

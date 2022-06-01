@@ -1,6 +1,6 @@
-import { Autocomplete, Box, Button, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
+import { Autocomplete, Box, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { ClipThing } from "../../.."
+import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../../constants"
 import { useAuth, useSnackbar, useSupremacy } from "../../../../containers"
@@ -357,33 +357,29 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                             </Stack>
                         </Stack>
 
-                        <Button
-                            variant="contained"
-                            size="small"
+                        <FancyButton
+                            excludeCaret
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: primaryColor,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
+                                sx: { position: "relative", flex: 1, minWidth: 0, mt: "1.8rem" },
+                            }}
+                            sx={{ px: "1.6rem", py: ".3rem", color: secondaryColor }}
                             onClick={onSubmit}
                             disabled={isDisabled}
-                            sx={{
-                                flex: 1,
-                                minWidth: 0,
-                                mt: "1.8rem",
-                                px: ".8rem",
-                                py: ".8rem",
-                                backgroundColor: primaryColor,
-                                borderRadius: 0.3,
-                                ":hover": { backgroundColor: `${primaryColor}90` },
-                            }}
                         >
                             <Typography
+                                variant="caption"
                                 sx={{
                                     color: secondaryColor,
-                                    lineHeight: 1,
-                                    fontWeight: "fontWeightBold",
-                                    opacity: isDisabled ? 0.6 : 1,
+                                    fontFamily: fonts.nostromoBlack,
                                 }}
                             >
                                 SUBMIT
                             </Typography>
-                        </Button>
+                        </FancyButton>
 
                         {userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && (
                             <Typography variant="body2" sx={{ mt: "1rem", opacity: 0.6, lineHeight: 1.2 }}>

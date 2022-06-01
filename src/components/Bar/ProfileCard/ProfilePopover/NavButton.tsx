@@ -21,6 +21,7 @@ export const NavButton: React.FC<NavButtonProps> = ({ href, active, sx, startIco
                 pb: ".6rem",
                 color: "#FFFFFF",
                 backgroundColor: active ? colors.darkNavyBlue : undefined,
+                borderRadius: 0.4,
                 ":hover": {
                     backgroundColor: "#FFFFFF20",
                 },

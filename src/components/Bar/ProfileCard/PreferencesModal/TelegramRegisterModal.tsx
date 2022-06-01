@@ -1,6 +1,7 @@
-import { Modal, Box, Stack, Typography, Button } from "@mui/material"
+import { Modal, Box, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import QRCode from "react-qr-code"
+import { FancyButton } from "../../.."
 import { SvgContentCopyIcon } from "../../../../assets"
 import { TELEGRAM_BOT_URL } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
@@ -105,32 +106,31 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                                     </Typography>
                                 </Box>
 
-                                <Button
-                                    variant="outlined"
+                                <FancyButton
+                                    excludeCaret
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: colors.darkNavy,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: colors.neonBlue, borderThickness: "2px" },
+                                        sx: { position: "relative", mt: "auto", ml: 3, width: "9rem" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: colors.neonBlue }}
                                     onClick={() => {
                                         setUserTelegramShortcodeRegistered(false)
                                         onClose()
                                     }}
-                                    sx={{
-                                        justifySelf: "flex-end",
-                                        mt: "auto",
-                                        ml: 3,
-                                        pt: ".7rem",
-                                        pb: ".4rem",
-                                        width: "9rem",
-                                        color: colors.neonBlue,
-                                        backgroundColor: colors.darkNavy,
-                                        borderRadius: 0.7,
-                                        fontFamily: fonts.nostromoBold,
-                                        border: `${colors.neonBlue} 1px solid`,
-                                        ":hover": {
-                                            opacity: 0.8,
-                                            border: `${colors.neonBlue} 1px solid`,
-                                        },
-                                    }}
                                 >
-                                    Close
-                                </Button>
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: colors.neonBlue,
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        CLOSE
+                                    </Typography>
+                                </FancyButton>
                             </Stack>
                         </Stack>
                     </ClipThing>
@@ -308,32 +308,32 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                                     </Typography>
                                 )}
                             </Box>
-                            <Button
-                                variant="outlined"
+
+                            <FancyButton
+                                excludeCaret
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: colors.darkNavy,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: colors.neonBlue, borderThickness: "2px" },
+                                    sx: { position: "relative", mt: "auto", ml: 3, width: "9rem" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: colors.neonBlue }}
                                 onClick={() => {
                                     setUserTelegramShortcodeRegistered(false)
                                     onClose()
                                 }}
-                                sx={{
-                                    justifySelf: "flex-end",
-                                    mt: "auto",
-                                    ml: 3,
-                                    pt: ".7rem",
-                                    pb: ".4rem",
-                                    width: "9rem",
-                                    color: colors.neonBlue,
-                                    backgroundColor: colors.darkNavy,
-                                    borderRadius: 0.7,
-                                    fontFamily: fonts.nostromoBold,
-                                    border: `${colors.neonBlue} 1px solid`,
-                                    ":hover": {
-                                        opacity: 0.8,
-                                        border: `${colors.neonBlue} 1px solid`,
-                                    },
-                                }}
                             >
-                                Close
-                            </Button>
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: colors.neonBlue,
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    CLOSE
+                                </Typography>
+                            </FancyButton>
                         </Stack>
                     </Stack>
                 </ClipThing>

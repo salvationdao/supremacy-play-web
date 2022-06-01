@@ -29,6 +29,7 @@ export const HowToPlay = () => {
                     mx: "1.2rem",
                     color: colors.neonBlue,
                     minWidth: 0,
+                    borderRadius: 0.4,
                 }}
             >
                 <SvgQuestionMark size="1.5rem" fill={colors.neonBlue} />
@@ -113,6 +114,7 @@ const OptionButton = ({ text, onClick }: { text: string; onClick: () => void }) 
                 minWidth: 0,
                 cursor: "pointer",
                 px: "1.2rem",
+                borderRadius: 0.4,
                 ":hover": {
                     backgroundColor: "#FFFFFF20",
                 },

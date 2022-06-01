@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { MaskStylesObj } from "@reactour/mask"
 import { PopoverStylesObj } from "@reactour/popover"
 import { StepType, useTour } from "@reactour/tour"
@@ -8,6 +8,7 @@ import { useBar, useAuth, useSupremacy } from "../../../containers"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { useHistory } from "react-router-dom"
 import { RightDrawerHashes } from "../../../routes"
+import { FancyButton } from "../.."
 
 export const SetupTutorial = () => {
     const { userID, user } = useAuth()
@@ -158,6 +159,33 @@ export const SetupTutorial = () => {
                         <Typography>
                             Start contributing to your syndicate&apos;s battle effort to ensure it&apos;s supremacy and reap the Spoils of War!
                         </Typography>
+                        <FancyButton
+                            excludeCaret
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: colors.neonBlue,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: colors.darkNavy, borderThickness: "2px" },
+                                sx: { position: "relative", mt: "1rem" },
+                            }}
+                            sx={{ px: "1.6rem", py: ".6rem", color: colors.darkNavy }}
+                            onClick={() => {
+                                setCurrentStep(0)
+                                setIsOpen(false)
+                                localStorage.setItem("visited", "true")
+                            }}
+                        >
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: colors.darkNavy,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                PLAY NOW
+                            </Typography>
+                        </FancyButton>
+                        {/* 
                         <Button
                             variant="contained"
                             onClick={() => {
@@ -180,7 +208,7 @@ export const SetupTutorial = () => {
                             <Typography variant="body2" sx={{ color: `${colors.navy}D9`, fontFamily: fonts.nostromoBold }}>
                                 Play Now
                             </Typography>
-                        </Button>
+                        </Button> */}
                     </Box>
                 ),
                 position: "center",

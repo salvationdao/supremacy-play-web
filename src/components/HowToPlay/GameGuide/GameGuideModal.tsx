@@ -189,10 +189,10 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                         <FancyButton
                             excludeCaret
                             clipThingsProps={{
-                                clipSize: "5px",
+                                clipSize: "9px",
                                 backgroundColor: backgroundColor,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                                border: { borderColor: primaryColor, borderThickness: "1.5px" },
                                 sx: { position: "relative", width: "10rem", ml: "2.6rem", mt: "auto" },
                             }}
                             sx={{ px: "1.6rem", py: ".6rem", color: primaryColor }}
@@ -202,7 +202,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                 variant="caption"
                                 sx={{
                                     color: primaryColor,
-                                    fontFamily: fonts.nostromoBold,
+                                    fontFamily: fonts.nostromoBlack,
                                 }}
                             >
                                 CLOSE
