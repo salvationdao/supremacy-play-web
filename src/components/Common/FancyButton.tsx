@@ -51,7 +51,7 @@ export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caret
                     borderRadius: 0,
                     fontFamily: fonts.shareTech,
                     fontWeight: "fontWeightBold",
-                    color: "white",
+                    color: "#FFFFFF",
                     textTransform: "uppercase",
                     "&:focus": {
                         boxShadow: "none",

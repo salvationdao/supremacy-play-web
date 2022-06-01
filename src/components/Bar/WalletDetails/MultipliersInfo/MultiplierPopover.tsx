@@ -5,6 +5,8 @@ import { BattleMultipliers } from "../../../../types"
 import { useEffect, MutableRefObject } from "react"
 import { useToggle } from "../../../../hooks"
 import { MultipliersBattle } from "./MultipliersBattle"
+import { useTheme } from "../../../../containers/theme"
+import { ClipThing } from "../../.."
 
 export const MultipliersPopover = ({
     open,
@@ -17,6 +19,7 @@ export const MultipliersPopover = ({
     onClose: () => void
     popoverRef: MutableRefObject<null>
 }) => {
+    const theme = useTheme()
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const actualMultipliers = multipliers.filter((m) => m.multipliers.length > 0)
 
@@ -49,42 +52,52 @@ export const MultipliersPopover = ({
                 ".MuiPaper-root": {
                     mt: ".8rem",
                     background: "none",
-                    backgroundColor: (theme) => theme.factionTheme.background,
-                    border: "#FFFFFF50 1px solid",
+                    boxShadow: 0,
                 },
             }}
         >
-            <Stack spacing="1.2rem" sx={{ position: "relative", width: "35rem", px: "2rem", py: "1.4rem" }}>
-                {actualMultipliers && actualMultipliers.length > 0 ? (
-                    <Box>
-                        <Typography sx={{ fontWeight: "bold", color: colors.offWhite }} variant="h6">
-                            ACTIVE MULTIPLIERS
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    isFancy: true,
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
+                }}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+            >
+                <Stack spacing="1.2rem" sx={{ position: "relative", width: "35rem", px: "2rem", py: "1.4rem" }}>
+                    {actualMultipliers && actualMultipliers.length > 0 ? (
+                        <Box>
+                            <Typography sx={{ fontWeight: "bold", color: colors.offWhite }} variant="h6">
+                                ACTIVE MULTIPLIERS
+                            </Typography>
+
+                            <Typography sx={{ mb: ".9rem", opacity: 0.7 }}>
+                                The below are the active multipliers from each battle that are currently applied to your account.
+                            </Typography>
+
+                            <Stack spacing=".4rem">
+                                {actualMultipliers.map((bm) => {
+                                    return <MultipliersBattle key={`bmv-key-${bm.battle_number}`} bm={bm} />
+                                })}
+                            </Stack>
+                        </Box>
+                    ) : (
+                        <Typography>
+                            <i>
+                                You don&apos;t have any multipliers.
+                                <br />
+                                Participate in battles to earn multipliers.
+                            </i>
                         </Typography>
+                    )}
 
-                        <Typography sx={{ mb: ".9rem", opacity: 0.7 }}>
-                            The below are the active multipliers from each battle that are currently applied to your account.
-                        </Typography>
-
-                        <Stack spacing=".4rem">
-                            {actualMultipliers.map((bm) => {
-                                return <MultipliersBattle key={`bmv-key-${bm.battle_number}`} bm={bm} />
-                            })}
-                        </Stack>
-                    </Box>
-                ) : (
-                    <Typography>
-                        <i>
-                            You don&apos;t have any multipliers.
-                            <br />
-                            Participate in battles to earn multipliers.
-                        </i>
-                    </Typography>
-                )}
-
-                <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-1rem", right: ".2rem" }}>
-                    <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                </IconButton>
-            </Stack>
+                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-1rem", right: ".2rem" }}>
+                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    </IconButton>
+                </Stack>
+            </ClipThing>
         </Popover>
     )
 }

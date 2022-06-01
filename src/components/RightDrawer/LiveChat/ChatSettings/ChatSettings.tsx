@@ -1,6 +1,6 @@
 import { IconButton, Popover, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useMemo, useRef } from "react"
-import { NoMultiFilter, SplitView, SystemMessageFilter } from "../../.."
+import { ClipThing, NoMultiFilter, SplitView, SystemMessageFilter } from "../../.."
 import { SvgSettings } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -82,12 +82,22 @@ const SettingsPopover = ({
                 ".MuiPaper-root": {
                     mt: "-2.5rem",
                     background: "none",
-                    backgroundColor,
-                    border: "#FFFFFF50 1px solid",
+                    boxShadow: 0,
                 },
             }}
         >
-            <SettingsContent faction_id={faction_id} />
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    isFancy: true,
+                    borderColor: primaryColor,
+                    borderThickness: ".2rem",
+                }}
+                backgroundColor={backgroundColor}
+                sx={{ height: "100%" }}
+            >
+                <SettingsContent faction_id={faction_id} />
+            </ClipThing>
         </Popover>
     )
 }

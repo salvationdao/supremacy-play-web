@@ -1,9 +1,11 @@
 import { Button, Popover, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { MutableRefObject, useRef } from "react"
+import { ClipThing, FancyButton } from ".."
 import { SvgQuestionMark } from "../../assets"
+import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
-import { colors, siteZIndex } from "../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 import GameGuide from "./GameGuide/GameGuide"
 import { SetupTutorial } from "./Tutorial/SetupTutorial"
 
@@ -73,6 +75,8 @@ const OptionsPopover = ({
     openGameGuide: () => void
     openTutorial: () => void
 }) => {
+    const theme = useTheme()
+
     return (
         <Popover
             open={open}
@@ -91,37 +95,51 @@ const OptionsPopover = ({
                 zIndex: siteZIndex.Modal,
                 ".MuiPaper-root": {
                     background: "none",
-                    backgroundColor: (theme) => theme.factionTheme.background,
-                    border: "#FFFFFF50 1px solid",
+                    boxShadow: 0,
                 },
             }}
         >
-            <Stack spacing=".32rem" sx={{ position: "relative", minWidth: "13rem", p: ".8rem" }}>
-                <OptionButton text="TUTORIAL" onClick={openTutorial} />
-                <OptionButton text="GAME GUIDE" onClick={openGameGuide} />
-            </Stack>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    isFancy: true,
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
+                }}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+            >
+                <Stack spacing=".32rem" sx={{ position: "relative", minWidth: "13rem", p: ".8rem" }}>
+                    <OptionButton text="TUTORIAL" onClick={openTutorial} />
+                    <OptionButton text="GAME GUIDE" onClick={openGameGuide} />
+                </Stack>
+            </ClipThing>
         </Popover>
     )
 }
 
 const OptionButton = ({ text, onClick }: { text: string; onClick: () => void }) => {
     return (
-        <Button
+        <FancyButton
             tabIndex={0}
-            sx={{
-                justifyContent: "flex-start",
-                color: "#FFFFFF",
-                minWidth: 0,
-                cursor: "pointer",
-                px: "1.2rem",
-                borderRadius: 0.4,
-                ":hover": {
-                    backgroundColor: "#FFFFFF20",
-                },
+            excludeCaret
+            clipThingsProps={{
+                clipSize: "9px",
+                opacity: 1,
+                sx: { position: "relative" },
             }}
+            sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
             onClick={onClick}
         >
-            <Typography sx={{ lineHeight: 1 }}>{text}</Typography>
-        </Button>
+            <Typography
+                variant="caption"
+                sx={{
+                    color: "#FFFFFF",
+                    fontFamily: fonts.nostromoBlack,
+                }}
+            >
+                {text}
+            </Typography>
+        </FancyButton>
     )
 }
