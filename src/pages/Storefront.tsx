@@ -8,7 +8,12 @@ import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
 import { fonts, siteZIndex } from "../theme/theme"
 
-type tabs = "mystery-crates" | "skins" | "abilities" | "merchandise"
+enum TABS {
+    MYSTERY_CRATES = "mystery-crates",
+    SKINS = "skins",
+    ABILITIES = "abilities",
+    MERCHANDISE = "merchandise",
+}
 
 export const StorefrontPage = () => {
     const { userID } = useAuth()
@@ -40,12 +45,12 @@ export const StorefrontPage = () => {
 
 const StorefrontPageInner = () => {
     const theme = useTheme()
-    const { type } = useParams<{ type: string }>()
-    const [currentValue, setCurrentValue] = useState<tabs>("mystery-crates")
+    const { type } = useParams<{ type: TABS }>()
+    const [currentValue, setCurrentValue] = useState<TABS>(TABS.MYSTERY_CRATES)
 
-    console.log({ type })
+    console.log({ type, isValid: Object.values(TABS).includes(type) })
 
-    const handleChange = (event: SyntheticEvent, newValue: tabs) => {
+    const handleChange = (event: SyntheticEvent, newValue: TABS) => {
         setCurrentValue(newValue)
     }
 
@@ -70,23 +75,23 @@ const StorefrontPageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="MYSTERY CRATES" value="mystery-crates" />
-                        <Tab label="SKINS" value="skins" />
-                        <Tab label="ABILITIES" value="abilities" />
-                        <Tab label="MERCHANDISE" value="merchandise" />
+                        <Tab label="MYSTERY CRATES" value={TABS.MYSTERY_CRATES} />
+                        <Tab label="SKINS" value={TABS.SKINS} />
+                        <Tab label="ABILITIES" value={TABS.ABILITIES} />
+                        <Tab label="MERCHANDISE" value={TABS.MERCHANDISE} />
                     </Tabs>
                 </Box>
 
-                <TabPanel currentValue={currentValue} value="mystery-crates">
+                <TabPanel currentValue={currentValue} value={TABS.MYSTERY_CRATES}>
                     <MysteryCrates />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value="skins">
+                <TabPanel currentValue={currentValue} value={TABS.SKINS}>
                     SKINS
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value="abilities">
+                <TabPanel currentValue={currentValue} value={TABS.ABILITIES}>
                     ABILITIES
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value="merchandise">
+                <TabPanel currentValue={currentValue} value={TABS.MERCHANDISE}>
                     MERCHANDISE
                 </TabPanel>
             </Stack>
@@ -96,8 +101,8 @@ const StorefrontPageInner = () => {
 
 interface TabPanelProps {
     children?: React.ReactNode
-    value: tabs
-    currentValue: tabs
+    value: TABS
+    currentValue: TABS
 }
 
 const TabPanel = (props: TabPanelProps) => {

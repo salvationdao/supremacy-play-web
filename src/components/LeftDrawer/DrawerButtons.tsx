@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Tab, Tabs } from "@mui/material"
-import { useHistory, useLocation } from "react-router-dom"
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom"
 import { SvgNext } from "../../assets"
 import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
@@ -14,6 +14,8 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
+
+    const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
 
     return (
         <Stack
@@ -38,19 +40,19 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                 },
             }}
         >
-            <Tabs value={location.pathname} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
+            <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {ROUTES_ARRAY.map((r) => {
                     if (!r.showInLeftDrawer) return null
                     const disable = r.requireAuth && !userID
+                    const root = r.path.split("/:")[0]
                     return (
                         <TabButton
                             key={r.id}
                             label={r.label}
                             enable={r.enable && !disable}
                             isComingSoon={!r.enable}
-                            value={r.path}
-                            onClick={() => history.push(`${r.path}${location.hash}`)}
-                            isActive={location.pathname === r.path}
+                            onClick={() => history.push(`${root}${location.hash}`)}
+                            isActive={match?.path === r.path}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
                         />
@@ -80,7 +82,6 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
 
 export const TabButton = ({
     label,
-    value,
     enable,
     isComingSoon,
     icon,
@@ -89,7 +90,6 @@ export const TabButton = ({
     onClick,
 }: {
     label: string
-    value: string
     enable?: boolean
     isComingSoon?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
@@ -118,7 +118,6 @@ export const TabButton = ({
                         </Stack>
                     )
                 }
-                value={value}
                 icon={icon}
                 iconPosition="end"
                 onClick={onClick}

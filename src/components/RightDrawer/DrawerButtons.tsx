@@ -34,14 +34,13 @@ export const DrawerButtons = () => {
                 },
             }}
         >
-            <Tabs value="" orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
+            <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {HASH_ROUTES_ARRAY.map((r) => {
                     return (
                         <TabButton
                             key={r.id}
                             label={r.label}
                             enable={!!r.enable}
-                            value=""
                             icon={r.icon}
                             onClick={() => {
                                 if (location.hash === r.hash) {

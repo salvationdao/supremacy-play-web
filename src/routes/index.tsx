@@ -28,7 +28,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
     hangar: {
         id: "hangar",
-        path: "/hangar",
+        path: "/hangar/:type?",
         exact: true,
         Component: HangarPage,
         showInLeftDrawer: true,
@@ -38,7 +38,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
     storefront: {
         id: "storefront",
-        path: "/storefront",
+        path: "/storefront/:type?",
         exact: true,
         Component: StorefrontPage,
         showInLeftDrawer: true,
@@ -48,7 +48,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
     marketplace: {
         id: "marketplace",
-        path: "/marketplace",
+        path: "/marketplace/:type?",
         exact: true,
         Component: MarketplacePage,
         showInLeftDrawer: true,

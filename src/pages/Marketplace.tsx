@@ -7,7 +7,12 @@ import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
 import { fonts, siteZIndex } from "../theme/theme"
 
-type tabs = "war-machines" | "key-cards" | "weapons" | "attachments" | "cores" | "paint-jobs" | "bundles"
+enum TABS {
+    WAR_MACHINES = "war-machines",
+    KEY_CARDS = "key-cards",
+    MYSTERY_CRATES = "mystery-crates",
+}
+
 export const MarketplacePage = () => {
     const { userID } = useAuth()
 
@@ -38,9 +43,9 @@ export const MarketplacePage = () => {
 
 const MarketplacePageInner = () => {
     const theme = useTheme()
-    const [currentValue, setCurrentValue] = useState<tabs>("war-machines")
+    const [currentValue, setCurrentValue] = useState<TABS>(TABS.WAR_MACHINES)
 
-    const handleChange = (event: SyntheticEvent, newValue: tabs) => {
+    const handleChange = (event: SyntheticEvent, newValue: TABS) => {
         setCurrentValue(newValue)
     }
 
@@ -65,36 +70,20 @@ const MarketplacePageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="WAR MACHINES" value="war-machines" />
-                        <Tab label="KEY CARDS" value="key-cards" />
-                        <Tab label="WEAPONS" value="weapons" />
-                        <Tab label="ATTACHMENTS" value="attachments" />
-                        <Tab label="CORES" value="cores" />
-                        <Tab label="PAINT JOBS" value="paint-jobs" />
-                        <Tab label="BUNDLES" value="bundles" />
+                        <Tab label="WAR MACHINES" value={TABS.WAR_MACHINES} />
+                        <Tab label="KEY CARDS" value={TABS.KEY_CARDS} />
+                        <Tab label="MYSTERY CRATES" value={TABS.MYSTERY_CRATES} />
                     </Tabs>
                 </Box>
 
-                <TabPanel currentValue={currentValue} value="war-machines">
+                <TabPanel currentValue={currentValue} value={TABS.WAR_MACHINES}>
                     <WarMachinesMarket />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value="key-cards">
-                    key-cards
+                <TabPanel currentValue={currentValue} value={TABS.KEY_CARDS}>
+                    key cards
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value="weapons">
-                    weapons
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value="attachments">
-                    attachments
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value="cores">
-                    cores
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value="paint-jobs">
-                    paint-jobs
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value="bundles">
-                    bundles
+                <TabPanel currentValue={currentValue} value={TABS.MYSTERY_CRATES}>
+                    mystery crates
                 </TabPanel>
             </Stack>
         </>
@@ -103,8 +92,8 @@ const MarketplacePageInner = () => {
 
 interface TabPanelProps {
     children?: React.ReactNode
-    value: tabs
-    currentValue: tabs
+    value: TABS
+    currentValue: TABS
 }
 
 const TabPanel = (props: TabPanelProps) => {

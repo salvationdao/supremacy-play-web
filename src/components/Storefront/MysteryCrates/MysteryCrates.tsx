@@ -143,8 +143,8 @@ export const MysteryCrates = () => {
                         overflow: "visible",
                     }}
                 >
-                    {crates.map((crate) => (
-                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}`} enlargedView={enlargedView} crate={crate} />
+                    {crates.map((crate, index) => (
+                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
                     ))}
                 </Box>
             )
