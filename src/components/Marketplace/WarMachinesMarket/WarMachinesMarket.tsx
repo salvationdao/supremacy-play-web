@@ -104,7 +104,7 @@ export const WarMachinesMarket = () => {
 
         if (mechItems && mechItems.length > 0) {
             return (
-                <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem", height: 0 }}>
+                <Stack spacing="1.4rem" sx={{ py: "1rem", height: 0 }}>
                     {mechItems.map((item) => (
                         <WarMachineMarketItem key={`marketplace-${item.id}`} item={item} />
                     ))}
@@ -157,7 +157,7 @@ export const WarMachinesMarket = () => {
                 }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", flex: 1 }}
+                sx={{ height: "100%", flex: 1, maxWidth: "136rem" }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
@@ -222,7 +222,7 @@ export const WarMachinesMarket = () => {
                             changePage={changePage}
                         />
 
-                        <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                             <Box
                                 sx={{
                                     my: ".8rem",

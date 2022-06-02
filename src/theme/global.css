@@ -45,12 +45,12 @@ body {
 
 /* Update `src/containers/dimensions.ts` */
 html {
-    font-size: 62.5%; /* 62.5% of 16px is 10px */
+    font-size: 60%; /* 62.5% of 16px is 10px */
 }
 
 @media only screen and (max-width: 1920px) {
     html {
-        font-size: 56%;
+        font-size: 54%;
     }
 }
 

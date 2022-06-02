@@ -52,7 +52,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                             enable={r.enable && !disable}
                             isComingSoon={!r.enable}
                             onClick={() => history.push(`${root}${location.hash}`)}
-                            isActive={match?.path === r.path}
+                            isActive={match?.path === r.path || (location.pathname === "/" && r.path === "/")}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
                         />

@@ -208,8 +208,8 @@ const PopoverContent = ({ faction }: { faction: Faction }) => {
                             },
                         }}
                         sx={{
-                            px: "2.56rem",
-                            py: ".2rem",
+                            px: "3rem",
+                            py: ".4rem",
                         }}
                         onClick={enlistFaction}
                     >
