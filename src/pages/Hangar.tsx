@@ -1,11 +1,13 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState, SyntheticEvent } from "react"
+import { useState, SyntheticEvent, useEffect } from "react"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
 import { useTheme } from "../containers/theme"
 import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
 import { useAuth } from "../containers"
 import { fonts, siteZIndex } from "../theme/theme"
+import { useHistory, useLocation, useParams } from "react-router-dom"
+import { ROUTES_MAP } from "../routes"
 
 enum TABS {
     WAR_MACHINES = "war-machines",
@@ -44,11 +46,23 @@ export const HangarPage = () => {
 
 const HangarPageInner = () => {
     const theme = useTheme()
-    const [currentValue, setCurrentValue] = useState<TABS>(TABS.WAR_MACHINES)
+    const location = useLocation()
+    const history = useHistory()
+    const { type } = useParams<{ type: TABS }>()
+    const [currentValue, setCurrentValue] = useState<TABS>()
+
+    // Make sure that the param route is correct, fix it if invalid
+    useEffect(() => {
+        if (Object.values(TABS).includes(type)) return setCurrentValue(type)
+        history.replace(`${ROUTES_MAP.hangar.path.replace(":type", TABS.WAR_MACHINES)}${location.hash}`)
+    }, [history, location.hash, location.pathname, type])
 
     const handleChange = (event: SyntheticEvent, newValue: TABS) => {
         setCurrentValue(newValue)
+        history.push(`${ROUTES_MAP.hangar.path.replace(":type", newValue)}${location.hash}`)
     }
+
+    if (!currentValue) return null
 
     return (
         <>

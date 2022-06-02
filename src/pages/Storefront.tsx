@@ -1,11 +1,12 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState, SyntheticEvent } from "react"
-import { useParams } from "react-router-dom"
+import { useState, SyntheticEvent, useEffect } from "react"
+import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
 import { MysteryCrates } from "../components/Storefront/MysteryCrates/MysteryCrates"
 import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
+import { ROUTES_MAP } from "../routes"
 import { fonts, siteZIndex } from "../theme/theme"
 
 enum TABS {
@@ -45,14 +46,23 @@ export const StorefrontPage = () => {
 
 const StorefrontPageInner = () => {
     const theme = useTheme()
+    const location = useLocation()
+    const history = useHistory()
     const { type } = useParams<{ type: TABS }>()
-    const [currentValue, setCurrentValue] = useState<TABS>(TABS.MYSTERY_CRATES)
+    const [currentValue, setCurrentValue] = useState<TABS>()
 
-    console.log({ type, isValid: Object.values(TABS).includes(type) })
+    // Make sure that the param route is correct, fix it if invalid
+    useEffect(() => {
+        if (Object.values(TABS).includes(type)) return setCurrentValue(type)
+        history.replace(`${ROUTES_MAP.storefront.path.replace(":type", TABS.MYSTERY_CRATES)}${location.hash}`)
+    }, [history, location.hash, location.pathname, type])
 
     const handleChange = (event: SyntheticEvent, newValue: TABS) => {
         setCurrentValue(newValue)
+        history.push(`${ROUTES_MAP.storefront.path.replace(":type", newValue)}${location.hash}`)
     }
+
+    if (!currentValue) return null
 
     return (
         <>
