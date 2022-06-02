@@ -83,7 +83,9 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                 borderThickness: ".2rem",
                                 borderColor: colors.blue2,
                             }}
-                            skipRightCorner
+                            corners={{
+                                bottomLeft: true,
+                            }}
                             backgroundColor={colors.darkNavy}
                         >
                             <Box sx={{ px: "2rem", py: "1.5rem" }}>

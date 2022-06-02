@@ -313,6 +313,10 @@ const ChatSendInner = ({ primaryColor, faction_id, send, user, userRank, onSentM
                         borderColor: primaryColor,
                         borderThickness: ".2rem",
                     }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                    }}
                     opacity={0.6}
                     backgroundColor="#494949"
                 >

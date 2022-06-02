@@ -1,8 +1,9 @@
-import { Box, Stack, Theme, Typography, useTheme } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { Enlist, FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useAuth, useSnackbar, useSupremacy } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -61,7 +62,7 @@ export const Bar = () => {
 }
 
 const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const { isServerUp } = useSupremacy()
     const [showSaleAbilities, toggleShowSaleAbilities] = useToggle()
 

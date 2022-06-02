@@ -81,6 +81,7 @@ export enum GameServerKeys {
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
     SubmitBanVote = "PUNISH:VOTE",
+    SubmitInstantBan = "PUNISH:VOTE:INSTANT:PASS",
 
     // Player list
     SubPlayerList = "FACTION:ACTIVE:PLAYER:SUBSCRIBE",
@@ -89,10 +90,14 @@ export enum GameServerKeys {
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
 
     // Player Profile
-    GetPlayerPreferences = "PLAYER:PREFERENCES_GET",
-    UpdatePlayerPreferences = "PLAYER:PREFERENCES_UPDATE",
+    GetNotificationPreferences = "PLAYER:PREFERENCES_GET",
+    UpdateNotificationPreferences = "PLAYER:PREFERENCES_UPDATE",
 
     EnlistFaction = "FACTION:ENLIST",
+
+    // Storefront
+    GetMysteryCrates = "XXXXXXXXX",
+    SubMysteryCrate = "XXXXXXXXX",
 }
 
 export enum PassportServerKeys {

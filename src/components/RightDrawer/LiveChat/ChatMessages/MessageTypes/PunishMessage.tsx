@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { LineItem, StyledImageText, TooltipHelper } from "../../../.."
 import { SvgAnnouncement, SvgCooldown, SvgFastRepair, SvgInfoCircular } from "../../../../../assets"
-import { dateFormatter, snakeToTitle } from "../../../../../helpers"
+import { dateFormatter, getUserRankDeets, snakeToTitle } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { colors } from "../../../../../theme/theme"
 import { Faction } from "../../../../../types"
@@ -25,9 +25,37 @@ export const PunishMessage = ({
         [data?.issued_by_user.faction_id, getFaction],
     )
 
+    const votedByRender = useMemo(() => {
+        if (!data) return null
+
+        const { issued_by_user, is_passed, instant_pass_by_user, agreed_player_number, total_player_number } = data
+
+        // If ban was triggered instantly by a GENERAL
+        if (instant_pass_by_user && instant_pass_by_user.rank) {
+            const rankDeets = getUserRankDeets(instant_pass_by_user.rank, "1rem", "1.3rem")
+            return (
+                <Stack direction="row">
+                    {rankDeets?.icon}
+                    <Typography sx={{ ml: ".2rem" }}>
+                        {`${issued_by_user.username}`}
+                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${issued_by_user.gid}`}</span>
+                    </Typography>
+                </Stack>
+            )
+        }
+
+        return (
+            <Box>
+                <Typography sx={{ color: is_passed ? colors.green : colors.red }}>
+                    {agreed_player_number}/{total_player_number} AGREED
+                </Typography>
+            </Box>
+        )
+    }, [data])
+
     if (!data) return null
 
-    const { issued_by_user, reported_user, is_passed, agreed_player_number, punish_option, punish_reason, total_player_number } = data
+    const { issued_by_user, reported_user, is_passed, punish_option, punish_reason, instant_pass_by_user } = data
 
     return (
         <Box>
@@ -159,13 +187,7 @@ export const PunishMessage = ({
                             <Typography>{punish_reason}</Typography>
                         </LineItem>
 
-                        <LineItem title="VOTES">
-                            <Box>
-                                <Typography sx={{ color: is_passed ? colors.green : colors.red }}>
-                                    {agreed_player_number}/{total_player_number} AGREED
-                                </Typography>
-                            </Box>
-                        </LineItem>
+                        <LineItem title={instant_pass_by_user ? "INSTANT BANNED" : "VOTES"}>{votedByRender}</LineItem>
                     </Stack>
                 )}
             </Box>

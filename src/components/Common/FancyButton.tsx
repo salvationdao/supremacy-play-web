@@ -25,7 +25,13 @@ interface FancyButtonProps extends LoadingButtonProps {
 
 export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, ...props }: FancyButtonProps) => {
     return (
-        <ClipThing {...clipThingsProps}>
+        <ClipThing
+            corners={{
+                topRight: true,
+                bottomLeft: true,
+            }}
+            {...clipThingsProps}
+        >
             {disabled && (
                 <Box
                     sx={{
@@ -35,7 +41,7 @@ export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caret
                         left: 0,
                         right: 0,
                         backgroundColor: "#050c12",
-                        opacity: 0.5,
+                        opacity: 0.3,
                         zIndex: 99,
                     }}
                 />

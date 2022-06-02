@@ -17,6 +17,7 @@ import {
     MultiplierSniper,
     MultiplierWonBattle,
     MultiplierWonLastThreeBattles,
+    SafePNG,
     SvgCorporal,
     SvgGeneral,
     SvgNewRecruit,
@@ -24,7 +25,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { UserRank } from "../types"
+import { MysteryCrateType, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -335,6 +336,27 @@ export const getUserRankDeets = (rank: UserRank, width: string, height: string):
     return { icon, title, desc }
 }
 
+export const getMysteryCrateDeets = (mysteryCrateType: MysteryCrateType): { image: string; label: string; desc: string } => {
+    let image = SafePNG
+    let label = "MYSTERY CRATE"
+    let desc = "Open a mystery crate to receive random weapon / war machine!"
+
+    switch (mysteryCrateType) {
+        case "MECH":
+            image = SafePNG
+            label = "WAR MACHINE CRATE"
+            desc = "Get a random war machine to participate in the battle arena."
+            break
+        case "WEAPON":
+            image = SafePNG
+            label = "WEAPON CRATE"
+            desc = "Get a random weapon to equip onto your war machine."
+            break
+    }
+
+    return { image, label, desc }
+}
+
 export const timeSince = (date: Date, dateToCompare?: Date) => {
     const seconds = Math.floor(((dateToCompare ? dateToCompare.getTime() : Date.now()) - date.getTime()) / 1000)
 
@@ -414,4 +436,8 @@ export const equalsIgnoreOrder = (a: unknown[], b: unknown[]) => {
         if (aCount !== bCount) return false
     }
     return true
+}
+
+export const numberCommaFormatter = (num: number): string => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }

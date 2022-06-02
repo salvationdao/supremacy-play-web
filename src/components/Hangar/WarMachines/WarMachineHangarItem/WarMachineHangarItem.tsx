@@ -23,14 +23,12 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
     const { send } = useGameServerCommandsUser("/user_commander")
     const { selectedMechDetails, setSelectedMechDetails } = useHangarWarMachine()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const [loadingDetails, setLoadingDetails] = useState<boolean>(true)
 
     const isSelected = useMemo(() => selectedMechDetails?.id === mech.id, [mech.id, selectedMechDetails?.id])
 
     useEffect(() => {
         ;(async () => {
             try {
-                setLoadingDetails(true)
                 const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
                     mech_id: mech.id,
                 })
@@ -40,23 +38,19 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
                 if (index === 0) setSelectedMechDetails(resp)
             } catch (e) {
                 console.error(e)
-            } finally {
-                setLoadingDetails(false)
             }
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
-    return <WarMachineHangarItemInner loadingDetails={loadingDetails} mech={mech} mechDetails={mechDetails} isSelected={isSelected} setSelectedMechDetails={setSelectedMechDetails} />
+    return <WarMachineHangarItemInner mech={mech} mechDetails={mechDetails} isSelected={isSelected} setSelectedMechDetails={setSelectedMechDetails} />
 }
 
 const WarMachineHangarItemInner = ({
-   loadingDetails,
     mech,
     mechDetails,
     isSelected,
     setSelectedMechDetails,
 }: {
-    loadingDetails: boolean,
     mech: MechBasic
     mechDetails?: MechDetails
     isSelected: boolean
@@ -75,6 +69,10 @@ const WarMachineHangarItemInner = ({
                     borderColor: theme.factionTheme.primary,
                     borderThickness: isSelected ? ".4rem" : ".15rem",
                 }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                }}
                 opacity={isSelected ? 1 : 0.7}
                 backgroundColor={theme.factionTheme.background}
             >
@@ -86,7 +84,7 @@ const WarMachineHangarItemInner = ({
 
                     <Stack spacing="1.1rem" sx={{ flex: 1, height: "100%" }}>
                         <Stack direction="row" spacing="1rem" sx={{ flex: 1, height: 0 }}>
-                            <MechLoadout loading={loadingDetails} mech={mech} mechDetails={mechDetails} />
+                            <MechLoadout mech={mech} mechDetails={mechDetails} />
                             <MechMiniStats mech={mech} mechDetails={mechDetails} />
                             <MechBarStats mech={mech} mechDetails={mechDetails} />
                         </Stack>
@@ -111,7 +109,11 @@ export const WarMachineHangarItemLoadingSkeleton = () => {
                     borderColor: theme.factionTheme.primary,
                     borderThickness: ".15rem",
                 }}
-                opacity={0.7}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                }}
+                opacity={0.5}
                 backgroundColor={theme.factionTheme.background}
             >
                 <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "22rem", px: "1.8rem", py: "1.6rem" }}>

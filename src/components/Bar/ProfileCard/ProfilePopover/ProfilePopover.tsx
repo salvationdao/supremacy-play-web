@@ -5,8 +5,8 @@ import { PASSPORT_WEB } from "../../../../constants"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
 import { User } from "../../../../types"
-import { PreferencesModal } from "../../PreferencesModal/PreferencesModal"
-import { TelegramRegisterModal } from "../../PreferencesModal/TelegramRegisterModal"
+import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
+import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
 
@@ -78,18 +78,16 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
             {/* preferences modal */}
             {preferencesModalOpen && (
                 <PreferencesModal
-                    open={preferencesModalOpen}
-                    toggle={() => {
+                    onClose={() => {
                         togglePreferencesModalOpen(false)
                         toggleLocalOpen(false)
-                        onClose()
                     }}
                     setTelegramShortcode={setTelegramShortcode}
                 />
             )}
 
             {/* telegram register modal */}
-            {!!telegramShortcode && <TelegramRegisterModal open={!!telegramShortcode} code={telegramShortcode} onClose={() => setTelegramShortcode("")} />}
+            {!!telegramShortcode && <TelegramRegisterModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} />}
         </>
     )
 }
