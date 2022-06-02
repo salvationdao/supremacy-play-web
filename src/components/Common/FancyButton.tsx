@@ -1,6 +1,7 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
 import { Box, styled, SxProps } from "@mui/system"
 import { HTMLAttributeAnchorTarget } from "react"
+import { mergeDeep } from "../../helpers"
 import { fonts } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
 
@@ -30,7 +31,7 @@ export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caret
                 topRight: true,
                 bottomLeft: true,
             }}
-            {...clipThingsProps}
+            {...mergeDeep({ opacity: disabled ? 0.5 : 1 }, clipThingsProps)}
         >
             {disabled && (
                 <Box

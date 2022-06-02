@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../.."
 import { useSnackbar } from "../../../../containers"
@@ -10,14 +10,14 @@ import { MechModal } from "../Common/MechModal"
 
 export const LeaveModal = () => {
     const { newSnackbarMessage } = useSnackbar()
-    const { send: sendFactionCommander } = useGameServerCommandsFaction("/faction_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { leaveMechDetails, setLeaveMechDetails } = useHangarWarMachine()
     const [leaveQueueError, setLeaveQueueError] = useState<string>()
 
     const onLeaveQueue = useCallback(
         async (hash: string) => {
             try {
-                const resp = await sendFactionCommander(GameServerKeys.LeaveQueue, { asset_hash: hash })
+                const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: hash })
                 if (resp) {
                     newSnackbarMessage("Successfully removed war machine from queue.", "success")
                     setLeaveMechDetails(undefined)
@@ -28,7 +28,7 @@ export const LeaveModal = () => {
                 console.error(e)
             }
         },
-        [newSnackbarMessage, sendFactionCommander, setLeaveMechDetails],
+        [newSnackbarMessage, send, setLeaveMechDetails],
     )
 
     const onClose = useCallback(() => {
@@ -48,7 +48,7 @@ export const LeaveModal = () => {
                     fee.
                 </Typography>
 
-                <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
+                <Box sx={{ mt: "auto" }}>
                     <FancyButton
                         excludeCaret
                         clipThingsProps={{
@@ -64,7 +64,7 @@ export const LeaveModal = () => {
                             LEAVE QUEUE
                         </Typography>
                     </FancyButton>
-                </Stack>
+                </Box>
 
                 {leaveQueueError && (
                     <Typography

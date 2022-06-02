@@ -56,10 +56,10 @@ export const GlobalSnackbar = () => {
         >
             <Box>
                 <ClipThing
-                    clipSize=".5rem"
+                    clipSize="9px"
                     border={{
                         isFancy: true,
-                        borderThickness: ".3rem",
+                        borderThickness: ".25rem",
                         borderColor: "#FFFFFF",
                     }}
                     corners={{

@@ -7,7 +7,7 @@ import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
-    const { setDeployMechDetails, setHistoryMechDetails, setRentalMechDetails } = useHangarWarMachine()
+    const { setDeployMechDetails, setHistoryMechDetails, setRentalMechDetails, setSellMechDetails } = useHangarWarMachine()
 
     return (
         <Stack direction="row" spacing=".8rem">
@@ -18,7 +18,9 @@ export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: Me
                 disabled={!mechDetails}
                 onClick={() => mechDetails && setDeployMechDetails(mechDetails)}
             />
+
             <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechDetails} />
+
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
@@ -26,7 +28,15 @@ export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: Me
                 disabled={!mechDetails}
                 onClick={() => mechDetails && setHistoryMechDetails(mechDetails)}
             />
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="SELL" disabled={!mechDetails} />
+
+            <ReusableButton
+                primaryColor={theme.factionTheme.primary}
+                backgroundColor={theme.factionTheme.background}
+                label="SELL"
+                disabled={!mechDetails}
+                onClick={() => mechDetails && setSellMechDetails(mechDetails)}
+            />
+
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
@@ -58,7 +68,6 @@ const ReusableButton = ({
             clipThingsProps={{
                 clipSize: "8px",
                 backgroundColor: backgroundColor,
-                opacity: 0.8,
                 border: { borderColor: primaryColor, borderThickness: "1.5px" },
                 sx: { flex: 1, position: "relative" },
             }}

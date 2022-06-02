@@ -1,3 +1,4 @@
+import { Stack } from "@mui/material"
 import { useMemo } from "react"
 import { getRarityDeets } from "../../../helpers"
 import { MarketplaceMechItem } from "../../../types/marketplace"
@@ -38,5 +39,5 @@ export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
 }
 
 export const WarMachineMarketItemLoadingSkeleton = () => {
-    return null
+    return <Stack>Loading...</Stack>
 }

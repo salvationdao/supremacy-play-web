@@ -94,7 +94,7 @@ export const WarMachinesMarket = () => {
 
         if (!mechItems || isLoading) {
             return (
-                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
+                <Stack sx={{ height: 0 }}>
                     {new Array(8).fill(0).map((_, index) => (
                         <WarMachineMarketItemLoadingSkeleton key={index} />
                     ))}

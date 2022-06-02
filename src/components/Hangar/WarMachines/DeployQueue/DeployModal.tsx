@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../assets"
-import { useAuth, useSnackbar } from "../../../../containers"
+import { useSnackbar } from "../../../../containers"
 import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { supFormatter } from "../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
@@ -19,8 +19,7 @@ export interface QueueFeed {
 export const DeployModal = () => {
     const { deployMechDetails, setDeployMechDetails } = useHangarWarMachine()
     const { newSnackbarMessage } = useSnackbar()
-    const { userID } = useAuth()
-    const { send: sendFactionCommander } = useGameServerCommandsFaction("/faction_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [deployQueueError, setDeployQueueError] = useState<string>()
 
     // Queuing cost, queue length win reward etc.
@@ -31,11 +30,8 @@ export const DeployModal = () => {
 
     const onDeployQueue = useCallback(
         async ({ hash }: { hash: string }) => {
-            if (!userID) return
-
             try {
-                // Deploy the mech into queue, with the notification settings
-                const resp = await sendFactionCommander<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
+                const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
                     asset_hash: hash,
                 })
 
@@ -50,7 +46,7 @@ export const DeployModal = () => {
                 return
             }
         },
-        [newSnackbarMessage, sendFactionCommander, setDeployMechDetails, userID],
+        [newSnackbarMessage, send, setDeployMechDetails],
     )
 
     const onClose = useCallback(() => {
@@ -95,7 +91,7 @@ export const DeployModal = () => {
                     />
                 </Stack>
 
-                <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
+                <Box sx={{ mt: "auto" }}>
                     <FancyButton
                         excludeCaret
                         clipThingsProps={{
@@ -111,7 +107,7 @@ export const DeployModal = () => {
                             DEPLOY
                         </Typography>
                     </FancyButton>
-                </Stack>
+                </Box>
 
                 {deployQueueError && (
                     <Typography
