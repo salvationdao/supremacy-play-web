@@ -106,20 +106,11 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     const authCheckCallback = useCallback(
         (event?: MessageEvent) => {
-            console.log("here")
-
             if (event && !("token" in event.data)) return
-
-            console.log("here1")
-
             // Check passport server login
             if (!userFromPassport) {
-                console.log("here2")
-
                 passportLoginCheck().then((resp) => {
                     if (resp.error || !resp.payload) {
-                        console.log("resp 1", resp)
-
                         setUserFromPassport(undefined)
                         return
                     }
@@ -129,12 +120,8 @@ export const AuthProvider: React.FC = ({ children }) => {
 
             // Check game server login
             if (!isLoginGameServer) {
-                console.log("here3")
-
                 gameServerLoginCheck().then((resp) => {
                     if (resp.error || !resp.payload) {
-                        console.log("resp 2", resp)
-
                         setIsLoginGameServer(false)
                         return
                     }
@@ -185,8 +172,6 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     // Open iframe to passport web to login
     const onLogInClick = useCallback(async () => {
-        console.log("in here")
-
         if (isLoggingIn) return
         setIsLoggingIn(true)
 
