@@ -13,8 +13,6 @@ export const PassportLoginCheck = (): Action<User> => {
 }
 
 export const GameServerLoginCheck = (fingerprint?: Fingerprint): Action<boolean> => {
-    console.log("checking ", fingerprint)
-
     return {
         method: "POST",
         endpoint: `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/check`,
