@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState, SyntheticEvent, useEffect } from "react"
+import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
 import { useTheme } from "../containers/theme"
@@ -9,11 +9,11 @@ import { fonts, siteZIndex } from "../theme/theme"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { ROUTES_MAP } from "../routes"
 
-enum TABS {
-    WAR_MACHINES = "war-machines",
-    WEAPONS = "weapons",
-    ATTACHMENTS = "attachments",
-    PAINT_JOBS = "paint-jobs",
+export enum HANGAR_TABS {
+    WarMachines = "war-machines",
+    Weapons = "weapons",
+    Attachments = "attachments",
+    PaintJObs = "paint-jobs",
 }
 
 export const HangarPage = () => {
@@ -48,19 +48,22 @@ const HangarPageInner = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
-    const { type } = useParams<{ type: TABS }>()
-    const [currentValue, setCurrentValue] = useState<TABS>()
+    const { type } = useParams<{ type: HANGAR_TABS }>()
+    const [currentValue, setCurrentValue] = useState<HANGAR_TABS>()
 
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
-        if (Object.values(TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.hangar.path.replace(":type", TABS.WAR_MACHINES)}${location.hash}`)
+        if (Object.values(HANGAR_TABS).includes(type)) return setCurrentValue(type)
+        history.replace(`${ROUTES_MAP.hangar.path.replace(":type", HANGAR_TABS.WarMachines)}${location.hash}`)
     }, [history, location.hash, location.pathname, type])
 
-    const handleChange = (event: SyntheticEvent, newValue: TABS) => {
-        setCurrentValue(newValue)
-        history.push(`${ROUTES_MAP.hangar.path.replace(":type", newValue)}${location.hash}`)
-    }
+    const handleChange = useCallback(
+        (event: SyntheticEvent, newValue: HANGAR_TABS) => {
+            setCurrentValue(newValue)
+            history.push(`${ROUTES_MAP.hangar.path.replace(":type", newValue)}${location.hash}`)
+        },
+        [history, location.hash],
+    )
 
     if (!currentValue) return null
 
@@ -85,23 +88,23 @@ const HangarPageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="WAR MACHINE" value={TABS.WAR_MACHINES} />
-                        <Tab label="WEAPONS" value={TABS.WEAPONS} />
-                        <Tab label="ATTACHMENTS" value={TABS.ATTACHMENTS} />
-                        <Tab label="PAINT JOBS" value={TABS.PAINT_JOBS} />
+                        <Tab label="WAR MACHINE" value={HANGAR_TABS.WarMachines} />
+                        <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
+                        <Tab label="ATTACHMENTS" value={HANGAR_TABS.Attachments} />
+                        <Tab label="PAINT JOBS" value={HANGAR_TABS.PaintJObs} />
                     </Tabs>
                 </Box>
 
-                <TabPanel currentValue={currentValue} value={TABS.WAR_MACHINES}>
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
                     <WarMachines />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={TABS.WEAPONS}>
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Weapons}>
                     WEAPONS
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={TABS.ATTACHMENTS}>
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Attachments}>
                     ATTACHMENTS
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={TABS.PAINT_JOBS}>
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.PaintJObs}>
                     PAINT JOBS
                 </TabPanel>
             </Stack>
@@ -111,8 +114,8 @@ const HangarPageInner = () => {
 
 interface TabPanelProps {
     children?: React.ReactNode
-    value: TABS
-    currentValue: TABS
+    value: HANGAR_TABS
+    currentValue: HANGAR_TABS
 }
 
 const TabPanel = (props: TabPanelProps) => {

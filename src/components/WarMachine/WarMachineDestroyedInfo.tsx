@@ -33,7 +33,7 @@ export const WarMachineDestroyedInfo = ({
                 setWarMachineDestroyedRecord(resp.payload)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve mech destroyed info.", "error")
-                console.debug(e)
+                console.error(e)
             }
         })()
     }, [newSnackbarMessage, queryGetMechDestroyedInfo, warMachine.id])

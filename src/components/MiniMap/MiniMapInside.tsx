@@ -75,7 +75,7 @@ const MiniMapInsideInner = ({
             newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
-            console.debug(e)
+            console.error(e)
         }
     }, [selection, send, setSubmitted, newSnackbarMessage])
 

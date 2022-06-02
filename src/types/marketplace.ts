@@ -12,7 +12,14 @@ export enum SaleType {
     DutchAuction = "DUTCH_AUCTION",
 }
 
-export interface ItemSale {
+export enum SortType {
+    OldestFirst = "OLDEST_FIRST",
+    NewestFirst = "NEWEST_FIRST",
+    Alphabetical = "ALPHABETICAL",
+    AlphabeticalReverse = "ALPHABETICAL_REVERSE",
+}
+
+export interface MarketplaceMechItem {
     id: string
     end_at: string
     buyout_price: string
@@ -38,13 +45,6 @@ export interface ItemSale {
         updated_at: string
         created_at: string
     }
-}
-
-export enum SortType {
-    OldestFirst = "OLDEST_FIRST",
-    NewestFirst = "NEWEST_FIRST",
-    Alphabetical = "ALPHABETICAL",
-    AlphabeticalReverse = "ALPHABETICAL_REVERSE",
 }
 
 // TODO: remove

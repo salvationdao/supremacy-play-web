@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState, SyntheticEvent, useEffect } from "react"
+import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
@@ -9,11 +9,11 @@ import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { fonts, siteZIndex } from "../theme/theme"
 
-enum TABS {
-    MYSTERY_CRATES = "mystery-crates",
-    SKINS = "skins",
-    ABILITIES = "abilities",
-    MERCHANDISE = "merchandise",
+export enum STOREFRONT_TABS {
+    MysteryCrates = "mystery-crates",
+    Skins = "skins",
+    Abilities = "abilities",
+    Merchandise = "merchandise",
 }
 
 export const StorefrontPage = () => {
@@ -48,19 +48,22 @@ const StorefrontPageInner = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
-    const { type } = useParams<{ type: TABS }>()
-    const [currentValue, setCurrentValue] = useState<TABS>()
+    const { type } = useParams<{ type: STOREFRONT_TABS }>()
+    const [currentValue, setCurrentValue] = useState<STOREFRONT_TABS>()
 
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
-        if (Object.values(TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.storefront.path.replace(":type", TABS.MYSTERY_CRATES)}${location.hash}`)
+        if (Object.values(STOREFRONT_TABS).includes(type)) return setCurrentValue(type)
+        history.replace(`${ROUTES_MAP.storefront.path.replace(":type", STOREFRONT_TABS.MysteryCrates)}${location.hash}`)
     }, [history, location.hash, location.pathname, type])
 
-    const handleChange = (event: SyntheticEvent, newValue: TABS) => {
-        setCurrentValue(newValue)
-        history.push(`${ROUTES_MAP.storefront.path.replace(":type", newValue)}${location.hash}`)
-    }
+    const handleChange = useCallback(
+        (event: SyntheticEvent, newValue: STOREFRONT_TABS) => {
+            setCurrentValue(newValue)
+            history.push(`${ROUTES_MAP.storefront.path.replace(":type", newValue)}${location.hash}`)
+        },
+        [history, location.hash],
+    )
 
     if (!currentValue) return null
 
@@ -85,23 +88,23 @@ const StorefrontPageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="MYSTERY CRATES" value={TABS.MYSTERY_CRATES} />
-                        <Tab label="SKINS" value={TABS.SKINS} />
-                        <Tab label="ABILITIES" value={TABS.ABILITIES} />
-                        <Tab label="MERCHANDISE" value={TABS.MERCHANDISE} />
+                        <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
+                        <Tab label="SKINS" value={STOREFRONT_TABS.Skins} />
+                        <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />
+                        <Tab label="MERCHANDISE" value={STOREFRONT_TABS.Merchandise} />
                     </Tabs>
                 </Box>
 
-                <TabPanel currentValue={currentValue} value={TABS.MYSTERY_CRATES}>
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.MysteryCrates}>
                     <MysteryCrates />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={TABS.SKINS}>
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Skins}>
                     SKINS
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={TABS.ABILITIES}>
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
                     ABILITIES
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={TABS.MERCHANDISE}>
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Merchandise}>
                     MERCHANDISE
                 </TabPanel>
             </Stack>
@@ -111,8 +114,8 @@ const StorefrontPageInner = () => {
 
 interface TabPanelProps {
     children?: React.ReactNode
-    value: TABS
-    currentValue: TABS
+    value: STOREFRONT_TABS
+    currentValue: STOREFRONT_TABS
 }
 
 const TabPanel = (props: TabPanelProps) => {

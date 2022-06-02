@@ -5,7 +5,7 @@ import { usePagination } from "../../../hooks"
 import { Stack, Tabs, Tab, Box, Typography, TextField, InputAdornment, Alert, Pagination, Select, MenuItem, Modal, Skeleton } from "@mui/material"
 import { ClipThing, FancyButton } from "../../"
 import { colors, fonts } from "../../../theme/theme"
-import { ItemSale, ItemType, ItemTypeInfo, SortType } from "../../../types/marketplace"
+import { MarketplaceMechItem, ItemType, ItemTypeInfo, SortType } from "../../../types/marketplace"
 import { SvgWallet, SvgSupToken } from "../../../assets"
 
 import SearchIcon from "@mui/icons-material/Search"
@@ -32,7 +32,7 @@ export const MarketplaceListing = (props: Props) => {
     const { type } = useParams<{ type: string }>()
 
     // List
-    const [assetList, setAssetList] = useState<ItemSale[]>([])
+    const [assetList, setAssetList] = useState<MarketplaceMechItem[]>([])
     const [error, setError] = useState<string | null>(null)
     const [buyError, setBuyError] = useState<string | null>(null)
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -48,7 +48,7 @@ export const MarketplaceListing = (props: Props) => {
                     sortDir = "desc"
             }
 
-            const resp = await send<{ total: number; records: ItemSale[] }>(GameServerKeys.MarketplaceSalesList, {
+            const resp = await send<{ total: number; records: MarketplaceMechItem[] }>(GameServerKeys.MarketplaceSalesList, {
                 page_number: page,
                 page_size: pageSize,
                 search: search,
@@ -68,7 +68,7 @@ export const MarketplaceListing = (props: Props) => {
     }, [listQuery])
 
     // Buying Item
-    const [targetBuyItem, setTargetBuyItem] = useState<ItemSale | null>(null)
+    const [targetBuyItem, setTargetBuyItem] = useState<MarketplaceMechItem | null>(null)
 
     const confirmBuyCloseHandler = async (confirmBuy: boolean) => {
         if (!targetBuyItem) return
@@ -78,7 +78,7 @@ export const MarketplaceListing = (props: Props) => {
         }
 
         try {
-            await send<{ total: number; records: ItemSale[] }>(GameServerKeys.MarketplaceSalesBuy, {
+            await send<{ total: number; records: MarketplaceMechItem[] }>(GameServerKeys.MarketplaceSalesBuy, {
                 item_id: targetBuyItem.id,
             })
             setTargetBuyItem(null)
@@ -255,8 +255,8 @@ const ListSearchAndSortFilter = (props: Props) => {
 
 /** Props for <ListItems>. */
 interface ListItemsProps {
-    items: ItemSale[]
-    onBuyClick: (item: ItemSale) => void
+    items: MarketplaceMechItem[]
+    onBuyClick: (item: MarketplaceMechItem) => void
 }
 
 /**
@@ -283,7 +283,7 @@ const ListItems = ({ items, onBuyClick }: ListItemsProps) => {
 
 /** Props for <ListItem>. */
 interface ListItemProps {
-    item: ItemSale
+    item: MarketplaceMechItem
     onBuyClick: () => void
 }
 
@@ -489,7 +489,7 @@ const ListItem = ({ item, onBuyClick }: ListItemProps) => {
 
 /** Props for <ConfirmBuyModal>. */
 interface ConfirmBuyModalProps {
-    item: ItemSale
+    item: MarketplaceMechItem
     errorMessage: string | null
     onClose: (confirmed: boolean) => void
 }

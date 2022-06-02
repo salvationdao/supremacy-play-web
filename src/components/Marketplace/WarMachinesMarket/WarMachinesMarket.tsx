@@ -1,45 +1,72 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { usePagination } from "../../../hooks"
+import { useDebounce, usePagination } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
+import { MarketplaceMechItem, SortType } from "../../../types/marketplace"
 import { Filters } from "../Filters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
+import { WarMachineMarketItem, WarMachineMarketItemLoadingSkeleton } from "./WarMachineMarketItem"
 
 export const WarMachinesMarket = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
-    const [mechItems, setMechItems] = useState<string[]>()
+
+    // Filters and sorts
+    const [search, setSearch] = useDebounce("", 300)
+    const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
+    const [rarities, setRarities] = useState<string[]>([])
+
+    // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+    const [mechItems, setMechItems] = useState<MarketplaceMechItem[]>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
 
-    // useEffect(() => {
-    //     ;(async () => {
-    //         try {
-    //             const resp = await send<MysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
-    //                 page,
-    //                 page_size: pageSize,
-    //             })
+    const getMechs = useCallback(async () => {
+        try {
+            setIsLoading(true)
 
-    //             if (!resp) return
-    //             setLoadError(undefined)
-    //             // setMechItems(resp)
-    //         } catch (e) {
-    //             setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
-    //             newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
-    //             console.error(e)
-    //         } finally {
-    //             setIsLoading(false)
-    //         }
-    //     })()
-    // }, [page, pageSize, send])
+            // TODO: Handle alpha sort type
+            let sortDir = "asc"
+            switch (sort) {
+                case SortType.AlphabeticalReverse:
+                case SortType.NewestFirst:
+                    sortDir = "desc"
+            }
+
+            const resp = await send<{ total: number; records: MarketplaceMechItem[] }>(GameServerKeys.MarketplaceSalesList, {
+                page_number: page,
+                page_size: pageSize,
+                search: search,
+                rarities: rarities,
+                sort_dir: sortDir,
+            })
+
+            if (!resp) return
+            setTotalItems(resp.total)
+            setMechItems(resp.records)
+            setLoadError(undefined)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to submit target location."
+            newSnackbarMessage(message, "error")
+            setLoadError(message)
+            console.error(err)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [sort, send, page, pageSize, search, rarities, setTotalItems, newSnackbarMessage])
+
+    // Initial load the mech listings
+    useEffect(() => {
+        getMechs()
+    }, [getMechs])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -68,11 +95,9 @@ export const WarMachinesMarket = () => {
         if (!mechItems || isLoading) {
             return (
                 <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(8).fill(0).map(
-                        (_, index) =>
-                            // <MysteryCrateItemLoadingSkeleton key={index} />
-                            null,
-                    )}
+                    {new Array(8).fill(0).map((_, index) => (
+                        <WarMachineMarketItemLoadingSkeleton key={index} />
+                    ))}
                 </Stack>
             )
         }
@@ -80,10 +105,9 @@ export const WarMachinesMarket = () => {
         if (mechItems && mechItems.length > 0) {
             return (
                 <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem", height: 0 }}>
-                    {mechItems.map(
-                        (mech) => null,
-                        // <MysteryCrateItem key={`storefront-mystery-crate-${mech.id}`} mech={mech} />
-                    )}
+                    {mechItems.map((item) => (
+                        <WarMachineMarketItem key={`marketplace-${item.id}`} item={item} />
+                    ))}
                 </Stack>
             )
         }
@@ -93,13 +117,13 @@ export const WarMachinesMarket = () => {
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
                     <Box
                         sx={{
-                            width: "9rem",
-                            height: "9rem",
+                            width: "80%",
+                            height: "16rem",
                             opacity: 0.6,
                             filter: "grayscale(100%)",
                             background: `url(${EmptyWarMachinesPNG})`,
                             backgroundRepeat: "no-repeat",
-                            backgroundPosition: "top center",
+                            backgroundPosition: "bottom center",
                             backgroundSize: "contain",
                         }}
                     />
@@ -114,12 +138,12 @@ export const WarMachinesMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no mystery crates on sale at this time, come back later."}
+                        {"There are no war machines on sale at this time, come back later."}
                     </Typography>
                 </Stack>
             </Stack>
         )
-    }, [isLoading, mechItems])
+    }, [isLoading, loadError, mechItems])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>

@@ -96,7 +96,7 @@ const PopoverContent = ({ faction }: { faction: Faction }) => {
             newSnackbarMessage("Successfully enlisted into syndicate.", "success")
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to enlist into syndicate.", "error")
-            console.debug(e)
+            console.error(e)
         }
         return
     }, [send, faction.id, newSnackbarMessage])

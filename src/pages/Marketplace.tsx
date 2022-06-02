@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState, SyntheticEvent, useEffect } from "react"
+import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
@@ -9,10 +9,10 @@ import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { fonts, siteZIndex } from "../theme/theme"
 
-enum TABS {
-    WAR_MACHINES = "war-machines",
-    KEY_CARDS = "key-cards",
-    MYSTERY_CRATES = "mystery-crates",
+export enum MARKETPLACE_TABS {
+    WarMachines = "war-machines",
+    KeyCards = "key-cards",
+    MysteryCrates = "mystery-crates",
 }
 
 export const MarketplacePage = () => {
@@ -47,19 +47,22 @@ const MarketplacePageInner = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
-    const { type } = useParams<{ type: TABS }>()
-    const [currentValue, setCurrentValue] = useState<TABS>()
+    const { type } = useParams<{ type: MARKETPLACE_TABS }>()
+    const [currentValue, setCurrentValue] = useState<MARKETPLACE_TABS>()
 
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
-        if (Object.values(TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.marketplace.path.replace(":type", TABS.WAR_MACHINES)}${location.hash}`)
+        if (Object.values(MARKETPLACE_TABS).includes(type)) return setCurrentValue(type)
+        history.replace(`${ROUTES_MAP.marketplace.path.replace(":type", MARKETPLACE_TABS.WarMachines)}${location.hash}`)
     }, [history, location.hash, location.pathname, type])
 
-    const handleChange = (event: SyntheticEvent, newValue: TABS) => {
-        setCurrentValue(newValue)
-        history.push(`${ROUTES_MAP.marketplace.path.replace(":type", newValue)}${location.hash}`)
-    }
+    const handleChange = useCallback(
+        (event: SyntheticEvent, newValue: MARKETPLACE_TABS) => {
+            setCurrentValue(newValue)
+            history.push(`${ROUTES_MAP.marketplace.path.replace(":type", newValue)}${location.hash}`)
+        },
+        [history, location.hash],
+    )
 
     if (!currentValue) return null
 
@@ -84,19 +87,19 @@ const MarketplacePageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="WAR MACHINES" value={TABS.WAR_MACHINES} />
-                        <Tab label="KEY CARDS" value={TABS.KEY_CARDS} />
-                        <Tab label="MYSTERY CRATES" value={TABS.MYSTERY_CRATES} />
+                        <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
+                        <Tab label="KEY CARDS" value={MARKETPLACE_TABS.KeyCards} />
+                        <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
                     </Tabs>
                 </Box>
 
-                <TabPanel currentValue={currentValue} value={TABS.WAR_MACHINES}>
+                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.WarMachines}>
                     <WarMachinesMarket />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={TABS.KEY_CARDS}>
+                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.KeyCards}>
                     key cards
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={TABS.MYSTERY_CRATES}>
+                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.MysteryCrates}>
                     mystery crates
                 </TabPanel>
             </Stack>
@@ -106,8 +109,8 @@ const MarketplacePageInner = () => {
 
 interface TabPanelProps {
     children?: React.ReactNode
-    value: TABS
-    currentValue: TABS
+    value: MARKETPLACE_TABS
+    currentValue: MARKETPLACE_TABS
 }
 
 const TabPanel = (props: TabPanelProps) => {

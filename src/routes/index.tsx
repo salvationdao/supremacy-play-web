@@ -3,6 +3,7 @@ import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
 import { StorefrontPage } from "../pages/Storefront"
+import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 
 interface RouteStruct {
     id: string
@@ -45,6 +46,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         enable: true,
         label: "Storefront",
         requireAuth: true,
+    },
+    marketplace_item: {
+        id: "marketplace_item",
+        path: "/marketplace/:type/:itemID",
+        exact: true,
+        Component: MarketplaceItemPage,
+        showInLeftDrawer: false,
+        enable: false,
+        label: "",
+        requireAuth: false,
     },
     marketplace: {
         id: "marketplace",
