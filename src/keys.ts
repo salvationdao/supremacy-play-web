@@ -101,6 +101,7 @@ export enum GameServerKeys {
 
     // Marketplace
     MarketplaceSalesList = "MARKETPLACE:SALES:LIST",
+    MarketplaceSalesGet = "MARKETPLACE:SALES:GET",
     MarketplaceSalesCreate = "MARKETPLACE:SALES:CREATE",
     MarketplaceSalesBuy = "MARKETPLACE:SALES:BUY",
     MarketplaceSalesBid = "MARKETPLACE:SALES:BID",

@@ -5,24 +5,19 @@ import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMa
 import { ROUTES_MAP } from "../routes"
 
 export const MarketplaceItemPage = () => {
-    const { type, itemID } = useParams<{ type: MARKETPLACE_TABS; itemID: string }>()
+    const { type, id } = useParams<{ type: MARKETPLACE_TABS; id: string }>()
     const history = useHistory()
 
     // If invalid url, then redirect to marketplace page
     useEffect(() => {
-        if (!Object.values(MARKETPLACE_TABS).includes(type) || !itemID) {
+        if (!Object.values(MARKETPLACE_TABS).includes(type) || !id) {
             history.replace(`${ROUTES_MAP.marketplace.path.replace(":type", MARKETPLACE_TABS.WarMachines)}${location.hash}`)
         }
-    }, [history, itemID, type])
+    }, [history, id, type])
 
-    if (type === MARKETPLACE_TABS.WarMachines) {
-        return <WarMachineMarketDetails itemID={itemID} />
+    if (type === MARKETPLACE_TABS.WarMachines && !!id) {
+        return <WarMachineMarketDetails id={id} />
     }
 
-    return (
-        <div>
-            <p>{type}</p>
-            <p>{itemID}</p>
-        </div>
-    )
+    return null
 }

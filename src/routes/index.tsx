@@ -9,7 +9,7 @@ interface RouteStruct {
     id: string
     path: string
     exact: boolean
-    Component?: () => JSX.Element
+    Component?: () => JSX.Element | null
     showInLeftDrawer: boolean
     enable: boolean
     label: string
@@ -49,7 +49,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
     marketplace_item: {
         id: "marketplace_item",
-        path: "/marketplace/:type/:itemID",
+        path: "/marketplace/:type/:id",
         exact: true,
         Component: MarketplaceItemPage,
         showInLeftDrawer: false,
