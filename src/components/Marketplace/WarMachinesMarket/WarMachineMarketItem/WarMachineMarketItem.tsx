@@ -9,7 +9,7 @@ import { MarketplaceMechItem } from "../../../../types/marketplace"
 import { Thumbnail } from "./Thumbnail"
 import { MechInfo } from "./MechInfo"
 import { SellerInfo } from "./SellerInfo"
-import { OfferTimeframe } from "./OfferTimeframe"
+import { Timeframe } from "./Timeframe"
 import { Pricing } from "./Pricing"
 import { ViewButton } from "./ViewButton"
 import { colors } from "../../../../theme/theme"
@@ -106,7 +106,7 @@ export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
                     <Thumbnail avatarUrl={avatar_url} />
                     <MechInfo name={name} label={label} tier={tier} mechDetails={mechDetails} />
                     <SellerInfo username={username} gid={gid} />
-                    <OfferTimeframe endAt={end_at} buyout={buyout} auction={auction} />
+                    <Timeframe endAt={end_at} buyout={buyout} auction={auction} />
                     <Pricing buyoutPrice={buyout_price} auctionPrice={auction_price} buyout={buyout} auction={auction} />
                     <ViewButton id={id} buyout={buyout} auction={auction} />
                 </Box>

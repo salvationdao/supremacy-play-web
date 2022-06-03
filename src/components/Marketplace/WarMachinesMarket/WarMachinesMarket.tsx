@@ -10,7 +10,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceMechItem, SortType } from "../../../types/marketplace"
 import { SellItemModal } from "../Check/SellItemModal"
-import { Filters } from "../Filters"
+import { SortAndFilters } from "../SortAndFilters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
 import { WarMachineMarketItem, WarMachineMarketItemLoadingSkeleton } from "./WarMachineMarketItem/WarMachineMarketItem"
 
@@ -150,7 +150,7 @@ export const WarMachinesMarket = () => {
     return (
         <>
             <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-                <Filters />
+                <SortAndFilters />
 
                 <ClipThing
                     clipSize="10px"

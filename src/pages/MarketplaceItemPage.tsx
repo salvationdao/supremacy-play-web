@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { MARKETPLACE_TABS } from "."
-import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMarket/WarMachineMarketDetails"
+import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMarket/WarMachineMarketDetails/WarMachineMarketDetails"
 import { ROUTES_MAP } from "../routes"
 
 export const MarketplaceItemPage = () => {
