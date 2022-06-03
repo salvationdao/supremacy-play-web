@@ -4,11 +4,12 @@ import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { useDebounce, usePagination } from "../../../hooks"
+import { useDebounce, usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceMechItem, SortType } from "../../../types/marketplace"
+import { SellItemModal } from "../Check/SellItemModal"
 import { Filters } from "../Filters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
 import { WarMachineMarketItem, WarMachineMarketItemLoadingSkeleton } from "./WarMachineMarketItem/WarMachineMarketItem"
@@ -17,6 +18,7 @@ export const WarMachinesMarket = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
+    const [sellModalOpen, toggleSellModalOpen] = useToggle()
 
     // Filters and sorts
     const [search, setSearch] = useDebounce("", 300)
@@ -146,140 +148,145 @@ export const WarMachinesMarket = () => {
     }, [isLoading, loadError, mechItems])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <Filters />
+        <>
+            <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+                <Filters />
 
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
-                }}
-                opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", flex: 1 }}
-            >
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack sx={{ flex: 1 }}>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            sx={{
-                                px: "2rem",
-                                py: "2.2rem",
-                                backgroundColor: "#00000070",
-                                borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                            }}
-                        >
-                            <Box
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    opacity={0.7}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%", flex: 1 }}
+                >
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <Stack sx={{ flex: 1 }}>
+                            <Stack
+                                direction="row"
+                                alignItems="center"
                                 sx={{
-                                    alignSelf: "flex-start",
-                                    flexShrink: 0,
-                                    mr: "1.2rem",
-                                    width: "7rem",
-                                    height: "5.2rem",
-                                    background: `url(${WarMachineIconPNG})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "cover",
+                                    px: "2rem",
+                                    py: "2.2rem",
+                                    backgroundColor: "#00000070",
+                                    borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
                                 }}
-                            />
-                            <Box sx={{ mr: "2rem" }}>
-                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    WAR MACHINES
-                                </Typography>
-                                <Typography sx={{ fontSize: "1.85rem" }}>Explore what other citizens have to offer.</Typography>
-                            </Box>
-
-                            <FancyButton
-                                excludeCaret
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: colors.red,
-                                    opacity: 1,
-                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { position: "relative", ml: "auto" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".4rem", color: theme.factionTheme.secondary }}
                             >
-                                <Typography
-                                    variant="caption"
+                                <Box
                                     sx={{
-                                        color: theme.factionTheme.secondary,
-                                        fontFamily: fonts.nostromoBlack,
+                                        alignSelf: "flex-start",
+                                        flexShrink: 0,
+                                        mr: "1.2rem",
+                                        width: "7rem",
+                                        height: "5.2rem",
+                                        background: `url(${WarMachineIconPNG})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "cover",
+                                    }}
+                                />
+                                <Box sx={{ mr: "2rem" }}>
+                                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        WAR MACHINES
+                                    </Typography>
+                                    <Typography sx={{ fontSize: "1.85rem" }}>Explore what other citizens have to offer.</Typography>
+                                </Box>
+
+                                <FancyButton
+                                    excludeCaret
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.red,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
+                                        sx: { position: "relative", ml: "auto" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".4rem", color: theme.factionTheme.secondary }}
+                                    onClick={() => toggleSellModalOpen(true)}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: theme.factionTheme.secondary,
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        SELL WAR MACHINE
+                                    </Typography>
+                                </FancyButton>
+                            </Stack>
+
+                            <TotalAndPageSizeOptions
+                                countItems={mechItems?.length}
+                                totalItems={totalItems}
+                                pageSize={pageSize}
+                                setPageSize={setPageSize}
+                                changePage={changePage}
+                            />
+
+                            <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                                <Box
+                                    sx={{
+                                        my: ".8rem",
+                                        ml: ".8rem",
+                                        pl: "1rem",
+                                        pr: "1.5rem",
+                                        flex: 1,
+                                        overflowY: "auto",
+                                        overflowX: "hidden",
+                                        direction: "ltr",
+                                        scrollbarWidth: "none",
+                                        "::-webkit-scrollbar": {
+                                            width: ".4rem",
+                                        },
+                                        "::-webkit-scrollbar-track": {
+                                            background: "#FFFFFF15",
+                                            borderRadius: 3,
+                                        },
+                                        "::-webkit-scrollbar-thumb": {
+                                            background: theme.factionTheme.primary,
+                                            borderRadius: 3,
+                                        },
                                     }}
                                 >
-                                    SELL WAR MACHINE
-                                </Typography>
-                            </FancyButton>
+                                    {content}
+                                </Box>
+                            </Stack>
                         </Stack>
 
-                        <TotalAndPageSizeOptions
-                            countItems={mechItems?.length}
-                            totalItems={totalItems}
-                            pageSize={pageSize}
-                            setPageSize={setPageSize}
-                            changePage={changePage}
-                        />
-
-                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                        {totalPages > 1 && (
                             <Box
                                 sx={{
-                                    my: ".8rem",
-                                    ml: ".8rem",
-                                    pl: "1rem",
-                                    pr: "1.5rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-                                    scrollbarWidth: "none",
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
-                                        borderRadius: 3,
-                                    },
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                    backgroundColor: "#00000070",
                                 }}
                             >
-                                {content}
+                                <Pagination
+                                    size="medium"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{
+                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                        ".Mui-selected": {
+                                            color: (theme) => theme.factionTheme.secondary,
+                                            backgroundColor: `${theme.factionTheme.primary} !important`,
+                                        },
+                                    }}
+                                    onChange={(e, p) => changePage(p)}
+                                    showFirstButton
+                                    showLastButton
+                                />
                             </Box>
-                        </Stack>
+                        )}
                     </Stack>
+                </ClipThing>
+            </Stack>
 
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
-                                    },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
-                        </Box>
-                    )}
-                </Stack>
-            </ClipThing>
-        </Stack>
+            {sellModalOpen && <SellItemModal onClose={() => toggleSellModalOpen(false)} />}
+        </>
     )
 }

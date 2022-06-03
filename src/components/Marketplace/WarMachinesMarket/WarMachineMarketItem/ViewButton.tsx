@@ -13,8 +13,6 @@ export const ViewButton = ({ id, buyout }: { id: string; buyout: boolean; auctio
     const secondaryColor = theme.factionTheme.secondary
     const auctionColor = colors.orange
 
-    console.log({ id })
-
     return (
         <Stack justifyContent="center">
             <FancyButton
