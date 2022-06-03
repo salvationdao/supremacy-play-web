@@ -5,7 +5,19 @@ import { getRarityDeets } from "../../../../helpers"
 import { useMemo } from "react"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 
-export const MechInfo = ({ name, label, tier, mechDetails }: { name: string; label: string; tier: string; mechDetails?: MechDetails }) => {
+export const MechInfo = ({
+    isGridView,
+    name,
+    label,
+    tier,
+    mechDetails,
+}: {
+    isGridView: boolean
+    name: string
+    label: string
+    tier: string
+    mechDetails?: MechDetails
+}) => {
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
     let hasSkin = false
@@ -29,7 +41,7 @@ export const MechInfo = ({ name, label, tier, mechDetails }: { name: string; lab
     }
 
     return (
-        <Stack spacing=".6rem">
+        <Stack spacing={isGridView ? "" : ".6rem"}>
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
@@ -54,7 +66,7 @@ export const MechInfo = ({ name, label, tier, mechDetails }: { name: string; lab
                 {name || label}
             </Typography>
 
-            <Stack direction="row" spacing=".5rem">
+            <Stack direction="row" spacing=".5rem" sx={{ pt: isGridView ? ".4rem" : "" }}>
                 {hasSkin && <SvgSkin size="1.3rem" />}
 
                 {hasIntroAnimation && <SvgIntroAnimation size="1.3rem" />}

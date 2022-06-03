@@ -5,7 +5,7 @@ import { SvgWallet, SvgHammer } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { fonts, colors } from "../../../../theme/theme"
 
-export const ViewButton = ({ id, buyout }: { id: string; buyout: boolean; auction: boolean }) => {
+export const ViewButton = ({ isGridView, id, buyout }: { isGridView: boolean; id: string; buyout: boolean; auction: boolean }) => {
     const theme = useTheme()
     const history = useHistory()
 
@@ -22,9 +22,9 @@ export const ViewButton = ({ id, buyout }: { id: string; buyout: boolean; auctio
                     backgroundColor: buyout ? primaryColor : auctionColor,
                     opacity: 1,
                     border: { isFancy: true, borderColor: buyout ? primaryColor : auctionColor, borderThickness: "1px" },
-                    sx: { position: "relative" },
+                    sx: { position: "relative", width: isGridView ? "100%" : "14rem" },
                 }}
-                sx={{ width: "14rem", py: ".2rem", color: buyout ? secondaryColor : "#FFFFFF" }}
+                sx={{ py: ".25rem", color: buyout ? secondaryColor : "#FFFFFF" }}
                 onClick={() => history.push(`/marketplace/war-machines/${id}${location.hash}`)}
             >
                 <Stack direction="row" spacing=".8rem" alignItems="center" justifyContent="center">

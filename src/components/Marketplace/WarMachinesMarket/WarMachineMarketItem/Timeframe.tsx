@@ -3,11 +3,11 @@ import { useMemo } from "react"
 import { timeSince } from "../../../../helpers"
 import { fonts, colors } from "../../../../theme/theme"
 
-export const Timeframe = ({ endAt }: { endAt: Date; buyout: boolean; auction: boolean }) => {
+export const Timeframe = ({ isGridView, endAt }: { isGridView: boolean; endAt: Date; buyout: boolean; auction: boolean }) => {
     const timeLeft = useMemo(() => timeSince(new Date(), endAt), [endAt])
 
     return (
-        <Stack spacing=".6rem">
+        <Stack spacing={isGridView ? "" : ".6rem"}>
             <Typography sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>TIME LEFT</Typography>
             <Typography
                 variant="body2"

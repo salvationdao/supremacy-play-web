@@ -2,7 +2,7 @@ import { Box, Stack, CircularProgress } from "@mui/material"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 
-export const Thumbnail = ({ avatarUrl }: { avatarUrl: string }) => {
+export const Thumbnail = ({ isGridView, avatarUrl }: { isGridView: boolean; avatarUrl: string }) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
 
@@ -14,6 +14,7 @@ export const Thumbnail = ({ avatarUrl }: { avatarUrl: string }) => {
                 borderThickness: avatarUrl ? "0" : ".15rem",
             }}
             corners={{
+                topRight: isGridView,
                 topLeft: true,
                 bottomLeft: true,
                 bottomRight: true,
@@ -23,12 +24,12 @@ export const Thumbnail = ({ avatarUrl }: { avatarUrl: string }) => {
         >
             <Box
                 sx={{
-                    height: "100%",
+                    height: isGridView ? "14rem" : "100%",
                     width: "100%",
                     overflow: "hidden",
                     background: `url(${avatarUrl})`,
                     backgroundRepeat: "no-repeat",
-                    backgroundPosition: "top",
+                    backgroundPosition: "center",
                     backgroundSize: "cover",
                 }}
             >

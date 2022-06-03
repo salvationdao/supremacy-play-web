@@ -1,15 +1,26 @@
 import { IconButton, Stack, Typography } from "@mui/material"
+import { SvgGridView, SvgListView } from "../../assets"
 import { fonts } from "../../theme/theme"
 
 interface TotalAndPageSizeOptionsProps {
     countItems?: number
     totalItems: number
     pageSize: number
+    isGridView?: boolean
     setPageSize: (value: number) => void
     changePage: (value: number) => void
+    toggleIsGridView?: (value: boolean) => void
 }
 
-export const TotalAndPageSizeOptions = ({ countItems, totalItems, pageSize, setPageSize, changePage }: TotalAndPageSizeOptionsProps) => {
+export const TotalAndPageSizeOptions = ({
+    countItems,
+    totalItems,
+    pageSize,
+    isGridView,
+    setPageSize,
+    changePage,
+    toggleIsGridView,
+}: TotalAndPageSizeOptionsProps) => {
     return (
         <Stack
             direction="row"
@@ -29,7 +40,7 @@ export const TotalAndPageSizeOptions = ({ countItems, totalItems, pageSize, setP
             </Typography>
             <Stack
                 direction="row"
-                spacing=".3rem"
+                spacing=".6rem"
                 alignItems="center"
                 sx={{
                     "& .MuiIconButton-root": {
@@ -43,6 +54,17 @@ export const TotalAndPageSizeOptions = ({ countItems, totalItems, pageSize, setP
                     },
                 }}
             >
+                {toggleIsGridView && (
+                    <>
+                        <IconButton size="small" onClick={() => toggleIsGridView(false)}>
+                            <SvgListView size="1.2rem" sx={{ opacity: isGridView ? 0.3 : 1 }} />
+                        </IconButton>
+                        <IconButton size="small" onClick={() => toggleIsGridView(true)}>
+                            <SvgGridView size="1.2rem" sx={{ opacity: isGridView ? 1 : 0.3 }} />
+                        </IconButton>
+                    </>
+                )}
+
                 <IconButton
                     sx={{
                         color: (theme) => (pageSize === 5 ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),

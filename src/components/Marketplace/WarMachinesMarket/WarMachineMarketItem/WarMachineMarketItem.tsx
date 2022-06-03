@@ -17,9 +17,10 @@ import { shadeColor } from "../../../../helpers"
 
 interface WarMachineMarketItemProps {
     item: MarketplaceMechItem
+    isGridView: boolean
 }
 
-export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
+export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -57,7 +58,7 @@ export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
             <ClipThing
                 clipSize="7px"
                 border={{
-                    isFancy: true,
+                    isFancy: !isGridView,
                     borderColor: buyout ? theme.factionTheme.primary : colors.orange,
                     borderThickness: ".25rem",
                 }}
@@ -67,49 +68,54 @@ export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
                 <Box
                     sx={{
                         position: "relative",
-                        px: "1rem",
-                        py: ".8rem",
-                        display: "grid",
+                        p: isGridView ? "1.2rem 1.3rem" : ".8rem 1rem",
+                        display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
                         gridTemplateColumns: "8rem minmax(auto, 32rem) 1.5fr repeat(2, 1fr) min-content",
                         gap: "1.6rem",
+                        ...(isGridView
+                            ? {
+                                  "&>*:not(:last-child)": {
+                                      mb: ".8rem",
+                                  },
+                              }
+                            : {}),
                     }}
                 >
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            bottom: 0,
-                            background: `url(${imageUrl})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "top",
-                            backgroundSize: "cover",
-                            opacity: 0.11,
-                            zIndex: -2,
-                        }}
-                    />
-
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            bottom: 0,
-                            background: `linear-gradient(to top, #FFFFFF10, ${buyout ? theme.factionTheme.background : `${auctionBackgroundColor}80`})`,
-                            zIndex: -1,
-                        }}
-                    />
-
-                    <Thumbnail avatarUrl={avatar_url} />
-                    <MechInfo name={name} label={label} tier={tier} mechDetails={mechDetails} />
-                    <SellerInfo username={username} gid={gid} />
-                    <Timeframe endAt={end_at} buyout={buyout} auction={auction} />
-                    <Pricing buyoutPrice={buyout_price} auctionPrice={auction_price} buyout={buyout} auction={auction} />
-                    <ViewButton id={id} buyout={buyout} auction={auction} />
+                    <Thumbnail isGridView={isGridView} avatarUrl={avatar_url} />
+                    <MechInfo isGridView={isGridView} name={name} label={label} tier={tier} mechDetails={mechDetails} />
+                    <SellerInfo isGridView={isGridView} username={username} gid={gid} />
+                    <Timeframe isGridView={isGridView} endAt={end_at} buyout={buyout} auction={auction} />
+                    <Pricing isGridView={isGridView} buyoutPrice={buyout_price} auctionPrice={auction_price} buyout={buyout} auction={auction} />
+                    <ViewButton isGridView={isGridView} id={id} buyout={buyout} auction={auction} />
                 </Box>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        background: `url(${imageUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "top",
+                        backgroundSize: "cover",
+                        opacity: 0.11,
+                        zIndex: -2,
+                    }}
+                />
+
+                <Box
+                    sx={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        background: `linear-gradient(to top, #FFFFFF10, ${buyout ? theme.factionTheme.background : `${auctionBackgroundColor}80`})`,
+                        zIndex: -1,
+                    }}
+                />
             </ClipThing>
         </Box>
     )

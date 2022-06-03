@@ -30,6 +30,7 @@ export const WarMachinesMarket = () => {
     const [loadError, setLoadError] = useState<string>()
     const [mechItems, setMechItems] = useState<MarketplaceMechItem[]>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
+    const [isGridView, toggleIsGridView] = useToggle(false)
 
     const getMechs = useCallback(async () => {
         try {
@@ -106,11 +107,23 @@ export const WarMachinesMarket = () => {
 
         if (mechItems && mechItems.length > 0) {
             return (
-                <Stack spacing="1.2rem" sx={{ py: "1rem", height: 0 }}>
+                <Box
+                    sx={{
+                        width: "100%",
+                        py: "1rem",
+                        display: "grid",
+                        gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(28rem, 1fr))" : "100%",
+                        gap: "1.3rem",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: 0,
+                        overflow: "visible",
+                    }}
+                >
                     {mechItems.map((item) => (
-                        <WarMachineMarketItem key={`marketplace-${item.id}`} item={item} />
+                        <WarMachineMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
                     ))}
-                </Stack>
+                </Box>
             )
         }
 
@@ -145,7 +158,7 @@ export const WarMachinesMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoading, loadError, mechItems])
+    }, [isLoading, loadError, mechItems, isGridView])
 
     return (
         <>
@@ -224,6 +237,8 @@ export const WarMachinesMarket = () => {
                                 pageSize={pageSize}
                                 setPageSize={setPageSize}
                                 changePage={changePage}
+                                isGridView={isGridView}
+                                toggleIsGridView={toggleIsGridView}
                             />
 
                             <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
