@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material"
+import { Box } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
@@ -89,6 +89,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                     <Pricing isGridView={isGridView} buyoutPrice={buyout_price} auctionPrice={auction_price} buyout={buyout} auction={auction} />
                     <ViewButton isGridView={isGridView} id={id} buyout={buyout} auction={auction} />
                 </Box>
+
                 <Box
                     sx={{
                         position: "absolute",
@@ -119,8 +120,4 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
             </ClipThing>
         </Box>
     )
-}
-
-export const WarMachineMarketItemLoadingSkeleton = () => {
-    return <Stack>Loading...</Stack>
 }

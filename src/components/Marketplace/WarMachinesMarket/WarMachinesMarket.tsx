@@ -1,4 +1,4 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
@@ -12,7 +12,7 @@ import { MarketplaceMechItem, SortType } from "../../../types/marketplace"
 import { SellItemModal } from "../Check/SellItemModal"
 import { SortAndFilters } from "../SortAndFilters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
-import { WarMachineMarketItem, WarMachineMarketItemLoadingSkeleton } from "./WarMachineMarketItem/WarMachineMarketItem"
+import { WarMachineMarketItem } from "./WarMachineMarketItem/WarMachineMarketItem"
 
 export const WarMachinesMarket = () => {
     const { newSnackbarMessage } = useSnackbar()
@@ -97,10 +97,10 @@ export const WarMachinesMarket = () => {
 
         if (!mechItems || isLoading) {
             return (
-                <Stack spacing="1.2rem" sx={{ height: 0 }}>
-                    {new Array(8).fill(0).map((_, index) => (
-                        <WarMachineMarketItemLoadingSkeleton key={index} />
-                    ))}
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
                 </Stack>
             )
         }
@@ -158,7 +158,7 @@ export const WarMachinesMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoading, loadError, mechItems, isGridView])
+    }, [loadError, mechItems, isLoading, theme.factionTheme.primary, isGridView])
 
     return (
         <>
