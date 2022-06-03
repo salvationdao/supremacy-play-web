@@ -58,6 +58,9 @@ const WarMachineHangarItemInner = ({
 }) => {
     const theme = useTheme()
 
+    const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
+    const imageUrl = skin?.large_image_url
+
     return (
         <Box sx={{ position: "relative", overflow: "visible", cursor: "pointer" }} onClick={() => setSelectedMechDetails(mechDetails)}>
             <MechTitle mech={mech} mechDetails={mechDetails} isSelected={isSelected} />
@@ -92,6 +95,34 @@ const WarMachineHangarItemInner = ({
                         <MechButtons mech={mech} mechDetails={mechDetails} />
                     </Stack>
                 </Stack>
+
+                <Box
+                    sx={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        background: `url(${imageUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "top",
+                        backgroundSize: "cover",
+                        opacity: 0.08,
+                        zIndex: -2,
+                    }}
+                />
+
+                <Box
+                    sx={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        background: `linear-gradient(65deg, ${theme.factionTheme.background} 50%, #FFFFFF10)`,
+                        zIndex: -1,
+                    }}
+                />
             </ClipThing>
         </Box>
     )
