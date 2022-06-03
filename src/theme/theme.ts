@@ -28,7 +28,7 @@ declare module "@mui/material/styles" {
 export const colors = {
     text: "#FFFFFF",
     offWhite: "#D4FFFF",
-    red: "#C24242",
+    red: "#D12A2A",
     lightRed: "#E83200",
     green: "#2BA172",
     yellow: "#FFE200",
@@ -180,7 +180,7 @@ export const theme = createTheme({
         },
         body1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.43rem",
+            fontSize: "1.5rem",
         },
         body2: {
             fontFamily: fonts.shareTech,

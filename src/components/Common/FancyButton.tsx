@@ -25,7 +25,13 @@ interface FancyButtonProps extends LoadingButtonProps {
 
 export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, ...props }: FancyButtonProps) => {
     return (
-        <ClipThing {...clipThingsProps}>
+        <ClipThing
+            corners={{
+                topRight: true,
+                bottomLeft: true,
+            }}
+            {...clipThingsProps}
+        >
             {disabled && (
                 <Box
                     sx={{

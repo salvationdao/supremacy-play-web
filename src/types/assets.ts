@@ -314,3 +314,13 @@ export interface RepairStatus {
     remain_seconds: number
     full_repair_fee: string
 }
+
+export type MysteryCrateType = "MECH" | "WEAPON"
+
+export interface MysteryCrate {
+    id: string
+    mystery_crate_type: MysteryCrateType
+    price: string
+    amount: number
+    sold: number
+}

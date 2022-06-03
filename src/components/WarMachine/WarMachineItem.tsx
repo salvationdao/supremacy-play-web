@@ -210,7 +210,10 @@ const WarMachineItemInner = ({
                     clipSlantSize="18px"
                     border={{ isFancy: false, borderColor: primaryColor, borderThickness: ".4rem" }}
                     sx={{ zIndex: 2 }}
-                    skipRightCorner={!isExpanded}
+                    corners={{
+                        topRight: !isExpanded,
+                        bottomLeft: true,
+                    }}
                     innerSx={{ background: `linear-gradient(${primaryColor}, #000000)` }}
                 >
                     <Box>

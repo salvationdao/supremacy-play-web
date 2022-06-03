@@ -79,10 +79,14 @@ export const UserDetailsPopover = ({
                         borderColor: factionColor || colors.neonBlue,
                         borderThickness: ".2rem",
                     }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                    }}
                     sx={{ position: "relative" }}
                     backgroundColor={colors.darkNavy}
                 >
-                    <Stack sx={{ minWidth: "20rem", px: "1.2rem", py: ".8rem" }}>
+                    <Stack sx={{ minWidth: "20rem", px: "1.5rem", py: "1.2rem" }}>
                         <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
                             {faction_logo_url && (
                                 <Box
@@ -155,8 +159,8 @@ export const UserDetailsPopover = ({
                                 sx={{
                                     mt: ".7rem",
                                     px: ".8rem",
-                                    pt: ".48rem",
-                                    pb: ".3rem",
+                                    pt: ".7rem",
+                                    pb: ".5rem",
                                     backgroundColor: factionColor,
                                     border: `${factionColor} 1px solid`,
                                     borderRadius: 0.3,

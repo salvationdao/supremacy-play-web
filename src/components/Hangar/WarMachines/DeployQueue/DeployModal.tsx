@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { useAuth, useSnackbar } from "../../../../containers"
@@ -22,21 +21,13 @@ export const DeployModal = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { userID } = useAuth()
     const { send: sendFactionCommander } = useGameServerCommandsFaction("/faction_commander")
+    const [deployQueueError, setDeployQueueError] = useState<string>()
 
     // Queuing cost, queue length win reward etc.
     const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
         URI: "/queue",
         key: GameServerKeys.SubQueueFeed,
     })
-
-    const [deployQueueError, setDeployQueueError] = useState<string>()
-    const [actualQueueCost, setActualQueueCost] = useState(supFormatter(queueFeed?.queue_cost || "0", 2))
-
-    // If notification is turned on, add 10% to the queue cost
-    useEffect(() => {
-        const qc = new BigNumber(queueFeed?.queue_cost || "0").shiftedBy(-18)
-        setActualQueueCost(qc.toFixed(3))
-    }, [queueFeed?.queue_cost])
 
     const onDeployQueue = useCallback(
         async ({ hash }: { hash: string }) => {
@@ -96,7 +87,12 @@ export const DeployModal = () => {
                         tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
                     />
 
-                    <AmountItem title={"Fee: "} color={"#FF4136"} value={actualQueueCost} tooltip="The cost to place your war machine into the battle queue." />
+                    <AmountItem
+                        title={"Fee: "}
+                        color={"#FF4136"}
+                        value={supFormatter(queueFeed?.queue_cost || "0", 2)}
+                        tooltip="The cost to place your war machine into the battle queue."
+                    />
                 </Stack>
 
                 <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
@@ -108,7 +104,7 @@ export const DeployModal = () => {
                             border: { isFancy: true, borderColor: colors.green },
                             sx: { position: "relative", width: "100%" },
                         }}
-                        sx={{ px: "1.6rem", py: ".5rem", color: "#FFFFFF" }}
+                        sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
                         onClick={() => onDeployQueue({ hash })}
                     >
                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>

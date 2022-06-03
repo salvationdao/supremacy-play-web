@@ -1,9 +1,10 @@
-import { Box, IconButton, Pagination, Stack, Theme, Typography, useTheme } from "@mui/material"
+import { Box, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useSnackbar } from "../../../containers"
 import { HangarWarMachineProvider } from "../../../containers/hangar/hangarWarMachines"
+import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -41,7 +42,7 @@ export const WarMachines = () => {
 const WarMachinesInner = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const [mechs, setMechs] = useState<MechBasic[]>()
     const [isLoading, setIsLoading] = useState(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
@@ -91,12 +92,14 @@ const WarMachinesInner = () => {
 
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }} spacing="1rem">
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                    spacing="1.5rem"
+                >
                     <Typography
                         sx={{
-                            px: "1.28rem",
-                            pt: "1.28rem",
-
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
                             userSelect: "text !important",
@@ -114,9 +117,9 @@ const WarMachinesInner = () => {
                             clipSize: "5px",
                             backgroundColor: theme.factionTheme.background,
                             border: { borderColor: theme.factionTheme.primary },
-                            sx: { position: "relative", width: "88%" },
+                            sx: { position: "relative", width: "50%" },
                         }}
-                        sx={{ px: "1.8rem", py: ".5rem", color: theme.factionTheme.primary }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.primary }}
                     >
                         <Typography
                             variant="body2"
@@ -137,9 +140,9 @@ const WarMachinesInner = () => {
                             clipSize: "5px",
                             backgroundColor: theme.factionTheme.background,
                             border: { borderColor: colors.neonPink },
-                            sx: { position: "relative", width: "88%" },
+                            sx: { position: "relative", width: "50%" },
                         }}
-                        sx={{ px: "1.8rem", py: ".5rem", color: colors.neonPink }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: colors.neonPink }}
                     >
                         <Typography
                             variant="body2"
@@ -162,9 +165,13 @@ const WarMachinesInner = () => {
             <ClipThing
                 clipSize="10px"
                 border={{
-                    isFancy: true,
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".15rem",
+                    borderThickness: ".3rem",
+                }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
                 }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
@@ -256,11 +263,11 @@ const WarMachinesInner = () => {
                         {content}
                     </Box>
 
-                    {mechs && (
+                    {totalPages > 1 && (
                         <Box
                             sx={{
                                 px: "1rem",
-                                py: ".5rem",
+                                py: ".7rem",
                                 borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
                                 backgroundColor: "#00000070",
                             }}
@@ -270,8 +277,11 @@ const WarMachinesInner = () => {
                                 count={totalPages}
                                 page={page}
                                 sx={{
-                                    ".MuiButtonBase-root": { fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": { backgroundColor: `${theme.factionTheme.primary} !important` },
+                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                    ".Mui-selected": {
+                                        color: (theme) => theme.factionTheme.secondary,
+                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                                    },
                                 }}
                                 onChange={(e, p) => changePage(p)}
                                 showFirstButton

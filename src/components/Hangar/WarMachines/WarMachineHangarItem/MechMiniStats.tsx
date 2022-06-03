@@ -11,7 +11,16 @@ export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
     const utilities = mechDetails?.utility?.length
 
     return (
-        <ClipThing clipSize="10px" opacity={0.08} backgroundColor="#FFFFFF" sx={{ height: "100%", flexShrink: 0 }}>
+        <ClipThing
+            clipSize="10px"
+            opacity={0.08}
+            corners={{
+                topRight: true,
+                bottomLeft: true,
+            }}
+            backgroundColor="#FFFFFF"
+            sx={{ height: "100%", flexShrink: 0 }}
+        >
             <Box
                 sx={{
                     flex: 1,
@@ -34,7 +43,7 @@ export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
                 }}
             >
                 <Stack alignItems="center" justifyContent="center" spacing=".4rem" sx={{ height: "100%", px: "1rem", py: ".8rem" }}>
-                    <SingleStat Icon={<SvgSkin size="1.5rem" />} current={chassis_skin_id ? 1 : 0} total={1} tooltipText="Custom chassis skin." />
+                    <SingleStat Icon={<SvgSkin size="1.5rem" />} current={chassis_skin_id ? 1 : 0} total={1} tooltipText="Chassis skin." />
                     <SingleStat Icon={<SvgIntroAnimation size="1.5rem" />} current={intro_animation_id ? 1 : 0} total={1} tooltipText="Intro animation." />
                     <SingleStat Icon={<SvgOutroAnimation size="1.5rem" />} current={outro_animation_id ? 1 : 0} total={1} tooltipText="Outro animation." />
                     <SingleStat Icon={<SvgPowerCore size="1.5rem" />} current={power_core_id ? 1 : 0} total={1} tooltipText="Power core." />

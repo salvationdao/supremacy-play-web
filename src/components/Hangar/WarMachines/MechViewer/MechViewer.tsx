@@ -21,25 +21,11 @@ export const MechViewer = () => {
                         height: "100%",
                         width: "100%",
                         overflow: "hidden",
-                        border: `${theme.factionTheme.primary}90 1px solid`,
+                        border: `${theme.factionTheme.primary}90 .3rem solid`,
                         borderLeft: "none",
                         boxShadow: 2,
                     }}
                 >
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            height: "100%",
-                            width: "100%",
-                            background: `url(${imageUrl})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
-                            filter: "blur(20px)",
-                            zIndex: 2,
-                        }}
-                    />
-
                     <Box
                         sx={{
                             position: "absolute",
@@ -56,10 +42,10 @@ export const MechViewer = () => {
                         component="video"
                         sx={{
                             position: "absolute",
-                            height: "calc(100% - 8rem)",
-                            width: "calc(100% - 10rem)",
-                            left: "5rem",
-                            top: "4rem",
+                            height: "100%",
+                            width: "100%",
+                            objectFit: "cover",
+                            objectPosition: "50% 8%",
                             zIndex: 3,
                         }}
                         loop
