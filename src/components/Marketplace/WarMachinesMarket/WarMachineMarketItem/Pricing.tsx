@@ -5,7 +5,6 @@ import { numFormatter } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 
 export const Pricing = ({ buyoutPrice, auctionPrice, buyout }: { buyoutPrice: string; auctionPrice: string; buyout: boolean; auction: boolean }) => {
-    console.log(numFormatter(buyout ? parseInt(buyoutPrice) : parseInt(auctionPrice)))
     const formattedPrice = useMemo(() => numFormatter(buyout ? parseInt(buyoutPrice) : parseInt(auctionPrice)), [auctionPrice, buyout, buyoutPrice])
 
     return (
