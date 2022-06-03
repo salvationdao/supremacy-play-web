@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js"
 const USE_PROD = false
 
 // Envar stuff
+export const STAGING_ONLY = process.env.NODE_ENV === "staging" || "development"
 export const DEV_ONLY = process.env.NODE_ENV === "development"
 const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
 const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/external/buy"
