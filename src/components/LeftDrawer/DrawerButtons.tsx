@@ -16,6 +16,11 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
     const history = useHistory()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
+    let activeTabID = ""
+    if (match && location.pathname !== match.path) {
+        const r = ROUTES_ARRAY.find((r) => r.path === match.path)
+        activeTabID = r?.matchLeftDrawerID || ""
+    }
 
     return (
         <Stack
@@ -42,17 +47,19 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {ROUTES_ARRAY.map((r) => {
-                    if (!r.showInLeftDrawer) return null
-                    const disable = r.requireAuth && !userID
-                    const root = r.path.split("/:")[0]
+                    if (!r.leftDrawer) return null
+                    const { enable, requireAuth, label } = r.leftDrawer
+                    const disable = requireAuth && !userID
+                    const navigateTo = r.path.split("/:")[0]
+
                     return (
                         <TabButton
                             key={r.id}
-                            label={r.label}
-                            enable={r.enable && !disable}
-                            isComingSoon={!r.enable}
-                            onClick={() => history.push(`${root}${location.hash}`)}
-                            isActive={match?.path === r.path || (location.pathname === "/" && r.path === "/")}
+                            label={label}
+                            enable={enable && !disable}
+                            isComingSoon={!enable}
+                            onClick={() => history.push(`${navigateTo}${location.hash}`)}
+                            isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
                         />

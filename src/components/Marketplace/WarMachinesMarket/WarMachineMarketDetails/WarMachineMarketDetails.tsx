@@ -60,5 +60,17 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     //     }
     // },[])
 
+    if (!marketItem) return null
+
+    const { buyout, auction, end_at, buyout_price, auction_price, owner, mech } = marketItem
+
+    if (!mech || !owner) return null
+
+    const { username, gid } = owner
+    const { name, label, tier, avatar_url } = mech
+
+    const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
+    const imageUrl = skin?.large_image_url
+
     return <div>{id}</div>
 }

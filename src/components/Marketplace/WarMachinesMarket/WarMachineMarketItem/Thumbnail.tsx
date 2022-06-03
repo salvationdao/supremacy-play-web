@@ -24,7 +24,7 @@ export const Thumbnail = ({ isGridView, avatarUrl }: { isGridView: boolean; avat
         >
             <Box
                 sx={{
-                    height: isGridView ? "14rem" : "100%",
+                    height: isGridView ? "15rem" : "100%",
                     width: "100%",
                     overflow: "hidden",
                     background: `url(${avatarUrl})`,

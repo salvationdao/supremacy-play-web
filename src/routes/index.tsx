@@ -10,10 +10,12 @@ interface RouteStruct {
     path: string
     exact: boolean
     Component?: () => JSX.Element | null
-    showInLeftDrawer: boolean
-    enable: boolean
-    label: string
-    requireAuth?: boolean
+    leftDrawer?: {
+        enable: boolean
+        label: string
+        requireAuth?: boolean
+    }
+    matchLeftDrawerID?: string
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
@@ -22,70 +24,73 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/",
         exact: true,
         Component: BattleArenaPage,
-        showInLeftDrawer: true,
-        enable: true,
-        label: "Battle Arena",
-        requireAuth: false,
+        leftDrawer: {
+            enable: true,
+            label: "Battle Arena",
+            requireAuth: false,
+        },
+        matchLeftDrawerID: "home",
     },
     hangar: {
         id: "hangar",
         path: "/hangar/:type?",
         exact: true,
         Component: HangarPage,
-        showInLeftDrawer: true,
-        enable: true,
-        label: "Hangar",
-        requireAuth: true,
+        leftDrawer: {
+            enable: true,
+            label: "Hangar",
+            requireAuth: true,
+        },
+        matchLeftDrawerID: "hangar",
     },
     storefront: {
         id: "storefront",
         path: "/storefront/:type?",
         exact: true,
         Component: StorefrontPage,
-        showInLeftDrawer: true,
-        enable: true,
-        label: "Storefront",
-        requireAuth: true,
+        leftDrawer: {
+            enable: true,
+            label: "Storefront",
+            requireAuth: true,
+        },
+        matchLeftDrawerID: "storefront",
     },
     marketplace_item: {
         id: "marketplace_item",
         path: "/marketplace/:type/:id",
         exact: true,
         Component: MarketplaceItemPage,
-        showInLeftDrawer: false,
-        enable: false,
-        label: "",
-        requireAuth: false,
+        matchLeftDrawerID: "marketplace",
     },
     marketplace: {
         id: "marketplace",
         path: "/marketplace/:type?",
         exact: true,
         Component: MarketplacePage,
-        showInLeftDrawer: true,
-        enable: true,
-        label: "Marketplace",
-        requireAuth: true,
+        leftDrawer: {
+            enable: true,
+            label: "Marketplace",
+            requireAuth: true,
+        },
+        matchLeftDrawerID: "marketplace",
     },
     contracts: {
         id: "contracts",
         path: "/contracts",
         exact: true,
         Component: undefined,
-        showInLeftDrawer: true,
-        enable: false,
-        label: "Contracts",
-        requireAuth: false,
+        leftDrawer: {
+            enable: false,
+            label: "Contracts",
+            requireAuth: false,
+        },
+        matchLeftDrawerID: "contracts",
     },
     not_found_page: {
         id: "not_found_page",
         path: "/404",
         exact: false,
         Component: NotFoundPage,
-        showInLeftDrawer: false,
-        enable: false,
-        label: "",
-        requireAuth: false,
     },
 }
 
