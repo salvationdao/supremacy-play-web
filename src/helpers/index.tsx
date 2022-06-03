@@ -99,9 +99,8 @@ export const numFormatter = (num: number) => {
         return (num / 1000).toFixed(1) + "K"
     } else if (num > 1000000) {
         return (num / 1000000).toFixed(1) + "M"
-    } else if (num < 900) {
-        return num + ""
     }
+    return num + ""
 }
 
 export const supFormatter = (num: string, fixedAmount: number | undefined = 0): string => {

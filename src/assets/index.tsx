@@ -80,6 +80,7 @@ import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import Copy from "!@svgr/webpack!./svg/Copy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
+import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
@@ -873,5 +874,11 @@ export const SvgUtilities: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgWeapons: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Weapons />
+    </SvgWrapper>
+)
+
+export const SvgHammer: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Hammer />
     </SvgWrapper>
 )

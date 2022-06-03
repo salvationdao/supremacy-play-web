@@ -18,6 +18,7 @@ export const SellModal = () => {
         async ({ id }: { id: string }) => {
             try {
                 const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
+                    has_buyout: true,
                     sale_type: "BUYOUT",
                     item_type: "WAR_MACHINE",
                     item_id: id,

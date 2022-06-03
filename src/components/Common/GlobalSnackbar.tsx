@@ -67,7 +67,7 @@ export const GlobalSnackbar = () => {
                         bottomLeft: true,
                     }}
                     sx={{
-                        mb: "1.8rem",
+                        mb: "-1rem",
                         ml: DEV_ONLY ? "1.9rem" : "-.9rem",
                     }}
                     backgroundColor={severityDeets.color}

@@ -22,8 +22,11 @@ export enum SortType {
 export interface MarketplaceMechItem {
     id: string
     item_id: string
-    end_at: string
+    buyout: boolean
+    auction: boolean
+    end_at: Date
     buyout_price: string
+    auction_price: string
     owner?: {
         username: string
         gid: number

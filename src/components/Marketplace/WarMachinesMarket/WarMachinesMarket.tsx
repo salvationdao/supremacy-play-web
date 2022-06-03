@@ -11,7 +11,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceMechItem, SortType } from "../../../types/marketplace"
 import { Filters } from "../Filters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
-import { WarMachineMarketItem, WarMachineMarketItemLoadingSkeleton } from "./WarMachineMarketItem"
+import { WarMachineMarketItem, WarMachineMarketItemLoadingSkeleton } from "./WarMachineMarketItem/WarMachineMarketItem"
 
 export const WarMachinesMarket = () => {
     const { newSnackbarMessage } = useSnackbar()
@@ -94,7 +94,7 @@ export const WarMachinesMarket = () => {
 
         if (!mechItems || isLoading) {
             return (
-                <Stack sx={{ height: 0 }}>
+                <Stack spacing="1.2rem" sx={{ height: 0 }}>
                     {new Array(8).fill(0).map((_, index) => (
                         <WarMachineMarketItemLoadingSkeleton key={index} />
                     ))}
@@ -104,7 +104,7 @@ export const WarMachinesMarket = () => {
 
         if (mechItems && mechItems.length > 0) {
             return (
-                <Stack spacing="1.4rem" sx={{ py: "1rem", height: 0 }}>
+                <Stack spacing="1.2rem" sx={{ py: "1rem", height: 0 }}>
                     {mechItems.map((item) => (
                         <WarMachineMarketItem key={`marketplace-${item.id}`} item={item} />
                     ))}

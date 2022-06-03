@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MechBasic, MechDetails } from "../../../../types"
 import { MechBarStats } from "./MechBarStats"
@@ -20,7 +20,7 @@ interface WarMachineHangarItemProps {
 }
 
 export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps) => {
-    const { send } = useGameServerCommandsUser("/user_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { selectedMechDetails, setSelectedMechDetails } = useHangarWarMachine()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
