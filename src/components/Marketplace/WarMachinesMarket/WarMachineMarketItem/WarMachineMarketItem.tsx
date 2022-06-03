@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
@@ -13,6 +13,7 @@ import { OfferTimeframe } from "./OfferTimeframe"
 import { Pricing } from "./Pricing"
 import { ViewButton } from "./ViewButton"
 import { colors } from "../../../../theme/theme"
+import { shadeColor } from "../../../../helpers"
 
 interface WarMachineMarketItemProps {
     item: MarketplaceMechItem
@@ -22,6 +23,8 @@ export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+
+    const auctionBackgroundColor = useMemo(() => shadeColor(colors.orange, -95), [])
 
     useEffect(() => {
         ;(async () => {
@@ -59,7 +62,7 @@ export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
                     borderThickness: ".25rem",
                 }}
                 opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={buyout ? theme.factionTheme.background : auctionBackgroundColor}
             >
                 <Box
                     sx={{
@@ -95,7 +98,7 @@ export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
                             right: 0,
                             top: 0,
                             bottom: 0,
-                            background: `linear-gradient(to top, #FFFFFF10, ${theme.factionTheme.background})`,
+                            background: `linear-gradient(to top, #FFFFFF10, ${buyout ? theme.factionTheme.background : `${auctionBackgroundColor}80`})`,
                             zIndex: -1,
                         }}
                     />

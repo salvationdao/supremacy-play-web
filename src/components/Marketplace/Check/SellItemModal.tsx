@@ -34,7 +34,7 @@ export const SellItemModal = ({ onClose }: Props) => {
     const [assetsList, setAssetsList] = useState<MechBasic[] | Keycard[] | null>(null)
     const [selectedAsset, setSelectedAsset] = useState<string | null>(null)
     const [saleType, setSaleType] = useState<SaleType>(SaleType.Buyout)
-    const [askingPrice, setAskingPrice] = useState<string>("")
+    const [buyoutPrice, setBuyoutPrice] = useState<string>("")
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 12, page: 1 })
     const { state: stateUser, send: sendUser } = useGameServerCommandsUser("/user_commander")
@@ -45,12 +45,14 @@ export const SellItemModal = ({ onClose }: Props) => {
         e.preventDefault()
         if (stateFaction !== WebSocket.OPEN) return
 
+        const isKeycard = itemType.name === ItemType.KeyCards
+
         try {
-            await sendFaction(GameServerKeys.MarketplaceSalesCreate, {
+            await sendFaction(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 sale_type: saleType,
                 item_type: itemType.name,
                 item_id: selectedAsset,
-                asking_price: askingPrice,
+                asking_price: buyoutPrice,
                 listing_duration_hours: 8,
             })
             onClose()
@@ -308,13 +310,13 @@ export const SellItemModal = ({ onClose }: Props) => {
 
                         <Typography sx={{ lineHeight: 1, mt: "2rem", mb: "1rem", fontWeight: 600 }}>ASKING PRICE:</Typography>
                         <TextField
-                            placeholder="Asking Price"
+                            placeholder="Buyout Price"
                             type="number"
                             hiddenLabel
                             size="small"
                             fullWidth
-                            value={askingPrice}
-                            onChange={(e) => setAskingPrice(e.currentTarget.value)}
+                            value={buyoutPrice}
+                            onChange={(e) => setBuyoutPrice(e.currentTarget.value)}
                             sx={{
                                 borderRadius: 1,
                                 boxShadow: 1,
@@ -378,7 +380,7 @@ interface AssetItemProps {
 
 /** Display Asset Item. */
 const AssetItem = ({ item, selected, onSelected }: AssetItemProps) => {
-    const { send } = useGameServerCommandsUser("/user_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const [mechDetails, setMechDetails] = useState<MechDetails | null>(null)
 

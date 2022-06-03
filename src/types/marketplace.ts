@@ -3,7 +3,6 @@ import { snakeToSlug, snakeToTitle } from "../helpers"
 export enum ItemType {
     WarMachine = "WAR_MACHINE",
     KeyCards = "KEY_CARDS",
-    Abilities = "ABILITIES",
 }
 
 export enum SaleType {
