@@ -157,7 +157,7 @@ export const WarMachinesMarket = () => {
                 }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", flex: 1, maxWidth: "136rem" }}
+                sx={{ height: "100%", flex: 1 }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>

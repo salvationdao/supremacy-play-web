@@ -20,6 +20,7 @@ export const MarketplacePage = () => {
 
     return (
         <Stack
+            alignItems="center"
             sx={{
                 height: "100%",
                 zIndex: siteZIndex.RoutePage,
@@ -27,6 +28,7 @@ export const MarketplacePage = () => {
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
+                boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
             {!userID ? (
@@ -68,7 +70,7 @@ const MarketplacePageInner = () => {
 
     return (
         <>
-            <Stack sx={{ m: "1.5rem", height: "100%" }}>
+            <Stack sx={{ my: "1.5rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
                 <Box sx={{ maxWidth: "fit-content", mb: ".8rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
                     <Tabs
                         value={currentValue}
@@ -79,7 +81,7 @@ const MarketplacePageInner = () => {
                             flexShrink: 0,
                             color: (theme) => theme.factionTheme.primary,
                             minHeight: 0,
-                            ".MuiTab-root": { minHeight: 0, fontSize: "1.2rem", py: "1rem" },
+                            ".MuiTab-root": { minHeight: 0, fontSize: "1.2rem", py: ".8rem" },
                             ".Mui-selected": {
                                 color: (theme) => `${theme.factionTheme.secondary} !important`,
                                 backgroundColor: (theme) => `${theme.factionTheme.primary}CC !important`,

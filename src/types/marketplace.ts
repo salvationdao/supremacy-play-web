@@ -21,22 +21,19 @@ export enum SortType {
 
 export interface MarketplaceMechItem {
     id: string
+    item_id: string
     end_at: string
     buyout_price: string
     owner?: {
         username: string
+        gid: number
         public_address: string
-    }
-    collection?: {
-        id: string
-        tier: string
-        image_url: string
     }
     mech?: {
         id: string
         name: string
         label: string
-        image_url: string
+        avatar_url: string
         tier: string
         hash: string
         slug: string

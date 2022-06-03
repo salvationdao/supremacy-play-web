@@ -1,8 +1,11 @@
 import { Box, Stack } from "@mui/material"
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { MechDetails } from "../../../types"
 import { MarketplaceMechItem } from "../../../types/marketplace"
 
 interface WarMachineMarketItemProps {
@@ -11,15 +14,33 @@ interface WarMachineMarketItemProps {
 
 export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
     const theme = useTheme()
-    const rarityDeets = useMemo(() => getRarityDeets(item.collection?.tier || ""), [item.collection?.tier])
+    const { send } = useGameServerCommandsUser("/user_commander")
+    const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const { end_at, buyout_price, owner, collection, mech } = item
+    const rarityDeets = useMemo(() => getRarityDeets(item.mech?.tier || ""), [item.mech?.tier])
 
-    if (!mech || !collection || !owner) return null
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (!item.mech) return
+                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
+                    mech_id: item.mech.id,
+                })
+
+                if (!resp) return
+                setMechDetails(resp)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [item.mech?.id, send])
+
+    const { end_at, buyout_price, owner, mech } = item
+
+    if (!mech || !owner) return null
 
     const { username, public_address } = owner
-    const { tier, image_url: collectionImageUrl } = collection
-    const { name, label, image_url } = mech
+    const { name, label, tier, avatar_url } = mech
 
     // tier
     tier
@@ -40,7 +61,7 @@ export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
     return (
         <Box sx={{ position: "relative", overflow: "visible" }}>
             <ClipThing
-                clipSize="10px"
+                clipSize="8px"
                 border={{
                     isFancy: true,
                     borderColor: theme.factionTheme.primary,
@@ -55,7 +76,7 @@ export const WarMachineMarketItem = ({ item }: WarMachineMarketItemProps) => {
                             flexShrink: 0,
                             width: "7rem",
                             height: "5.2rem",
-                            background: `url(${image_url || collectionImageUrl})`,
+                            background: `url(${avatar_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
