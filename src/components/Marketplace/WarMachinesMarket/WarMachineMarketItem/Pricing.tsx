@@ -24,7 +24,7 @@ export const Pricing = ({
 
             <Stack direction="row" alignItems="center">
                 <SvgSupToken size="1.7rem" fill={colors.yellow} />
-                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
+                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                     {formattedPrice}
                 </Typography>
             </Stack>

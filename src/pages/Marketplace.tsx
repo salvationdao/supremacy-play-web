@@ -90,8 +90,28 @@ const MarketplacePageInner = () => {
                         }}
                     >
                         <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
-                        <Tab label="KEY CARDS" value={MARKETPLACE_TABS.KeyCards} />
-                        <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
+                        <Tab
+                            label={
+                                <>
+                                    KEY CARDS
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={MARKETPLACE_TABS.KeyCards}
+                        />
+                        <Tab
+                            label={
+                                <>
+                                    MYSTERY CRATES
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={MARKETPLACE_TABS.MysteryCrates}
+                        />
                     </Tabs>
                 </Box>
 
@@ -99,10 +119,10 @@ const MarketplacePageInner = () => {
                     <WarMachinesMarket />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.KeyCards}>
-                    key cards
+                    COMING SOON!
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.MysteryCrates}>
-                    mystery crates
+                    COMING SOON!
                 </TabPanel>
             </Stack>
         </>

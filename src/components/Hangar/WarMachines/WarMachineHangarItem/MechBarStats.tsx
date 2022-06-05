@@ -7,6 +7,14 @@ import { MechBasic, MechDetails } from "../../../../types"
 export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const theme = useTheme()
     const { speed, max_hitpoints } = mech
+    let rechargeRate = 0
+    let capacity = 0
+
+    if (mechDetails) {
+        rechargeRate = mechDetails.power_core?.recharge_rate || 0
+        capacity = mechDetails.power_core?.capacity || 0
+    }
+
     const powerCore = mechDetails?.power_core
     const utilities = mechDetails?.utility
     const weapons = mechDetails?.weapons

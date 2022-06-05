@@ -11,9 +11,8 @@ import { ROUTES_MAP } from "../routes"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
-    Weapons = "weapons",
-    Attachments = "attachments",
-    PaintJObs = "paint-jobs",
+    MysteryCrates = "mystery-crates",
+    KeyCards = "key-cards",
 }
 
 export const HangarPage = () => {
@@ -90,24 +89,40 @@ const HangarPageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="WAR MACHINE" value={HANGAR_TABS.WarMachines} />
-                        <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
-                        <Tab label="ATTACHMENTS" value={HANGAR_TABS.Attachments} />
-                        <Tab label="PAINT JOBS" value={HANGAR_TABS.PaintJObs} />
+                        <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
+                        <Tab
+                            label={
+                                <>
+                                    MYSTERY CRATES
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={HANGAR_TABS.MysteryCrates}
+                        />
+                        <Tab
+                            label={
+                                <>
+                                    KEY CARDS
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={HANGAR_TABS.KeyCards}
+                        />
                     </Tabs>
                 </Box>
 
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
                     <WarMachines />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Weapons}>
-                    WEAPONS
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
+                    COMING SOON!
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Attachments}>
-                    ATTACHMENTS
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value={HANGAR_TABS.PaintJObs}>
-                    PAINT JOBS
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.KeyCards}>
+                    COMING SOON!
                 </TabPanel>
             </Stack>
         </>

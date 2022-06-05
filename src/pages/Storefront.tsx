@@ -91,9 +91,39 @@ const StorefrontPageInner = () => {
                         }}
                     >
                         <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
-                        <Tab label="SKINS" value={STOREFRONT_TABS.Skins} />
-                        <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />
-                        <Tab label="MERCHANDISE" value={STOREFRONT_TABS.Merchandise} />
+                        <Tab
+                            label={
+                                <>
+                                    SKINS
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            value={STOREFRONT_TABS.Skins}
+                            disabled
+                        />
+                        <Tab
+                            label={
+                                <>
+                                    ABILITIES
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={STOREFRONT_TABS.Abilities}
+                        />
+                        <Tab
+                            label={
+                                <>
+                                    MERCHANDISE
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={STOREFRONT_TABS.Merchandise}
+                        />
                     </Tabs>
                 </Box>
 
@@ -101,13 +131,13 @@ const StorefrontPageInner = () => {
                     <MysteryCrates />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Skins}>
-                    SKINS
+                    COMING SOON!
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
-                    ABILITIES
+                    COMING SOON!
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Merchandise}>
-                    MERCHANDISE
+                    COMING SOON!
                 </TabPanel>
             </Stack>
         </>
