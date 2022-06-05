@@ -1,13 +1,30 @@
-import { Stack } from "@mui/material"
-import { useEffect } from "react"
+import { Stack, Typography } from "@mui/material"
+import { useCallback, useEffect } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { MARKETPLACE_TABS } from "."
-import { HangarBg } from "../assets"
+import { HangarBg, SvgBack } from "../assets"
+import { FancyButton } from "../components"
 import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMarket/WarMachineMarketDetails/WarMachineMarketDetails"
+import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
-import { siteZIndex } from "../theme/theme"
+import { fonts, siteZIndex } from "../theme/theme"
 
 export const MarketplaceItemPage = () => {
+    const { type, id } = useParams<{ type: MARKETPLACE_TABS; id: string }>()
+    const history = useHistory()
+    const theme = useTheme()
+
+    const primaryColor = theme.factionTheme.primary
+
+    const goBack = useCallback(() => {
+        history.push(`${ROUTES_MAP.marketplace.path.replace(":type", MARKETPLACE_TABS.WarMachines)}${location.hash}`)
+    }, [history])
+
+    // If invalid url, then redirect to marketplace page
+    useEffect(() => {
+        if (!Object.values(MARKETPLACE_TABS).includes(type) || !id) goBack()
+    }, [goBack, history, id, type])
+
     return (
         <Stack
             alignItems="center"
@@ -21,7 +38,32 @@ export const MarketplaceItemPage = () => {
                 boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
-            <Stack sx={{ my: "1.5rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
+            <Stack spacing=".5rem" sx={{ my: "1.5rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "130rem" }}>
+                <FancyButton
+                    excludeCaret
+                    clipThingsProps={{
+                        clipSize: "9px",
+                        corners: { topLeft: true },
+                        opacity: 1,
+                        sx: { position: "relative", alignSelf: "flex-start" },
+                    }}
+                    sx={{ px: "1.6rem", py: ".6rem", color: primaryColor }}
+                    onClick={goBack}
+                >
+                    <Stack spacing=".6rem" direction="row" alignItems="center">
+                        <SvgBack size="1.4rem" fill={primaryColor} />
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: primaryColor,
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            GO BACK
+                        </Typography>
+                    </Stack>
+                </FancyButton>
+
                 <MarketplaceItemPageInner />
             </Stack>
         </Stack>
@@ -30,14 +72,6 @@ export const MarketplaceItemPage = () => {
 
 const MarketplaceItemPageInner = () => {
     const { type, id } = useParams<{ type: MARKETPLACE_TABS; id: string }>()
-    const history = useHistory()
-
-    // If invalid url, then redirect to marketplace page
-    useEffect(() => {
-        if (!Object.values(MARKETPLACE_TABS).includes(type) || !id) {
-            history.replace(`${ROUTES_MAP.marketplace.path.replace(":type", MARKETPLACE_TABS.WarMachines)}${location.hash}`)
-        }
-    }, [history, id, type])
 
     if (type === MARKETPLACE_TABS.WarMachines && !!id) {
         return <WarMachineMarketDetails id={id} />

@@ -1,10 +1,14 @@
+import { Box, Stack } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
+import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MechDetails } from "../../../../types"
 import { MarketplaceMechItem } from "../../../../types/marketplace"
+import { ClipThing } from "../../../Common/ClipThing"
 
 export const WarMachineMarketDetails = ({ id }: { id: string }) => {
+    const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
@@ -35,7 +39,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
             try {
                 if (!marketItem || !marketItem.mech?.id) return
                 const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: marketItem.mech.id,
+                    mech_id: marketItem.item_id,
                 })
 
                 if (!resp) return
@@ -72,5 +76,23 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl = skin?.large_image_url
 
-    return <div>{id}</div>
+    return (
+        <ClipThing
+            clipSize="10px"
+            border={{
+                borderColor: theme.factionTheme.primary,
+                borderThickness: ".3rem",
+            }}
+            corners={{
+                topRight: true,
+                bottomLeft: true,
+                bottomRight: true,
+            }}
+            opacity={0.7}
+            backgroundColor={theme.factionTheme.background}
+            sx={{ height: "100%" }}
+        >
+            <Stack sx={{ height: "100%" }}>CONTENT</Stack>
+        </ClipThing>
+    )
 }
