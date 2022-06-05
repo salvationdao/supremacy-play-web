@@ -5,16 +5,12 @@ import { MARKETPLACE_TABS } from "."
 import { HangarBg, SvgBack } from "../assets"
 import { FancyButton } from "../components"
 import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMarket/WarMachineMarketDetails/WarMachineMarketDetails"
-import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { fonts, siteZIndex } from "../theme/theme"
 
 export const MarketplaceItemPage = () => {
     const { type, id } = useParams<{ type: MARKETPLACE_TABS; id: string }>()
     const history = useHistory()
-    const theme = useTheme()
-
-    const primaryColor = theme.factionTheme.primary
 
     const goBack = useCallback(() => {
         history.push(`${ROUTES_MAP.marketplace.path.replace(":type", MARKETPLACE_TABS.WarMachines)}${location.hash}`)
@@ -38,7 +34,7 @@ export const MarketplaceItemPage = () => {
                 boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
-            <Stack spacing=".6rem" sx={{ my: "1.5rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "130rem" }}>
+            <Stack spacing=".6rem" sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "130rem" }}>
                 <FancyButton
                     excludeCaret
                     clipThingsProps={{

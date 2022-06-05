@@ -241,7 +241,7 @@ export const MysteryCrates = () => {
                                 animation: `${zoomEffect(1.01)} 3s infinite`,
                             }}
                         >
-                            <Typography sx={{ textAlign: "center", color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>LIMITED AMOUNTS</Typography>
+                            <Typography sx={{ textAlign: "center", color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>ONLY 20,000 AVAILABLE</Typography>
                         </Box>
                     </Stack>
 
