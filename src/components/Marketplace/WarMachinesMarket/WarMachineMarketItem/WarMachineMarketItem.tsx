@@ -25,7 +25,11 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const auctionBackgroundColor = useMemo(() => shadeColor(colors.orange, -95), [])
+    const primaryColor = useMemo(() => (item.buyout ? theme.factionTheme.primary : colors.orange), [item.buyout, theme.factionTheme.primary])
+    const backgroundColor = useMemo(
+        () => (item.buyout ? theme.factionTheme.background : shadeColor(colors.orange, -97)),
+        [item.buyout, theme.factionTheme.background],
+    )
 
     useEffect(() => {
         ;(async () => {
@@ -59,11 +63,11 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                 clipSize="7px"
                 border={{
                     isFancy: !isGridView,
-                    borderColor: buyout ? theme.factionTheme.primary : colors.orange,
+                    borderColor: primaryColor,
                     borderThickness: ".25rem",
                 }}
                 opacity={0.7}
-                backgroundColor={buyout ? theme.factionTheme.background : auctionBackgroundColor}
+                backgroundColor={backgroundColor}
             >
                 <Box
                     sx={{
@@ -113,7 +117,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                         right: 0,
                         top: 0,
                         bottom: 0,
-                        background: `linear-gradient(to top, #FFFFFF10, ${buyout ? theme.factionTheme.background : `${auctionBackgroundColor}80`})`,
+                        background: `linear-gradient(to top, #FFFFFF10, ${backgroundColor}80)`,
                         zIndex: -1,
                     }}
                 />

@@ -1,8 +1,10 @@
 import { Box, Stack } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
+import { shadeColor } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { colors } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MarketplaceMechItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
@@ -14,6 +16,12 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const [loadError, setLoadError] = useState<string>()
     const [marketItem, setMarketItem] = useState<MarketplaceMechItem>()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+
+    const primaryColor = useMemo(() => (marketItem?.buyout ? theme.factionTheme.primary : colors.orange), [marketItem?.buyout, theme.factionTheme.primary])
+    const backgroundColor = useMemo(
+        () => (marketItem?.buyout ? theme.factionTheme.background : shadeColor(colors.orange, -97)),
+        [marketItem?.buyout, theme.factionTheme.background],
+    )
 
     // Get listing details
     useEffect(() => {

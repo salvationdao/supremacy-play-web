@@ -45,17 +45,17 @@ export const MarketplaceItemPage = () => {
                         clipSize: "9px",
                         corners: { topLeft: true },
                         opacity: 1,
-                        sx: { position: "relative", alignSelf: "flex-start" },
+                        sx: { position: "relative", alignSelf: "flex-start", opacity: 0.5, ":hover": { opacity: 1 } },
                     }}
-                    sx={{ px: "1.6rem", py: ".6rem", color: primaryColor }}
+                    sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
                     onClick={goBack}
                 >
                     <Stack spacing=".6rem" direction="row" alignItems="center">
-                        <SvgBack size="1.4rem" fill={primaryColor} />
+                        <SvgBack size="1.4rem" fill={"#FFFFFF"} />
                         <Typography
                             variant="caption"
                             sx={{
-                                color: primaryColor,
+                                color: "#FFFFFF",
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
