@@ -75,6 +75,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                             left: `calc(50vw - min(${modalWidth / 2}px, 50vw))`,
                             width: "100%",
                             maxWidth: modalWidth,
+                            outline: "none",
                         }}
                     >
                         <ClipThing

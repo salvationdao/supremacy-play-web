@@ -147,6 +147,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                     transform: "translate(-50%, -50%)",
                     width: "42rem",
                     boxShadow: 24,
+                    outline: "none",
                 }}
             >
                 <ClipThing

@@ -49,6 +49,7 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                         left: "50%",
                         transform: "translate(-50%, -50%)",
                         width: "63rem",
+                        outline: "none",
                     }}
                 >
                     <ClipThing
@@ -148,6 +149,7 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "73rem",
+                    outline: "none",
                 }}
             >
                 <ClipThing

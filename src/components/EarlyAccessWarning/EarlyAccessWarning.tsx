@@ -19,6 +19,7 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                     transform: "translate(-50%, -50%)",
                     width: "42rem",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing

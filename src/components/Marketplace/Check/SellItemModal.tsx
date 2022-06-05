@@ -107,6 +107,7 @@ export const SellItemModal = ({ onClose }: Props) => {
                     width: "63rem",
                     maxWidth: "82rem",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing

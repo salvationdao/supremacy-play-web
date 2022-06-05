@@ -30,6 +30,7 @@ export const InstantPunishConfirmModal = ({
                     transform: "translate(-50%, -50%)",
                     width: "38rem",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing

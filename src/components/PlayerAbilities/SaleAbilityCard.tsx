@@ -196,6 +196,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                             transform: "translate(-50%, -50%)",
                             width: "100%",
                             maxWidth: purchaseModalWidth,
+                            outline: "none",
                         }}
                     >
                         <ClipThing

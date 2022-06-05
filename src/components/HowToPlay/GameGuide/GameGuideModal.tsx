@@ -38,6 +38,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                     transform: "translate(-50%, -50%)",
                     maxWidth: "82rem",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing

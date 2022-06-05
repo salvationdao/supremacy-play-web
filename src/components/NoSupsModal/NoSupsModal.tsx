@@ -20,6 +20,7 @@ export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
                     transform: "translate(-50%, -50%)",
                     maxWidth: "50rem",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing

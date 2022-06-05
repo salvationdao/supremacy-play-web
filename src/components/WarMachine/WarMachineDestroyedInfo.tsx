@@ -113,8 +113,8 @@ export const WarMachineDestroyedInfo = ({
                     transform: "translate(-50%, -50%)",
                     width: "63rem",
                     border: "none",
-                    outline: "none",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing

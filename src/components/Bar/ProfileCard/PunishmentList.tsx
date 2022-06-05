@@ -27,8 +27,8 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                     transform: "translate(-50%, -50%)",
                     width: "40rem",
                     border: "none",
-                    outline: "none",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing

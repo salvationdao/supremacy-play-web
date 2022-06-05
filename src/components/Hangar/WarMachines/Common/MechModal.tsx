@@ -35,6 +35,7 @@ export const MechModal = ({
                     transform: "translate(-50%, -50%)",
                     width: width || "43rem",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing

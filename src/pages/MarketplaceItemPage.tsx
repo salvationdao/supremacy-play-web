@@ -38,7 +38,7 @@ export const MarketplaceItemPage = () => {
                 boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
-            <Stack spacing=".5rem" sx={{ my: "1.5rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "130rem" }}>
+            <Stack spacing=".6rem" sx={{ my: "1.5rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "130rem" }}>
                 <FancyButton
                     excludeCaret
                     clipThingsProps={{
