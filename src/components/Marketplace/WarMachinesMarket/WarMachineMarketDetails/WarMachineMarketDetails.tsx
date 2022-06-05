@@ -130,8 +130,10 @@ const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem:
         <Stack>
             <Box
                 sx={{
+                    px: "5rem",
+                    py: "4rem",
                     display: "grid",
-                    gridTemplateColumns: "minmax(32rem, 1.3fr) minmax(32rem, 1fr)",
+                    gridTemplateColumns: "minmax(32rem, 1fr) minmax(32rem, 1.3fr)",
                     gap: "1.8rem",
                     alignItems: "center",
                     justifyContent: "center",

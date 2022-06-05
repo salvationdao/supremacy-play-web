@@ -248,7 +248,8 @@ export const MysteryCrates = () => {
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                my: ".8rem",
+                                mt: ".1rem",
+                                mb: ".8rem",
                                 ml: ".8rem",
                                 pl: "1rem",
                                 pr: "1.5rem",

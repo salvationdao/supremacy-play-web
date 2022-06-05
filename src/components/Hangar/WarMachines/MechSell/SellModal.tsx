@@ -28,7 +28,7 @@ export const SellModal = () => {
                     item_type: "WAR_MACHINE",
                     item_id: id,
                     asking_price: "999",
-                    listing_duration_hours: 8,
+                    listing_duration_hours: 50,
                 })
 
                 // const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
