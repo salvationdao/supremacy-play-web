@@ -217,7 +217,7 @@ const PopoverContent = ({ faction }: { faction: Faction }) => {
                             variant="caption"
                             sx={{
                                 color: secondary_color,
-                                fontFamily: fonts.nostromoBold,
+                                fontFamily: fonts.nostromoBlack,
                             }}
                         >
                             ENLIST

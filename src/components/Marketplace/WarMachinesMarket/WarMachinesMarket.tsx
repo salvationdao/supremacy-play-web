@@ -99,7 +99,7 @@ export const WarMachinesMarket = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
                     </Stack>
                 </Stack>
             )

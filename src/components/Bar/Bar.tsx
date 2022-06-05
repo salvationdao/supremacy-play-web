@@ -38,7 +38,6 @@ export const Bar = () => {
                 height: `${GAME_BAR_HEIGHT}rem`,
                 color: "#FFFFFF",
                 background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
-                // borderBottom: (theme) => `${theme.factionTheme.primary}25 1.5px solid`,
                 scrollbarWidth: "none",
                 zIndex: siteZIndex.Popover,
                 "::-webkit-scrollbar": {
