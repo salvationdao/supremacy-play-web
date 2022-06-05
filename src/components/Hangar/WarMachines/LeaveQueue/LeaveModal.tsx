@@ -14,27 +14,26 @@ export const LeaveModal = () => {
     const { leaveMechDetails, setLeaveMechDetails } = useHangarWarMachine()
     const [leaveQueueError, setLeaveQueueError] = useState<string>()
 
+    const onClose = useCallback(() => {
+        setLeaveMechDetails(undefined)
+        setLeaveQueueError(undefined)
+    }, [setLeaveQueueError, setLeaveMechDetails])
+
     const onLeaveQueue = useCallback(
         async (hash: string) => {
             try {
                 const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: hash })
                 if (resp) {
                     newSnackbarMessage("Successfully removed war machine from queue.", "success")
-                    setLeaveMechDetails(undefined)
-                    setLeaveQueueError("")
+                    onClose()
                 }
             } catch (e) {
                 setLeaveQueueError(typeof e === "string" ? e : "Failed to leave queue.")
                 console.error(e)
             }
         },
-        [newSnackbarMessage, send, setLeaveMechDetails],
+        [newSnackbarMessage, send, onClose],
     )
-
-    const onClose = useCallback(() => {
-        setLeaveMechDetails(undefined)
-        setLeaveQueueError("")
-    }, [setLeaveQueueError, setLeaveMechDetails])
 
     if (!leaveMechDetails) return null
 

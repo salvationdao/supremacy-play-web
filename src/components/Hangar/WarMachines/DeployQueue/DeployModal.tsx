@@ -28,6 +28,11 @@ export const DeployModal = () => {
         key: GameServerKeys.SubQueueFeed,
     })
 
+    const onClose = useCallback(() => {
+        setDeployMechDetails(undefined)
+        setDeployQueueError(undefined)
+    }, [setDeployQueueError, setDeployMechDetails])
+
     const onDeployQueue = useCallback(
         async ({ hash }: { hash: string }) => {
             try {
@@ -37,8 +42,7 @@ export const DeployModal = () => {
 
                 if (resp && resp.success) {
                     newSnackbarMessage("Successfully deployed war machine.", "success")
-                    setDeployMechDetails(undefined)
-                    setDeployQueueError("")
+                    onClose()
                 }
             } catch (e) {
                 setDeployQueueError(typeof e === "string" ? e : "Failed to deploy war machine.")
@@ -46,13 +50,8 @@ export const DeployModal = () => {
                 return
             }
         },
-        [newSnackbarMessage, send, setDeployMechDetails],
+        [newSnackbarMessage, send, onClose],
     )
-
-    const onClose = useCallback(() => {
-        setDeployMechDetails(undefined)
-        setDeployQueueError("")
-    }, [setDeployQueueError, setDeployMechDetails])
 
     if (!deployMechDetails) return null
 

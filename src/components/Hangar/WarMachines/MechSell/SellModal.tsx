@@ -14,6 +14,11 @@ export const SellModal = () => {
     const { newSnackbarMessage } = useSnackbar()
     const [sellError, setSellError] = useState<string>()
 
+    const onClose = useCallback(() => {
+        setSellMechDetails(undefined)
+        setSellError(undefined)
+    }, [setSellMechDetails])
+
     const onSellMech = useCallback(
         async ({ id }: { id: string }) => {
             try {
@@ -22,14 +27,22 @@ export const SellModal = () => {
                     sale_type: "BUYOUT",
                     item_type: "WAR_MACHINE",
                     item_id: id,
-                    asking_price: 999,
+                    asking_price: "999",
                     listing_duration_hours: 8,
                 })
 
+                // const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
+                //     has_auction: true,
+                //     item_type: "WAR_MACHINE",
+                //     item_id: id,
+                //     asking_price: "999",
+                //     auction_reserved_price: "999",
+                //     listing_duration_hours: 8,
+                // })
+
                 if (resp) {
                     newSnackbarMessage("Successfully listed war machine for sale.", "success")
-                    setSellMechDetails(undefined)
-                    setSellError("")
+                    onClose()
                 }
             } catch (e) {
                 setSellError(typeof e === "string" ? e : "Failed to list war machine.")
@@ -37,7 +50,7 @@ export const SellModal = () => {
                 return
             }
         },
-        [newSnackbarMessage, send, setSellMechDetails],
+        [newSnackbarMessage, onClose, send],
     )
 
     // // Fetch
@@ -74,10 +87,6 @@ export const SellModal = () => {
     //         setState(payload)
     //     },
     // )
-
-    const onClose = useCallback(() => {
-        setSellMechDetails(undefined)
-    }, [setSellMechDetails])
 
     if (!sellMechDetails) return null
 
