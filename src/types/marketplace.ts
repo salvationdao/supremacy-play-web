@@ -8,6 +8,7 @@ export enum ItemType {
 export enum SaleType {
     Buyout = "BUYOUT",
     Auction = "AUCTION",
+    AuctionOrBuyout = "AUCTION_OR_BUYOUT",
     DutchAuction = "DUTCH_AUCTION",
 }
 
@@ -21,12 +22,14 @@ export enum SortType {
 export interface MarketplaceMechItem {
     id: string
     item_id: string
-    buyout: boolean
     auction: boolean
-    end_at: Date
-    buyout_price: string
     auction_current_price: string
     auction_reserved_price: string
+    dutch_auction: boolean
+    dutch_auction_drop_rate: string
+    buyout: boolean
+    buyout_price: string
+    end_at: Date
     owner?: {
         username: string
         gid: number

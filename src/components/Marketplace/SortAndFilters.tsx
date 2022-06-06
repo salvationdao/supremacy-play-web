@@ -22,7 +22,7 @@ export const SortAndFilters = () => {
             backgroundColor={theme.factionTheme.background}
             sx={{ height: "100%", minWidth: "30rem", maxWidth: "45rem" }}
         >
-            <Stack sx={{ position: "relative", height: "100%", px: "1.2rem", py: "1rem" }}>
+            <Stack sx={{ position: "relative", height: "100%", px: "1.6rem", py: "1.2rem" }}>
                 <Box>
                     <Typography variant="caption" sx={{ color: colors.grey, fontFamily: fonts.nostromoBold }}>
                         SEARCH

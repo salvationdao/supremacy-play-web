@@ -25,6 +25,7 @@ interface GetAssetsResponse {
  * Sell Item Modal.
  */
 export const SellItemModal = ({ onClose }: Props) => {
+    const [submitting, setSubmitting] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
     // Item Type Selection
@@ -34,30 +35,59 @@ export const SellItemModal = ({ onClose }: Props) => {
     const [assetsList, setAssetsList] = useState<MechBasic[] | Keycard[] | null>(null)
     const [selectedAsset, setSelectedAsset] = useState<string | null>(null)
     const [saleType, setSaleType] = useState<SaleType>(SaleType.Buyout)
-    const [buyoutPrice, setBuyoutPrice] = useState<string>("")
+    const [listingHours, setListingHours] = useState(1)
+    const [askingPrice, setAskingPrice] = useState<string>("")
+    const [auctionReservedPrice, setAuctionReservedPrice] = useState<string>("")
+    const [dropRate, setDropRate] = useState<string>("")
+
+    const askingPriceLabel = saleType === SaleType.DutchAuction ? "Starting Price" : "Buyout Price"
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 12, page: 1 })
     const { state: stateUser, send: sendUser } = useGameServerCommandsUser("/user_commander")
     const { state: stateFaction, send: sendFaction } = useGameServerCommandsFaction("/faction_commander")
 
+    useEffect(() => {
+        setAskingPrice("")
+        setAuctionReservedPrice("")
+        setDropRate("")
+    }, [saleType])
+
+    useEffect(() => {
+        // Force Keycards to be Buyout types
+        if (itemType.name === ItemType.KeyCards) {
+            setSaleType(SaleType.Buyout)
+        }
+    }, [itemType])
+
     /** Submit handler */
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setSubmitting(true)
         if (stateFaction !== WebSocket.OPEN) return
 
         const isKeycard = itemType.name === ItemType.KeyCards
 
+        const hasBuyout = saleType === SaleType.Buyout || saleType === SaleType.AuctionOrBuyout
+        const hasAuction = saleType === SaleType.Auction || saleType === SaleType.AuctionOrBuyout
+        const hasDutchAuction = saleType === SaleType.DutchAuction
+
         try {
             await sendFaction(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
-                sale_type: saleType,
                 item_type: itemType.name,
                 item_id: selectedAsset,
-                asking_price: buyoutPrice,
-                listing_duration_hours: 8,
+                has_buyout: hasBuyout,
+                has_auction: hasAuction,
+                has_dutch_auction: hasDutchAuction,
+                asking_price: hasBuyout || hasDutchAuction ? askingPrice : undefined,
+                auction_reserved_price: hasAuction || hasDutchAuction ? auctionReservedPrice : undefined,
+                dutch_auction_drop_rate: hasDutchAuction ? dropRate : undefined,
+                listing_duration_hours: listingHours,
             })
             onClose()
         } catch (err) {
             setErrorMessage(err as string)
+        } finally {
+            setSubmitting(false)
         }
     }
 
@@ -73,10 +103,12 @@ export const SellItemModal = ({ onClose }: Props) => {
                     {
                         page: number
                         page_size: number
+                        exclude_market_listed: boolean
                     }
                 >(key, {
                     page, // start with 0
                     page_size: pageSize,
+                    exclude_market_listed: true,
                 })
                 if (!resp) return
                 if (itemType.name === ItemType.WarMachine) {
@@ -107,7 +139,6 @@ export const SellItemModal = ({ onClose }: Props) => {
                     width: "63rem",
                     maxWidth: "82rem",
                     boxShadow: 6,
-                    outline: "none",
                 }}
             >
                 <ClipThing
@@ -168,7 +199,7 @@ export const SellItemModal = ({ onClose }: Props) => {
                     <ClipThing
                         clipSize="10px"
                         border={{
-                            borderColor: colors.red,
+                            borderColor: colors.orange,
                             borderThickness: "0.125rem",
                         }}
                         backgroundColor="#110815"
@@ -215,6 +246,8 @@ export const SellItemModal = ({ onClose }: Props) => {
                             <Pagination size="small" count={totalPages} page={page} onChange={(_, p) => changePage(p)} showFirstButton showLastButton />
                         </Box>
                     )}
+
+                    {/* Sell Item Pricing Section */}
                     <Stack
                         direction="row"
                         spacing=".96rem"
@@ -234,7 +267,6 @@ export const SellItemModal = ({ onClose }: Props) => {
                             SALE OPTIONS
                         </Typography>
                     </Stack>
-
                     <Box
                         component={"form"}
                         onSubmit={submitHandler}
@@ -260,7 +292,60 @@ export const SellItemModal = ({ onClose }: Props) => {
                             </Alert>
                         )}
 
-                        <Typography sx={{ lineHeight: 1, mb: "1rem", fontWeight: 600 }}>SALE TYPE</Typography>
+                        {itemType.name !== ItemType.KeyCards && (
+                            <>
+                                <Typography sx={{ lineHeight: 1, mb: "1rem", fontWeight: 600 }}>SALE TYPE:</Typography>
+                                <Select
+                                    sx={{
+                                        borderRadius: 0.5,
+                                        "&:hover": {
+                                            backgroundColor: colors.darkNavy,
+                                        },
+                                        "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
+                                    }}
+                                    fullWidth
+                                    defaultValue={SaleType.Buyout}
+                                    value={saleType}
+                                    onChange={(e) => {
+                                        setSaleType(e.target.value as SaleType)
+                                    }}
+                                    MenuProps={{
+                                        variant: "menu",
+                                        sx: {
+                                            "&& .Mui-selected": {
+                                                backgroundColor: colors.darkerNeonBlue,
+                                            },
+                                        },
+                                        PaperProps: {
+                                            sx: {
+                                                backgroundColor: colors.darkNavy,
+                                                borderRadius: 0.5,
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {Object.values(SaleType).map((x) => {
+                                        return (
+                                            <MenuItem
+                                                key={`sell-item-type-option-${x}`}
+                                                value={x}
+                                                sx={{
+                                                    "&:hover": {
+                                                        backgroundColor: colors.darkNavyBlue,
+                                                    },
+                                                }}
+                                            >
+                                                <Typography textTransform="uppercase" variant="body2">
+                                                    {snakeToTitle(x)}
+                                                </Typography>
+                                            </MenuItem>
+                                        )
+                                    })}
+                                </Select>
+                            </>
+                        )}
+
+                        <Typography sx={{ lineHeight: 1, mt: "2rem", mb: "1rem", fontWeight: 600 }}>LIST ITEM FOR:</Typography>
                         <Select
                             sx={{
                                 borderRadius: 0.5,
@@ -270,10 +355,10 @@ export const SellItemModal = ({ onClose }: Props) => {
                                 "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
                             }}
                             fullWidth
-                            defaultValue={SaleType.Buyout}
-                            value={saleType}
+                            defaultValue={1}
+                            value={listingHours}
                             onChange={(e) => {
-                                setSaleType(e.target.value as SaleType)
+                                setListingHours(typeof e.target.value === "number" ? e.target.value : parseInt(e.target.value, 10))
                             }}
                             MenuProps={{
                                 variant: "menu",
@@ -290,72 +375,150 @@ export const SellItemModal = ({ onClose }: Props) => {
                                 },
                             }}
                         >
-                            {Object.values(SaleType).map((x) => {
-                                return (
-                                    <MenuItem
-                                        key={`sell-item-type-option-${x}`}
-                                        value={x}
-                                        sx={{
-                                            "&:hover": {
-                                                backgroundColor: colors.darkNavyBlue,
-                                            },
-                                        }}
-                                    >
-                                        <Typography textTransform="uppercase" variant="body2">
-                                            {snakeToTitle(x)}
-                                        </Typography>
-                                    </MenuItem>
-                                )
-                            })}
+                            {Array(10)
+                                .fill(true)
+                                .map((_, i) => {
+                                    const value = i + 1
+                                    return <MenuItem key={`listing-option-option-${value}`} value={value}>{`${value} hour${value !== 1 ? "s" : ""}`}</MenuItem>
+                                })}
                         </Select>
 
-                        <Typography sx={{ lineHeight: 1, mt: "2rem", mb: "1rem", fontWeight: 600 }}>ASKING PRICE:</Typography>
-                        <TextField
-                            placeholder="Buyout Price"
-                            type="number"
-                            hiddenLabel
-                            size="small"
-                            fullWidth
-                            value={buyoutPrice}
-                            onChange={(e) => setBuyoutPrice(e.currentTarget.value)}
-                            sx={{
-                                borderRadius: 1,
-                                boxShadow: 1,
-                                "& .MuiInputBase-root": {
-                                    backgroundColor: "#49494970",
-                                    fontFamily: fonts.nostromoBlack,
-                                    pt: "1rem",
-                                    pb: ".8rem",
-                                },
-                                "& .MuiInputBase-input": {
-                                    pt: 0,
-                                    pb: 0,
-                                },
-                                ".Mui-disabled": {
-                                    WebkitTextFillColor: "unset",
-                                    color: "#FFFFFF70",
-                                },
-                                ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: `${colors.globalChat} !important`,
-                                },
-                                textarea: {
-                                    color: "#FFFFFF",
-                                    overflow: "hidden",
-                                },
-                            }}
-                            InputProps={{
-                                startAdornment: <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />,
-                            }}
-                        />
+                        {saleType !== SaleType.Auction && (
+                            <>
+                                <Typography sx={{ lineHeight: 1, mt: "2rem", mb: "1rem", fontWeight: 600 }}>{askingPriceLabel.toUpperCase()}:</Typography>
+                                <TextField
+                                    placeholder={askingPriceLabel}
+                                    type="number"
+                                    hiddenLabel
+                                    size="small"
+                                    fullWidth
+                                    value={askingPrice}
+                                    onChange={(e) => setAskingPrice(e.currentTarget.value)}
+                                    sx={{
+                                        borderRadius: 1,
+                                        boxShadow: 1,
+                                        "& .MuiInputBase-root": {
+                                            backgroundColor: "#49494970",
+                                            fontFamily: fonts.nostromoBlack,
+                                            pt: "1rem",
+                                            pb: ".8rem",
+                                        },
+                                        "& .MuiInputBase-input": {
+                                            pt: 0,
+                                            pb: 0,
+                                        },
+                                        ".Mui-disabled": {
+                                            WebkitTextFillColor: "unset",
+                                            color: "#FFFFFF70",
+                                        },
+                                        ".Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: `${colors.globalChat} !important`,
+                                        },
+                                        textarea: {
+                                            color: "#FFFFFF",
+                                            overflow: "hidden",
+                                        },
+                                    }}
+                                    InputProps={{
+                                        startAdornment: <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />,
+                                    }}
+                                />
+                            </>
+                        )}
+                        {(saleType === SaleType.Auction || saleType === SaleType.AuctionOrBuyout || saleType === SaleType.DutchAuction) && (
+                            <>
+                                <Typography sx={{ lineHeight: 1, mt: "2rem", mb: "1rem", fontWeight: 600 }}>AUCTION RESERVED PRICE:</Typography>
+                                <TextField
+                                    placeholder="Auction Reserved Price"
+                                    type="number"
+                                    hiddenLabel
+                                    size="small"
+                                    fullWidth
+                                    value={auctionReservedPrice}
+                                    onChange={(e) => setAuctionReservedPrice(e.currentTarget.value)}
+                                    sx={{
+                                        borderRadius: 1,
+                                        boxShadow: 1,
+                                        "& .MuiInputBase-root": {
+                                            backgroundColor: "#49494970",
+                                            fontFamily: fonts.nostromoBlack,
+                                            pt: "1rem",
+                                            pb: ".8rem",
+                                        },
+                                        "& .MuiInputBase-input": {
+                                            pt: 0,
+                                            pb: 0,
+                                        },
+                                        ".Mui-disabled": {
+                                            WebkitTextFillColor: "unset",
+                                            color: "#FFFFFF70",
+                                        },
+                                        ".Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: `${colors.globalChat} !important`,
+                                        },
+                                        textarea: {
+                                            color: "#FFFFFF",
+                                            overflow: "hidden",
+                                        },
+                                    }}
+                                    InputProps={{
+                                        startAdornment: <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />,
+                                    }}
+                                />
+                            </>
+                        )}
+                        {saleType === SaleType.DutchAuction && (
+                            <>
+                                <Typography sx={{ lineHeight: 1, mt: "2rem", mb: "1rem", fontWeight: 600 }}>PRICE DROP RATE:</Typography>
+                                <TextField
+                                    placeholder="Price Drop Rate (every hour)"
+                                    type="number"
+                                    hiddenLabel
+                                    size="small"
+                                    fullWidth
+                                    value={dropRate}
+                                    onChange={(e) => setDropRate(e.currentTarget.value)}
+                                    sx={{
+                                        borderRadius: 1,
+                                        boxShadow: 1,
+                                        "& .MuiInputBase-root": {
+                                            backgroundColor: "#49494970",
+                                            fontFamily: fonts.nostromoBlack,
+                                            pt: "1rem",
+                                            pb: ".8rem",
+                                        },
+                                        "& .MuiInputBase-input": {
+                                            pt: 0,
+                                            pb: 0,
+                                        },
+                                        ".Mui-disabled": {
+                                            WebkitTextFillColor: "unset",
+                                            color: "#FFFFFF70",
+                                        },
+                                        ".Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: `${colors.globalChat} !important`,
+                                        },
+                                        textarea: {
+                                            color: "#FFFFFF",
+                                            overflow: "hidden",
+                                        },
+                                    }}
+                                    InputProps={{
+                                        startAdornment: <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />,
+                                    }}
+                                />
+                            </>
+                        )}
                         <FancyButton
                             type={"submit"}
                             disabled={!selectedAsset}
+                            loading={submitting}
                             clipThingsProps={{
                                 clipSize: "7px",
                                 sx: { mt: "2rem", ml: "auto !important", width: "33.33%", minWidth: "100px" },
-                                backgroundColor: colors.red,
+                                backgroundColor: colors.orange,
                                 border: {
-                                    borderColor: colors.red,
+                                    borderColor: colors.orange,
                                 },
                             }}
                             sx={{

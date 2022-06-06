@@ -2,6 +2,7 @@ import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgSupToken, SvgWallet } from "../../../../assets"
+import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
@@ -52,6 +53,7 @@ export const BuyoutDetails = ({ marketItem }: { marketItem: MarketplaceMechItem 
 }
 
 const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem; onClose: () => void }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [buyError, setBuyError] = useState<string>()
@@ -65,13 +67,14 @@ const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem
             })
 
             if (!resp) return
+            newSnackbarMessage("Successfully purchased item.")
             onClose()
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setBuyError(message)
             console.error(err)
         }
-    }, [id, onClose, send])
+    }, [id, newSnackbarMessage, onClose, send])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

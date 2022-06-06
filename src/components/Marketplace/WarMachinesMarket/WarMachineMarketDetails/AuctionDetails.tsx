@@ -2,6 +2,7 @@ import { Box, IconButton, InputAdornment, Modal, Stack, TextField, Typography } 
 import { useCallback, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgSupToken, SvgHammer } from "../../../../assets"
+import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
@@ -27,6 +28,7 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
                 <Stack direction="row" spacing="1rem" alignItems="center">
                     <TextField
                         variant="outlined"
+                        hiddenLabel
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -90,6 +92,7 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
 }
 
 const ConfirmModal = ({ marketItem, bidPrice, onClose }: { marketItem: MarketplaceMechItem; bidPrice: number; onClose: () => void }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [bidError, setBidError] = useState<string>()
@@ -98,18 +101,20 @@ const ConfirmModal = ({ marketItem, bidPrice, onClose }: { marketItem: Marketpla
 
     const confirmBid = useCallback(async () => {
         try {
-            const resp = await send(GameServerKeys.MarketplaceSalesBuy, {
+            const resp = await send(GameServerKeys.MarketplaceSalesBid, {
                 item_id: id,
+                amount: bidPrice.toString(),
             })
 
             if (!resp) return
+            newSnackbarMessage("Successfully placed your bid.")
             onClose()
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setBidError(message)
             console.error(err)
         }
-    }, [id, onClose, send])
+    }, [bidPrice, id, newSnackbarMessage, onClose, send])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

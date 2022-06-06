@@ -147,7 +147,7 @@ const PreviewModal = ({ imageUrl, videoUrl, onClose }: { imageUrl?: string; vide
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "80vw",
-                    height: "80vh",
+                    height: "90vh",
                     boxShadow: 6,
                     outline: "none",
                     backgroundColor: "#000000",
