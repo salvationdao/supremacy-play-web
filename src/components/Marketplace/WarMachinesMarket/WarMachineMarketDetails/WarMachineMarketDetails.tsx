@@ -133,16 +133,14 @@ const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem:
                     px: "5rem",
                     py: "4rem",
                     display: "grid",
-                    gridTemplateColumns: "minmax(32rem, 1.2fr) minmax(32rem, 1fr)",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
                     gap: "2.5rem",
                     justifyContent: "center",
                 }}
             >
-                <Stack>
-                    <MechImage mechDetails={mechDetails} />
-                    <MechStatsDetails mechDetails={mechDetails} />
-                </Stack>
+                <MechImage mechDetails={mechDetails} />
                 <MechListingDetails marketItem={marketItem} />
+                <MechStatsDetails mechDetails={mechDetails} />
             </Box>
         </Stack>
     )

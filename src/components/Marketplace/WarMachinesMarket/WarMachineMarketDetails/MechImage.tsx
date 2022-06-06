@@ -25,14 +25,14 @@ export const MechImage = ({ mechDetails }: { mechDetails?: MechDetails }) => {
     }, [activeImageUrl, activeVideoUrl, animationUrl, largeImageUrl])
 
     return (
-        <Stack spacing="1.3rem" sx={{ height: "50rem" }}>
+        <Stack spacing="1.3rem">
             <Box
                 key={activeImageUrl}
                 component="video"
                 sx={{
-                    flex: 1,
+                    height: "50rem",
                     width: "100%",
-                    objectFit: "cover",
+                    objectFit: "contain",
                     objectPosition: "center",
                     border: "#FFFFFF18 2px solid",
                     boxShadow: "inset 0 0 12px 6px #00000040",

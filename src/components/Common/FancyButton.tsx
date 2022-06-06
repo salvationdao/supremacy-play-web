@@ -31,7 +31,7 @@ export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caret
                 topRight: true,
                 bottomLeft: true,
             }}
-            {...mergeDeep({ opacity: disabled ? 0.5 : 1 }, clipThingsProps)}
+            {...mergeDeep({ clipSlantSize: "2px", opacity: disabled ? 0.5 : 1 }, clipThingsProps)}
         >
             {disabled && (
                 <Box
