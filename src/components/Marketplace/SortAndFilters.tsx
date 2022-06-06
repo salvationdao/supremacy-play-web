@@ -1,10 +1,12 @@
-import { Box, Button, InputAdornment, Stack, TextField, Typography } from "@mui/material"
+import { Box, MenuItem, Select, Stack, TextField, Typography } from "@mui/material"
 import { useState } from "react"
 import { ClipThing, FancyButton } from ".."
 import { SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { colors, fonts } from "../../theme/theme"
 import { SortType } from "../../types/marketplace"
+
+const sortOptions: SortType[] = [SortType.OldestFirst, SortType.NewestFirst, SortType.Alphabetical, SortType.AlphabeticalReverse]
 
 export interface FilterSection {
     options: string[]
@@ -52,8 +54,8 @@ export const SortAndFilters = ({ onSetSearch, onSetSort, filters }: SortAndFilte
                         <ClipThing
                             clipSize="5px"
                             clipSlantSize="2px"
+                            opacity={0.9}
                             border={{
-                                isFancy: true,
                                 borderColor: primaryColor,
                                 borderThickness: "1px",
                             }}
@@ -111,6 +113,67 @@ export const SortAndFilters = ({ onSetSearch, onSetSort, filters }: SortAndFilte
                     <Typography gutterBottom variant="caption" sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
                         SORT
                     </Typography>
+
+                    <ClipThing
+                        clipSize="5px"
+                        clipSlantSize="2px"
+                        opacity={0.9}
+                        border={{
+                            borderColor: primaryColor,
+                            borderThickness: "1px",
+                        }}
+                        backgroundColor={backgroundColor}
+                    >
+                        <Stack sx={{ height: "100%" }}>
+                            <Select
+                                sx={{
+                                    width: "100%",
+                                    px: "1rem",
+                                    py: ".5rem",
+                                    borderRadius: 0.5,
+                                    "&:hover": {
+                                        backgroundColor: colors.darkNavy,
+                                    },
+                                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
+                                    ".MuiOutlinedInput-notchedOutline": {
+                                        border: "none !important",
+                                    },
+                                }}
+                                value={sort}
+                                MenuProps={{
+                                    variant: "menu",
+                                    sx: {
+                                        "&& .Mui-selected": {
+                                            color: secondaryColor,
+                                            backgroundColor: primaryColor,
+                                        },
+                                    },
+                                    PaperProps: {
+                                        sx: {
+                                            backgroundColor: colors.darkNavy,
+                                            borderRadius: 0.5,
+                                        },
+                                    },
+                                }}
+                            >
+                                {sortOptions.map((x, i) => {
+                                    return (
+                                        <MenuItem
+                                            key={x + i}
+                                            value={x}
+                                            onClick={() => {
+                                                setSort(x)
+                                                onSetSort(x)
+                                            }}
+                                            sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
+                                        >
+                                            <Typography textTransform="uppercase">{x}</Typography>
+                                        </MenuItem>
+                                    )
+                                })}
+                            </Select>
+                        </Stack>
+                    </ClipThing>
                 </Box>
             </Stack>
         </ClipThing>

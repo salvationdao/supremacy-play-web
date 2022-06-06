@@ -275,7 +275,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                                         variant: "menu",
                                         sx: {
                                             "&& .Mui-selected": {
-                                                backgroundColor: "#FFFFFF25",
+                                                color: secondaryColor,
+                                                backgroundColor: primaryColor,
                                             },
                                         },
                                         PaperProps: {
@@ -293,11 +294,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                                                 key={`ban-reason-${x.id}`}
                                                 value={x.id}
                                                 onClick={() => setSelectedBanOptionID(x.id)}
-                                                sx={{
-                                                    "&:hover": {
-                                                        backgroundColor: "#FFFFFF15",
-                                                    },
-                                                }}
+                                                sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                             >
                                                 <Stack direction="row" spacing="1rem" justifyContent="space-between" sx={{ flex: 1 }}>
                                                     <Typography>{snakeToTitle(x.key)}</Typography>

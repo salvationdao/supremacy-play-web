@@ -13,10 +13,10 @@ export enum SaleType {
 }
 
 export enum SortType {
-    OldestFirst = "OLDEST_FIRST",
-    NewestFirst = "NEWEST_FIRST",
-    Alphabetical = "ALPHABETICAL",
-    AlphabeticalReverse = "ALPHABETICAL_REVERSE",
+    OldestFirst = "Oldest first",
+    NewestFirst = "Newest first",
+    Alphabetical = "Ascending",
+    AlphabeticalReverse = "Descending",
 }
 
 export interface MarketplaceMechItem {

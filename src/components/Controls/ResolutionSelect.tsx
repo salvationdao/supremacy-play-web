@@ -1,11 +1,16 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useStream } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
 
 export const ResolutionSelect = () => {
+    const theme = useTheme()
     const { streamResolutions, selectedResolution, setSelectedResolution } = useStream()
 
     if (!streamResolutions || streamResolutions.length <= 0) return null
+
+    const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
 
     return (
         <Stack direction="row" spacing=".24rem" alignItems="center">
@@ -28,7 +33,8 @@ export const ResolutionSelect = () => {
                     variant: "menu",
                     sx: {
                         "&& .Mui-selected": {
-                            backgroundColor: colors.darkerNeonBlue,
+                            color: secondaryColor,
+                            backgroundColor: primaryColor,
                         },
                     },
                     PaperProps: {
@@ -47,7 +53,7 @@ export const ResolutionSelect = () => {
                             onClick={() => setSelectedResolution(x)}
                             sx={{
                                 "&:hover": {
-                                    backgroundColor: colors.darkNavyBlue,
+                                    backgroundColor: `#FFFFFF30`,
                                 },
                             }}
                         >
