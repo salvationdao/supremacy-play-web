@@ -1,16 +1,16 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useState, useEffect, useMemo, useCallback } from "react"
+import { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { useDebounce, usePagination, useToggle } from "../../../hooks"
+import { usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceMechItem, SortType } from "../../../types/marketplace"
 import { SellItemModal } from "../Check/SellItemModal"
-import { SortAndFilters } from "../SortAndFilters"
+import { FilterSection, SortAndFilters } from "../SortAndFilters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
 import { WarMachineMarketItem } from "./WarMachineMarketItem/WarMachineMarketItem"
 
@@ -21,7 +21,7 @@ export const WarMachinesMarket = () => {
     const [sellModalOpen, toggleSellModalOpen] = useToggle()
 
     // Filters and sorts
-    const [search, setSearch] = useDebounce("", 300)
+    const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
     const [rarities, setRarities] = useState<string[]>([])
 
@@ -31,6 +31,11 @@ export const WarMachinesMarket = () => {
     const [mechItems, setMechItems] = useState<MarketplaceMechItem[]>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
+
+    const rarityFilterSection = useRef<FilterSection>({
+        options: ["MEGA", "COLOSSAL", "RARE", "LEGENDARY", "ELITE_LEGENDARY", "ULTRA_RARE", "EXOTIC", "GUARDIAN", "MYTHIC", "DEUS_EX", "TITAN"],
+        onSetFilter: setRarities,
+    })
 
     const getMechs = useCallback(async () => {
         try {
@@ -163,7 +168,7 @@ export const WarMachinesMarket = () => {
     return (
         <>
             <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-                <SortAndFilters />
+                <SortAndFilters onSetSearch={setSearch} onSetSort={setSort} filters={[rarityFilterSection.current]} />
 
                 <ClipThing
                     clipSize="10px"

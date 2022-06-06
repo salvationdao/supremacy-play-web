@@ -21,6 +21,7 @@ import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
+import Search from "!react-svg-loader!./svg/Search.svg"
 import Support from "!react-svg-loader!./svg/Support.svg"
 import Microchip from "!react-svg-loader!./svg/Microchip.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
@@ -880,5 +881,11 @@ export const SvgWeapons: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
 export const SvgHammer: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Hammer />
+    </SvgWrapper>
+)
+
+export const SvgSearch: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Search />
     </SvgWrapper>
 )
