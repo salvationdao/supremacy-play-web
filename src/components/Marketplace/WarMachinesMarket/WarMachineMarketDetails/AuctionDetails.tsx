@@ -12,7 +12,7 @@ import { MarketplaceMechItem } from "../../../../types/marketplace"
 
 export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem }) => {
     const currentBid = parseInt(marketItem.auction_current_price)
-    const [bidPrice, setBidPrice] = useState(currentBid + 1)
+    const [bidPrice, setBidPrice] = useState<number>()
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
 
     const primaryColor = colors.orange
@@ -22,13 +22,14 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
         <>
             <Box>
                 <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                    YOUR BID:
+                    PLACE YOUR BID:
                 </Typography>
 
                 <Stack direction="row" spacing="1.5rem" alignItems="center">
                     <TextField
                         variant="outlined"
                         hiddenLabel
+                        placeholder={(currentBid + 1).toString()}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -59,6 +60,7 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
                     />
                     <FancyButton
                         excludeCaret
+                        disabled={!bidPrice || bidPrice <= 0}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: primaryColor,
@@ -87,7 +89,7 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
                 </Stack>
             </Box>
 
-            {confirmModalOpen && <ConfirmModal marketItem={marketItem} bidPrice={bidPrice} onClose={() => toggleConfirmModalOpen(false)} />}
+            {confirmModalOpen && bidPrice && <ConfirmModal marketItem={marketItem} bidPrice={bidPrice} onClose={() => toggleConfirmModalOpen(false)} />}
         </>
     )
 }
