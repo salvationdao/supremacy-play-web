@@ -16,7 +16,7 @@ export const Pricing = ({
     buyout: boolean
     auction: boolean
 }) => {
-    const formattedPrice = useMemo(() => numFormatter(buyout ? parseInt(buyoutPrice) : parseInt(auctionPrice)), [auctionPrice, buyout, buyoutPrice])
+    const formattedPrice = useMemo(() => numFormatter(parseInt(buyout ? buyoutPrice : auctionPrice)), [auctionPrice, buyout, buyoutPrice])
 
     return (
         <Stack spacing={isGridView ? "" : ".6rem"}>

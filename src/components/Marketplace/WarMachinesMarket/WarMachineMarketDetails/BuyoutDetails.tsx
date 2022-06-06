@@ -1,9 +1,8 @@
 import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgSupToken, SvgWallet } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { supFormatterNoFixed, timeSinceInWords } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -13,52 +12,12 @@ import { MarketplaceMechItem } from "../../../../types/marketplace"
 export const BuyoutDetails = ({ marketItem }: { marketItem: MarketplaceMechItem }) => {
     const theme = useTheme()
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
-    const { end_at, buyout_price } = marketItem
-    const timeLeft = useMemo(() => timeSinceInWords(new Date(), end_at), [end_at])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
-    const backgroundColor = theme.factionTheme.background
 
     return (
         <>
-            <Box>
-                <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                    PRICE:
-                </Typography>
-                <ClipThing
-                    clipSize="10px"
-                    clipSlantSize="3px"
-                    border={{
-                        isFancy: true,
-                        borderColor: primaryColor,
-                        borderThickness: ".2rem",
-                    }}
-                    corners={{
-                        topRight: true,
-                        bottomLeft: true,
-                    }}
-                    backgroundColor={backgroundColor}
-                    sx={{ width: "min-content" }}
-                >
-                    <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
-                        <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
-                        <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                            {buyout_price}
-                        </Typography>
-                    </Stack>
-                </ClipThing>
-            </Box>
-
-            <Box>
-                <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                    TIME LEFT:
-                </Typography>
-                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                    {timeLeft} <span style={{ opacity: 0.7, fontFamily: "inherit" }}>({end_at.toUTCString()})</span>
-                </Typography>
-            </Box>
-
             <FancyButton
                 excludeCaret
                 clipThingsProps={{
@@ -66,15 +25,16 @@ export const BuyoutDetails = ({ marketItem }: { marketItem: MarketplaceMechItem 
                     backgroundColor: primaryColor,
                     opacity: 1,
                     border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
-                    sx: { position: "relative", width: "20rem" },
+                    sx: { position: "relative", width: "18rem" },
                 }}
-                sx={{ py: ".9rem", color: secondaryColor }}
+                sx={{ py: ".7rem", color: secondaryColor }}
                 onClick={() => toggleConfirmModalOpen(true)}
             >
                 <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
                     <SvgWallet size="1.9rem" fill={secondaryColor} />
 
                     <Typography
+                        variant="body2"
                         sx={{
                             flexShrink: 0,
                             color: secondaryColor,

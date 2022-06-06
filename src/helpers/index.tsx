@@ -209,7 +209,7 @@ export const getRarityDeets = (rarityKey: string): { label: string; color: strin
     }
 }
 
-export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
+export const getMultiplierDeets = (multiplierKey: string): { image: string } => {
     let image
 
     switch (multiplierKey.toLowerCase()) {

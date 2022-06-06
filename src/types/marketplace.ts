@@ -25,7 +25,8 @@ export interface MarketplaceMechItem {
     auction: boolean
     end_at: Date
     buyout_price: string
-    auction_price: string
+    auction_current_price: string
+    auction_reserved_price: string
     owner?: {
         username: string
         gid: number

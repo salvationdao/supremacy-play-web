@@ -47,7 +47,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
         })()
     }, [item.mech, send])
 
-    const { id, buyout, auction, end_at, buyout_price, auction_price, owner, mech } = item
+    const { id, buyout, auction, end_at, buyout_price, auction_current_price, owner, mech } = item
 
     if (!mech || !owner) return null
 
@@ -90,7 +90,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                     <MechInfo isGridView={isGridView} name={name} label={label} tier={tier} mechDetails={mechDetails} />
                     <SellerInfo isGridView={isGridView} username={username} gid={gid} />
                     <Timeframe isGridView={isGridView} endAt={end_at} buyout={buyout} auction={auction} />
-                    <Pricing isGridView={isGridView} buyoutPrice={buyout_price} auctionPrice={auction_price} buyout={buyout} auction={auction} />
+                    <Pricing isGridView={isGridView} buyoutPrice={buyout_price} auctionPrice={auction_current_price} buyout={buyout} auction={auction} />
                     <ViewButton isGridView={isGridView} id={id} buyout={buyout} auction={auction} />
                 </Box>
 

@@ -1,21 +1,26 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
+import { SvgSupToken } from "../../../../assets"
 import { useSupremacy } from "../../../../containers"
-import { getRarityDeets } from "../../../../helpers"
+import { useTheme } from "../../../../containers/theme"
+import { getRarityDeets, numberCommaFormatter, timeSinceInWords } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MarketplaceMechItem } from "../../../../types/marketplace"
+import { ClipThing } from "../../../Common/ClipThing"
 import { AuctionDetails } from "./AuctionDetails"
 import { BuyoutDetails } from "./BuyoutDetails"
 
 export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMechItem }) => {
+    const theme = useTheme()
     const { getFaction } = useSupremacy()
 
     const rarityDeets = useMemo(() => getRarityDeets(marketItem.mech?.tier || ""), [marketItem.mech?.tier])
     const ownerFactionDeets = useMemo(() => getFaction(marketItem.owner?.faction_id || ""), [marketItem.owner, getFaction])
+    const timeLeft = useMemo(() => timeSinceInWords(new Date(), marketItem.end_at), [marketItem.end_at])
 
     if (!marketItem.owner || !marketItem.mech) return null
 
-    const { buyout, owner, mech } = marketItem
+    const { buyout, owner, mech, buyout_price, auction_current_price, end_at } = marketItem
     const { username, gid } = owner
     const { name, label } = mech
 
@@ -67,6 +72,43 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
                         <span style={{ marginLeft: ".2rem", opacity: 0.7, fontFamily: "inherit" }}>{`#${gid}`}</span>
                     </Typography>
                 </Stack>
+            </Box>
+
+            <Box>
+                <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                    {buyout ? "PRICE:" : "CURRENT BID:"}
+                </Typography>
+                <ClipThing
+                    clipSize="10px"
+                    clipSlantSize="3px"
+                    border={{
+                        isFancy: true,
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".2rem",
+                    }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                    }}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ width: "min-content" }}
+                >
+                    <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
+                        <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
+                        <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                            {numberCommaFormatter(parseInt(buyout ? buyout_price : auction_current_price))}
+                        </Typography>
+                    </Stack>
+                </ClipThing>
+            </Box>
+
+            <Box>
+                <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                    TIME LEFT:
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                    {timeLeft} <span style={{ opacity: 0.7, fontFamily: "inherit" }}>({end_at.toUTCString()})</span>
+                </Typography>
             </Box>
 
             {buyout ? <BuyoutDetails marketItem={marketItem} /> : <AuctionDetails marketItem={marketItem} />}

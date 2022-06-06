@@ -27,7 +27,7 @@ export const SellModal = () => {
                     sale_type: "BUYOUT",
                     item_type: "WAR_MACHINE",
                     item_id: id,
-                    asking_price: "999",
+                    asking_price: "88888",
                     listing_duration_hours: 50,
                 })
 
