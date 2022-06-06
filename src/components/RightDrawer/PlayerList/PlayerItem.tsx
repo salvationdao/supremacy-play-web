@@ -18,7 +18,7 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                 alignItems="center"
                 sx={{
                     px: "1.3rem",
-                    py: ".4rem",
+                    py: ".5rem",
                     backgroundColor: (theme) => `${theme.factionTheme.primary}10`,
                     opacity: isActive ? 1 : 0.6,
                 }}
@@ -42,7 +42,7 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                 <FancyButton
                     excludeCaret
                     clipThingsProps={{
-                        clipSize: "4px",
+                        clipSize: "7px",
                         opacity: 1,
                         sx: { position: "relative", ml: "auto" },
                     }}
@@ -53,7 +53,6 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                         variant="caption"
                         sx={{
                             color: "#FFFFFF80",
-                            fontSize: "1rem",
                             fontFamily: fonts.nostromoBold,
                         }}
                     >

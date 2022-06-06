@@ -42,7 +42,7 @@ export const LeaveModal = () => {
     return (
         <MechModal mechDetails={leaveMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
-                <Typography sx={{ fontSize: "1.6rem", strong: { color: colors.neonBlue } }}>
+                <Typography sx={{ strong: { color: colors.neonBlue } }}>
                     Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle queue? Your will be refunded the initial queuing
                     fee.
                 </Typography>

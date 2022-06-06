@@ -30,7 +30,7 @@ export const MechImage = ({ mechDetails }: { mechDetails?: MechDetails }) => {
             <Stack spacing="1.3rem">
                 <Box
                     sx={{
-                        height: "50rem",
+                        height: "55rem",
                         cursor: "zoom-in",
                         transition: "all .2s",
                         ":hover": {

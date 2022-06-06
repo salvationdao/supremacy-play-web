@@ -135,7 +135,7 @@ export const TabButton = ({
                     position: "absolute",
                     whiteSpace: "nowrap",
                     fontFamily: fonts.nostromoBold,
-                    fontSize: "1.1rem",
+                    fontSize: "1.2rem",
                     lineHeight: 1,
                     color: "#FFFFFF",
                     backgroundColor: enable ? (isActive ? `${primaryColor}80` : `${primaryColor}25`) : `${primaryColor}20`,
