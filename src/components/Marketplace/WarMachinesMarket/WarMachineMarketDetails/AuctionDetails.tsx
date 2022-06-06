@@ -1,7 +1,7 @@
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Modal, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
-import { SvgClose, SvgSupToken, SvgWallet } from "../../../../assets"
+import { SvgClose, SvgSupToken, SvgHammer } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
@@ -10,55 +10,86 @@ import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MarketplaceMechItem } from "../../../../types/marketplace"
 
 export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem }) => {
-    const theme = useTheme()
+    const currentBid = parseInt(marketItem.auction_current_price)
+    const [bidPrice, setBidPrice] = useState(currentBid + 1)
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
 
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const primaryColor = colors.orange
+    const secondaryColor = "#FFFFFF"
 
     return (
         <>
-            <FancyButton
-                excludeCaret
-                clipThingsProps={{
-                    clipSize: "9px",
-                    backgroundColor: primaryColor,
-                    opacity: 1,
-                    border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
-                    sx: { position: "relative", width: "18rem" },
-                }}
-                sx={{ py: ".7rem", color: secondaryColor }}
-                onClick={() => toggleConfirmModalOpen(true)}
-            >
-                <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
-                    <SvgWallet size="1.9rem" fill={secondaryColor} />
+            <Box>
+                <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                    YOUR BID:
+                </Typography>
 
-                    <Typography
-                        variant="body2"
+                <Stack direction="row" spacing="1rem" alignItems="center">
+                    <TextField
+                        variant="outlined"
                         sx={{
-                            flexShrink: 0,
-                            color: secondaryColor,
-                            fontFamily: fonts.nostromoBlack,
+                            ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${primaryColor}99 2px dashed` },
+                            ".MuiOutlinedInput-input": {
+                                px: "1.5rem",
+                                py: ".8rem",
+                                fontSize: "2.2rem",
+                                height: "unset",
+                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                    "-webkit-appearance": "none",
+                                },
+                            },
+                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                         }}
+                        type="number"
+                        value={bidPrice}
+                        onChange={(e) => {
+                            const value = parseInt(e.target.value)
+                            setBidPrice(value)
+                        }}
+                    />
+                    <FancyButton
+                        excludeCaret
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: primaryColor,
+                            opacity: 1,
+                            border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
+                            sx: { position: "relative", width: "18rem" },
+                        }}
+                        sx={{ py: ".7rem", color: secondaryColor }}
+                        onClick={() => toggleConfirmModalOpen(true)}
                     >
-                        BUY NOW
-                    </Typography>
-                </Stack>
-            </FancyButton>
+                        <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
+                            <SvgHammer size="1.9rem" fill={secondaryColor} />
 
-            {confirmModalOpen && <ConfirmModal marketItem={marketItem} onClose={() => toggleConfirmModalOpen(false)} />}
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    flexShrink: 0,
+                                    color: secondaryColor,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                PLACE BID
+                            </Typography>
+                        </Stack>
+                    </FancyButton>
+                </Stack>
+            </Box>
+
+            {confirmModalOpen && <ConfirmModal marketItem={marketItem} bidPrice={bidPrice} onClose={() => toggleConfirmModalOpen(false)} />}
         </>
     )
 }
 
-const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem; onClose: () => void }) => {
+const ConfirmModal = ({ marketItem, bidPrice, onClose }: { marketItem: MarketplaceMechItem; bidPrice: number; onClose: () => void }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [buyError, setBuyError] = useState<string>()
+    const [bidError, setBidError] = useState<string>()
 
-    const { id, buyout_price, mech } = marketItem
+    const { id, mech } = marketItem
 
-    const confirmBuy = useCallback(async () => {
+    const confirmBid = useCallback(async () => {
         try {
             const resp = await send(GameServerKeys.MarketplaceSalesBuy, {
                 item_id: id,
@@ -68,7 +99,7 @@ const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem
             onClose()
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
-            setBuyError(message)
+            setBidError(message)
             console.error(err)
         }
     }, [id, onClose, send])
@@ -111,7 +142,7 @@ const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem
                             CONFIRMATION
                         </Typography>
                         <Typography variant="h6">
-                            Do you wish to purchase <strong>{mech?.name || mech?.label}</strong> for <span>{buyout_price}</span> SUPS?
+                            Do you wish to place a bid of <span>{bidPrice}</span> SUPS on <strong>{mech?.name || mech?.label}</strong>?
                         </Typography>
                         <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
                             <FancyButton
@@ -123,7 +154,7 @@ const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem
                                     sx: { flex: 2, position: "relative" },
                                 }}
                                 sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                onClick={confirmBuy}
+                                onClick={confirmBid}
                             >
                                 <Stack direction="row" justifyContent="center">
                                     <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
@@ -131,7 +162,7 @@ const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem
                                     </Typography>
                                     <SvgSupToken size="1.8rem" />
                                     <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        {buyout_price})
+                                        {bidPrice})
                                     </Typography>
                                 </Stack>
                             </FancyButton>
@@ -153,14 +184,14 @@ const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem
                             </FancyButton>
                         </Stack>
 
-                        {buyError && (
+                        {bidError && (
                             <Typography
                                 sx={{
                                     mt: ".3rem",
                                     color: "red",
                                 }}
                             >
-                                {buyError}
+                                {bidError}
                             </Typography>
                         )}
                     </Stack>

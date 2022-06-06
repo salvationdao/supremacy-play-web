@@ -134,7 +134,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem:
                     py: "4rem",
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
-                    gap: "2.5rem",
+                    gap: "3rem",
                     justifyContent: "center",
                 }}
             >

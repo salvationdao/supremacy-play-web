@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { SvgSupToken } from "../../../../assets"
+import { SvgHammer, SvgSupToken, SvgWallet } from "../../../../assets"
 import { useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets, numberCommaFormatter, timeSinceInWords } from "../../../../helpers"
+import { getRarityDeets, numberCommaFormatter, shadeColor, timeSinceInWords } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MarketplaceMechItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
@@ -13,6 +13,15 @@ import { BuyoutDetails } from "./BuyoutDetails"
 export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMechItem }) => {
     const theme = useTheme()
     const { getFaction } = useSupremacy()
+
+    const primaryColor = useMemo(
+        () => (!marketItem || marketItem.buyout ? theme.factionTheme.primary : colors.orange),
+        [marketItem, theme.factionTheme.primary],
+    )
+    const backgroundColor = useMemo(
+        () => (marketItem?.buyout ? theme.factionTheme.background : shadeColor(colors.orange, -97)),
+        [marketItem?.buyout, theme.factionTheme.background],
+    )
 
     const rarityDeets = useMemo(() => getRarityDeets(marketItem.mech?.tier || ""), [marketItem.mech?.tier])
     const ownerFactionDeets = useMemo(() => getFaction(marketItem.owner?.faction_id || ""), [marketItem.owner, getFaction])
@@ -25,7 +34,7 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
     const { name, label } = mech
 
     return (
-        <Stack spacing="2.5rem">
+        <Stack spacing="2rem">
             <Box>
                 <Typography gutterBottom variant="h5" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoBold }}>
                     {rarityDeets.label}
@@ -34,6 +43,18 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
                 <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
                     {name || label}
                 </Typography>
+            </Box>
+
+            <Box>
+                <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                    LISTING TYPE:
+                </Typography>
+                <Stack direction="row" alignItems="center" spacing=".8rem">
+                    {buyout ? <SvgWallet fill={primaryColor} /> : <SvgHammer fill={primaryColor} />}
+                    <Typography variant="h5" sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
+                        {buyout ? "BUY IT NOW" : "AUCTION"}
+                    </Typography>
+                </Stack>
             </Box>
 
             <Box>
@@ -69,28 +90,28 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
                     )}
                     <Typography variant="h5" sx={{ color: ownerFactionDeets.primary_color, fontWeight: "fontWeightBold" }}>
                         {username}
-                        <span style={{ marginLeft: ".2rem", opacity: 0.7, fontFamily: "inherit" }}>{`#${gid}`}</span>
+                        <span style={{ marginLeft: ".2rem", opacity: 0.8, fontFamily: "inherit" }}>{`#${gid}`}</span>
                     </Typography>
                 </Stack>
             </Box>
 
             <Box>
                 <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                    {buyout ? "PRICE:" : "CURRENT BID:"}
+                    {buyout ? "FIXED PRICE:" : "CURRENT BID:"}
                 </Typography>
                 <ClipThing
                     clipSize="10px"
                     clipSlantSize="3px"
                     border={{
                         isFancy: true,
-                        borderColor: theme.factionTheme.primary,
+                        borderColor: primaryColor,
                         borderThickness: ".2rem",
                     }}
                     corners={{
                         topRight: true,
                         bottomLeft: true,
                     }}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={backgroundColor}
                     sx={{ width: "min-content" }}
                 >
                     <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
