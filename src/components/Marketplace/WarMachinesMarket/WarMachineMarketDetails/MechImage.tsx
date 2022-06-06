@@ -1,13 +1,14 @@
-import { Box, Stack } from "@mui/material"
+import { Box, IconButton, Modal, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useTheme } from "../../../../containers/theme"
-import { colors } from "../../../../theme/theme"
+import { SvgClose } from "../../../../assets"
+import { useToggle } from "../../../../hooks"
+import { colors, siteZIndex } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 
 export const MechImage = ({ mechDetails }: { mechDetails?: MechDetails }) => {
-    const theme = useTheme()
     const [activeImageUrl, setActiveImageUrl] = useState<string>()
     const [activeVideoUrl, setActiveVideoUrl] = useState<string>()
+    const [previewModalOpen, togglePreviewModalOpen] = useToggle()
 
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const avatarUrl = skin?.avatar_url // avatar
@@ -25,58 +26,81 @@ export const MechImage = ({ mechDetails }: { mechDetails?: MechDetails }) => {
     }, [activeImageUrl, activeVideoUrl, animationUrl, largeImageUrl])
 
     return (
-        <Stack spacing="1.3rem">
-            <Box
-                key={activeImageUrl}
-                component="video"
-                sx={{
-                    height: "50rem",
-                    width: "100%",
-                    objectFit: "contain",
-                    objectPosition: "center",
-                    border: "#FFFFFF18 2px solid",
-                    boxShadow: "inset 0 0 12px 6px #00000040",
-                    background: `radial-gradient(#FFFFFF20 10px, ${theme.factionTheme.background})`,
-                }}
-                loop
-                muted
-                autoPlay
-                poster={`${activeImageUrl}`}
-            >
-                <source src={activeVideoUrl} type="video/mp4" />
-            </Box>
+        <>
+            <Stack spacing="1.3rem">
+                <Box
+                    sx={{
+                        height: "50rem",
+                        cursor: "zoom-in",
+                        transition: "all .2s",
+                        ":hover": {
+                            boxShadow: 10,
+                            transform: "scale(1.004)",
+                        },
+                    }}
+                    onClick={() => togglePreviewModalOpen(true)}
+                >
+                    <MainPreview imageUrl={activeImageUrl} videoUrl={activeVideoUrl} />
+                </Box>
 
-            <Box
-                sx={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, 6rem)",
-                    gridTemplateRows: "repeat(auto-fill, 6rem)",
-                    gap: "1.3rem",
-                }}
-            >
-                <SmallImageThumbnail
-                    imageUrl={largeImageUrl}
-                    videoUrl={animationUrl}
-                    activeImageUrl={activeImageUrl}
-                    setActiveImageUrl={setActiveImageUrl}
-                    setActiveVideoUrl={setActiveVideoUrl}
-                />
-                <SmallImageThumbnail
-                    imageUrl={imageUrl}
-                    videoUrl={cardAnimationUrl}
-                    activeImageUrl={activeImageUrl}
-                    setActiveImageUrl={setActiveImageUrl}
-                    setActiveVideoUrl={setActiveVideoUrl}
-                />
-                <SmallImageThumbnail
-                    imageUrl={avatarUrl}
-                    videoUrl={avatarUrl}
-                    activeImageUrl={activeImageUrl}
-                    setActiveImageUrl={setActiveImageUrl}
-                    setActiveVideoUrl={setActiveVideoUrl}
-                />
-            </Box>
-        </Stack>
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, 6rem)",
+                        gridTemplateRows: "repeat(auto-fill, 6rem)",
+                        gap: "1.3rem",
+                    }}
+                >
+                    <SmallImageThumbnail
+                        imageUrl={largeImageUrl}
+                        videoUrl={animationUrl}
+                        activeImageUrl={activeImageUrl}
+                        setActiveImageUrl={setActiveImageUrl}
+                        setActiveVideoUrl={setActiveVideoUrl}
+                    />
+                    <SmallImageThumbnail
+                        imageUrl={imageUrl}
+                        videoUrl={cardAnimationUrl}
+                        activeImageUrl={activeImageUrl}
+                        setActiveImageUrl={setActiveImageUrl}
+                        setActiveVideoUrl={setActiveVideoUrl}
+                    />
+                    <SmallImageThumbnail
+                        imageUrl={avatarUrl}
+                        videoUrl={avatarUrl}
+                        activeImageUrl={activeImageUrl}
+                        setActiveImageUrl={setActiveImageUrl}
+                        setActiveVideoUrl={setActiveVideoUrl}
+                    />
+                </Box>
+            </Stack>
+
+            {previewModalOpen && <PreviewModal imageUrl={activeImageUrl} videoUrl={activeVideoUrl} onClose={() => togglePreviewModalOpen(false)} />}
+        </>
+    )
+}
+
+const MainPreview = ({ imageUrl, videoUrl }: { imageUrl?: string; videoUrl?: string }) => {
+    return (
+        <Box
+            key={imageUrl}
+            component="video"
+            sx={{
+                height: "100%",
+                width: "100%",
+                objectFit: "contain",
+                objectPosition: "center",
+                border: "#FFFFFF18 2px solid",
+                boxShadow: "inset 0 0 12px 6px #00000040",
+                background: `radial-gradient(#FFFFFF20 10px, #00000080)`,
+            }}
+            loop
+            muted
+            autoPlay
+            poster={`${imageUrl}`}
+        >
+            <source src={videoUrl} type="video/mp4" />
+        </Box>
     )
 }
 
@@ -110,5 +134,33 @@ const SmallImageThumbnail = ({
                 setActiveVideoUrl(videoUrl)
             }}
         />
+    )
+}
+
+const PreviewModal = ({ imageUrl, videoUrl, onClose }: { imageUrl?: string; videoUrl?: string; onClose: () => void }) => {
+    return (
+        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "80vw",
+                    height: "80vh",
+                    boxShadow: 6,
+                    outline: "none",
+                    backgroundColor: "#000000",
+                }}
+            >
+                <Box sx={{ position: "relative", height: "100%" }}>
+                    <MainPreview imageUrl={imageUrl} videoUrl={videoUrl} />
+
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    </IconButton>
+                </Box>
+            </Box>
+        </Modal>
     )
 }
