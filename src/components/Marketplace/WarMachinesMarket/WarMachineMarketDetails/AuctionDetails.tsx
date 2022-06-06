@@ -1,4 +1,4 @@
-import { Box, IconButton, Modal, Stack, TextField, Typography } from "@mui/material"
+import { Box, IconButton, InputAdornment, Modal, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgSupToken, SvgHammer } from "../../../../assets"
@@ -27,6 +27,13 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
                 <Stack direction="row" spacing="1rem" alignItems="center">
                     <TextField
                         variant="outlined"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SvgSupToken fill={colors.yellow} size="2.4rem" />
+                                </InputAdornment>
+                            ),
+                        }}
                         sx={{
                             ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${primaryColor}99 2px dashed` },
                             ".MuiOutlinedInput-input": {
