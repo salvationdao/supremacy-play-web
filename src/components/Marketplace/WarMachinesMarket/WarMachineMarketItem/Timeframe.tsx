@@ -1,10 +1,10 @@
 import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { timeSince } from "../../../../helpers"
+import { timeSinceInWords } from "../../../../helpers"
 import { fonts, colors } from "../../../../theme/theme"
 
 export const Timeframe = ({ isGridView, endAt }: { isGridView: boolean; endAt: Date; buyout: boolean; auction: boolean }) => {
-    const timeLeft = useMemo(() => timeSince(new Date(), endAt), [endAt])
+    const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
 
     return (
         <Stack spacing={isGridView ? "" : ".6rem"}>

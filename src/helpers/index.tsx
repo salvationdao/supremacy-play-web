@@ -360,31 +360,47 @@ export const getMysteryCrateDeets = (mysteryCrateType: MysteryCrateType): { imag
     return { image, label, desc }
 }
 
-export const timeSince = (date: Date, dateToCompare?: Date) => {
-    const seconds = Math.floor(((dateToCompare ? dateToCompare.getTime() : Date.now()) - date.getTime()) / 1000)
+export const timeSince = (
+    fromDate: Date,
+    toDate: Date,
+): {
+    total: number
+    days: number
+    hours: number
+    minutes: number
+    seconds: number
+} => {
+    const total = toDate.getTime() - fromDate.getTime()
+    const seconds = Math.floor((total / 1000) % 60)
+    const minutes = Math.floor((total / 1000 / 60) % 60)
+    const hours = Math.floor((total / (1000 * 60 * 60)) % 24)
+    const days = Math.floor(total / (1000 * 60 * 60 * 24))
 
-    let interval = seconds / 31536000
+    return {
+        total,
+        days,
+        hours,
+        minutes,
+        seconds,
+    }
+}
 
-    if (interval > 1) {
-        return Math.floor(interval) + " years"
-    }
-    interval = seconds / 2592000
-    if (interval > 1) {
-        return Math.floor(interval) + " months"
-    }
-    interval = seconds / 86400
-    if (interval > 1) {
-        return Math.floor(interval) + " days"
-    }
-    interval = seconds / 3600
-    if (interval > 1) {
-        return Math.floor(interval) + " hours"
-    }
-    interval = seconds / 60
-    if (interval > 1) {
-        return Math.floor(interval) + " minutes"
-    }
-    return Math.floor(seconds) + " seconds"
+export const timeSinceInWords = (fromDate: Date, toDate: Date): string => {
+    const { days, hours, minutes, seconds } = timeSince(fromDate, toDate)
+
+    let result = days > 0 ? days + " day" + (days === 1 ? "" : "s") : ""
+    result = (result ? result + " " : "") + (hours > 0 ? hours + " hour" + (hours === 1 ? "" : "s") : "")
+
+    // Return result if more than a day, else too long
+    if (days > 0) return result
+
+    result = (result ? result + " " : "") + (minutes > 0 ? minutes + " minute" + (minutes === 1 ? "" : "s") : "")
+
+    // Return result if more than a day, else too long
+    if (hours > 0) return result
+
+    result = (result ? result + " " : "") + (seconds > 0 ? seconds + " second" + (seconds === 1 ? "" : "s") : "")
+    return result
 }
 
 export const camelToTitle = (str: string) => {

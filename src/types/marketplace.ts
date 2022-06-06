@@ -30,6 +30,7 @@ export interface MarketplaceMechItem {
         username: string
         gid: number
         public_address: string
+        faction_id: string
     }
     mech?: {
         id: string
