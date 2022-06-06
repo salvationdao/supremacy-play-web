@@ -25,7 +25,7 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
                     YOUR BID:
                 </Typography>
 
-                <Stack direction="row" spacing="1rem" alignItems="center">
+                <Stack direction="row" spacing="1.5rem" alignItems="center">
                     <TextField
                         variant="outlined"
                         hiddenLabel
@@ -37,6 +37,7 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
                             ),
                         }}
                         sx={{
+                            backgroundColor: "#00000090",
                             ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${primaryColor}99 2px dashed` },
                             ".MuiOutlinedInput-input": {
                                 px: "1.5rem",
