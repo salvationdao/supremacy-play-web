@@ -76,13 +76,10 @@ export const WarMachinesMarket = () => {
         try {
             setIsLoading(true)
 
-            // TODO: Handle alpha sort type
             let sortDir = "asc"
-            switch (sort) {
-                case SortType.AlphabeticalReverse:
-                case SortType.NewestFirst:
-                    sortDir = "desc"
-            }
+            let sortBy = "alphabetical"
+            if (sort === SortType.AlphabeticalReverse || sort === SortType.NewestFirst) sortDir = "desc"
+            if (sort === SortType.OldestFirst || sort === SortType.NewestFirst) sortBy = "created_at"
 
             const [min_price, max_price] = price
 
@@ -94,8 +91,8 @@ export const WarMachinesMarket = () => {
                 listing_types: listingTypes,
                 min_price,
                 max_price,
-                sort_by: SortType.Alphabetical || SortType.AlphabeticalReverse ? "alphabetical" : "created_at",
                 sort_dir: sortDir,
+                sort_by: sortBy,
             })
 
             if (!resp) return
