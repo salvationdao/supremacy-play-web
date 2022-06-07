@@ -19,7 +19,7 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
     const utilities = mechDetails?.utility
     const weapons = mechDetails?.weapons
 
-    if (!mech) console.log({ speed, max_hitpoints, powerCore, utilities, weapons })
+    if (!mech) console.log({ speed, max_hitpoints, powerCore, utilities, weapons, rechargeRate, capacity })
 
     return (
         <Box

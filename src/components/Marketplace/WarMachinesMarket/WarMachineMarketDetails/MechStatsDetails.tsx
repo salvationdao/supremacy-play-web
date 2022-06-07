@@ -17,5 +17,20 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
     const weapons = mechDetails?.weapons
     const utilities = mechDetails?.utility
 
+    if (!mechDetails)
+        console.log({
+            primaryColor,
+            chassis_skin_id,
+            intro_animation_id,
+            outro_animation_id,
+            power_core_id,
+            chassisSkin,
+            introAnimation,
+            outroAnimation,
+            powerCore,
+            weapons,
+            utilities,
+        })
+
     return <Box>TODO</Box>
 }
