@@ -12,6 +12,7 @@ export const LeaveModal = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { leaveMechDetails, setLeaveMechDetails } = useHangarWarMachine()
+    const [isLoading, setIsLoading] = useState(false)
     const [leaveQueueError, setLeaveQueueError] = useState<string>()
 
     const onClose = useCallback(() => {
@@ -22,6 +23,7 @@ export const LeaveModal = () => {
     const onLeaveQueue = useCallback(
         async (hash: string) => {
             try {
+                setIsLoading(true)
                 const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: hash })
                 if (resp) {
                     newSnackbarMessage("Successfully removed war machine from queue.", "success")
@@ -30,6 +32,8 @@ export const LeaveModal = () => {
             } catch (e) {
                 setLeaveQueueError(typeof e === "string" ? e : "Failed to leave queue.")
                 console.error(e)
+            } finally {
+                setIsLoading(false)
             }
         },
         [newSnackbarMessage, send, onClose],
@@ -49,6 +53,7 @@ export const LeaveModal = () => {
 
                 <Box sx={{ mt: "auto" }}>
                     <FancyButton
+                        loading={isLoading}
                         excludeCaret
                         clipThingsProps={{
                             clipSize: "5px",
