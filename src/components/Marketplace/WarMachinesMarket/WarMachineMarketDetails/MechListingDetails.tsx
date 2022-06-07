@@ -124,7 +124,7 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
                 </Typography>
             </Box>
 
-            {dutch_auction || auction ? <AuctionDetails marketItem={marketItem} /> : <BuyoutDetails marketItem={marketItem} />}
+            {auction ? <AuctionDetails marketItem={marketItem} /> : <BuyoutDetails marketItem={marketItem} />}
         </Stack>
     )
 }
