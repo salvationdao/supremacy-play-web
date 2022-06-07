@@ -49,7 +49,6 @@ export const MechButtons = ({
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
                     label="UNDEPLOY"
-                    disabled={true}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setLeaveMechModalOpen(true)
