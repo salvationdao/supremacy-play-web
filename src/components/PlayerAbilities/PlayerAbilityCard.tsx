@@ -2,7 +2,7 @@ import { AbilityCardProps } from "./SaleAbilityCard"
 
 // const activateModalWidth = 400
 
-export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
+export const PlayerAbilityCard = () => {
     return <></>
     // Purchasing
     // const [showPurchaseModal, toggleShowActivateModal] = useToggle(false)

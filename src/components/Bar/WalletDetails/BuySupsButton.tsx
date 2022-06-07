@@ -7,7 +7,7 @@ import { colors, fonts } from "../../../theme/theme"
 
 export const BuySupsButton = () => {
     // const { send } = usePassportCommandsUser("xxxxxxxxx")
-    const [timeTilNextClaim, ] = useState<Date>()
+    const [timeTilNextClaim] = useState<Date>()
 
     const getFreeSups = useCallback(async () => {
         // try {

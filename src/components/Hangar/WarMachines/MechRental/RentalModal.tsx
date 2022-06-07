@@ -4,11 +4,14 @@ import { MechModal } from "../Common/MechModal"
 import { MechDetails } from "../../../../types"
 
 export const RentalModal = ({
-                                selectedMechDetails: rentalMechDetails,
-                                rentalMechModalOpen,
-                                setRentalMechModalOpen,
-                            }: { selectedMechDetails: MechDetails, rentalMechModalOpen: boolean, setRentalMechModalOpen: (close: boolean) => void }) => {
-
+    selectedMechDetails: rentalMechDetails,
+    rentalMechModalOpen,
+    setRentalMechModalOpen,
+}: {
+    selectedMechDetails: MechDetails
+    rentalMechModalOpen: boolean
+    setRentalMechModalOpen: (close: boolean) => void
+}) => {
     // // Fetch
     // const { send } = useGameServerCommandsYYY("xxxxxxxxx")
 

@@ -17,10 +17,14 @@ export interface QueueFeed {
 }
 
 export const DeployModal = ({
-                                selectedMechDetails: deployMechDetails,
-                                deployMechModalOpen,
-                                setDeployMechModalOpen,
-                            }: { selectedMechDetails: MechDetails, deployMechModalOpen: boolean, setDeployMechModalOpen: (close: boolean) => void }) => {
+    selectedMechDetails: deployMechDetails,
+    deployMechModalOpen,
+    setDeployMechModalOpen,
+}: {
+    selectedMechDetails: MechDetails
+    deployMechModalOpen: boolean
+    setDeployMechModalOpen: (close: boolean) => void
+}) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
@@ -133,12 +137,12 @@ export const DeployModal = ({
 }
 
 const AmountItem = ({
-                        title,
-                        color,
-                        value,
-                        tooltip,
-                        disableIcon,
-                    }: {
+    title,
+    color,
+    value,
+    tooltip,
+    disableIcon,
+}: {
     title: string
     color: string
     value: string | number

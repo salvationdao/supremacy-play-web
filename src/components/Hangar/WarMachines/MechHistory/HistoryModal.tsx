@@ -11,10 +11,14 @@ import { HistoryEntry } from "./HistoryEntry"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
 
 export const HistoryModal = ({
-                                 selectedMechDetails: historyMechDetails,
-                                 historyMechModalOpen,
-                                 setHistoryMechModalOpen,
-                             }: { selectedMechDetails: MechDetails, historyMechModalOpen: boolean, setHistoryMechModalOpen: (close: boolean) => void }) => {
+    selectedMechDetails: historyMechDetails,
+    historyMechModalOpen,
+    setHistoryMechModalOpen,
+}: {
+    selectedMechDetails: MechDetails
+    historyMechModalOpen: boolean
+    setHistoryMechModalOpen: (close: boolean) => void
+}) => {
     const { send } = useGameServerCommands("/public/commander")
     // Mech stats
     const [stats, setStats] = useState<BattleMechStats>()

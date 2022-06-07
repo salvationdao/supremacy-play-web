@@ -9,10 +9,14 @@ import { MechModal } from "../Common/MechModal"
 import { MechDetails } from "../../../../types"
 
 export const LeaveModal = ({
-                               selectedMechDetails: leaveMechDetails,
-                               leaveMechModalOpen,
-                               setLeaveMechModalOpen,
-                           }: { selectedMechDetails: MechDetails, leaveMechModalOpen: boolean, setLeaveMechModalOpen: (close: boolean) => void }) => {
+    selectedMechDetails: leaveMechDetails,
+    leaveMechModalOpen,
+    setLeaveMechModalOpen,
+}: {
+    selectedMechDetails: MechDetails
+    leaveMechModalOpen: boolean
+    setLeaveMechModalOpen: (close: boolean) => void
+}) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)

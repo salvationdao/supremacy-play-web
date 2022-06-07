@@ -5,7 +5,6 @@ import { MechDetails } from "../../../../types"
 export const MechViewer = ({ selectedMechDetails }: { selectedMechDetails: MechDetails }) => {
     const theme = useTheme()
 
-
     const skin = selectedMechDetails.chassis_skin || selectedMechDetails.default_chassis_skin
     const imageUrl = skin?.large_image_url || selectedMechDetails.large_image_url
     const animationUrl = skin?.animation_url || selectedMechDetails.animation_url

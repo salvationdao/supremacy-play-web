@@ -47,41 +47,53 @@ export const WarMachines = () => {
                 setRentalMechModalOpen={setRentalMechModalOpen}
                 setSellMechModalOpen={setSellMechModalOpen}
             />
-            {selectedMechDetails &&
-                <DeployModal selectedMechDetails={selectedMechDetails} deployMechModalOpen={deployMechModalOpen}
-                             setDeployMechModalOpen={setDeployMechModalOpen} />}
-            {selectedMechDetails &&
-                <LeaveModal selectedMechDetails={selectedMechDetails} leaveMechModalOpen={leaveMechModalOpen}
-                            setLeaveMechModalOpen={setLeaveMechModalOpen} />}
-            {selectedMechDetails &&
-                <HistoryModal selectedMechDetails={selectedMechDetails} historyMechModalOpen={historyMechModalOpen}
-                              setHistoryMechModalOpen={setHistoryMechModalOpen} />}
-            {selectedMechDetails &&
-                <RentalModal selectedMechDetails={selectedMechDetails} rentalMechModalOpen={rentalMechModalOpen}
-                             setRentalMechModalOpen={setRentalMechModalOpen} />}
-            {selectedMechDetails &&
-                <SellModal selectedMechDetails={selectedMechDetails} sellMechModalOpen={sellMechModalOpen}
-                           setSellMechModalOpen={setSellMechModalOpen} />}
+            {selectedMechDetails && (
+                <DeployModal
+                    selectedMechDetails={selectedMechDetails}
+                    deployMechModalOpen={deployMechModalOpen}
+                    setDeployMechModalOpen={setDeployMechModalOpen}
+                />
+            )}
+            {selectedMechDetails && (
+                <LeaveModal selectedMechDetails={selectedMechDetails} leaveMechModalOpen={leaveMechModalOpen} setLeaveMechModalOpen={setLeaveMechModalOpen} />
+            )}
+            {selectedMechDetails && (
+                <HistoryModal
+                    selectedMechDetails={selectedMechDetails}
+                    historyMechModalOpen={historyMechModalOpen}
+                    setHistoryMechModalOpen={setHistoryMechModalOpen}
+                />
+            )}
+            {selectedMechDetails && (
+                <RentalModal
+                    selectedMechDetails={selectedMechDetails}
+                    rentalMechModalOpen={rentalMechModalOpen}
+                    setRentalMechModalOpen={setRentalMechModalOpen}
+                />
+            )}
+            {selectedMechDetails && (
+                <SellModal selectedMechDetails={selectedMechDetails} sellMechModalOpen={sellMechModalOpen} setSellMechModalOpen={setSellMechModalOpen} />
+            )}
         </>
     )
 }
 
 const WarMachinesInner = ({
-                              selectedMechDetails,
-                              setSelectedMechDetails,
-                              setDeployMechModalOpen,
-                              setLeaveMechModalOpen,
-                              setHistoryMechModalOpen,
-                              setRentalMechModalOpen,
-                              setSellMechModalOpen,
-                          }: {
-    selectedMechDetails?: MechDetails,
-    setSelectedMechDetails:  React.Dispatch<React.SetStateAction<MechDetails | undefined>>,
-    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    setSellMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    selectedMechDetails,
+    setSelectedMechDetails,
+    setDeployMechModalOpen,
+    setLeaveMechModalOpen,
+    setHistoryMechModalOpen,
+    setRentalMechModalOpen,
+    setSellMechModalOpen,
+}: {
+    selectedMechDetails?: MechDetails
+    setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
+    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setSellMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -89,15 +101,7 @@ const WarMachinesInner = ({
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const {
-        page,
-        changePage,
-        totalItems,
-        setTotalItems,
-        totalPages,
-        pageSize,
-        setPageSize,
-    } = usePagination({ pageSize: 5, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
 
     // Get mechs
     useEffect(() => {
@@ -144,8 +148,6 @@ const WarMachinesInner = ({
         )
     }, [
         mechs,
-        theme.factionTheme.background,
-        theme.factionTheme.primary,
         selectedMechDetails,
         setSelectedMechDetails,
         setDeployMechModalOpen,
@@ -205,24 +207,26 @@ const WarMachinesInner = ({
                             },
                         }}
                     >
-                        {loadError && (<Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                            <Stack
-                                alignItems="center"
-                                justifyContent="center"
-                                sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
-                                spacing="1.5rem"
-                            >
-                                <Typography
-                                    sx={{
-                                        color: colors.red,
-                                        fontFamily: fonts.nostromoBold,
-                                        textAlign: "center",
-                                    }}
+                        {loadError && (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Stack
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                                    spacing="1.5rem"
                                 >
-                                    {loadError}
-                                </Typography>
+                                    <Typography
+                                        sx={{
+                                            color: colors.red,
+                                            fontFamily: fonts.nostromoBold,
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        {loadError}
+                                    </Typography>
+                                </Stack>
                             </Stack>
-                        </Stack>)}
+                        )}
 
                         {isLoading && (
                             <Stack spacing="1.6rem" sx={{ width: "100%", px: "1rem", py: ".8rem", height: 0 }}>

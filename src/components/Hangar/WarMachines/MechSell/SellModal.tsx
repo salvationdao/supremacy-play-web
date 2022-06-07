@@ -9,10 +9,14 @@ import { MechModal } from "../Common/MechModal"
 import { MechDetails } from "../../../../types"
 
 export const SellModal = ({
-                              selectedMechDetails: sellMechDetails,
-                              sellMechModalOpen,
-                              setSellMechModalOpen,
-                          }: { selectedMechDetails: MechDetails, sellMechModalOpen: boolean, setSellMechModalOpen: (close: boolean) => void }) => {
+    selectedMechDetails: sellMechDetails,
+    sellMechModalOpen,
+    setSellMechModalOpen,
+}: {
+    selectedMechDetails: MechDetails
+    sellMechModalOpen: boolean
+    setSellMechModalOpen: (close: boolean) => void
+}) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { newSnackbarMessage } = useSnackbar()
     const [isLoading, setIsLoading] = useState(false)

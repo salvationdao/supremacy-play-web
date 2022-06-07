@@ -22,8 +22,8 @@ const purchaseModalWidth = 400
 export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const [saleAbility, setSaleAbility] = useState<SaleAbility | null>(null)
-    const [price, ] = useState<string | null>(null)
-    const [previousPrice, ] = useState<string | null>(null)
+    const [price] = useState<string | null>(null)
+    const [previousPrice] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
     // Purchasing

@@ -16,26 +16,26 @@ import { MechTitle } from "./MechTitle"
 interface WarMachineHangarItemProps {
     mech: MechBasic
     index: number
-    isSelected: boolean,
-    setSelectedMechDetails:  React.Dispatch<React.SetStateAction<MechDetails | undefined>>,
-    setDeployMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
-    setLeaveMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
-    setHistoryMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
-    setRentalMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
-    setSellMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
+    isSelected: boolean
+    setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
+    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setSellMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const WarMachineHangarItem = ({
-                                         mech,
-                                         index,
-                                         isSelected,
-                                         setSelectedMechDetails,
-                                         setDeployMechModalOpen,
-                                         setLeaveMechModalOpen,
-                                         setHistoryMechModalOpen,
-                                         setRentalMechModalOpen,
-                                         setSellMechModalOpen,
-                                     }: WarMachineHangarItemProps) => {
+    mech,
+    index,
+    isSelected,
+    setSelectedMechDetails,
+    setDeployMechModalOpen,
+    setLeaveMechModalOpen,
+    setHistoryMechModalOpen,
+    setRentalMechModalOpen,
+    setSellMechModalOpen,
+}: WarMachineHangarItemProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const [mechQueuePosition, setMechQueuePosition] = useState<number>(-1)
@@ -71,48 +71,67 @@ export const WarMachineHangarItem = ({
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
-    return <WarMachineHangarItemInner mech={mech}
-                                      isSelected={isSelected}
-                                      mechDetails={mechDetails}
-                                      mechQueuePosition={mechQueuePosition}
-                                      setSelectedMechDetails={setSelectedMechDetails}
-                                      setDeployMechModalOpen={setDeployMechModalOpen}
-                                      setLeaveMechModalOpen={setLeaveMechModalOpen}
-                                      setHistoryMechModalOpen={setHistoryMechModalOpen}
-                                      setRentalMechModalOpen={setRentalMechModalOpen}
-                                      setSellMechModalOpen={setSellMechModalOpen}
-    />
+    const warMachineInnerMemo = useMemo(
+        () => (
+            <WarMachineHangarItemInner
+                mech={mech}
+                isSelected={isSelected}
+                mechDetails={mechDetails}
+                mechQueuePosition={mechQueuePosition}
+                setSelectedMechDetails={setSelectedMechDetails}
+                setDeployMechModalOpen={setDeployMechModalOpen}
+                setLeaveMechModalOpen={setLeaveMechModalOpen}
+                setHistoryMechModalOpen={setHistoryMechModalOpen}
+                setRentalMechModalOpen={setRentalMechModalOpen}
+                setSellMechModalOpen={setSellMechModalOpen}
+            />
+        ),
+        [
+            mech,
+            isSelected,
+            mechDetails,
+            mechQueuePosition,
+            setSelectedMechDetails,
+            setDeployMechModalOpen,
+            setLeaveMechModalOpen,
+            setHistoryMechModalOpen,
+            setRentalMechModalOpen,
+            setSellMechModalOpen,
+        ],
+    )
+
+    return warMachineInnerMemo
 }
 
 const WarMachineHangarItemInner = ({
-                                       mech,
-                                       mechDetails,
-                                       isSelected,
-                                       setSelectedMechDetails,
-                                       mechQueuePosition,
-                                       setDeployMechModalOpen,
-                                       setLeaveMechModalOpen,
-                                       setHistoryMechModalOpen,
-                                       setRentalMechModalOpen,
-                                       setSellMechModalOpen,
-                                   }: {
-    mechQueuePosition: number,
-    mech: MechBasic,
-    mechDetails?: MechDetails,
-    isSelected: boolean,
-    setSelectedMechDetails:  React.Dispatch<React.SetStateAction<MechDetails | undefined>>,
-    setDeployMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
-    setLeaveMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
-    setHistoryMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
-    setRentalMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
-    setSellMechModalOpen:  React.Dispatch<React.SetStateAction<boolean>>,
+    mech,
+    mechDetails,
+    isSelected,
+    setSelectedMechDetails,
+    mechQueuePosition,
+    setDeployMechModalOpen,
+    setLeaveMechModalOpen,
+    setHistoryMechModalOpen,
+    setRentalMechModalOpen,
+    setSellMechModalOpen,
+}: {
+    mechQueuePosition: number
+    mech: MechBasic
+    mechDetails?: MechDetails
+    isSelected: boolean
+    setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
+    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setSellMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const theme = useTheme()
 
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl = skin?.large_image_url
 
-    const loadout = useMemo(()=><MechLoadout mech={mech} mechDetails={mechDetails} />,[mech, mechDetails])
+    const loadout = useMemo(() => <MechLoadout mech={mech} mechDetails={mechDetails} />, [mech, mechDetails])
 
     return (
         <Box sx={{ position: "relative", overflow: "visible" }} onClick={() => setSelectedMechDetails(mechDetails)}>
@@ -132,8 +151,7 @@ const WarMachineHangarItemInner = ({
                 opacity={isSelected ? 1 : 0.7}
                 backgroundColor={theme.factionTheme.background}
             >
-                <Stack direction="row" alignItems="center" spacing="1.2rem"
-                       sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>
+                <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>
                     <Stack spacing="1rem" sx={{ height: "100%" }}>
                         <MechThumbnail mech={mech} mechDetails={mechDetails} />
                         <MechGeneralStatus mechQueuePosition={mechQueuePosition} />
@@ -146,15 +164,18 @@ const WarMachineHangarItemInner = ({
                             <MechBarStats mech={mech} mechDetails={mechDetails} />
                         </Stack>
 
-                        {mechDetails && <MechButtons mechDetails={mechDetails}
-                                     mechQueuePosition={mechQueuePosition}
-                                     setSelectedMechDetails={setSelectedMechDetails}
-                                     setDeployMechModalOpen={setDeployMechModalOpen}
-                                     setLeaveMechModalOpen={setLeaveMechModalOpen}
-                                     setHistoryMechModalOpen={setHistoryMechModalOpen}
-                                     setRentalMechModalOpen={setRentalMechModalOpen}
-                                     setSellMechModalOpen={setSellMechModalOpen}
-                        />}
+                        {mechDetails && (
+                            <MechButtons
+                                mechDetails={mechDetails}
+                                mechQueuePosition={mechQueuePosition}
+                                setSelectedMechDetails={setSelectedMechDetails}
+                                setDeployMechModalOpen={setDeployMechModalOpen}
+                                setLeaveMechModalOpen={setLeaveMechModalOpen}
+                                setHistoryMechModalOpen={setHistoryMechModalOpen}
+                                setRentalMechModalOpen={setRentalMechModalOpen}
+                                setSellMechModalOpen={setSellMechModalOpen}
+                            />
+                        )}
                     </Stack>
                 </Stack>
 
@@ -209,8 +230,7 @@ export const WarMachineHangarItemLoadingSkeleton = () => {
                 opacity={0.5}
                 backgroundColor={theme.factionTheme.background}
             >
-                <Stack direction="row" alignItems="center" spacing="1.2rem"
-                       sx={{ height: "22rem", px: "1.8rem", py: "1.6rem" }}>
+                <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "22rem", px: "1.8rem", py: "1.6rem" }}>
                     <Stack spacing="1rem" sx={{ height: "100%" }}>
                         <Skeleton variant="rectangular" width="20rem" sx={{ flex: 1 }} />
                         <Skeleton variant="rectangular" width="100%" height="4rem" />
