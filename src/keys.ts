@@ -32,8 +32,6 @@ export enum GameServerKeys {
     // Game Use
     GameUserOnline = "GAME:ONLINE",
 
-    TriggerBattleQueueUpdated = "BATTLE:QUEUE:UPDATED",
-
     // Global messages
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
 
@@ -41,7 +39,7 @@ export enum GameServerKeys {
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
-    GetMechQueueDetails = "PLAYER:ASSET:MECH:QUEUE",
+    GetMechQueuePositionSubscribe = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
     SubRepairStatus = "ASSET:REPAIR:STATUS",
