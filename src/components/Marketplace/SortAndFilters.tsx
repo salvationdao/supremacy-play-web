@@ -58,7 +58,7 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
             }}
             opacity={0.7}
             backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%", minWidth: "30rem", maxWidth: "43rem" }}
+            sx={{ height: "100%", minWidth: "30rem", maxWidth: "38rem" }}
         >
             <Stack sx={{ position: "relative", height: "100%", mt: "-.3rem", mx: "-.3rem" }}>
                 <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor}>
