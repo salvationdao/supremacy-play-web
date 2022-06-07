@@ -1,32 +1,69 @@
 import { Stack, Typography } from "@mui/material"
 import { FancyButton } from "../../.."
-import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
-import { MechBasic, MechDetails } from "../../../../types"
+import { MechDetails } from "../../../../types"
 
-export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+export const MechButtons = ({
+    mechDetails,
+    mechQueuePosition,
+    setSelectedMechDetails,
+    setDeployMechModalOpen,
+    setLeaveMechModalOpen,
+    setHistoryMechModalOpen,
+    setRentalMechModalOpen,
+    setSellMechModalOpen,
+}: {
+    mechDetails: MechDetails
+    mechQueuePosition: number
+    setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
+    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setSellMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
     const theme = useTheme()
-    const { setDeployMechDetails, setHistoryMechDetails, setRentalMechDetails, setSellMechDetails } = useHangarWarMachine()
 
     return (
         <Stack direction="row" spacing=".8rem">
-            <ReusableButton
-                primaryColor={theme.factionTheme.primary}
-                backgroundColor={theme.factionTheme.background}
-                label="DEPLOY"
-                disabled={!mechDetails}
-                onClick={() => mechDetails && setDeployMechDetails(mechDetails)}
-            />
-
+            {mechQueuePosition === -1 && (
+                <ReusableButton
+                    primaryColor={theme.factionTheme.primary}
+                    backgroundColor={theme.factionTheme.background}
+                    label="DEPLOY"
+                    disabled={!mechDetails}
+                    onClick={() => {
+                        setSelectedMechDetails(mechDetails)
+                        setDeployMechModalOpen(true)
+                    }}
+                />
+            )}
+            {mechQueuePosition === 0 && (
+                <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="N/A" disabled={true} />
+            )}
+            {mechQueuePosition > 0 && (
+                <ReusableButton
+                    primaryColor={theme.factionTheme.primary}
+                    backgroundColor={theme.factionTheme.background}
+                    label="UNDEPLOY"
+                    disabled={true}
+                    onClick={() => {
+                        setSelectedMechDetails(mechDetails)
+                        setLeaveMechModalOpen(true)
+                    }}
+                />
+            )}
             <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechDetails} />
-
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
                 label="HISTORY"
                 disabled={!mechDetails}
-                onClick={() => mechDetails && setHistoryMechDetails(mechDetails)}
+                onClick={() => {
+                    setSelectedMechDetails(mechDetails)
+                    setHistoryMechModalOpen(true)
+                }}
             />
 
             <ReusableButton
@@ -34,15 +71,21 @@ export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: Me
                 backgroundColor={theme.factionTheme.background}
                 label="SELL"
                 disabled={!mechDetails}
-                onClick={() => mechDetails && setSellMechDetails(mechDetails)}
+                onClick={() => {
+                    setSelectedMechDetails(mechDetails)
+                    setSellMechModalOpen(true)
+                }}
             />
 
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
                 label="RENT"
-                disabled={!mechDetails}
-                onClick={() => mechDetails && setRentalMechDetails(mechDetails)}
+                disabled={true}
+                onClick={() => {
+                    setSelectedMechDetails(mechDetails)
+                    setRentalMechModalOpen(true)
+                }}
             />
         </Stack>
     )
@@ -77,7 +120,6 @@ const ReusableButton = ({
             <Typography
                 variant="caption"
                 sx={{
-                    fontSize: "1.1rem",
                     fontFamily: fonts.nostromoBold,
                 }}
             >

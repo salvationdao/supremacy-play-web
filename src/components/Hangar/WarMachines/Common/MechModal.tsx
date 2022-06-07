@@ -8,11 +8,13 @@ import { fonts, siteZIndex } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 
 export const MechModal = ({
+    open,
     mechDetails,
     onClose,
     width,
     children,
 }: {
+    open: boolean
     mechDetails: MechDetails
     onClose: () => void
     width?: string
@@ -26,7 +28,7 @@ export const MechModal = ({
     const imageUrl = skin?.image_url || mechDetails.image_url
 
     return (
-        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",

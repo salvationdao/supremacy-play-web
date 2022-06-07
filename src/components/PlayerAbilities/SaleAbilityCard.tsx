@@ -5,7 +5,7 @@ import { SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from
 import { useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscription } from "../../hooks/useGameServer"
+import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
@@ -22,8 +22,8 @@ const purchaseModalWidth = 400
 export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const [saleAbility, setSaleAbility] = useState<SaleAbility | null>(null)
-    const [price, setPrice] = useState<string | null>(null)
-    const [previousPrice, setPreviousPrice] = useState<string | null>(null)
+    const [price] = useState<string | null>(null)
+    const [previousPrice] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
     // Purchasing
@@ -69,19 +69,19 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
         }
     }, [abilityID, newSnackbarMessage, price, saleAbility?.ability?.label, send, toggleShowPurchaseModal])
 
-    useGameServerSubscription<{ id: string; price: string }>(
-        {
-            URI: "xxxxxxxxx",
-            key: GameServerKeys.SaleAbilityPriceSubscribe,
-        },
-        (payload) => {
-            if (!payload || payload.id !== abilityID) return
-            setPrice((prev) => {
-                if (prev) setPreviousPrice(prev)
-                return payload.price
-            })
-        },
-    )
+    // useGameServerSubscription<{ id: string; price: string }>(
+    //     {
+    //         URI: "xxxxxxxxx",
+    //         key: GameServerKeys.SaleAbilityPriceSubscribe,
+    //     },
+    //     (payload) => {
+    //         if (!payload || payload.id !== abilityID) return
+    //         setPrice((prev) => {
+    //             if (prev) setPreviousPrice(prev)
+    //             return payload.price
+    //         })
+    //     },
+    // )
 
     useEffect(() => {
         ;(async () => {

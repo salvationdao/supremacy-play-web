@@ -2,23 +2,30 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../.."
 import { useSnackbar } from "../../../../containers"
-import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechModal } from "../Common/MechModal"
+import { MechDetails } from "../../../../types"
 
-export const SellModal = () => {
-    const { sellMechDetails, setSellMechDetails } = useHangarWarMachine()
+export const SellModal = ({
+    selectedMechDetails: sellMechDetails,
+    sellMechModalOpen,
+    setSellMechModalOpen,
+}: {
+    selectedMechDetails: MechDetails
+    sellMechModalOpen: boolean
+    setSellMechModalOpen: (close: boolean) => void
+}) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { newSnackbarMessage } = useSnackbar()
     const [isLoading, setIsLoading] = useState(false)
     const [sellError, setSellError] = useState<string>()
 
     const onClose = useCallback(() => {
-        setSellMechDetails(undefined)
+        setSellMechModalOpen(false)
         setSellError(undefined)
-    }, [setSellMechDetails])
+    }, [setSellMechModalOpen])
 
     const onSellMech = useCallback(
         async ({ id }: { id: string }) => {
@@ -97,7 +104,7 @@ export const SellModal = () => {
     const { id } = sellMechDetails
 
     return (
-        <MechModal mechDetails={sellMechDetails} onClose={onClose}>
+        <MechModal open={sellMechModalOpen} mechDetails={sellMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Box sx={{ mt: "auto" }}>
                     <FancyButton
