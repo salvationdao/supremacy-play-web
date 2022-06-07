@@ -1,4 +1,4 @@
-import { AbilityCardProps } from "./SaleAbilityCard"
+// import { AbilityCardProps } from "./SaleAbilityCard"
 
 // const activateModalWidth = 400
 
@@ -214,3 +214,5 @@ import { AbilityCardProps } from "./SaleAbilityCard"
 //     //     </>
 //     // )
 // }
+
+export {}
