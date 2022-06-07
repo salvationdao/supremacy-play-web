@@ -21,7 +21,7 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
 
     if (!marketItem.owner || !marketItem.mech) return null
 
-    const { owner, mech, auction, dutch_auction, end_at } = marketItem
+    const { owner, mech, auction, end_at } = marketItem
     const { username, gid } = owner
     const { name, label } = mech
 
