@@ -4,7 +4,7 @@ import { useSnackbar } from "../../containers"
 import { colors } from "../../theme/theme"
 import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
 import { ClipThing } from ".."
-import {DEV_ONLY, STAGING_ONLY} from "../../constants"
+import { STAGING_ONLY } from "../../constants"
 
 export const GlobalSnackbar = () => {
     const { open, setOpen, messageInfo, setMessageInfo } = useSnackbar()
