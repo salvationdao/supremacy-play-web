@@ -58,7 +58,7 @@ export const MysteryCrates = () => {
                 console.debug(e)
             }
         })()
-    }, [page, pageSize, send])
+    }, [page, pageSize, send, newSnackbarMessage])
 
     const content = useMemo(() => {
         if (!crates || isLoading) {
