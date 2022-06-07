@@ -2,23 +2,26 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../.."
 import { useSnackbar } from "../../../../containers"
-import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechModal } from "../Common/MechModal"
+import { MechDetails } from "../../../../types"
 
-export const LeaveModal = () => {
+export const LeaveModal = ({
+                               selectedMechDetails: leaveMechDetails,
+                               leaveMechModalOpen,
+                               setLeaveMechModalOpen,
+                           }: { selectedMechDetails: MechDetails, leaveMechModalOpen: boolean, setLeaveMechModalOpen: (close: boolean) => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { leaveMechDetails, setLeaveMechDetails } = useHangarWarMachine()
     const [isLoading, setIsLoading] = useState(false)
     const [leaveQueueError, setLeaveQueueError] = useState<string>()
 
     const onClose = useCallback(() => {
-        setLeaveMechDetails(undefined)
+        setLeaveMechModalOpen(false)
         setLeaveQueueError(undefined)
-    }, [setLeaveQueueError, setLeaveMechDetails])
+    }, [setLeaveQueueError, setLeaveMechModalOpen])
 
     const onLeaveQueue = useCallback(
         async (hash: string) => {
@@ -44,7 +47,7 @@ export const LeaveModal = () => {
     const { hash, name, label } = leaveMechDetails
 
     return (
-        <MechModal mechDetails={leaveMechDetails} onClose={onClose}>
+        <MechModal open={leaveMechModalOpen} mechDetails={leaveMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Typography sx={{ strong: { color: colors.neonBlue } }}>
                     Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle queue? Your will be refunded the initial queuing

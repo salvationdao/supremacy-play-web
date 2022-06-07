@@ -1,18 +1,20 @@
 import { CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { SvgRefresh } from "../../../../assets"
-import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { camelToTitle } from "../../../../helpers"
 import { useGameServerCommands } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { BattleMechHistory, BattleMechStats } from "../../../../types"
+import { BattleMechHistory, BattleMechStats, MechDetails } from "../../../../types"
 import { MechModal } from "../Common/MechModal"
 import { HistoryEntry } from "./HistoryEntry"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "./PercentageDisplay"
 
-export const HistoryModal = () => {
-    const { historyMechDetails, setHistoryMechDetails } = useHangarWarMachine()
+export const HistoryModal = ({
+                                 selectedMechDetails: historyMechDetails,
+                                 historyMechModalOpen,
+                                 setHistoryMechModalOpen,
+                             }: { selectedMechDetails: MechDetails, historyMechModalOpen: boolean, setHistoryMechModalOpen: (close: boolean) => void }) => {
     const { send } = useGameServerCommands("/public/commander")
     // Mech stats
     const [stats, setStats] = useState<BattleMechStats>()
@@ -24,10 +26,10 @@ export const HistoryModal = () => {
     const [historyError, setHistoryError] = useState<string>()
 
     const onClose = useCallback(() => {
-        setHistoryMechDetails(undefined)
+        setHistoryMechModalOpen(false)
         setStatsError(undefined)
         setHistoryError(undefined)
-    }, [setHistoryMechDetails])
+    }, [setHistoryMechModalOpen])
 
     const fetchHistory = useCallback(async () => {
         if (!historyMechDetails?.id) return
@@ -94,7 +96,7 @@ export const HistoryModal = () => {
     if (!historyMechDetails) return null
 
     return (
-        <MechModal mechDetails={historyMechDetails} onClose={onClose} width="50rem">
+        <MechModal open={historyMechModalOpen} mechDetails={historyMechDetails} onClose={onClose} width="50rem">
             <Stack spacing="1.6rem" sx={{ pt: ".4rem" }}>
                 <Stack direction="row" justifyContent="space-between" sx={{ px: "1.3rem" }}>
                     {statsLoading ? (

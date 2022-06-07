@@ -3,12 +3,12 @@ import { useCallback, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
-import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { supFormatter } from "../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechModal } from "../Common/MechModal"
+import { MechDetails } from "../../../../types"
 
 export interface QueueFeed {
     queue_length: number
@@ -16,8 +16,11 @@ export interface QueueFeed {
     contract_reward: string
 }
 
-export const DeployModal = () => {
-    const { deployMechDetails, setDeployMechDetails } = useHangarWarMachine()
+export const DeployModal = ({
+                                selectedMechDetails: deployMechDetails,
+                                deployMechModalOpen,
+                                setDeployMechModalOpen,
+                            }: { selectedMechDetails: MechDetails, deployMechModalOpen: boolean, setDeployMechModalOpen: (close: boolean) => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
@@ -30,9 +33,9 @@ export const DeployModal = () => {
     })
 
     const onClose = useCallback(() => {
-        setDeployMechDetails(undefined)
         setDeployQueueError(undefined)
-    }, [setDeployQueueError, setDeployMechDetails])
+        setDeployMechModalOpen(false)
+    }, [setDeployQueueError, setDeployMechModalOpen])
 
     const onDeployQueue = useCallback(
         async ({ hash }: { hash: string }) => {
@@ -64,7 +67,7 @@ export const DeployModal = () => {
     const { hash } = deployMechDetails
 
     return (
-        <MechModal mechDetails={deployMechDetails} onClose={onClose}>
+        <MechModal open={deployMechModalOpen} mechDetails={deployMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Stack spacing=".2rem">
                     {queueLength >= 0 && (
@@ -130,12 +133,12 @@ export const DeployModal = () => {
 }
 
 const AmountItem = ({
-    title,
-    color,
-    value,
-    tooltip,
-    disableIcon,
-}: {
+                        title,
+                        color,
+                        value,
+                        tooltip,
+                        disableIcon,
+                    }: {
     title: string
     color: string
     value: string | number

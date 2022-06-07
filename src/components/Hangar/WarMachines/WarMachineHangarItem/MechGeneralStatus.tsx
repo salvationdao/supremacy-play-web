@@ -12,10 +12,10 @@ export const MechGeneralStatus = ({ mechQueuePosition }: { mechQueuePosition: nu
             {mechQueuePosition === -1 && <Typography variant="body2" sx={{ color: primaryColor, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
                 IN HANGAR
             </Typography>}
-            {mechQueuePosition === 0 && <Typography variant="body2" sx={{ color: primaryColor, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
-                IN HANGAR
+            {mechQueuePosition === 0 && <Typography variant="body2" sx={{ color: 'green', textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                IN BATTLE
             </Typography>}
-            {mechQueuePosition > 0 && <Typography variant="body2" sx={{ color: primaryColor, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+            {mechQueuePosition > 0 && <Typography variant="body2" sx={{ color: 'orange', textAlign: "center", fontFamily: fonts.nostromoBlack }}>
                 POSITION {mechQueuePosition}
             </Typography>}
         </Box>

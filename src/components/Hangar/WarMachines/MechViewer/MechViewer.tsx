@@ -1,12 +1,10 @@
 import { Box, Fade } from "@mui/material"
-import { useHangarWarMachine } from "../../../../containers/hangar/hangarWarMachines"
 import { useTheme } from "../../../../containers/theme"
+import { MechDetails } from "../../../../types"
 
-export const MechViewer = () => {
+export const MechViewer = ({ selectedMechDetails }: { selectedMechDetails: MechDetails }) => {
     const theme = useTheme()
-    const { selectedMechDetails } = useHangarWarMachine()
 
-    if (!selectedMechDetails) return null
 
     const skin = selectedMechDetails.chassis_skin || selectedMechDetails.default_chassis_skin
     const imageUrl = skin?.large_image_url || selectedMechDetails.large_image_url

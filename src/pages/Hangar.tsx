@@ -140,7 +140,7 @@ const TabPanel = (props: TabPanelProps) => {
 
     if (currentValue === value) {
         return (
-            <Fade in>
+            <Fade in unmountOnExit>
                 <Box id={`hangar-tabpanel-${value}`} sx={{ flex: 1 }}>
                     {children}
                 </Box>
