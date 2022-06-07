@@ -163,9 +163,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                         <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
                                 excludeCaret
-                                onClick={() => {
-                                    handlePurchase()
-                                }}
+                                onClick={handlePurchase}
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: primaryColor,
