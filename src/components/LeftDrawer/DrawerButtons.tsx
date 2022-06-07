@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Tab, Tabs } from "@mui/material"
-import { useHistory, useLocation } from "react-router-dom"
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom"
 import { SvgNext } from "../../assets"
 import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
@@ -15,6 +15,13 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
     const location = useLocation()
     const history = useHistory()
 
+    const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
+    let activeTabID = ""
+    if (match && location.pathname !== match.path) {
+        const r = ROUTES_ARRAY.find((r) => r.path === match.path)
+        activeTabID = r?.matchLeftDrawerID || ""
+    }
+
     return (
         <Stack
             sx={{
@@ -23,7 +30,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                 height: "100%",
                 overflow: "hidden",
                 width: `${DRAWER_BAR_WIDTH}rem`,
-                backgroundColor: (theme) => theme.factionTheme.background,
+                background: (theme) => `linear-gradient(to right, #FFFFFF06 26%, ${theme.factionTheme.background})`,
                 zIndex: siteZIndex.LeftDrawer,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
@@ -38,19 +45,21 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                 },
             }}
         >
-            <Tabs value={location.pathname} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
+            <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {ROUTES_ARRAY.map((r) => {
-                    if (!r.showInLeftDrawer) return null
-                    const disable = r.requireAuth && !userID
+                    if (!r.leftDrawer) return null
+                    const { enable, requireAuth, label } = r.leftDrawer
+                    const disable = requireAuth && !userID
+                    const navigateTo = r.path.split("/:")[0]
+
                     return (
                         <TabButton
                             key={r.id}
-                            label={r.label}
-                            enable={r.enable && !disable}
-                            isComingSoon={!r.enable}
-                            value={r.path}
-                            onClick={() => history.push(`${r.path}${location.hash}`)}
-                            isActive={location.pathname === r.path}
+                            label={label}
+                            enable={enable && !disable}
+                            isComingSoon={!enable}
+                            onClick={() => history.push(`${navigateTo}${location.hash}`)}
+                            isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
                         />
@@ -80,7 +89,6 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
 
 export const TabButton = ({
     label,
-    value,
     enable,
     isComingSoon,
     icon,
@@ -89,7 +97,6 @@ export const TabButton = ({
     onClick,
 }: {
     label: string
-    value: string
     enable?: boolean
     isComingSoon?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
@@ -118,7 +125,6 @@ export const TabButton = ({
                         </Stack>
                     )
                 }
-                value={value}
                 icon={icon}
                 iconPosition="end"
                 onClick={onClick}
@@ -129,7 +135,7 @@ export const TabButton = ({
                     position: "absolute",
                     whiteSpace: "nowrap",
                     fontFamily: fonts.nostromoBold,
-                    fontSize: "1.1rem",
+                    fontSize: "1.2rem",
                     lineHeight: 1,
                     color: "#FFFFFF",
                     backgroundColor: enable ? (isActive ? `${primaryColor}80` : `${primaryColor}25`) : `${primaryColor}20`,

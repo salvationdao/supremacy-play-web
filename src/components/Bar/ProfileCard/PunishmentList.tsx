@@ -27,15 +27,15 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                     transform: "translate(-50%, -50%)",
                     width: "40rem",
                     border: "none",
-                    outline: "none",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing
                     clipSize="8px"
                     border={{
                         borderColor: colors.red,
-                        borderThickness: ".2rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}

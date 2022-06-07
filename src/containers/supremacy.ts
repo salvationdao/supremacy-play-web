@@ -47,7 +47,7 @@ export const SupremacyContainer = createContainer(() => {
                 setFactionsAll(currentData)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
-                console.debug(e)
+                console.error(e)
                 return false
             }
         })()

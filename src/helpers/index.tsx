@@ -20,12 +20,16 @@ import {
     SafePNG,
     SvgCorporal,
     SvgGeneral,
+    SvgHammer,
     SvgNewRecruit,
     SvgPrivate,
+    SvgWallet,
     SvgWrapperProps,
 } from "../assets"
+import { ThemeState } from "../containers/theme"
 import { colors } from "../theme/theme"
 import { MysteryCrateType, UserRank } from "../types"
+import { MarketplaceMechItem } from "../types/marketplace"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -99,9 +103,8 @@ export const numFormatter = (num: number) => {
         return (num / 1000).toFixed(1) + "K"
     } else if (num > 1000000) {
         return (num / 1000000).toFixed(1) + "M"
-    } else if (num < 900) {
-        return num + ""
     }
+    return num + ""
 }
 
 export const supFormatter = (num: string, fixedAmount: number | undefined = 0): string => {
@@ -210,7 +213,7 @@ export const getRarityDeets = (rarityKey: string): { label: string; color: strin
     }
 }
 
-export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
+export const getMultiplierDeets = (multiplierKey: string): { image: string } => {
     let image
 
     switch (multiplierKey.toLowerCase()) {
@@ -304,6 +307,10 @@ export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
     return Capitalize(result)
 }
 
+export const snakeToSlug = (str: string): string => {
+    return str.split("_").join("-").toLowerCase()
+}
+
 export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: SvgWrapperProps; title: string; desc: string } => {
     let icon = null
     let title = ""
@@ -357,31 +364,74 @@ export const getMysteryCrateDeets = (mysteryCrateType: MysteryCrateType): { imag
     return { image, label, desc }
 }
 
-export const timeSince = (date: Date, dateToCompare?: Date) => {
-    const seconds = Math.floor(((dateToCompare ? dateToCompare.getTime() : Date.now()) - date.getTime()) / 1000)
+// Calculates the difference between two dates in different units (days, hours etc.)
+export const timeDiff = (
+    fromDate: Date,
+    toDate: Date,
+): {
+    total: number
+    days: number
+    hours: number
+    minutes: number
+    seconds: number
+} => {
+    const total = toDate.getTime() - fromDate.getTime()
+    const seconds = Math.floor(total / 1000)
+    const minutes = Math.floor(total / 1000 / 60)
+    const hours = Math.floor(total / (1000 * 60 * 60))
+    const days = Math.floor(total / (1000 * 60 * 60 * 24))
 
-    let interval = seconds / 31536000
+    return {
+        total,
+        days,
+        hours,
+        minutes,
+        seconds,
+    }
+}
 
-    if (interval > 1) {
-        return Math.floor(interval) + " years"
+// Calculates the time difference between two dates in days, hours minutes etc.
+export const timeSince = (
+    fromDate: Date,
+    toDate: Date,
+): {
+    total: number
+    days: number
+    hours: number
+    minutes: number
+    seconds: number
+} => {
+    const total = toDate.getTime() - fromDate.getTime()
+    const seconds = Math.floor((total / 1000) % 60)
+    const minutes = Math.floor((total / 1000 / 60) % 60)
+    const hours = Math.floor((total / (1000 * 60 * 60)) % 24)
+    const days = Math.floor(total / (1000 * 60 * 60 * 24))
+
+    return {
+        total,
+        days,
+        hours,
+        minutes,
+        seconds,
     }
-    interval = seconds / 2592000
-    if (interval > 1) {
-        return Math.floor(interval) + " months"
-    }
-    interval = seconds / 86400
-    if (interval > 1) {
-        return Math.floor(interval) + " days"
-    }
-    interval = seconds / 3600
-    if (interval > 1) {
-        return Math.floor(interval) + " hours"
-    }
-    interval = seconds / 60
-    if (interval > 1) {
-        return Math.floor(interval) + " minutes"
-    }
-    return Math.floor(seconds) + " seconds"
+}
+
+export const timeSinceInWords = (fromDate: Date, toDate: Date): string => {
+    const { days, hours, minutes, seconds } = timeSince(fromDate, toDate)
+
+    let result = days > 0 ? days + " day" + (days === 1 ? "" : "s") : ""
+    result = (result ? result + " " : "") + (hours > 0 ? hours + " hour" + (hours === 1 ? "" : "s") : "")
+
+    // Return result if more than a day, else too long
+    if (days > 0) return result
+
+    result = (result ? result + " " : "") + (minutes > 0 ? minutes + " minute" + (minutes === 1 ? "" : "s") : "")
+
+    // Return result if more than a day, else too long
+    if (hours > 0) return result
+
+    result = (result ? result + " " : "") + (seconds > 0 ? seconds + " second" + (seconds === 1 ? "" : "s") : "")
+    return result
 }
 
 export const camelToTitle = (str: string) => {
@@ -400,7 +450,7 @@ export const checkIfIsEmoji = (message: string) => {
     // If message is long then don't bother
     if (trimmedMsg.length > 8) return false
 
-    // Spreading string for proper emoji seperation-ignoring spaces that can appear between emojis and mess everything up
+    // Spreading string for proper emoji separation-ignoring spaces that can appear between emojis and mess everything up
     const messageArray = [...trimmedMsg.replaceAll(" ", "")]
 
     messageArray.map((c) => {
@@ -440,4 +490,69 @@ export const equalsIgnoreOrder = (a: unknown[], b: unknown[]) => {
 
 export const numberCommaFormatter = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+export const consolidateMarketItemDeets = (
+    marketItem: MarketplaceMechItem,
+    theme: ThemeState,
+): {
+    primaryColor: string
+    secondaryColor: string
+    backgroundColor: string
+    price: BigNumber
+    priceLabel: string
+    listingTypeLabel: string
+    ctaLabel: string
+    Icon: React.VoidFunctionComponent<SvgWrapperProps>
+} => {
+    const { auction, dutch_auction, buyout, auction_current_price, dutch_auction_drop_rate, buyout_price, created_at } = marketItem
+
+    const buyoutPrice = new BigNumber(buyout_price).shiftedBy(-18)
+    const auctionCurrentPrice = new BigNumber(auction_current_price).shiftedBy(-18)
+    const dutchAuctionDropBy = new BigNumber(dutch_auction_drop_rate).shiftedBy(-18)
+
+    let primaryColor = theme.factionTheme.primary
+    let secondaryColor = theme.factionTheme.secondary
+    let backgroundColor = theme.factionTheme.background
+    let price = buyoutPrice
+    let priceLabel = "PRICE"
+    let listingTypeLabel = "BUY NOW"
+    let ctaLabel = "BUY NOW"
+    let Icon = SvgWallet
+
+    if (auction) {
+        primaryColor = colors.auction
+        secondaryColor = "#FFFFFF"
+        backgroundColor = shadeColor(colors.auction, -97)
+        price = auctionCurrentPrice
+        priceLabel = "CURRENT BID"
+        listingTypeLabel = "AUCTION"
+        ctaLabel = "PLACE BID"
+        Icon = SvgHammer
+    }
+
+    if (dutch_auction) {
+        primaryColor = colors.dutchAuction
+        secondaryColor = "#FFFFFF"
+        backgroundColor = shadeColor(colors.dutchAuction, -97)
+        price = buyoutPrice.minus(dutchAuctionDropBy.multipliedBy(timeDiff(created_at, new Date()).hours))
+        priceLabel = "CURRENT PRICE"
+        listingTypeLabel = "DUTCH AUCTION"
+        Icon = SvgHammer
+    }
+
+    if (buyout) {
+        priceLabel = "FIXED PRICE"
+    }
+
+    return {
+        primaryColor,
+        secondaryColor,
+        backgroundColor,
+        price,
+        priceLabel,
+        ctaLabel,
+        listingTypeLabel,
+        Icon,
+    }
 }

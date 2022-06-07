@@ -1,19 +1,27 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState, SyntheticEvent } from "react"
+import { useState, SyntheticEvent, useEffect, useCallback } from "react"
+import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
 import { MysteryCrates } from "../components/Storefront/MysteryCrates/MysteryCrates"
 import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
+import { ROUTES_MAP } from "../routes"
 import { fonts, siteZIndex } from "../theme/theme"
 
-type tabs = "mystery-crates" | "skins" | "merchandise"
+export enum STOREFRONT_TABS {
+    MysteryCrates = "mystery-crates",
+    Skins = "skins",
+    Abilities = "abilities",
+    Merchandise = "merchandise",
+}
 
 export const StorefrontPage = () => {
     const { userID } = useAuth()
 
     return (
         <Stack
+            alignItems="center"
             sx={{
                 height: "100%",
                 zIndex: siteZIndex.RoutePage,
@@ -21,6 +29,7 @@ export const StorefrontPage = () => {
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
+                boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
             {!userID ? (
@@ -39,27 +48,41 @@ export const StorefrontPage = () => {
 
 const StorefrontPageInner = () => {
     const theme = useTheme()
-    const [currentValue, setCurrentValue] = useState<tabs>("mystery-crates")
+    const location = useLocation()
+    const history = useHistory()
+    const { type } = useParams<{ type: STOREFRONT_TABS }>()
+    const [currentValue, setCurrentValue] = useState<STOREFRONT_TABS>()
 
-    const handleChange = (event: SyntheticEvent, newValue: tabs) => {
-        setCurrentValue(newValue)
-    }
+    // Make sure that the param route is correct, fix it if invalid
+    useEffect(() => {
+        if (Object.values(STOREFRONT_TABS).includes(type)) return setCurrentValue(type)
+        history.replace(`${ROUTES_MAP.storefront.path.replace(":type", STOREFRONT_TABS.MysteryCrates)}${location.hash}`)
+    }, [history, location.hash, location.pathname, type])
+
+    const handleChange = useCallback(
+        (event: SyntheticEvent, newValue: STOREFRONT_TABS) => {
+            setCurrentValue(newValue)
+            history.push(`${ROUTES_MAP.storefront.path.replace(":type", newValue)}${location.hash}`)
+        },
+        [history, location.hash],
+    )
+
+    if (!currentValue) return null
 
     return (
         <>
-            <Stack sx={{ m: "1.5rem", height: "100%" }}>
-                <Box sx={{ width: "fit-content", mb: ".8rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
+            <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
+                <Box sx={{ maxWidth: "fit-content", mb: "1rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
                     <Tabs
                         value={currentValue}
                         onChange={handleChange}
                         variant="scrollable"
                         scrollButtons="auto"
                         sx={{
-                            width: "fit-content",
                             flexShrink: 0,
                             color: (theme) => theme.factionTheme.primary,
                             minHeight: 0,
-                            ".MuiTab-root": { minHeight: 0, fontSize: "1.2rem", py: "1rem" },
+                            ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", py: ".8rem" },
                             ".Mui-selected": {
                                 color: (theme) => `${theme.factionTheme.secondary} !important`,
                                 backgroundColor: (theme) => `${theme.factionTheme.primary}CC !important`,
@@ -67,20 +90,54 @@ const StorefrontPageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="MYSTERY CRATES" value="mystery-crates" />
-                        <Tab label="SKINS" value="skins" />
-                        <Tab label="MERCHANDISE" value="merchandise" />
+                        <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
+                        <Tab
+                            label={
+                                <>
+                                    SKINS
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            value={STOREFRONT_TABS.Skins}
+                            disabled
+                        />
+                        <Tab
+                            label={
+                                <>
+                                    ABILITIES
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={STOREFRONT_TABS.Abilities}
+                        />
+                        <Tab
+                            label={
+                                <>
+                                    MERCHANDISE
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={STOREFRONT_TABS.Merchandise}
+                        />
                     </Tabs>
                 </Box>
 
-                <TabPanel currentValue={currentValue} value="mystery-crates">
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.MysteryCrates}>
                     <MysteryCrates />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value="skins">
-                    SKINS
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Skins}>
+                    COMING SOON!
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value="merchandise">
-                    MERCHANDISE
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
+                    COMING SOON!
+                </TabPanel>
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Merchandise}>
+                    COMING SOON!
                 </TabPanel>
             </Stack>
         </>
@@ -89,8 +146,8 @@ const StorefrontPageInner = () => {
 
 interface TabPanelProps {
     children?: React.ReactNode
-    value: tabs
-    currentValue: tabs
+    value: STOREFRONT_TABS
+    currentValue: STOREFRONT_TABS
 }
 
 const TabPanel = (props: TabPanelProps) => {
@@ -99,7 +156,7 @@ const TabPanel = (props: TabPanelProps) => {
     if (currentValue === value) {
         return (
             <Fade in>
-                <Box id={`hangar-tabpanel-${value}`} sx={{ flex: 1 }}>
+                <Box id={`storefront-tabpanel-${value}`} sx={{ flex: 1 }}>
                     {children}
                 </Box>
             </Fade>

@@ -37,17 +37,5 @@ export const LogoutButton = () => {
 
     if (!userID) return null
 
-    return (
-        <NavButton
-            onClick={onClick}
-            startIcon={<SvgLogout sx={{ pb: ".5rem" }} size="1.6rem" />}
-            sx={{
-                ":hover": {
-                    backgroundColor: colors.red,
-                },
-            }}
-        >
-            Logout
-        </NavButton>
-    )
+    return <NavButton onClick={onClick} startIcon={<SvgLogout sx={{ pb: ".5rem" }} size="1.6rem" />} text="Logout" hoverBackgroundColor={colors.red} />
 }

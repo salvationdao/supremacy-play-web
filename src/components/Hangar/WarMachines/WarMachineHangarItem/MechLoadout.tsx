@@ -117,7 +117,7 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?:
                     },
                     sx: { height: "100%" },
                 }}
-                sx={{ height: "100%", color: primaryColor, p: ".5rem", minWidth: 0 }}
+                sx={{ height: "100%", color: primaryColor, p: ".8rem", minWidth: 0 }}
                 innerSx={{ p: 0 }}
                 onClick={() => alert("TODO: open loadout menu modal.")}
             >
@@ -142,8 +142,8 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?:
                     position: "absolute",
                     right: ".4rem",
                     bottom: ".2rem",
-                    pl: ".4rem",
-                    pt: ".2rem",
+                    pl: ".3rem",
+                    pt: ".3rem",
                     opacity: 0.82,
                     borderTopLeftRadius: "50%",
                     backgroundColor: "#000000DD",

@@ -24,7 +24,7 @@ export const Controls = () => {
                 pr: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
-                backgroundColor: (theme) => theme.factionTheme.background,
+                background: (theme) => `linear-gradient(#FFFFFF03 26%, ${theme.factionTheme.background})`,
                 zIndex: siteZIndex.Controls,
                 overflowX: "auto",
                 overflowY: "hidden",

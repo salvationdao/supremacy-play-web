@@ -1,39 +1,42 @@
-import { Stack, Box, Button, SxProps, Theme } from "@mui/material"
-import { colors, fonts } from "../../../../theme/theme"
+import { Stack, Typography } from "@mui/material"
+import { FancyButton } from "../../.."
+import { fonts } from "../../../../theme/theme"
 
 interface NavButtonProps {
     href?: string
-    active?: boolean
-    sx?: SxProps<Theme>
     startIcon?: React.ReactNode
-    onClick?: React.MouseEventHandler<HTMLAnchorElement>
+    text: string
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+    hoverBackgroundColor?: string
 }
 
-export const NavButton: React.FC<NavButtonProps> = ({ href, active, sx, startIcon, onClick, children }) => {
+export const NavButton: React.FC<NavButtonProps> = ({ href, startIcon, text, onClick, hoverBackgroundColor }) => {
     return (
-        <Button
-            sx={{
-                alignItems: "center",
-                justifyContent: "start",
-                fontFamily: fonts.nostromoBold,
-                px: "1.2rem",
-                pt: ".9rem",
-                pb: ".6rem",
-                color: "#FFFFFF",
-                backgroundColor: active ? colors.darkNavyBlue : undefined,
-                ":hover": {
-                    backgroundColor: "#FFFFFF20",
-                },
-                ...sx,
+        <FancyButton
+            tabIndex={0}
+            excludeCaret
+            clipThingsProps={{
+                clipSize: "9px",
+                opacity: 1,
+                sx: { position: "relative" },
             }}
+            sx={{ px: "1.6rem", py: ".4rem", color: hoverBackgroundColor }}
             href={href || ""}
             target={href ? "_blank" : undefined}
             onClick={onClick}
         >
             <Stack spacing="1rem" direction="row" alignItems="center">
                 {startIcon}
-                <Box>{children}</Box>
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: "#FFFFFF",
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    {text}
+                </Typography>
             </Stack>
-        </Button>
+        </FancyButton>
     )
 }

@@ -33,7 +33,7 @@ export const WarMachineDestroyedInfo = ({
                 setWarMachineDestroyedRecord(resp.payload)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve mech destroyed info.", "error")
-                console.debug(e)
+                console.error(e)
             }
         })()
     }, [newSnackbarMessage, queryGetMechDestroyedInfo, warMachine.id])
@@ -113,15 +113,15 @@ export const WarMachineDestroyedInfo = ({
                     transform: "translate(-50%, -50%)",
                     width: "63rem",
                     border: "none",
-                    outline: "none",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing
                     clipSize="8px"
                     border={{
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".2rem",
+                        borderThickness: ".3rem",
                     }}
                     backgroundColor={theme.factionTheme.background}
                 >
@@ -156,7 +156,7 @@ const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imag
             <ClipThing
                 clipSize="6px"
                 border={{
-                    borderThickness: ".15rem",
+                    borderThickness: ".2rem",
                     borderColor: color,
                 }}
                 innerSx={{ background: `linear-gradient(${color}, #000000)` }}

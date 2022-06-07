@@ -23,13 +23,14 @@ export const PreferencesModal = ({ onClose, setTelegramShortcode }: PreferencesM
                     transform: "translate(-50%, -50%)",
                     width: "54rem",
                     boxShadow: 24,
+                    outline: "none",
                 }}
             >
                 <ClipThing
                     clipSize="8px"
                     border={{
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".2rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}

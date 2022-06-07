@@ -65,6 +65,9 @@ export const colors = {
     supsCredit: "#01FF70",
     supsDebit: "#FF4136",
 
+    auction: "#E04F00",
+    dutchAuction: "#D96900",
+
     rarity: {
         MEGA: "#e84234",
         COLOSSAL: "#b43328",
@@ -180,24 +183,24 @@ export const theme = createTheme({
         },
         body1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.5rem",
+            fontSize: "1.6rem",
         },
         body2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.28rem",
+            fontSize: "1.4rem",
         },
         subtitle1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
+            fontSize: "1.3rem",
             textAlign: "center",
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
+            fontSize: "1.3rem",
         },
         caption: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.16rem",
+            fontSize: "1.2rem",
         },
     },
     components: {

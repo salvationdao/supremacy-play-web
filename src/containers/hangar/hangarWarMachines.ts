@@ -9,6 +9,7 @@ export const HangarWarMachineContainer = createContainer(() => {
     const [leaveMechDetails, setLeaveMechDetails] = useState<MechDetails>()
     const [historyMechDetails, setHistoryMechDetails] = useState<MechDetails>()
     const [rentalMechDetails, setRentalMechDetails] = useState<MechDetails>()
+    const [sellMechDetails, setSellMechDetails] = useState<MechDetails>()
 
     return {
         // Mech viewer
@@ -22,6 +23,8 @@ export const HangarWarMachineContainer = createContainer(() => {
         setHistoryMechDetails,
         rentalMechDetails,
         setRentalMechDetails,
+        sellMechDetails,
+        setSellMechDetails,
     }
 })
 

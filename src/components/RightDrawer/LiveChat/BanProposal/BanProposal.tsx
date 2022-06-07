@@ -124,7 +124,7 @@ const BanProposalInner = ({
                         <FancyButton
                             excludeCaret
                             clipThingsProps={{
-                                clipSize: "4px",
+                                clipSize: "5px",
                                 backgroundColor: colors.darkNavyBlue,
                                 border: { borderColor: userRank !== "GENERAL" ? "#FFFFFF90" : "#FFFFFF", borderThickness: "2px" },
                                 sx: { flex: 1.6, position: "relative" },
@@ -145,7 +145,7 @@ const BanProposalInner = ({
                     <FancyButton
                         excludeCaret
                         clipThingsProps={{
-                            clipSize: "4px",
+                            clipSize: "5px",
                             backgroundColor: colors.green,
                             border: { borderColor: colors.green, borderThickness: "2px" },
                             sx: { flex: 1, position: "relative" },
@@ -159,7 +159,7 @@ const BanProposalInner = ({
                     <FancyButton
                         excludeCaret
                         clipThingsProps={{
-                            clipSize: "4px",
+                            clipSize: "5px",
                             backgroundColor: colors.red,
                             border: { borderColor: colors.red, borderThickness: "2px" },
                             sx: { flex: 1, position: "relative" },

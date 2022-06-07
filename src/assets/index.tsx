@@ -21,6 +21,7 @@ import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
+import Search from "!react-svg-loader!./svg/Search.svg"
 import Support from "!react-svg-loader!./svg/Support.svg"
 import Microchip from "!react-svg-loader!./svg/Microchip.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
@@ -80,6 +81,7 @@ import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import Copy from "!@svgr/webpack!./svg/Copy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
+import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
@@ -108,6 +110,7 @@ import GenericWarMachinePNG from "./images/GenericWarMachine.png"
 import SupremacyPNG from "./images/Supremacy.png"
 import FlamesPNG from "./images/Flames.png"
 import MaintenancePNG from "./images/Maintenance.png"
+import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import LogoWEBP from "./images/Logo.webp"
 import BottomMechWEBP from "./images/BottomMech.webp"
@@ -181,6 +184,7 @@ export {
     Gabs,
     EmptyWarMachinesPNG,
     SafePNG,
+    WarMachineIconPNG,
 }
 
 export interface SvgWrapperProps extends BoxProps {
@@ -871,5 +875,17 @@ export const SvgUtilities: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgWeapons: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Weapons />
+    </SvgWrapper>
+)
+
+export const SvgHammer: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Hammer />
+    </SvgWrapper>
+)
+
+export const SvgSearch: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Search />
     </SvgWrapper>
 )

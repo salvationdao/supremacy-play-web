@@ -20,13 +20,14 @@ export const TutorialModal = () => {
                     transform: "translate(-50%, -50%)",
                     maxWidth: "50rem",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing
                     clipSize="8px"
                     border={{
                         borderColor: "#FFFFFF",
-                        borderThickness: ".2rem",
+                        borderThickness: ".3rem",
                     }}
                     backgroundColor={colors.darkNavyBlue}
                 >
@@ -71,6 +72,7 @@ export const TutorialModal = () => {
                             >
                                 <Typography sx={{ color: colors.darkNavy, fontFamily: fonts.nostromoBlack }}>Tutorial</Typography>
                             </Button>
+
                             <Button
                                 variant="outlined"
                                 onClick={() => {

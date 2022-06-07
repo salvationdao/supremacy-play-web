@@ -3,16 +3,19 @@ import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
 import { StorefrontPage } from "../pages/Storefront"
+import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 
 interface RouteStruct {
     id: string
     path: string
     exact: boolean
-    Component?: () => JSX.Element
-    showInLeftDrawer?: boolean
-    enable?: boolean
-    label: string
-    requireAuth?: boolean
+    Component?: () => JSX.Element | null
+    leftDrawer?: {
+        enable: boolean
+        label: string
+        requireAuth?: boolean
+    }
+    matchLeftDrawerID?: string
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
@@ -21,60 +24,73 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/",
         exact: true,
         Component: BattleArenaPage,
-        showInLeftDrawer: true,
-        enable: true,
-        label: "Battle Arena",
-        requireAuth: false,
+        leftDrawer: {
+            enable: true,
+            label: "Battle Arena",
+            requireAuth: false,
+        },
+        matchLeftDrawerID: "home",
     },
     hangar: {
         id: "hangar",
-        path: "/hangar",
+        path: "/hangar/:type?",
         exact: true,
         Component: HangarPage,
-        showInLeftDrawer: true,
-        enable: true,
-        label: "Hangar",
-        requireAuth: true,
+        leftDrawer: {
+            enable: true,
+            label: "Hangar",
+            requireAuth: true,
+        },
+        matchLeftDrawerID: "hangar",
     },
     storefront: {
         id: "storefront",
-        path: "/storefront",
+        path: "/storefront/:type?",
         exact: true,
         Component: StorefrontPage,
-        showInLeftDrawer: true,
-        enable: true,
-        label: "Storefront",
-        requireAuth: true,
+        leftDrawer: {
+            enable: true,
+            label: "Storefront",
+            requireAuth: true,
+        },
+        matchLeftDrawerID: "storefront",
+    },
+    marketplace_item: {
+        id: "marketplace_item",
+        path: "/marketplace/:type/:id",
+        exact: true,
+        Component: MarketplaceItemPage,
+        matchLeftDrawerID: "marketplace",
     },
     marketplace: {
         id: "marketplace",
-        path: "/marketplace",
+        path: "/marketplace/:type?",
         exact: true,
         Component: MarketplacePage,
-        showInLeftDrawer: true,
-        enable: true,
-        label: "Marketplace",
-        requireAuth: false,
+        leftDrawer: {
+            enable: true,
+            label: "Marketplace",
+            requireAuth: true,
+        },
+        matchLeftDrawerID: "marketplace",
     },
     contracts: {
         id: "contracts",
         path: "/contracts",
         exact: true,
         Component: undefined,
-        showInLeftDrawer: true,
-        enable: false,
-        label: "Contracts",
-        requireAuth: false,
+        leftDrawer: {
+            enable: false,
+            label: "Contracts",
+            requireAuth: false,
+        },
+        matchLeftDrawerID: "contracts",
     },
     not_found_page: {
         id: "not_found_page",
         path: "/404",
         exact: false,
         Component: NotFoundPage,
-        showInLeftDrawer: false,
-        enable: false,
-        label: "",
-        requireAuth: false,
     },
 }
 
@@ -92,7 +108,7 @@ interface HashRouteStruct {
     hash: string
     Component?: () => JSX.Element
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    enable?: boolean
+    enable: boolean
     label: string
 }
 

@@ -1,9 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { Enlist, FancyButton, Logo, ProfileCard, WalletDetails } from ".."
+import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useAuth, useSnackbar, useSupremacy } from "../../containers"
-import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -38,7 +37,7 @@ export const Bar = () => {
                 flexShrink: 0,
                 height: `${GAME_BAR_HEIGHT}rem`,
                 color: "#FFFFFF",
-                backgroundColor: (theme) => theme.factionTheme.background,
+                background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
                 scrollbarWidth: "none",
                 zIndex: siteZIndex.Popover,
                 "::-webkit-scrollbar": {
@@ -62,7 +61,6 @@ export const Bar = () => {
 }
 
 const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
-    const theme = useTheme()
     const { isServerUp } = useSupremacy()
     const [showSaleAbilities, toggleShowSaleAbilities] = useToggle()
 
@@ -88,30 +86,6 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <HowToPlay />
             {userID && (
                 <>
-                    {DEV_ONLY && (
-                        <FancyButton
-                            excludeCaret
-                            clipThingsProps={{
-                                clipSize: "5px",
-                                opacity: 0.6,
-                                backgroundColor: theme.factionTheme.background,
-                                border: { isFancy: true, borderColor: theme.factionTheme.primary },
-                                sx: { mr: "1rem", position: "relative", flexShrink: 0 },
-                            }}
-                            sx={{ px: "1.6rem", py: ".4rem", color: theme.factionTheme.primary }}
-                            onClick={() => toggleShowSaleAbilities(true)}
-                        >
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    color: theme.factionTheme.primary,
-                                    fontFamily: fonts.nostromoBold,
-                                }}
-                            >
-                                PURCHASE ABILITIES
-                            </Typography>
-                        </FancyButton>
-                    )}
                     <Enlist />
                     <WalletDetails />
                 </>

@@ -1,19 +1,26 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState, SyntheticEvent } from "react"
+import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
 import { useTheme } from "../containers/theme"
 import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
 import { useAuth } from "../containers"
 import { fonts, siteZIndex } from "../theme/theme"
+import { useHistory, useLocation, useParams } from "react-router-dom"
+import { ROUTES_MAP } from "../routes"
 
-type tabs = "war-machines" | "weapons" | "attachments" | "paint-jobs"
+export enum HANGAR_TABS {
+    WarMachines = "war-machines",
+    MysteryCrates = "mystery-crates",
+    KeyCards = "key-cards",
+}
 
 export const HangarPage = () => {
     const { userID } = useAuth()
 
     return (
         <Stack
+            alignItems="center"
             sx={{
                 height: "100%",
                 zIndex: siteZIndex.RoutePage,
@@ -21,6 +28,7 @@ export const HangarPage = () => {
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
+                boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
             {!userID ? (
@@ -39,27 +47,41 @@ export const HangarPage = () => {
 
 const HangarPageInner = () => {
     const theme = useTheme()
-    const [currentValue, setCurrentValue] = useState<tabs>("war-machines")
+    const location = useLocation()
+    const history = useHistory()
+    const { type } = useParams<{ type: HANGAR_TABS }>()
+    const [currentValue, setCurrentValue] = useState<HANGAR_TABS>()
 
-    const handleChange = (event: SyntheticEvent, newValue: tabs) => {
-        setCurrentValue(newValue)
-    }
+    // Make sure that the param route is correct, fix it if invalid
+    useEffect(() => {
+        if (Object.values(HANGAR_TABS).includes(type)) return setCurrentValue(type)
+        history.replace(`${ROUTES_MAP.hangar.path.replace(":type", HANGAR_TABS.WarMachines)}${location.hash}`)
+    }, [history, location.hash, location.pathname, type])
+
+    const handleChange = useCallback(
+        (event: SyntheticEvent, newValue: HANGAR_TABS) => {
+            setCurrentValue(newValue)
+            history.push(`${ROUTES_MAP.hangar.path.replace(":type", newValue)}${location.hash}`)
+        },
+        [history, location.hash],
+    )
+
+    if (!currentValue) return null
 
     return (
         <>
-            <Stack sx={{ m: "1.5rem", height: "100%" }}>
-                <Box sx={{ width: "fit-content", mb: ".8rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
+            <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "193rem" }}>
+                <Box sx={{ maxWidth: "fit-content", mb: "1rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
                     <Tabs
                         value={currentValue}
                         onChange={handleChange}
                         variant="scrollable"
                         scrollButtons="auto"
                         sx={{
-                            width: "fit-content",
                             flexShrink: 0,
                             color: (theme) => theme.factionTheme.primary,
                             minHeight: 0,
-                            ".MuiTab-root": { minHeight: 0, fontSize: "1.2rem", py: "1rem" },
+                            ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", py: ".8rem" },
                             ".Mui-selected": {
                                 color: (theme) => `${theme.factionTheme.secondary} !important`,
                                 backgroundColor: (theme) => `${theme.factionTheme.primary}CC !important`,
@@ -67,24 +89,40 @@ const HangarPageInner = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="WAR MACHINE" value="war-machines" />
-                        <Tab label="WEAPONS" value="weapons" />
-                        <Tab label="ATTACHMENTS" value="attachments" />
-                        <Tab label="PAINT JOBS" value="paint-jobs" />
+                        <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
+                        <Tab
+                            label={
+                                <>
+                                    MYSTERY CRATES
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={HANGAR_TABS.MysteryCrates}
+                        />
+                        <Tab
+                            label={
+                                <>
+                                    KEY CARDS
+                                    <br />
+                                    <span>(COMING SOON)</span>
+                                </>
+                            }
+                            disabled
+                            value={HANGAR_TABS.KeyCards}
+                        />
                     </Tabs>
                 </Box>
 
-                <TabPanel currentValue={currentValue} value={"war-machines"}>
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
                     <WarMachines />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={"weapons"}>
-                    WEAPONS
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
+                    COMING SOON!
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={"attachments"}>
-                    ATTACHMENTS
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value={"paint-jobs"}>
-                    PAINT JOBS
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.KeyCards}>
+                    COMING SOON!
                 </TabPanel>
             </Stack>
         </>
@@ -93,8 +131,8 @@ const HangarPageInner = () => {
 
 interface TabPanelProps {
     children?: React.ReactNode
-    value: tabs
-    currentValue: tabs
+    value: HANGAR_TABS
+    currentValue: HANGAR_TABS
 }
 
 const TabPanel = (props: TabPanelProps) => {

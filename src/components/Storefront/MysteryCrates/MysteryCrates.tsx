@@ -1,4 +1,4 @@
-import { Box, Divider, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useState, useEffect, useMemo } from "react"
 import { ClipThing } from "../.."
 import { SafePNG } from "../../../assets"
@@ -18,6 +18,7 @@ export const MysteryCrates = () => {
     const theme = useTheme()
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
+    const [loadError, setLoadError] = useState<string>()
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
 
     const enlargedView = crates ? crates.length <= 2 : false
@@ -33,34 +34,43 @@ export const MysteryCrates = () => {
                 })
 
                 if (!resp) return
+                setLoadError(undefined)
                 setCrates(resp)
             } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
-                console.debug(e)
+                const message = typeof e === "string" ? e : "Failed to get mystery crates."
+                setLoadError(message)
+                newSnackbarMessage(message, "error")
+                console.error(e)
             } finally {
                 setIsLoading(false)
             }
         })()
     }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<MysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
-                    page,
-                    page_size: pageSize,
-                })
-
-                if (!resp) return
-                setCrates(resp)
-            } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to subscribe to war machines.", "error")
-                console.debug(e)
-            }
-        })()
-    }, [page, pageSize, send, newSnackbarMessage])
-
     const content = useMemo(() => {
+        if (loadError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {loadError}
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
         if (!crates || isLoading) {
             return (
                 <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
@@ -78,16 +88,16 @@ export const MysteryCrates = () => {
                         width: "100%",
                         pt: ".5rem",
                         display: "grid",
-                        gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(60rem, 46%))" : "repeat(auto-fill, minmax(32rem, 1fr))",
-                        gap: enlargedView ? "4rem" : "2.4rem",
+                        gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(58rem, 40%))" : "repeat(auto-fill, minmax(32rem, 1fr))",
+                        gap: enlargedView ? "5rem" : "2.4rem",
                         alignItems: "center",
                         justifyContent: "center",
                         height: enlargedView ? "100%" : 0,
                         overflow: "visible",
                     }}
                 >
-                    {crates.map((crate) => (
-                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}`} enlargedView={enlargedView} crate={crate} />
+                    {crates.map((crate, index) => (
+                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
                     ))}
                 </Box>
             )
@@ -104,7 +114,7 @@ export const MysteryCrates = () => {
                             filter: "grayscale(100%)",
                             background: `url(${SafePNG})`,
                             backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
+                            backgroundPosition: "top center",
                             backgroundSize: "contain",
                         }}
                     />
@@ -124,7 +134,7 @@ export const MysteryCrates = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, enlargedView, isLoading])
+    }, [crates, enlargedView, isLoading, loadError])
 
     return (
         <ClipThing
@@ -143,14 +153,24 @@ export const MysteryCrates = () => {
             sx={{ height: "100%" }}
         >
             <Stack sx={{ position: "relative", height: "100%" }}>
-                <Stack spacing="2rem" sx={{ flex: 1, px: "2rem", py: "2.2rem" }}>
-                    <Stack direction="row" alignItems="flex-start">
+                <Stack sx={{ flex: 1 }}>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        sx={{
+                            px: "2rem",
+                            py: "2.2rem",
+                            backgroundColor: "#00000070",
+                            borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                        }}
+                    >
                         <Box
                             sx={{
+                                alignSelf: "flex-start",
                                 flexShrink: 0,
                                 mr: "1.2rem",
                                 width: "6.5rem",
-                                height: "6.5rem",
+                                height: "5rem",
                                 background: `url(${SafePNG})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",
@@ -169,41 +189,44 @@ export const MysteryCrates = () => {
                                 ml: "auto",
                                 px: "1.6rem",
                                 py: ".8rem",
+                                backgroundColor: `${colors.neonBlue}10`,
                                 border: `${colors.neonBlue} 2px dashed`,
                                 animation: `${zoomEffect(1.01)} 3s infinite`,
                             }}
                         >
-                            <Typography sx={{ textAlign: "center", color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>LIMITED AMOUNTS</Typography>
+                            <Typography sx={{ textAlign: "center", color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>ONLY 20,000 AVAILABLE</Typography>
                         </Box>
                     </Stack>
 
-                    <Divider />
-
-                    <Box
-                        sx={{
-                            my: ".8rem",
-                            ml: ".8rem",
-                            pr: "1.5rem",
-                            flex: 1,
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: theme.factionTheme.primary,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        {content}
-                    </Box>
+                    <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                        <Box
+                            sx={{
+                                mt: ".1rem",
+                                mb: ".8rem",
+                                ml: ".8rem",
+                                pl: "1rem",
+                                pr: "1.5rem",
+                                flex: 1,
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                direction: "ltr",
+                                scrollbarWidth: "none",
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: theme.factionTheme.primary,
+                                    borderRadius: 3,
+                                },
+                            }}
+                        >
+                            {content}
+                        </Box>
+                    </Stack>
                 </Stack>
 
                 {totalPages > 1 && (

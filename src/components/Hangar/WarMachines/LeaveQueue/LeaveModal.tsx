@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../.."
 import { useSnackbar } from "../../../../containers"
@@ -10,31 +10,34 @@ import { MechModal } from "../Common/MechModal"
 
 export const LeaveModal = () => {
     const { newSnackbarMessage } = useSnackbar()
-    const { send: sendFactionCommander } = useGameServerCommandsFaction("/faction_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { leaveMechDetails, setLeaveMechDetails } = useHangarWarMachine()
+    const [isLoading, setIsLoading] = useState(false)
     const [leaveQueueError, setLeaveQueueError] = useState<string>()
+
+    const onClose = useCallback(() => {
+        setLeaveMechDetails(undefined)
+        setLeaveQueueError(undefined)
+    }, [setLeaveQueueError, setLeaveMechDetails])
 
     const onLeaveQueue = useCallback(
         async (hash: string) => {
             try {
-                const resp = await sendFactionCommander(GameServerKeys.LeaveQueue, { asset_hash: hash })
+                setIsLoading(true)
+                const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: hash })
                 if (resp) {
                     newSnackbarMessage("Successfully removed war machine from queue.", "success")
-                    setLeaveMechDetails(undefined)
-                    setLeaveQueueError("")
+                    onClose()
                 }
             } catch (e) {
                 setLeaveQueueError(typeof e === "string" ? e : "Failed to leave queue.")
                 console.error(e)
+            } finally {
+                setIsLoading(false)
             }
         },
-        [newSnackbarMessage, sendFactionCommander, setLeaveMechDetails],
+        [newSnackbarMessage, send, onClose],
     )
-
-    const onClose = useCallback(() => {
-        setLeaveMechDetails(undefined)
-        setLeaveQueueError("")
-    }, [setLeaveQueueError, setLeaveMechDetails])
 
     if (!leaveMechDetails) return null
 
@@ -43,13 +46,14 @@ export const LeaveModal = () => {
     return (
         <MechModal mechDetails={leaveMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
-                <Typography sx={{ fontSize: "1.6rem", strong: { color: colors.neonBlue } }}>
+                <Typography sx={{ strong: { color: colors.neonBlue } }}>
                     Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle queue? Your will be refunded the initial queuing
                     fee.
                 </Typography>
 
-                <Stack direction="row" spacing="2rem" alignItems="center" sx={{ mt: "auto" }}>
+                <Box sx={{ mt: "auto" }}>
                     <FancyButton
+                        loading={isLoading}
                         excludeCaret
                         clipThingsProps={{
                             clipSize: "5px",
@@ -64,7 +68,7 @@ export const LeaveModal = () => {
                             LEAVE QUEUE
                         </Typography>
                     </FancyButton>
-                </Stack>
+                </Box>
 
                 {leaveQueueError && (
                     <Typography

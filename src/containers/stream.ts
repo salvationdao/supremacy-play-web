@@ -274,13 +274,13 @@ export const StreamContainer = createContainer(() => {
                     },
                     callbackError: (e: string) => {
                         if (e === "no_stream_exist" || e === "WebSocketNotConnected") {
-                            console.debug("Failed to start stream:", e)
+                            console.error("Failed to start stream:", e)
                             newSnackbarMessage("Failed to start stream.", "error")
                         }
                     },
                 })
             } catch (e) {
-                console.debug(e)
+                console.error(e)
                 webRtc.current = undefined
             }
         },

@@ -19,7 +19,7 @@ export const DrawerButtons = () => {
                 height: "100%",
                 overflow: "hidden",
                 width: `${DRAWER_BAR_WIDTH}rem`,
-                backgroundColor: (theme) => theme.factionTheme.background,
+                background: (theme) => `linear-gradient(to right, #FFFFFF06 26%, ${theme.factionTheme.background})`,
                 zIndex: siteZIndex.RightDrawer,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
@@ -34,14 +34,13 @@ export const DrawerButtons = () => {
                 },
             }}
         >
-            <Tabs value="" orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
+            <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {HASH_ROUTES_ARRAY.map((r) => {
                     return (
                         <TabButton
                             key={r.id}
                             label={r.label}
                             enable={!!r.enable}
-                            value=""
                             icon={r.icon}
                             onClick={() => {
                                 if (location.hash === r.hash) {

@@ -287,7 +287,7 @@ export const UserUpdater = () => {
                     fruit: a ? "APPLE" : "BANANA",
                 })
             } catch (e) {
-                console.debug(e)
+                console.error(e)
             }
         },
         [send],

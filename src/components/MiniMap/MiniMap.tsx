@@ -216,8 +216,8 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                 display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                                 pointerEvents: "all",
                                 position: "absolute",
-                                top: ".75rem",
-                                left: "1.15rem",
+                                top: "1rem",
+                                left: "1.65rem",
                                 cursor: "nwse-resize",
                                 color: colors.text,
                                 opacity: 0.8,
@@ -235,7 +235,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                             clipSize="10px"
                             border={{
                                 isFancy: true,
-                                borderThickness: ".2rem",
+                                borderThickness: ".3rem",
                                 borderColor: mainColor,
                             }}
                             backgroundColor={colors.darkNavy}

@@ -79,7 +79,7 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
                             right: "3rem",
                             zIndex: 9,
                             backgroundColor: colors.darkNavy,
-                            borderRadius: 0.7,
+                            borderRadius: 0.4,
                             fontFamily: fonts.nostromoBold,
                             ":hover": { opacity: 0.8, backgroundColor: colors.darkNavy },
                             ":disabled": {

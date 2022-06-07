@@ -41,12 +41,13 @@ const TabbedLayout = () => {
         faction_id = null
         primaryColor = colors.globalChat
         secondaryColor = "#FFFFFF"
-        bannerBackgroundColor = shadeColor(colors.globalChat, -30)
+        bannerBackgroundColor = shadeColor(primaryColor, -30)
     } else if (tabValue == 1 && isEnlisted) {
         faction_id = factionID
         primaryColor = theme.factionTheme.primary
         secondaryColor = theme.factionTheme.secondary
-        bannerBackgroundColor = `${primaryColor}25`
+        // bannerBackgroundColor = `${primaryColor}25`
+        bannerBackgroundColor = shadeColor(primaryColor, -60)
     } else {
         return null
     }
@@ -72,7 +73,8 @@ const TabbedLayout = () => {
                 variant="fullWidth"
                 sx={{
                     height: `${5}rem`,
-                    background: bannerBackgroundColor,
+                    // background: bannerBackgroundColor,
+                    background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}90)`,
                     boxShadow: 1,
                     zIndex: 9,
                     ".MuiButtonBase-root": {

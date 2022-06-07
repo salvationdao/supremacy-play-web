@@ -25,6 +25,8 @@ export const HistoryModal = () => {
 
     const onClose = useCallback(() => {
         setHistoryMechDetails(undefined)
+        setStatsError(undefined)
+        setHistoryError(undefined)
     }, [setHistoryMechDetails])
 
     const fetchHistory = useCallback(async () => {

@@ -98,7 +98,18 @@ export enum GameServerKeys {
     // Storefront
     GetMysteryCrates = "STORE:MYSTERY:CRATES",
     SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",
-    MysteryCratePurchase = "STORE:MYSTERY:CRATE:PURCHASE",
+    PurchaseMysteryCrate = "STORE:MYSTERY:CRATE:PURCHASE",
+
+    // Marketplace
+    MarketplaceSalesList = "MARKETPLACE:SALES:LIST",
+    MarketplaceSalesGet = "MARKETPLACE:SALES:GET",
+    MarketplaceSalesCreate = "MARKETPLACE:SALES:CREATE",
+    MarketplaceSalesBuy = "MARKETPLACE:SALES:BUY",
+    MarketplaceSalesBid = "MARKETPLACE:SALES:BID",
+    MarketplaceSalesKeycardList = "MARKETPLACE:SALES:KEYCARD:LIST",
+    MarketplaceSalesKeycardCreate = "MARKETPLACE:SALES:KEYCARD:CREATE",
+    MarketplaceSalesKeycardBuy = "MARKETPLACE:SALES:KEYCARD:BUY",
+    GetKeycards = "PLAYER:ASSET:KEYCARD:LIST",
 }
 
 export enum PassportServerKeys {

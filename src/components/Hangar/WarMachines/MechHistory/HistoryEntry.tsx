@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { SvgDeath, SvgGoldBars } from "../../../../assets"
-import { timeSince } from "../../../../helpers"
+import { timeSinceInWords } from "../../../../helpers"
 import { fonts, colors } from "../../../../theme/theme"
 
 interface HistoryEntryProps {
@@ -77,7 +77,7 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                     <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
                 </Stack>
 
-                <Typography sx={{ color: colors.offWhite }}>{timeSince(date)} AGO</Typography>
+                <Typography sx={{ color: colors.offWhite }}>{timeSinceInWords(date, new Date())} AGO</Typography>
             </Stack>
         </Stack>
     )

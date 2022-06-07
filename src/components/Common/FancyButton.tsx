@@ -1,7 +1,8 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
 import { Box, styled, SxProps } from "@mui/system"
 import { HTMLAttributeAnchorTarget } from "react"
-import { fonts } from "../../theme/theme"
+import { mergeDeep } from "../../helpers"
+import { colors, fonts } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
 
 const Triangle = styled("div")({
@@ -23,16 +24,16 @@ interface FancyButtonProps extends LoadingButtonProps {
     target?: HTMLAttributeAnchorTarget | undefined
 }
 
-export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, ...props }: FancyButtonProps) => {
+export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, loading, ...props }: FancyButtonProps) => {
     return (
         <ClipThing
             corners={{
                 topRight: true,
                 bottomLeft: true,
             }}
-            {...clipThingsProps}
+            {...mergeDeep({ clipSlantSize: "2px", opacity: disabled ? 0.5 : 1 }, clipThingsProps)}
         >
-            {disabled && (
+            {(loading || disabled) && (
                 <Box
                     sx={{
                         position: "absolute",
@@ -51,7 +52,7 @@ export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caret
                     borderRadius: 0,
                     fontFamily: fonts.shareTech,
                     fontWeight: "fontWeightBold",
-                    color: "white",
+                    color: "#FFFFFF",
                     textTransform: "uppercase",
                     "&:focus": {
                         boxShadow: "none",
@@ -62,9 +63,13 @@ export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caret
                     "& .MuiLoadingButton-loadingIndicator": {
                         color: "#FFFFFF",
                     },
+                    ".MuiCircularProgress-root": {
+                        color: colors.offWhite,
+                    },
                     ...sx,
                 }}
                 fullWidth
+                loading={loading}
                 {...props}
             >
                 <Box sx={{ pt: ".3rem", height: "100%", width: "100%", ...innerSx }}>

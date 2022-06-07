@@ -127,13 +127,14 @@ export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => 
                             transform: "translate(-50%, -50%)",
                             width: "100%",
                             maxWidth: activateModalWidth,
+                            outline: "none",
                         }}
                     >
                         <ClipThing
                             clipSlantSize="8px"
                             border={{
                                 borderColor: playerAbility.colour,
-                                borderThickness: ".2rem",
+                                borderThickness: ".3rem",
                             }}
                             backgroundColor={colors.darkNavy}
                             sx={{ position: "relative" }}

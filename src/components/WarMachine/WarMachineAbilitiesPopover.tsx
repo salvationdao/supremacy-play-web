@@ -53,7 +53,7 @@ export const WarMachineAbilitiesPopover = ({
                     clipSlantSize="8px"
                     border={{
                         isFancy: true,
-                        borderThickness: ".14rem",
+                        borderThickness: ".2rem",
                         borderColor: faction.primary_color,
                     }}
                     opacity={0.8}

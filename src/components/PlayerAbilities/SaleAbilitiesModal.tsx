@@ -75,12 +75,13 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                             left: `calc(50vw - min(${modalWidth / 2}px, 50vw))`,
                             width: "100%",
                             maxWidth: modalWidth,
+                            outline: "none",
                         }}
                     >
                         <ClipThing
                             clipSize="8px"
                             border={{
-                                borderThickness: ".2rem",
+                                borderThickness: ".3rem",
                                 borderColor: colors.blue2,
                             }}
                             corners={{

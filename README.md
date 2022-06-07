@@ -12,7 +12,7 @@
 	border={{
 		isFancy: true,
 		borderColor: "#FF0000",
-		borderThickness: ".15rem",
+		borderThickness: ".3rem",
 	}}
 	corners={{
 		topLeft: true,
@@ -33,10 +33,10 @@
 <FancyButton
 	excludeCaret
 	clipThingsProps={{
-		clipSize: "5px",
+		clipSize: "9px",
 		backgroundColor: "#333333",
 		opacity: 1,
-		border: { isFancy: true, borderColor: "#FF0000", borderThickness: "1.5px" },
+		border: { isFancy: true, borderColor: "#FF0000", borderThickness: "2px" },
 		sx: { position: "relative" },
 	}}
 	sx={{ px: "1.6rem", py: ".6rem", color: "#FF0000" }}
@@ -46,7 +46,7 @@
 		variant="caption"
 		sx={{
 			color: "#FF0000",
-			fontFamily: fonts.nostromoBold,
+			fontFamily: fonts.nostromoBlack,
 		}}
 	>
 		GO TO ASSET STORE

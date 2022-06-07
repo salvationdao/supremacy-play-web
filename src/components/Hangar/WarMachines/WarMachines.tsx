@@ -1,4 +1,4 @@
-import { Box, IconButton, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
@@ -10,10 +10,12 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic } from "../../../types"
+import { TotalAndPageSizeOptions } from "../../Marketplace/TotalAndPageSizeOptions"
 import { DeployModal } from "./DeployQueue/DeployModal"
 import { LeaveModal } from "./LeaveQueue/LeaveModal"
 import { HistoryModal } from "./MechHistory/HistoryModal"
 import { RentalModal } from "./MechRental/RentalModal"
+import { SellModal } from "./MechSell/SellModal"
 import { MechViewer } from "./MechViewer/MechViewer"
 import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./WarMachineHangarItem/WarMachineHangarItem"
 
@@ -35,6 +37,7 @@ export const WarMachines = () => {
             <LeaveModal />
             <HistoryModal />
             <RentalModal />
+            <SellModal />
         </HangarWarMachineProvider>
     )
 }
@@ -45,6 +48,7 @@ const WarMachinesInner = () => {
     const theme = useTheme()
     const [mechs, setMechs] = useState<MechBasic[]>()
     const [isLoading, setIsLoading] = useState(true)
+    const [loadError, setLoadError] = useState<string>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
 
     // Get mechs
@@ -58,11 +62,13 @@ const WarMachinesInner = () => {
                 })
 
                 if (!resp) return
+                setLoadError(undefined)
                 setMechs(resp.mechs)
                 setTotalItems(resp.total)
             } catch (e) {
+                setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
-                console.debug(e)
+                console.error(e)
             } finally {
                 setIsLoading(false)
             }
@@ -70,6 +76,29 @@ const WarMachinesInner = () => {
     }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
 
     const content = useMemo(() => {
+        if (loadError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {loadError}
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
         if (!mechs || isLoading) {
             return (
                 <Stack spacing="1.6rem" sx={{ width: "80rem", px: "1rem", py: ".8rem", height: 0 }}>
@@ -158,7 +187,7 @@ const WarMachinesInner = () => {
                 </Stack>
             </Stack>
         )
-    }, [mechs, isLoading, theme.factionTheme])
+    }, [loadError, mechs, isLoading, theme.factionTheme.background, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
@@ -178,63 +207,13 @@ const WarMachinesInner = () => {
                 sx={{ height: "100%", width: "fit-content", minWidth: "60rem" }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        sx={{
-                            px: "1.5rem",
-                            pt: ".6rem",
-                            pb: ".3rem",
-                            backgroundColor: "#00000070",
-                            borderBottom: (theme) => `${theme.factionTheme.primary}70 1px solid`,
-                            span: {
-                                fontFamily: fonts.nostromoBold,
-                            },
-                        }}
-                    >
-                        <Typography variant="caption">
-                            <strong>DISPLAYING:</strong> {mechs?.length || 0} of {totalItems}
-                        </Typography>
-                        <Stack direction="row" spacing=".3rem" alignItems="center">
-                            <IconButton
-                                sx={{ minWidth: "3rem" }}
-                                size="small"
-                                onClick={() => {
-                                    setPageSize(5)
-                                    changePage(1)
-                                }}
-                            >
-                                <Typography variant="caption" sx={{ opacity: pageSize === 5 ? 1 : 0.3 }}>
-                                    5
-                                </Typography>
-                            </IconButton>
-                            <IconButton
-                                sx={{ minWidth: "3rem" }}
-                                size="small"
-                                onClick={() => {
-                                    setPageSize(10)
-                                    changePage(1)
-                                }}
-                            >
-                                <Typography variant="caption" sx={{ opacity: pageSize === 10 ? 1 : 0.3 }}>
-                                    10
-                                </Typography>
-                            </IconButton>
-                            <IconButton
-                                sx={{ minWidth: "3rem" }}
-                                size="small"
-                                onClick={() => {
-                                    setPageSize(15)
-                                    changePage(1)
-                                }}
-                            >
-                                <Typography variant="caption" sx={{ opacity: pageSize === 15 ? 1 : 0.3 }}>
-                                    15
-                                </Typography>
-                            </IconButton>
-                        </Stack>
-                    </Stack>
+                    <TotalAndPageSizeOptions
+                        countItems={mechs?.length}
+                        totalItems={totalItems}
+                        pageSize={pageSize}
+                        setPageSize={setPageSize}
+                        changePage={changePage}
+                    />
 
                     <Box
                         sx={{
@@ -268,7 +247,7 @@ const WarMachinesInner = () => {
                             sx={{
                                 px: "1rem",
                                 py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
                                 backgroundColor: "#00000070",
                             }}
                         >

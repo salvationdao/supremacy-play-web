@@ -324,3 +324,24 @@ export interface MysteryCrate {
     amount: number
     amount_sold: number
 }
+export interface Keycard {
+    id: string
+    player_id: string
+    blueprint_keycard_id: string
+    count: number
+    created_at: string
+    blueprints: KeycardBlueprint
+}
+
+export interface KeycardBlueprint {
+    id: string
+    label: string
+    description: string
+    collection: string
+    keycard_token_id: string
+    image_url: string
+    animation_url: string
+    keycard_group: string
+    syndicate?: string | null
+    created_at: Date
+}

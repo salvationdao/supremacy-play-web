@@ -81,13 +81,10 @@ export const ClipThing: React.FC<ClipThingProps> = ({
         [bottomLeft, bottomRight, clipSize, clipSlantSize, isSlanted, topLeft, topRight],
     )
 
-    const borderStyles: SxProps = useMemo(
-        () => ({
-            borderTopLeftRadius: "2px",
-            borderBottomRightRadius: "2px",
-        }),
-        [],
-    )
+    const borderStyles: SxProps = {
+        borderTopLeftRadius: "1.5px",
+        borderBottomRightRadius: "1.5px",
+    }
 
     if (border) {
         if (border) {

@@ -1,18 +1,24 @@
-import { Box, Button, Modal, Skeleton, Stack, Tab, Tabs } from "@mui/material"
+import { Box, Modal, Skeleton, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { PrismicRichText, usePrismicDocumentsByType } from "@prismicio/react"
 import { useEffect, useState } from "react"
+import { FancyButton } from "../.."
+import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { PrismicHowToPlay, PrismicSliceType } from "../../../types/prismic"
 import { ClipThing } from "../../Common/ClipThing"
 
 export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
+    const theme = useTheme()
     const [value, setValue] = useState<number>(0)
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue)
     }
     const [document, { state }] = usePrismicDocumentsByType<PrismicHowToPlay>("how_to_play_v2")
     const [showSkeleton, toggleShowSkeleton] = useToggle(true)
+
+    const primaryColor = theme.factionTheme.primary
+    const backgroundColor = theme.factionTheme.background
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -32,16 +38,17 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                     transform: "translate(-50%, -50%)",
                     maxWidth: "82rem",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        borderColor: "#FFFFFF",
-                        borderThickness: ".2rem",
+                        borderColor: primaryColor,
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={colors.darkNavyBlue}
+                    backgroundColor={backgroundColor}
                 >
                     <Stack
                         sx={{
@@ -58,14 +65,15 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                         value={value}
                                         onChange={handleChange}
                                         sx={{
-                                            height: "5rem",
-                                            ".MuiTab-root.Mui-selected": { color: colors.neonBlue, opacity: 1 },
-                                            ".MuiTabs-indicator": { backgroundColor: colors.neonBlue },
+                                            height: "4.5rem",
+                                            ".MuiTab-root.Mui-selected": { color: primaryColor, opacity: 1 },
+                                            ".MuiTabs-indicator": { backgroundColor: primaryColor },
                                             ".MuiTab-root": {
-                                                height: "5rem",
+                                                height: "4.5rem",
                                                 p: 0,
                                                 px: "2rem",
                                                 fontSize: "1.6rem",
+                                                fontWeight: "fontWeightBold",
                                                 opacity: 0.7,
                                                 fontFamily: fonts.shareTech,
                                             },
@@ -100,7 +108,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                             borderRadius: 3,
                                         },
                                         "::-webkit-scrollbar-thumb": {
-                                            background: `${colors.neonBlue}`,
+                                            background: `${primaryColor}`,
                                             borderRadius: 3,
                                         },
                                         a: {
@@ -124,9 +132,10 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                                                         border={{
                                                                             isFancy: true,
                                                                             borderColor: colors.offWhite,
-                                                                            borderThickness: ".1rem",
+                                                                            borderThickness: ".15rem",
                                                                         }}
-                                                                        backgroundColor={colors.darkNavyBlue}
+                                                                        opacity={0.6}
+                                                                        backgroundColor={backgroundColor}
                                                                     >
                                                                         <Box
                                                                             sx={{
@@ -137,20 +146,28 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                                                             <Stack direction="row" spacing="1.3rem">
                                                                                 <Box
                                                                                     sx={{
-                                                                                        height: "3.2rem",
-                                                                                        width: "3.2rem",
                                                                                         mt: ".2rem",
+                                                                                        p: ".5rem",
+                                                                                        alignSelf: "flex-start",
                                                                                         flexShrink: 0,
-                                                                                        backgroundImage: `url(${
-                                                                                            item.section_image_link ? item.section_image_link.url : ""
-                                                                                        })`,
-                                                                                        backgroundRepeat: "no-repeat",
-                                                                                        backgroundPosition: "top center",
-                                                                                        backgroundSize: "contain",
-                                                                                        border: `${"#FFFFFF"} 1px solid`,
+                                                                                        backgroundColor: `${colors.lightNeonBlue}20`,
                                                                                         borderRadius: 0.6,
                                                                                     }}
-                                                                                />
+                                                                                >
+                                                                                    <Box
+                                                                                        sx={{
+                                                                                            height: "3.2rem",
+                                                                                            width: "3.2rem",
+                                                                                            backgroundImage: `url(${
+                                                                                                item.section_image_link ? item.section_image_link.url : ""
+                                                                                            })`,
+                                                                                            backgroundRepeat: "no-repeat",
+                                                                                            backgroundPosition: "center",
+                                                                                            backgroundSize: "contain",
+                                                                                        }}
+                                                                                    />
+                                                                                </Box>
+
                                                                                 <Stack>
                                                                                     <PrismicRichText field={item.section_content_title} />
                                                                                     <PrismicRichText field={item.section_content_subheader} />
@@ -170,29 +187,28 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                             </Stack>
                         )}
 
-                        <Button
-                            variant="outlined"
-                            onClick={() => onClose()}
-                            sx={{
-                                justifySelf: "flex-end",
-                                mt: "auto",
-                                ml: 3,
-                                pt: ".7rem",
-                                pb: ".4rem",
-                                width: "9rem",
-                                color: colors.neonBlue,
-                                backgroundColor: colors.darkNavy,
-                                borderRadius: 0.7,
-                                fontFamily: fonts.nostromoBold,
-                                border: `${colors.neonBlue} 1px solid`,
-                                ":hover": {
-                                    opacity: 0.8,
-                                    border: `${colors.neonBlue} 1px solid`,
-                                },
+                        <FancyButton
+                            excludeCaret
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: backgroundColor,
+                                opacity: 1,
+                                border: { borderColor: primaryColor, borderThickness: "1.5px" },
+                                sx: { position: "relative", width: "10rem", ml: "2.6rem", mt: "auto" },
                             }}
+                            sx={{ px: "1.6rem", py: ".6rem", color: primaryColor }}
+                            onClick={() => onClose()}
                         >
-                            Close
-                        </Button>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: primaryColor,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                CLOSE
+                            </Typography>
+                        </FancyButton>
                     </Stack>
                 </ClipThing>
             </Stack>
@@ -217,7 +233,7 @@ const TabPanel = (props: TabPanelProps) => {
 }
 
 const LoadingSkeleton = () => (
-    <Box sx={{ width: "82rem", flex: 1, height: 0, pr: "1.2rem", py: "1.2rem" }}>
+    <Box sx={{ width: "82rem", maxWidth: "80vw", flex: 1, height: 0, pr: "1.2rem", py: "1.2rem" }}>
         <Stack
             sx={{
                 overflowY: "scroll",
