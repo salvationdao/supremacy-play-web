@@ -246,7 +246,7 @@ export const WarMachinesMarket = () => {
                                             fontFamily: fonts.nostromoBlack,
                                         }}
                                     >
-                                        SELL WAR MACHINE
+                                        SELL ITEM
                                     </Typography>
                                 </FancyButton>
                             </Stack>
