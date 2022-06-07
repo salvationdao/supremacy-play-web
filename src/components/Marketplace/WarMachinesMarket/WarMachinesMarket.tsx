@@ -80,11 +80,9 @@ export const WarMachinesMarket = () => {
 
             // TODO: Handle alpha sort type
             let sortDir = "asc"
-            switch (sort) {
-                case SortType.AlphabeticalReverse:
-                case SortType.NewestFirst:
-                    sortDir = "desc"
-            }
+            let sortBy = "alphabetical"
+            if (sort === SortType.AlphabeticalReverse || sort === SortType.NewestFirst) sortDir = "desc"
+            if (sort === SortType.OldestFirst || sort === SortType.NewestFirst) sortBy = "created_at"
 
             const resp = await send<{ total: number; records: MarketplaceMechItem[] }>(GameServerKeys.MarketplaceSalesList, {
                 page_number: page,
@@ -92,8 +90,8 @@ export const WarMachinesMarket = () => {
                 search: search,
                 rarities: rarities,
                 listing_types: listingTypes,
-                sort_by: SortType.Alphabetical || SortType.AlphabeticalReverse ? "alphabetical" : "created_at",
                 sort_dir: sortDir,
+                sort_by: sortBy,
             })
 
             if (!resp) return
