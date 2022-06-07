@@ -1,13 +1,14 @@
-import { Box, Skeleton, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { Box, CircularProgress, Skeleton, Stack, Typography } from "@mui/material"
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgSupToken } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getMysteryCrateDeets, numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
-import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MysteryCrate } from "../../../../types"
+import { useSnackbar } from "../../../../containers"
 
 interface MysteryCrateItemProps {
     enlargedView?: boolean
@@ -16,25 +17,49 @@ interface MysteryCrateItemProps {
 
 export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps) => {
     const theme = useTheme()
+    const { newSnackbarMessage } = useSnackbar()
     const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>(crate)
-
+    const [isLoading, setIsLoading] = useState(false)
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const crateDeets = useMemo(() => getMysteryCrateDeets(mysteryCrate.mystery_crate_type), [mysteryCrate])
 
     const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     useGameServerSubscriptionFaction<MysteryCrate>(
         {
-            URI: "/xxxxxxxxx",
+            URI: `/crate/${crate.id}`,
             key: GameServerKeys.SubMysteryCrate,
         },
         (payload) => {
             if (!payload) return
+            console.log(payload)
             setMysteryCrate(payload)
         },
     )
 
-    const { price, sold, amount } = mysteryCrate
+    const handlePurchase = useCallback(async () => {
+        if (!send) return
+        try {
+            setIsLoading(true)
+            const resp = await send<MysteryCrate[]>(GameServerKeys.MysteryCratePurchase, {
+                type: crate.mystery_crate_type,
+            })
+
+            if (resp) {
+                newSnackbarMessage(`Successfully purchased ${crate.mystery_crate_type} CRATE`, "success")
+            }
+            console.log(resp)
+        } catch (e) {
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to get purchase crate.", "error")
+            console.debug(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, crate.mystery_crate_type, newSnackbarMessage])
+
+    const { price, amount_sold, amount } = mysteryCrate
 
     return (
         <Box
@@ -98,11 +123,11 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                     fontFamily: fonts.nostromoBold,
                                     span: {
                                         fontFamily: "inherit",
-                                        color: sold >= amount ? colors.red : colors.neonBlue,
+                                        color: amount_sold >= amount ? colors.red : colors.neonBlue,
                                     },
                                 }}
                             >
-                                <span>{numberCommaFormatter(amount - sold)}</span> / {numberCommaFormatter(amount)}
+                                <span>{numberCommaFormatter(amount - amount_sold)}</span> / {numberCommaFormatter(amount)}
                             </Typography>
                         </Box>
 
@@ -140,6 +165,9 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                         <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
                                 excludeCaret
+                                onClick={() => {
+                                    handlePurchase()
+                                }}
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: primaryColor,
@@ -149,8 +177,11 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                 }}
                                 sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
                             >
-                                <Typography variant={enlargedView ? "body1" : "caption"} sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    BUY NOW
+                                <Typography
+                                    variant={enlargedView ? "body1" : "caption"}
+                                    sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                >
+                                    {isLoading ? <CircularProgress size={"2rem"} sx={{ color: secondaryColor }} /> : "BUY NOW"}
                                 </Typography>
                             </FancyButton>
                         </Stack>

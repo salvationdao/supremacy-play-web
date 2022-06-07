@@ -12,26 +12,9 @@ import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { MysteryCrateItem, MysteryCrateItemLoadingSkeleton } from "./MysteryCrateItem/MysteryCrateItem"
 
-const placeholderCrates: MysteryCrate[] = [
-    {
-        id: "1",
-        mystery_crate_type: "MECH",
-        price: "3200000000000000000000",
-        amount: 10000,
-        sold: 6080,
-    },
-    {
-        id: "2",
-        mystery_crate_type: "WEAPON",
-        price: "2200000000000000000000",
-        amount: 10000,
-        sold: 3610,
-    },
-]
-
 export const MysteryCrates = () => {
     const { newSnackbarMessage } = useSnackbar()
-    const { send } = useGameServerCommandsFaction("xxxxxxxxx")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
@@ -41,21 +24,6 @@ export const MysteryCrates = () => {
 
     // Get mystery crates
     useEffect(() => {
-        // TODO: remove later
-        setCrates([...placeholderCrates])
-        // setCrates([
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        // ])
-        setIsLoading(false)
-        return
         ;(async () => {
             try {
                 setIsLoading(true)
@@ -65,6 +33,7 @@ export const MysteryCrates = () => {
                 })
 
                 if (!resp) return
+                console.log(resp)
                 setCrates(resp)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
