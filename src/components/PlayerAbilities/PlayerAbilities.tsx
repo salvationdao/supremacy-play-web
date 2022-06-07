@@ -1,10 +1,9 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { useAuth } from "../../containers/auth"
+import { useAuth } from "../../containers"
 import { useGameServerCommandsUser, useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 const columns = 5
 const rows = 2
@@ -21,29 +20,27 @@ export const PlayerAbilities = () => {
 
     const fetchSaleAbilities = useCallback(async () => {
         if (!userID) return
-        ;(async () => {
-            try {
-                const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.PlayerAbilitiesList, {
-                    page_size: pageSize,
-                    page: currentPage - 1,
-                    filter: {
-                        items: [
-                            {
-                                column: "owner_id",
-                                operator: "=",
-                                value: userID,
-                            },
-                        ],
-                    },
-                })
+        try {
+            const resp = await send<{ total: number; ability_ids: string[] }>(GameServerKeys.PlayerAbilitiesList, {
+                page_size: pageSize,
+                page: currentPage - 1,
+                filter: {
+                    items: [
+                        {
+                            column: "owner_id",
+                            operator: "=",
+                            value: userID,
+                        },
+                    ],
+                },
+            })
 
-                if (!resp) return
-                setPlayerAbilityIDs(resp.ability_ids)
-                setTotalPages(Math.ceil(resp.total / pageSize))
-            } catch (e) {
-                console.error(e)
-            }
-        })()
+            if (!resp) return
+            setPlayerAbilityIDs(resp.ability_ids)
+            setTotalPages(Math.ceil(resp.total / pageSize))
+        } catch (e) {
+            console.error(e)
+        }
     }, [currentPage, send, userID])
 
     useEffect(() => {
@@ -82,9 +79,9 @@ export const PlayerAbilities = () => {
                             gap: ".5rem",
                         }}
                     >
-                        {playerAbilityIDs.map((s) => (
-                            <PlayerAbilityCard key={s} abilityID={s} />
-                        ))}
+                        {/*{playerAbilityIDs.map((s) => (*/}
+                        {/*    <PlayerAbilityCard key={s} abilityID={s} />*/}
+                        {/*))}*/}
                     </Box>
                 ) : (
                     <Typography
