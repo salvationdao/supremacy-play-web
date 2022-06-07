@@ -63,8 +63,7 @@ export const WarMachineHangarItem = ({
                     mech_id: mech.id,
                 })
                 if (!resp) return
-                console.log(resp)
-                setMechQueuePosition(0)
+                setMechQueuePosition(resp)
             } catch (e) {
                 console.error(e)
             }
