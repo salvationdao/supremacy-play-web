@@ -12,6 +12,7 @@ export const SellModal = () => {
     const { sellMechDetails, setSellMechDetails } = useHangarWarMachine()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { newSnackbarMessage } = useSnackbar()
+    const [isLoading, setIsLoading] = useState(false)
     const [sellError, setSellError] = useState<string>()
 
     const onClose = useCallback(() => {
@@ -22,6 +23,7 @@ export const SellModal = () => {
     const onSellMech = useCallback(
         async ({ id }: { id: string }) => {
             try {
+                setIsLoading(true)
                 const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
                     has_buyout: true,
                     sale_type: "BUYOUT",
@@ -48,6 +50,8 @@ export const SellModal = () => {
                 setSellError(typeof e === "string" ? e : "Failed to list war machine.")
                 console.error(e)
                 return
+            } finally {
+                setIsLoading(false)
             }
         },
         [newSnackbarMessage, onClose, send],
@@ -97,6 +101,7 @@ export const SellModal = () => {
             <Stack spacing="1.5rem">
                 <Box sx={{ mt: "auto" }}>
                     <FancyButton
+                        loading={isLoading}
                         excludeCaret
                         clipThingsProps={{
                             clipSize: "5px",

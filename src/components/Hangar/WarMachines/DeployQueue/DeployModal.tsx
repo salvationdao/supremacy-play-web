@@ -20,6 +20,7 @@ export const DeployModal = () => {
     const { deployMechDetails, setDeployMechDetails } = useHangarWarMachine()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [isLoading, setIsLoading] = useState(false)
     const [deployQueueError, setDeployQueueError] = useState<string>()
 
     // Queuing cost, queue length win reward etc.
@@ -36,6 +37,7 @@ export const DeployModal = () => {
     const onDeployQueue = useCallback(
         async ({ hash }: { hash: string }) => {
             try {
+                setIsLoading(true)
                 const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
                     asset_hash: hash,
                 })
@@ -48,6 +50,8 @@ export const DeployModal = () => {
                 setDeployQueueError(typeof e === "string" ? e : "Failed to deploy war machine.")
                 console.error(e)
                 return
+            } finally {
+                setIsLoading(false)
             }
         },
         [newSnackbarMessage, send, onClose],
@@ -92,6 +96,7 @@ export const DeployModal = () => {
 
                 <Box sx={{ mt: "auto" }}>
                     <FancyButton
+                        loading={isLoading}
                         excludeCaret
                         clipThingsProps={{
                             clipSize: "5px",

@@ -98,24 +98,28 @@ const ConfirmModal = ({ marketItem, bidPrice, onClose }: { marketItem: Marketpla
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [isLoading, setIsLoading] = useState(false)
     const [bidError, setBidError] = useState<string>()
 
     const { id, mech } = marketItem
 
     const confirmBid = useCallback(async () => {
         try {
+            setIsLoading(true)
             const resp = await send(GameServerKeys.MarketplaceSalesBid, {
                 id,
                 amount: bidPrice.toString(),
             })
 
             if (!resp) return
-            newSnackbarMessage("Successfully placed your bid.")
+            newSnackbarMessage("Successfully placed your bid.", "success")
             onClose()
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setBidError(message)
             console.error(err)
+        } finally {
+            setIsLoading(false)
         }
     }, [bidPrice, id, newSnackbarMessage, onClose, send])
 
@@ -161,6 +165,7 @@ const ConfirmModal = ({ marketItem, bidPrice, onClose }: { marketItem: Marketpla
                         </Typography>
                         <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
                             <FancyButton
+                                loading={isLoading}
                                 excludeCaret
                                 clipThingsProps={{
                                     clipSize: "5px",
