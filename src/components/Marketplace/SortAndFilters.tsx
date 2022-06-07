@@ -152,7 +152,7 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                                     "&:hover": {
                                         backgroundColor: colors.darkNavy,
                                     },
-                                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
+                                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
                                     ".MuiOutlinedInput-notchedOutline": {
                                         border: "none !important",
                                     },
@@ -242,7 +242,7 @@ const Section = ({
                 </Stack>
             </ClipThing>
 
-            <Box sx={{ px: "1.4rem", pt: "1.5rem", pb: "2.1rem" }}>{children}</Box>
+            <Box sx={{ px: "2rem", pt: "1.8rem", pb: "2.2rem" }}>{children}</Box>
         </Box>
     )
 }

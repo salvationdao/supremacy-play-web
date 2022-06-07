@@ -236,7 +236,7 @@ const WarMachinesInner = ({
                             </Stack>
                         )}
 
-                        {mechs.length <= 0 && (
+                        {!isLoading && mechs.length <= 0 && (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Stack
                                     alignItems="center"
