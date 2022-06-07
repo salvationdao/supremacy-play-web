@@ -11,7 +11,7 @@ export const ViewButton = ({ isGridView, id, buyout }: { isGridView: boolean; id
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
-    const auctionColor = colors.orange
+    const auctionColor = colors.auction
 
     return (
         <Stack justifyContent="center">

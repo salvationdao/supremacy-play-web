@@ -15,11 +15,11 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
     const { getFaction } = useSupremacy()
 
     const primaryColor = useMemo(
-        () => (!marketItem || marketItem.buyout ? theme.factionTheme.primary : colors.orange),
+        () => (!marketItem || marketItem.buyout ? theme.factionTheme.primary : colors.auction),
         [marketItem, theme.factionTheme.primary],
     )
     const backgroundColor = useMemo(
-        () => (marketItem?.buyout ? theme.factionTheme.background : shadeColor(colors.orange, -97)),
+        () => (marketItem?.buyout ? theme.factionTheme.background : shadeColor(colors.auction, -97)),
         [marketItem?.buyout, theme.factionTheme.background],
     )
 
@@ -52,7 +52,7 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
                 <Stack direction="row" alignItems="center" spacing=".8rem">
                     {buyout ? <SvgWallet fill={primaryColor} /> : <SvgHammer fill={primaryColor} />}
                     <Typography variant="h5" sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                        {buyout ? "BUY IT NOW" : "AUCTION"}
+                        {buyout ? "BUY NOW" : "AUCTION"}
                     </Typography>
                 </Stack>
             </Box>

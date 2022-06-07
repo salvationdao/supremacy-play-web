@@ -25,9 +25,9 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const primaryColor = useMemo(() => (item.buyout ? theme.factionTheme.primary : colors.orange), [item.buyout, theme.factionTheme.primary])
+    const primaryColor = useMemo(() => (item.buyout ? theme.factionTheme.primary : colors.auction), [item.buyout, theme.factionTheme.primary])
     const backgroundColor = useMemo(
-        () => (item.buyout ? theme.factionTheme.background : shadeColor(colors.orange, -97)),
+        () => (item.buyout ? theme.factionTheme.background : shadeColor(colors.auction, -97)),
         [item.buyout, theme.factionTheme.background],
     )
 

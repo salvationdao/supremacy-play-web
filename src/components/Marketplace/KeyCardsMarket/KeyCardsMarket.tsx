@@ -13,9 +13,8 @@ import { MarketplaceMechItem, SortType } from "../../../types/marketplace"
 import { SellItemModal } from "../Check/SellItemModal"
 import { FilterSection, SortAndFilters } from "../SortAndFilters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
-import { WarMachineMarketItem } from "./WarMachineMarketItem/WarMachineMarketItem"
 
-export const WarMachinesMarket = () => {
+export const KeyCardsMarket = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -24,7 +23,6 @@ export const WarMachinesMarket = () => {
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
-    const [listingTypes, setListingTypes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
 
     // Items
@@ -33,18 +31,6 @@ export const WarMachinesMarket = () => {
     const [mechItems, setMechItems] = useState<MarketplaceMechItem[]>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
-
-    // Filters
-    const listingTypeFilterSection = useRef<FilterSection>({
-        label: "LISTING TYPE",
-        options: [
-            { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
-            { value: "AUCTION", label: "AUCTION", color: colors.auction },
-            { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutch_auction },
-        ],
-        initialSelected: listingTypes,
-        onSetFilter: setListingTypes,
-    })
 
     const rarityFilterSection = useRef<FilterSection>({
         label: "RARITY",
@@ -153,9 +139,9 @@ export const WarMachinesMarket = () => {
                         overflow: "visible",
                     }}
                 >
-                    {mechItems.map((item) => (
+                    {/* {mechItems.map((item) => (
                         <WarMachineMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
-                    ))}
+                    ))} */}
                 </Box>
             )
         }
@@ -196,13 +182,7 @@ export const WarMachinesMarket = () => {
     return (
         <>
             <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-                <SortAndFilters
-                    initialSearch={search}
-                    onSetSearch={setSearch}
-                    initialSort={sort}
-                    onSetSort={setSort}
-                    filters={[listingTypeFilterSection.current, rarityFilterSection.current]}
-                />
+                <SortAndFilters initialSearch={search} onSetSearch={setSearch} initialSort={sort} onSetSort={setSort} filters={[rarityFilterSection.current]} />
 
                 <ClipThing
                     clipSize="10px"

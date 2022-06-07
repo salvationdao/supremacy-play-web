@@ -65,6 +65,9 @@ export const colors = {
     supsCredit: "#01FF70",
     supsDebit: "#FF4136",
 
+    auction: "#E04F00",
+    dutch_auction: "#D96900",
+
     rarity: {
         MEGA: "#e84234",
         COLOSSAL: "#b43328",

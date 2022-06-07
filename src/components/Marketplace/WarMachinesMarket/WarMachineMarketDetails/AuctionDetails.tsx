@@ -15,7 +15,7 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
     const [bidPrice, setBidPrice] = useState<number>()
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
 
-    const primaryColor = colors.orange
+    const primaryColor = colors.auction
     const secondaryColor = "#FFFFFF"
 
     return (

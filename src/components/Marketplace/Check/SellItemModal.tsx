@@ -199,7 +199,7 @@ export const SellItemModal = ({ onClose }: Props) => {
                     <ClipThing
                         clipSize="10px"
                         border={{
-                            borderColor: colors.orange,
+                            borderColor: colors.auction,
                             borderThickness: "0.125rem",
                         }}
                         backgroundColor="#110815"
@@ -516,9 +516,9 @@ export const SellItemModal = ({ onClose }: Props) => {
                             clipThingsProps={{
                                 clipSize: "7px",
                                 sx: { mt: "2rem", ml: "auto !important", width: "33.33%", minWidth: "100px" },
-                                backgroundColor: colors.orange,
+                                backgroundColor: colors.auction,
                                 border: {
-                                    borderColor: colors.orange,
+                                    borderColor: colors.auction,
                                 },
                             }}
                             sx={{

@@ -20,11 +20,11 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     const primaryColor = useMemo(
-        () => (!marketItem || marketItem.buyout ? theme.factionTheme.primary : colors.orange),
+        () => (!marketItem || marketItem.buyout ? theme.factionTheme.primary : colors.auction),
         [marketItem, theme.factionTheme.primary],
     )
     const backgroundColor = useMemo(
-        () => (marketItem?.buyout ? theme.factionTheme.background : shadeColor(colors.orange, -97)),
+        () => (marketItem?.buyout ? theme.factionTheme.background : shadeColor(colors.auction, -97)),
         [marketItem?.buyout, theme.factionTheme.background],
     )
 

@@ -3,6 +3,7 @@ import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
+import { KeyCardsMarket } from "../components/Marketplace/KeyCardsMarket/KeyCardsMarket"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
 import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
@@ -90,17 +91,7 @@ const MarketplacePageInner = () => {
                         }}
                     >
                         <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
-                        <Tab
-                            label={
-                                <>
-                                    KEY CARDS
-                                    <br />
-                                    <span>(COMING SOON)</span>
-                                </>
-                            }
-                            disabled
-                            value={MARKETPLACE_TABS.KeyCards}
-                        />
+                        <Tab label="KEY CARDS" value={MARKETPLACE_TABS.KeyCards} />
                         <Tab
                             label={
                                 <>
@@ -119,7 +110,7 @@ const MarketplacePageInner = () => {
                     <WarMachinesMarket />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.KeyCards}>
-                    COMING SOON!
+                    <KeyCardsMarket />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.MysteryCrates}>
                     COMING SOON!
