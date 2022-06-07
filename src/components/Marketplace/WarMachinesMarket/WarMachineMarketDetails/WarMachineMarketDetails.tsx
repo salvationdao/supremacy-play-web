@@ -52,7 +52,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
             try {
                 if (!marketItem || !marketItem.mech?.id) return
                 const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: marketItem.item_id,
+                    mech_id: marketItem.mech.id,
                 })
 
                 if (!resp) return

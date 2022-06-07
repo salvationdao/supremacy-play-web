@@ -73,7 +73,7 @@ export const SellItemModal = ({ onClose }: Props) => {
 
         try {
             await sendFaction(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
-                item_type: itemType.name,
+                item_type: !isKeycard ? "mech" : undefined, // TODO: Handle mystery crates
                 item_id: selectedAsset,
                 has_buyout: hasBuyout,
                 has_auction: hasAuction,
