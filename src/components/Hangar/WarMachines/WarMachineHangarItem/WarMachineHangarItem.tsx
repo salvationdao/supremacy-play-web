@@ -165,7 +165,7 @@ const WarMachineHangarItemInner = ({
                             <MechBarStats mech={mech} mechDetails={mechDetails} />
                         </Stack>
 
-                        {mechDetails && (
+                        {mechDetails ? (
                             <MechButtons
                                 mechDetails={mechDetails}
                                 mechQueuePosition={mechQueuePosition}
@@ -176,6 +176,8 @@ const WarMachineHangarItemInner = ({
                                 setRentalMechModalOpen={setRentalMechModalOpen}
                                 setSellMechModalOpen={setSellMechModalOpen}
                             />
+                        ) : (
+                            <Box sx={{ height: "3rem" }} />
                         )}
                     </Stack>
                 </Stack>

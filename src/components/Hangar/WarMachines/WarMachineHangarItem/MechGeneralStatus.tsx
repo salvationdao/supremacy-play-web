@@ -25,7 +25,7 @@ export const MechGeneralStatus = ({ mechQueuePosition }: { mechQueuePosition: nu
     }
 
     return (
-        <Box sx={{ px: "1.6rem", py: ".6rem", backgroundColor: `${primaryColor}10`, border: `${primaryColor} 1.5px dashed` }}>
+        <Box sx={{ px: "1.6rem", pt: ".9rem", pb: ".6rem", backgroundColor: `${primaryColor}10`, border: `${primaryColor} 1.5px dashed` }}>
             <Typography variant="body2" sx={{ color, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
                 {text}
             </Typography>
