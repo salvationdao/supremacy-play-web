@@ -7,7 +7,7 @@ export const MechGeneralStatus = ({ mechQueuePosition }: { mechQueuePosition: nu
     const primaryColor = theme.factionTheme.primary
 
     let text = "LOADING..."
-    let color = colors.neonBlue
+    let color = primaryColor
 
     if (mechQueuePosition === -1) {
         text = "IN HANGAR"
