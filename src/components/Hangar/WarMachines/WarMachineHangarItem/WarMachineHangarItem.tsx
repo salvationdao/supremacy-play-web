@@ -62,7 +62,8 @@ export const WarMachineHangarItem = ({
             key: GameServerKeys.GetMechQueuePositionSubscribe,
         },
         (payload) => {
-            if (!payload) return
+            if (typeof payload === 'undefined') return
+            console.log(payload)
             setMechQueuePosition(payload)
         },
     )
