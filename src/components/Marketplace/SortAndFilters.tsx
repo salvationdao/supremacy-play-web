@@ -1,7 +1,7 @@
-import { Box, MenuItem, Select, Stack, TextField, Typography } from "@mui/material"
+import { Box, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from ".."
-import { SvgSearch } from "../../assets"
+import { SvgSearch, SvgSupToken } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { useDebounce } from "../../hooks"
 import { colors, fonts } from "../../theme/theme"
@@ -9,7 +9,7 @@ import { SortType } from "../../types/marketplace"
 
 const sortOptions: SortType[] = [SortType.OldestFirst, SortType.NewestFirst, SortType.Alphabetical, SortType.AlphabeticalReverse]
 
-export interface FilterSection {
+export interface ChipFilter {
     label: string
     options: {
         label: string
@@ -17,7 +17,13 @@ export interface FilterSection {
         color: string
     }[]
     initialSelected: string[]
-    onSetFilter: React.Dispatch<React.SetStateAction<string[]>>
+    onSetSelected: React.Dispatch<React.SetStateAction<string[]>>
+}
+
+export interface RangeFilter {
+    label: string
+    initialValue: (number | undefined)[]
+    onSetValue: React.Dispatch<React.SetStateAction<(number | undefined)[]>>
 }
 
 interface SortAndFiltersProps {
@@ -25,10 +31,11 @@ interface SortAndFiltersProps {
     onSetSearch: React.Dispatch<React.SetStateAction<string>>
     initialSort: SortType
     onSetSort: React.Dispatch<React.SetStateAction<SortType>>
-    filters?: FilterSection[]
+    chipFilters?: ChipFilter[]
+    rangeFilters?: RangeFilter[]
 }
 
-export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetSort, filters }: SortAndFiltersProps) => {
+export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetSort, chipFilters, rangeFilters }: SortAndFiltersProps) => {
     const theme = useTheme()
     const [searchValue, setSearchValue] = useState(initialSearch)
     const [sortValue, setSortValue] = useState<SortType>(initialSort)
@@ -187,9 +194,13 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                     </ClipThing>
                 </Section>
 
-                {!!filters &&
-                    filters.length > 0 &&
-                    filters.map((f, i) => <FilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
+                {!!chipFilters &&
+                    chipFilters.length > 0 &&
+                    chipFilters.map((f, i) => <ChipFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
+
+                {!!rangeFilters &&
+                    rangeFilters.length > 0 &&
+                    rangeFilters.map((f, i) => <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
             </Stack>
         </ClipThing>
     )
@@ -236,13 +247,14 @@ const Section = ({
     )
 }
 
-const FilterSection = ({ filter, primaryColor, secondaryColor }: { filter: FilterSection; primaryColor: string; secondaryColor: string }) => {
-    const { label, options, initialSelected, onSetFilter } = filter
+const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: ChipFilter; primaryColor: string; secondaryColor: string }) => {
+    const { label, options, initialSelected, onSetSelected } = filter
     const [selectedOptions, setSelectedOptions, selectedOptionsInstant, setSelectedOptionsInstant] = useDebounce<string[]>(initialSelected, 700)
 
+    // Set the value on the parent
     useEffect(() => {
-        onSetFilter(selectedOptions)
-    }, [onSetFilter, selectedOptions])
+        onSetSelected(selectedOptions)
+    }, [onSetSelected, selectedOptions])
 
     const onSelect = useCallback(
         (option: string) => {
@@ -316,5 +328,101 @@ const FilterSection = ({ filter, primaryColor, secondaryColor }: { filter: Filte
                 })}
             </Stack>
         </Section>
+    )
+}
+
+const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: RangeFilter; primaryColor: string; secondaryColor: string }) => {
+    const { label, initialValue, onSetValue } = filter
+    const [value, setValue, valueInstant, setValueInstant] = useDebounce<(number | undefined)[]>(initialValue, 700)
+
+    // Set the value on the parent
+    useEffect(() => {
+        onSetValue(value)
+    }, [onSetValue, value])
+
+    const handleChange = useCallback(
+        (newValue: number, index: number) => {
+            setValue((prev) => {
+                const newArray = [...prev]
+                newArray[index] = newValue ? newValue : undefined
+                return newArray
+            })
+        },
+        [setValue],
+    )
+
+    const resetButton = useMemo(() => {
+        if (value[0] === undefined && value[1] === undefined) return null
+
+        return (
+            <FancyButton
+                excludeCaret
+                clipThingsProps={{
+                    clipSize: "8px",
+                    opacity: 1,
+                    sx: { position: "relative" },
+                }}
+                sx={{ px: "1.2rem", pt: ".0rem", pb: ".2rem", color: colors.offWhite }}
+                onClick={() => setValueInstant([undefined, undefined])}
+            >
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: colors.offWhite,
+                        fontSize: "1.1rem",
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    RESET FILTER
+                </Typography>
+            </FancyButton>
+        )
+    }, [setValueInstant, value])
+
+    return (
+        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton}>
+            <Stack direction="row" spacing="1rem" alignItems="center" sx={{ px: ".4rem" }}>
+                <NumberInput value={valueInstant[0]} setValue={(newValue: number) => handleChange(newValue, 0)} primaryColor={primaryColor} />
+                <Typography>TO</Typography>
+                <NumberInput value={valueInstant[1]} setValue={(newValue: number) => handleChange(newValue, 1)} primaryColor={primaryColor} />
+            </Stack>
+        </Section>
+    )
+}
+
+const NumberInput = ({ value, setValue, primaryColor }: { value: number | undefined; setValue: (newValue: number) => void; primaryColor: string }) => {
+    return (
+        <TextField
+            variant="outlined"
+            hiddenLabel
+            placeholder="ANY"
+            InputProps={{
+                startAdornment: (
+                    <InputAdornment position="start">
+                        <SvgSupToken fill={colors.yellow} size="1.9rem" />
+                    </InputAdornment>
+                ),
+            }}
+            sx={{
+                backgroundColor: "#00000090",
+                ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${primaryColor}99 2px dashed` },
+                ".MuiOutlinedInput-input": {
+                    px: "1.5rem",
+                    py: ".6rem",
+                    fontSize: "1.7rem",
+                    height: "unset",
+                    "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                        "-webkit-appearance": "none",
+                    },
+                },
+                ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+            }}
+            type="number"
+            value={value || ""}
+            onChange={(e) => {
+                const value = parseInt(e.target.value)
+                setValue(value)
+            }}
+        />
     )
 }

@@ -11,7 +11,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceMechItem, SortType } from "../../../types/marketplace"
 import { SellItemModal } from "../Check/SellItemModal"
-import { FilterSection, SortAndFilters } from "../SortAndFilters"
+import { ChipFilter, RangeFilter, SortAndFilters } from "../SortAndFilters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
 import { WarMachineMarketItem } from "./WarMachineMarketItem/WarMachineMarketItem"
 
@@ -21,12 +21,6 @@ export const WarMachinesMarket = () => {
     const theme = useTheme()
     const [sellModalOpen, toggleSellModalOpen] = useToggle()
 
-    // Filters and sorts
-    const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
-    const [listingTypes, setListingTypes] = useState<string[]>([])
-    const [rarities, setRarities] = useState<string[]>([])
-
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
@@ -34,19 +28,28 @@ export const WarMachinesMarket = () => {
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
+    // Filters and sorts
+    const [search, setSearch] = useState("")
+    const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
+    const [listingTypes, setListingTypes] = useState<string[]>([])
+    const [rarities, setRarities] = useState<string[]>([])
+    const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
+
+    console.log(price)
+
     // Filters
-    const listingTypeFilterSection = useRef<FilterSection>({
+    const listingTypeFilterSection = useRef<ChipFilter>({
         label: "LISTING TYPE",
         options: [
             { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
-            { value: "AUCTION", label: "AUCTION", color: colors.auction },
-            { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutch_auction },
+            { value: "AUCTION", label: "AUCTION", color: colors.orange },
+            { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: "" },
         ],
         initialSelected: listingTypes,
-        onSetFilter: setListingTypes,
+        onSetSelected: setListingTypes,
     })
 
-    const rarityFilterSection = useRef<FilterSection>({
+    const rarityChipFilter = useRef<ChipFilter>({
         label: "RARITY",
         options: [
             { value: "MEGA", ...getRarityDeets("MEGA") },
@@ -62,7 +65,13 @@ export const WarMachinesMarket = () => {
             { value: "TITAN", ...getRarityDeets("TITAN") },
         ],
         initialSelected: rarities,
-        onSetFilter: setRarities,
+        onSetSelected: setRarities,
+    })
+
+    const priceRangeFilter = useRef<RangeFilter>({
+        label: "PRICE RANGE",
+        initialValue: price,
+        onSetValue: setPrice,
     })
 
     const getMechs = useCallback(async () => {
@@ -201,7 +210,8 @@ export const WarMachinesMarket = () => {
                     onSetSearch={setSearch}
                     initialSort={sort}
                     onSetSort={setSort}
-                    filters={[listingTypeFilterSection.current, rarityFilterSection.current]}
+                    chipFilters={[listingTypeFilterSection.current, rarityChipFilter.current]}
+                    rangeFilters={[priceRangeFilter.current]}
                 />
 
                 <ClipThing
