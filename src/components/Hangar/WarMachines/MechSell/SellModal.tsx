@@ -33,7 +33,7 @@ export const SellModal = () => {
 
                 const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
                     has_auction: true,
-                    item_type: "WAR_MACHINE",
+                    item_type: "mech",
                     item_id: id,
                     asking_price: "999",
                     auction_reserved_price: "999",
