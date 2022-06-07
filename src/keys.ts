@@ -96,8 +96,9 @@ export enum GameServerKeys {
     EnlistFaction = "FACTION:ENLIST",
 
     // Storefront
-    GetMysteryCrates = "XXXXXXXXX",
-    SubMysteryCrate = "XXXXXXXXX",
+    GetMysteryCrates = "STORE:MYSTERY:CRATES",
+    SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",
+    MysteryCratePurchase = "STORE:MYSTERY:CRATE:PURCHASE",
 }
 
 export enum PassportServerKeys {
