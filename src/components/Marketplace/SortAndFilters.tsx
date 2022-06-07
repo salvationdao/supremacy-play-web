@@ -1,5 +1,5 @@
 import { Box, MenuItem, Select, Stack, TextField, Typography } from "@mui/material"
-import { ReactNode, useCallback, useEffect, useState } from "react"
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from ".."
 import { SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
@@ -195,7 +195,19 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
     )
 }
 
-const Section = ({ label, primaryColor, secondaryColor, children }: { label: string; primaryColor: string; secondaryColor: string; children: ReactNode }) => {
+const Section = ({
+    label,
+    primaryColor,
+    secondaryColor,
+    children,
+    endComponent,
+}: {
+    label: string
+    primaryColor: string
+    secondaryColor: string
+    children: ReactNode
+    endComponent?: ReactNode
+}) => {
     return (
         <Box>
             <ClipThing
@@ -211,10 +223,11 @@ const Section = ({ label, primaryColor, secondaryColor, children }: { label: str
                 opacity={0.8}
                 backgroundColor={primaryColor}
             >
-                <Stack sx={{ height: "100%", px: "1.4rem", pt: ".7rem", pb: ".6rem" }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ height: "100%", px: "1.4rem", pt: ".7rem", pb: ".6rem" }}>
                     <Typography variant="caption" sx={{ color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
                         {label}
                     </Typography>
+                    {endComponent}
                 </Stack>
             </ClipThing>
 
@@ -225,7 +238,7 @@ const Section = ({ label, primaryColor, secondaryColor, children }: { label: str
 
 const FilterSection = ({ filter, primaryColor, secondaryColor }: { filter: FilterSection; primaryColor: string; secondaryColor: string }) => {
     const { label, options, initialSelected, onSetFilter } = filter
-    const [selectedOptions, setSelectedOptions, selectedOptionsInstant] = useDebounce<string[]>(initialSelected, 700)
+    const [selectedOptions, setSelectedOptions, selectedOptionsInstant, setSelectedOptionsInstant] = useDebounce<string[]>(initialSelected, 700)
 
     useEffect(() => {
         onSetFilter(selectedOptions)
@@ -238,10 +251,38 @@ const FilterSection = ({ filter, primaryColor, secondaryColor }: { filter: Filte
         [setSelectedOptions],
     )
 
+    const resetButton = useMemo(() => {
+        if (selectedOptions.length <= 0) return null
+
+        return (
+            <FancyButton
+                excludeCaret
+                clipThingsProps={{
+                    clipSize: "8px",
+                    opacity: 1,
+                    sx: { position: "relative" },
+                }}
+                sx={{ px: "1.2rem", pt: ".0rem", pb: ".2rem", color: colors.offWhite }}
+                onClick={() => setSelectedOptionsInstant([])}
+            >
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: colors.offWhite,
+                        fontSize: "1.1rem",
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    RESET FILTER
+                </Typography>
+            </FancyButton>
+        )
+    }, [selectedOptions.length, setSelectedOptionsInstant])
+
     if (!options || options.length <= 0) return null
 
     return (
-        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor}>
+        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton}>
             <Stack direction="row" flexWrap="wrap">
                 {options.map((o, i) => {
                     const { label, value, color } = o
