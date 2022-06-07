@@ -224,7 +224,7 @@ const Section = ({ label, primaryColor, secondaryColor, children }: { label: str
 
 const FilterSection = ({ filter, primaryColor, secondaryColor }: { filter: FilterSection; primaryColor: string; secondaryColor: string }) => {
     const { label, options, initialSelected, onSetFilter } = filter
-    const [selectedOptions, setSelectedOptions, selectedOptionsInstant] = useDebounce<string[]>(initialSelected, 350)
+    const [selectedOptions, setSelectedOptions, selectedOptionsInstant] = useDebounce<string[]>(initialSelected, 900)
 
     useEffect(() => {
         onSetFilter(selectedOptions)

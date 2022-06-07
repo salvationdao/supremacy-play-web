@@ -22,23 +22,23 @@ export const SellModal = () => {
     const onSellMech = useCallback(
         async ({ id }: { id: string }) => {
             try {
-                // const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
-                //     has_buyout: true,
-                //     sale_type: "BUYOUT",
-                //     item_type: "WAR_MACHINE",
-                //     item_id: id,
-                //     asking_price: "88888",
-                //     listing_duration_hours: 50,
-                // })
-
                 const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
-                    has_auction: true,
+                    has_buyout: true,
+                    sale_type: "BUYOUT",
                     item_type: "mech",
                     item_id: id,
-                    asking_price: "999",
-                    auction_reserved_price: "999",
-                    listing_duration_hours: 8,
+                    asking_price: "88888",
+                    listing_duration_hours: 50,
                 })
+
+                // const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
+                //     has_auction: true,
+                //     item_type: "mech",
+                //     item_id: id,
+                //     asking_price: "999",
+                //     auction_reserved_price: "999",
+                //     listing_duration_hours: 8,
+                // })
 
                 if (resp) {
                     newSnackbarMessage("Successfully listed war machine for sale.", "success")
