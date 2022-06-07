@@ -33,7 +33,6 @@ export const MysteryCrates = () => {
                 })
 
                 if (!resp) return
-                console.log(resp)
                 setCrates(resp)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
@@ -55,7 +54,8 @@ export const MysteryCrates = () => {
                 if (!resp) return
                 setCrates(resp)
             } catch (e) {
-                console.error(e)
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to subscribe to war machines.", "error")
+                console.debug(e)
             }
         })()
     }, [page, pageSize, send])

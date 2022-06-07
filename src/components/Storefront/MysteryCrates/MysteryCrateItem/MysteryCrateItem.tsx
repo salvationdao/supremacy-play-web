@@ -34,7 +34,6 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
         },
         (payload) => {
             if (!payload) return
-            console.log(payload)
             setMysteryCrate(payload)
         },
     )
@@ -50,7 +49,6 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
             if (resp) {
                 newSnackbarMessage(`Successfully purchased ${crate.mystery_crate_type} CRATE`, "success")
             }
-            console.log(resp)
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to get purchase crate.", "error")
             console.debug(e)
