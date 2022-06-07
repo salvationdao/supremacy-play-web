@@ -78,7 +78,6 @@ export const WarMachinesMarket = () => {
         try {
             setIsLoading(true)
 
-            // TODO: Handle alpha sort type
             let sortDir = "asc"
             let sortBy = "alphabetical"
             if (sort === SortType.AlphabeticalReverse || sort === SortType.NewestFirst) sortDir = "desc"
