@@ -4,7 +4,7 @@ import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { MechBasic, MechDetails, MysteryCrate } from "../../../../types"
+import { MechBasic, MechDetails } from "../../../../types"
 import { MechBarStats } from "./MechBarStats"
 import { MechButtons } from "./MechButtons"
 import { MechGeneralStatus } from "./MechGeneralStatus"
@@ -70,7 +70,7 @@ export const WarMachineHangarItem = ({
 
 
 
-    const warMachineInnerMemo = useMemo(
+    return useMemo(
         () => (
             <WarMachineHangarItemInner
                 mech={mech}
@@ -98,8 +98,6 @@ export const WarMachineHangarItem = ({
             setSellMechModalOpen,
         ],
     )
-
-    return warMachineInnerMemo
 }
 
 const WarMachineHangarItemInner = ({
