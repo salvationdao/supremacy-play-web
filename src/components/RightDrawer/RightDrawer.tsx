@@ -1,6 +1,6 @@
 import { Drawer } from "@mui/material"
 import { useEffect, useMemo } from "react"
-import {DEV_ONLY, DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH} from "../../constants"
+import { DEV_ONLY, DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH } from "../../constants"
 import { ChatProvider } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"

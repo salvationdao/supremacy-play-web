@@ -18,6 +18,7 @@ import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors } from "./theme/theme"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ws } from "./containers/ws"
+import { FingerprintProvider } from "./containers/fingerprint"
 
 const AppInner = () => {
     const { isServerUp } = useSupremacy()
@@ -131,28 +132,30 @@ const tourProviderProps = {
 const App = () => {
     return (
         <ThemeProvider>
-            <SnackBarProvider>
-                <ClientContextProvider client={client}>
-                    <AuthProvider>
-                        <SupremacyProvider>
-                            <WalletProvider>
-                                <BarProvider>
-                                    <TourProvider {...tourProviderProps}>
-                                        <UserUpdater />
-                                        <BrowserRouter>
-                                            <Switch>
-                                                <Route path="/404" exact component={NotFoundPage} />
-                                                <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                <Route path="" component={AppInner} />
-                                            </Switch>
-                                        </BrowserRouter>
-                                    </TourProvider>
-                                </BarProvider>
-                            </WalletProvider>
-                        </SupremacyProvider>
-                    </AuthProvider>
-                </ClientContextProvider>
-            </SnackBarProvider>
+            <FingerprintProvider>
+                <SnackBarProvider>
+                    <ClientContextProvider client={client}>
+                        <AuthProvider>
+                            <SupremacyProvider>
+                                <WalletProvider>
+                                    <BarProvider>
+                                        <TourProvider {...tourProviderProps}>
+                                            <UserUpdater />
+                                            <BrowserRouter>
+                                                <Switch>
+                                                    <Route path="/404" exact component={NotFoundPage} />
+                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                    <Route path="" component={AppInner} />
+                                                </Switch>
+                                            </BrowserRouter>
+                                        </TourProvider>
+                                    </BarProvider>
+                                </WalletProvider>
+                            </SupremacyProvider>
+                        </AuthProvider>
+                    </ClientContextProvider>
+                </SnackBarProvider>
+            </FingerprintProvider>
         </ThemeProvider>
     )
 }

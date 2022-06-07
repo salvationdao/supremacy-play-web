@@ -11,6 +11,7 @@ import { useTheme } from "./theme"
 import { GameServerLoginCheck, PassportLoginCheck } from "../fetching"
 import { useSupremacy } from "."
 import { colors } from "../theme/theme"
+import { useFingerprint } from "./fingerprint"
 
 export const FallbackUser: User = {
     id: "",
@@ -84,6 +85,8 @@ const initialState: AuthState = {
 export const AuthContext = createContext<AuthState>(initialState)
 
 export const AuthProvider: React.FC = ({ children }) => {
+    const { fingerprint } = useFingerprint()
+
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
@@ -99,12 +102,11 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
-    const { query: gameServerLoginCheck } = useQuery(GameServerLoginCheck(), false)
+    const { query: gameServerLoginCheck } = useQuery(GameServerLoginCheck(fingerprint), false)
 
     const authCheckCallback = useCallback(
         (event?: MessageEvent) => {
             if (event && !("token" in event.data)) return
-
             // Check passport server login
             if (!userFromPassport) {
                 passportLoginCheck().then((resp) => {
