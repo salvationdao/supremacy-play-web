@@ -91,6 +91,7 @@ export const WarMachinesMarket = () => {
                 page_size: pageSize,
                 search: search,
                 rarities: rarities,
+                listing_types: listingTypes,
                 sort_dir: sortDir,
             })
 
@@ -106,7 +107,7 @@ export const WarMachinesMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, send, page, pageSize, search, rarities, setTotalItems, newSnackbarMessage])
+    }, [sort, send, page, pageSize, search, rarities, listingTypes, setTotalItems, newSnackbarMessage])
 
     // Initial load the mech listings
     useEffect(() => {
