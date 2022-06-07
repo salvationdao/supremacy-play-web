@@ -42,8 +42,8 @@ export const WarMachinesMarket = () => {
         label: "LISTING TYPE",
         options: [
             { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
-            { value: "AUCTION", label: "AUCTION", color: colors.orange },
-            { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: "" },
+            { value: "AUCTION", label: "AUCTION", color: colors.auction },
+            { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutch_auction },
         ],
         initialSelected: listingTypes,
         onSetSelected: setListingTypes,
