@@ -13,6 +13,7 @@ export interface FilterSection {
     label: string
     options: {
         label: string
+        value: string
         color: string
     }[]
     initialSelected: string[]
@@ -224,7 +225,7 @@ const Section = ({ label, primaryColor, secondaryColor, children }: { label: str
 
 const FilterSection = ({ filter, primaryColor, secondaryColor }: { filter: FilterSection; primaryColor: string; secondaryColor: string }) => {
     const { label, options, initialSelected, onSetFilter } = filter
-    const [selectedOptions, setSelectedOptions, selectedOptionsInstant] = useDebounce<string[]>(initialSelected, 900)
+    const [selectedOptions, setSelectedOptions, selectedOptionsInstant] = useDebounce<string[]>(initialSelected, 700)
 
     useEffect(() => {
         onSetFilter(selectedOptions)
@@ -243,8 +244,8 @@ const FilterSection = ({ filter, primaryColor, secondaryColor }: { filter: Filte
         <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor}>
             <Stack direction="row" flexWrap="wrap">
                 {options.map((o, i) => {
-                    const { label, color } = o
-                    const isSelected = selectedOptionsInstant.includes(label)
+                    const { label, value, color } = o
+                    const isSelected = selectedOptionsInstant.includes(value)
                     return (
                         <Box key={i} sx={{ p: ".4rem" }}>
                             <FancyButton
@@ -257,7 +258,7 @@ const FilterSection = ({ filter, primaryColor, secondaryColor }: { filter: Filte
                                     sx: { position: "relative" },
                                 }}
                                 sx={{ px: "1rem", py: ".2rem", color: isSelected ? "#FFFFFF" : color }}
-                                onClick={() => onSelect(label)}
+                                onClick={() => onSelect(value)}
                             >
                                 <Typography
                                     variant="caption"
