@@ -35,8 +35,6 @@ export const WarMachinesMarket = () => {
     const [rarities, setRarities] = useState<string[]>([])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
-    console.log(price)
-
     // Filters
     const listingTypeFilterSection = useRef<ChipFilter>({
         label: "LISTING TYPE",
@@ -83,12 +81,16 @@ export const WarMachinesMarket = () => {
             if (sort === SortType.AlphabeticalReverse || sort === SortType.NewestFirst) sortDir = "desc"
             if (sort === SortType.OldestFirst || sort === SortType.NewestFirst) sortBy = "created_at"
 
+            const [min_price, max_price] = price
+
             const resp = await send<{ total: number; records: MarketplaceMechItem[] }>(GameServerKeys.MarketplaceSalesList, {
                 page_number: page,
                 page_size: pageSize,
                 search: search,
                 rarities: rarities,
                 listing_types: listingTypes,
+                min_price,
+                max_price,
                 sort_dir: sortDir,
                 sort_by: sortBy,
             })
@@ -105,7 +107,7 @@ export const WarMachinesMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, send, page, pageSize, search, rarities, listingTypes, setTotalItems, newSnackbarMessage])
+    }, [sort, send, page, pageSize, search, rarities, listingTypes, price, setTotalItems, newSnackbarMessage])
 
     // Initial load the mech listings
     useEffect(() => {
