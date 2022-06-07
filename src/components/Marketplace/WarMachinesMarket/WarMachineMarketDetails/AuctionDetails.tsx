@@ -105,7 +105,7 @@ const ConfirmModal = ({ marketItem, bidPrice, onClose }: { marketItem: Marketpla
     const confirmBid = useCallback(async () => {
         try {
             const resp = await send(GameServerKeys.MarketplaceSalesBid, {
-                item_id: id,
+                id,
                 amount: bidPrice.toString(),
             })
 

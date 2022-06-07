@@ -71,7 +71,7 @@ const HangarPageInner = () => {
     return (
         <>
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "193rem" }}>
-                <Box sx={{ maxWidth: "fit-content", mb: ".8rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
+                <Box sx={{ maxWidth: "fit-content", mb: "1rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
                     <Tabs
                         value={currentValue}
                         onChange={handleChange}

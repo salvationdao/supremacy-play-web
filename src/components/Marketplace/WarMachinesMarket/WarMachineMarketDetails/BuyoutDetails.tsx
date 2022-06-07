@@ -63,7 +63,7 @@ const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem
     const confirmBuy = useCallback(async () => {
         try {
             const resp = await send(GameServerKeys.MarketplaceSalesBuy, {
-                item_id: id,
+                id,
             })
 
             if (!resp) return

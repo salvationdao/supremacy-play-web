@@ -6,15 +6,15 @@ import React, { useEffect, useState } from "react"
  * @returns a debounced stateful value, a function to update it and a function to update it without delay.
  */
 export function useDebounce<T>(value: T, delay: number): [T, React.Dispatch<React.SetStateAction<T>>, T, React.Dispatch<React.SetStateAction<T>>] {
-    const [raw, setRaw] = useState<T>(value)
+    const [instant, setInstant] = useState<T>(value)
     const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
     useEffect(() => {
         const t = setTimeout(() => {
-            setDebouncedValue(raw)
+            setDebouncedValue(instant)
         }, delay)
         return () => clearTimeout(t)
-    }, [delay, raw])
+    }, [delay, instant])
 
-    return [debouncedValue, setRaw, raw, setDebouncedValue]
+    return [debouncedValue, setInstant, instant, setDebouncedValue]
 }

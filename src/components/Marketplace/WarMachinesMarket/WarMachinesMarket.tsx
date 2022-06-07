@@ -4,6 +4,7 @@ import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { getRarityDeets } from "../../../helpers"
 import { usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -33,19 +34,21 @@ export const WarMachinesMarket = () => {
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     const rarityFilterSection = useRef<FilterSection>({
+        label: "RARITY",
         options: [
-            { name: "MEGA", color: "xxxxxx" },
-            { name: "COLOSSAL", color: "xxxxxx" },
-            { name: "RARE", color: "xxxxxx" },
-            { name: "LEGENDARY", color: "xxxxxx" },
-            { name: "ELITE_LEGENDARY", color: "xxxxxx" },
-            { name: "ULTRA_RARE", color: "xxxxxx" },
-            { name: "EXOTIC", color: "xxxxxx" },
-            { name: "GUARDIAN", color: "xxxxxx" },
-            { name: "MYTHIC", color: "xxxxxx" },
-            { name: "DEUS_EX", color: "xxxxxx" },
-            { name: "TITAN", color: "xxxxxx" },
+            { ...getRarityDeets("MEGA") },
+            { ...getRarityDeets("COLOSSAL") },
+            { ...getRarityDeets("RARE") },
+            { ...getRarityDeets("LEGENDARY") },
+            { ...getRarityDeets("ELITE_LEGENDARY") },
+            { ...getRarityDeets("ULTRA_RARE") },
+            { ...getRarityDeets("EXOTIC") },
+            { ...getRarityDeets("GUARDIAN") },
+            { ...getRarityDeets("MYTHIC") },
+            { ...getRarityDeets("DEUS_EX") },
+            { ...getRarityDeets("TITAN") },
         ],
+        initialSelected: rarities,
         onSetFilter: setRarities,
     })
 
@@ -180,7 +183,7 @@ export const WarMachinesMarket = () => {
     return (
         <>
             <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-                <SortAndFilters onSetSearch={setSearch} onSetSort={setSort} filters={[rarityFilterSection.current]} />
+                <SortAndFilters initialSearch={search} onSetSearch={setSearch} initialSort={sort} onSetSort={setSort} filters={[rarityFilterSection.current]} />
 
                 <ClipThing
                     clipSize="10px"

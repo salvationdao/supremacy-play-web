@@ -1,31 +1,36 @@
 import { Box, MenuItem, Select, Stack, TextField, Typography } from "@mui/material"
-import { useState } from "react"
+import { ReactNode, useCallback, useEffect, useState } from "react"
 import { ClipThing, FancyButton } from ".."
 import { SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
+import { useDebounce } from "../../hooks"
 import { colors, fonts } from "../../theme/theme"
 import { SortType } from "../../types/marketplace"
 
 const sortOptions: SortType[] = [SortType.OldestFirst, SortType.NewestFirst, SortType.Alphabetical, SortType.AlphabeticalReverse]
 
 export interface FilterSection {
+    label: string
     options: {
-        name: string
+        label: string
         color: string
     }[]
+    initialSelected: string[]
     onSetFilter: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 interface SortAndFiltersProps {
+    initialSearch: string
     onSetSearch: React.Dispatch<React.SetStateAction<string>>
+    initialSort: SortType
     onSetSort: React.Dispatch<React.SetStateAction<SortType>>
     filters?: FilterSection[]
 }
 
-export const SortAndFilters = ({ onSetSearch, onSetSort, filters }: SortAndFiltersProps) => {
+export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetSort, filters }: SortAndFiltersProps) => {
     const theme = useTheme()
-    const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
+    const [searchValue, setSearchValue] = useState(initialSearch)
+    const [sortValue, setSortValue] = useState<SortType>(initialSort)
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -45,14 +50,10 @@ export const SortAndFilters = ({ onSetSearch, onSetSort, filters }: SortAndFilte
             }}
             opacity={0.7}
             backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%", minWidth: "30rem", maxWidth: "45rem" }}
+            sx={{ height: "100%", minWidth: "30rem", maxWidth: "43rem" }}
         >
-            <Stack spacing="2.5rem" sx={{ position: "relative", height: "100%", px: "1.4rem", py: "1.2rem" }}>
-                <Box>
-                    <Typography gutterBottom variant="caption" sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                        SEARCH
-                    </Typography>
-
+            <Stack sx={{ position: "relative", height: "100%", mt: "-.3rem", mx: "-.3rem" }}>
+                <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor}>
                     <Stack direction="row" spacing=".5rem">
                         <ClipThing
                             clipSize="5px"
@@ -86,8 +87,18 @@ export const SortAndFilters = ({ onSetSearch, onSetSort, filters }: SortAndFilte
                                         },
                                         ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                                     }}
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
+                                    value={searchValue}
+                                    onChange={(e) => setSearchValue(e.target.value)}
+                                    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                                        e.stopPropagation()
+                                        switch (e.key) {
+                                            case "Enter": {
+                                                e.preventDefault()
+                                                onSetSearch(searchValue)
+                                                break
+                                            }
+                                        }
+                                    }}
                                 />
                             </Stack>
                         </ClipThing>
@@ -104,19 +115,15 @@ export const SortAndFilters = ({ onSetSearch, onSetSort, filters }: SortAndFilte
                                     sx: { position: "relative", width: "4.5rem", height: "100%" },
                                 }}
                                 sx={{ py: ".6rem", color: secondaryColor, minWidth: 0, height: "100%" }}
-                                onClick={() => onSetSearch(search)}
+                                onClick={() => onSetSearch(searchValue)}
                             >
                                 <SvgSearch size="1.4rem" fill={secondaryColor} sx={{ pt: ".1rem" }} />
                             </FancyButton>
                         </Box>
                     </Stack>
-                </Box>
+                </Section>
 
-                <Box>
-                    <Typography gutterBottom variant="caption" sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                        SORT
-                    </Typography>
-
+                <Section label="SORT" primaryColor={primaryColor} secondaryColor={secondaryColor}>
                     <ClipThing
                         clipSize="5px"
                         clipSlantSize="2px"
@@ -142,7 +149,7 @@ export const SortAndFilters = ({ onSetSearch, onSetSort, filters }: SortAndFilte
                                         border: "none !important",
                                     },
                                 }}
-                                value={sort}
+                                value={sortValue}
                                 MenuProps={{
                                     variant: "menu",
                                     sx: {
@@ -165,7 +172,7 @@ export const SortAndFilters = ({ onSetSearch, onSetSort, filters }: SortAndFilte
                                             key={x + i}
                                             value={x}
                                             onClick={() => {
-                                                setSort(x)
+                                                setSortValue(x)
                                                 onSetSort(x)
                                             }}
                                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
@@ -177,8 +184,95 @@ export const SortAndFilters = ({ onSetSearch, onSetSort, filters }: SortAndFilte
                             </Select>
                         </Stack>
                     </ClipThing>
-                </Box>
+                </Section>
+
+                {!!filters &&
+                    filters.length > 0 &&
+                    filters.map((f, i) => <FilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
             </Stack>
         </ClipThing>
+    )
+}
+
+const Section = ({ label, primaryColor, secondaryColor, children }: { label: string; primaryColor: string; secondaryColor: string; children: ReactNode }) => {
+    return (
+        <Box>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    isFancy: true,
+                    borderColor: primaryColor,
+                    borderThickness: ".25rem",
+                }}
+                corners={{
+                    topRight: true,
+                }}
+                opacity={0.8}
+                backgroundColor={primaryColor}
+            >
+                <Stack sx={{ height: "100%", px: "1.4rem", pt: ".7rem", pb: ".6rem" }}>
+                    <Typography variant="caption" sx={{ color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
+                        {label}
+                    </Typography>
+                </Stack>
+            </ClipThing>
+
+            <Box sx={{ px: "1.4rem", pt: "1.5rem", pb: "2.1rem" }}>{children}</Box>
+        </Box>
+    )
+}
+
+const FilterSection = ({ filter, primaryColor, secondaryColor }: { filter: FilterSection; primaryColor: string; secondaryColor: string }) => {
+    const { label, options, initialSelected, onSetFilter } = filter
+    const [selectedOptions, setSelectedOptions, selectedOptionsInstant] = useDebounce<string[]>(initialSelected, 350)
+
+    useEffect(() => {
+        onSetFilter(selectedOptions)
+    }, [onSetFilter, selectedOptions])
+
+    const onSelect = useCallback(
+        (option: string) => {
+            setSelectedOptions((prev) => (prev.includes(option) ? prev.filter((r) => r !== option) : prev.concat(option)))
+        },
+        [setSelectedOptions],
+    )
+
+    if (!options || options.length <= 0) return null
+
+    return (
+        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor}>
+            <Stack direction="row" flexWrap="wrap">
+                {options.map((o, i) => {
+                    const { label, color } = o
+                    const isSelected = selectedOptionsInstant.includes(label)
+                    return (
+                        <Box key={i} sx={{ p: ".4rem" }}>
+                            <FancyButton
+                                excludeCaret
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: isSelected ? color : "#000000",
+                                    opacity: isSelected ? 1 : 0.6,
+                                    border: { borderColor: color, borderThickness: "1px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1rem", py: ".2rem", color: isSelected ? "#FFFFFF" : color }}
+                                onClick={() => onSelect(label)}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: isSelected ? "#FFFFFF" : color,
+                                        fontFamily: fonts.nostromoBold,
+                                    }}
+                                >
+                                    {label}
+                                </Typography>
+                            </FancyButton>
+                        </Box>
+                    )
+                })}
+            </Stack>
+        </Section>
     )
 }
