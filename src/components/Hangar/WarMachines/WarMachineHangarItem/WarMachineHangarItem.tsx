@@ -2,9 +2,9 @@ import { Box, Skeleton, Stack } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { MechBasic, MechDetails } from "../../../../types"
+import { MechBasic, MechDetails, MysteryCrate } from "../../../../types"
 import { MechBarStats } from "./MechBarStats"
 import { MechButtons } from "./MechButtons"
 import { MechGeneralStatus } from "./MechGeneralStatus"
@@ -40,7 +40,6 @@ export const WarMachineHangarItem = ({
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const [mechQueuePosition, setMechQueuePosition] = useState<number>(-1)
 
-    // Get mech details
     useEffect(() => {
         ;(async () => {
             try {
@@ -57,20 +56,18 @@ export const WarMachineHangarItem = ({
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
-    // Get mech queue info
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<number>(GameServerKeys.GetMechQueueDetails, {
-                    mech_id: mech.id,
-                })
-                if (!resp) return
-                setMechQueuePosition(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [index, mech.id, send, setSelectedMechDetails])
+    useGameServerSubscriptionFaction<number>(
+        {
+            URI: `/queue/${mech.id}`,
+            key: GameServerKeys.GetMechQueuePositionSubscribe,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechQueuePosition(payload)
+        },
+    )
+
+
 
     const warMachineInnerMemo = useMemo(
         () => (
