@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { SvgHammer, SvgSupToken, SvgWallet } from "../../../../assets"
+import { SvgSupToken } from "../../../../assets"
 import { useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets, numberCommaFormatter, shadeColor, timeSinceInWords } from "../../../../helpers"
+import { consolidateMarketItemDeets, getRarityDeets, numberCommaFormatter, timeSinceInWords } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MarketplaceMechItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
@@ -14,22 +14,14 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
     const theme = useTheme()
     const { getFaction } = useSupremacy()
 
-    const primaryColor = useMemo(
-        () => (!marketItem || marketItem.buyout ? theme.factionTheme.primary : colors.auction),
-        [marketItem, theme.factionTheme.primary],
-    )
-    const backgroundColor = useMemo(
-        () => (marketItem?.buyout ? theme.factionTheme.background : shadeColor(colors.auction, -97)),
-        [marketItem?.buyout, theme.factionTheme.background],
-    )
-
+    const marketItemDeets = useMemo(() => consolidateMarketItemDeets(marketItem, theme), [marketItem, theme])
     const rarityDeets = useMemo(() => getRarityDeets(marketItem.mech?.tier || ""), [marketItem.mech?.tier])
     const ownerFactionDeets = useMemo(() => getFaction(marketItem.owner?.faction_id || ""), [marketItem.owner, getFaction])
     const timeLeft = useMemo(() => timeSinceInWords(new Date(), marketItem.end_at), [marketItem.end_at])
 
     if (!marketItem.owner || !marketItem.mech) return null
 
-    const { buyout, owner, mech, buyout_price, auction_current_price, end_at } = marketItem
+    const { owner, mech, auction, dutch_auction, end_at } = marketItem
     const { username, gid } = owner
     const { name, label } = mech
 
@@ -50,9 +42,9 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
                     LISTING TYPE:
                 </Typography>
                 <Stack direction="row" alignItems="center" spacing=".8rem">
-                    {buyout ? <SvgWallet fill={primaryColor} /> : <SvgHammer fill={primaryColor} />}
-                    <Typography variant="h5" sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>
-                        {buyout ? "BUY NOW" : "AUCTION"}
+                    {<marketItemDeets.Icon fill={marketItemDeets.primaryColor} />}
+                    <Typography variant="h5" sx={{ color: marketItemDeets.primaryColor, fontWeight: "fontWeightBold" }}>
+                        {marketItemDeets.listingTypeLabel}
                     </Typography>
                 </Stack>
             </Box>
@@ -95,33 +87,33 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
                 </Stack>
             </Box>
 
-            <Box>
+            <Stack>
                 <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                    {buyout ? "FIXED PRICE:" : "CURRENT BID:"}
+                    {marketItemDeets.priceLabel}:
                 </Typography>
                 <ClipThing
                     clipSize="10px"
                     clipSlantSize="3px"
                     border={{
                         isFancy: true,
-                        borderColor: primaryColor,
+                        borderColor: marketItemDeets.primaryColor,
                         borderThickness: ".2rem",
                     }}
                     corners={{
                         topRight: true,
                         bottomLeft: true,
                     }}
-                    backgroundColor={backgroundColor}
-                    sx={{ width: "min-content" }}
+                    backgroundColor={marketItemDeets.backgroundColor}
+                    sx={{ alignSelf: "flex-start" }}
                 >
                     <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
                         <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
                         <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                            {numberCommaFormatter(parseInt(buyout ? buyout_price : auction_current_price))}
+                            {numberCommaFormatter(marketItemDeets.price.toNumber())}
                         </Typography>
                     </Stack>
                 </ClipThing>
-            </Box>
+            </Stack>
 
             <Box>
                 <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
@@ -132,7 +124,7 @@ export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMech
                 </Typography>
             </Box>
 
-            {buyout ? <BuyoutDetails marketItem={marketItem} /> : <AuctionDetails marketItem={marketItem} />}
+            {dutch_auction || auction ? <AuctionDetails marketItem={marketItem} /> : <BuyoutDetails marketItem={marketItem} />}
         </Stack>
     )
 }

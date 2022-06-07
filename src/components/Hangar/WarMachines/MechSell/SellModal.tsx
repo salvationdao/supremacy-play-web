@@ -29,7 +29,7 @@ export const SellModal = () => {
                     sale_type: "BUYOUT",
                     item_type: "mech",
                     item_id: id,
-                    asking_price: "88888",
+                    asking_price: "88888000000000000000000",
                     listing_duration_hours: 50,
                 })
 
@@ -38,7 +38,7 @@ export const SellModal = () => {
                 //     item_type: "mech",
                 //     item_id: id,
                 //     asking_price: "999",
-                //     auction_reserved_price: "999",
+                //     auction_reserved_price: "88888000000000000000000",
                 //     listing_duration_hours: 8,
                 // })
 

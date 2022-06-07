@@ -20,12 +20,16 @@ import {
     SafePNG,
     SvgCorporal,
     SvgGeneral,
+    SvgHammer,
     SvgNewRecruit,
     SvgPrivate,
+    SvgWallet,
     SvgWrapperProps,
 } from "../assets"
+import { ThemeState } from "../containers/theme"
 import { colors } from "../theme/theme"
 import { MysteryCrateType, UserRank } from "../types"
+import { MarketplaceMechItem } from "../types/marketplace"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -360,6 +364,33 @@ export const getMysteryCrateDeets = (mysteryCrateType: MysteryCrateType): { imag
     return { image, label, desc }
 }
 
+// Calculates the difference between two dates in different units (days, hours etc.)
+export const timeDiff = (
+    fromDate: Date,
+    toDate: Date,
+): {
+    total: number
+    days: number
+    hours: number
+    minutes: number
+    seconds: number
+} => {
+    const total = toDate.getTime() - fromDate.getTime()
+    const seconds = Math.floor(total / 1000)
+    const minutes = Math.floor(total / 1000 / 60)
+    const hours = Math.floor(total / (1000 * 60 * 60))
+    const days = Math.floor(total / (1000 * 60 * 60 * 24))
+
+    return {
+        total,
+        days,
+        hours,
+        minutes,
+        seconds,
+    }
+}
+
+// Calculates the time difference between two dates in days, hours minutes etc.
 export const timeSince = (
     fromDate: Date,
     toDate: Date,
@@ -419,7 +450,7 @@ export const checkIfIsEmoji = (message: string) => {
     // If message is long then don't bother
     if (trimmedMsg.length > 8) return false
 
-    // Spreading string for proper emoji seperation-ignoring spaces that can appear between emojis and mess everything up
+    // Spreading string for proper emoji separation-ignoring spaces that can appear between emojis and mess everything up
     const messageArray = [...trimmedMsg.replaceAll(" ", "")]
 
     messageArray.map((c) => {
@@ -459,4 +490,69 @@ export const equalsIgnoreOrder = (a: unknown[], b: unknown[]) => {
 
 export const numberCommaFormatter = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+export const consolidateMarketItemDeets = (
+    marketItem: MarketplaceMechItem,
+    theme: ThemeState,
+): {
+    primaryColor: string
+    secondaryColor: string
+    backgroundColor: string
+    price: BigNumber
+    priceLabel: string
+    listingTypeLabel: string
+    ctaLabel: string
+    Icon: React.VoidFunctionComponent<SvgWrapperProps>
+} => {
+    const { auction, dutch_auction, buyout, auction_current_price, dutch_auction_drop_rate, buyout_price, created_at } = marketItem
+
+    const buyoutPrice = new BigNumber(buyout_price).shiftedBy(-18)
+    const auctionCurrentPrice = new BigNumber(auction_current_price).shiftedBy(-18)
+    const dutchAuctionDropBy = new BigNumber(dutch_auction_drop_rate).shiftedBy(-18)
+
+    let primaryColor = theme.factionTheme.primary
+    let secondaryColor = theme.factionTheme.secondary
+    let backgroundColor = theme.factionTheme.background
+    let price = buyoutPrice
+    let priceLabel = "PRICE"
+    let listingTypeLabel = "BUY NOW"
+    let ctaLabel = "BUY NOW"
+    let Icon = SvgWallet
+
+    if (auction) {
+        primaryColor = colors.auction
+        secondaryColor = "#FFFFFF"
+        backgroundColor = shadeColor(colors.auction, -97)
+        price = auctionCurrentPrice
+        priceLabel = "CURRENT BID"
+        listingTypeLabel = "AUCTION"
+        ctaLabel = "PLACE BID"
+        Icon = SvgHammer
+    }
+
+    if (dutch_auction) {
+        primaryColor = colors.dutchAuction
+        secondaryColor = "#FFFFFF"
+        backgroundColor = shadeColor(colors.dutchAuction, -97)
+        price = buyoutPrice.minus(dutchAuctionDropBy.multipliedBy(timeDiff(created_at, new Date()).hours))
+        priceLabel = "CURRENT PRICE"
+        listingTypeLabel = "DUTCH AUCTION"
+        Icon = SvgHammer
+    }
+
+    if (buyout) {
+        priceLabel = "FIXED PRICE"
+    }
+
+    return {
+        primaryColor,
+        secondaryColor,
+        backgroundColor,
+        price,
+        priceLabel,
+        ctaLabel,
+        listingTypeLabel,
+        Icon,
+    }
 }

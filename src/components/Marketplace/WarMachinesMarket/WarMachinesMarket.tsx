@@ -43,7 +43,7 @@ export const WarMachinesMarket = () => {
         options: [
             { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
-            { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutch_auction },
+            { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
         ],
         initialSelected: listingTypes,
         onSetSelected: setListingTypes,
@@ -194,7 +194,7 @@ export const WarMachinesMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines on sale at this time, come back later."}
+                        {"There are no war machines found, please try again."}
                     </Typography>
                 </Stack>
             </Stack>

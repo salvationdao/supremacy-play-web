@@ -1,27 +1,20 @@
 import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { SvgSupToken } from "../../../../assets"
-import { numFormatter } from "../../../../helpers"
+import { useTheme } from "../../../../containers/theme"
+import { consolidateMarketItemDeets, numFormatter } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
+import { MarketplaceMechItem } from "../../../../types/marketplace"
 
-export const Pricing = ({
-    isGridView,
-    buyoutPrice,
-    auctionPrice,
-    buyout,
-}: {
-    isGridView: boolean
-    buyoutPrice: string
-    auctionPrice: string
-    buyout: boolean
-    auction: boolean
-}) => {
-    const formattedPrice = useMemo(() => numFormatter(parseInt(buyout ? buyoutPrice : auctionPrice)), [auctionPrice, buyout, buyoutPrice])
+export const Pricing = ({ isGridView, marketItem }: { isGridView: boolean; marketItem: MarketplaceMechItem }) => {
+    const theme = useTheme()
+    const marketItemDeets = useMemo(() => consolidateMarketItemDeets(marketItem, theme), [marketItem, theme])
+    const formattedPrice = useMemo(() => numFormatter(marketItemDeets.price.toNumber()), [marketItemDeets.price])
 
     return (
         <Stack spacing={isGridView ? "" : ".6rem"}>
             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
-                {buyout ? "FIXED PRICE" : "CURRENT BID"}
+                {marketItemDeets.priceLabel}
             </Typography>
 
             <Stack direction="row" alignItems="center">

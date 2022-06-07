@@ -2,18 +2,17 @@ import { Box } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
+import { consolidateMarketItemDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MechDetails } from "../../../../types"
 import { MarketplaceMechItem } from "../../../../types/marketplace"
-import { Thumbnail } from "./Thumbnail"
 import { MechInfo } from "./MechInfo"
-import { SellerInfo } from "./SellerInfo"
-import { Timeframe } from "./Timeframe"
 import { Pricing } from "./Pricing"
+import { SellerInfo } from "./SellerInfo"
+import { Thumbnail } from "./Thumbnail"
+import { Timeframe } from "./Timeframe"
 import { ViewButton } from "./ViewButton"
-import { colors } from "../../../../theme/theme"
-import { shadeColor } from "../../../../helpers"
 
 interface WarMachineMarketItemProps {
     item: MarketplaceMechItem
@@ -25,11 +24,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const primaryColor = useMemo(() => (item.buyout ? theme.factionTheme.primary : colors.auction), [item.buyout, theme.factionTheme.primary])
-    const backgroundColor = useMemo(
-        () => (item.buyout ? theme.factionTheme.background : shadeColor(colors.auction, -97)),
-        [item.buyout, theme.factionTheme.background],
-    )
+    const marketItemDeets = useMemo(() => consolidateMarketItemDeets(item, theme), [item, theme])
 
     useEffect(() => {
         ;(async () => {
@@ -47,7 +42,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
         })()
     }, [item.mech, send])
 
-    const { id, buyout, auction, end_at, buyout_price, auction_current_price, owner, mech } = item
+    const { id, buyout, auction, end_at, owner, mech } = item
 
     if (!mech || !owner) return null
 
@@ -63,11 +58,11 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                 clipSize="7px"
                 border={{
                     isFancy: !isGridView,
-                    borderColor: primaryColor,
+                    borderColor: marketItemDeets.primaryColor,
                     borderThickness: ".25rem",
                 }}
                 opacity={0.7}
-                backgroundColor={backgroundColor}
+                backgroundColor={marketItemDeets.backgroundColor}
             >
                 <Box
                     sx={{
@@ -90,8 +85,8 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                     <MechInfo isGridView={isGridView} name={name} label={label} tier={tier} mechDetails={mechDetails} />
                     <SellerInfo isGridView={isGridView} username={username} gid={gid} />
                     <Timeframe isGridView={isGridView} endAt={end_at} buyout={buyout} auction={auction} />
-                    <Pricing isGridView={isGridView} buyoutPrice={buyout_price} auctionPrice={auction_current_price} buyout={buyout} auction={auction} />
-                    <ViewButton isGridView={isGridView} id={id} buyout={buyout} auction={auction} />
+                    <Pricing isGridView={isGridView} marketItem={item} />
+                    <ViewButton isGridView={isGridView} id={id} marketItem={item} />
                 </Box>
 
                 <Box
@@ -117,7 +112,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                         right: 0,
                         top: 0,
                         bottom: 0,
-                        background: `linear-gradient(to top, #FFFFFF10, ${backgroundColor}80)`,
+                        background: `linear-gradient(to top, #FFFFFF10, ${marketItemDeets.backgroundColor}80)`,
                         zIndex: -1,
                     }}
                 />

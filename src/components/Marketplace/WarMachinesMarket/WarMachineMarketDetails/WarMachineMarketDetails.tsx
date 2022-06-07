@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
-import { shadeColor } from "../../../../helpers"
+import { consolidateMarketItemDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -19,14 +19,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const [marketItem, setMarketItem] = useState<MarketplaceMechItem>()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const primaryColor = useMemo(
-        () => (!marketItem || marketItem.buyout ? theme.factionTheme.primary : colors.auction),
-        [marketItem, theme.factionTheme.primary],
-    )
-    const backgroundColor = useMemo(
-        () => (marketItem?.buyout ? theme.factionTheme.background : shadeColor(colors.auction, -97)),
-        [marketItem?.buyout, theme.factionTheme.background],
-    )
+    const marketItemDeets = useMemo(() => (marketItem ? consolidateMarketItemDeets(marketItem, theme) : undefined), [marketItem, theme])
 
     // Get listing details
     useEffect(() => {
@@ -91,7 +84,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
             )
         }
 
-        if (!marketItem) {
+        if (!marketItem || !marketItemDeets) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -102,13 +95,13 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
         }
 
         return <WarMachineMarketDetailsInner marketItem={marketItem} mechDetails={mechDetails} />
-    }, [loadError, marketItem, mechDetails, theme.factionTheme.primary])
+    }, [loadError, marketItem, marketItemDeets, mechDetails, theme.factionTheme.primary])
 
     return (
         <ClipThing
             clipSize="10px"
             border={{
-                borderColor: primaryColor,
+                borderColor: marketItemDeets?.primaryColor || theme.factionTheme.primary,
                 borderThickness: ".3rem",
             }}
             corners={{
@@ -117,7 +110,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
                 bottomRight: true,
             }}
             opacity={0.7}
-            backgroundColor={backgroundColor}
+            backgroundColor={marketItemDeets?.backgroundColor || theme.factionTheme.background}
             sx={{ height: "100%" }}
         >
             <Stack sx={{ height: "100%" }}>{content}</Stack>

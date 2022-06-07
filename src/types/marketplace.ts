@@ -29,6 +29,7 @@ export interface MarketplaceMechItem {
     dutch_auction_drop_rate: string
     buyout: boolean
     buyout_price: string
+    created_at: Date
     end_at: Date
     owner?: {
         username: string
