@@ -12,26 +12,9 @@ import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { MysteryCrateItem, MysteryCrateItemLoadingSkeleton } from "./MysteryCrateItem/MysteryCrateItem"
 
-const placeholderCrates: MysteryCrate[] = [
-    {
-        id: "1",
-        mystery_crate_type: "MECH",
-        price: "3200000000000000000000",
-        amount: 10000,
-        sold: 6080,
-    },
-    {
-        id: "2",
-        mystery_crate_type: "WEAPON",
-        price: "2200000000000000000000",
-        amount: 10000,
-        sold: 3610,
-    },
-]
-
 export const MysteryCrates = () => {
     const { newSnackbarMessage } = useSnackbar()
-    const { send } = useGameServerCommandsFaction("xxxxxxxxx")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
@@ -42,21 +25,6 @@ export const MysteryCrates = () => {
 
     // Get mystery crates
     useEffect(() => {
-        // TODO: remove later
-        setCrates([...placeholderCrates])
-        // setCrates([
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        //     ...placeholderCrates,
-        // ])
-        setIsLoading(false)
-        return
         ;(async () => {
             try {
                 setIsLoading(true)
@@ -69,30 +37,15 @@ export const MysteryCrates = () => {
                 setLoadError(undefined)
                 setCrates(resp)
             } catch (e) {
-                setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
+                const message = typeof e === "string" ? e : "Failed to get mystery crates."
+                setLoadError(message)
+                newSnackbarMessage(message, "error")
                 console.error(e)
             } finally {
                 setIsLoading(false)
             }
         })()
     }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
-
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<MysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
-                    page,
-                    page_size: pageSize,
-                })
-
-                if (!resp) return
-                setCrates(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [page, pageSize, send])
 
     const content = useMemo(() => {
         if (loadError) {

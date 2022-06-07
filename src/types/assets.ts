@@ -322,7 +322,7 @@ export interface MysteryCrate {
     mystery_crate_type: MysteryCrateType
     price: string
     amount: number
-    sold: number
+    amount_sold: number
 }
 export interface Keycard {
     id: string
