@@ -23,6 +23,7 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { selectedMechDetails, setSelectedMechDetails } = useHangarWarMachine()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [mechQueuePosition, setMechQueuePosition] = useState<number>(-1)
 
     const isSelected = useMemo(() => selectedMechDetails?.id === mech.id, [mech.id, selectedMechDetails?.id])
 
@@ -42,7 +43,22 @@ export const WarMachineHangarItem = ({ mech, index }: WarMachineHangarItemProps)
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
-    return <WarMachineHangarItemInner mech={mech} mechDetails={mechDetails} isSelected={isSelected} setSelectedMechDetails={setSelectedMechDetails} />
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await send<number>(GameServerKeys.GetMechQueueDetails, {
+                    mech_id: mech.id,
+                })
+                if (!resp) return
+                console.log(resp)
+                setMechQueuePosition(resp)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [index, mech.id, send, setSelectedMechDetails])
+
+    return <WarMachineHangarItemInner mech={mech} mechDetails={mechDetails} isSelected={isSelected} mechQueuePosition={mechQueuePosition} setSelectedMechDetails={setSelectedMechDetails} />
 }
 
 const WarMachineHangarItemInner = ({
@@ -50,7 +66,9 @@ const WarMachineHangarItemInner = ({
     mechDetails,
     isSelected,
     setSelectedMechDetails,
+                                       mechQueuePosition,
 }: {
+    mechQueuePosition: number,
     mech: MechBasic
     mechDetails?: MechDetails
     isSelected: boolean
@@ -82,7 +100,7 @@ const WarMachineHangarItemInner = ({
                 <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>
                     <Stack spacing="1rem" sx={{ height: "100%" }}>
                         <MechThumbnail mech={mech} mechDetails={mechDetails} />
-                        <MechGeneralStatus mech={mech} />
+                        <MechGeneralStatus mechQueuePosition={mechQueuePosition} />
                     </Stack>
 
                     <Stack spacing="1.1rem" sx={{ flex: 1, height: "100%" }}>
@@ -92,7 +110,7 @@ const WarMachineHangarItemInner = ({
                             <MechBarStats mech={mech} mechDetails={mechDetails} />
                         </Stack>
 
-                        <MechButtons mech={mech} mechDetails={mechDetails} />
+                        <MechButtons mech={mech} mechDetails={mechDetails} mechQueuePosition={mechQueuePosition} />
                     </Stack>
                 </Stack>
 

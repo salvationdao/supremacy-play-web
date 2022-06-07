@@ -15,16 +15,16 @@ export const Bar = () => {
     const { userID, user } = useAuth()
     const { newSnackbarMessage } = useSnackbar()
 
-    useGameServerSubscription(
-        {
-            URI: "xxxxxxxxx",
-            key: GameServerKeys.TriggerSaleAbilitiesListUpdated,
-        },
-        () => {
-            if (DEV_ONLY) return
-            newSnackbarMessage("Player abilities market has been refreshed.", "info")
-        },
-    )
+    // useGameServerSubscription(
+    //     {
+    //         URI: "xxxxxxxxx",
+    //         key: GameServerKeys.TriggerSaleAbilitiesListUpdated,
+    //     },
+    //     () => {
+    //         if (DEV_ONLY) return
+    //         newSnackbarMessage("Player abilities market has been refreshed.", "info")
+    //     },
+    // )
 
     return (
         <Stack

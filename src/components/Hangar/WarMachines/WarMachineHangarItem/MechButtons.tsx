@@ -5,22 +5,36 @@ import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
-export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+export const MechButtons = ({
+                                mechDetails,
+                                mechQueuePosition,
+                            }: { mech: MechBasic; mechDetails?: MechDetails, mechQueuePosition: number }) => {
     const theme = useTheme()
     const { setDeployMechDetails, setHistoryMechDetails, setRentalMechDetails, setSellMechDetails } = useHangarWarMachine()
 
     return (
         <Stack direction="row" spacing=".8rem">
-            <ReusableButton
+            {mechQueuePosition === -1 && <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
                 label="DEPLOY"
                 disabled={!mechDetails}
                 onClick={() => mechDetails && setDeployMechDetails(mechDetails)}
-            />
-
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechDetails} />
-
+            />}
+            {mechQueuePosition === 0 && <ReusableButton
+                primaryColor={theme.factionTheme.primary}
+                backgroundColor={theme.factionTheme.background}
+                label="UNAVAILABLE"
+                disabled={true}
+            />}
+            {mechQueuePosition > 0 && <ReusableButton
+                primaryColor={theme.factionTheme.primary}
+                backgroundColor={theme.factionTheme.background}
+                label="UNDEPLOY"
+                disabled={true}
+            />}
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background}
+                            label="REPAIR" disabled={!mechDetails} />
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
@@ -49,12 +63,12 @@ export const MechButtons = ({ mechDetails }: { mech: MechBasic; mechDetails?: Me
 }
 
 const ReusableButton = ({
-    primaryColor,
-    backgroundColor,
-    label,
-    onClick,
-    disabled,
-}: {
+                            primaryColor,
+                            backgroundColor,
+                            label,
+                            onClick,
+                            disabled,
+                        }: {
     primaryColor: string
     backgroundColor: string
     label: string

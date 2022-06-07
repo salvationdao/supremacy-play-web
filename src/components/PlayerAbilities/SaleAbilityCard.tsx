@@ -69,19 +69,19 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
         }
     }, [abilityID, newSnackbarMessage, price, saleAbility?.ability?.label, send, toggleShowPurchaseModal])
 
-    useGameServerSubscription<{ id: string; price: string }>(
-        {
-            URI: "xxxxxxxxx",
-            key: GameServerKeys.SaleAbilityPriceSubscribe,
-        },
-        (payload) => {
-            if (!payload || payload.id !== abilityID) return
-            setPrice((prev) => {
-                if (prev) setPreviousPrice(prev)
-                return payload.price
-            })
-        },
-    )
+    // useGameServerSubscription<{ id: string; price: string }>(
+    //     {
+    //         URI: "xxxxxxxxx",
+    //         key: GameServerKeys.SaleAbilityPriceSubscribe,
+    //     },
+    //     (payload) => {
+    //         if (!payload || payload.id !== abilityID) return
+    //         setPrice((prev) => {
+    //             if (prev) setPreviousPrice(prev)
+    //             return payload.price
+    //         })
+    //     },
+    // )
 
     useEffect(() => {
         ;(async () => {

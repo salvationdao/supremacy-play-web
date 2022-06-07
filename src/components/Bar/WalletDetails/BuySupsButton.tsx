@@ -8,17 +8,17 @@ import { PassportServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 
 export const BuySupsButton = () => {
-    const { send } = usePassportCommandsUser("xxxxxxxxx")
+    // const { send } = usePassportCommandsUser("xxxxxxxxx")
     const [timeTilNextClaim, setTimeTilNextClaim] = useState<Date>()
 
     const getFreeSups = useCallback(async () => {
-        try {
-            const resp = await send<Date | boolean>(PassportServerKeys.GetFreeSups)
-            if (resp instanceof Date) setTimeTilNextClaim(resp)
-        } catch (e) {
-            console.error(e)
-        }
-    }, [send])
+        // try {
+        //     const resp = await send<Date | boolean>(PassportServerKeys.GetFreeSups)
+        //     if (resp instanceof Date) setTimeTilNextClaim(resp)
+        // } catch (e) {
+        //     console.error(e)
+        // }
+    }, [])
 
     const tooltipText = useMemo(() => {
         if (STAGING_ONLY) {
