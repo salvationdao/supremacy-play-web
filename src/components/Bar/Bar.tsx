@@ -1,11 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
-import { useAuth, useSnackbar, useSupremacy } from "../../containers"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
+import { useAuth, useSupremacy } from "../../containers"
 import { useToggle } from "../../hooks"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
 import { fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
@@ -13,7 +11,7 @@ import { SaleAbilitiesModal } from "../PlayerAbilities/SaleAbilitiesModal"
 
 export const Bar = () => {
     const { userID, user } = useAuth()
-    const { newSnackbarMessage } = useSnackbar()
+    // const { newSnackbarMessage } = useSnackbar()
 
     // useGameServerSubscription(
     //     {

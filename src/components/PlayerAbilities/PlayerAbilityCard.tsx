@@ -1,16 +1,6 @@
-import { LoadingButton } from "@mui/lab"
-import { Box, ButtonBase, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { SvgClose, SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
-import { useToggle } from "../../hooks"
-import { useGameServerSubscriptionUser } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { colors, fonts } from "../../theme/theme"
-import { PlayerAbility } from "../../types"
-import { ClipThing } from "../Common/ClipThing"
-import { TooltipHelper } from "../Common/TooltipHelper"
 import { AbilityCardProps } from "./SaleAbilityCard"
 
-const activateModalWidth = 400
+// const activateModalWidth = 400
 
 export const PlayerAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
     return <></>
