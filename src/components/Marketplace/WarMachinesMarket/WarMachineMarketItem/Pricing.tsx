@@ -20,11 +20,13 @@ export const Pricing = ({
 
     return (
         <Stack spacing={isGridView ? "" : ".6rem"}>
-            <Typography sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>{buyout ? "FIXED PRICE" : "CURRENT BID"}</Typography>
+            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
+                {buyout ? "FIXED PRICE" : "CURRENT BID"}
+            </Typography>
 
             <Stack direction="row" alignItems="center">
                 <SvgSupToken size="1.7rem" fill={colors.yellow} />
-                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                     {formattedPrice}
                 </Typography>
             </Stack>

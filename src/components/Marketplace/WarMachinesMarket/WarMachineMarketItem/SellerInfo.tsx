@@ -4,9 +4,11 @@ import { fonts, colors } from "../../../../theme/theme"
 export const SellerInfo = ({ isGridView, username, gid }: { isGridView: boolean; username: string; gid: number }) => {
     return (
         <Stack spacing={isGridView ? "" : ".6rem"}>
-            <Typography sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>SELLER</Typography>
+            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
+                SELLER
+            </Typography>
             <Typography
-                variant="body2"
+                variant="caption"
                 sx={{
                     fontFamily: fonts.nostromoBold,
                     display: "-webkit-box",

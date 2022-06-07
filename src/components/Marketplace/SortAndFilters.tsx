@@ -9,7 +9,10 @@ import { SortType } from "../../types/marketplace"
 const sortOptions: SortType[] = [SortType.OldestFirst, SortType.NewestFirst, SortType.Alphabetical, SortType.AlphabeticalReverse]
 
 export interface FilterSection {
-    options: string[]
+    options: {
+        name: string
+        color: string
+    }[]
     onSetFilter: React.Dispatch<React.SetStateAction<string[]>>
 }
 

@@ -43,6 +43,7 @@ export const MechInfo = ({
     return (
         <Stack spacing={isGridView ? "" : ".6rem"}>
             <Typography
+                variant="body2"
                 sx={{
                     fontFamily: fonts.nostromoBlack,
                     color: rarityDeets.color,
@@ -52,7 +53,7 @@ export const MechInfo = ({
             </Typography>
 
             <Typography
-                variant="body2"
+                variant="caption"
                 sx={{
                     fontFamily: fonts.nostromoBold,
                     display: "-webkit-box",

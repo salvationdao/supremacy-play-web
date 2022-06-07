@@ -8,9 +8,11 @@ export const Timeframe = ({ isGridView, endAt }: { isGridView: boolean; endAt: D
 
     return (
         <Stack spacing={isGridView ? "" : ".6rem"}>
-            <Typography sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>TIME LEFT</Typography>
+            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
+                TIME LEFT
+            </Typography>
             <Typography
-                variant="body2"
+                variant="caption"
                 sx={{
                     fontFamily: fonts.nostromoBold,
                     display: "-webkit-box",

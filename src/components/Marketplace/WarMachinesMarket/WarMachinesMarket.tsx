@@ -33,7 +33,19 @@ export const WarMachinesMarket = () => {
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     const rarityFilterSection = useRef<FilterSection>({
-        options: ["MEGA", "COLOSSAL", "RARE", "LEGENDARY", "ELITE_LEGENDARY", "ULTRA_RARE", "EXOTIC", "GUARDIAN", "MYTHIC", "DEUS_EX", "TITAN"],
+        options: [
+            { name: "MEGA", color: "xxxxxx" },
+            { name: "COLOSSAL", color: "xxxxxx" },
+            { name: "RARE", color: "xxxxxx" },
+            { name: "LEGENDARY", color: "xxxxxx" },
+            { name: "ELITE_LEGENDARY", color: "xxxxxx" },
+            { name: "ULTRA_RARE", color: "xxxxxx" },
+            { name: "EXOTIC", color: "xxxxxx" },
+            { name: "GUARDIAN", color: "xxxxxx" },
+            { name: "MYTHIC", color: "xxxxxx" },
+            { name: "DEUS_EX", color: "xxxxxx" },
+            { name: "TITAN", color: "xxxxxx" },
+        ],
         onSetFilter: setRarities,
     })
 
