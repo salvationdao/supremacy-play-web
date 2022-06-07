@@ -92,6 +92,7 @@ export const WarMachinesMarket = () => {
                 search: search,
                 rarities: rarities,
                 listing_types: listingTypes,
+                sort_by: SortType.Alphabetical || SortType.AlphabeticalReverse ? "alphabetical" : "created_at",
                 sort_dir: sortDir,
             })
 
