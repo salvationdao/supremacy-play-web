@@ -44,6 +44,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
             <Box
                 sx={{
                     height: enlargedView ? "88%" : "100%",
+                    minHeight: "60rem",
                     width: "100%",
                     transition: "all .15s",
                     ":hover": {

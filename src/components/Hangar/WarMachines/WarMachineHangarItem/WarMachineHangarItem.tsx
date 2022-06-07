@@ -40,6 +40,7 @@ export const WarMachineHangarItem = ({
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const [mechQueuePosition, setMechQueuePosition] = useState<number>(-1)
 
+    // Get mech details
     useEffect(() => {
         ;(async () => {
             try {
@@ -56,6 +57,7 @@ export const WarMachineHangarItem = ({
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
+    // Get mech queue info
     useEffect(() => {
         ;(async () => {
             try {
@@ -163,7 +165,7 @@ const WarMachineHangarItemInner = ({
                             <MechBarStats mech={mech} mechDetails={mechDetails} />
                         </Stack>
 
-                        {mechDetails && (
+                        {mechDetails ? (
                             <MechButtons
                                 mechDetails={mechDetails}
                                 mechQueuePosition={mechQueuePosition}
@@ -174,6 +176,8 @@ const WarMachineHangarItemInner = ({
                                 setRentalMechModalOpen={setRentalMechModalOpen}
                                 setSellMechModalOpen={setSellMechModalOpen}
                             />
+                        ) : (
+                            <Box sx={{ height: "3rem" }} />
                         )}
                     </Stack>
                 </Stack>
