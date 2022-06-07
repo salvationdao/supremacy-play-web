@@ -30,7 +30,7 @@ export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
                     direction: "ltr",
                     scrollbarWidth: "none",
                     "::-webkit-scrollbar": {
-                        width: ".3rem",
+                        width: ".4rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",

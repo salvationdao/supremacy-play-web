@@ -172,7 +172,7 @@ const WarMachinesInner = ({
                 }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", width: "55%", minWidth: "fit-content" }}
+                sx={{ height: "100%", width: "fit-content", minWidth: "80rem" }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <TotalAndPageSizeOptions
@@ -236,7 +236,7 @@ const WarMachinesInner = ({
                             </Stack>
                         )}
 
-                        {mechs.length <= 0 && (
+                        {!isLoading && mechs.length <= 0 && (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Stack
                                     alignItems="center"

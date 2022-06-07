@@ -323,6 +323,16 @@ export interface MysteryCrate {
     price: string
     amount: number
     amount_sold: number
+    faction_id: string
+    label: string
+    description: string
+    image_url?: string
+    card_animation_url?: string
+    avatar_url?: string
+    large_image_url?: string
+    background_color?: string
+    animation_url?: string
+    youtube_url?: string
 }
 export interface Keycard {
     id: string

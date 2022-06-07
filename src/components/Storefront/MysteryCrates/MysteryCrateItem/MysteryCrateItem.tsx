@@ -1,10 +1,10 @@
 import { Box, IconButton, Modal, Skeleton, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
-import { SvgClose, SvgSupToken } from "../../../../assets"
+import { SafePNG, SvgClose, SvgSupToken } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { getMysteryCrateDeets, numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
+import { numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -20,8 +20,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
     const theme = useTheme()
     const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>(crate)
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
-
-    const crateDeets = useMemo(() => getMysteryCrateDeets(mysteryCrate.mystery_crate_type), [mysteryCrate])
+    const [imgUrl] = useState<string>(mysteryCrate.image_url || `url(${SafePNG})`)
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -37,13 +36,12 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
         },
     )
 
-    const { price, amount_sold, amount } = mysteryCrate
-
     return (
         <>
             <Box
                 sx={{
                     height: enlargedView ? "88%" : "100%",
+                    minHeight: "60rem",
                     width: "100%",
                     transition: "all .15s",
                     ":hover": {
@@ -78,7 +76,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                 sx={{
                                     width: "100%",
                                     height: enlargedView ? "100%" : "22rem",
-                                    background: `url(${crateDeets.image})`,
+                                    background: imgUrl,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
@@ -102,11 +100,11 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                         fontFamily: fonts.nostromoBold,
                                         span: {
                                             fontFamily: "inherit",
-                                            color: amount_sold >= amount ? colors.red : colors.neonBlue,
+                                            color: mysteryCrate.amount_sold >= mysteryCrate.amount ? colors.red : colors.neonBlue,
                                         },
                                     }}
                                 >
-                                    <span>{numberCommaFormatter(amount - amount_sold)}</span> / {numberCommaFormatter(amount)}
+                                    <span>{numberCommaFormatter(mysteryCrate.amount - mysteryCrate.amount_sold)}</span> / {numberCommaFormatter(mysteryCrate.amount)}
                                 </Typography>
                             </Box>
 
@@ -118,7 +116,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                             >
                                 <SvgSupToken size={enlargedView ? "2.3rem" : "1.6rem"} fill={colors.yellow} />
                                 <Typography sx={{ fontSize: enlargedView ? "1.9rem" : "1.6rem", fontWeight: "fontWeightBold" }}>
-                                    {supFormatterNoFixed(price, 2)}
+                                    {supFormatterNoFixed(mysteryCrate.price, 2)}
                                 </Typography>
                             </Stack>
                         </Box>
@@ -128,11 +126,11 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                 variant={enlargedView ? "h4" : "h6"}
                                 sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack, textAlign: enlargedView ? "center" : "start" }}
                             >
-                                {crateDeets.label}
+                                {mysteryCrate.label}
                             </Typography>
 
                             <Typography sx={{ fontSize: enlargedView ? "2.1rem" : "1.6rem", textAlign: enlargedView ? "center" : "start" }}>
-                                {crateDeets.desc}
+                                {mysteryCrate.description}
                             </Typography>
 
                             <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>

@@ -39,22 +39,25 @@ export const MechButtons = ({
                     }}
                 />
             )}
+
             {mechQueuePosition === 0 && (
-                <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="N/A" disabled={true} />
+                <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="UNDEPLOY" disabled={true} />
             )}
+
             {mechQueuePosition > 0 && (
                 <ReusableButton
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
                     label="UNDEPLOY"
-                    disabled={true}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setLeaveMechModalOpen(true)
                     }}
                 />
             )}
+
             <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechDetails} />
+
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}

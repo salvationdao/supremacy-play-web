@@ -160,7 +160,7 @@ export const HistoryModal = ({
                         maxHeight: "36rem",
                     }}
                 >
-                    <Stack direction="row" alignItems="center" sx={{ pb: ".4rem" }}>
+                    <Stack direction="row" alignItems="center" spacing=".3rem" sx={{ pb: ".4rem" }}>
                         <Typography variant="body1" sx={{ fontFamily: fonts.nostromoBlack }}>
                             RECENT 10 MATCHES
                         </Typography>
