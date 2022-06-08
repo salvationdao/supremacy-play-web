@@ -193,7 +193,7 @@ const WarMachinesInner = ({
                             overflowY: "auto",
                             overflowX: "hidden",
                             direction: "ltr",
-                            scrollbarWidth: "none",
+
                             "::-webkit-scrollbar": {
                                 width: ".4rem",
                             },

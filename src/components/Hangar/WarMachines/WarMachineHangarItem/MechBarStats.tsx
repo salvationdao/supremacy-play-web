@@ -35,7 +35,7 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
                 pr: ".8rem",
                 py: ".16rem",
                 direction: "ltr",
-                scrollbarWidth: "none",
+
                 "::-webkit-scrollbar": {
                     width: ".4rem",
                 },

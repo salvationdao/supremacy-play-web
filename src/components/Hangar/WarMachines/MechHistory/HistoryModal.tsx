@@ -179,7 +179,7 @@ export const HistoryModal = ({
                                 pr: ".6rem",
                                 py: ".16rem",
                                 direction: "ltr",
-                                scrollbarWidth: "none",
+
                                 "::-webkit-scrollbar": {
                                     width: ".4rem",
                                 },
