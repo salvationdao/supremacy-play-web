@@ -24,7 +24,8 @@ export const MysteryCratesStore = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [ownershipDetails, setOwnershipDetails] = useState<MysteryCrateOwnershipResp>({
-        allowed: 0, owned: 0,
+        allowed: 0,
+        owned: 0,
     })
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
 
@@ -177,7 +178,7 @@ export const MysteryCratesStore = () => {
                         alignItems="center"
                         sx={{
                             p: "2rem",
-                            gap:'2rem',
+                            gap: "2rem",
                             backgroundColor: "#00000070",
                             borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
                         }}
@@ -186,7 +187,7 @@ export const MysteryCratesStore = () => {
                             component={"img"}
                             src={SafePNG}
                             sx={{
-                                maxHeight:"150px",
+                                maxHeight: "150px",
                                 userSelect: "none",
                             }}
                         />
@@ -194,18 +195,16 @@ export const MysteryCratesStore = () => {
                             <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 MYSTERY CRATES
                             </Typography>
-                            <Typography >Gear up for the battle arena with a variety of War
-                                Machines and Weapons.</Typography>
-
+                            <Typography>Gear up for the battle arena with a variety of War Machines and Weapons.</Typography>
                         </Box>
-                        <Box sx={{display:'flex', height:'100%', flexDirection:'column', marginLeft:"auto"}}>
+                        <Box sx={{ display: "flex", height: "100%", flexDirection: "column", marginLeft: "auto" }}>
                             <Box
                                 sx={{
-                                    flex:1,
-                                    display:'flex',
-                                    flexDirection:'column',
-                                    p: '2rem',
-                                    justifyContent:'space-evenly',
+                                    flex: 1,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    p: "2rem",
+                                    justifyContent: "space-evenly",
                                     backgroundColor: `${colors.neonBlue}10`,
                                     border: `${colors.neonBlue} 2px dashed`,
                                 }}
@@ -213,17 +212,17 @@ export const MysteryCratesStore = () => {
                                 <Typography
                                     variant={"h5"}
                                     sx={{
-                                    textAlign: "center",
-                                    color: colors.neonBlue,
-                                    fontFamily: fonts.nostromoBlack,
-                                }}>Limited Supply</Typography>
-                                <Typography variant={"h6"}>Total
-                                    Owned: {ownershipDetails.owned}</Typography>
-                                <Typography variant={"h6"}>Total Maximum
-                                    Capacity: {ownershipDetails.allowed}</Typography>
-
+                                        textAlign: "center",
+                                        color: colors.neonBlue,
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    Limited Supply
+                                </Typography>
+                                <Typography variant={"h6"}>Total Owned: {ownershipDetails.owned}</Typography>
+                                <Typography variant={"h6"}>Total Maximum Capacity: {ownershipDetails.allowed}</Typography>
                             </Box>
-                            <Typography >Maximum capacity is effected by your held keycards.</Typography>
+                            <Typography>Maximum capacity is effected by your held keycards.</Typography>
                         </Box>
                     </Stack>
 
