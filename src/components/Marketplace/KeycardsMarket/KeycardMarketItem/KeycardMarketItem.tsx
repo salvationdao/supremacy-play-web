@@ -3,11 +3,15 @@ import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { MarketplaceBuyItem } from "../../../../types/marketplace"
 import { KeycardInfo } from "./KeycardInfo"
-import { Pricing } from "./Pricing"
-import { SellerInfo } from "./SellerInfo"
-import { Thumbnail } from "./Thumbnail"
-import { Timeframe } from "./Timeframe"
-import { ViewButton } from "./ViewButton"
+import { Pricing } from "../../Common/MarketItem/Pricing"
+import { Thumbnail } from "../../Common/MarketItem/Thumbnail"
+import { SellerInfo } from "../../Common/MarketItem/SellerInfo"
+import { Timeframe } from "../../Common/MarketItem/Timeframe"
+import { ViewButton } from "../../Common/MarketItem/ViewButton"
+import { useMemo } from "react"
+import { numFormatter } from "../../../../helpers"
+import BigNumber from "bignumber.js"
+import { SvgWallet } from "../../../../assets"
 
 interface KeycardMarketItemProps {
     item: MarketplaceBuyItem
@@ -17,7 +21,8 @@ interface KeycardMarketItemProps {
 export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) => {
     const theme = useTheme()
 
-    const { id, end_at, owner, keycard } = item
+    const { id, end_at, owner, keycard, buyout_price } = item
+    const formattedPrice = useMemo(() => numFormatter(new BigNumber(buyout_price).shiftedBy(-18).toNumber()), [buyout_price])
 
     if (!keycard || !owner) return null
 
@@ -57,8 +62,15 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
                     <KeycardInfo isGridView={isGridView} label={label} description={description} />
                     <SellerInfo isGridView={isGridView} username={username} gid={gid} />
                     <Timeframe isGridView={isGridView} endAt={end_at} />
-                    <Pricing isGridView={isGridView} marketItem={item} />
-                    <ViewButton isGridView={isGridView} id={id} />
+                    <Pricing isGridView={isGridView} formattedPrice={formattedPrice} priceLabel="FIXED PRICE" />
+                    <ViewButton
+                        isGridView={isGridView}
+                        id={id}
+                        primaryColor={theme.factionTheme.primary}
+                        secondaryColor={theme.factionTheme.secondary}
+                        ctaLabel="BUY NOW"
+                        icon={<SvgWallet size="1.9rem" fill={theme.factionTheme.secondary} />}
+                    />
                 </Box>
 
                 <Box

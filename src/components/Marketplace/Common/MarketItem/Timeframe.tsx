@@ -1,11 +1,15 @@
 import { Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
+import { timeSinceInWords } from "../../../../helpers"
 import { fonts, colors } from "../../../../theme/theme"
 
-export const SellerInfo = ({ isGridView, username, gid }: { isGridView: boolean; username: string; gid: number }) => {
+export const Timeframe = ({ isGridView, endAt }: { isGridView: boolean; endAt: Date }) => {
+    const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
+
     return (
-        <Stack spacing={isGridView ? "" : ".6rem"}>
+        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
-                SELLER
+                TIME LEFT
             </Typography>
             <Typography
                 variant="caption"
@@ -19,8 +23,7 @@ export const SellerInfo = ({ isGridView, username, gid }: { isGridView: boolean;
                     WebkitBoxOrient: "vertical",
                 }}
             >
-                {username}
-                <span style={{ marginLeft: ".2rem", opacity: 0.7, fontFamily: "inherit" }}>{`#${gid}`}</span>
+                {timeLeft}
             </Typography>
         </Stack>
     )

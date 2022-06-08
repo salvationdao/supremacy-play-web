@@ -6,7 +6,7 @@ export const KeycardInfo = ({ isGridView, label, description }: { isGridView: bo
     const theme = useTheme()
 
     return (
-        <Stack spacing={isGridView ? "" : ".6rem"}>
+        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
             <Typography
                 variant="body2"
                 sx={{

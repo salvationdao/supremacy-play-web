@@ -2,17 +2,17 @@ import { Box } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
-import { consolidateMarketItemDeets } from "../../../../helpers"
+import { consolidateMarketItemDeets, numFormatter } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MechDetails } from "../../../../types"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { MechInfo } from "./MechInfo"
-import { Pricing } from "./Pricing"
-import { SellerInfo } from "./SellerInfo"
-import { Thumbnail } from "./Thumbnail"
-import { Timeframe } from "./Timeframe"
-import { ViewButton } from "./ViewButton"
+import { Pricing } from "../../Common/MarketItem/Pricing"
+import { Thumbnail } from "../../Common/MarketItem/Thumbnail"
+import { SellerInfo } from "../../Common/MarketItem/SellerInfo"
+import { Timeframe } from "../../Common/MarketItem/Timeframe"
+import { ViewButton } from "../../Common/MarketItem/ViewButton"
 
 interface WarMachineMarketItemProps {
     item: MarketplaceBuyAuctionItem
@@ -25,6 +25,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     const marketItemDeets = useMemo(() => consolidateMarketItemDeets(item, theme), [item, theme])
+    const formattedPrice = useMemo(() => numFormatter(marketItemDeets.price.toNumber()), [marketItemDeets.price])
 
     useEffect(() => {
         ;(async () => {
@@ -42,7 +43,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
         })()
     }, [item.mech, send])
 
-    const { id, buyout, auction, end_at, owner, mech } = item
+    const { id, end_at, owner, mech } = item
 
     if (!mech || !owner) return null
 
@@ -81,12 +82,19 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                             : {}),
                     }}
                 >
-                    <Thumbnail isGridView={isGridView} avatarUrl={avatar_url} />
+                    <Thumbnail isGridView={isGridView} imageUrl={avatar_url} />
                     <MechInfo isGridView={isGridView} name={name} label={label} tier={tier} mechDetails={mechDetails} />
                     <SellerInfo isGridView={isGridView} username={username} gid={gid} />
-                    <Timeframe isGridView={isGridView} endAt={end_at} buyout={buyout} auction={auction} />
-                    <Pricing isGridView={isGridView} marketItem={item} />
-                    <ViewButton isGridView={isGridView} id={id} marketItem={item} />
+                    <Timeframe isGridView={isGridView} endAt={end_at} />
+                    <Pricing isGridView={isGridView} formattedPrice={formattedPrice} priceLabel={marketItemDeets.priceLabel} />
+                    <ViewButton
+                        isGridView={isGridView}
+                        id={id}
+                        primaryColor={marketItemDeets.primaryColor}
+                        secondaryColor={marketItemDeets.secondaryColor}
+                        ctaLabel={marketItemDeets.ctaLabel}
+                        icon={<marketItemDeets.Icon size="1.9rem" fill={marketItemDeets.secondaryColor} />}
+                    />
                 </Box>
 
                 <Box

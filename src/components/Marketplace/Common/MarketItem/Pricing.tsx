@@ -1,19 +1,12 @@
 import { Stack, Typography } from "@mui/material"
-import BigNumber from "bignumber.js"
-import { useMemo } from "react"
 import { SvgSupToken } from "../../../../assets"
-import { numFormatter } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
-import { MarketplaceBuyItem } from "../../../../types/marketplace"
 
-export const Pricing = ({ isGridView, marketItem }: { isGridView: boolean; marketItem: MarketplaceBuyItem }) => {
-    const { buyout_price } = marketItem
-    const formattedPrice = useMemo(() => numFormatter(new BigNumber(buyout_price).shiftedBy(-18).toNumber()), [buyout_price])
-
+export const Pricing = ({ isGridView, formattedPrice, priceLabel }: { isGridView: boolean; formattedPrice: string; priceLabel: string }) => {
     return (
-        <Stack spacing={isGridView ? "" : ".6rem"}>
+        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
-                FIXED PRICE
+                {priceLabel}
             </Typography>
 
             <Stack direction="row" alignItems="center">
