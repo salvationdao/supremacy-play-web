@@ -92,19 +92,19 @@ const HangarPageInner = () => {
                         }}
                     >
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
-                        <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
                         <Tab label="KEY CARDS" value={HANGAR_TABS.KeyCards} />
+                        <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
                     </Tabs>
                 </Box>
 
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
                     <WarMachinesHangar />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
-                    <MysteryCratesHangar />
-                </TabPanel>
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.KeyCards}>
                     <KeyCardsHangar />
+                </TabPanel>
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
+                    <MysteryCratesHangar />
                 </TabPanel>
             </Stack>
         </>
