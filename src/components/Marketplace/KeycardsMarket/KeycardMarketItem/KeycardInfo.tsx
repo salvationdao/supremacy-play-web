@@ -12,6 +12,12 @@ export const KeycardInfo = ({ isGridView, label, description }: { isGridView: bo
                 sx={{
                     fontFamily: fonts.nostromoBlack,
                     color: theme.factionTheme.primary,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: "vertical",
                 }}
             >
                 {label}

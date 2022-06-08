@@ -19,7 +19,7 @@ export const Timeframe = ({ isGridView, endAt }: { isGridView: boolean; endAt: D
                     overflow: "hidden",
                     overflowWrap: "anywhere",
                     textOverflow: "ellipsis",
-                    WebkitLineClamp: 1,
+                    WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
                 }}
             >

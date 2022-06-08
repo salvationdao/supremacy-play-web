@@ -42,7 +42,7 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
                         p: isGridView ? "1.2rem 1.3rem" : ".8rem 1rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: "8rem minmax(auto, 30rem) 1.5fr repeat(2, 1fr) min-content",
+                        gridTemplateColumns: "8rem minmax(auto, 35rem) repeat(3, 1fr) min-content",
                         gap: "1.6rem",
                         ...(isGridView
                             ? {
