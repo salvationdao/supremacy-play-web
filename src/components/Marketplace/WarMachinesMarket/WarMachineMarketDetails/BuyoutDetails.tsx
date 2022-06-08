@@ -8,9 +8,9 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { MarketplaceMechItem } from "../../../../types/marketplace"
+import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 
-export const BuyoutDetails = ({ marketItem }: { marketItem: MarketplaceMechItem }) => {
+export const BuyoutDetails = ({ marketItem }: { marketItem: MarketplaceBuyAuctionItem }) => {
     const theme = useTheme()
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
 
@@ -52,7 +52,7 @@ export const BuyoutDetails = ({ marketItem }: { marketItem: MarketplaceMechItem 
     )
 }
 
-const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceMechItem; onClose: () => void }) => {
+const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceBuyAuctionItem; onClose: () => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")

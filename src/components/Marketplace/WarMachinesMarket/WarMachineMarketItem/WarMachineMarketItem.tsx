@@ -6,7 +6,7 @@ import { consolidateMarketItemDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MechDetails } from "../../../../types"
-import { MarketplaceMechItem } from "../../../../types/marketplace"
+import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { MechInfo } from "./MechInfo"
 import { Pricing } from "./Pricing"
 import { SellerInfo } from "./SellerInfo"
@@ -15,7 +15,7 @@ import { Timeframe } from "./Timeframe"
 import { ViewButton } from "./ViewButton"
 
 interface WarMachineMarketItemProps {
-    item: MarketplaceMechItem
+    item: MarketplaceBuyAuctionItem
     isGridView: boolean
 }
 

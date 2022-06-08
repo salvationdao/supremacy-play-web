@@ -20,7 +20,33 @@ export enum SortType {
     AlphabeticalReverse = "Descending",
 }
 
-export interface MarketplaceMechItem {
+export interface MarketplaceBuyItem {
+    id: string
+    item_id: string
+    buyout_price: string
+    created_at: Date
+    end_at: Date
+    owner?: {
+        username: string
+        gid: number
+        public_address: string
+        faction_id: string
+    }
+    keycard?: {
+        id: string
+        label: string
+        image_url: string
+        animation_url: string
+        description: string
+        collection: string
+        keycard_token_id: string
+        keycard_group: string
+        syndicate: string
+        created_at: Date
+    }
+}
+
+export interface MarketplaceBuyAuctionItem {
     id: string
     item_id: string
     auction: boolean
@@ -30,8 +56,16 @@ export interface MarketplaceMechItem {
     dutch_auction_drop_rate: string
     buyout: boolean
     buyout_price: string
+    faction_id: string
     created_at: Date
     end_at: Date
+    total_bids: number
+    last_bid: {
+        username: string
+        gid: number
+        public_address: string
+        faction_id: string
+    }
     owner?: {
         username: string
         gid: number
@@ -47,9 +81,13 @@ export interface MarketplaceMechItem {
         hash: string
         slug: string
         asset_type: string
-        deleted_at?: string
-        updated_at: string
-        created_at: string
+        deleted_at?: Date
+        updated_at: Date
+        created_at: Date
+    }
+    mystery_crate?: {
+        id: string
+        label: string
     }
 }
 

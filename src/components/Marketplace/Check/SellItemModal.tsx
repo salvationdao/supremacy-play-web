@@ -4,7 +4,7 @@ import { ClipThing } from "../../Common/ClipThing"
 import { colors, fonts } from "../../../theme/theme"
 import { usePagination } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
-import { MechBasic, MechDetails, Keycard, MysteryCrate } from "../../../types/assets"
+import { MechBasic, MechDetails, KeyCard, MysteryCrate } from "../../../types/assets"
 import { SvgRobot, SvgSupToken } from "../../../assets"
 import { FancyButton } from "../../Common/FancyButton"
 import { ItemType, ItemTypeInfo, SaleType } from "../../../types/marketplace"
@@ -18,7 +18,7 @@ interface Props {
 
 interface GetAssetsResponse {
     mechs: MechBasic[]
-    keycards: Keycard[]
+    keycards: KeyCard[]
     mystery_crates: MysteryCrate[]
     total: number
 }
@@ -34,7 +34,7 @@ export const SellItemModal = ({ onClose }: Props) => {
     const [selectedTab, setSelectedTab] = useState(0)
     const itemType = ItemTypeInfo[selectedTab]
 
-    const [assetsList, setAssetsList] = useState<MechBasic[] | Keycard[] | MysteryCrate[] | null>(null)
+    const [assetsList, setAssetsList] = useState<MechBasic[] | KeyCard[] | MysteryCrate[] | null>(null)
     const [selectedAsset, setSelectedAsset] = useState<string | null>(null)
     const [saleType, setSaleType] = useState<SaleType>(SaleType.Buyout)
     const [listingHours, setListingHours] = useState(1)
@@ -55,7 +55,7 @@ export const SellItemModal = ({ onClose }: Props) => {
     }, [saleType])
 
     useEffect(() => {
-        // Force Keycards to be Buyout types
+        // Force key cards to be Buyout types
         if (itemType.name === ItemType.KeyCards) {
             setSaleType(SaleType.Buyout)
         }
@@ -81,7 +81,7 @@ export const SellItemModal = ({ onClose }: Props) => {
         }
 
         try {
-            await sendFaction(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
+            await sendFaction(isKeycard ? GameServerKeys.MarketplaceSalesKeyCardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 item_type: itemTypePayload,
                 item_id: selectedAsset,
                 has_buyout: hasBuyout,
@@ -109,7 +109,7 @@ export const SellItemModal = ({ onClose }: Props) => {
                     case ItemType.MysteryCrate:
                         return GameServerKeys.GetPlayerMysteryCrates
                     case ItemType.KeyCards:
-                        return GameServerKeys.GetKeycards
+                        return GameServerKeys.GetKeyCards
                     default:
                         return GameServerKeys.GetMechs
                 }
@@ -666,14 +666,14 @@ const AssetItem = ({ item, selected, onSelected }: AssetItemProps) => {
     )
 }
 
-type AssetItem = MechBasic | Keycard | MysteryCrate
+type AssetItem = MechBasic | KeyCard | MysteryCrate
 
 const isAssetMech = (item: AssetItem): item is MechBasic => {
     return (item as MechBasic).max_hitpoints !== undefined
 }
 
-const isAssetKeycard = (item: AssetItem): item is Keycard => {
-    return (item as Keycard).blueprint_keycard_id !== undefined
+const isAssetKeycard = (item: AssetItem): item is KeyCard => {
+    return (item as KeyCard).blueprint_keycard_id !== undefined
 }
 
 const isAssetMysteryCrate = (item: AssetItem): item is MysteryCrate => {

@@ -9,7 +9,7 @@ import { usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceMechItem, SortType } from "../../../types/marketplace"
+import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
 import { SellItemModal } from "../Check/SellItemModal"
 import { ChipFilter, RangeFilter, SortAndFilters } from "../SortAndFilters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
@@ -24,7 +24,7 @@ export const WarMachinesMarket = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [mechItems, setMechItems] = useState<MarketplaceMechItem[]>()
+    const [mechItems, setMechItems] = useState<MarketplaceBuyAuctionItem[]>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
@@ -83,7 +83,7 @@ export const WarMachinesMarket = () => {
 
             const [min_price, max_price] = price
 
-            const resp = await send<{ total: number; records: MarketplaceMechItem[] }>(GameServerKeys.MarketplaceSalesList, {
+            const resp = await send<{ total: number; records: MarketplaceBuyAuctionItem[] }>(GameServerKeys.MarketplaceSalesList, {
                 page_number: page,
                 page_size: pageSize,
                 search: search,
@@ -100,7 +100,7 @@ export const WarMachinesMarket = () => {
             setMechItems(resp.records)
             setLoadError(undefined)
         } catch (err) {
-            const message = typeof err === "string" ? err : "Failed to submit target location."
+            const message = typeof err === "string" ? err : "Failed to get mech listings."
             newSnackbarMessage(message, "error")
             setLoadError(message)
             console.error(err)

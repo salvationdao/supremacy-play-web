@@ -5,12 +5,12 @@ import { useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { consolidateMarketItemDeets, getRarityDeets, numberCommaFormatter, timeSinceInWords } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
-import { MarketplaceMechItem } from "../../../../types/marketplace"
+import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { AuctionDetails } from "./AuctionDetails"
 import { BuyoutDetails } from "./BuyoutDetails"
 
-export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceMechItem }) => {
+export const MechListingDetails = ({ marketItem }: { marketItem: MarketplaceBuyAuctionItem }) => {
     const theme = useTheme()
     const { getFaction } = useSupremacy()
 

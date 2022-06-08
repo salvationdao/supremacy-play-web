@@ -305,7 +305,7 @@ const WarMachinesHangarInner = ({
                             </Stack>
                         )}
 
-                        {!loadError && !isLoading && content}
+                        {!loadError && !isLoading && mechs.length > 0 && content}
                     </Box>
 
                     {totalPages > 1 && (

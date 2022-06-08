@@ -6,7 +6,7 @@ import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
-import { MarketplaceMechItem } from "../../../../types/marketplace"
+import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MechImage } from "./MechImage"
 import { MechListingDetails } from "./MechListingDetails"
@@ -16,7 +16,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
-    const [marketItem, setMarketItem] = useState<MarketplaceMechItem>()
+    const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     const marketItemDeets = useMemo(() => (marketItem ? consolidateMarketItemDeets(marketItem, theme) : undefined), [marketItem, theme])
@@ -25,7 +25,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<MarketplaceMechItem>(GameServerKeys.MarketplaceSalesGet, {
+                const resp = await send<MarketplaceBuyAuctionItem>(GameServerKeys.MarketplaceSalesGet, {
                     id,
                 })
 
@@ -118,7 +118,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     )
 }
 
-const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem: MarketplaceMechItem; mechDetails?: MechDetails }) => {
+const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem: MarketplaceBuyAuctionItem; mechDetails?: MechDetails }) => {
     return (
         <Stack>
             <Box

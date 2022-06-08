@@ -8,9 +8,9 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { MarketplaceMechItem } from "../../../../types/marketplace"
+import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 
-export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem }) => {
+export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceBuyAuctionItem }) => {
     const currentBid = parseInt(marketItem.auction_current_price)
     const [bidPrice, setBidPrice] = useState<number>()
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
@@ -94,7 +94,7 @@ export const AuctionDetails = ({ marketItem }: { marketItem: MarketplaceMechItem
     )
 }
 
-const ConfirmModal = ({ marketItem, bidPrice, onClose }: { marketItem: MarketplaceMechItem; bidPrice: number; onClose: () => void }) => {
+const ConfirmModal = ({ marketItem, bidPrice, onClose }: { marketItem: MarketplaceBuyAuctionItem; bidPrice: number; onClose: () => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")

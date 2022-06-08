@@ -29,7 +29,7 @@ import {
 import { ThemeState } from "../containers/theme"
 import { colors } from "../theme/theme"
 import { MysteryCrateType, UserRank } from "../types"
-import { MarketplaceMechItem } from "../types/marketplace"
+import { MarketplaceBuyAuctionItem } from "../types/marketplace"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -493,7 +493,7 @@ export const numberCommaFormatter = (num: number): string => {
 }
 
 export const consolidateMarketItemDeets = (
-    marketItem: MarketplaceMechItem,
+    marketItem: MarketplaceBuyAuctionItem,
     theme: ThemeState,
 ): {
     primaryColor: string
