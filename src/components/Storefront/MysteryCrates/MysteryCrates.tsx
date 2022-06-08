@@ -5,12 +5,17 @@ import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate } from "../../../types"
+import { MultiplierUpdateResp, MysteryCrate } from "../../../types"
 import { MysteryCrateItem, MysteryCrateItemLoadingSkeleton } from "./MysteryCrateItem/MysteryCrateItem"
+
+interface MysteryCrateOwnershipResp {
+    allowed: number
+    owned: number
+}
 
 export const MysteryCrates = () => {
     const { newSnackbarMessage } = useSnackbar()
@@ -19,9 +24,23 @@ export const MysteryCrates = () => {
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+    const [ownershipDetails, setOwnershipDetails] = useState<MysteryCrateOwnershipResp>({
+        allowed: 0, owned: 0,
+    })
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
 
     const enlargedView = crates ? crates.length <= 2 : false
+
+    useGameServerSubscriptionUser<MysteryCrateOwnershipResp>(
+        {
+            URI: "/mystery_crates",
+            key: GameServerKeys.HubKeyMysteryCrateOwnership,
+        },
+        (payload) => {
+            if (!payload) return
+            setOwnershipDetails(payload)
+        },
+    )
 
     // Get mystery crates
     useEffect(() => {
@@ -97,7 +116,8 @@ export const MysteryCrates = () => {
                     }}
                 >
                     {crates.map((crate, index) => (
-                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
+                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`}
+                                          enlargedView={enlargedView} crate={crate} />
                     ))}
                 </Box>
             )
@@ -158,43 +178,54 @@ export const MysteryCrates = () => {
                         direction="row"
                         alignItems="center"
                         sx={{
-                            px: "2rem",
-                            py: "2.2rem",
+                            p: "2rem",
+                            gap:'2rem',
                             backgroundColor: "#00000070",
                             borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
                         }}
                     >
                         <Box
+                            component={"img"}
+                            src={SafePNG}
                             sx={{
-                                alignSelf: "flex-start",
-                                flexShrink: 0,
-                                mr: "1.2rem",
-                                width: "6.5rem",
-                                height: "5rem",
-                                background: `url(${SafePNG})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "cover",
+                                maxHeight:"150px",
+                                userSelect: "none",
                             }}
                         />
                         <Box sx={{ mr: "2rem" }}>
-                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 MYSTERY CRATES
                             </Typography>
-                            <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle areana with a variety of War Machines and Weapons.</Typography>
-                        </Box>
+                            <Typography >Gear up for the battle arena with a variety of War
+                                Machines and Weapons.</Typography>
 
-                        <Box
-                            sx={{
-                                ml: "auto",
-                                px: "1.6rem",
-                                py: ".8rem",
-                                backgroundColor: `${colors.neonBlue}10`,
-                                border: `${colors.neonBlue} 2px dashed`,
-                                animation: `${zoomEffect(1.01)} 3s infinite`,
-                            }}
-                        >
-                            <Typography sx={{ textAlign: "center", color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>ONLY 20,000 AVAILABLE</Typography>
+                        </Box>
+                        <Box sx={{display:'flex', height:'100%', flexDirection:'column', marginLeft:"auto"}}>
+                            <Box
+                                sx={{
+                                    flex:1,
+                                    display:'flex',
+                                    flexDirection:'column',
+                                    p: '2rem',
+                                    justifyContent:'space-evenly',
+                                    backgroundColor: `${colors.neonBlue}10`,
+                                    border: `${colors.neonBlue} 2px dashed`,
+                                }}
+                            >
+                                <Typography
+                                    variant={"h5"}
+                                    sx={{
+                                    textAlign: "center",
+                                    color: colors.neonBlue,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}>Limited Supply</Typography>
+                                <Typography variant={"h6"}>Total
+                                    Owned: {ownershipDetails.owned}</Typography>
+                                <Typography variant={"h6"}>Total Maximum
+                                    Capacity: {ownershipDetails.allowed}</Typography>
+
+                            </Box>
+                            <Typography >Maximum capacity is effected by your held keycards.</Typography>
                         </Box>
                     </Stack>
 
