@@ -3,11 +3,13 @@ import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
 import { useTheme } from "../containers/theme"
-import { WarMachines } from "../components/Hangar/WarMachines/WarMachines"
+import { HangarWarMachines } from "../components/Hangar/HangarWarMachines/HangarWarMachines"
 import { useAuth } from "../containers"
 import { fonts, siteZIndex } from "../theme/theme"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { ROUTES_MAP } from "../routes"
+import { HangarMysteryCrates } from "../components/Hangar/HangarMysteryCrates/HangarMysteryCrates"
+import { HangarKeyCards } from "../components/Hangar/HangarKeyCards/HangarKeyCards"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -90,39 +92,19 @@ const HangarPageInner = () => {
                         }}
                     >
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
-                        <Tab
-                            label={
-                                <>
-                                    MYSTERY CRATES
-                                    <br />
-                                    <span>(COMING SOON)</span>
-                                </>
-                            }
-                            disabled
-                            value={HANGAR_TABS.MysteryCrates}
-                        />
-                        <Tab
-                            label={
-                                <>
-                                    KEY CARDS
-                                    <br />
-                                    <span>(COMING SOON)</span>
-                                </>
-                            }
-                            disabled
-                            value={HANGAR_TABS.KeyCards}
-                        />
+                        <Tab label="MYSTERY CRATES" disabled value={HANGAR_TABS.MysteryCrates} />
+                        <Tab label="KEY CARDS" disabled value={HANGAR_TABS.KeyCards} />
                     </Tabs>
                 </Box>
 
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
-                    <WarMachines />
+                    <HangarWarMachines />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
-                    COMING SOON!
+                    <HangarMysteryCrates />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.KeyCards}>
-                    COMING SOON!
+                    <HangarKeyCards />
                 </TabPanel>
             </Stack>
         </>
