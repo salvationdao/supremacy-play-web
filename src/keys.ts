@@ -32,8 +32,6 @@ export enum GameServerKeys {
     // Game Use
     GameUserOnline = "GAME:ONLINE",
 
-    TriggerBattleQueueUpdated = "BATTLE:QUEUE:UPDATED",
-
     // Global messages
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
 
