@@ -16,6 +16,7 @@ import Robot from "!react-svg-loader!./svg/Robot.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
+import Angle from "!react-svg-loader!./svg/Angle.svg"
 import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
@@ -887,5 +888,11 @@ export const SvgHammer: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgSearch: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Search />
+    </SvgWrapper>
+)
+
+export const SvgAngle: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Angle />
     </SvgWrapper>
 )
