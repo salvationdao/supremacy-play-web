@@ -120,7 +120,7 @@ const ChatMessagesInner = ({
                     overflowY: "auto",
                     overflowX: "hidden",
                     direction: "ltr",
-                    scrollbarWidth: "none",
+
                     scrollBehavior: "smooth",
                     "::-webkit-scrollbar": {
                         width: ".4rem",

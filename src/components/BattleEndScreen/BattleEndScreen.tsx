@@ -77,7 +77,7 @@ export const BattleEndScreen = () => {
                             pb: "3.2rem",
                             overflowY: "auto",
                             overflowX: "auto",
-                            scrollbarWidth: "none",
+
                             "::-webkit-scrollbar": {
                                 width: ".4rem",
                                 height: ".4rem",

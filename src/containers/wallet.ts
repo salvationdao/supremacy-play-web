@@ -8,7 +8,7 @@ import { usePassportSubscriptionUser } from "../hooks/usePassport"
 export const WalletContainer = createContainer(() => {
     const { haveSups, toggleHaveSups } = useSupremacy()
     const [onWorldSupsRaw, setOnWorldSupsRaw] = useState<string>("")
-    const [onWorldSups, setOnworldSups] = useState<BigNumber>()
+    const [onWorldSups, setOnWorldSups] = useState<BigNumber>()
     const firstIteration = useRef(true)
 
     usePassportSubscriptionUser<string>(
@@ -18,7 +18,7 @@ export const WalletContainer = createContainer(() => {
         },
         (payload) => {
             setOnWorldSupsRaw(payload)
-            setOnworldSups(new BigNumber(payload))
+            setOnWorldSups(new BigNumber(payload))
         },
     )
 

@@ -38,7 +38,7 @@ export const WalletDetails = () => {
                         height: "100%",
                         overflowX: "auto",
                         overflowY: "hidden",
-                        scrollbarWidth: "none",
+
                         "::-webkit-scrollbar": {
                             height: ".3rem",
                         },

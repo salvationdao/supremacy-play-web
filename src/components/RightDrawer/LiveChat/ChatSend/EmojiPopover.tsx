@@ -73,7 +73,7 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 direction: "ltr",
-                                scrollbarWidth: "none",
+
                                 "::-webkit-scrollbar": {
                                     width: ".4rem",
                                 },

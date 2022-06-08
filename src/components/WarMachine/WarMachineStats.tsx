@@ -104,7 +104,7 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
                 overflowY: "hidden",
                 overflowX: "auto",
                 direction: "ltr",
-                scrollbarWidth: "none",
+
                 "::-webkit-scrollbar": {
                     height: ".4rem",
                 },

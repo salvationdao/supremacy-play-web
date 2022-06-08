@@ -136,7 +136,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                                         pl: ".88rem",
                                         py: ".16rem",
                                         direction: "rtl",
-                                        scrollbarWidth: "none",
+
                                         "::-webkit-scrollbar": {
                                             width: ".4rem",
                                         },

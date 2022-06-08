@@ -30,7 +30,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 overflowY: "hidden",
                 overflowX: "auto",
                 direction: "ltr",
-                scrollbarWidth: "none",
+
                 "::-webkit-scrollbar": {
                     height: ".4rem",
                 },
