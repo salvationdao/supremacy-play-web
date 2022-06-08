@@ -72,28 +72,24 @@ export interface MarketplaceBuyAuctionItem {
         public_address: string
         faction_id: string
     }
-    mech?: {
-        id: string
-        name: string
-        label: string
-        avatar_url: string
+    collection_item?: {
         tier: string
-        hash: string
-        slug: string
-        asset_type: string
-        deleted_at?: Date
-        updated_at: Date
-        created_at: Date
-    }
-    mystery_crate?: {
-        id: string
-        label: string
-        description: string
         image_url?: string
         animation_url?: string
         card_animation_url?: string
         avatar_url?: string
         large_image_url?: string
+    }
+    mech?: {
+        id: string
+        name: string
+        label: string
+        avatar_url: string
+    }
+    mystery_crate?: {
+        id: string
+        label: string
+        description: string
     }
 }
 

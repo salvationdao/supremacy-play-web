@@ -24,12 +24,13 @@ export const MysteryCrateMarketItem = ({ item, isGridView }: MysteryCratesMarket
     const marketItemDeets = useMemo(() => consolidateMarketItemDeets(item, theme), [item, theme])
     const formattedPrice = useMemo(() => numFormatter(marketItemDeets.price.toNumber()), [marketItemDeets.price])
 
-    const { id, end_at, owner, mystery_crate } = item
+    const { id, end_at, owner, mystery_crate, collection_item } = item
 
-    if (!mystery_crate || !owner) return null
+    if (!mystery_crate || !collection_item || !owner) return null
 
     const { username, gid } = owner
-    const { label, description, image_url, animation_url } = mystery_crate
+    const { label, description } = mystery_crate
+    const { image_url, animation_url } = collection_item
 
     return (
         <Box sx={{ position: "relative", overflow: "visible" }}>

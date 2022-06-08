@@ -44,12 +44,13 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
         })()
     }, [item.mech, send])
 
-    const { id, end_at, owner, mech } = item
+    const { id, end_at, owner, mech, collection_item } = item
 
-    if (!mech || !owner) return null
+    if (!mech || !collection_item || !owner) return null
 
     const { username, gid } = owner
-    const { name, label, tier, avatar_url } = mech
+    const { name, label, avatar_url } = mech
+    const { tier } = collection_item
 
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl = skin?.large_image_url
