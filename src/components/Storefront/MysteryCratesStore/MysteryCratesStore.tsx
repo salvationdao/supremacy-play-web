@@ -187,8 +187,8 @@ export const MysteryCratesStore = () => {
                             sx={{
                                 flexShrink: 0,
                                 mr: "1.2rem",
-                                width: "6.5rem",
-                                height: "5rem",
+                                width: "7rem",
+                                height: "6rem",
                                 background: `url(${SafePNG})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",
