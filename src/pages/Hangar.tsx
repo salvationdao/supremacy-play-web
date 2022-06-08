@@ -9,12 +9,12 @@ import { fonts, siteZIndex } from "../theme/theme"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { ROUTES_MAP } from "../routes"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
-import { KeyCardsHangar } from "../components/Hangar/KeyCardsHangar/KeyCardsHangar"
+import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
     MysteryCrates = "mystery-crates",
-    KeyCards = "key-cards",
+    Keycards = "key-cards",
 }
 
 export const HangarPage = () => {
@@ -92,7 +92,7 @@ const HangarPageInner = () => {
                         }}
                     >
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
-                        <Tab label="KEY CARDS" value={HANGAR_TABS.KeyCards} />
+                        <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
                     </Tabs>
                 </Box>
@@ -100,8 +100,8 @@ const HangarPageInner = () => {
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
                     <WarMachinesHangar />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={HANGAR_TABS.KeyCards}>
-                    <KeyCardsHangar />
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Keycards}>
+                    <KeycardsHangar />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
                     <MysteryCratesHangar />

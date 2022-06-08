@@ -2,7 +2,7 @@ import { snakeToSlug, snakeToTitle } from "../helpers"
 
 export enum ItemType {
     WarMachine = "WAR_MACHINE",
-    KeyCards = "KEY_CARDS",
+    Keycards = "KEY_CARDS",
     MysteryCrate = "MYSTERY_CRATE",
 }
 

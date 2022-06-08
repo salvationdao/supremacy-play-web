@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 
-export const KeyCardInfo = ({ isGridView, label, description }: { isGridView: boolean; label: string; description: string }) => {
+export const KeycardInfo = ({ isGridView, label, description }: { isGridView: boolean; label: string; description: string }) => {
     const theme = useTheme()
 
     return (

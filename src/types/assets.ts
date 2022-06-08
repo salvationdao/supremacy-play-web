@@ -334,16 +334,16 @@ export interface MysteryCrate {
     animation_url?: string
     youtube_url?: string
 }
-export interface KeyCard {
+export interface Keycard {
     id: string
     player_id: string
     blueprint_keycard_id: string
     count: number
     created_at: string
-    blueprints: KeyCardBlueprint
+    blueprints: KeycardBlueprint
 }
 
-export interface KeyCardBlueprint {
+export interface KeycardBlueprint {
     id: string
     label: string
     description: string

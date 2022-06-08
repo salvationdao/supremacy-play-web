@@ -12,9 +12,9 @@ import { MarketplaceBuyItem, SortType } from "../../../types/marketplace"
 import { SellItemModal } from "../Check/SellItemModal"
 import { RangeFilter, SortAndFilters } from "../SortAndFilters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
-import { KeyCardMarketItem } from "./KeyCardMarketItem/KeyCardMarketItem"
+import { KeycardMarketItem } from "./KeycardMarketItem/KeycardMarketItem"
 
-export const KeyCardsMarket = () => {
+export const KeycardsMarket = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -23,7 +23,7 @@ export const KeyCardsMarket = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [keyCardItems, setKeyCardItems] = useState<MarketplaceBuyItem[]>()
+    const [keycardItems, setKeycardItems] = useState<MarketplaceBuyItem[]>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
@@ -39,7 +39,7 @@ export const KeyCardsMarket = () => {
         onSetValue: setPrice,
     })
 
-    const getKeyCards = useCallback(async () => {
+    const getKeycards = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -50,7 +50,7 @@ export const KeyCardsMarket = () => {
 
             const [min_price, max_price] = price
 
-            const resp = await send<{ total: number; records: MarketplaceBuyItem[] }>(GameServerKeys.MarketplaceSalesKeyCardList, {
+            const resp = await send<{ total: number; records: MarketplaceBuyItem[] }>(GameServerKeys.MarketplaceSalesKeycardList, {
                 page_number: page,
                 page_size: pageSize,
                 search: search,
@@ -62,7 +62,7 @@ export const KeyCardsMarket = () => {
 
             if (!resp) return
             setTotalItems(resp.total)
-            setKeyCardItems(resp.records)
+            setKeycardItems(resp.records)
             setLoadError(undefined)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to get key card listings."
@@ -76,8 +76,8 @@ export const KeyCardsMarket = () => {
 
     // Initial load the key card listings
     useEffect(() => {
-        getKeyCards()
-    }, [getKeyCards])
+        getKeycards()
+    }, [getKeycards])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -103,7 +103,7 @@ export const KeyCardsMarket = () => {
             )
         }
 
-        if (!keyCardItems || isLoading) {
+        if (!keycardItems || isLoading) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -113,7 +113,7 @@ export const KeyCardsMarket = () => {
             )
         }
 
-        if (keyCardItems && keyCardItems.length > 0) {
+        if (keycardItems && keycardItems.length > 0) {
             return (
                 <Box
                     sx={{
@@ -128,8 +128,8 @@ export const KeyCardsMarket = () => {
                         overflow: "visible",
                     }}
                 >
-                    {keyCardItems.map((item) => (
-                        <KeyCardMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
+                    {keycardItems.map((item) => (
+                        <KeycardMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
                     ))}
                 </Box>
             )
@@ -161,12 +161,12 @@ export const KeyCardsMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no keyCards found, please try again."}
+                        {"There are no keycards found, please try again."}
                     </Typography>
                 </Stack>
             </Stack>
         )
-    }, [loadError, keyCardItems, isLoading, theme.factionTheme.primary, isGridView])
+    }, [loadError, keycardItems, isLoading, theme.factionTheme.primary, isGridView])
 
     return (
         <>
@@ -246,7 +246,7 @@ export const KeyCardsMarket = () => {
                             </Stack>
 
                             <TotalAndPageSizeOptions
-                                countItems={keyCardItems?.length}
+                                countItems={keycardItems?.length}
                                 totalItems={totalItems}
                                 pageSize={pageSize}
                                 setPageSize={setPageSize}

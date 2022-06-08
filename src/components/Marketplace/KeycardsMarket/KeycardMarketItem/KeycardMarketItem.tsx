@@ -2,19 +2,19 @@ import { Box } from "@mui/material"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { MarketplaceBuyItem } from "../../../../types/marketplace"
-import { KeyCardInfo } from "./KeyCardInfo"
+import { KeycardInfo } from "./KeycardInfo"
 import { Pricing } from "./Pricing"
 import { SellerInfo } from "./SellerInfo"
 import { Thumbnail } from "./Thumbnail"
 import { Timeframe } from "./Timeframe"
 import { ViewButton } from "./ViewButton"
 
-interface KeyCardMarketItemProps {
+interface KeycardMarketItemProps {
     item: MarketplaceBuyItem
     isGridView: boolean
 }
 
-export const KeyCardMarketItem = ({ item, isGridView }: KeyCardMarketItemProps) => {
+export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) => {
     const theme = useTheme()
 
     const { id, end_at, owner, keycard } = item
@@ -54,7 +54,7 @@ export const KeyCardMarketItem = ({ item, isGridView }: KeyCardMarketItemProps) 
                     }}
                 >
                     <Thumbnail isGridView={isGridView} imageUrl={image_url} animationUrl={animation_url} />
-                    <KeyCardInfo isGridView={isGridView} label={label} description={description} />
+                    <KeycardInfo isGridView={isGridView} label={label} description={description} />
                     <SellerInfo isGridView={isGridView} username={username} gid={gid} />
                     <Timeframe isGridView={isGridView} endAt={end_at} />
                     <Pricing isGridView={isGridView} marketItem={item} />

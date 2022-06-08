@@ -4,7 +4,7 @@ import { ClipThing } from "../../Common/ClipThing"
 import { colors, fonts } from "../../../theme/theme"
 import { usePagination } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
-import { MechBasic, MechDetails, KeyCard, MysteryCrate } from "../../../types/assets"
+import { MechBasic, MechDetails, Keycard, MysteryCrate } from "../../../types/assets"
 import { SvgRobot, SvgSupToken } from "../../../assets"
 import { FancyButton } from "../../Common/FancyButton"
 import { ItemType, ItemTypeInfo, SaleType } from "../../../types/marketplace"
@@ -18,7 +18,7 @@ interface Props {
 
 interface GetAssetsResponse {
     mechs: MechBasic[]
-    keycards: KeyCard[]
+    keycards: Keycard[]
     mystery_crates: MysteryCrate[]
     total: number
 }
@@ -34,7 +34,7 @@ export const SellItemModal = ({ onClose }: Props) => {
     const [selectedTab, setSelectedTab] = useState(0)
     const itemType = ItemTypeInfo[selectedTab]
 
-    const [assetsList, setAssetsList] = useState<MechBasic[] | KeyCard[] | MysteryCrate[] | null>(null)
+    const [assetsList, setAssetsList] = useState<MechBasic[] | Keycard[] | MysteryCrate[] | null>(null)
     const [selectedAsset, setSelectedAsset] = useState<string | null>(null)
     const [saleType, setSaleType] = useState<SaleType>(SaleType.Buyout)
     const [listingHours, setListingHours] = useState(1)
@@ -56,7 +56,7 @@ export const SellItemModal = ({ onClose }: Props) => {
 
     useEffect(() => {
         // Force key cards to be Buyout types
-        if (itemType.name === ItemType.KeyCards) {
+        if (itemType.name === ItemType.Keycards) {
             setSaleType(SaleType.Buyout)
         }
     }, [itemType])
@@ -67,7 +67,7 @@ export const SellItemModal = ({ onClose }: Props) => {
         setSubmitting(true)
         if (stateFaction !== WebSocket.OPEN) return
 
-        const isKeycard = itemType.name === ItemType.KeyCards
+        const isKeycard = itemType.name === ItemType.Keycards
 
         const hasBuyout = saleType === SaleType.Buyout || saleType === SaleType.AuctionOrBuyout
         const hasAuction = saleType === SaleType.Auction || saleType === SaleType.AuctionOrBuyout
@@ -81,7 +81,7 @@ export const SellItemModal = ({ onClose }: Props) => {
         }
 
         try {
-            await sendFaction(isKeycard ? GameServerKeys.MarketplaceSalesKeyCardCreate : GameServerKeys.MarketplaceSalesCreate, {
+            await sendFaction(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 item_type: itemTypePayload,
                 item_id: selectedAsset,
                 has_buyout: hasBuyout,
@@ -108,8 +108,8 @@ export const SellItemModal = ({ onClose }: Props) => {
                 switch (itemType.name) {
                     case ItemType.MysteryCrate:
                         return GameServerKeys.GetPlayerMysteryCrates
-                    case ItemType.KeyCards:
-                        return GameServerKeys.GetKeyCards
+                    case ItemType.Keycards:
+                        return GameServerKeys.GetKeycards
                     default:
                         return GameServerKeys.GetMechs
                 }
@@ -316,7 +316,7 @@ export const SellItemModal = ({ onClose }: Props) => {
                             </Alert>
                         )}
 
-                        {itemType.name !== ItemType.KeyCards && (
+                        {itemType.name !== ItemType.Keycards && (
                             <>
                                 <Typography sx={{ lineHeight: 1, mb: "1rem", fontWeight: 600 }}>SALE TYPE:</Typography>
                                 <Select
@@ -668,14 +668,14 @@ const AssetItem = ({ item, selected, onSelected }: AssetItemProps) => {
     )
 }
 
-type AssetItem = MechBasic | KeyCard | MysteryCrate
+type AssetItem = MechBasic | Keycard | MysteryCrate
 
 const isAssetMech = (item: AssetItem): item is MechBasic => {
     return (item as MechBasic).max_hitpoints !== undefined
 }
 
-const isAssetKeycard = (item: AssetItem): item is KeyCard => {
-    return (item as KeyCard).blueprint_keycard_id !== undefined
+const isAssetKeycard = (item: AssetItem): item is Keycard => {
+    return (item as Keycard).blueprint_keycard_id !== undefined
 }
 
 const isAssetMysteryCrate = (item: AssetItem): item is MysteryCrate => {
