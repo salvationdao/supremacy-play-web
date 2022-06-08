@@ -86,7 +86,7 @@ const MarketplacePageInner = () => {
                             ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", py: ".8rem" },
                             ".Mui-selected": {
                                 color: (theme) => `${theme.factionTheme.secondary} !important`,
-                                backgroundColor: (theme) => `${theme.factionTheme.primary}CC !important`,
+                                background: (theme) => `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
                             },
                             ".MuiTabs-indicator": { display: "none" },
                         }}
