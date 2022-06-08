@@ -59,16 +59,14 @@ export const WarMachineHangarItem = ({
     useGameServerSubscriptionFaction<number>(
         {
             URI: `/queue/${mech.id}`,
-            key: GameServerKeys.GetMechQueuePositionSubscribe,
+            key: GameServerKeys.SubMechQueuePosition,
         },
         (payload) => {
-            if (typeof payload === 'undefined') return
+            if (typeof payload === "undefined") return
             console.log(payload)
             setMechQueuePosition(payload)
         },
     )
-
-
 
     return useMemo(
         () => (

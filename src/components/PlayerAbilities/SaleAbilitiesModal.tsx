@@ -103,7 +103,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                 <Box
                                     sx={{
                                         overflowX: "auto",
-                                        scrollbarWidth: "none",
+
                                         "::-webkit-scrollbar": {
                                             width: ".4rem",
                                         },

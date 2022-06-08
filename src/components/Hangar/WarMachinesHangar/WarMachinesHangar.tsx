@@ -28,7 +28,7 @@ interface GetAssetsResponse {
     total: number
 }
 
-export const WarMachines = () => {
+export const WarMachinesHangar = () => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
     const [leaveMechModalOpen, setLeaveMechModalOpen] = useState<boolean>(false)
@@ -38,7 +38,7 @@ export const WarMachines = () => {
 
     return (
         <>
-            <WarMachinesInner
+            <WarMachinesHangarInner
                 selectedMechDetails={selectedMechDetails}
                 setSelectedMechDetails={setSelectedMechDetails}
                 setDeployMechModalOpen={setDeployMechModalOpen}
@@ -78,7 +78,7 @@ export const WarMachines = () => {
     )
 }
 
-const WarMachinesInner = ({
+const WarMachinesHangarInner = ({
     selectedMechDetails,
     setSelectedMechDetails,
     setDeployMechModalOpen,
@@ -193,7 +193,7 @@ const WarMachinesInner = ({
                             overflowY: "auto",
                             overflowX: "hidden",
                             direction: "ltr",
-                            scrollbarWidth: "none",
+
                             "::-webkit-scrollbar": {
                                 width: ".4rem",
                             },

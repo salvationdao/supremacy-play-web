@@ -62,7 +62,7 @@ export const MultipliersBattle = ({ bm }: { bm: BattleMultipliers }) => {
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
-                        scrollbarWidth: "none",
+
                         "::-webkit-scrollbar": {
                             width: ".4rem",
                         },

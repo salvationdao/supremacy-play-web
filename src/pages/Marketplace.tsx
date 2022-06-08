@@ -4,6 +4,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
 import { KeyCardsMarket } from "../components/Marketplace/KeyCardsMarket/KeyCardsMarket"
+import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
 import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
@@ -72,7 +73,7 @@ const MarketplacePageInner = () => {
     return (
         <>
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
-                <Box sx={{ maxWidth: "fit-content", mb: "1rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
+                <Box sx={{ maxWidth: "fit-content", mb: "1.1rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
                     <Tabs
                         value={currentValue}
                         onChange={handleChange}
@@ -92,17 +93,7 @@ const MarketplacePageInner = () => {
                     >
                         <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
                         <Tab label="KEY CARDS" value={MARKETPLACE_TABS.KeyCards} />
-                        <Tab
-                            label={
-                                <>
-                                    MYSTERY CRATES
-                                    <br />
-                                    <span>(COMING SOON)</span>
-                                </>
-                            }
-                            disabled
-                            value={MARKETPLACE_TABS.MysteryCrates}
-                        />
+                        <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
                     </Tabs>
                 </Box>
 
@@ -113,7 +104,7 @@ const MarketplacePageInner = () => {
                     <KeyCardsMarket />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.MysteryCrates}>
-                    COMING SOON!
+                    <MysteryCratesMarket />
                 </TabPanel>
             </Stack>
         </>

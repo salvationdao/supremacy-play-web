@@ -4,12 +4,13 @@ import { ClipThing } from "../../Common/ClipThing"
 import { colors, fonts } from "../../../theme/theme"
 import { usePagination } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
-import { MechBasic, MechDetails, Keycard } from "../../../types/assets"
+import { MechBasic, MechDetails, Keycard, MysteryCrate } from "../../../types/assets"
 import { SvgRobot, SvgSupToken } from "../../../assets"
 import { FancyButton } from "../../Common/FancyButton"
 import { ItemType, ItemTypeInfo, SaleType } from "../../../types/marketplace"
 import { snakeToTitle } from "../../../helpers"
 import { useGameServerCommandsUser, useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { SafePNG } from "../../../assets"
 
 interface Props {
     onClose: () => void
@@ -18,6 +19,7 @@ interface Props {
 interface GetAssetsResponse {
     mechs: MechBasic[]
     keycards: Keycard[]
+    mystery_crates: MysteryCrate[]
     total: number
 }
 
@@ -32,7 +34,7 @@ export const SellItemModal = ({ onClose }: Props) => {
     const [selectedTab, setSelectedTab] = useState(0)
     const itemType = ItemTypeInfo[selectedTab]
 
-    const [assetsList, setAssetsList] = useState<MechBasic[] | Keycard[] | null>(null)
+    const [assetsList, setAssetsList] = useState<MechBasic[] | Keycard[] | MysteryCrate[] | null>(null)
     const [selectedAsset, setSelectedAsset] = useState<string | null>(null)
     const [saleType, setSaleType] = useState<SaleType>(SaleType.Buyout)
     const [listingHours, setListingHours] = useState(1)
@@ -71,9 +73,16 @@ export const SellItemModal = ({ onClose }: Props) => {
         const hasAuction = saleType === SaleType.Auction || saleType === SaleType.AuctionOrBuyout
         const hasDutchAuction = saleType === SaleType.DutchAuction
 
+        let itemTypePayload: string | undefined = undefined
+        if (itemType.name === ItemType.WarMachine) {
+            itemTypePayload = "mech"
+        } else if (itemType.name === ItemType.MysteryCrate) {
+            itemTypePayload = "mystery_crate"
+        }
+
         try {
             await sendFaction(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
-                item_type: !isKeycard ? "mech" : undefined, // TODO: Handle mystery crates
+                item_type: itemTypePayload,
                 item_id: selectedAsset,
                 has_buyout: hasBuyout,
                 has_auction: hasAuction,
@@ -95,7 +104,16 @@ export const SellItemModal = ({ onClose }: Props) => {
     useEffect(() => {
         if (stateUser !== WebSocket.OPEN) return
         ;(async () => {
-            const key = itemType.name === ItemType.KeyCards ? GameServerKeys.GetKeycards : GameServerKeys.GetMechs
+            const key = (() => {
+                switch (itemType.name) {
+                    case ItemType.MysteryCrate:
+                        return GameServerKeys.GetPlayerMysteryCrates
+                    case ItemType.KeyCards:
+                        return GameServerKeys.GetKeycards
+                    default:
+                        return GameServerKeys.GetMechs
+                }
+            })()
 
             try {
                 const resp = await sendUser<
@@ -103,16 +121,22 @@ export const SellItemModal = ({ onClose }: Props) => {
                     {
                         page: number
                         page_size: number
+                        exclude_opened: boolean
                         exclude_market_listed: boolean
+                        exclude_market_locked: boolean
                     }
                 >(key, {
                     page, // start with 0
                     page_size: pageSize,
+                    exclude_opened: true,
                     exclude_market_listed: true,
+                    exclude_market_locked: true,
                 })
                 if (!resp) return
                 if (itemType.name === ItemType.WarMachine) {
                     setAssetsList(resp.mechs)
+                } else if (itemType.name === ItemType.MysteryCrate) {
+                    setAssetsList(resp.mystery_crates)
                 } else {
                     setAssetsList(resp.keycards)
                 }
@@ -537,9 +561,9 @@ export const SellItemModal = ({ onClose }: Props) => {
 
 /** Props for <AssetItem>. */
 interface AssetItemProps {
-    item: MechBasic | Keycard
+    item: AssetItem
     selected: boolean
-    onSelected: (item: MechBasic | Keycard) => void
+    onSelected: (item: AssetItem) => void
 }
 
 /** Display Asset Item. */
@@ -564,9 +588,23 @@ const AssetItem = ({ item, selected, onSelected }: AssetItemProps) => {
     }, [item, send])
 
     // Render
-    const name = isAssetMech(item) ? item.name : item.blueprints.label
-    const label = isAssetMech(item) ? item.label : item.blueprints.label
-    const image_url = isAssetMech(item) ? mechDetails?.chassis_skin?.image_url : item.blueprints.image_url
+    const label = isAssetKeycard(item) ? item.blueprints.label : item.label
+
+    let name: string | undefined = undefined
+    if (isAssetMech(item)) {
+        name = item.name
+    } else if (isAssetKeycard(item)) {
+        name = item.blueprints.label
+    }
+
+    let image_url: string | undefined = undefined
+    if (isAssetMech(item)) {
+        image_url = mechDetails?.chassis_skin?.image_url
+    } else if (isAssetMysteryCrate(item)) {
+        image_url = item.image_url || SafePNG
+    } else {
+        image_url = item.blueprints.image_url
+    }
 
     return (
         <Box
@@ -630,6 +668,16 @@ const AssetItem = ({ item, selected, onSelected }: AssetItemProps) => {
     )
 }
 
-const isAssetMech = (item: MechBasic | Keycard): item is MechBasic => {
-    return (item as MechBasic).item_type !== undefined
+type AssetItem = MechBasic | Keycard | MysteryCrate
+
+const isAssetMech = (item: AssetItem): item is MechBasic => {
+    return (item as MechBasic).max_hitpoints !== undefined
+}
+
+const isAssetKeycard = (item: AssetItem): item is Keycard => {
+    return (item as Keycard).blueprint_keycard_id !== undefined
+}
+
+const isAssetMysteryCrate = (item: AssetItem): item is MysteryCrate => {
+    return !isAssetMech(item) && !isAssetKeycard(item)
 }

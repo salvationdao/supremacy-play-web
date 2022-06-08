@@ -53,7 +53,7 @@ export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) =
                         ":hover p": { opacity: 0.7 },
                         overflowX: "auto",
                         overflowY: "hidden",
-                        scrollbarWidth: "none",
+
                         "::-webkit-scrollbar": {
                             height: ".3rem",
                         },
