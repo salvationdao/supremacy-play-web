@@ -92,8 +92,8 @@ const HangarPageInner = () => {
                         }}
                     >
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
-                        <Tab label="MYSTERY CRATES" disabled value={HANGAR_TABS.MysteryCrates} />
-                        <Tab label="KEY CARDS" disabled value={HANGAR_TABS.KeyCards} />
+                        <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
+                        <Tab label="KEY CARDS" value={HANGAR_TABS.KeyCards} />
                     </Tabs>
                 </Box>
 
