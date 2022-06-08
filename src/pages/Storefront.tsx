@@ -3,7 +3,7 @@ import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
-import { MysteryCrates } from "../components/Storefront/MysteryCrates/MysteryCrates"
+import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
 import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
@@ -128,7 +128,7 @@ const StorefrontPageInner = () => {
                 </Box>
 
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.MysteryCrates}>
-                    <MysteryCrates />
+                    <MysteryCratesStore />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Skins}>
                     COMING SOON!

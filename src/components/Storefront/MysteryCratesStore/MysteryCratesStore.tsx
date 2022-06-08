@@ -10,9 +10,9 @@ import { GameServerKeys } from "../../../keys"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
-import { MysteryCrateItem, MysteryCrateItemLoadingSkeleton } from "./MysteryCrateItem/MysteryCrateItem"
+import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
-export const MysteryCrates = () => {
+export const MysteryCratesStore = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -75,7 +75,7 @@ export const MysteryCrates = () => {
             return (
                 <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
                     {new Array(6).fill(0).map((_, index) => (
-                        <MysteryCrateItemLoadingSkeleton key={index} />
+                        <MysteryCrateStoreItemLoadingSkeleton key={index} />
                     ))}
                 </Stack>
             )
@@ -97,7 +97,7 @@ export const MysteryCrates = () => {
                     }}
                 >
                     {crates.map((crate, index) => (
-                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
+                        <MysteryCrateStoreItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
                     ))}
                 </Box>
             )

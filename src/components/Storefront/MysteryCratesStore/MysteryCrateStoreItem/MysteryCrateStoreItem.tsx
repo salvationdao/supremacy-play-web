@@ -11,12 +11,12 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MysteryCrate } from "../../../../types"
 
-interface MysteryCrateItemProps {
+interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
     crate: MysteryCrate
 }
 
-export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps) => {
+export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
     const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>(crate)
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
@@ -164,7 +164,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
     )
 }
 
-export const MysteryCrateItemLoadingSkeleton = () => {
+export const MysteryCrateStoreItemLoadingSkeleton = () => {
     const theme = useTheme()
 
     return (
