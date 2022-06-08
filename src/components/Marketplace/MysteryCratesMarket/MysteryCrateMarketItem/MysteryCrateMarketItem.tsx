@@ -1,34 +1,35 @@
 import { Box } from "@mui/material"
+import { useMemo } from "react"
 import { ClipThing } from "../../.."
+import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { MarketplaceBuyItem } from "../../../../types/marketplace"
-import { KeycardInfo } from "./KeycardInfo"
+import { consolidateMarketItemDeets, numFormatter } from "../../../../helpers"
+import { MARKETPLACE_TABS } from "../../../../pages"
+import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { Pricing } from "../../Common/MarketItem/Pricing"
-import { Thumbnail } from "../../Common/MarketItem/Thumbnail"
 import { SellerInfo } from "../../Common/MarketItem/SellerInfo"
+import { Thumbnail } from "../../Common/MarketItem/Thumbnail"
 import { Timeframe } from "../../Common/MarketItem/Timeframe"
 import { ViewButton } from "../../Common/MarketItem/ViewButton"
-import { useMemo } from "react"
-import { numFormatter } from "../../../../helpers"
-import BigNumber from "bignumber.js"
-import { SvgWallet } from "../../../../assets"
-import { MARKETPLACE_TABS } from "../../../../pages"
+import { MysteryCrateInfo } from "./MysteryCrateInfo"
 
-interface KeycardMarketItemProps {
-    item: MarketplaceBuyItem
+interface MysteryCratesMarketItemProps {
+    item: MarketplaceBuyAuctionItem
     isGridView: boolean
 }
 
-export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) => {
+export const MysteryCrateMarketItem = ({ item, isGridView }: MysteryCratesMarketItemProps) => {
     const theme = useTheme()
 
-    const { id, end_at, owner, keycard, buyout_price } = item
-    const formattedPrice = useMemo(() => numFormatter(new BigNumber(buyout_price).shiftedBy(-18).toNumber()), [buyout_price])
+    const marketItemDeets = useMemo(() => consolidateMarketItemDeets(item, theme), [item, theme])
+    const formattedPrice = useMemo(() => numFormatter(marketItemDeets.price.toNumber()), [marketItemDeets.price])
 
-    if (!keycard || !owner) return null
+    const { id, end_at, owner, mystery_crate } = item
+
+    if (!mystery_crate || !owner) return null
 
     const { username, gid } = owner
-    const { label, image_url, animation_url, description } = keycard
+    const { label, description, image_url, animation_url } = mystery_crate
 
     return (
         <Box sx={{ position: "relative", overflow: "visible" }}>
@@ -36,11 +37,11 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
                 clipSize="7px"
                 border={{
                     isFancy: !isGridView,
-                    borderColor: theme.factionTheme.primary,
+                    borderColor: marketItemDeets.primaryColor,
                     borderThickness: ".25rem",
                 }}
                 opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={marketItemDeets.backgroundColor}
             >
                 <Box
                     sx={{
@@ -48,7 +49,7 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
                         p: isGridView ? "1.2rem 1.3rem" : ".8rem 1rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: "8rem minmax(auto, 35rem) repeat(3, 1fr) min-content",
+                        gridTemplateColumns: "8rem minmax(auto, 30rem) 1.5fr repeat(2, 1fr) min-content",
                         gap: "1.6rem",
                         ...(isGridView
                             ? {
@@ -59,18 +60,18 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
                             : {}),
                     }}
                 >
-                    <Thumbnail isGridView={isGridView} imageUrl={image_url} animationUrl={animation_url} />
-                    <KeycardInfo isGridView={isGridView} label={label} description={description} />
+                    <Thumbnail isGridView={isGridView} imageUrl={image_url || SafePNG} animationUrl={animation_url} />
+                    <MysteryCrateInfo isGridView={isGridView} label={label} description={description} />
                     <SellerInfo isGridView={isGridView} username={username} gid={gid} />
                     <Timeframe isGridView={isGridView} endAt={end_at} />
-                    <Pricing isGridView={isGridView} formattedPrice={formattedPrice} priceLabel="FIXED PRICE" />
+                    <Pricing isGridView={isGridView} formattedPrice={formattedPrice} priceLabel={marketItemDeets.priceLabel} />
                     <ViewButton
                         isGridView={isGridView}
-                        primaryColor={theme.factionTheme.primary}
-                        secondaryColor={theme.factionTheme.secondary}
-                        ctaLabel="BUY NOW"
-                        icon={<SvgWallet size="1.9rem" fill={theme.factionTheme.secondary} />}
-                        to={`/marketplace/${MARKETPLACE_TABS.Keycards}/${id}${location.hash}`}
+                        primaryColor={marketItemDeets.primaryColor}
+                        secondaryColor={marketItemDeets.secondaryColor}
+                        ctaLabel={marketItemDeets.ctaLabel}
+                        icon={<marketItemDeets.Icon size="1.9rem" fill={marketItemDeets.secondaryColor} />}
+                        to={`/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${id}${location.hash}`}
                     />
                 </Box>
 
@@ -81,7 +82,7 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
                         right: 0,
                         top: 0,
                         bottom: 0,
-                        background: `linear-gradient(to top, #FFFFFF10, ${theme.factionTheme.background}80)`,
+                        background: `linear-gradient(to top, #FFFFFF10, ${marketItemDeets.backgroundColor}80)`,
                         zIndex: -1,
                     }}
                 />

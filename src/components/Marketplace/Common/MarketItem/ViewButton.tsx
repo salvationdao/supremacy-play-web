@@ -6,18 +6,18 @@ import { fonts } from "../../../../theme/theme"
 
 export const ViewButton = ({
     isGridView,
-    id,
     primaryColor,
     secondaryColor,
     ctaLabel,
     icon,
+    to,
 }: {
     isGridView: boolean
-    id: string
     primaryColor: string
     secondaryColor: string
     ctaLabel: string
     icon: ReactNode
+    to: string
 }) => {
     const history = useHistory()
 
@@ -33,7 +33,7 @@ export const ViewButton = ({
                     sx: { position: "relative", width: isGridView ? "100%" : "14rem" },
                 }}
                 sx={{ py: ".25rem", color: secondaryColor }}
-                onClick={() => history.push(`/marketplace/war-machines/${id}${location.hash}`)}
+                onClick={() => history.push(to)}
             >
                 <Stack direction="row" spacing=".8rem" alignItems="center" justifyContent="center">
                     {icon}

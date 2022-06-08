@@ -88,6 +88,12 @@ export interface MarketplaceBuyAuctionItem {
     mystery_crate?: {
         id: string
         label: string
+        description: string
+        image_url?: string
+        animation_url?: string
+        card_animation_url?: string
+        avatar_url?: string
+        large_image_url?: string
     }
 }
 

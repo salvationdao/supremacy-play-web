@@ -1,4 +1,4 @@
-import { Box, Stack, CircularProgress } from "@mui/material"
+import { Box } from "@mui/material"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 
@@ -41,20 +41,8 @@ export const Thumbnail = ({ isGridView, imageUrl, animationUrl }: { isGridView: 
                 autoPlay
                 poster={`${imageUrl}`}
             >
-                <source src={animationUrl} type="video/mp4" />
+                {animationUrl && <source src={animationUrl} type="video/mp4" />}
             </Box>
-
-            {/* <Box
-                sx={{
-                    height: isGridView ? "15rem" : "100%",
-                    width: "100%",
-                    overflow: "hidden",
-                    background: `url(${imageUrl})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
-                }}
-            /> */}
         </ClipThing>
     )
 }

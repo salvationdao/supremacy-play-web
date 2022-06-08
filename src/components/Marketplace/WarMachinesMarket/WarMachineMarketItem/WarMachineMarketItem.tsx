@@ -13,6 +13,7 @@ import { Thumbnail } from "../../Common/MarketItem/Thumbnail"
 import { SellerInfo } from "../../Common/MarketItem/SellerInfo"
 import { Timeframe } from "../../Common/MarketItem/Timeframe"
 import { ViewButton } from "../../Common/MarketItem/ViewButton"
+import { MARKETPLACE_TABS } from "../../../../pages"
 
 interface WarMachineMarketItemProps {
     item: MarketplaceBuyAuctionItem
@@ -89,11 +90,11 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                     <Pricing isGridView={isGridView} formattedPrice={formattedPrice} priceLabel={marketItemDeets.priceLabel} />
                     <ViewButton
                         isGridView={isGridView}
-                        id={id}
                         primaryColor={marketItemDeets.primaryColor}
                         secondaryColor={marketItemDeets.secondaryColor}
                         ctaLabel={marketItemDeets.ctaLabel}
                         icon={<marketItemDeets.Icon size="1.9rem" fill={marketItemDeets.secondaryColor} />}
+                        to={`/marketplace/${MARKETPLACE_TABS.WarMachines}/${id}${location.hash}`}
                     />
                 </Box>
 
