@@ -121,12 +121,14 @@ export const SellItemModal = ({ onClose }: Props) => {
                     {
                         page: number
                         page_size: number
+                        exclude_opened: boolean
                         exclude_market_listed: boolean
                         exclude_market_locked: boolean
                     }
                 >(key, {
                     page, // start with 0
                     page_size: pageSize,
+                    exclude_opened: true,
                     exclude_market_listed: true,
                     exclude_market_locked: true,
                 })
