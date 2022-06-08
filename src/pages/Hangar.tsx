@@ -3,13 +3,13 @@ import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
 import { useTheme } from "../containers/theme"
-import { HangarWarMachines } from "../components/Hangar/HangarWarMachines/HangarWarMachines"
+import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
 import { useAuth } from "../containers"
 import { fonts, siteZIndex } from "../theme/theme"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { ROUTES_MAP } from "../routes"
-import { HangarMysteryCrates } from "../components/Hangar/HangarMysteryCrates/HangarMysteryCrates"
-import { HangarKeyCards } from "../components/Hangar/HangarKeyCards/HangarKeyCards"
+import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { KeyCardsHangar } from "../components/Hangar/KeyCardsHangar/KeyCardsHangar"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -98,13 +98,13 @@ const HangarPageInner = () => {
                 </Box>
 
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
-                    <HangarWarMachines />
+                    <WarMachinesHangar />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
-                    <HangarMysteryCrates />
+                    <MysteryCratesHangar />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.KeyCards}>
-                    <HangarKeyCards />
+                    <KeyCardsHangar />
                 </TabPanel>
             </Stack>
         </>

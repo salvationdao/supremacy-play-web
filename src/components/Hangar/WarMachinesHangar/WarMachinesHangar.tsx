@@ -28,7 +28,7 @@ interface GetAssetsResponse {
     total: number
 }
 
-export const HangarWarMachines = () => {
+export const WarMachinesHangar = () => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
     const [leaveMechModalOpen, setLeaveMechModalOpen] = useState<boolean>(false)
@@ -38,7 +38,7 @@ export const HangarWarMachines = () => {
 
     return (
         <>
-            <HangarWarMachinesInner
+            <WarMachinesHangarInner
                 selectedMechDetails={selectedMechDetails}
                 setSelectedMechDetails={setSelectedMechDetails}
                 setDeployMechModalOpen={setDeployMechModalOpen}
@@ -78,7 +78,7 @@ export const HangarWarMachines = () => {
     )
 }
 
-const HangarWarMachinesInner = ({
+const WarMachinesHangarInner = ({
     selectedMechDetails,
     setSelectedMechDetails,
     setDeployMechModalOpen,
