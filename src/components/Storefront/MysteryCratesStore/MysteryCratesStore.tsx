@@ -5,12 +5,17 @@ import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
+import { TooltipHelper } from "../../Common/TooltipHelper"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
+
+interface MysteryCrateOwnershipResp {
+    allowed: number
+    owned: number
+}
 
 export const MysteryCratesStore = () => {
     const { newSnackbarMessage } = useSnackbar()
@@ -19,9 +24,24 @@ export const MysteryCratesStore = () => {
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+    const [ownershipDetails, setOwnershipDetails] = useState<MysteryCrateOwnershipResp>({
+        allowed: 0,
+        owned: 0,
+    })
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
 
     const enlargedView = crates ? crates.length <= 2 : false
+
+    useGameServerSubscriptionUser<MysteryCrateOwnershipResp>(
+        {
+            URI: "/mystery_crates",
+            key: GameServerKeys.SubMysteryCrateOwnership,
+        },
+        (payload) => {
+            if (!payload) return
+            setOwnershipDetails(payload)
+        },
+    )
 
     // Get mystery crates
     useEffect(() => {
@@ -74,7 +94,7 @@ export const MysteryCratesStore = () => {
         if (!crates || isLoading) {
             return (
                 <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(6).fill(0).map((_, index) => (
+                    {new Array(10).fill(0).map((_, index) => (
                         <MysteryCrateStoreItemLoadingSkeleton key={index} />
                     ))}
                 </Stack>
@@ -158,15 +178,13 @@ export const MysteryCratesStore = () => {
                         direction="row"
                         alignItems="center"
                         sx={{
-                            px: "2rem",
-                            py: "2.2rem",
+                            p: "2rem",
                             backgroundColor: "#00000070",
                             borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
                         }}
                     >
                         <Box
                             sx={{
-                                alignSelf: "flex-start",
                                 flexShrink: 0,
                                 mr: "1.2rem",
                                 width: "6.5rem",
@@ -179,23 +197,65 @@ export const MysteryCratesStore = () => {
                         />
                         <Box sx={{ mr: "2rem" }}>
                             <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                MYSTERY CRATES
+                                MYSTERY CRATES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
                             </Typography>
-                            <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle areana with a variety of War Machines and Weapons.</Typography>
+                            <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle arena with a variety of War Machines and Weapons.</Typography>
                         </Box>
+                        <Stack spacing="1rem" sx={{ ml: "auto" }}>
+                            <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
+                                <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoHeavy }}>
+                                    Total owned:
+                                </Typography>
 
-                        <Box
-                            sx={{
-                                ml: "auto",
-                                px: "1.6rem",
-                                py: ".8rem",
-                                backgroundColor: `${colors.neonBlue}10`,
-                                border: `${colors.neonBlue} 2px dashed`,
-                                animation: `${zoomEffect(1.01)} 3s infinite`,
-                            }}
-                        >
-                            <Typography sx={{ textAlign: "center", color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>ONLY 20,000 AVAILABLE</Typography>
-                        </Box>
+                                <ClipThing
+                                    clipSize="8px"
+                                    clipSlantSize="3px"
+                                    border={{
+                                        borderColor: colors.neonBlue,
+                                        borderThickness: ".15rem",
+                                    }}
+                                    corners={{
+                                        topRight: true,
+                                        bottomLeft: true,
+                                    }}
+                                    backgroundColor={colors.darkerNavy}
+                                >
+                                    <Stack direction="row" justifyContent="center" spacing=".2rem" sx={{ px: "2rem", pt: ".3rem", width: "8rem" }}>
+                                        <Typography variant="body2" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
+                                            {ownershipDetails.owned}
+                                        </Typography>
+                                    </Stack>
+                                </ClipThing>
+                            </Stack>
+
+                            <TooltipHelper placement="bottom" text="Maximum capacity is dependent on the number of keycards you hold.">
+                                <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
+                                    <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>
+                                        Maximum capacity:
+                                    </Typography>
+
+                                    <ClipThing
+                                        clipSize="8px"
+                                        clipSlantSize="3px"
+                                        border={{
+                                            borderColor: colors.neonBlue,
+                                            borderThickness: ".15rem",
+                                        }}
+                                        corners={{
+                                            topRight: true,
+                                            bottomLeft: true,
+                                        }}
+                                        backgroundColor={colors.darkerNavy}
+                                    >
+                                        <Stack direction="row" justifyContent="center" spacing=".2rem" sx={{ px: "2rem", pt: ".3rem", width: "8rem" }}>
+                                            <Typography variant="body2" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
+                                                {ownershipDetails.allowed}
+                                            </Typography>
+                                        </Stack>
+                                    </ClipThing>
+                                </Stack>
+                            </TooltipHelper>
+                        </Stack>
                     </Stack>
 
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>

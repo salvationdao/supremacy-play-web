@@ -67,9 +67,9 @@ export enum GameServerKeys {
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
+    SubMysteryCrateOwnership = "STORE:MYSTERY:CRATE:OWNERSHIP:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
-
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
     GetSettings = "PLAYER:GET_SETTINGS",
 
