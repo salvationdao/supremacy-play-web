@@ -14,53 +14,24 @@ import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 interface BuyNowDetailsProps {
     id: string
     itemName: string
-    primaryColor: string
-    secondaryColor: string
-    backgroundColor: string
-    priceLabel: string
     createdAt: Date
     endAt: Date
-    price: BigNumber
+    buyNowPrice: string
 }
 
-export const BuyNowDetails = ({ id, itemName, primaryColor, secondaryColor, backgroundColor, priceLabel, createdAt, endAt, price }: BuyNowDetailsProps) => {
+export const BuyNowDetails = ({ id, itemName, createdAt, endAt, buyNowPrice }: BuyNowDetailsProps) => {
+    const theme = useTheme()
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
 
+    const primaryColor = useMemo(() => theme.factionTheme.primary, [theme.factionTheme])
+    const secondaryColor = useMemo(() => theme.factionTheme.secondary, [theme.factionTheme])
+    const backgroundColor = useMemo(() => theme.factionTheme.background, [theme.factionTheme])
     const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
-    const formattedCommaPrice = useMemo(() => numberCommaFormatter(price.toNumber()), [price])
-    const formattedPrice = useMemo(() => numFormatter(price.toNumber()), [price])
+    const formattedCommaPrice = useMemo(() => numberCommaFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber()), [buyNowPrice])
 
     return (
         <>
             <Stack spacing="2rem">
-                <Stack>
-                    <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                        {priceLabel}:
-                    </Typography>
-                    <ClipThing
-                        clipSize="10px"
-                        clipSlantSize="3px"
-                        border={{
-                            isFancy: true,
-                            borderColor: primaryColor,
-                            borderThickness: ".2rem",
-                        }}
-                        corners={{
-                            topRight: true,
-                            bottomLeft: true,
-                        }}
-                        backgroundColor={backgroundColor}
-                        sx={{ alignSelf: "flex-start" }}
-                    >
-                        <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
-                            <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
-                            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                                {formattedCommaPrice}
-                            </Typography>
-                        </Stack>
-                    </ClipThing>
-                </Stack>
-
                 <Box>
                     <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
                         DATE LISTED:
@@ -79,46 +50,79 @@ export const BuyNowDetails = ({ id, itemName, primaryColor, secondaryColor, back
                     </Typography>
                 </Box>
 
-                <FancyButton
-                    excludeCaret
-                    clipThingsProps={{
-                        clipSize: "9px",
-                        backgroundColor: primaryColor,
-                        opacity: 1,
-                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
-                        sx: { position: "relative", width: "18rem" },
-                    }}
-                    sx={{ py: ".7rem", color: secondaryColor }}
-                    onClick={() => toggleConfirmModalOpen(true)}
-                >
-                    <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
-                        <SvgWallet size="1.9rem" fill={secondaryColor} />
+                <Stack>
+                    <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                        FIXED PRICE:
+                    </Typography>
 
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                flexShrink: 0,
-                                color: secondaryColor,
-                                fontFamily: fonts.nostromoBlack,
+                    <Stack direction="row" alignItems="center" spacing="2rem">
+                        <ClipThing
+                            clipSize="10px"
+                            clipSlantSize="3px"
+                            border={{
+                                isFancy: true,
+                                borderColor: primaryColor,
+                                borderThickness: ".2rem",
                             }}
+                            corners={{
+                                topRight: true,
+                                bottomLeft: true,
+                            }}
+                            backgroundColor={backgroundColor}
+                            sx={{ alignSelf: "flex-start" }}
                         >
-                            BUY NOW
-                        </Typography>
+                            <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
+                                <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
+                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                    {formattedCommaPrice}
+                                </Typography>
+                            </Stack>
+                        </ClipThing>
+
+                        <FancyButton
+                            excludeCaret
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: primaryColor,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
+                                sx: { position: "relative", width: "18rem" },
+                            }}
+                            sx={{ py: ".7rem", color: secondaryColor }}
+                            onClick={() => toggleConfirmModalOpen(true)}
+                        >
+                            <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
+                                <SvgWallet size="1.9rem" fill={secondaryColor} />
+
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        flexShrink: 0,
+                                        color: secondaryColor,
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    BUY NOW
+                                </Typography>
+                            </Stack>
+                        </FancyButton>
                     </Stack>
-                </FancyButton>
+                </Stack>
             </Stack>
 
-            {confirmModalOpen && <ConfirmModal id={id} itemName={itemName} formattedPrice={formattedPrice} onClose={() => toggleConfirmModalOpen(false)} />}
+            {confirmModalOpen && <ConfirmModal id={id} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmModalOpen(false)} />}
         </>
     )
 }
 
-const ConfirmModal = ({ id, itemName, formattedPrice, onClose }: { id: string; itemName: string; formattedPrice: string; onClose: () => void }) => {
+const ConfirmModal = ({ id, itemName, price, onClose }: { id: string; itemName: string; price: string; onClose: () => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [buyError, setBuyError] = useState<string>()
+
+    const formattedPrice = useMemo(() => numFormatter(new BigNumber(price).shiftedBy(-18).toNumber()), [price])
 
     const confirmBuy = useCallback(async () => {
         try {

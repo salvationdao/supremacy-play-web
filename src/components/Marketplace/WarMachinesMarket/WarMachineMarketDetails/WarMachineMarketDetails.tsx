@@ -8,6 +8,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
+import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
 import { ItemType } from "../../Common/MarketDetails/ItemType"
@@ -160,23 +161,34 @@ const WarMachineMarketDetailsInner = ({
 
     const listingDetails = useMemo(() => {
         const { buyout, auction, dutch_auction } = marketItem
-        if (buyout)
+        if (auction) {
+            return (
+                <AuctionDetails
+                    id={marketItem.id}
+                    itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
+                    createdAt={marketItem.created_at}
+                    endAt={marketItem.end_at}
+                    buyNowPrice={marketItem.buyout_price}
+                />
+            )
+        }
+
+        if (dutch_auction) {
+            return null
+        }
+
+        if (buyout) {
             return (
                 <BuyNowDetails
                     id={marketItem.id}
                     itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
-                    primaryColor={marketItemDeets.primaryColor}
-                    secondaryColor={marketItemDeets.secondaryColor}
-                    backgroundColor={marketItemDeets.backgroundColor}
-                    priceLabel={marketItemDeets.priceLabel}
                     createdAt={marketItem.created_at}
                     endAt={marketItem.end_at}
-                    price={marketItemDeets.price}
+                    buyNowPrice={marketItem.buyout_price}
                 />
             )
-        if (auction) return null
-        if (dutch_auction) return null
-    }, [marketItem, marketItemDeets])
+        }
+    }, [marketItem])
 
     const { owner, mech } = marketItem
 

@@ -37,7 +37,6 @@ export const SellModal = ({
                 //     item_type: "mech",
                 //     item_id: id,
                 //     asking_price: "88888",
-                //     listing_duration_hours: 50,
                 // })
 
                 const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
@@ -46,7 +45,6 @@ export const SellModal = ({
                     item_id: id,
                     asking_price: "999",
                     auction_reserved_price: "88888",
-                    listing_duration_hours: 8,
                 })
 
                 if (resp) {
