@@ -169,6 +169,9 @@ const WarMachineMarketDetailsInner = ({
                     createdAt={marketItem.created_at}
                     endAt={marketItem.end_at}
                     buyNowPrice={marketItem.buyout_price}
+                    auctionCurrentPrice={marketItem.auction_current_price}
+                    auctionBidCount={marketItem.total_bids}
+                    auctionLastBid={marketItem.last_bid}
                 />
             )
         }

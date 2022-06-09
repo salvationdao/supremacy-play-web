@@ -108,6 +108,7 @@ export enum GameServerKeys {
     MarketplaceSalesKeycardList = "MARKETPLACE:SALES:KEYCARD:LIST",
     MarketplaceSalesKeycardCreate = "MARKETPLACE:SALES:KEYCARD:CREATE",
     MarketplaceSalesKeycardBuy = "MARKETPLACE:SALES:KEYCARD:BUY",
+    SubMarketplaceSalesItem = "MARKETPLACE:SALES:ITEM:UPDATE",
     GetKeycards = "PLAYER:ASSET:KEYCARD:LIST",
     GetPlayerMysteryCrates = "PLAYER:ASSET:MYSTERY_CRATE:LIST",
 }

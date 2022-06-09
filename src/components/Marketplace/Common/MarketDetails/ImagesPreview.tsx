@@ -40,7 +40,16 @@ export const ImagesPreview = ({ media }: { media: MarketMedia[] }) => {
                     {activeImageUrl ? (
                         <MainPreview imageUrl={activeImageUrl} videoUrl={activeVideoUrl} />
                     ) : (
-                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                        <Stack
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{
+                                height: "100%",
+                                border: "#FFFFFF18 2px solid",
+                                boxShadow: "inset 0 0 12px 6px #00000040",
+                                background: `radial-gradient(#FFFFFF20 10px, #00000080)`,
+                            }}
+                        >
                             <CircularProgress />
                         </Stack>
                     )}

@@ -7,9 +7,10 @@ import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, numFormatter, shadeColor, timeSinceInWords } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { MarketUser } from "../../../../types/marketplace"
 
 interface AuctionDetailsProps {
     id: string
@@ -17,13 +18,18 @@ interface AuctionDetailsProps {
     createdAt: Date
     endAt: Date
     buyNowPrice?: string
+    auctionCurrentPrice: string
+    auctionBidCount: number
+    auctionLastBid?: MarketUser
 }
 
-export const AuctionDetails = ({ id, itemName, buyNowPrice, createdAt, endAt }: AuctionDetailsProps) => {
+export const AuctionDetails = ({ id, itemName, buyNowPrice, createdAt, endAt, auctionCurrentPrice, auctionBidCount, auctionLastBid }: AuctionDetailsProps) => {
     const theme = useTheme()
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
-    const [currentPrice, setCurrentPrice] = useState<BigNumber>()
-    const [bidPrice, setBidPrice] = useState<number>()
+    const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))
+    const [bidCount, setBidCount] = useState<number>(auctionBidCount)
+    const [lastBidUser, setLastBidUser] = useState<MarketUser | undefined>(auctionLastBid)
+    const [inputBidPrice, setInputBidPrice] = useState<number>()
 
     const primaryColor = useMemo(() => colors.auction, [])
     const secondaryColor = useMemo(() => "#FFFFFF", [])
@@ -33,6 +39,19 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, createdAt, endAt }: 
     const formattedCommaBuyNowPrice = useMemo(
         () => (buyNowPrice ? numberCommaFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber()) : undefined),
         [buyNowPrice],
+    )
+
+    useGameServerSubscriptionFaction<{ auction_current_price: string; total_bids: number; last_bid: MarketUser }>(
+        {
+            URI: `/marketplace/${id}`,
+            key: GameServerKeys.SubMarketplaceSalesItem,
+        },
+        (payload) => {
+            if (!payload) return
+            setCurrentPrice(new BigNumber(payload.auction_current_price).shiftedBy(-18))
+            setBidCount(payload.total_bids)
+            setLastBidUser(payload.last_bid)
+        },
     )
 
     return (
@@ -116,15 +135,15 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, createdAt, endAt }: 
                                 ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                             }}
                             type="number"
-                            value={bidPrice}
+                            value={inputBidPrice}
                             onChange={(e) => {
                                 const value = parseInt(e.target.value)
-                                setBidPrice(value)
+                                setInputBidPrice(value)
                             }}
                         />
                         <FancyButton
                             excludeCaret
-                            disabled={!currentPrice || !bidPrice || currentPrice.isGreaterThanOrEqualTo(bidPrice)}
+                            disabled={!currentPrice || !inputBidPrice || currentPrice.isGreaterThanOrEqualTo(inputBidPrice)}
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: primaryColor,
@@ -215,26 +234,28 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, createdAt, endAt }: 
                 )}
             </Stack>
 
-            {confirmModalOpen && bidPrice && <ConfirmModal id={id} itemName={itemName} bidPrice={bidPrice} onClose={() => toggleConfirmModalOpen(false)} />}
+            {confirmModalOpen && inputBidPrice && (
+                <ConfirmModal id={id} itemName={itemName} inputBidPrice={inputBidPrice} onClose={() => toggleConfirmModalOpen(false)} />
+            )}
         </>
     )
 }
 
-const ConfirmModal = ({ id, itemName, onClose, bidPrice }: { id: string; itemName: string; onClose: () => void; bidPrice: number }) => {
+const ConfirmModal = ({ id, itemName, onClose, inputBidPrice }: { id: string; itemName: string; onClose: () => void; inputBidPrice: number }) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [bidError, setBidError] = useState<string>()
 
-    const formattedPrice = numFormatter(bidPrice)
+    const formattedPrice = numFormatter(inputBidPrice)
 
     const confirmBid = useCallback(async () => {
         try {
             setIsLoading(true)
             const resp = await send(GameServerKeys.MarketplaceSalesBid, {
                 id,
-                amount: bidPrice.toString(),
+                amount: inputBidPrice.toString(),
             })
 
             if (!resp) return
@@ -247,7 +268,7 @@ const ConfirmModal = ({ id, itemName, onClose, bidPrice }: { id: string; itemNam
         } finally {
             setIsLoading(false)
         }
-    }, [bidPrice, id, newSnackbarMessage, onClose, send])
+    }, [inputBidPrice, id, newSnackbarMessage, onClose, send])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
