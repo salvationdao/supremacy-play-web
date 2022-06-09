@@ -11,6 +11,7 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
+import { ConfirmBuyModal } from "./BuyNowDetails"
 
 interface AuctionDetailsProps {
     id: string
@@ -23,7 +24,8 @@ interface AuctionDetailsProps {
 
 export const AuctionDetails = ({ id, itemName, buyNowPrice, auctionCurrentPrice, auctionBidCount, auctionLastBid }: AuctionDetailsProps) => {
     const theme = useTheme()
-    const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
+    const [confirmBidModalOpen, toggleConfirmBidModalOpen] = useToggle()
+    const [confirmBuyModalOpen, toggleConfirmBuyModalOpen] = useToggle()
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))
     const [bidCount, setBidCount] = useState<number>(auctionBidCount)
     const [lastBidUser, setLastBidUser] = useState<MarketUser | undefined>(auctionLastBid)
@@ -94,7 +96,7 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, auctionCurrentPrice,
                                     sx: { position: "relative", width: "18rem" },
                                 }}
                                 sx={{ py: ".7rem", color: theme.factionTheme.secondary }}
-                                onClick={() => toggleConfirmModalOpen(true)}
+                                onClick={() => toggleConfirmBuyModalOpen(true)}
                             >
                                 <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
                                     <SvgWallet size="1.9rem" fill={theme.factionTheme.secondary} />
@@ -206,7 +208,7 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, auctionCurrentPrice,
                                 sx: { position: "relative", width: "18rem" },
                             }}
                             sx={{ py: ".7rem", color: secondaryColor }}
-                            onClick={() => toggleConfirmModalOpen(true)}
+                            onClick={() => toggleConfirmBidModalOpen(true)}
                         >
                             <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
                                 <SvgHammer size="1.9rem" fill={secondaryColor} />
@@ -227,14 +229,18 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, auctionCurrentPrice,
                 </Box>
             </Stack>
 
-            {confirmModalOpen && inputBidPrice && (
-                <ConfirmModal id={id} itemName={itemName} inputBidPrice={inputBidPrice} onClose={() => toggleConfirmModalOpen(false)} />
+            {confirmBidModalOpen && inputBidPrice && (
+                <ConfirmBidModal id={id} itemName={itemName} inputBidPrice={inputBidPrice} onClose={() => toggleConfirmBidModalOpen(false)} />
+            )}
+
+            {confirmBuyModalOpen && buyNowPrice && (
+                <ConfirmBuyModal id={id} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmBuyModalOpen(false)} />
             )}
         </>
     )
 }
 
-const ConfirmModal = ({ id, itemName, onClose, inputBidPrice }: { id: string; itemName: string; onClose: () => void; inputBidPrice: number }) => {
+const ConfirmBidModal = ({ id, itemName, onClose, inputBidPrice }: { id: string; itemName: string; onClose: () => void; inputBidPrice: number }) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")

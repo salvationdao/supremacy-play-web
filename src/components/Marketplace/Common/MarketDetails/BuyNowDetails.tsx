@@ -33,7 +33,7 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
 
     const theme = useTheme()
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(calculateNewPrice())
-    const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
+    const [confirmBuyModalOpen, toggleConfirmBuyModalOpen] = useToggle()
 
     const primaryColor = useMemo(() => theme.factionTheme.primary, [theme.factionTheme])
     const secondaryColor = useMemo(() => theme.factionTheme.secondary, [theme.factionTheme])
@@ -95,7 +95,7 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
                                 sx: { position: "relative", width: "18rem" },
                             }}
                             sx={{ py: ".7rem", color: secondaryColor }}
-                            onClick={() => toggleConfirmModalOpen(true)}
+                            onClick={() => toggleConfirmBuyModalOpen(true)}
                         >
                             <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
                                 <SvgWallet size="1.9rem" fill={secondaryColor} />
@@ -116,7 +116,7 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
                 </Stack>
             </Stack>
 
-            {confirmModalOpen && <ConfirmModal id={id} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmModalOpen(false)} />}
+            {confirmBuyModalOpen && <ConfirmBuyModal id={id} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmBuyModalOpen(false)} />}
         </>
     )
 }
@@ -147,7 +147,7 @@ const PriceDropper = ({
     return <>{timeLeft}</>
 }
 
-const ConfirmModal = ({ id, itemName, price, onClose }: { id: string; itemName: string; price: string; onClose: () => void }) => {
+export const ConfirmBuyModal = ({ id, itemName, price, onClose }: { id: string; itemName: string; price: string; onClose: () => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
