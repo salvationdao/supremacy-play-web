@@ -131,7 +131,7 @@ const SmallImageThumbnail = ({
                 height: "100%",
                 objectFit: "cover",
                 objectPosition: "center",
-                border: activeImageUrl === imageUrl ? `${colors.neonBlue}99 2px solid` : "#FFFFFF18 2px solid",
+                border: activeImageUrl === imageUrl ? `${colors.lightNeonBlue} 2px solid` : "#FFFFFF18 2px solid",
             }}
             onClick={() => {
                 setActiveImageUrl(imageUrl)
