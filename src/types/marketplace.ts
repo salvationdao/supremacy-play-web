@@ -46,6 +46,13 @@ export interface MarketplaceBuyItem {
     }
 }
 
+export interface MarketUser {
+    username: string
+    gid: number
+    public_address: string
+    faction_id: string
+}
+
 export interface MarketplaceBuyAuctionItem {
     id: string
     item_id: string
@@ -60,18 +67,8 @@ export interface MarketplaceBuyAuctionItem {
     created_at: Date
     end_at: Date
     total_bids: number
-    last_bid: {
-        username: string
-        gid: number
-        public_address: string
-        faction_id: string
-    }
-    owner?: {
-        username: string
-        gid: number
-        public_address: string
-        faction_id: string
-    }
+    last_bid?: MarketUser
+    owner?: MarketUser
     collection_item?: {
         tier: string
         image_url?: string

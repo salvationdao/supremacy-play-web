@@ -9,7 +9,7 @@ export interface MarketMedia {
     videoUrl?: string
 }
 
-export const MarketDetailImages = ({ media }: { media: MarketMedia[] }) => {
+export const ImagesPreview = ({ media }: { media: MarketMedia[] }) => {
     const [activeImageUrl, setActiveImageUrl] = useState<string>()
     const [activeVideoUrl, setActiveVideoUrl] = useState<string>()
     const [previewModalOpen, togglePreviewModalOpen] = useToggle()

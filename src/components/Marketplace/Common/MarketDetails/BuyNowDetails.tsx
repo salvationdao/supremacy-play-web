@@ -1,65 +1,114 @@
 import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import BigNumber from "bignumber.js"
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgSupToken, SvgWallet } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
+import { numberCommaFormatter, numFormatter, timeSinceInWords } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 
-export const BuyoutDetails = ({ marketItem }: { marketItem: MarketplaceBuyAuctionItem }) => {
-    const theme = useTheme()
+interface BuyNowDetailsProps {
+    id: string
+    itemName: string
+    primaryColor: string
+    secondaryColor: string
+    backgroundColor: string
+    priceLabel: string
+    endAt: Date
+    price: BigNumber
+}
+
+export const BuyNowDetails = ({ id, itemName, primaryColor, secondaryColor, backgroundColor, priceLabel, endAt, price }: BuyNowDetailsProps) => {
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
 
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
+    const formattedCommaPrice = useMemo(() => numberCommaFormatter(price.toNumber()), [price])
+    const formattedPrice = useMemo(() => numFormatter(price.toNumber()), [price])
 
     return (
         <>
-            <FancyButton
-                excludeCaret
-                clipThingsProps={{
-                    clipSize: "9px",
-                    backgroundColor: primaryColor,
-                    opacity: 1,
-                    border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
-                    sx: { position: "relative", width: "18rem" },
-                }}
-                sx={{ py: ".7rem", color: secondaryColor }}
-                onClick={() => toggleConfirmModalOpen(true)}
-            >
-                <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
-                    <SvgWallet size="1.9rem" fill={secondaryColor} />
-
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            flexShrink: 0,
-                            color: secondaryColor,
-                            fontFamily: fonts.nostromoBlack,
-                        }}
-                    >
-                        BUY NOW
+            <Stack spacing="2rem">
+                <Stack>
+                    <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                        {priceLabel}:
                     </Typography>
+                    <ClipThing
+                        clipSize="10px"
+                        clipSlantSize="3px"
+                        border={{
+                            isFancy: true,
+                            borderColor: primaryColor,
+                            borderThickness: ".2rem",
+                        }}
+                        corners={{
+                            topRight: true,
+                            bottomLeft: true,
+                        }}
+                        backgroundColor={backgroundColor}
+                        sx={{ alignSelf: "flex-start" }}
+                    >
+                        <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
+                            <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
+                            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                {formattedCommaPrice}
+                            </Typography>
+                        </Stack>
+                    </ClipThing>
                 </Stack>
-            </FancyButton>
 
-            {confirmModalOpen && <ConfirmModal marketItem={marketItem} onClose={() => toggleConfirmModalOpen(false)} />}
+                <Box>
+                    <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                        TIME LEFT:
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                        {timeLeft} <span style={{ opacity: 0.7, fontFamily: "inherit" }}>({endAt.toUTCString()})</span>
+                    </Typography>
+                </Box>
+
+                <FancyButton
+                    excludeCaret
+                    clipThingsProps={{
+                        clipSize: "9px",
+                        backgroundColor: primaryColor,
+                        opacity: 1,
+                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
+                        sx: { position: "relative", width: "18rem" },
+                    }}
+                    sx={{ py: ".7rem", color: secondaryColor }}
+                    onClick={() => toggleConfirmModalOpen(true)}
+                >
+                    <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
+                        <SvgWallet size="1.9rem" fill={secondaryColor} />
+
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                flexShrink: 0,
+                                color: secondaryColor,
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            BUY NOW
+                        </Typography>
+                    </Stack>
+                </FancyButton>
+            </Stack>
+
+            {confirmModalOpen && <ConfirmModal id={id} itemName={itemName} formattedPrice={formattedPrice} onClose={() => toggleConfirmModalOpen(false)} />}
         </>
     )
 }
 
-const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceBuyAuctionItem; onClose: () => void }) => {
+const ConfirmModal = ({ id, itemName, formattedPrice, onClose }: { id: string; itemName: string; formattedPrice: string; onClose: () => void }) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [buyError, setBuyError] = useState<string>()
-
-    const { id, buyout_price, mech } = marketItem
 
     const confirmBuy = useCallback(async () => {
         try {
@@ -118,7 +167,7 @@ const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceBuyAucti
                             CONFIRMATION
                         </Typography>
                         <Typography variant="h6">
-                            Do you wish to purchase <strong>{mech?.name || mech?.label}</strong> for <span>{buyout_price}</span> SUPS?
+                            Do you wish to purchase <strong>{itemName}</strong> for <span>{formattedPrice}</span> SUPS?
                         </Typography>
                         <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
                             <FancyButton
@@ -139,7 +188,7 @@ const ConfirmModal = ({ marketItem, onClose }: { marketItem: MarketplaceBuyAucti
                                     </Typography>
                                     <SvgSupToken size="1.8rem" />
                                     <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        {buyout_price})
+                                        {formattedPrice})
                                     </Typography>
                                 </Stack>
                             </FancyButton>

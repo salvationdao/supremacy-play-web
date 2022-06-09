@@ -1,15 +1,18 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
-import { consolidateMarketItemDeets } from "../../../../helpers"
+import { consolidateMarketItemDeets, getRarityDeets, MarketItemDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
-import { MarketMedia, MarketDetailImages } from "./MarketDetailImages"
-import { MechListingDetails } from "./MechListingDetails"
+import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
+import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
+import { ItemType } from "../../Common/MarketDetails/ItemType"
+import { ListingType } from "../../Common/MarketDetails/ListingType"
+import { Owner } from "../../Common/MarketDetails/Owner"
 import { MechStatsDetails } from "./MechStatsDetails"
 
 export const WarMachineMarketDetails = ({ id }: { id: string }) => {
@@ -94,7 +97,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
             )
         }
 
-        return <WarMachineMarketDetailsInner marketItem={marketItem} mechDetails={mechDetails} />
+        return <WarMachineMarketDetailsInner marketItem={marketItem} mechDetails={mechDetails} marketItemDeets={marketItemDeets} />
     }, [loadError, marketItem, marketItemDeets, mechDetails, theme.factionTheme.primary])
 
     return (
@@ -118,7 +121,17 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     )
 }
 
-const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem: MarketplaceBuyAuctionItem; mechDetails?: MechDetails }) => {
+const WarMachineMarketDetailsInner = ({
+    marketItem,
+    mechDetails,
+    marketItemDeets,
+}: {
+    marketItem: MarketplaceBuyAuctionItem
+    mechDetails?: MechDetails
+    marketItemDeets: MarketItemDeets
+}) => {
+    const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
+
     const media: MarketMedia[] = useMemo(() => {
         const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
         if (!skin) return []
@@ -145,6 +158,27 @@ const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem:
         ]
     }, [mechDetails])
 
+    const listingDetails = useMemo(() => {
+        const { buyout, auction, dutch_auction } = marketItem
+        if (buyout)
+            return (
+                <BuyNowDetails
+                    id={marketItem.id}
+                    itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
+                    primaryColor={marketItemDeets.primaryColor}
+                    secondaryColor={marketItemDeets.secondaryColor}
+                    backgroundColor={marketItemDeets.backgroundColor}
+                    priceLabel={marketItemDeets.priceLabel}
+                    endAt={marketItem.end_at}
+                    price={marketItemDeets.price}
+                />
+            )
+        if (auction) return null
+        if (dutch_auction) return null
+    }, [marketItem, marketItemDeets])
+
+    const { owner, mech } = marketItem
+
     return (
         <Stack>
             <Box
@@ -157,8 +191,32 @@ const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem:
                     justifyContent: "center",
                 }}
             >
-                <MarketDetailImages media={media} />
-                <MechListingDetails marketItem={marketItem} />
+                <ImagesPreview media={media} />
+
+                <Stack spacing="2rem">
+                    <Box>
+                        <Typography gutterBottom variant="h5" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoBold }}>
+                            {rarityDeets.label}
+                        </Typography>
+
+                        <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            {mech?.name || mech?.label}
+                        </Typography>
+                    </Box>
+
+                    <ListingType
+                        primaryColor={marketItemDeets.primaryColor}
+                        listingTypeLabel={marketItemDeets.listingTypeLabel}
+                        icon={<marketItemDeets.Icon fill={marketItemDeets.primaryColor} />}
+                    />
+
+                    <ItemType itemType="WAR MACHINE" />
+
+                    <Owner owner={owner} />
+
+                    {listingDetails}
+                </Stack>
+
                 <MechStatsDetails mechDetails={mechDetails} />
             </Box>
         </Stack>
