@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { timeSinceInWords } from "../../../../helpers"
 import { useInterval } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
@@ -21,7 +21,7 @@ export const Dates = ({ createdAt, endAt }: { createdAt: Date; endAt: Date }) =>
                     END DATE:
                 </Typography>
                 <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                    {endAt.toUTCString()} (<TimeLeft endAt={endAt} /> left)
+                    {endAt.toUTCString()} (<TimeLeft endAt={endAt} />)
                 </Typography>
             </Box>
         </>
@@ -29,10 +29,17 @@ export const Dates = ({ createdAt, endAt }: { createdAt: Date; endAt: Date }) =>
 }
 
 const TimeLeft = ({ endAt }: { endAt: Date }) => {
-    const [timeLeft, setTimeLeft] = useState<string>(timeSinceInWords(new Date(), endAt))
+    const refreshTime = useCallback(() => {
+        const timeNow = new Date()
+        let newText = "LISTING ENDED"
+        if (timeNow < endAt) newText = timeSinceInWords(new Date(), endAt) + " left"
+        return newText
+    }, [endAt])
+
+    const [timeLeft, setTimeLeft] = useState<string>(refreshTime)
 
     useInterval(() => {
-        setTimeLeft(timeSinceInWords(new Date(), endAt))
+        setTimeLeft(refreshTime())
     }, 1000)
 
     return <>{timeLeft}</>
