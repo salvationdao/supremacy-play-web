@@ -202,7 +202,7 @@ const WarMachineMarketDetailsInner = ({
                     justifyContent: "center",
                 }}
             >
-                <ImagesPreview media={media} />
+                <ImagesPreview media={media} primaryColor={marketItemDeets.primaryColor} />
 
                 <Stack spacing="2rem">
                     <Box>

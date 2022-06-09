@@ -2,14 +2,14 @@ import { Box, CircularProgress, IconButton, Modal, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgClose } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
-import { colors, siteZIndex } from "../../../../theme/theme"
+import { siteZIndex } from "../../../../theme/theme"
 
 export interface MarketMedia {
     imageUrl?: string
     videoUrl?: string
 }
 
-export const ImagesPreview = ({ media }: { media: MarketMedia[] }) => {
+export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; primaryColor: string }) => {
     const [activeImageUrl, setActiveImageUrl] = useState<string>()
     const [activeVideoUrl, setActiveVideoUrl] = useState<string>()
     const [previewModalOpen, togglePreviewModalOpen] = useToggle()
@@ -73,6 +73,7 @@ export const ImagesPreview = ({ media }: { media: MarketMedia[] }) => {
                                 activeImageUrl={activeImageUrl}
                                 setActiveImageUrl={setActiveImageUrl}
                                 setActiveVideoUrl={setActiveVideoUrl}
+                                primaryColor={primaryColor}
                             />
                         )
                     })}
@@ -114,12 +115,14 @@ const SmallImageThumbnail = ({
     activeImageUrl,
     setActiveImageUrl,
     setActiveVideoUrl,
+    primaryColor,
 }: {
     imageUrl?: string
     videoUrl?: string
     activeImageUrl?: string
     setActiveImageUrl: React.Dispatch<React.SetStateAction<string | undefined>>
     setActiveVideoUrl: React.Dispatch<React.SetStateAction<string | undefined>>
+    primaryColor: string
 }) => {
     return (
         <Box
@@ -131,7 +134,7 @@ const SmallImageThumbnail = ({
                 height: "100%",
                 objectFit: "cover",
                 objectPosition: "center",
-                border: activeImageUrl === imageUrl ? `${colors.lightNeonBlue} 2px solid` : "#FFFFFF18 2px solid",
+                border: activeImageUrl === imageUrl ? `${primaryColor} 2px solid` : "#FFFFFF18 2px solid",
             }}
             onClick={() => {
                 setActiveImageUrl(imageUrl)
