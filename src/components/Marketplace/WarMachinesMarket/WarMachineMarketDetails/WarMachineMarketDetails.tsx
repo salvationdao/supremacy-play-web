@@ -8,7 +8,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
-import { MechImage } from "./MechImage"
+import { MarketMedia, MechImage } from "./MechImage"
 import { MechListingDetails } from "./MechListingDetails"
 import { MechStatsDetails } from "./MechStatsDetails"
 
@@ -119,6 +119,32 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
 }
 
 const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem: MarketplaceBuyAuctionItem; mechDetails?: MechDetails }) => {
+    const media: MarketMedia[] = useMemo(() => {
+        const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
+        if (!skin) return []
+
+        const avatarUrl = skin.avatar_url // avatar
+        const imageUrl = skin.image_url // poster for card_animation_url
+        const cardAnimationUrl = skin.card_animation_url // smaller one, transparent bg
+        const largeImageUrl = skin.large_image_url // poster for animation_url
+        const animationUrl = skin.animation_url // big one
+
+        return [
+            {
+                imageUrl: largeImageUrl,
+                videoUrl: animationUrl,
+            },
+            {
+                imageUrl: imageUrl,
+                videoUrl: cardAnimationUrl,
+            },
+            {
+                imageUrl: avatarUrl,
+                videoUrl: avatarUrl,
+            },
+        ]
+    }, [mechDetails])
+
     return (
         <Stack>
             <Box
@@ -131,7 +157,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem:
                     justifyContent: "center",
                 }}
             >
-                <MechImage mechDetails={mechDetails} />
+                <MechImage media={media} />
                 <MechListingDetails marketItem={marketItem} />
                 <MechStatsDetails mechDetails={mechDetails} />
             </Box>

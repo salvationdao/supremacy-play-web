@@ -1,29 +1,26 @@
-import { Box, IconButton, Modal, Stack } from "@mui/material"
+import { Box, CircularProgress, IconButton, Modal, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgClose } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
 import { colors, siteZIndex } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
 
-export const MechImage = ({ mechDetails }: { mechDetails?: MechDetails }) => {
+export interface MarketMedia {
+    imageUrl?: string
+    videoUrl?: string
+}
+
+export const MechImage = ({ media }: { media: MarketMedia[] }) => {
     const [activeImageUrl, setActiveImageUrl] = useState<string>()
     const [activeVideoUrl, setActiveVideoUrl] = useState<string>()
     const [previewModalOpen, togglePreviewModalOpen] = useToggle()
 
-    const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
-    const avatarUrl = skin?.avatar_url // avatar
-    const imageUrl = skin?.image_url // poster for card_animation_url
-    const cardAnimationUrl = skin?.card_animation_url // smaller one, transparent bg
-    const largeImageUrl = skin?.large_image_url // poster for animation_url
-    const animationUrl = skin?.animation_url // big one
-
     // Sets the initial image to display
     useEffect(() => {
-        if ((!activeImageUrl || !activeVideoUrl) && largeImageUrl && animationUrl) {
-            setActiveImageUrl(largeImageUrl)
-            setActiveVideoUrl(animationUrl)
+        if ((!activeImageUrl || !activeVideoUrl) && media.length > 0) {
+            setActiveImageUrl(media[0].imageUrl)
+            setActiveVideoUrl(media[0].videoUrl)
         }
-    }, [activeImageUrl, activeVideoUrl, animationUrl, largeImageUrl])
+    }, [activeImageUrl, activeVideoUrl, media])
 
     return (
         <>
@@ -40,7 +37,13 @@ export const MechImage = ({ mechDetails }: { mechDetails?: MechDetails }) => {
                     }}
                     onClick={() => togglePreviewModalOpen(true)}
                 >
-                    <MainPreview imageUrl={activeImageUrl} videoUrl={activeVideoUrl} />
+                    {activeImageUrl ? (
+                        <MainPreview imageUrl={activeImageUrl} videoUrl={activeVideoUrl} />
+                    ) : (
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                            <CircularProgress />
+                        </Stack>
+                    )}
                 </Box>
 
                 <Box
@@ -51,27 +54,19 @@ export const MechImage = ({ mechDetails }: { mechDetails?: MechDetails }) => {
                         gap: "1.3rem",
                     }}
                 >
-                    <SmallImageThumbnail
-                        imageUrl={largeImageUrl}
-                        videoUrl={animationUrl}
-                        activeImageUrl={activeImageUrl}
-                        setActiveImageUrl={setActiveImageUrl}
-                        setActiveVideoUrl={setActiveVideoUrl}
-                    />
-                    <SmallImageThumbnail
-                        imageUrl={imageUrl}
-                        videoUrl={cardAnimationUrl}
-                        activeImageUrl={activeImageUrl}
-                        setActiveImageUrl={setActiveImageUrl}
-                        setActiveVideoUrl={setActiveVideoUrl}
-                    />
-                    <SmallImageThumbnail
-                        imageUrl={avatarUrl}
-                        videoUrl={avatarUrl}
-                        activeImageUrl={activeImageUrl}
-                        setActiveImageUrl={setActiveImageUrl}
-                        setActiveVideoUrl={setActiveVideoUrl}
-                    />
+                    {media.map((m, i) => {
+                        if (!m.imageUrl) return null
+                        return (
+                            <SmallImageThumbnail
+                                key={i}
+                                imageUrl={m.imageUrl}
+                                videoUrl={m.videoUrl}
+                                activeImageUrl={activeImageUrl}
+                                setActiveImageUrl={setActiveImageUrl}
+                                setActiveVideoUrl={setActiveVideoUrl}
+                            />
+                        )
+                    })}
                 </Box>
             </Stack>
 
