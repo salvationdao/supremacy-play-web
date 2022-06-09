@@ -14,6 +14,7 @@ import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
 import { ListingType } from "../../Common/MarketDetails/ListingType"
 import { Owner } from "../../Common/MarketDetails/Owner"
+import { CrateDetails } from "./CrateDetails"
 
 export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
@@ -207,6 +208,8 @@ const WarMachineMarketDetailsInner = ({
 
                     {listingDetails}
                 </Stack>
+
+                <CrateDetails crate={mystery_crate} primaryColor={primaryColor} />
             </Box>
         </Box>
     )

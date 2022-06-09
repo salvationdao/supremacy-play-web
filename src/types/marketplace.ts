@@ -53,6 +53,12 @@ export interface MarketUser {
     faction_id: string
 }
 
+export interface MarketCrate {
+    id: string
+    label: string
+    description: string
+}
+
 export interface MarketplaceBuyAuctionItem {
     id: string
     item_id: string
@@ -83,11 +89,7 @@ export interface MarketplaceBuyAuctionItem {
         label: string
         avatar_url: string
     }
-    mystery_crate?: {
-        id: string
-        label: string
-        description: string
-    }
+    mystery_crate?: MarketCrate
 }
 
 // TODO: remove
