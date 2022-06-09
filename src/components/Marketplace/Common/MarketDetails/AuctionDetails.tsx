@@ -5,7 +5,7 @@ import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgHammer, SvgSupToken, SvgWallet } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { numberCommaFormatter, numFormatter, shadeColor, timeSinceInWords } from "../../../../helpers"
+import { numberCommaFormatter, numFormatter, shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -15,15 +15,13 @@ import { MarketUser } from "../../../../types/marketplace"
 interface AuctionDetailsProps {
     id: string
     itemName: string
-    createdAt: Date
-    endAt: Date
     buyNowPrice?: string
     auctionCurrentPrice: string
     auctionBidCount: number
     auctionLastBid?: MarketUser
 }
 
-export const AuctionDetails = ({ id, itemName, buyNowPrice, createdAt, endAt, auctionCurrentPrice, auctionBidCount, auctionLastBid }: AuctionDetailsProps) => {
+export const AuctionDetails = ({ id, itemName, buyNowPrice, auctionCurrentPrice, auctionBidCount, auctionLastBid }: AuctionDetailsProps) => {
     const theme = useTheme()
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))
@@ -34,7 +32,6 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, createdAt, endAt, au
     const primaryColor = useMemo(() => colors.auction, [])
     const secondaryColor = useMemo(() => "#FFFFFF", [])
     const backgroundColor = useMemo(() => shadeColor(colors.auction, -97), [])
-    const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
     const formattedCommaCurrentPrice = useMemo(() => (currentPrice ? numberCommaFormatter(currentPrice.toNumber()) : "-"), [currentPrice])
     const formattedCommaBuyNowPrice = useMemo(
         () => (buyNowPrice ? numberCommaFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber()) : undefined),
@@ -57,24 +54,6 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, createdAt, endAt, au
     return (
         <>
             <Stack spacing="2rem">
-                <Box>
-                    <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                        DATE LISTED:
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                        {createdAt.toUTCString()}
-                    </Typography>
-                </Box>
-
-                <Box>
-                    <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                        END DATE:
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                        {endAt.toUTCString()} ({timeLeft} left)
-                    </Typography>
-                </Box>
-
                 {formattedCommaBuyNowPrice && (
                     <Stack>
                         <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>

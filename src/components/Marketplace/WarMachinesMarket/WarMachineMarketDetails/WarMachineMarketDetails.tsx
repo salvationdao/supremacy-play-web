@@ -10,6 +10,7 @@ import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
+import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
 import { ItemType } from "../../Common/MarketDetails/ItemType"
 import { ListingType } from "../../Common/MarketDetails/ListingType"
@@ -166,8 +167,6 @@ const WarMachineMarketDetailsInner = ({
                 <AuctionDetails
                     id={marketItem.id}
                     itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
-                    createdAt={marketItem.created_at}
-                    endAt={marketItem.end_at}
                     buyNowPrice={marketItem.buyout_price}
                     auctionCurrentPrice={marketItem.auction_current_price}
                     auctionBidCount={marketItem.total_bids}
@@ -181,19 +180,11 @@ const WarMachineMarketDetailsInner = ({
         }
 
         if (buyout) {
-            return (
-                <BuyNowDetails
-                    id={marketItem.id}
-                    itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
-                    createdAt={marketItem.created_at}
-                    endAt={marketItem.end_at}
-                    buyNowPrice={marketItem.buyout_price}
-                />
-            )
+            return <BuyNowDetails id={marketItem.id} itemName={marketItem.mech?.name || marketItem.mech?.label || ""} buyNowPrice={marketItem.buyout_price} />
         }
     }, [marketItem])
 
-    const { owner, mech } = marketItem
+    const { owner, mech, created_at, end_at } = marketItem
 
     return (
         <Stack>
@@ -229,6 +220,8 @@ const WarMachineMarketDetailsInner = ({
                     <ItemType itemType="WAR MACHINE" />
 
                     <Owner owner={owner} />
+
+                    <Dates createdAt={created_at} endAt={end_at} />
 
                     {listingDetails}
                 </Stack>

@@ -5,7 +5,7 @@ import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgSupToken, SvgWallet } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { numberCommaFormatter, numFormatter, timeSinceInWords } from "../../../../helpers"
+import { numberCommaFormatter, numFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -14,42 +14,21 @@ import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 interface BuyNowDetailsProps {
     id: string
     itemName: string
-    createdAt: Date
-    endAt: Date
     buyNowPrice: string
 }
 
-export const BuyNowDetails = ({ id, itemName, createdAt, endAt, buyNowPrice }: BuyNowDetailsProps) => {
+export const BuyNowDetails = ({ id, itemName, buyNowPrice }: BuyNowDetailsProps) => {
     const theme = useTheme()
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
 
     const primaryColor = useMemo(() => theme.factionTheme.primary, [theme.factionTheme])
     const secondaryColor = useMemo(() => theme.factionTheme.secondary, [theme.factionTheme])
     const backgroundColor = useMemo(() => theme.factionTheme.background, [theme.factionTheme])
-    const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
     const formattedCommaPrice = useMemo(() => numberCommaFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber()), [buyNowPrice])
 
     return (
         <>
             <Stack spacing="2rem">
-                <Box>
-                    <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                        DATE LISTED:
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                        {createdAt.toUTCString()}
-                    </Typography>
-                </Box>
-
-                <Box>
-                    <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                        END DATE:
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                        {endAt.toUTCString()} ({timeLeft} left)
-                    </Typography>
-                </Box>
-
                 <Stack>
                     <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
                         FIXED PRICE:
