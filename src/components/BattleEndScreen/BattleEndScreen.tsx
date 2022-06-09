@@ -25,12 +25,12 @@ export const BattleEndScreen = () => {
     }, [map, toggleIsEndBattleDetailOpen])
 
     const primaryColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail.winning_faction.primary_color : colors.neonBlue),
+        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail.winning_faction.theme.primary : colors.neonBlue),
         [battleEndDetail],
     )
 
     const backgroundColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? shadeColor(battleEndDetail.winning_faction.primary_color, -96) : colors.darkNavyBlue),
+        () => (battleEndDetail && battleEndDetail.winning_faction ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96) : colors.darkNavyBlue),
         [battleEndDetail],
     )
 
