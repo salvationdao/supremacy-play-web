@@ -15,9 +15,8 @@ import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPre
 import { ItemType } from "../../Common/MarketDetails/ItemType"
 import { ListingType } from "../../Common/MarketDetails/ListingType"
 import { Owner } from "../../Common/MarketDetails/Owner"
-import { MechStatsDetails } from "./MechStatsDetails"
 
-export const WarMachineMarketDetails = ({ id }: { id: string }) => {
+export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
@@ -191,33 +190,11 @@ const WarMachineMarketDetailsInner = ({
     const { owner, mech, created_at, end_at } = marketItem
 
     return (
-        <Box
-            sx={{
-                flex: 1,
-                overflowY: "auto",
-                overflowX: "hidden",
-                mr: "1rem",
-                my: "1.2rem",
-                direction: "ltr",
-                scrollbarWidth: "none",
-                "::-webkit-scrollbar": {
-                    width: ".4rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                    borderRadius: 3,
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: (theme) => theme.factionTheme.primary,
-                    borderRadius: 3,
-                },
-            }}
-        >
+        <Stack>
             <Box
                 sx={{
-                    maxHeight: 0,
                     px: "5rem",
-                    py: "2.8rem",
+                    py: "4rem",
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
                     gap: "3.5rem",
@@ -251,9 +228,7 @@ const WarMachineMarketDetailsInner = ({
 
                     {listingDetails}
                 </Stack>
-
-                <MechStatsDetails mechDetails={mechDetails} />
             </Box>
-        </Box>
+        </Stack>
     )
 }
