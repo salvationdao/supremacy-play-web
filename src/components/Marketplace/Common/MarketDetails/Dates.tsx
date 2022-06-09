@@ -1,11 +1,10 @@
 import { Box, Typography } from "@mui/material"
-import { useMemo } from "react"
+import { useState } from "react"
 import { timeSinceInWords } from "../../../../helpers"
+import { useInterval } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
 
 export const Dates = ({ createdAt, endAt }: { createdAt: Date; endAt: Date }) => {
-    const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
-
     return (
         <>
             <Box>
@@ -22,9 +21,19 @@ export const Dates = ({ createdAt, endAt }: { createdAt: Date; endAt: Date }) =>
                     END DATE:
                 </Typography>
                 <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                    {endAt.toUTCString()} ({timeLeft} left)
+                    {endAt.toUTCString()} (<TimeLeft endAt={endAt} /> left)
                 </Typography>
             </Box>
         </>
     )
+}
+
+const TimeLeft = ({ endAt }: { endAt: Date }) => {
+    const [timeLeft, setTimeLeft] = useState<string>(timeSinceInWords(new Date(), endAt))
+
+    useInterval(() => {
+        setTimeLeft(timeSinceInWords(new Date(), endAt))
+    }, 1000)
+
+    return <>{timeLeft}</>
 }
