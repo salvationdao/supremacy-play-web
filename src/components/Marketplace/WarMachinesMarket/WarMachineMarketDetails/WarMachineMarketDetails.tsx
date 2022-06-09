@@ -8,7 +8,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
-import { MarketMedia, MechImage } from "./MechImage"
+import { MarketMedia, MarketDetailImages } from "./MarketDetailImages"
 import { MechListingDetails } from "./MechListingDetails"
 import { MechStatsDetails } from "./MechStatsDetails"
 
@@ -157,7 +157,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, mechDetails }: { marketItem:
                     justifyContent: "center",
                 }}
             >
-                <MechImage media={media} />
+                <MarketDetailImages media={media} />
                 <MechListingDetails marketItem={marketItem} />
                 <MechStatsDetails mechDetails={mechDetails} />
             </Box>
