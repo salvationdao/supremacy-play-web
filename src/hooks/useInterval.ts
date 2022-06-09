@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react"
 export const useInterval = (callback: any, delay: number | null) => {
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     const savedCallback = useRef<any>()
+    const intervalRef = useRef<NodeJS.Timer>()
 
     // Remember the latest callback.
     useEffect(() => {
@@ -12,13 +13,14 @@ export const useInterval = (callback: any, delay: number | null) => {
 
     // Set up the interval.
     useEffect(() => {
-        const tick = () => {
-            savedCallback.current()
-        }
-
         if (delay !== null) {
-            const id = setInterval(tick, delay)
-            return () => clearInterval(id)
+            const intervalClearer = () => {
+                intervalRef.current && clearInterval(intervalRef.current)
+            }
+
+            intervalClearer()
+            intervalRef.current = setInterval(savedCallback.current, delay)
+            return intervalClearer
         }
     }, [delay])
 }

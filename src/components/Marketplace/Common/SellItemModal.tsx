@@ -55,8 +55,8 @@ export const SellItemModal = ({ onClose }: Props) => {
     }, [saleType])
 
     useEffect(() => {
-        // Force Keycards to be Buyout types
-        if (itemType.name === ItemType.KeyCards) {
+        // Force key cards to be Buyout types
+        if (itemType.name === ItemType.Keycards) {
             setSaleType(SaleType.Buyout)
         }
     }, [itemType])
@@ -67,7 +67,7 @@ export const SellItemModal = ({ onClose }: Props) => {
         setSubmitting(true)
         if (stateFaction !== WebSocket.OPEN) return
 
-        const isKeycard = itemType.name === ItemType.KeyCards
+        const isKeycard = itemType.name === ItemType.Keycards
 
         const hasBuyout = saleType === SaleType.Buyout || saleType === SaleType.AuctionOrBuyout
         const hasAuction = saleType === SaleType.Auction || saleType === SaleType.AuctionOrBuyout
@@ -108,7 +108,7 @@ export const SellItemModal = ({ onClose }: Props) => {
                 switch (itemType.name) {
                     case ItemType.MysteryCrate:
                         return GameServerKeys.GetPlayerMysteryCrates
-                    case ItemType.KeyCards:
+                    case ItemType.Keycards:
                         return GameServerKeys.GetKeycards
                     default:
                         return GameServerKeys.GetMechs
@@ -316,7 +316,7 @@ export const SellItemModal = ({ onClose }: Props) => {
                             </Alert>
                         )}
 
-                        {itemType.name !== ItemType.KeyCards && (
+                        {itemType.name !== ItemType.Keycards && (
                             <>
                                 <Typography sx={{ lineHeight: 1, mb: "1rem", fontWeight: 600 }}>SALE TYPE:</Typography>
                                 <Select

@@ -67,7 +67,7 @@ export enum GameServerKeys {
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
-    HubKeyMysteryCrateOwnership = "STORE:MYSTERY:CRATE:OWNERSHIP:SUBSCRIBE",
+    SubMysteryCrateOwnership = "STORE:MYSTERY:CRATE:OWNERSHIP:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
@@ -108,6 +108,8 @@ export enum GameServerKeys {
     MarketplaceSalesKeycardList = "MARKETPLACE:SALES:KEYCARD:LIST",
     MarketplaceSalesKeycardCreate = "MARKETPLACE:SALES:KEYCARD:CREATE",
     MarketplaceSalesKeycardBuy = "MARKETPLACE:SALES:KEYCARD:BUY",
+    SubMarketplaceSalesItem = "MARKETPLACE:SALES:ITEM:UPDATE",
+    GetKeycard = "MARKETPLACE:SALES:KEYCARD:GET",
     GetKeycards = "PLAYER:ASSET:KEYCARD:LIST",
     GetPlayerMysteryCrates = "PLAYER:ASSET:MYSTERY_CRATE:LIST",
 }

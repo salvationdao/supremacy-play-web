@@ -29,7 +29,7 @@ import {
 import { ThemeState } from "../containers/theme"
 import { colors } from "../theme/theme"
 import { MysteryCrateType, UserRank } from "../types"
-import { MarketplaceMechItem } from "../types/marketplace"
+import { MarketplaceBuyAuctionItem } from "../types/marketplace"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -99,10 +99,12 @@ export const getRandomArbitrary = (min: number, max: number): number => {
 }
 
 export const numFormatter = (num: number) => {
-    if (num > 999 && num < 1000000) {
-        return (num / 1000).toFixed(1) + "K"
-    } else if (num > 1000000) {
+    if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(1) + "B"
+    } else if (num >= 1000000) {
         return (num / 1000000).toFixed(1) + "M"
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + "K"
     }
     return num + ""
 }
@@ -492,10 +494,7 @@ export const numberCommaFormatter = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
-export const consolidateMarketItemDeets = (
-    marketItem: MarketplaceMechItem,
-    theme: ThemeState,
-): {
+export interface MarketItemDeets {
     primaryColor: string
     secondaryColor: string
     backgroundColor: string
@@ -504,7 +503,9 @@ export const consolidateMarketItemDeets = (
     listingTypeLabel: string
     ctaLabel: string
     Icon: React.VoidFunctionComponent<SvgWrapperProps>
-} => {
+}
+
+export const consolidateMarketItemDeets = (marketItem: MarketplaceBuyAuctionItem, theme: ThemeState): MarketItemDeets => {
     const { auction, dutch_auction, buyout, auction_current_price, dutch_auction_drop_rate, buyout_price, created_at } = marketItem
 
     const buyoutPrice = new BigNumber(buyout_price).shiftedBy(-18)
@@ -535,7 +536,7 @@ export const consolidateMarketItemDeets = (
         primaryColor = colors.dutchAuction
         secondaryColor = "#FFFFFF"
         backgroundColor = shadeColor(colors.dutchAuction, -97)
-        price = buyoutPrice.minus(dutchAuctionDropBy.multipliedBy(timeDiff(created_at, new Date()).hours))
+        price = buyoutPrice.minus(dutchAuctionDropBy.multipliedBy(timeDiff(created_at, new Date()).minutes))
         priceLabel = "CURRENT PRICE"
         listingTypeLabel = "DUTCH AUCTION"
         Icon = SvgHammer

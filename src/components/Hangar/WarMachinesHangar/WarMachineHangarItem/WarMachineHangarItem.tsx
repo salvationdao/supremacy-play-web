@@ -63,7 +63,6 @@ export const WarMachineHangarItem = ({
         },
         (payload) => {
             if (typeof payload === "undefined") return
-            console.log(payload)
             setMechQueuePosition(payload)
         },
     )

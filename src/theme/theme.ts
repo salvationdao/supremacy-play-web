@@ -54,7 +54,7 @@ export const colors = {
     shield: "#00F7F7",
     warMachineSkillBar: "#9669FF",
 
-    lightGrey: "#aeaeb3",
+    lightGrey: "#C0C0C4",
     grey: "#89898d",
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
@@ -66,7 +66,7 @@ export const colors = {
     supsDebit: "#FF4136",
 
     auction: "#E04F00",
-    dutchAuction: "#D96900",
+    dutchAuction: "#D98D00",
 
     rarity: {
         MEGA: "#e84234",

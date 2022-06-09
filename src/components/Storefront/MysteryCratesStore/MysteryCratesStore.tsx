@@ -9,6 +9,7 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
+import { TooltipHelper } from "../../Common/TooltipHelper"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
 interface MysteryCrateOwnershipResp {
@@ -34,7 +35,7 @@ export const MysteryCratesStore = () => {
     useGameServerSubscriptionUser<MysteryCrateOwnershipResp>(
         {
             URI: "/mystery_crates",
-            key: GameServerKeys.HubKeyMysteryCrateOwnership,
+            key: GameServerKeys.SubMysteryCrateOwnership,
         },
         (payload) => {
             if (!payload) return
@@ -93,7 +94,7 @@ export const MysteryCratesStore = () => {
         if (!crates || isLoading) {
             return (
                 <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(6).fill(0).map((_, index) => (
+                    {new Array(10).fill(0).map((_, index) => (
                         <MysteryCrateStoreItemLoadingSkeleton key={index} />
                     ))}
                 </Stack>
@@ -178,52 +179,83 @@ export const MysteryCratesStore = () => {
                         alignItems="center"
                         sx={{
                             p: "2rem",
-                            gap: "2rem",
                             backgroundColor: "#00000070",
                             borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
                         }}
                     >
                         <Box
-                            component={"img"}
-                            src={SafePNG}
                             sx={{
-                                maxHeight: "150px",
-                                userSelect: "none",
+                                flexShrink: 0,
+                                mr: "1.2rem",
+                                width: "7rem",
+                                height: "6rem",
+                                background: `url(${SafePNG})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
                             }}
                         />
                         <Box sx={{ mr: "2rem" }}>
-                            <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                MYSTERY CRATES
+                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                MYSTERY CRATES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
                             </Typography>
-                            <Typography>Gear up for the battle arena with a variety of War Machines and Weapons.</Typography>
+                            <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle arena with a variety of War Machines and Weapons.</Typography>
                         </Box>
-                        <Box sx={{ display: "flex", height: "100%", flexDirection: "column", marginLeft: "auto" }}>
-                            <Box
-                                sx={{
-                                    flex: 1,
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    p: "2rem",
-                                    justifyContent: "space-evenly",
-                                    backgroundColor: `${colors.neonBlue}10`,
-                                    border: `${colors.neonBlue} 2px dashed`,
-                                }}
-                            >
-                                <Typography
-                                    variant={"h5"}
-                                    sx={{
-                                        textAlign: "center",
-                                        color: colors.neonBlue,
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    Limited Supply
+                        <Stack spacing="1rem" sx={{ ml: "auto" }}>
+                            <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
+                                <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoHeavy }}>
+                                    Total owned:
                                 </Typography>
-                                <Typography variant={"h6"}>Total Owned: {ownershipDetails.owned}</Typography>
-                                <Typography variant={"h6"}>Total Maximum Capacity: {ownershipDetails.allowed}</Typography>
-                            </Box>
-                            <Typography>Maximum capacity is effected by your held keycards.</Typography>
-                        </Box>
+
+                                <ClipThing
+                                    clipSize="8px"
+                                    clipSlantSize="3px"
+                                    border={{
+                                        borderColor: colors.neonBlue,
+                                        borderThickness: ".15rem",
+                                    }}
+                                    corners={{
+                                        topRight: true,
+                                        bottomLeft: true,
+                                    }}
+                                    backgroundColor={colors.darkerNavy}
+                                >
+                                    <Stack direction="row" justifyContent="center" spacing=".2rem" sx={{ px: "2rem", pt: ".3rem", width: "8rem" }}>
+                                        <Typography variant="body2" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
+                                            {ownershipDetails.owned}
+                                        </Typography>
+                                    </Stack>
+                                </ClipThing>
+                            </Stack>
+
+                            <TooltipHelper placement="bottom" text="Maximum capacity is dependent on the number of keycards you hold.">
+                                <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
+                                    <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>
+                                        Maximum capacity:
+                                    </Typography>
+
+                                    <ClipThing
+                                        clipSize="8px"
+                                        clipSlantSize="3px"
+                                        border={{
+                                            borderColor: colors.neonBlue,
+                                            borderThickness: ".15rem",
+                                        }}
+                                        corners={{
+                                            topRight: true,
+                                            bottomLeft: true,
+                                        }}
+                                        backgroundColor={colors.darkerNavy}
+                                    >
+                                        <Stack direction="row" justifyContent="center" spacing=".2rem" sx={{ px: "2rem", pt: ".3rem", width: "8rem" }}>
+                                            <Typography variant="body2" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
+                                                {ownershipDetails.allowed}
+                                            </Typography>
+                                        </Stack>
+                                    </ClipThing>
+                                </Stack>
+                            </TooltipHelper>
+                        </Stack>
                     </Stack>
 
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>

@@ -3,7 +3,7 @@ import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
-import { KeyCardsMarket } from "../components/Marketplace/KeyCardsMarket/KeyCardsMarket"
+import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
 import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
 import { useAuth } from "../containers"
@@ -13,7 +13,7 @@ import { fonts, siteZIndex } from "../theme/theme"
 
 export enum MARKETPLACE_TABS {
     WarMachines = "war-machines",
-    KeyCards = "key-cards",
+    Keycards = "key-cards",
     MysteryCrates = "mystery-crates",
 }
 
@@ -86,13 +86,13 @@ const MarketplacePageInner = () => {
                             ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", py: ".8rem" },
                             ".Mui-selected": {
                                 color: (theme) => `${theme.factionTheme.secondary} !important`,
-                                backgroundColor: (theme) => `${theme.factionTheme.primary}CC !important`,
+                                background: (theme) => `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
                             },
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
                         <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
-                        <Tab label="KEY CARDS" value={MARKETPLACE_TABS.KeyCards} />
+                        <Tab label="KEY CARDS" value={MARKETPLACE_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
                     </Tabs>
                 </Box>
@@ -100,8 +100,8 @@ const MarketplacePageInner = () => {
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.WarMachines}>
                     <WarMachinesMarket />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.KeyCards}>
-                    <KeyCardsMarket />
+                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.Keycards}>
+                    <KeycardsMarket />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.MysteryCrates}>
                     <MysteryCratesMarket />

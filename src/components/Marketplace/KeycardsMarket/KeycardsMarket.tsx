@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -8,13 +8,13 @@ import { usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
+import { MarketplaceBuyItem, SortType } from "../../../types/marketplace"
 import { SellItemModal } from "../Common/SellItemModal"
-import { ChipFilter, RangeFilter, SortAndFilters } from "../SortAndFilters"
+import { RangeFilter, SortAndFilters } from "../SortAndFilters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
-import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem/MysteryCrateMarketItem"
+import { KeycardMarketItem } from "./KeycardMarketItem/KeycardMarketItem"
 
-export const MysteryCratesMarket = () => {
+export const KeycardsMarket = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -23,35 +23,23 @@ export const MysteryCratesMarket = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [crateItems, setCrateItems] = useState<MarketplaceBuyAuctionItem[]>()
+    const [keycardItems, setKeycardItems] = useState<MarketplaceBuyItem[]>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
-    const [listingTypes, setListingTypes] = useState<string[]>([])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
-    const listingTypeFilterSection = useRef<ChipFilter>({
-        label: "LISTING TYPE",
-        options: [
-            { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
-            { value: "AUCTION", label: "AUCTION", color: colors.auction },
-            { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
-        ],
-        initialSelected: listingTypes,
-        onSetSelected: setListingTypes,
-    })
-
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
         onSetValue: setPrice,
     })
 
-    const getCrates = useCallback(async () => {
+    const getKeycards = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -62,12 +50,10 @@ export const MysteryCratesMarket = () => {
 
             const [min_price, max_price] = price
 
-            const resp = await send<{ total: number; records: MarketplaceBuyAuctionItem[] }>(GameServerKeys.MarketplaceSalesList, {
+            const resp = await send<{ total: number; records: MarketplaceBuyItem[] }>(GameServerKeys.MarketplaceSalesKeycardList, {
                 page_number: page,
                 page_size: pageSize,
                 search: search,
-                listing_types: listingTypes,
-                item_type: "mystery_crate",
                 min_price,
                 max_price,
                 sort_dir: sortDir,
@@ -76,22 +62,22 @@ export const MysteryCratesMarket = () => {
 
             if (!resp) return
             setTotalItems(resp.total)
-            setCrateItems(resp.records)
+            setKeycardItems(resp.records)
             setLoadError(undefined)
         } catch (err) {
-            const message = typeof err === "string" ? err : "Failed to get mech listings."
+            const message = typeof err === "string" ? err : "Failed to get key card listings."
             newSnackbarMessage(message, "error")
             setLoadError(message)
             console.error(err)
         } finally {
             setIsLoading(false)
         }
-    }, [sort, send, page, pageSize, search, listingTypes, price, setTotalItems, newSnackbarMessage])
+    }, [sort, send, page, pageSize, search, price, setTotalItems, newSnackbarMessage])
 
-    // Initial load the crate listings
+    // Initial load the key card listings
     useEffect(() => {
-        getCrates()
-    }, [getCrates])
+        getKeycards()
+    }, [getKeycards])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -117,7 +103,7 @@ export const MysteryCratesMarket = () => {
             )
         }
 
-        if (!crateItems || isLoading) {
+        if (!keycardItems || isLoading) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -127,7 +113,7 @@ export const MysteryCratesMarket = () => {
             )
         }
 
-        if (crateItems && crateItems.length > 0) {
+        if (keycardItems && keycardItems.length > 0) {
             return (
                 <Box
                     sx={{
@@ -142,8 +128,8 @@ export const MysteryCratesMarket = () => {
                         overflow: "visible",
                     }}
                 >
-                    {crateItems.map((item) => (
-                        <MysteryCrateMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
+                    {keycardItems.map((item) => (
+                        <KeycardMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
                     ))}
                 </Box>
             )
@@ -175,12 +161,12 @@ export const MysteryCratesMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {"There are no keycards found, please try again."}
                     </Typography>
                 </Stack>
             </Stack>
         )
-    }, [loadError, crateItems, isLoading, theme.factionTheme.primary, isGridView])
+    }, [loadError, keycardItems, isLoading, theme.factionTheme.primary, isGridView])
 
     return (
         <>
@@ -190,7 +176,6 @@ export const MysteryCratesMarket = () => {
                     onSetSearch={setSearch}
                     initialSort={sort}
                     onSetSort={setSort}
-                    chipFilters={[listingTypeFilterSection.current]}
                     rangeFilters={[priceRangeFilter.current]}
                 />
 
@@ -231,7 +216,7 @@ export const MysteryCratesMarket = () => {
                                 />
                                 <Box sx={{ mr: "2rem" }}>
                                     <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                        WAR MACHINES
+                                        KEY CARDS
                                     </Typography>
                                     <Typography sx={{ fontSize: "1.85rem" }}>Explore what other citizens have to offer.</Typography>
                                 </Box>
@@ -261,7 +246,7 @@ export const MysteryCratesMarket = () => {
                             </Stack>
 
                             <TotalAndPageSizeOptions
-                                countItems={crateItems?.length}
+                                countItems={keycardItems?.length}
                                 totalItems={totalItems}
                                 pageSize={pageSize}
                                 setPageSize={setPageSize}

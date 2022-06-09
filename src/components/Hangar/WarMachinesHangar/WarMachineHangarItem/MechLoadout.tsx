@@ -119,7 +119,7 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?:
                 }}
                 sx={{ height: "100%", color: primaryColor, p: ".8rem", minWidth: 0 }}
                 innerSx={{ p: 0 }}
-                onClick={() => alert("TODO: open loadout menu modal.")}
+                // onClick={() => alert("TODO: open loadout menu modal.")}
             >
                 <TooltipHelper placement="bottom" text={tooltipText}>
                     <Box

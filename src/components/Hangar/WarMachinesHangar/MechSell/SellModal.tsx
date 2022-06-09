@@ -31,23 +31,21 @@ export const SellModal = ({
         async ({ id }: { id: string }) => {
             try {
                 setIsLoading(true)
-                const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
-                    has_buyout: true,
-                    sale_type: "BUYOUT",
-                    item_type: "mech",
-                    item_id: id,
-                    asking_price: "88888",
-                    listing_duration_hours: 50,
-                })
-
                 // const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
-                //     has_auction: true,
+                //     has_buyout: true,
+                //     sale_type: "BUYOUT",
                 //     item_type: "mech",
                 //     item_id: id,
-                //     asking_price: "999",
-                //     auction_reserved_price: "88888",
-                //     listing_duration_hours: 8,
+                //     asking_price: "88888",
                 // })
+
+                const resp = await send(GameServerKeys.MarketplaceSalesCreate, {
+                    has_auction: true,
+                    item_type: "mech",
+                    item_id: id,
+                    asking_price: "999",
+                    auction_reserved_price: "88888",
+                })
 
                 if (resp) {
                     newSnackbarMessage("Successfully listed war machine for sale.", "success")
