@@ -20,8 +20,11 @@ export const Dates = ({ createdAt, endAt }: { createdAt: Date; endAt: Date }) =>
                 <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
                     END DATE:
                 </Typography>
-                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                    {endAt.toUTCString()} (<TimeLeft endAt={endAt} />)
+                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue, fontFamily: "inherit" } }}>
+                    {endAt.toUTCString()}{" "}
+                    <span>
+                        (<TimeLeft endAt={endAt} />)
+                    </span>
                 </Typography>
             </Box>
         </>

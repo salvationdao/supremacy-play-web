@@ -175,12 +175,16 @@ const WarMachineMarketDetailsInner = ({
             )
         }
 
-        if (dutch_auction) {
-            return null
-        }
-
-        if (buyout) {
-            return <BuyNowDetails id={marketItem.id} itemName={marketItem.mech?.name || marketItem.mech?.label || ""} buyNowPrice={marketItem.buyout_price} />
+        if (buyout || dutch_auction) {
+            return (
+                <BuyNowDetails
+                    id={marketItem.id}
+                    itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
+                    buyNowPrice={marketItem.buyout_price}
+                    dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
+                    createdAt={marketItem.created_at}
+                />
+            )
         }
     }, [marketItem])
 

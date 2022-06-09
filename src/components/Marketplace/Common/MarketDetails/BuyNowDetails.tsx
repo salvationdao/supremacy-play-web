@@ -5,8 +5,8 @@ import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgSupToken, SvgWallet } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { numberCommaFormatter, numFormatter } from "../../../../helpers"
-import { useToggle } from "../../../../hooks"
+import { numberCommaFormatter, numFormatter, timeDiff, timeSince } from "../../../../helpers"
+import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
@@ -15,20 +15,47 @@ interface BuyNowDetailsProps {
     id: string
     itemName: string
     buyNowPrice: string
+    dutchAuctionDropRate: string
+    createdAt: Date
 }
 
-export const BuyNowDetails = ({ id, itemName, buyNowPrice }: BuyNowDetailsProps) => {
+export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate, createdAt }: BuyNowDetailsProps) => {
+    const calculateNewPrice = useCallback(() => {
+        let newPrice = new BigNumber(buyNowPrice).shiftedBy(-18)
+
+        // Drop price
+        if (dutchAuctionDropRate) {
+            const dropRate = new BigNumber(dutchAuctionDropRate).shiftedBy(-18)
+            newPrice = newPrice.minus(dropRate.multipliedBy(timeDiff(createdAt, new Date()).minutes))
+        }
+        return newPrice
+    }, [buyNowPrice, createdAt, dutchAuctionDropRate])
+
     const theme = useTheme()
+    const [currentPrice, setCurrentPrice] = useState<BigNumber>(calculateNewPrice())
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
 
     const primaryColor = useMemo(() => theme.factionTheme.primary, [theme.factionTheme])
     const secondaryColor = useMemo(() => theme.factionTheme.secondary, [theme.factionTheme])
     const backgroundColor = useMemo(() => theme.factionTheme.background, [theme.factionTheme])
-    const formattedCommaPrice = useMemo(() => numberCommaFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber()), [buyNowPrice])
+    const formattedCommaPrice = useMemo(() => numberCommaFormatter(currentPrice.toNumber()), [currentPrice])
 
     return (
         <>
             <Stack spacing="2rem">
+                {dutchAuctionDropRate && (
+                    <Box>
+                        <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                            NEXT PRICE DROP:
+                        </Typography>
+                        <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue, fontFamily: "inherit" } }}>
+                            NEXT PRICE DROP IN{" "}
+                            <span>{<PriceDropper createdAt={createdAt} calculateNewPrice={calculateNewPrice} setCurrentPrice={setCurrentPrice} />}</span>{" "}
+                            SECONDS
+                        </Typography>
+                    </Box>
+                )}
+
                 <Stack>
                     <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
                         FIXED PRICE:
@@ -92,6 +119,32 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice }: BuyNowDetailsProps)
             {confirmModalOpen && <ConfirmModal id={id} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmModalOpen(false)} />}
         </>
     )
+}
+
+const PriceDropper = ({
+    createdAt,
+    calculateNewPrice,
+    setCurrentPrice,
+}: {
+    createdAt: Date
+    calculateNewPrice: () => BigNumber
+    setCurrentPrice: React.Dispatch<React.SetStateAction<BigNumber>>
+}) => {
+    const [timeLeft, setTimeLeft] = useState<number>(60 - timeSince(createdAt, new Date()).seconds)
+
+    useInterval(() => {
+        setTimeLeft((prev) => {
+            let newTimeLeft = prev - 1
+            if (newTimeLeft === 0) {
+                setCurrentPrice(calculateNewPrice())
+            }
+
+            if (newTimeLeft < 0) newTimeLeft = 59
+            return newTimeLeft
+        })
+    }, 1000)
+
+    return <>{timeLeft}</>
 }
 
 const ConfirmModal = ({ id, itemName, price, onClose }: { id: string; itemName: string; price: string; onClose: () => void }) => {
