@@ -39,7 +39,7 @@ export enum GameServerKeys {
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
-    GetMechQueuePositionSubscribe = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
+    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
     SubRepairStatus = "ASSET:REPAIR:STATUS",
@@ -67,9 +67,9 @@ export enum GameServerKeys {
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
+    HubKeyMysteryCrateOwnership = "STORE:MYSTERY:CRATE:OWNERSHIP:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
-
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
     GetSettings = "PLAYER:GET_SETTINGS",
 
@@ -109,6 +109,7 @@ export enum GameServerKeys {
     MarketplaceSalesKeycardCreate = "MARKETPLACE:SALES:KEYCARD:CREATE",
     MarketplaceSalesKeycardBuy = "MARKETPLACE:SALES:KEYCARD:BUY",
     GetKeycards = "PLAYER:ASSET:KEYCARD:LIST",
+    GetPlayerMysteryCrates = "PLAYER:ASSET:MYSTERY_CRATE:LIST",
 }
 
 export enum PassportServerKeys {

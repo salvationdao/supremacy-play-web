@@ -28,7 +28,7 @@ export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
                     overflowY: "auto",
                     overflowX: "hidden",
                     direction: "ltr",
-                    scrollbarWidth: "none",
+
                     "::-webkit-scrollbar": {
                         width: ".4rem",
                     },

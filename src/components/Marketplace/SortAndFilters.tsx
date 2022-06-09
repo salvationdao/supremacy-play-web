@@ -79,7 +79,7 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                                     variant="outlined"
                                     hiddenLabel
                                     fullWidth
-                                    placeholder="Enter keyword..."
+                                    placeholder="Enter keywords..."
                                     sx={{
                                         backgroundColor: "unset",
                                         ".MuiOutlinedInput-input": {

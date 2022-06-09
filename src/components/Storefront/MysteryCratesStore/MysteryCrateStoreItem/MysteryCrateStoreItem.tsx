@@ -11,16 +11,15 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MysteryCrate } from "../../../../types"
 
-interface MysteryCrateItemProps {
+interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
     crate: MysteryCrate
 }
 
-export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps) => {
+export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
     const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>(crate)
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
-    const [imgUrl] = useState<string>(mysteryCrate.image_url || `url(${SafePNG})`)
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -76,7 +75,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                 sx={{
                                     width: "100%",
                                     height: enlargedView ? "100%" : "22rem",
-                                    background: imgUrl,
+                                    background: `url(${mysteryCrate.image_url || SafePNG})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
@@ -104,7 +103,8 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
                                         },
                                     }}
                                 >
-                                    <span>{numberCommaFormatter(mysteryCrate.amount - mysteryCrate.amount_sold)}</span> / {numberCommaFormatter(mysteryCrate.amount)}
+                                    <span>{numberCommaFormatter(mysteryCrate.amount - mysteryCrate.amount_sold)}</span> /{" "}
+                                    {numberCommaFormatter(mysteryCrate.amount)}
                                 </Typography>
                             </Box>
 
@@ -164,7 +164,7 @@ export const MysteryCrateItem = ({ enlargedView, crate }: MysteryCrateItemProps)
     )
 }
 
-export const MysteryCrateItemLoadingSkeleton = () => {
+export const MysteryCrateStoreItemLoadingSkeleton = () => {
     const theme = useTheme()
 
     return (

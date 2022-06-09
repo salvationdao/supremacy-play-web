@@ -90,7 +90,7 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                         flex: 1,
                                         height: 0,
                                         overflowY: "scroll",
-                                        scrollbarWidth: "none",
+
                                         scrollBehavior: "smooth",
                                         display: "flex",
                                         flexDirection: "column",
@@ -240,7 +240,7 @@ const LoadingSkeleton = () => (
                 width: "100%",
                 px: "1.5rem",
                 height: "100%",
-                scrollbarWidth: "none",
+
                 scrollBehavior: "smooth",
                 "::-webkit-scrollbar": {
                     width: ".4rem",

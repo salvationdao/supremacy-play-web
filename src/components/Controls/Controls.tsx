@@ -28,7 +28,7 @@ export const Controls = () => {
                 zIndex: siteZIndex.Controls,
                 overflowX: "auto",
                 overflowY: "hidden",
-                scrollbarWidth: "none",
+
                 "::-webkit-scrollbar": {
                     height: ".4rem",
                 },

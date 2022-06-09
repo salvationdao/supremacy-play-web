@@ -89,6 +89,7 @@ export const WarMachinesMarket = () => {
                 search: search,
                 rarities: rarities,
                 listing_types: listingTypes,
+                item_type: "mech",
                 min_price,
                 max_price,
                 sort_dir: sortDir,
@@ -302,7 +303,7 @@ export const WarMachinesMarket = () => {
                                         overflowY: "auto",
                                         overflowX: "hidden",
                                         direction: "ltr",
-                                        scrollbarWidth: "none",
+
                                         "::-webkit-scrollbar": {
                                             width: ".4rem",
                                         },

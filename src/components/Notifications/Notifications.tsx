@@ -228,7 +228,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                         pr: ".8rem",
                         py: ".16rem",
                         direction: "ltr",
-                        scrollbarWidth: "none",
+
                         "::-webkit-scrollbar": {
                             width: ".4rem",
                         },
