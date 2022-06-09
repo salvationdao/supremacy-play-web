@@ -18,11 +18,12 @@ interface BuyNowDetailsProps {
     secondaryColor: string
     backgroundColor: string
     priceLabel: string
+    createdAt: Date
     endAt: Date
     price: BigNumber
 }
 
-export const BuyNowDetails = ({ id, itemName, primaryColor, secondaryColor, backgroundColor, priceLabel, endAt, price }: BuyNowDetailsProps) => {
+export const BuyNowDetails = ({ id, itemName, primaryColor, secondaryColor, backgroundColor, priceLabel, createdAt, endAt, price }: BuyNowDetailsProps) => {
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
 
     const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
@@ -62,10 +63,19 @@ export const BuyNowDetails = ({ id, itemName, primaryColor, secondaryColor, back
 
                 <Box>
                     <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                        TIME LEFT:
+                        DATE LISTED:
                     </Typography>
                     <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                        {timeLeft} <span style={{ opacity: 0.7, fontFamily: "inherit" }}>({endAt.toUTCString()})</span>
+                        {createdAt.toUTCString()}
+                    </Typography>
+                </Box>
+
+                <Box>
+                    <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                        END DATE:
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                        {endAt.toUTCString()} ({timeLeft} left)
                     </Typography>
                 </Box>
 

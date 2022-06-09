@@ -169,6 +169,7 @@ const WarMachineMarketDetailsInner = ({
                     secondaryColor={marketItemDeets.secondaryColor}
                     backgroundColor={marketItemDeets.backgroundColor}
                     priceLabel={marketItemDeets.priceLabel}
+                    createdAt={marketItem.created_at}
                     endAt={marketItem.end_at}
                     price={marketItemDeets.price}
                 />
