@@ -13,7 +13,7 @@ import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
 import { ListingType } from "../../Common/MarketDetails/ListingType"
 import { Owner } from "../../Common/MarketDetails/Owner"
 
-export const KeycardMarketDetails = () => null
+export const KeycardMarketDetails = ({ id }: { id: string }) => <Box>{id}</Box>
 
 export const KeycardMarketDetails2 = ({ id }: { id: string }) => {
     const theme = useTheme()
