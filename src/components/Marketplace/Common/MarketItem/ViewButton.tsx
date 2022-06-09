@@ -8,6 +8,7 @@ export const ViewButton = ({
     isGridView,
     primaryColor,
     secondaryColor,
+    listingTypeLabel,
     ctaLabel,
     icon,
     to,
@@ -15,6 +16,7 @@ export const ViewButton = ({
     isGridView: boolean
     primaryColor: string
     secondaryColor: string
+    listingTypeLabel: string
     ctaLabel: string
     icon: ReactNode
     to: string
@@ -22,7 +24,10 @@ export const ViewButton = ({
     const history = useHistory()
 
     return (
-        <Stack justifyContent="center">
+        <Stack alignItems="center" spacing={isGridView ? ".3rem" : ".6rem"}>
+            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: primaryColor }}>
+                {listingTypeLabel}
+            </Typography>
             <FancyButton
                 excludeCaret
                 clipThingsProps={{

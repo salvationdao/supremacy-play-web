@@ -93,6 +93,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
                         isGridView={isGridView}
                         primaryColor={marketItemDeets.primaryColor}
                         secondaryColor={marketItemDeets.secondaryColor}
+                        listingTypeLabel={marketItemDeets.listingTypeLabel}
                         ctaLabel={marketItemDeets.ctaLabel}
                         icon={<marketItemDeets.Icon size="1.9rem" fill={marketItemDeets.secondaryColor} />}
                         to={`/marketplace/${MARKETPLACE_TABS.WarMachines}/${id}${location.hash}`}

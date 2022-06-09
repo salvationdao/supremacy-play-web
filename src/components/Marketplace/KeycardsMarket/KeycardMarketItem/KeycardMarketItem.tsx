@@ -68,6 +68,7 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
                         isGridView={isGridView}
                         primaryColor={theme.factionTheme.primary}
                         secondaryColor={theme.factionTheme.secondary}
+                        listingTypeLabel="BUY NOW"
                         ctaLabel="BUY NOW"
                         icon={<SvgWallet size="1.9rem" fill={theme.factionTheme.secondary} />}
                         to={`/marketplace/${MARKETPLACE_TABS.Keycards}/${id}${location.hash}`}
