@@ -20,6 +20,32 @@ export enum SortType {
     AlphabeticalReverse = "Descending",
 }
 
+export interface MarketUser {
+    username: string
+    gid: number
+    public_address: string
+    faction_id: string
+}
+
+export interface MarketKeycard {
+    id: string
+    label: string
+    image_url: string
+    animation_url: string
+    description: string
+    collection: string
+    keycard_token_id: string
+    keycard_group: string
+    syndicate: string
+    created_at: Date
+}
+
+export interface MarketCrate {
+    id: string
+    label: string
+    description: string
+}
+
 export interface MarketplaceBuyItem {
     id: string
     item_id: string
@@ -32,31 +58,7 @@ export interface MarketplaceBuyItem {
         public_address: string
         faction_id: string
     }
-    keycard?: {
-        id: string
-        label: string
-        image_url: string
-        animation_url: string
-        description: string
-        collection: string
-        keycard_token_id: string
-        keycard_group: string
-        syndicate: string
-        created_at: Date
-    }
-}
-
-export interface MarketUser {
-    username: string
-    gid: number
-    public_address: string
-    faction_id: string
-}
-
-export interface MarketCrate {
-    id: string
-    label: string
-    description: string
+    keycard?: MarketKeycard
 }
 
 export interface MarketplaceBuyAuctionItem {

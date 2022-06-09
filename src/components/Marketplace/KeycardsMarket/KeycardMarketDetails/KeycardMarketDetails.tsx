@@ -12,10 +12,9 @@ import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
 import { ListingType } from "../../Common/MarketDetails/ListingType"
 import { Owner } from "../../Common/MarketDetails/Owner"
+import { KeycardDetails } from "./KeycardDetails"
 
-export const KeycardMarketDetails = ({ id }: { id: string }) => <Box>{id}</Box>
-
-export const KeycardMarketDetails2 = ({ id }: { id: string }) => {
+export const KeycardMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
@@ -25,7 +24,7 @@ export const KeycardMarketDetails2 = ({ id }: { id: string }) => {
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<MarketplaceBuyItem>(GameServerKeys.MarketplaceSalesGet, {
+                const resp = await send<MarketplaceBuyItem>(GameServerKeys.GetKeycard, {
                     id,
                 })
 
@@ -176,6 +175,8 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
 
                     {listingDetails}
                 </Stack>
+
+                <KeycardDetails keycard={keycard} primaryColor={primaryColor} />
             </Box>
         </Box>
     )
