@@ -12,7 +12,6 @@ import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
-import { ItemType } from "../../Common/MarketDetails/ItemType"
 import { ListingType } from "../../Common/MarketDetails/ListingType"
 import { Owner } from "../../Common/MarketDetails/Owner"
 import { MechStatsDetails } from "./MechStatsDetails"
@@ -99,7 +98,14 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
             )
         }
 
-        return <WarMachineMarketDetailsInner marketItem={marketItem} mechDetails={mechDetails} marketItemDeets={marketItemDeets} />
+        return (
+            <WarMachineMarketDetailsInner
+                marketItem={marketItem}
+                mechDetails={mechDetails}
+                marketItemDeets={marketItemDeets}
+                primaryColor={theme.factionTheme.primary}
+            />
+        )
     }, [loadError, marketItem, marketItemDeets, mechDetails, theme.factionTheme.primary])
 
     return (
@@ -127,10 +133,12 @@ const WarMachineMarketDetailsInner = ({
     marketItem,
     mechDetails,
     marketItemDeets,
+    primaryColor,
 }: {
     marketItem: MarketplaceBuyAuctionItem
     mechDetails?: MechDetails
     marketItemDeets: MarketItemDeets
+    primaryColor: string
 }) => {
     const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
 
@@ -166,7 +174,7 @@ const WarMachineMarketDetailsInner = ({
             return (
                 <AuctionDetails
                     id={marketItem.id}
-                    itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
+                    itemName={marketItem.mech?.name || marketItem.mech?.label || "WAR MACHINE"}
                     buyNowPrice={marketItem.buyout_price}
                     auctionCurrentPrice={marketItem.auction_current_price}
                     auctionBidCount={marketItem.total_bids}
@@ -179,7 +187,7 @@ const WarMachineMarketDetailsInner = ({
             return (
                 <BuyNowDetails
                     id={marketItem.id}
-                    itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
+                    itemName={marketItem.mech?.name || marketItem.mech?.label || "WAR MACHINE"}
                     buyNowPrice={marketItem.buyout_price}
                     dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
                     createdAt={marketItem.created_at}
@@ -228,8 +236,12 @@ const WarMachineMarketDetailsInner = ({
 
                 <Stack spacing="2rem">
                     <Box>
-                        <Typography gutterBottom variant="h5" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoBold }}>
-                            {rarityDeets.label}
+                        <Typography
+                            gutterBottom
+                            variant="h5"
+                            sx={{ color: primaryColor, fontFamily: fonts.nostromoBold, span: { color: rarityDeets.color, fontFamily: "inherit" } }}
+                        >
+                            WAR MACHINE | <span>{rarityDeets.label}</span>
                         </Typography>
 
                         <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
@@ -242,8 +254,6 @@ const WarMachineMarketDetailsInner = ({
                         listingTypeLabel={marketItemDeets.listingTypeLabel}
                         icon={<marketItemDeets.Icon fill={marketItemDeets.primaryColor} />}
                     />
-
-                    <ItemType itemType="WAR MACHINE" />
 
                     <Owner owner={owner} />
 

@@ -4,9 +4,10 @@ import { useHistory, useParams } from "react-router-dom"
 import { MARKETPLACE_TABS } from "."
 import { HangarBg, SvgBack } from "../assets"
 import { ConnectButton, FancyButton } from "../components"
+import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/KeycardMarketDetails/KeycardMarketDetails"
+import { MysteryCrateMarketDetails } from "../components/Marketplace/MysteryCratesMarket/MysteryCrateMarketDetails/MysteryCrateMarketDetails"
 import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMarket/WarMachineMarketDetails/WarMachineMarketDetails"
 import { useAuth } from "../containers"
-import { ROUTES_MAP } from "../routes"
 import { fonts, siteZIndex } from "../theme/theme"
 
 export const MarketplaceItemPage = () => {
@@ -44,7 +45,7 @@ const MarketplaceItemPageInner = () => {
     const history = useHistory()
 
     const goBack = useCallback(() => {
-        history.push(`${ROUTES_MAP.marketplace.path.replace(":type", MARKETPLACE_TABS.WarMachines)}${location.hash}`)
+        history.goBack()
     }, [history])
 
     // If invalid url, then redirect to marketplace page
@@ -89,6 +90,14 @@ const Inner = () => {
 
     if (type === MARKETPLACE_TABS.WarMachines && !!id) {
         return <WarMachineMarketDetails id={id} />
+    }
+
+    if (type === MARKETPLACE_TABS.Keycards && !!id) {
+        return <KeycardMarketDetails id={id} />
+    }
+
+    if (type === MARKETPLACE_TABS.MysteryCrates && !!id) {
+        return <MysteryCrateMarketDetails id={id} />
     }
 
     return null

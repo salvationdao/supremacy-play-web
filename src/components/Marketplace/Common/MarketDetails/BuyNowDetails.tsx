@@ -15,7 +15,7 @@ interface BuyNowDetailsProps {
     id: string
     itemName: string
     buyNowPrice: string
-    dutchAuctionDropRate: string
+    dutchAuctionDropRate?: string
     createdAt: Date
 }
 

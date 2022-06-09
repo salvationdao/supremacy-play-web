@@ -1,35 +1,31 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { SafePNG, SvgWallet } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { consolidateMarketItemDeets, getRarityDeets, MarketItemDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
-import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
+import { MarketplaceBuyItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
-import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
-import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
-import { ItemType } from "../../Common/MarketDetails/ItemType"
+import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
 import { ListingType } from "../../Common/MarketDetails/ListingType"
 import { Owner } from "../../Common/MarketDetails/Owner"
 
-export const KeycardMarketDetails = ({ id }: { id: string }) => {
+export const KeycardMarketDetails = () => null
+
+export const KeycardMarketDetails2 = ({ id }: { id: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
-    const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
-    const [mechDetails, setMechDetails] = useState<MechDetails>()
-
-    const marketItemDeets = useMemo(() => (marketItem ? consolidateMarketItemDeets(marketItem, theme) : undefined), [marketItem, theme])
+    const [marketItem, setMarketItem] = useState<MarketplaceBuyItem>()
 
     // Get listing details
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<MarketplaceBuyAuctionItem>(GameServerKeys.MarketplaceSalesGet, {
+                const resp = await send<MarketplaceBuyItem>(GameServerKeys.MarketplaceSalesGet, {
                     id,
                 })
 
@@ -43,27 +39,8 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
         })()
     }, [id, send])
 
-    // Get mech details
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!marketItem || !marketItem.mech?.id) return
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: marketItem.mech.id,
-                })
-
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get war machine details."
-                setLoadError(message)
-                console.error(err)
-            }
-        })()
-    }, [marketItem, send])
-
     const content = useMemo(() => {
-        const validStruct = !marketItem || (marketItem.mech && marketItem.owner)
+        const validStruct = !marketItem || (marketItem.keycard && marketItem.owner)
 
         if (loadError || !validStruct) {
             return (
@@ -88,7 +65,7 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
             )
         }
 
-        if (!marketItem || !marketItemDeets) {
+        if (!marketItem) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -98,14 +75,14 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
             )
         }
 
-        return <WarMachineMarketDetailsInner marketItem={marketItem} mechDetails={mechDetails} marketItemDeets={marketItemDeets} />
-    }, [loadError, marketItem, marketItemDeets, mechDetails, theme.factionTheme.primary])
+        return <WarMachineMarketDetailsInner marketItem={marketItem} primaryColor={theme.factionTheme.primary} />
+    }, [loadError, marketItem, theme.factionTheme.primary])
 
     return (
         <ClipThing
             clipSize="10px"
             border={{
-                borderColor: marketItemDeets?.primaryColor || theme.factionTheme.primary,
+                borderColor: theme.factionTheme.primary,
                 borderThickness: ".3rem",
             }}
             corners={{
@@ -114,7 +91,7 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
                 bottomRight: true,
             }}
             opacity={0.7}
-            backgroundColor={marketItemDeets?.backgroundColor || theme.factionTheme.background}
+            backgroundColor={theme.factionTheme.background}
             sx={{ height: "100%" }}
         >
             <Stack sx={{ height: "100%" }}>{content}</Stack>
@@ -122,72 +99,19 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
     )
 }
 
-const WarMachineMarketDetailsInner = ({
-    marketItem,
-    mechDetails,
-    marketItemDeets,
-}: {
-    marketItem: MarketplaceBuyAuctionItem
-    mechDetails?: MechDetails
-    marketItemDeets: MarketItemDeets
-}) => {
-    const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
-
-    const media: MarketMedia[] = useMemo(() => {
-        const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
-        if (!skin) return []
-
-        const avatarUrl = skin.avatar_url // avatar
-        const imageUrl = skin.image_url // poster for card_animation_url
-        const cardAnimationUrl = skin.card_animation_url // smaller one, transparent bg
-        const largeImageUrl = skin.large_image_url // poster for animation_url
-        const animationUrl = skin.animation_url // big one
-
-        return [
-            {
-                imageUrl: largeImageUrl,
-                videoUrl: animationUrl,
-            },
-            {
-                imageUrl: imageUrl,
-                videoUrl: cardAnimationUrl,
-            },
-            {
-                imageUrl: avatarUrl,
-                videoUrl: avatarUrl,
-            },
-        ]
-    }, [mechDetails])
-
+const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyItem; primaryColor: string }) => {
     const listingDetails = useMemo(() => {
-        const { buyout, auction, dutch_auction } = marketItem
-        if (auction) {
-            return (
-                <AuctionDetails
-                    id={marketItem.id}
-                    itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
-                    buyNowPrice={marketItem.buyout_price}
-                    auctionCurrentPrice={marketItem.auction_current_price}
-                    auctionBidCount={marketItem.total_bids}
-                    auctionLastBid={marketItem.last_bid}
-                />
-            )
-        }
-
-        if (buyout || dutch_auction) {
-            return (
-                <BuyNowDetails
-                    id={marketItem.id}
-                    itemName={marketItem.mech?.name || marketItem.mech?.label || ""}
-                    buyNowPrice={marketItem.buyout_price}
-                    dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
-                    createdAt={marketItem.created_at}
-                />
-            )
-        }
+        return (
+            <BuyNowDetails
+                id={marketItem.id}
+                itemName={marketItem.keycard?.label || "KEYCARD"}
+                buyNowPrice={marketItem.buyout_price}
+                createdAt={marketItem.created_at}
+            />
+        )
     }, [marketItem])
 
-    const { owner, mech, created_at, end_at } = marketItem
+    const { owner, keycard, created_at, end_at } = marketItem
 
     return (
         <Box
@@ -223,26 +147,28 @@ const WarMachineMarketDetailsInner = ({
                     justifyContent: "center",
                 }}
             >
-                <ImagesPreview media={media} primaryColor={marketItemDeets.primaryColor} />
+                <ImagesPreview
+                    media={[
+                        {
+                            imageUrl: keycard?.image_url || SafePNG,
+                            videoUrl: keycard?.animation_url || SafePNG,
+                        },
+                    ]}
+                    primaryColor={primaryColor}
+                />
 
                 <Stack spacing="2rem">
                     <Box>
-                        <Typography gutterBottom variant="h5" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoBold }}>
-                            {rarityDeets.label}
+                        <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
+                            KEYCARD
                         </Typography>
 
                         <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            {mech?.name || mech?.label}
+                            {keycard?.label || "KEYCARD"}
                         </Typography>
                     </Box>
 
-                    <ListingType
-                        primaryColor={marketItemDeets.primaryColor}
-                        listingTypeLabel={marketItemDeets.listingTypeLabel}
-                        icon={<marketItemDeets.Icon fill={marketItemDeets.primaryColor} />}
-                    />
-
-                    <ItemType itemType="WAR MACHINE" />
+                    <ListingType primaryColor={primaryColor} listingTypeLabel="BUY NOW" icon={<SvgWallet fill={primaryColor} />} />
 
                     <Owner owner={owner} />
 
