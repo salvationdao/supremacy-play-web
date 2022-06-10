@@ -32,7 +32,15 @@ export const MechStatsDetails = ({
                 <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                     WAR MACHINE STATS
                 </Typography>
-                <MechBarStats mech={mechDetails} mechDetails={mechDetails} color={primaryColor} fontSize="1.3rem" width="100%" />
+                <MechBarStats
+                    mech={mechDetails}
+                    mechDetails={mechDetails}
+                    color={primaryColor}
+                    fontSize="1.3rem"
+                    width="100%"
+                    spacing=".9rem"
+                    barHeight=".8rem"
+                />
             </Stack>
 
             <Stack spacing="1rem">
