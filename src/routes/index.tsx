@@ -1,4 +1,4 @@
-import { BattleArenaPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleArenaPage, ClaimsPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
 import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
@@ -85,6 +85,12 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             requireAuth: false,
         },
         matchLeftDrawerID: "contracts",
+    },
+    claim: {
+        id: "claim",
+        path: "/claim",
+        exact: true,
+        Component: ClaimsPage,
     },
     not_found_page: {
         id: "not_found_page",

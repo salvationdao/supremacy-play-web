@@ -94,6 +94,9 @@ export enum GameServerKeys {
 
     EnlistFaction = "FACTION:ENLIST",
 
+    //Redeem Coupon Code
+    CodeRedemption = "CODE:REDEMPTION",
+
     // Storefront
     GetMysteryCrates = "STORE:MYSTERY:CRATES",
     SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",

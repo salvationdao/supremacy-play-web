@@ -9,22 +9,24 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { MysteryCrate } from "../../../../types"
+import { RewardResponse, StorefrontMysteryCrate } from "../../../../types"
+import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
-    crate: MysteryCrate
+    crate: StorefrontMysteryCrate
 }
 
 export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
-    const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>(crate)
+    const [mysteryCrate, setMysteryCrate] = useState<StorefrontMysteryCrate>(crate)
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
+    const [reward, setReward] = useState<RewardResponse>()
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
-    useGameServerSubscriptionFaction<MysteryCrate>(
+    useGameServerSubscriptionFaction<StorefrontMysteryCrate>(
         {
             URI: `/crate/${crate.id}`,
             key: GameServerKeys.SubMysteryCrate,
@@ -159,7 +161,8 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                 </ClipThing>
             </Box>
 
-            {confirmModalOpen && <ConfirmModal mysteryCrate={mysteryCrate} onClose={() => toggleConfirmModalOpen(false)} />}
+            {confirmModalOpen && <ConfirmModal mysteryCrate={mysteryCrate} setReward={setReward} onClose={() => toggleConfirmModalOpen(false)} />}
+            {reward && <PurchaseSuccessModal reward={reward} onClose={() => setReward(undefined)} />}
         </>
     )
 }
@@ -191,7 +194,15 @@ export const MysteryCrateStoreItemLoadingSkeleton = () => {
     )
 }
 
-const ConfirmModal = ({ mysteryCrate, onClose }: { mysteryCrate: MysteryCrate; onClose: () => void }) => {
+const ConfirmModal = ({
+    mysteryCrate,
+    setReward,
+    onClose,
+}: {
+    mysteryCrate: StorefrontMysteryCrate
+    setReward: (value: ((prevState: RewardResponse | undefined) => RewardResponse | undefined) | RewardResponse | undefined) => void
+    onClose: () => void
+}) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -204,11 +215,13 @@ const ConfirmModal = ({ mysteryCrate, onClose }: { mysteryCrate: MysteryCrate; o
     const confirmBuy = useCallback(async () => {
         try {
             setIsLoading(true)
-            const resp = await send<MysteryCrate[]>(GameServerKeys.PurchaseMysteryCrate, {
+            const resp = await send<RewardResponse>(GameServerKeys.PurchaseMysteryCrate, {
                 type: mystery_crate_type,
             })
 
             if (!resp) return
+            console.log(resp)
+            setReward(resp)
             newSnackbarMessage(`Successfully purchased ${mystery_crate_type} crate.`, "success")
             onClose()
         } catch (err) {
@@ -217,7 +230,7 @@ const ConfirmModal = ({ mysteryCrate, onClose }: { mysteryCrate: MysteryCrate; o
         } finally {
             setIsLoading(false)
         }
-    }, [send, mystery_crate_type, newSnackbarMessage, onClose])
+    }, [send, mystery_crate_type, newSnackbarMessage, onClose, setReward])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -316,6 +329,26 @@ const ConfirmModal = ({ mysteryCrate, onClose }: { mysteryCrate: MysteryCrate; o
                         <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
+            </Box>
+        </Modal>
+    )
+}
+
+const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse | undefined; onClose: () => void }) => {
+    return (
+        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "50%",
+                    boxShadow: 6,
+                    outline: "none",
+                }}
+            >
+                {reward && <ClaimedRewards rewards={[reward]} />}
             </Box>
         </Modal>
     )

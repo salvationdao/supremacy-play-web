@@ -317,7 +317,7 @@ export interface RepairStatus {
 
 export type MysteryCrateType = "MECH" | "WEAPON"
 
-export interface MysteryCrate {
+export interface StorefrontMysteryCrate {
     id: string
     mystery_crate_type: MysteryCrateType
     price: string
@@ -354,4 +354,11 @@ export interface KeycardBlueprint {
     keycard_group: string
     syndicate?: string | null
     created_at: Date
+}
+
+export interface RewardResponse {
+    label: string
+    image_url: string
+    locked_until: Date
+    amount: string
 }

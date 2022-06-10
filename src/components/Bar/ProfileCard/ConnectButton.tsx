@@ -1,10 +1,19 @@
-import { Typography } from "@mui/material"
+import { SxProps, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { colors, fonts } from "../../../theme/theme"
 import { useAuth } from "../../../containers"
 import { FancyButton } from "../.."
 
-export const ConnectButton = ({ width }: { width?: string }) => {
+interface ConnectWalletProps {
+    width?: string
+    label?: string
+    loadingLabel?: string
+    sx?: SxProps
+    typeSx?: SxProps
+    clipBorderColor?: string
+    clipBackgroundColor?: string
+}
+export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBorderColor, clipBackgroundColor }: ConnectWalletProps) => {
     const { isLoggingIn, onLogInClick } = useAuth()
     const { setIsOpen } = useTour()
 
@@ -16,14 +25,15 @@ export const ConnectButton = ({ width }: { width?: string }) => {
                     excludeCaret
                     clipThingsProps={{
                         clipSize: "7px",
-                        backgroundColor: colors.neonBlue,
+                        backgroundColor: clipBackgroundColor ?? colors.neonBlue,
                         sx: { position: "relative", width },
-                        border: { isFancy: true, borderColor: colors.neonBlue },
+                        border: { borderColor: clipBorderColor ?? colors.neonBlue },
                     }}
                     sx={{
                         px: "2rem",
                         py: ".3rem",
                         color: colors.darkestNeonBlue,
+                        ...sx,
                     }}
                     onClick={() => {
                         setIsOpen(false)
@@ -36,14 +46,15 @@ export const ConnectButton = ({ width }: { width?: string }) => {
                             color: colors.darkestNeonBlue,
                             fontFamily: fonts.nostromoBold,
                             whiteSpace: "nowrap",
+                            ...typeSx,
                         }}
                     >
-                        LOG IN
+                        {label ?? "LOG IN"}
                     </Typography>
                 </FancyButton>
             ) : (
-                <Typography sx={{ ml: "2.1rem", mr: "1.6rem", fontFamily: fonts.nostromoBold }} variant="caption">
-                    Logging in...
+                <Typography sx={{ ml: "2.1rem", mr: "1.6rem", fontFamily: fonts.nostromoBold, ...typeSx }} variant="caption">
+                    {loadingLabel ?? "Logging in..."}
                 </Typography>
             )}
         </>
