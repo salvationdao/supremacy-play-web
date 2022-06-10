@@ -1,7 +1,7 @@
 import { Button } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { TooltipHelper } from "../.."
-import { STAGING_ONLY, TOKEN_SALE_PAGE } from "../../../constants"
+import { STAGING_OR_DEV_ONLY, TOKEN_SALE_PAGE } from "../../../constants"
 import { dateFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 
@@ -19,7 +19,7 @@ export const BuySupsButton = () => {
     }, [])
 
     const tooltipText = useMemo(() => {
-        if (STAGING_ONLY) {
+        if (STAGING_OR_DEV_ONLY) {
             if (timeTilNextClaim && timeTilNextClaim < new Date()) {
                 return `Time until next claim: ${dateFormatter(timeTilNextClaim)}`
             }
@@ -47,17 +47,17 @@ export const BuySupsButton = () => {
                     pb: ".16rem",
                     flexShrink: 0,
                     justifyContent: "flex-start",
-                    color: STAGING_ONLY ? colors.gold : colors.neonBlue,
+                    color: STAGING_OR_DEV_ONLY ? colors.gold : colors.neonBlue,
                     whiteSpace: "nowrap",
                     borderRadius: 0.2,
-                    border: `1px solid ${STAGING_ONLY ? colors.gold : colors.neonBlue}`,
+                    border: `1px solid ${STAGING_OR_DEV_ONLY ? colors.gold : colors.neonBlue}`,
                     overflow: "hidden",
                     fontFamily: fonts.nostromoBold,
                 }}
-                onClick={STAGING_ONLY ? getFreeSups : openBuySupsPage}
-                disabled={STAGING_ONLY && timeTilNextClaim && timeTilNextClaim < new Date()}
+                onClick={STAGING_OR_DEV_ONLY ? getFreeSups : openBuySupsPage}
+                disabled={STAGING_OR_DEV_ONLY && timeTilNextClaim && timeTilNextClaim < new Date()}
             >
-                {STAGING_ONLY ? "GET FREE SUPS" : "GET SUPS"}
+                {STAGING_OR_DEV_ONLY ? "GET FREE SUPS" : "GET SUPS"}
             </Button>
         </TooltipHelper>
     )
