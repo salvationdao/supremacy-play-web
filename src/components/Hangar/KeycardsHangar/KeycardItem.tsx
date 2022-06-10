@@ -1,7 +1,6 @@
-import { Box, Divider, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
-import { SafePNG } from "../../../assets"
 import { ClipThing } from "../../Common/ClipThing"
 import { useTheme } from "../../../containers/theme"
 
@@ -18,8 +17,6 @@ export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
     return (
         <Box
             sx={{
-                height: "100%",
-                minHeight: "50rem",
                 width: "100%",
             }}
         >
@@ -40,29 +37,35 @@ export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                             px: ".8rem",
                             py: "2rem",
                             borderRadius: 1,
-                            height: "70%",
+                            height: "25rem",
                             boxShadow: "inset 0 0 12px 6px #00000040",
                             background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
                             border: "#00000060 1px solid",
                         }}
                     >
                         <Box
+                            component="video"
                             sx={{
                                 height: "100%",
-                                width: "auto",
-                                background: `url(${keycard.blueprints.image_url || SafePNG})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "contain",
+                                width: "100%",
+                                overflow: "hidden",
+                                objectFit: "contain",
+                                objectPosition: "center",
+                                borderRadius: 1,
                             }}
-                        />
+                            loop
+                            muted
+                            autoPlay
+                            poster={`${keycard.blueprints.image_url}`}
+                        >
+                            {keycard.blueprints.animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
+                        </Box>
                     </Box>
 
-                    <Stack alignItems={"flex-start"} sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
+                    <Stack spacing={".4rem"} alignItems={"flex-start"} sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
                         <Typography variant={"h6"} sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
                             {keycard.blueprints.label}
                         </Typography>
-                        <Divider sx={{ width: "100%" }} color={theme.factionTheme.primary} />
                         <Typography variant={"h6"} sx={{ color: primaryColor, textAlign: "start" }}>
                             {keycard.blueprints.description}
                         </Typography>

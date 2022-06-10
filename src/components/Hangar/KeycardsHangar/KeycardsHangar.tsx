@@ -88,7 +88,7 @@ export const KeycardsHangar = () => {
                         width: "100%",
                         pt: ".5rem",
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
                         gap: "2.4rem",
                         alignItems: "center",
                         justifyContent: "center",
