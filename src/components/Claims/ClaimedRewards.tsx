@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from "react"
 import { RewardResponse } from "../../types"
 import { supFormatter } from "../../helpers"
 import { RainingSupsPNG, SafePNG } from "../../assets"
+import { useTimer } from "../../hooks"
 
 interface ClaimedRewardsProps {
     rewards: RewardResponse[]
@@ -139,80 +140,42 @@ interface ClaimRewardsCountdownProps {
     dateTo: Date | undefined
 }
 
-const GenericCountdown = ({ dateTo }: ClaimRewardsCountdownProps) => {
-    const [daysTo, setDaysTo] = useState<number>(-1)
-    const [hoursTo, setHoursTo] = useState<number>(-1)
-    const [minutesTo, setMinutesTo] = useState<number>(-1)
-    const [secondsTo, setSecondsTo] = useState<number>(-1)
-    const [hasPassed, setHasPassed] = useState(false)
-
-    const calcTime = useCallback(() => {
-        if (hasPassed || !dateTo) return
-
-        const s = 1000
-        const m = s * 60
-        const h = m * 60
-        const d = h * 24
-
-        const timeToDate = dateTo.getTime() - new Date().getTime()
-
-        if (timeToDate < 0) {
-            setHasPassed(true)
-        }
-
-        const days = Math.floor(timeToDate / d)
-        const hours = Math.floor((timeToDate % d) / h)
-        const minutes = Math.floor((timeToDate % h) / m)
-        const seconds = Math.floor((timeToDate % m) / s)
-
-        setDaysTo(days)
-        setHoursTo(hours)
-        setMinutesTo(minutes)
-        setSecondsTo(seconds)
-    }, [dateTo, hasPassed])
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            calcTime()
-        }, 1000)
-        if (hasPassed) {
-            clearInterval(timer)
-        }
-    }, [calcTime, hasPassed])
+export const GenericCountdown = ({ dateTo }: ClaimRewardsCountdownProps) => {
+    const { days, hours, minutes, seconds } = useTimer(dateTo)
 
     return (
         <>
             <Box sx={{ display: "flex" }}>
                 <Stack>
-                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem" }}>
-                        {daysTo}
+                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem", textAlign: "center" }}>
+                        {days}
                     </Typography>
                     <Typography>Days</Typography>
                 </Stack>
-                <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
+                <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem", textAlign: "center" }}>
                     :{" "}
                 </Typography>
                 <Stack>
-                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem" }}>
-                        {hoursTo}
+                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem", textAlign: "center" }}>
+                        {hours}
                     </Typography>
                     <Typography>Hours</Typography>
                 </Stack>
-                <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
+                <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem", textAlign: "center" }}>
                     :{" "}
                 </Typography>
                 <Stack>
-                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem" }}>
-                        {minutesTo}
+                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem", textAlign: "center" }}>
+                        {minutes}
                     </Typography>
                     <Typography>Minutes</Typography>
                 </Stack>
-                <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
+                <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem", textAlign: "center" }}>
                     :{" "}
                 </Typography>
                 <Stack>
-                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem" }}>
-                        {secondsTo}
+                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem", textAlign: "center" }}>
+                        {seconds}
                     </Typography>
                     <Typography>Seconds</Typography>
                 </Stack>

@@ -334,6 +334,21 @@ export interface StorefrontMysteryCrate {
     animation_url?: string
     youtube_url?: string
 }
+
+export interface MysteryCrate extends Collection {
+    id: string
+    type: string
+    faction_id: string
+    label: string
+    opened: boolean
+    locked_until: Date
+    purchased: boolean
+    description: string
+    deleted_at?: string
+    updated_at: string
+    created_at: string
+}
+
 export interface Keycard {
     id: string
     player_id: string
