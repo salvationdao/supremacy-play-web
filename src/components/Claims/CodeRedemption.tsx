@@ -12,11 +12,8 @@ import { useSnackbar } from "../../containers"
 interface redemptionProps {
     setRewards: (value: ((prevState: RewardResponse[] | undefined) => RewardResponse[] | undefined) | RewardResponse[] | undefined) => void
 }
-export const CodeRedemption = ({ setRewards }: redemptionProps) => {
-    return <CodeRedemptionInner setRewards={setRewards} />
-}
 
-const CodeRedemptionInner = ({ setRewards }: redemptionProps) => {
+export const CodeRedemption = ({ setRewards }: redemptionProps) => {
     const theme = useTheme()
     const [code, setCode] = useState<string>("")
     const [loading, setLoading] = useState<boolean>(false)
@@ -41,59 +38,68 @@ const CodeRedemptionInner = ({ setRewards }: redemptionProps) => {
 
     return (
         <ClipThing
-            clipSize="8px"
+            clipSize="10px"
             corners={{
                 topRight: true,
                 bottomLeft: true,
             }}
             border={{
                 borderColor: theme.factionTheme.primary,
-                borderThickness: ".2rem",
+                borderThickness: ".3rem",
             }}
-            sx={{ position: "relative", py: "5rem", px: "2rem", width: "auto", maxWidth: "500px" }}
+            sx={{ position: "relative", m: "4rem", maxWidth: "70rem" }}
             backgroundColor={theme.factionTheme.background}
-            opacity={0.7}
+            opacity={0.9}
         >
-            <Stack sx={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "1rem", textAlign: "center" }}>
-                <Typography variant={"h1"} sx={{ fontSize: "3rem", mb: "2rem" }}>
+            <Stack alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
+                <Typography variant={"h1"} sx={{ fontSize: "3rem", fontFamily: fonts.nostromoBlack, mb: "2rem" }}>
                     Enter Your Unlock Code
                 </Typography>
-                <Typography variant={"subtitle1"} sx={{ fontSize: "2rem", mb: "5rem", lineHeight: "1.2" }}>
+
+                <Typography variant={"subtitle1"} sx={{ fontSize: "2rem", mb: "3rem" }}>
                     You&apos;ll find this on your Supremacy trading card or wherever you received the code from
                 </Typography>
-                <Stack sx={{ pb: "5rem" }}>
-                    <Typography sx={{ fontFamily: fonts.nostromoBold, pt: "1rem", pb: ".5rem" }}>Enter your 6 digit unlock code</Typography>
+
+                <Stack>
+                    <Typography sx={{ mb: "1.6rem", fontFamily: fonts.nostromoBold }}>Enter your 6 digit unlock code</Typography>
+
                     <ClipThing
-                        clipSize="5px"
-                        corners={{
-                            topRight: true,
-                            bottomLeft: true,
-                        }}
+                        clipSize="8px"
                         border={{
                             borderColor: theme.factionTheme.primary,
-                            borderThickness: ".1rem",
+                            borderThickness: ".2rem",
                         }}
-                        sx={{ position: "relative", mb: "1rem" }}
+                        sx={{ position: "relative", mb: "2.8rem" }}
                         backgroundColor={theme.factionTheme.background}
-                        opacity={0.9}
                     >
                         <CodeEntry code={code} length={6} setCode={setCode} />
                     </ClipThing>
+
+                    <FancyButton
+                        excludeCaret
+                        disabled={code.length !== 6 || loading}
+                        loading={loading}
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: theme.factionTheme.primary,
+                            opacity: 1,
+                            border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ width: "100%", py: "1.1rem", color: theme.factionTheme.secondary }}
+                        onClick={onClaim}
+                    >
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: theme.factionTheme.secondary,
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            Claim
+                        </Typography>
+                    </FancyButton>
                 </Stack>
-                <FancyButton
-                    disabled={code.length !== 6 || loading}
-                    onClick={onClaim}
-                    clipThingsProps={{
-                        clipSize: "8px",
-                        opacity: 0.6,
-                        backgroundColor: theme.factionTheme.primary,
-                        border: { isFancy: true, borderColor: theme.factionTheme.primary },
-                        sx: { mr: "1rem", position: "relative", flexShrink: 0 },
-                    }}
-                    sx={{ px: "8rem", py: "1rem" }}
-                >
-                    <Typography sx={{ fontFamily: fonts.nostromoBold, fontSize: "2rem" }}>Claim</Typography>
-                </FancyButton>
             </Stack>
         </ClipThing>
     )
@@ -106,8 +112,8 @@ interface CodeEntryProps {
 }
 
 const CodeEntry = ({ length, code, setCode }: CodeEntryProps) => {
-    const [isFocused, setIsFocused] = useState(false)
     const theme = useTheme()
+    const [isFocused, setIsFocused] = useState(false)
 
     useEffect(() => {
         const input = document.getElementById("code_entry_redemption")
@@ -119,9 +125,7 @@ const CodeEntry = ({ length, code, setCode }: CodeEntryProps) => {
             id="code_entry_redemption"
             variant="standard"
             value={code}
-            onChange={(e) => {
-                setCode(e.target.value)
-            }}
+            onChange={(e) => setCode(e.target.value)}
             inputProps={{
                 style: {
                     margin: "1rem auto",

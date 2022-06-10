@@ -25,9 +25,9 @@ export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBord
                     excludeCaret
                     clipThingsProps={{
                         clipSize: "7px",
-                        backgroundColor: clipBackgroundColor ?? colors.neonBlue,
+                        backgroundColor: clipBackgroundColor || colors.neonBlue,
                         sx: { position: "relative", width },
-                        border: { borderColor: clipBorderColor ?? colors.neonBlue },
+                        border: { isFancy: true, borderColor: clipBorderColor || colors.neonBlue },
                     }}
                     sx={{
                         px: "2rem",
@@ -49,12 +49,12 @@ export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBord
                             ...typeSx,
                         }}
                     >
-                        {label ?? "LOG IN"}
+                        {label || "LOG IN"}
                     </Typography>
                 </FancyButton>
             ) : (
                 <Typography sx={{ ml: "2.1rem", mr: "1.6rem", fontFamily: fonts.nostromoBold, ...typeSx }} variant="caption">
-                    {loadingLabel ?? "Logging in..."}
+                    {loadingLabel || "Logging in..."}
                 </Typography>
             )}
         </>

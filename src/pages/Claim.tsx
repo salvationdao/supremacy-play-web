@@ -3,15 +3,15 @@ import { Box } from "@mui/system"
 import { siteZIndex } from "../theme/theme"
 import { ClaimsBg } from "../assets"
 
-export const ClaimsPage = () => {
+export const ClaimPage = () => {
     return (
         <Box sx={{ height: "100%" }}>
-            <ClaimsPageInner />
+            <ClaimPageInner />
         </Box>
     )
 }
 
-const ClaimsPageInner = () => {
+const ClaimPageInner = () => {
     return (
         <Box
             sx={{

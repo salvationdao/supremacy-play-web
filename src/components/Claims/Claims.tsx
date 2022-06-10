@@ -10,8 +10,8 @@ import { RewardResponse } from "../../types"
 
 export const Claims = () => {
     const { userID, factionID } = useAuth()
-
     const [rewards, setRewards] = useState<RewardResponse[]>()
+
     return (
         <Stack sx={{ minHeight: "100%", minWidth: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Fade in>

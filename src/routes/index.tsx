@@ -1,4 +1,4 @@
-import { BattleArenaPage, ClaimsPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
 import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
@@ -90,7 +90,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         id: "claim",
         path: "/claim",
         exact: true,
-        Component: ClaimsPage,
+        Component: ClaimPage,
     },
     not_found_page: {
         id: "not_found_page",
