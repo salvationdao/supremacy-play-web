@@ -86,9 +86,9 @@ export const SellItemModal = ({ onClose }: Props) => {
                 has_buyout: hasBuyout,
                 has_auction: hasAuction,
                 has_dutch_auction: hasDutchAuction,
-                asking_price: hasBuyout || hasDutchAuction ? askingPrice : undefined,
-                auction_reserved_price: hasAuction || hasDutchAuction ? auctionReservedPrice : undefined,
-                dutch_auction_drop_rate: hasDutchAuction ? dropRate : undefined,
+                asking_price: (hasBuyout || hasDutchAuction) && askingPrice ? askingPrice : undefined,
+                auction_reserved_price: (hasAuction || hasDutchAuction) && auctionReservedPrice ? auctionReservedPrice : undefined,
+                dutch_auction_drop_rate: hasDutchAuction && dropRate ? dropRate : undefined,
             })
             onClose()
         } catch (err) {
