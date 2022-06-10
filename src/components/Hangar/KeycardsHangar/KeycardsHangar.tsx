@@ -42,7 +42,6 @@ export const KeycardsHangar = () => {
                     page_size: pageSize,
                 })
 
-                console.log(resp)
                 if (!resp) return
                 setLoadError(undefined)
                 setKeycards(resp.keycards)
