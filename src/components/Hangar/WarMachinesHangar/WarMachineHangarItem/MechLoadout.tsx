@@ -3,6 +3,7 @@ import { ReactNode } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPlus, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { colors } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 const ITEM_WIDTH = 7.5 //rem
@@ -48,7 +49,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 {power_core_id && (
                     <LoadoutItem
                         imageUrl={powerCore?.image_url}
-                        Icon={<SvgPowerCore size="1.3rem" />}
+                        Icon={<SvgPowerCore fill={colors.powerCore} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={powerCore?.label}
                     />
@@ -56,7 +57,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 {chassis_skin_id && (
                     <LoadoutItem
                         imageUrl={chassisSkin?.image_url}
-                        Icon={<SvgSkin size="1.3rem" />}
+                        Icon={<SvgSkin fill={colors.chassisSkin} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={chassisSkin?.label}
                     />
@@ -64,7 +65,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 {intro_animation_id && (
                     <LoadoutItem
                         imageUrl={introAnimation?.image_url}
-                        Icon={<SvgIntroAnimation size="1.3rem" />}
+                        Icon={<SvgIntroAnimation fill={colors.introAnimation} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={introAnimation?.label}
                     />
@@ -72,7 +73,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 {outro_animation_id && (
                     <LoadoutItem
                         imageUrl={outroAnimation?.image_url}
-                        Icon={<SvgOutroAnimation size="1.3rem" />}
+                        Icon={<SvgOutroAnimation fill={colors.outroAnimation} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={outroAnimation?.label}
                     />
@@ -81,7 +82,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                     <LoadoutItem
                         key={`mech-loadout-weapon-${w.id}`}
                         imageUrl={w?.image_url}
-                        Icon={<SvgWeapons size="1.3rem" />}
+                        Icon={<SvgWeapons fill={colors.weapons} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={w.label}
                     />
@@ -90,7 +91,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                     <LoadoutItem
                         key={`mech-loadout-utility-${u.id}`}
                         imageUrl={u?.image_url}
-                        Icon={<SvgUtilities size="1.3rem" />}
+                        Icon={<SvgUtilities fill={colors.utilities} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={u.label}
                     />

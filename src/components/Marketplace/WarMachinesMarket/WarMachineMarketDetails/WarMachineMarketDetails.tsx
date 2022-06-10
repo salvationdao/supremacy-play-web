@@ -103,10 +103,11 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
                 marketItem={marketItem}
                 mechDetails={mechDetails}
                 marketItemDeets={marketItemDeets}
-                primaryColor={theme.factionTheme.primary}
+                primaryColor={marketItemDeets?.primaryColor || theme.factionTheme.primary}
+                backgroundColor={marketItemDeets?.backgroundColor || theme.factionTheme.background}
             />
         )
-    }, [loadError, marketItem, marketItemDeets, mechDetails, theme.factionTheme.primary])
+    }, [loadError, marketItem, marketItemDeets, mechDetails, theme.factionTheme.background, theme.factionTheme.primary])
 
     return (
         <ClipThing
@@ -134,11 +135,13 @@ const WarMachineMarketDetailsInner = ({
     mechDetails,
     marketItemDeets,
     primaryColor,
+    backgroundColor,
 }: {
     marketItem: MarketplaceBuyAuctionItem
     mechDetails?: MechDetails
     marketItemDeets: MarketItemDeets
     primaryColor: string
+    backgroundColor: string
 }) => {
     const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
 
@@ -163,7 +166,6 @@ const WarMachineMarketDetailsInner = ({
             },
             {
                 imageUrl: avatarUrl,
-                videoUrl: avatarUrl,
             },
         ]
     }, [mechDetails])
@@ -205,7 +207,8 @@ const WarMachineMarketDetailsInner = ({
                 overflowY: "auto",
                 overflowX: "hidden",
                 mr: "1rem",
-                my: "1.2rem",
+                mt: "1.2rem",
+                mb: "3rem",
                 direction: "ltr",
                 scrollbarWidth: "none",
                 "::-webkit-scrollbar": {
@@ -216,7 +219,7 @@ const WarMachineMarketDetailsInner = ({
                     borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: (theme) => theme.factionTheme.primary,
+                    background: primaryColor,
                     borderRadius: 3,
                 },
             }}
@@ -262,7 +265,7 @@ const WarMachineMarketDetailsInner = ({
                     {listingDetails}
                 </Stack>
 
-                <MechStatsDetails mechDetails={mechDetails} />
+                <MechStatsDetails mechDetails={mechDetails} primaryColor={primaryColor} backgroundColor={backgroundColor} />
             </Box>
         </Box>
     )

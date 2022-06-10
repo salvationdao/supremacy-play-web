@@ -119,7 +119,8 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                 overflowY: "auto",
                 overflowX: "hidden",
                 mr: "1rem",
-                my: "1.2rem",
+                mt: "1.2rem",
+                mb: "3rem",
                 direction: "ltr",
                 scrollbarWidth: "none",
                 "::-webkit-scrollbar": {
@@ -130,7 +131,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                     borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: (theme) => theme.factionTheme.primary,
+                    background: primaryColor,
                     borderRadius: 3,
                 },
             }}

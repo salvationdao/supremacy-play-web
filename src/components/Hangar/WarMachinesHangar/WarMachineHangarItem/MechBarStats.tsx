@@ -4,8 +4,23 @@ import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
-export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+export const MechBarStats = ({
+    mech,
+    mechDetails,
+    color,
+    fontSize: fs,
+    width,
+}: {
+    mech: MechBasic
+    mechDetails?: MechDetails
+    color?: string
+    fontSize?: string
+    width?: string
+}) => {
     const theme = useTheme()
+
+    const primaryColor = color || theme.factionTheme.primary
+    const fontSize = fs || "1.1rem"
 
     const health = mech.max_hitpoints
     const speed = mech.speed
@@ -44,7 +59,7 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
                     borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: (theme) => theme.factionTheme.primary,
+                    background: primaryColor,
                     borderRadius: 3,
                 },
             }}
@@ -53,16 +68,16 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
                 spacing=".7rem"
                 sx={{
                     height: "100%",
-                    width: "26rem",
+                    width: width || "26rem",
                     flexShrink: 0,
                 }}
             >
-                <BarStat primaryColor={theme.factionTheme.primary} label="HEALTH" current={health} total={10000} />
-                <BarStat primaryColor={theme.factionTheme.primary} label="SPEED" current={speed} total={10000} unit="M/S" />
-                <BarStat primaryColor={theme.factionTheme.primary} label="Power Core CAPACITY" current={powerCoreCapacity} total={1000} />
-                <BarStat primaryColor={theme.factionTheme.primary} label="Power Core REGEN" current={powerCoreRechargeRate} total={1000} unit="/S" />
-                <BarStat primaryColor={theme.factionTheme.primary} label="SHIELD" current={totalShield} total={1000} />
-                <BarStat primaryColor={theme.factionTheme.primary} label="SHIELD REGEN" current={totalShieldRechargeRate} total={1000} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} label="HEALTH" current={health} total={10000} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} label="SPEED" current={speed} total={10000} unit="M/S" />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} label="Power Core CAPACITY" current={powerCoreCapacity} total={1000} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} label="Power Core REGEN" current={powerCoreRechargeRate} total={1000} unit="/S" />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD" current={totalShield} total={1000} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD REGEN" current={totalShieldRechargeRate} total={1000} />
             </Stack>
         </Box>
     )
@@ -70,12 +85,14 @@ export const MechBarStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetai
 
 const BarStatInner = ({
     primaryColor,
+    fontSize,
     label,
     current,
     total,
     unit,
 }: {
     primaryColor: string
+    fontSize: string
     label: string
     current: number
     total: number
@@ -90,7 +107,7 @@ const BarStatInner = ({
                     variant="caption"
                     sx={{
                         lineHeight: 1,
-                        fontSize: "1.1rem",
+                        fontSize,
                         fontFamily: fonts.nostromoBlack,
                         display: "-webkit-box",
                         overflow: "hidden",
@@ -119,7 +136,7 @@ const BarStatInner = ({
                         variant="caption"
                         sx={{
                             width: "8rem",
-                            fontSize: "1.1rem",
+                            fontSize,
                             fontFamily: fonts.nostromoBold,
                             display: "-webkit-box",
                             overflow: "hidden",
@@ -135,7 +152,7 @@ const BarStatInner = ({
                 </Stack>
             </Box>
         )
-    }, [current, label, primaryColor, total, unit])
+    }, [current, fontSize, label, primaryColor, total, unit])
 }
 
 const BarStat = React.memo(BarStatInner)
