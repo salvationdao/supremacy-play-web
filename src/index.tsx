@@ -8,7 +8,7 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 import { Bar, EarlyAccessWarning, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, STAGING_ONLY, UNDER_MAINTENANCE } from "./constants"
+import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, STAGING_OR_DEV_ONLY, UNDER_MAINTENANCE } from "./constants"
 import { BarProvider, SnackBarProvider, SupremacyProvider, useSupremacy, WalletProvider } from "./containers"
 import { AuthProvider, UserUpdater } from "./containers/auth"
 import { ThemeProvider } from "./containers/theme"
@@ -49,7 +49,7 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    {STAGING_ONLY && <LeftDrawer />}
+                    {STAGING_OR_DEV_ONLY && <LeftDrawer />}
 
                     <Box
                         sx={{
