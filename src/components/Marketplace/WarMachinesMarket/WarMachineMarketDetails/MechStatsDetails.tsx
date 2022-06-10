@@ -102,7 +102,7 @@ export const MechStatsDetails = ({
                 <Stack direction="row" spacing=".6rem" alignItems="center">
                     <SvgSkin fill={colors.chassisSkin} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.chassisSkin, fontFamily: fonts.nostromoBlack }}>
-                        CHASSIS SKIN ({chassis_skin_id ? 1 : 0}/1)
+                        SUBMODEL ({chassis_skin_id ? 1 : 0}/1)
                     </Typography>
                 </Stack>
 
