@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
+import { EmptyWarMachinesPNG, SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination, useToggle } from "../../../hooks"
@@ -223,7 +223,7 @@ export const MysteryCratesMarket = () => {
                                         mr: "1.2rem",
                                         width: "7rem",
                                         height: "5.2rem",
-                                        background: `url(${WarMachineIconPNG})`,
+                                        background: `url(${SafePNG})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "cover",
@@ -231,7 +231,7 @@ export const MysteryCratesMarket = () => {
                                 />
                                 <Box sx={{ mr: "2rem" }}>
                                     <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                        WAR MACHINES
+                                        MYSTERY CRATES
                                     </Typography>
                                     <Typography sx={{ fontSize: "1.85rem" }}>Explore what other citizens have to offer.</Typography>
                                 </Box>
