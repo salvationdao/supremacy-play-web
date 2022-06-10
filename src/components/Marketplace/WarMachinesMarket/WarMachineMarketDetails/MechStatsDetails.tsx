@@ -1,5 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../../.."
+import { SvgInfoCircular, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MechBarStats } from "../../../Hangar/WarMachinesHangar/WarMachineHangarItem/MechBarStats"
@@ -27,9 +28,12 @@ export const MechStatsDetails = ({
     return (
         <Stack spacing="3rem">
             <Stack spacing="1rem">
-                <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                    WAR MACHINE STATS
-                </Typography>
+                <Stack direction="row" spacing=".8rem" alignItems="center">
+                    <SvgInfoCircular fill={primaryColor} size="1.8rem" />
+                    <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                        WAR MACHINE STATS
+                    </Typography>
+                </Stack>
                 <MechBarStats
                     mech={mechDetails}
                     mechDetails={mechDetails}
@@ -42,9 +46,12 @@ export const MechStatsDetails = ({
             </Stack>
 
             <Stack spacing="1rem">
-                <Typography variant="h5" sx={{ color: colors.weapons, fontFamily: fonts.nostromoBlack }}>
-                    WEAPONS ({weapons.length}/{weapon_hardpoints})
-                </Typography>
+                <Stack direction="row" spacing=".6rem" alignItems="center">
+                    <SvgWeapons fill={colors.weapons} size="2.5rem" />
+                    <Typography variant="h5" sx={{ color: colors.weapons, fontFamily: fonts.nostromoBlack }}>
+                        WEAPONS ({weapons.length}/{weapon_hardpoints})
+                    </Typography>
+                </Stack>
 
                 {weapons.length > 0 ? (
                     <Stack direction="row" spacing="1.6rem" flexWrap="wrap">
@@ -58,9 +65,12 @@ export const MechStatsDetails = ({
             </Stack>
 
             <Stack spacing="1rem">
-                <Typography variant="h5" sx={{ color: colors.powerCore, fontFamily: fonts.nostromoBlack }}>
-                    POWER CORE ({power_core_id ? 1 : 0}/1)
-                </Typography>
+                <Stack direction="row" spacing=".6rem" alignItems="center">
+                    <SvgPowerCore fill={colors.powerCore} size="2.5rem" />
+                    <Typography variant="h5" sx={{ color: colors.powerCore, fontFamily: fonts.nostromoBlack }}>
+                        POWER CORE ({power_core_id ? 1 : 0}/1)
+                    </Typography>
+                </Stack>
 
                 {powerCore ? (
                     <Card imageUrl={powerCore.image_url} value={powerCore.label} primaryColor={colors.powerCore} backgroundColor={backgroundColor} />
@@ -70,9 +80,12 @@ export const MechStatsDetails = ({
             </Stack>
 
             <Stack spacing="1rem">
-                <Typography variant="h5" sx={{ color: colors.utilities, fontFamily: fonts.nostromoBlack }}>
-                    UTILITIES ({utilities.length}/{utility_slots})
-                </Typography>
+                <Stack direction="row" spacing=".6rem" alignItems="center">
+                    <SvgUtilities fill={colors.utilities} size="2.5rem" />
+                    <Typography variant="h5" sx={{ color: colors.utilities, fontFamily: fonts.nostromoBlack }}>
+                        UTILITIES ({utilities.length}/{utility_slots})
+                    </Typography>
+                </Stack>
 
                 {utilities.length > 0 ? (
                     <Stack direction="row" spacing="1.6rem" flexWrap="wrap">
@@ -86,9 +99,12 @@ export const MechStatsDetails = ({
             </Stack>
 
             <Stack spacing="1rem">
-                <Typography variant="h5" sx={{ color: colors.chassisSkin, fontFamily: fonts.nostromoBlack }}>
-                    CHASSIS SKIN ({chassis_skin_id ? 1 : 0}/1)
-                </Typography>
+                <Stack direction="row" spacing=".6rem" alignItems="center">
+                    <SvgSkin fill={colors.chassisSkin} size="2.5rem" />
+                    <Typography variant="h5" sx={{ color: colors.chassisSkin, fontFamily: fonts.nostromoBlack }}>
+                        CHASSIS SKIN ({chassis_skin_id ? 1 : 0}/1)
+                    </Typography>
+                </Stack>
 
                 {chassisSkin ? (
                     <Card imageUrl={chassisSkin.image_url} value={chassisSkin.label} primaryColor={colors.chassisSkin} backgroundColor={backgroundColor} />
@@ -98,9 +114,12 @@ export const MechStatsDetails = ({
             </Stack>
 
             <Stack spacing="1rem">
-                <Typography variant="h5" sx={{ color: colors.introAnimation, fontFamily: fonts.nostromoBlack }}>
-                    INTRO ANIMATION ({intro_animation_id ? 1 : 0}/1)
-                </Typography>
+                <Stack direction="row" spacing=".6rem" alignItems="center">
+                    <SvgIntroAnimation fill={colors.introAnimation} size="2.5rem" />
+                    <Typography variant="h5" sx={{ color: colors.introAnimation, fontFamily: fonts.nostromoBlack }}>
+                        INTRO ANIMATION ({intro_animation_id ? 1 : 0}/1)
+                    </Typography>
+                </Stack>
 
                 {introAnimation ? (
                     <Card
@@ -115,9 +134,12 @@ export const MechStatsDetails = ({
             </Stack>
 
             <Stack spacing="1rem">
-                <Typography variant="h5" sx={{ color: colors.outroAnimation, fontFamily: fonts.nostromoBlack }}>
-                    OUTRO ANIMATION ({outro_animation_id ? 1 : 0}/1)
-                </Typography>
+                <Stack direction="row" spacing=".6rem" alignItems="center">
+                    <SvgOutroAnimation fill={colors.outroAnimation} size="2.5rem" />
+                    <Typography variant="h5" sx={{ color: colors.outroAnimation, fontFamily: fonts.nostromoBlack }}>
+                        OUTRO ANIMATION ({outro_animation_id ? 1 : 0}/1)
+                    </Typography>
+                </Stack>
 
                 {outroAnimation ? (
                     <Card
