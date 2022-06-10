@@ -15,6 +15,10 @@ body {
     src: url("../assets/fonts/share-tech/share-tech.otf");
 }
 @font-face {
+    font-family: "Share Tech Mono";
+    src: url("../assets/fonts/share-tech/ShareTechMono-Regular.ttf");
+}
+@font-face {
     font-family: "Nostromo Regular Light";
     src: url("../assets/fonts/nostromo-regular/NostromoRegular-Light.otf");
 }

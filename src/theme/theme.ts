@@ -96,6 +96,7 @@ export const fonts = {
     nostromoMedium: ["Nostromo Regular Medium", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     nostromoLight: ["Nostromo Regular Light", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     shareTech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    shareTechMono: ["Share Tech Mono", "monospace"].join(","),
 }
 
 export enum siteZIndex {

@@ -4,7 +4,7 @@ import { ClipThing } from "../../Common/ClipThing"
 import { colors, fonts } from "../../../theme/theme"
 import { usePagination } from "../../../hooks"
 import { GameServerKeys } from "../../../keys"
-import { MechBasic, MechDetails, Keycard, MysteryCrate } from "../../../types/assets"
+import { MechBasic, MechDetails, Keycard, StorefrontMysteryCrate } from "../../../types"
 import { SvgRobot, SvgSupToken } from "../../../assets"
 import { FancyButton } from "../../Common/FancyButton"
 import { ItemType, ItemTypeInfo, SaleType } from "../../../types/marketplace"
@@ -19,7 +19,7 @@ interface Props {
 interface GetAssetsResponse {
     mechs: MechBasic[]
     keycards: Keycard[]
-    mystery_crates: MysteryCrate[]
+    mystery_crates: StorefrontMysteryCrate[]
     total: number
 }
 
@@ -34,7 +34,7 @@ export const SellItemModal = ({ onClose }: Props) => {
     const [selectedTab, setSelectedTab] = useState(0)
     const itemType = ItemTypeInfo[selectedTab]
 
-    const [assetsList, setAssetsList] = useState<MechBasic[] | Keycard[] | MysteryCrate[] | null>(null)
+    const [assetsList, setAssetsList] = useState<MechBasic[] | Keycard[] | StorefrontMysteryCrate[] | null>(null)
     const [selectedAsset, setSelectedAsset] = useState<string | null>(null)
     const [saleType, setSaleType] = useState<SaleType>(SaleType.Buyout)
     const [listingHours, setListingHours] = useState(1)
@@ -668,7 +668,7 @@ const AssetItem = ({ item, selected, onSelected }: AssetItemProps) => {
     )
 }
 
-type AssetItem = MechBasic | Keycard | MysteryCrate
+type AssetItem = MechBasic | Keycard | StorefrontMysteryCrate
 
 const isAssetMech = (item: AssetItem): item is MechBasic => {
     return (item as MechBasic).max_hitpoints !== undefined
@@ -678,6 +678,6 @@ const isAssetKeycard = (item: AssetItem): item is Keycard => {
     return (item as Keycard).blueprint_keycard_id !== undefined
 }
 
-const isAssetMysteryCrate = (item: AssetItem): item is MysteryCrate => {
+const isAssetMysteryCrate = (item: AssetItem): item is StorefrontMysteryCrate => {
     return !isAssetMech(item) && !isAssetKeycard(item)
 }

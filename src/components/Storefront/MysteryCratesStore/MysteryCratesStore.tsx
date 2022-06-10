@@ -8,7 +8,7 @@ import { usePagination } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate } from "../../../types"
+import { StorefrontMysteryCrate } from "../../../types"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
@@ -21,7 +21,7 @@ export const MysteryCratesStore = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
-    const [crates, setCrates] = useState<MysteryCrate[]>()
+    const [crates, setCrates] = useState<StorefrontMysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [ownershipDetails, setOwnershipDetails] = useState<MysteryCrateOwnershipResp>({
@@ -48,7 +48,7 @@ export const MysteryCratesStore = () => {
         ;(async () => {
             try {
                 setIsLoading(true)
-                const resp = await send<MysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
+                const resp = await send<StorefrontMysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
                     page,
                     page_size: pageSize,
                 })
