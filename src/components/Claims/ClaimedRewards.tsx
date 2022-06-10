@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef } from "react"
+import { useMemo } from "react"
 import { useHistory } from "react-router-dom"
 import { RainingSupsPNG, SafePNG } from "../../assets"
 import { useTheme } from "../../containers/theme"
@@ -113,40 +113,29 @@ interface ClaimRewardsCountdownProps {
 }
 
 const GenericCountdown = ({ dateTo }: ClaimRewardsCountdownProps) => {
-    const { hours, minutes: minutesTo, seconds: secondsTo } = useTimer(dateTo)
-    const daysTo = useRef<number>(hours ? Math.floor(hours / 24) : 0)
-    const hoursTo = useRef<number>(hours ? hours - daysTo.current * 24 : 0)
-
-    useEffect(() => {
-        if (hours) {
-            daysTo.current = Math.floor(hours / 24)
-            hoursTo.current = hours - daysTo.current * 24
-        }
-    }, [hours])
-
-    if (!hours || !minutesTo || !secondsTo) return null
+    const { days, hours, minutes, seconds } = useTimer(dateTo)
 
     return (
         <Stack direction="row" sx={{ py: "2rem", px: "3rem" }}>
-            <SingleCountDown value={`${daysTo.current}`} label="Days" />
+            <SingleCountDown value={`${days}`} label="Days" />
 
             <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
                 :{" "}
             </Typography>
 
-            <SingleCountDown value={`${hoursTo.current}`} label="Hours" />
+            <SingleCountDown value={`${hours}`} label="Hours" />
 
             <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
                 :{" "}
             </Typography>
 
-            <SingleCountDown value={`${minutesTo}`} label="Minutes" />
+            <SingleCountDown value={`${minutes}`} label="Minutes" />
 
             <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
                 :{" "}
             </Typography>
 
-            <SingleCountDown value={`${secondsTo}`} label="Seconds" />
+            <SingleCountDown value={`${seconds}`} label="Seconds" />
         </Stack>
     )
 }

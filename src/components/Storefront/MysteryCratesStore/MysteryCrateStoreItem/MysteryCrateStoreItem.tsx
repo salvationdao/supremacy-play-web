@@ -226,7 +226,7 @@ const ConfirmModal = ({
             onClose()
         } catch (err) {
             setBuyError(typeof err === "string" ? err : "Failed to purchase item.")
-            console.debug(err)
+            console.error(err)
         } finally {
             setIsLoading(false)
         }
