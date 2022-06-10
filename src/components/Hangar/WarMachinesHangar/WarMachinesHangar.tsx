@@ -1,5 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
+import { useHistory } from "react-router"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useSnackbar } from "../../../containers"
@@ -95,6 +96,7 @@ const WarMachinesHangarInner = ({
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setSellMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
+    const history = useHistory()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -253,25 +255,24 @@ const WarMachinesHangarInner = ({
                                             textAlign: "center",
                                         }}
                                     >
-                                        {"You don't have assets in Supremacy, go to Marketplace or go to Xsyn to transfer your assets to Supremacy."}
+                                        {"You don't have any war machines, go to the Marketplace or go to Xsyn to transfer your assets to Supremacy."}
                                     </Typography>
                                     <FancyButton
-                                        href={`${PASSPORT_WEB}profile`}
-                                        target="_blank"
+                                        onClick={() => history.push("/marketplace/war-machines")}
                                         excludeCaret
                                         clipThingsProps={{
-                                            clipSize: "5px",
-                                            backgroundColor: theme.factionTheme.background,
-                                            border: { borderColor: theme.factionTheme.primary },
+                                            clipSize: "9px",
+                                            backgroundColor: theme.factionTheme.primary,
+                                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
                                             sx: { position: "relative", width: "50%" },
                                         }}
-                                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.primary }}
+                                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
                                     >
                                         <Typography
                                             variant="body2"
                                             sx={{
                                                 textAlign: "center",
-                                                color: theme.factionTheme.primary,
+                                                color: theme.factionTheme.secondary,
                                                 fontFamily: fonts.nostromoBold,
                                             }}
                                         >
@@ -283,18 +284,18 @@ const WarMachinesHangarInner = ({
                                         target="_blank"
                                         excludeCaret
                                         clipThingsProps={{
-                                            clipSize: "5px",
-                                            backgroundColor: theme.factionTheme.background,
-                                            border: { borderColor: colors.neonPink },
+                                            clipSize: "9px",
+                                            backgroundColor: colors.neonPink,
+                                            border: { isFancy: true, borderColor: colors.neonPink },
                                             sx: { position: "relative", width: "50%" },
                                         }}
-                                        sx={{ px: "1.8rem", py: ".8rem", color: colors.neonPink }}
+                                        sx={{ px: "1.8rem", py: ".8rem", color: "#FFFFFF" }}
                                     >
                                         <Typography
                                             variant="body2"
                                             sx={{
                                                 textAlign: "center",
-                                                color: colors.neonPink,
+                                                color: "#FFFFFF",
                                                 fontFamily: fonts.nostromoBold,
                                             }}
                                         >

@@ -5,7 +5,7 @@ import { RainingSupsPNG, SafePNG } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { supFormatter } from "../../helpers"
 import { useTimer } from "../../hooks"
-import { fonts } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { RewardResponse } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
@@ -34,7 +34,6 @@ export const ClaimedRewards = ({ rewards }: ClaimedRewardsProps) => {
                 borderThickness: ".3rem",
             }}
             sx={{ m: "4rem", width: "110rem", maxWidth: "80%" }}
-            opacity={0.9}
             backgroundColor={theme.factionTheme.background}
         >
             <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
@@ -56,7 +55,9 @@ export const ClaimedRewards = ({ rewards }: ClaimedRewardsProps) => {
                                 sx={{ position: "relative" }}
                                 backgroundColor={theme.factionTheme.background}
                             >
-                                <GenericCountdown dateTo={isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until} />
+                                <Box sx={{ py: "2rem", px: "3rem" }}>
+                                    <Countdown dateTo={isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until} />
+                                </Box>
                             </ClipThing>
                         )}
                     </Stack>
@@ -108,33 +109,25 @@ const CrateItem = ({ label, imageUrl }: { label: string; imageUrl: string }) => 
     )
 }
 
-interface ClaimRewardsCountdownProps {
-    dateTo: Date | undefined
-}
-
-const GenericCountdown = ({ dateTo }: ClaimRewardsCountdownProps) => {
+const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { days, hours, minutes, seconds } = useTimer(dateTo)
 
+    if (seconds === undefined) return null
+
     return (
-        <Stack direction="row" sx={{ py: "2rem", px: "3rem" }}>
+        <Stack direction="row">
             <SingleCountDown value={`${days}`} label="Days" />
-
             <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
                 :{" "}
             </Typography>
-
             <SingleCountDown value={`${hours}`} label="Hours" />
-
             <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
                 :{" "}
             </Typography>
-
             <SingleCountDown value={`${minutes}`} label="Minutes" />
-
             <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
                 :{" "}
             </Typography>
-
             <SingleCountDown value={`${seconds}`} label="Seconds" />
         </Stack>
     )
@@ -143,7 +136,7 @@ const GenericCountdown = ({ dateTo }: ClaimRewardsCountdownProps) => {
 const SingleCountDown = ({ value, label }: { value: string; label: string }) => {
     return (
         <Stack alignItems="center">
-            <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBold }}>
+            <Typography variant="h4" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
                 {value}
             </Typography>
             <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBold }}>
