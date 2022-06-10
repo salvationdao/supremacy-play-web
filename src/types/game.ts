@@ -136,7 +136,15 @@ export interface BattleEndDetail {
     total_multipliers: number
     battle_multipliers: MultiplierUpdateResp
     winning_condition: string
-    winning_faction: Faction
+    winning_faction: {
+        id: string
+        label: string
+        theme: {
+            primary: string
+            secondary: string
+            background: string
+        }
+    }
     winning_war_machines: WarMachineState[]
     top_sups_contributors: {
         username: string
