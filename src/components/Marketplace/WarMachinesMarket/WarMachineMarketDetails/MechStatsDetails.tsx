@@ -24,8 +24,6 @@ export const MechStatsDetails = ({
     const weapons = mechDetails?.weapons
     const utilities = mechDetails?.utility
 
-    console.log(mechDetails)
-
     return (
         <Stack spacing="3rem">
             <Stack spacing="1rem">
