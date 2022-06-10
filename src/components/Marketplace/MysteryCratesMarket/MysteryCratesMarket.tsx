@@ -245,13 +245,13 @@ export const MysteryCratesMarket = () => {
                                         border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
                                         sx: { position: "relative", ml: "auto" },
                                     }}
-                                    sx={{ px: "1.6rem", py: ".4rem", color: theme.factionTheme.secondary }}
+                                    sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
                                     onClick={() => toggleSellModalOpen(true)}
                                 >
                                     <Typography
                                         variant="caption"
                                         sx={{
-                                            color: theme.factionTheme.secondary,
+                                            color: "#FFFFFF",
                                             fontFamily: fonts.nostromoBlack,
                                         }}
                                     >
