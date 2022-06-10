@@ -53,7 +53,8 @@ export const LeftDrawer = () => {
                     <Stack sx={{ flex: 1 }}>
                         {ROUTES_ARRAY.map((r) => {
                             if (!r.leftDrawer) return null
-                            const { enable, requireAuth, requireFaction, label } = r.leftDrawer
+                            const { requireAuth, requireFaction } = r
+                            const { enable, label } = r.leftDrawer
                             const disable = (requireAuth || requireFaction) && !userID
                             const navigateTo = r.path.split("/:")[0]
                             return (

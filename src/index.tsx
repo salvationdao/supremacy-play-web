@@ -10,7 +10,7 @@ import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, STAGING_OR_DEV_ONLY, UNDER_MAINTENANCE } from "./constants"
 import { BarProvider, SnackBarProvider, SupremacyProvider, useSupremacy, WalletProvider } from "./containers"
-import { AuthProvider, UserUpdater } from "./containers/auth"
+import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
 import { ThemeProvider } from "./containers/theme"
 import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
@@ -19,9 +19,12 @@ import { colors } from "./theme/theme"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ws } from "./containers/ws"
 import { FingerprintProvider } from "./containers/fingerprint"
+import { AuthPage } from "./pages/AuthPage"
+import { EnlistPage } from "./pages/EnlistPage"
 
 const AppInner = () => {
     const { isServerUp } = useSupremacy()
+    const { userID, factionID } = useAuth()
     const [understand, toggleUnderstand] = useToggle()
 
     return (
@@ -65,8 +68,15 @@ const AppInner = () => {
                         {understand && isServerUp && !UNDER_MAINTENANCE && (
                             <Switch>
                                 {ROUTES_ARRAY.map((r) => {
-                                    const { id, path, exact, Component } = r
-                                    return <Route key={id} path={path} exact={exact} component={Component} />
+                                    const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription } = r
+                                    let component = Component
+                                    if (requireAuth && !userID) {
+                                        const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
+                                        component = Comp
+                                    } else if (requireFaction && !factionID) {
+                                        component = EnlistPage
+                                    }
+                                    return <Route key={id} path={path} exact={exact} component={component} />
                                 })}
                                 <Redirect to={ROUTES_MAP.not_found_page.path} />
                             </Switch>

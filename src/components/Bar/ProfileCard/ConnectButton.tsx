@@ -44,7 +44,7 @@ export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBord
                         variant="caption"
                         sx={{
                             color: colors.darkestNeonBlue,
-                            fontFamily: fonts.nostromoBold,
+                            fontFamily: fonts.nostromoBlack,
                             whiteSpace: "nowrap",
                             ...typeSx,
                         }}

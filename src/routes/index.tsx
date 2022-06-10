@@ -2,7 +2,7 @@ import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage }
 import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
-import { StorefrontPage } from "../pages/Storefront"
+import { StorefrontPage } from "../pages/StorefrontPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 
 interface RouteStruct {
@@ -10,11 +10,13 @@ interface RouteStruct {
     path: string
     exact: boolean
     Component?: () => JSX.Element | null
+    requireAuth: boolean
+    authTitle?: string
+    authDescription?: string
+    requireFaction: boolean
     leftDrawer?: {
         enable: boolean
         label: string
-        requireAuth?: boolean
-        requireFaction?: boolean
     }
     matchLeftDrawerID?: string
 }
@@ -25,10 +27,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/",
         exact: true,
         Component: BattleArenaPage,
+        requireAuth: false,
+        requireFaction: false,
         leftDrawer: {
             enable: true,
             label: "Battle Arena",
-            requireAuth: false,
         },
         matchLeftDrawerID: "home",
     },
@@ -37,11 +40,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/hangar/:type?",
         exact: true,
         Component: HangarPage,
+        requireAuth: true,
+        requireFaction: true,
         leftDrawer: {
             enable: true,
             label: "Hangar",
-            requireAuth: true,
-            requireFaction: true,
         },
         matchLeftDrawerID: "hangar",
     },
@@ -50,11 +53,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/storefront/:type?",
         exact: true,
         Component: StorefrontPage,
+        requireAuth: true,
+        requireFaction: true,
         leftDrawer: {
             enable: true,
             label: "Storefront",
-            requireAuth: true,
-            requireFaction: true,
         },
         matchLeftDrawerID: "storefront",
     },
@@ -63,6 +66,8 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/marketplace/:type/:id",
         exact: true,
         Component: MarketplaceItemPage,
+        requireAuth: false,
+        requireFaction: false,
         matchLeftDrawerID: "marketplace",
     },
     marketplace: {
@@ -70,11 +75,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/marketplace/:type?",
         exact: true,
         Component: MarketplacePage,
+        requireAuth: true,
+        requireFaction: true,
         leftDrawer: {
             enable: true,
             label: "Marketplace",
-            requireAuth: true,
-            requireFaction: true,
         },
         matchLeftDrawerID: "marketplace",
     },
@@ -83,11 +88,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/contracts",
         exact: true,
         Component: undefined,
+        requireAuth: false,
+        requireFaction: false,
         leftDrawer: {
             enable: false,
             label: "Contracts",
-            requireAuth: false,
-            requireFaction: false,
         },
         matchLeftDrawerID: "contracts",
     },
@@ -96,12 +101,19 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/claim",
         exact: true,
         Component: ClaimPage,
+        requireAuth: true,
+        authTitle: "Connect Your Wallet to Claim Your Rewards",
+        authDescription:
+            "You will receive assets that are of Supremacy&apos;s next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
+        requireFaction: true,
     },
     not_found_page: {
         id: "not_found_page",
         path: "/404",
         exact: false,
         Component: NotFoundPage,
+        requireAuth: false,
+        requireFaction: false,
     },
 }
 

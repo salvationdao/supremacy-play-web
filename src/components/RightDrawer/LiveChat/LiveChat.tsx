@@ -73,8 +73,7 @@ const TabbedLayout = () => {
                 variant="fullWidth"
                 sx={{
                     height: `${5}rem`,
-                    // background: bannerBackgroundColor,
-                    background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}90)`,
+                    background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}95)`,
                     boxShadow: 1,
                     zIndex: 9,
                     ".MuiButtonBase-root": {
@@ -218,7 +217,8 @@ const SplitLayout = () => {
                     sx={{
                         height: `${5}rem`,
                         px: "1.8rem",
-                        background: shadeColor(colors.globalChat, -30),
+                        // background: shadeColor(colors.globalChat, -30),
+                        background: `linear-gradient(${shadeColor(colors.globalChat, -30)} 26%, ${shadeColor(colors.globalChat, -30)}95)`,
                         boxShadow: 1,
                         zIndex: 9,
                     }}
@@ -249,7 +249,8 @@ const SplitLayout = () => {
                         sx={{
                             height: `${5}rem`,
                             px: "1.8rem",
-                            background: (theme) => `${theme.factionTheme.primary}25`,
+                            background: (theme) =>
+                                `linear-gradient(${shadeColor(theme.factionTheme.primary, -60)} 26%, ${shadeColor(theme.factionTheme.primary, -60)}95)`,
                             boxShadow: 1,
                             zIndex: 9,
                         }}

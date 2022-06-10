@@ -1,26 +1,19 @@
 import { Fade, Stack } from "@mui/material"
-import { ConnectWallet } from "./ConnectWallet"
-import { SelectFaction } from "../Common/SelectFaction"
-import { CodeRedemption } from "./CodeRedemption"
-import { ClaimedRewards } from "./ClaimedRewards"
-import { useAuth } from "../../containers"
 import { useState } from "react"
-import { Box } from "@mui/system"
 import { RewardResponse } from "../../types"
+import { ClaimedRewards } from "./ClaimedRewards"
+import { CodeRedemption } from "./CodeRedemption"
 
 export const Claims = () => {
-    const { userID, factionID } = useAuth()
     const [rewards, setRewards] = useState<RewardResponse[]>()
 
     return (
-        <Stack sx={{ minHeight: "100%", minWidth: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Stack justifyContent="center" alignItems="center" sx={{ height: "100%", width: "100%" }}>
             <Fade in>
-                <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    {!userID && <ConnectWallet />}
-                    {userID && !factionID && <SelectFaction />}
-                    {userID && factionID && !rewards && <CodeRedemption setRewards={setRewards} />}
-                    {userID && factionID && rewards && <ClaimedRewards rewards={rewards} />}
-                </Box>
+                <Stack justifyContent="center">
+                    {!rewards && <CodeRedemption setRewards={setRewards} />}
+                    {rewards && <ClaimedRewards rewards={rewards} />}
+                </Stack>
             </Fade>
         </Stack>
     )
