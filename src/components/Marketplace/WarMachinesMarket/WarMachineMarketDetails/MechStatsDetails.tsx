@@ -1,5 +1,6 @@
-import { Box } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
+import { fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 
 export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
@@ -17,7 +18,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
     const weapons = mechDetails?.weapons
     const utilities = mechDetails?.utility
 
-    if (!mechDetails)
+    if (mechDetails)
         console.log({
             primaryColor,
             chassis_skin_id,
@@ -32,5 +33,12 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
             utilities,
         })
 
-    return <Box>TODO</Box>
+    return (
+        <Box>
+            <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                DESCRIPTION
+            </Typography>
+            <Typography variant="h5">aaaaaaaaaa</Typography>
+        </Box>
+    )
 }
