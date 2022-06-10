@@ -47,7 +47,7 @@ export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
                         Icon={<SvgSkin fill={colors.chassisSkin} size="1.6rem" />}
                         current={chassis_skin_id ? 1 : 0}
                         total={1}
-                        tooltipText="Chassis skin."
+                        tooltipText="Submodel."
                     />
                     <SingleStat
                         Icon={<SvgIntroAnimation fill={colors.introAnimation} size="1.6rem" />}
