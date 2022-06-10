@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material"
 import { fonts } from "../../../../theme/theme"
 import { MarketCrate } from "../../../../types/marketplace"
 
-export const CrateDetails = ({ crate, primaryColor }: { crate?: MarketCrate; primaryColor: string }) => {
+export const CrateDetails = ({ crate, primaryColor }: { crate?: MarketCrate; primaryColor: string; backgroundColor: string }) => {
     if (!crate) return null
 
     const { description } = crate

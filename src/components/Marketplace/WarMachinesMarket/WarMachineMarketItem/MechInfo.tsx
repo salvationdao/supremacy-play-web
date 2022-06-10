@@ -1,6 +1,6 @@
 import { MechDetails } from "../../../../types"
 import { Stack, Typography } from "@mui/material"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { useMemo } from "react"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
@@ -68,20 +68,20 @@ export const MechInfo = ({
             </Typography>
 
             <Stack direction="row" spacing=".5rem" sx={{ pt: isGridView ? ".4rem" : "" }}>
-                {hasSkin && <SvgSkin size="1.3rem" />}
+                {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.3rem" />}
 
-                {hasIntroAnimation && <SvgIntroAnimation size="1.3rem" />}
+                {hasIntroAnimation && <SvgIntroAnimation fill={colors.introAnimation} size="1.3rem" />}
 
-                {hasOutroAnimation && <SvgOutroAnimation size="1.3rem" />}
+                {hasOutroAnimation && <SvgOutroAnimation fill={colors.outroAnimation} size="1.3rem" />}
 
-                {hasPowerCore && <SvgPowerCore size="1.3rem" />}
+                {hasPowerCore && <SvgPowerCore fill={colors.powerCore} size="1.3rem" />}
 
                 {new Array(weaponCount).fill(0).map((_, index) => (
-                    <SvgWeapons key={`mech-info-${index}`} size="1.3rem" />
+                    <SvgWeapons key={`mech-info-${index}`} fill={colors.weapons} size="1.3rem" />
                 ))}
 
                 {new Array(utilityCount).fill(0).map((_, index) => (
-                    <SvgUtilities key={`mech-info-${index}`} size="1.3rem" />
+                    <SvgUtilities key={`mech-info-${index}`} fill={colors.utilities} size="1.3rem" />
                 ))}
             </Stack>
         </Stack>

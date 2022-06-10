@@ -1,6 +1,6 @@
 import { Fade, Stack } from "@mui/material"
 import { ConnectWallet } from "./ConnectWallet"
-import { SelectFaction } from "./SelectFaction"
+import { SelectFaction } from "../Common/SelectFaction"
 import { CodeRedemption } from "./CodeRedemption"
 import { ClaimedRewards } from "./ClaimedRewards"
 import { useAuth } from "../../containers"
@@ -10,8 +10,8 @@ import { RewardResponse } from "../../types"
 
 export const Claims = () => {
     const { userID, factionID } = useAuth()
-
     const [rewards, setRewards] = useState<RewardResponse[]>()
+
     return (
         <Stack sx={{ minHeight: "100%", minWidth: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Fade in>

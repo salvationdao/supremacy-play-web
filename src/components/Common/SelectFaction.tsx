@@ -1,35 +1,26 @@
 import { useSnackbar, useSupremacy } from "../../containers"
 import { Faction } from "../../types"
-import { ClipThing } from "../Common/ClipThing"
+import { ClipThing } from "./ClipThing"
 import { fonts } from "../../theme/theme"
 import { Box, Fade, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useState } from "react"
 import { GameServerKeys } from "../../keys"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
-import { FancyButton } from "../Common/FancyButton"
+import { FancyButton } from "./FancyButton"
 
 export const SelectFaction = () => {
-    return <SelectFactionInner />
-}
-
-const SelectFactionInner = () => {
     const { factionsAll } = useSupremacy()
-    const belowQuery = useMediaQuery("(max-width:1000px)")
+    const below1200 = useMediaQuery("(max-width:1200px)")
+
+    if (Object.keys(factionsAll).length < 3) return null
+
     return (
-        <Stack alignItems={"center"}>
-            <Typography variant={"h1"} sx={{ fontSize: "3rem", mt: "3rem" }}>
+        <Stack alignItems="center" sx={{ my: "auto" }}>
+            <Typography variant="h1" sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
                 Choose Your Syndicate
             </Typography>
-            <Stack
-                direction={"row"}
-                spacing={"3rem"}
-                sx={{
-                    display: "flex",
-                    padding: "5rem",
-                    justifyContent: "space-around",
-                }}
-            >
-                {belowQuery ? (
+            <Stack direction="row" spacing="3rem" justifyContent="space-between" sx={{ p: "5rem" }}>
+                {below1200 ? (
                     <ExtendedFactionCarousel factions={Object.values(factionsAll)} />
                 ) : (
                     Object.values(factionsAll).map((f) => <ExtendedFactionEnlist key={f.id} faction={f} />)
@@ -50,23 +41,18 @@ const renderLastDescription = (faction: Faction) => {
     }
 }
 
-interface ExtendedFactionEnlistProps {
-    faction: Faction
-}
-
-const ExtendedFactionEnlist = ({ faction }: ExtendedFactionEnlistProps) => {
+const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
-
-    const belowQuery = useMediaQuery("(max-width:1250px)")
+    const below1250 = useMediaQuery("(max-width:1250px)")
 
     const enlistFaction = useCallback(async () => {
         try {
             await send<null, { faction_id: string }>(GameServerKeys.EnlistFaction, { faction_id: faction.id })
             newSnackbarMessage("Successfully enlisted into syndicate.", "success")
-        } catch (e) {
-            newSnackbarMessage(typeof e === "string" ? e : "Failed to enlist into syndicate.", "error")
-            console.debug(e)
+        } catch (err) {
+            newSnackbarMessage(typeof err === "string" ? err : "Failed to enlist into syndicate.", "error")
+            console.error(err)
         }
         return
     }, [send, faction.id, newSnackbarMessage])
@@ -75,71 +61,101 @@ const ExtendedFactionEnlist = ({ faction }: ExtendedFactionEnlistProps) => {
         <Fade in key={faction.id}>
             <Box>
                 <ClipThing
-                    clipSize="8px"
+                    clipSize="10px"
                     corners={{
                         topRight: true,
                         bottomLeft: true,
                     }}
                     border={{
                         borderColor: faction.primary_color,
-                        borderThickness: ".1rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{
                         position: "relative",
-                        py: belowQuery ? "2rem" : "3rem",
-                        px: belowQuery ? "3rem" : "5rem",
                         height: "100%",
                     }}
                     backgroundColor={faction.background_color}
-                    opacity={0.7}
+                    opacity={0.9}
                 >
                     <Stack
+                        alignItems="center"
+                        justifyContent="space-around"
+                        spacing="3rem"
                         sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
+                            py: below1250 ? "3rem" : "4rem",
+                            px: below1250 ? "3rem" : "5rem",
                             textAlign: "center",
                             height: "100%",
-                            justifyContent: "space-around",
                         }}
                     >
-                        <Box component={"img"} src={faction.logo_url} sx={{ height: belowQuery ? "10rem" : "15rem", mb: "3rem" }} />
-                        <Typography variant={"h1"} sx={{ fontSize: "2rem", mb: "2rem" }}>
+                        <Box component={"img"} src={faction.logo_url} alt={faction.label} sx={{ height: below1250 ? "10rem" : "15rem" }} />
+
+                        <Typography variant={"h1"} sx={{ fontFamily: fonts.nostromoBlack, fontSize: "2rem" }}>
                             {faction.label}
                         </Typography>
-                        <Typography variant={"subtitle1"} sx={{ fontSize: "2rem", mb: belowQuery ? "2rem" : "4rem", lineHeight: "1.5", textAlign: "left" }}>
+
+                        <Typography variant={"subtitle1"} sx={{ fontSize: "2rem", textAlign: "left" }}>
                             {faction.description}
-                        </Typography>
-                        <Typography variant={"subtitle1"} sx={{ fontSize: "2rem", mb: "4rem", lineHeight: "1.5", textAlign: "left" }}>
+                            <br />
+                            <br />
                             {renderLastDescription(faction)}
                         </Typography>
+
                         <FancyButton
-                            onClick={enlistFaction}
+                            excludeCaret
                             clipThingsProps={{
-                                clipSize: "8px",
-                                opacity: 0.8,
-                                backgroundColor: faction.background_color,
-                                border: { borderColor: faction.primary_color },
-                                sx: { mr: "1rem" },
+                                clipSize: "9px",
+                                backgroundColor: faction.primary_color,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                sx: { position: "relative" },
                             }}
-                            sx={{ px: "8rem", py: "1rem" }}
+                            sx={{ px: "8rem", py: "1rem", color: faction.secondary_color }}
+                            onClick={enlistFaction}
                         >
-                            <Typography sx={{ fontFamily: fonts.nostromoBold, fontSize: "2rem" }}>Enlist</Typography>
+                            <Typography variant="caption" sx={{ color: faction.secondary_color, fontFamily: fonts.nostromoBlack }}>
+                                Enlist
+                            </Typography>
                         </FancyButton>
                     </Stack>
+
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            opacity: 0.1,
+                            zIndex: -2,
+                            background: `url(${faction.background_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                        }}
+                    />
+
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            opacity: 0.1,
+                            zIndex: -1,
+                            background: `linear-gradient(0deg, #FFFFFF20 26%, ${faction.primary_color})`,
+                        }}
+                    />
                 </ClipThing>
             </Box>
         </Fade>
     )
 }
 
-interface ExtendedFactionCarouselProps {
-    factions: Faction[]
-}
-
-const ExtendedFactionCarousel = ({ factions }: ExtendedFactionCarouselProps) => {
+const ExtendedFactionCarousel = ({ factions }: { factions: Faction[] }) => {
     const [openedFaction, setOpenedFaction] = useState<Faction>(factions[0])
-    const [unselectedFactions, setUnselectedFactions] = useState<Faction[]>([factions[1], factions[2]])
+    const [unselectedFactions, setUnselectedFactions] = useState<Faction[]>(factions.slice(1))
 
     const onSelect = (faction: Faction) => {
         const newUnselected = factions.filter((el) => {
@@ -150,7 +166,7 @@ const ExtendedFactionCarousel = ({ factions }: ExtendedFactionCarouselProps) => 
     }
 
     return (
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-around" }}>
             <FactionLogoSelector onClick={onSelect} faction={unselectedFactions[0]} />
             <Box sx={{ maxWidth: "60%" }}>
                 <ExtendedFactionEnlist faction={openedFaction} />
@@ -160,10 +176,7 @@ const ExtendedFactionCarousel = ({ factions }: ExtendedFactionCarouselProps) => 
     )
 }
 
-interface LogoSelectorProps extends ExtendedFactionEnlistProps {
-    onClick: (faction: Faction) => void
-}
-const FactionLogoSelector = ({ faction, onClick }: LogoSelectorProps) => {
+const FactionLogoSelector = ({ faction, onClick }: { faction: Faction; onClick: (faction: Faction) => void }) => {
     return (
         <Box
             component={"img"}

@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { ClipThing } from "../Common/ClipThing"
 import { useTheme } from "../../containers/theme"
 import { ConnectButton } from "../Bar/ProfileCard/ConnectButton"
@@ -12,26 +12,26 @@ const ConnectWalletInner = () => {
     const theme = useTheme()
     return (
         <ClipThing
-            clipSize="8px"
+            clipSize="10px"
             corners={{
                 topRight: true,
                 bottomLeft: true,
             }}
             border={{
                 borderColor: theme.factionTheme.primary,
-                borderThickness: ".2rem",
+                borderThickness: ".3rem",
             }}
-            sx={{ position: "relative", py: "5rem", px: "5rem", width: "auto", maxWidth: "1000px" }}
+            sx={{ position: "relative", m: "4rem", maxWidth: "110rem" }}
             backgroundColor={colors.darkerNavy}
-            opacity={0.7}
+            opacity={0.9}
         >
-            <Stack sx={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "1rem", textAlign: "center" }}>
-                <Typography variant={"h1"} sx={{ fontSize: "3rem", mb: "2rem" }}>
+            <Stack sx={{ alignItems: "center", py: "5rem", px: "6rem", textAlign: "center" }}>
+                <Typography variant="h1" sx={{ mb: "2rem", fontSize: "4.2rem", fontFamily: fonts.nostromoBlack }}>
                     Connect Your Wallet to Claim Your Rewards
                 </Typography>
-                <Typography variant={"subtitle1"} sx={{ fontSize: "2rem", mb: "5rem", lineHeight: "1.2" }}>
+                <Typography variant="h5" sx={{ mb: "4rem" }}>
                     You will receive assets that are of Supremacy&apos;s next generation collection: Supremacy Nexus, which will allow you to equip your war
-                    machines to defeat your enemies in battle.
+                    machines to defeat your enemies in the battle arena.
                 </Typography>
 
                 <ConnectButton
@@ -39,9 +39,7 @@ const ConnectWalletInner = () => {
                     label={"Connect Wallet"}
                     loadingLabel={"Connecting Wallet..."}
                     sx={{ px: "4rem", py: "1rem" }}
-                    typeSx={{ fontSize: "2rem", color: colors.offWhite }}
-                    clipBorderColor={colors.neonBlue}
-                    clipBackgroundColor={colors.darkerNavy}
+                    typeSx={{ fontSize: "2rem" }}
                 />
             </Stack>
         </ClipThing>

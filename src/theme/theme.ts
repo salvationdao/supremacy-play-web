@@ -68,6 +68,13 @@ export const colors = {
     auction: "#E04F00",
     dutchAuction: "#D98D00",
 
+    chassisSkin: "#EBD110",
+    introAnimation: "#C017EB",
+    outroAnimation: "#C017EB",
+    weapons: "#EB2300",
+    utilities: "#5DC437",
+    powerCore: "#00EBEB",
+
     rarity: {
         MEGA: "#e84234",
         COLOSSAL: "#b43328",

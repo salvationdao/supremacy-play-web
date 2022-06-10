@@ -1,184 +1,147 @@
-import { ClipThing } from "../Common/ClipThing"
 import { Box, Stack, Typography } from "@mui/material"
-import { fonts } from "../../theme/theme"
-import { FancyButton } from "../Common/FancyButton"
-import { useTheme } from "../../containers/theme"
+import { useMemo } from "react"
 import { useHistory } from "react-router-dom"
-import { RewardResponse } from "../../types"
-import { supFormatter } from "../../helpers"
 import { RainingSupsPNG, SafePNG } from "../../assets"
+import { useTheme } from "../../containers/theme"
+import { supFormatter } from "../../helpers"
 import { useTimer } from "../../hooks"
+import { colors, fonts } from "../../theme/theme"
+import { RewardResponse } from "../../types"
+import { ClipThing } from "../Common/ClipThing"
+import { FancyButton } from "../Common/FancyButton"
 
 interface ClaimedRewardsProps {
     rewards: RewardResponse[]
 }
-export const ClaimedRewards = ({ rewards }: ClaimedRewardsProps) => {
-    return <ClaimedRewardsInner rewards={rewards} />
-}
 
-const ClaimedRewardsInner = ({ rewards }: ClaimedRewardsProps) => {
+export const ClaimedRewards = ({ rewards }: ClaimedRewardsProps) => {
     const theme = useTheme()
     const history = useHistory()
 
-    const mechCrateReward = rewards.find((reward) => reward.label === "MECH")
-    const weaponCrateReward = rewards.find((reward) => reward.label === "WEAPON")
-    const supReward = rewards.find((reward) => reward.label === "Sups")
+    const isMechCrateReward = useMemo(() => rewards.find((reward) => reward.label === "MECH"), [rewards])
+    const isWeaponCrateReward = useMemo(() => rewards.find((reward) => reward.label === "WEAPON"), [rewards])
+    const isSupReward = useMemo(() => rewards.find((reward) => reward.label === "Sups"), [rewards])
 
-    const renderTitle = () => {
-        const arr: string[] = []
-        if (mechCrateReward) {
-            arr.push(`a ${mechCrateReward.label} Crate`)
-        }
-        if (weaponCrateReward) {
-            arr.push(`a ${weaponCrateReward.label} Crate`)
-        }
-        if (supReward) {
-            arr.push(`${supFormatter(supReward.amount)} $SUPS`)
-        }
-
-        const rewardString = arr.join(", ")
-        rewardString.concat()
-        return rewardString
-    }
     return (
         <ClipThing
-            clipSize="8px"
+            clipSize="10px"
             corners={{
                 topRight: true,
                 bottomLeft: true,
             }}
             border={{
                 borderColor: theme.factionTheme.primary,
-                borderThickness: ".2rem",
+                borderThickness: ".3rem",
             }}
-            sx={{ py: "5rem", px: "2rem", maxWidth: "80%" }}
-            opacity={0.9}
+            sx={{ m: "4rem", width: "110rem", maxWidth: "80%" }}
             backgroundColor={theme.factionTheme.background}
         >
-            <Stack sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "1rem", textAlign: "center" }}>
-                <Typography variant={"h1"} sx={{ fontSize: "3rem", mb: "2rem" }}>
-                    You have received {renderTitle()}!
+            <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
+                <Typography variant={"h1"} sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
+                    CONGRATULATIONS!
                 </Typography>
-                {(mechCrateReward || weaponCrateReward) && (
-                    <>
-                        <Typography variant={"subtitle1"} sx={{ fontSize: "2rem", lineHeight: "1.2" }}>
-                            You&apos;re crates will be ready to open in:
-                        </Typography>
 
-                        <ClipThing
-                            clipSize="5px"
-                            corners={{
-                                topRight: true,
-                                bottomLeft: true,
-                            }}
-                            border={{
-                                borderColor: theme.factionTheme.primary,
-                                borderThickness: ".1rem",
-                            }}
-                            sx={{ position: "relative", my: "5rem", py: "1.5rem", px: "3rem" }}
-                            backgroundColor={theme.factionTheme.background}
-                            opacity={0.9}
-                        >
-                            {mechCrateReward?.locked_until || weaponCrateReward?.locked_until ? (
-                                <GenericCountdown dateTo={mechCrateReward?.locked_until || weaponCrateReward?.locked_until} />
-                            ) : null}
-                        </ClipThing>
-                    </>
+                {(isMechCrateReward || isWeaponCrateReward) && (
+                    <Stack spacing="1.8rem" alignItems="center">
+                        <Typography sx={{ fontFamily: fonts.nostromoBold }}>Your crates will be ready to open in:</Typography>
+
+                        {(isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until) && (
+                            <ClipThing
+                                clipSize="8px"
+                                border={{
+                                    borderColor: theme.factionTheme.primary,
+                                    borderThickness: ".2rem",
+                                }}
+                                sx={{ position: "relative" }}
+                                backgroundColor={theme.factionTheme.background}
+                            >
+                                <Box sx={{ py: "2rem", px: "3rem" }}>
+                                    <Countdown dateTo={isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until} />
+                                </Box>
+                            </ClipThing>
+                        )}
+                    </Stack>
                 )}
 
-                <Stack direction={"row"} sx={{ display: "flex", justifyContent: "space-around", width: "100%", alignItems: "center" }}>
-                    {weaponCrateReward && (
-                        <Stack alignItems={"center"} sx={{ minWidth: "33%" }}>
-                            {/*weapon crate img*/}
-                            <Box component={"img"} src={weaponCrateReward?.image_url || SafePNG} sx={{ width: "80%", height: "auto", mb: "1rem" }} />
-                            <Typography variant={"h2"} sx={{ fontSize: "2rem", mb: "2rem" }}>
-                                Weapon Crate
-                            </Typography>
-                        </Stack>
-                    )}
-                    {mechCrateReward && (
-                        <Stack alignItems={"center"} sx={{ minWidth: "33%" }}>
-                            {/*mech crate img*/}
-                            <Box component={"img"} src={mechCrateReward.image_url || SafePNG} sx={{ width: "80%", height: "auto", mb: "1rem" }} />
-                            <Typography variant={"h2"} sx={{ fontSize: "2rem", mb: "2rem" }}>
-                                Mech Crate
-                            </Typography>
-                        </Stack>
-                    )}
-                    {supReward && (
-                        <Stack alignItems={"center"} sx={{ minWidth: "33%" }}>
-                            {/*sups img- get amount from be*/}
-                            <Box component={"img"} src={RainingSupsPNG} sx={{ width: "80%", maxWidth: "500px", height: "auto", mb: "1rem" }} />
-                            <Typography variant={"h2"} sx={{ fontSize: "2rem", mb: "2rem" }}>
-                                {supFormatter(supReward.amount)} $SUPS
-                            </Typography>
-                        </Stack>
-                    )}
+                <Stack direction="row" justifyContent="space-around" alignItems="center">
+                    {isWeaponCrateReward && <CrateItem label="Weapon Crate" imageUrl={isWeaponCrateReward.image_url || SafePNG} />}
+                    {isMechCrateReward && <CrateItem label="Mech Crate" imageUrl={isMechCrateReward.image_url || SafePNG} />}
+                    {isSupReward && <CrateItem label={`${supFormatter(isSupReward.amount)} $SUPS`} imageUrl={RainingSupsPNG} />}
                 </Stack>
+
                 <FancyButton
-                    onClick={() => {
-                        history.push("/hangar")
-                    }}
+                    excludeCaret
                     clipThingsProps={{
-                        clipSize: "8px",
-                        opacity: 0.6,
+                        clipSize: "9px",
                         backgroundColor: theme.factionTheme.primary,
-                        border: { isFancy: true, borderColor: theme.factionTheme.primary },
-                        sx: { mr: "1rem", position: "relative", flexShrink: 0 },
+                        opacity: 1,
+                        border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                        sx: { position: "relative", width: "32rem" },
                     }}
-                    sx={{ px: "8rem", py: "1rem" }}
+                    sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                    onClick={() => {
+                        history.push("/hangar/mystery-crates")
+                    }}
                 >
-                    <Typography sx={{ fontFamily: fonts.nostromoBold, fontSize: "2rem" }}>View in Hangar</Typography>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            color: theme.factionTheme.secondary,
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        View in Hangar
+                    </Typography>
                 </FancyButton>
             </Stack>
         </ClipThing>
     )
 }
 
-interface ClaimRewardsCountdownProps {
-    dateTo: Date | undefined
+const CrateItem = ({ label, imageUrl }: { label: string; imageUrl: string }) => {
+    return (
+        <Stack alignItems={"center"} spacing="1rem" sx={{ flex: 1 }}>
+            <Box component={"img"} src={imageUrl} alt={label} sx={{ width: "55%", height: "auto", objectFit: "contain", objectPosition: "center" }} />
+            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                {label}
+            </Typography>
+        </Stack>
+    )
 }
 
-export const GenericCountdown = ({ dateTo }: ClaimRewardsCountdownProps) => {
+const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { days, hours, minutes, seconds } = useTimer(dateTo)
 
+    if (seconds === undefined) return null
+
     return (
-        <>
-            <Box sx={{ display: "flex" }}>
-                <Stack>
-                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem", textAlign: "center" }}>
-                        {days}
-                    </Typography>
-                    <Typography>Days</Typography>
-                </Stack>
-                <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem", textAlign: "center" }}>
-                    :{" "}
-                </Typography>
-                <Stack>
-                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem", textAlign: "center" }}>
-                        {hours}
-                    </Typography>
-                    <Typography>Hours</Typography>
-                </Stack>
-                <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem", textAlign: "center" }}>
-                    :{" "}
-                </Typography>
-                <Stack>
-                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem", textAlign: "center" }}>
-                        {minutes}
-                    </Typography>
-                    <Typography>Minutes</Typography>
-                </Stack>
-                <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem", textAlign: "center" }}>
-                    :{" "}
-                </Typography>
-                <Stack>
-                    <Typography variant={"h2"} sx={{ fontSize: "2.5rem", textAlign: "center" }}>
-                        {seconds}
-                    </Typography>
-                    <Typography>Seconds</Typography>
-                </Stack>
-            </Box>
-        </>
+        <Stack direction="row">
+            <SingleCountDown value={`${days}`} label="Days" />
+            <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
+                :{" "}
+            </Typography>
+            <SingleCountDown value={`${hours}`} label="Hours" />
+            <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
+                :{" "}
+            </Typography>
+            <SingleCountDown value={`${minutes}`} label="Minutes" />
+            <Typography variant={"h2"} sx={{ fontSize: "2.5rem", mx: "1rem" }}>
+                :{" "}
+            </Typography>
+            <SingleCountDown value={`${seconds}`} label="Seconds" />
+        </Stack>
+    )
+}
+
+const SingleCountDown = ({ value, label }: { value: string; label: string }) => {
+    return (
+        <Stack alignItems="center">
+            <Typography variant="h4" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                {value}
+            </Typography>
+            <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBold }}>
+                {label}
+            </Typography>
+        </Stack>
     )
 }

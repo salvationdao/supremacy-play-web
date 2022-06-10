@@ -16,7 +16,7 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
 
     // Sets the initial image to display
     useEffect(() => {
-        if ((!activeImageUrl || !activeVideoUrl) && media.length > 0) {
+        if (!activeImageUrl && media.length > 0) {
             setActiveImageUrl(media[0].imageUrl)
             setActiveVideoUrl(media[0].videoUrl)
         }
@@ -86,24 +86,30 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
 }
 
 const MainPreview = ({ imageUrl, videoUrl }: { imageUrl?: string; videoUrl?: string }) => {
+    const styles = {
+        height: "100%",
+        width: "100%",
+        objectFit: "contain",
+        objectPosition: "center",
+        border: "#FFFFFF18 2px solid",
+        boxShadow: "inset 0 0 12px 6px #00000040",
+        background: `radial-gradient(#FFFFFF20 10px, #00000080)`,
+    }
+
+    if (!videoUrl) {
+        return (
+            <Box
+                component="img"
+                src={imageUrl}
+                sx={{
+                    ...styles,
+                }}
+            />
+        )
+    }
+
     return (
-        <Box
-            key={imageUrl}
-            component="video"
-            sx={{
-                height: "100%",
-                width: "100%",
-                objectFit: "contain",
-                objectPosition: "center",
-                border: "#FFFFFF18 2px solid",
-                boxShadow: "inset 0 0 12px 6px #00000040",
-                background: `radial-gradient(#FFFFFF20 10px, #00000080)`,
-            }}
-            loop
-            muted
-            autoPlay
-            poster={`${imageUrl}`}
-        >
+        <Box key={imageUrl} component="video" sx={{ ...styles }} loop muted autoPlay poster={`${imageUrl}`}>
             <source src={videoUrl} type="video/mp4" />
         </Box>
     )

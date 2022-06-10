@@ -1,6 +1,7 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
-import { ClipThing } from "../.."
+import { useHistory } from "react-router-dom"
+import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -9,11 +10,11 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
-import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { TotalAndPageSizeOptions } from "../../Marketplace/TotalAndPageSizeOptions"
+import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { KeycardItem } from "./KeycardItem"
 
-interface GetCratesRequest {
+interface GetKeycardsRequest {
     page: number
     page_size: number
 }
@@ -24,6 +25,7 @@ interface GetAssetsResponse {
 }
 
 export const KeycardsHangar = () => {
+    const history = useHistory()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -37,7 +39,7 @@ export const KeycardsHangar = () => {
         ;(async () => {
             try {
                 setIsLoading(true)
-                const resp = await send<GetAssetsResponse, GetCratesRequest>(GameServerKeys.GetKeycards, {
+                const resp = await send<GetAssetsResponse, GetKeycardsRequest>(GameServerKeys.GetKeycards, {
                     page,
                     page_size: pageSize,
                 })
@@ -47,7 +49,7 @@ export const KeycardsHangar = () => {
                 setKeycards(resp.keycards)
                 setTotalItems(resp.total)
             } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to get mystery crates."
+                const message = typeof e === "string" ? e : "Failed to get keycards."
                 setLoadError(message)
                 newSnackbarMessage(message, "error")
                 console.error(e)
@@ -88,7 +90,7 @@ export const KeycardsHangar = () => {
                         width: "100%",
                         pt: ".5rem",
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
                         gap: "2.4rem",
                         alignItems: "center",
                         justifyContent: "center",
@@ -97,7 +99,7 @@ export const KeycardsHangar = () => {
                     }}
                 >
                     {keycards.map((keycard, index) => (
-                        <KeycardItem key={`storefront-mystery-crate-${keycard.id}-${index}`} keycard={keycard} />
+                        <KeycardItem key={`storefront-keycard-${keycard.id}-${index}`} keycard={keycard} />
                     ))}
                 </Box>
             )
@@ -115,7 +117,7 @@ export const KeycardsHangar = () => {
 
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "43rem" }}>
                     <Box
                         sx={{
                             width: "9rem",
@@ -128,6 +130,7 @@ export const KeycardsHangar = () => {
                             backgroundSize: "contain",
                         }}
                     />
+
                     <Typography
                         sx={{
                             px: "1.28rem",
@@ -139,12 +142,35 @@ export const KeycardsHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no mystery crates on sale at this time, come back later."}
+                        {"You don't have any keycards."}
                     </Typography>
+
+                    <FancyButton
+                        onClick={() => history.push("/marketplace/keycards")}
+                        excludeCaret
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: theme.factionTheme.primary,
+                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
+                            sx: { position: "relative", mt: "2rem" },
+                        }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                textAlign: "center",
+                                color: theme.factionTheme.secondary,
+                                fontFamily: fonts.nostromoBold,
+                            }}
+                        >
+                            GO TO MARKETPLACE
+                        </Typography>
+                    </FancyButton>
                 </Stack>
             </Stack>
         )
-    }, [keycards, isLoading, loadError])
+    }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, history])
 
     return (
         <ClipThing

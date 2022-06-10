@@ -17,6 +17,7 @@ export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
     return (
         <Box
             sx={{
+                height: "100%",
                 width: "100%",
             }}
         >
@@ -37,7 +38,7 @@ export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                             px: ".8rem",
                             py: "2rem",
                             borderRadius: 1,
-                            height: "25rem",
+                            height: "20rem",
                             boxShadow: "inset 0 0 12px 6px #00000040",
                             background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
                             border: "#00000060 1px solid",
@@ -62,13 +63,12 @@ export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                         </Box>
                     </Box>
 
-                    <Stack spacing={".4rem"} alignItems={"flex-start"} sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
-                        <Typography variant={"h6"} sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
+                    <Stack spacing=".4rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
+                        <Typography variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                             {keycard.blueprints.label}
                         </Typography>
-                        <Typography variant={"h6"} sx={{ color: primaryColor, textAlign: "start" }}>
-                            {keycard.blueprints.description}
-                        </Typography>
+
+                        <Typography variant="h6">{keycard.blueprints.description}</Typography>
                     </Stack>
                 </Stack>
             </ClipThing>

@@ -1,6 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
-import { ClipThing } from "../.."
+import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -12,6 +12,7 @@ import { MysteryCrate } from "../../../types"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { TotalAndPageSizeOptions } from "../../Marketplace/TotalAndPageSizeOptions"
 import { MysteryCrateItem } from "./MysteryCrateItem"
+import { useHistory } from "react-router-dom"
 
 interface GetCratesRequest {
     page: number
@@ -25,6 +26,7 @@ interface GetAssetsResponse {
 }
 
 export const MysteryCratesHangar = () => {
+    const history = useHistory()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -117,7 +119,7 @@ export const MysteryCratesHangar = () => {
 
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "43rem" }}>
                     <Box
                         sx={{
                             width: "9rem",
@@ -130,6 +132,7 @@ export const MysteryCratesHangar = () => {
                             backgroundSize: "contain",
                         }}
                     />
+
                     <Typography
                         sx={{
                             px: "1.28rem",
@@ -141,12 +144,35 @@ export const MysteryCratesHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no mystery crates on sale at this time, come back later."}
+                        {"You don't have any mystery crates."}
                     </Typography>
+
+                    <FancyButton
+                        onClick={() => history.push("/marketplace/mystery-crates")}
+                        excludeCaret
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: theme.factionTheme.primary,
+                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
+                            sx: { position: "relative", mt: "2rem" },
+                        }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                textAlign: "center",
+                                color: theme.factionTheme.secondary,
+                                fontFamily: fonts.nostromoBold,
+                            }}
+                        >
+                            GO TO MARKETPLACE
+                        </Typography>
+                    </FancyButton>
                 </Stack>
             </Stack>
         )
-    }, [crates, isLoading, loadError])
+    }, [crates, history, isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <ClipThing

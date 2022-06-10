@@ -39,7 +39,7 @@ export enum GameServerKeys {
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
-    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE",
+    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
     SubRepairStatus = "ASSET:REPAIR:STATUS",

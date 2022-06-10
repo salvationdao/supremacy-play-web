@@ -42,13 +42,43 @@ export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
                     },
                 }}
             >
-                <Stack alignItems="center" justifyContent="center" spacing=".4rem" sx={{ height: "100%", px: "1rem", py: ".8rem" }}>
-                    <SingleStat Icon={<SvgSkin size="1.5rem" />} current={chassis_skin_id ? 1 : 0} total={1} tooltipText="Submodel" />
-                    <SingleStat Icon={<SvgIntroAnimation size="1.5rem" />} current={intro_animation_id ? 1 : 0} total={1} tooltipText="Intro animation." />
-                    <SingleStat Icon={<SvgOutroAnimation size="1.5rem" />} current={outro_animation_id ? 1 : 0} total={1} tooltipText="Outro animation." />
-                    <SingleStat Icon={<SvgPowerCore size="1.5rem" />} current={power_core_id ? 1 : 0} total={1} tooltipText="Power core." />
-                    <SingleStat Icon={<SvgWeapons size="1.5rem" />} current={weapons} total={weapon_hardpoints} tooltipText="Weapons equipped." />
-                    <SingleStat Icon={<SvgUtilities size="1.5rem" />} current={utilities} total={utility_slots} tooltipText="Utilities equipped." />
+                <Stack alignItems="center" justifyContent="center" spacing=".3rem" sx={{ height: "100%", px: "1rem", py: ".8rem" }}>
+                    <SingleStat
+                        Icon={<SvgSkin fill={colors.chassisSkin} size="1.6rem" />}
+                        current={chassis_skin_id ? 1 : 0}
+                        total={1}
+                        tooltipText="Submodel."
+                    />
+                    <SingleStat
+                        Icon={<SvgIntroAnimation fill={colors.introAnimation} size="1.6rem" />}
+                        current={intro_animation_id ? 1 : 0}
+                        total={1}
+                        tooltipText="Intro animation."
+                    />
+                    <SingleStat
+                        Icon={<SvgOutroAnimation fill={colors.outroAnimation} size="1.6rem" />}
+                        current={outro_animation_id ? 1 : 0}
+                        total={1}
+                        tooltipText="Outro animation."
+                    />
+                    <SingleStat
+                        Icon={<SvgPowerCore fill={colors.powerCore} size="1.6rem" />}
+                        current={power_core_id ? 1 : 0}
+                        total={1}
+                        tooltipText="Power core."
+                    />
+                    <SingleStat
+                        Icon={<SvgWeapons fill={colors.weapons} size="1.6rem" />}
+                        current={weapons}
+                        total={weapon_hardpoints}
+                        tooltipText="Weapons equipped."
+                    />
+                    <SingleStat
+                        Icon={<SvgUtilities fill={colors.utilities} size="1.6rem" />}
+                        current={utilities}
+                        total={utility_slots}
+                        tooltipText="Utilities equipped."
+                    />
                 </Stack>
             </Box>
         </ClipThing>

@@ -1,11 +1,11 @@
-import { Box, Divider, Stack, Typography } from "@mui/material"
-import { fonts } from "../../../theme/theme"
-import { MysteryCrate } from "../../../types"
-import { FancyButton } from "../../Common/FancyButton"
+import { Box, Stack, Typography } from "@mui/material"
 import { SafePNG } from "../../../assets"
-import { ClipThing } from "../../Common/ClipThing"
 import { useTheme } from "../../../containers/theme"
-import { GenericCountdown } from "../../Claims/ClaimedRewards"
+import { useTimer } from "../../../hooks"
+import { colors, fonts } from "../../../theme/theme"
+import { MysteryCrate } from "../../../types"
+import { ClipThing } from "../../Common/ClipThing"
+import { FancyButton } from "../../Common/FancyButton"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
@@ -22,7 +22,6 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
             <Box
                 sx={{
                     height: "100%",
-                    minHeight: "50rem",
                     width: "100%",
                 }}
             >
@@ -43,7 +42,7 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
                                 px: ".8rem",
                                 py: "2rem",
                                 borderRadius: 1,
-                                height: "25rem",
+                                height: "20rem",
                                 boxShadow: "inset 0 0 12px 6px #00000040",
                                 background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
                                 border: "#00000060 1px solid",
@@ -59,71 +58,81 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
                                     backgroundSize: "contain",
                                 }}
                             />
+
+                            <Stack
+                                alignItems="center"
+                                sx={{ position: "absolute", bottom: "-.2rem", width: "100%", px: ".8rem", py: ".5rem", backgroundColor: "#00000010" }}
+                            >
+                                <Countdown dateTo={crate.locked_until} />
+                            </Stack>
                         </Box>
 
-                        <Stack alignItems={"flex-start"} sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
-                            <Typography variant={"h6"} sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
+                        <Stack sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
+                            <Typography variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                                 {crate.label}
                             </Typography>
-                            <Divider sx={{ width: "100%" }} color={theme.factionTheme.primary} />
-                            <Typography variant={"h6"} sx={{ color: primaryColor, textAlign: "start" }}>
+
+                            <Typography variant="h6" sx={{ color: primaryColor }}>
                                 {crate.description}
                             </Typography>
 
                             <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>
-                                {new Date() < crate.locked_until ? (
-                                    <>
-                                        <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBold }}>
-                                            open in:
-                                        </Typography>
-                                        <ClipThing
-                                            clipSize="8px"
-                                            border={{
-                                                isFancy: true,
-                                                borderColor: theme.factionTheme.primary,
-                                                borderThickness: ".1rem",
-                                            }}
-                                            corners={{
-                                                topLeft: true,
-                                                topRight: true,
-                                                bottomLeft: true,
-                                                bottomRight: true,
-                                            }}
-                                            opacity={0.7}
-                                            backgroundColor={theme.factionTheme.secondary}
-                                            sx={{ height: "100%" }}
-                                        >
-                                            <Stack sx={{ height: "100%", padding: "1rem" }}>
-                                                <GenericCountdown dateTo={crate.locked_until} />
-                                            </Stack>
-                                        </ClipThing>
-                                    </>
-                                ) : (
-                                    <FancyButton
-                                        excludeCaret
-                                        onClick={() => {
-                                            /*TODO: open crate function*/
-                                            return
-                                        }}
-                                        clipThingsProps={{
-                                            clipSize: "5px",
-                                            backgroundColor: primaryColor,
-                                            opacity: 1,
-                                            border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                            sx: { position: "relative", mt: "1rem", width: "100%" },
-                                        }}
-                                        sx={{ px: "1.6rem", py: ".6rem" }}
-                                    >
-                                        <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
-                                            OPEN
-                                        </Typography>
-                                    </FancyButton>
-                                )}
+                                <FancyButton
+                                    disabled={new Date() < crate.locked_until}
+                                    excludeCaret
+                                    onClick={() => {
+                                        /*TODO: open crate function*/
+                                        return
+                                    }}
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: primaryColor,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                                        sx: { position: "relative", mt: "1rem", width: "100%" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem" }}
+                                >
+                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                                        OPEN
+                                    </Typography>
+                                </FancyButton>
                             </Stack>
                         </Stack>
                     </Stack>
                 </ClipThing>
             </Box>
         </>
+    )
+}
+
+const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
+    const { days, hours, minutes, seconds } = useTimer(dateTo)
+
+    if (seconds === undefined) return null
+
+    return (
+        <Stack direction="row">
+            <SingleCountDown value={`${days}`} label="Days" />
+            <Typography sx={{ mx: ".5rem" }}>: </Typography>
+            <SingleCountDown value={`${hours}`} label="Hours" />
+            <Typography sx={{ mx: ".5rem" }}>: </Typography>
+            <SingleCountDown value={`${minutes}`} label="Minutes" />
+            <Typography sx={{ mx: ".5rem" }}>: </Typography>
+            <SingleCountDown value={`${seconds}`} label="Seconds" />
+        </Stack>
+    )
+}
+
+const SingleCountDown = ({ value, label }: { value: string; label: string }) => {
+    return (
+        <Stack alignItems="center">
+            <Typography variant="caption" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                {value}
+            </Typography>
+            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
+                {label}
+            </Typography>
+        </Stack>
     )
 }

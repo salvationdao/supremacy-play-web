@@ -220,13 +220,12 @@ const ConfirmModal = ({
             })
 
             if (!resp) return
-            console.log(resp)
             setReward(resp)
             newSnackbarMessage(`Successfully purchased ${mystery_crate_type} crate.`, "success")
             onClose()
         } catch (err) {
             setBuyError(typeof err === "string" ? err : "Failed to purchase item.")
-            console.debug(err)
+            console.error(err)
         } finally {
             setIsLoading(false)
         }
@@ -343,8 +342,6 @@ const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse | un
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "50%",
-                    boxShadow: 6,
                     outline: "none",
                 }}
             >

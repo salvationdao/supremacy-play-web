@@ -78,8 +78,15 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
             )
         }
 
-        return <WarMachineMarketDetailsInner marketItem={marketItem} marketItemDeets={marketItemDeets} primaryColor={theme.factionTheme.primary} />
-    }, [loadError, marketItem, marketItemDeets, theme.factionTheme.primary])
+        return (
+            <WarMachineMarketDetailsInner
+                marketItem={marketItem}
+                marketItemDeets={marketItemDeets}
+                primaryColor={marketItemDeets?.primaryColor || theme.factionTheme.primary}
+                backgroundColor={marketItemDeets?.backgroundColor || theme.factionTheme.background}
+            />
+        )
+    }, [loadError, marketItem, marketItemDeets, theme.factionTheme.background, theme.factionTheme.primary])
 
     return (
         <ClipThing
@@ -106,10 +113,12 @@ const WarMachineMarketDetailsInner = ({
     marketItem,
     marketItemDeets,
     primaryColor,
+    backgroundColor,
 }: {
     marketItem: MarketplaceBuyAuctionItem
     marketItemDeets: MarketItemDeets
     primaryColor: string
+    backgroundColor: string
 }) => {
     const listingDetails = useMemo(() => {
         const { buyout, auction, dutch_auction } = marketItem
@@ -148,7 +157,8 @@ const WarMachineMarketDetailsInner = ({
                 overflowY: "auto",
                 overflowX: "hidden",
                 mr: "1rem",
-                my: "1.2rem",
+                mt: "1.2rem",
+                mb: "3rem",
                 direction: "ltr",
                 scrollbarWidth: "none",
                 "::-webkit-scrollbar": {
@@ -159,7 +169,7 @@ const WarMachineMarketDetailsInner = ({
                     borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
-                    background: (theme) => theme.factionTheme.primary,
+                    background: primaryColor,
                     borderRadius: 3,
                 },
             }}
@@ -209,7 +219,7 @@ const WarMachineMarketDetailsInner = ({
                     {listingDetails}
                 </Stack>
 
-                <CrateDetails crate={mystery_crate} primaryColor={primaryColor} />
+                <CrateDetails crate={mystery_crate} primaryColor={primaryColor} backgroundColor={backgroundColor} />
             </Box>
         </Box>
     )
