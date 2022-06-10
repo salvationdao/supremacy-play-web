@@ -354,6 +354,7 @@ export interface Keycard {
     player_id: string
     blueprint_keycard_id: string
     count: number
+    market_listed_count: number
     created_at: string
     blueprints: KeycardBlueprint
 }

@@ -16,6 +16,7 @@ import { MysteryCrateItem } from "./MysteryCrateItem"
 interface GetCratesRequest {
     page: number
     page_size: number
+    exclude_opened: boolean
 }
 
 interface GetAssetsResponse {
@@ -27,7 +28,7 @@ export const MysteryCratesHangar = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
-    const [crates, setCrates] = useState<any[]>()
+    const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
@@ -40,10 +41,9 @@ export const MysteryCratesHangar = () => {
                 const resp = await send<GetAssetsResponse, GetCratesRequest>(GameServerKeys.GetPlayerMysteryCrates, {
                     page,
                     page_size: pageSize,
+                    exclude_opened: true,
                 })
 
-                console.log("hi")
-                console.log(resp)
                 if (!resp) return
                 setLoadError(undefined)
                 setCrates(resp.mystery_crates)
