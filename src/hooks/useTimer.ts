@@ -6,6 +6,7 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000) => {
     const [endTimeState, setEndTimeState] = useState<Date | undefined>(endTime)
     const [totalSecRemain, setTotalSecRemain] = useState<number>(9999999)
     const [delay, setDelay] = useState<number | null>(null)
+    const [days, setDays] = useState<number>()
     const [hours, setHours] = useState<number>()
     const [minutes, setMinutes] = useState<number>()
     const [seconds, setSeconds] = useState<number>()
@@ -23,9 +24,11 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000) => {
     useInterval(() => {
         setTotalSecRemain((t) => Math.max(t - 1, 0))
         const d = moment.duration(moment(endTimeState).diff(moment()))
-        const hours = Math.floor(d.asHours())
-        const minutes = Math.floor(d.asMinutes()) - hours * 60
-        const seconds = Math.floor(d.asSeconds()) - hours * 60 * 60 - minutes * 60
+        const days = Math.floor(d.asDays())
+        const hours = Math.floor(d.asHours()) - days * 24
+        const minutes = Math.floor(d.asMinutes()) - days * 24 * 60 - hours * 60
+        const seconds = Math.floor(d.asSeconds()) - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
+        setDays(Math.max(days, 0))
         setHours(Math.max(hours, 0))
         setMinutes(Math.max(minutes, 0))
         setSeconds(Math.max(seconds, 0))
@@ -38,6 +41,7 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000) => {
     return {
         setEndTimeState,
         totalSecRemain,
+        days,
         hours,
         minutes,
         seconds,
