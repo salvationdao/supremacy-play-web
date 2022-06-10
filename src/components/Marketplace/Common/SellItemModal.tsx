@@ -37,7 +37,6 @@ export const SellItemModal = ({ onClose }: Props) => {
     const [assetsList, setAssetsList] = useState<MechBasic[] | Keycard[] | MysteryCrate[] | null>(null)
     const [selectedAsset, setSelectedAsset] = useState<string | null>(null)
     const [saleType, setSaleType] = useState<SaleType>(SaleType.Buyout)
-    const [listingHours, setListingHours] = useState(1)
     const [askingPrice, setAskingPrice] = useState<string>("")
     const [auctionReservedPrice, setAuctionReservedPrice] = useState<string>("")
     const [dropRate, setDropRate] = useState<string>("")
@@ -90,7 +89,6 @@ export const SellItemModal = ({ onClose }: Props) => {
                 asking_price: hasBuyout || hasDutchAuction ? askingPrice : undefined,
                 auction_reserved_price: hasAuction || hasDutchAuction ? auctionReservedPrice : undefined,
                 dutch_auction_drop_rate: hasDutchAuction ? dropRate : undefined,
-                listing_duration_hours: listingHours,
             })
             onClose()
         } catch (err) {
@@ -368,44 +366,6 @@ export const SellItemModal = ({ onClose }: Props) => {
                                 </Select>
                             </>
                         )}
-
-                        <Typography sx={{ lineHeight: 1, mt: "2rem", mb: "1rem", fontWeight: 600 }}>LIST ITEM FOR:</Typography>
-                        <Select
-                            sx={{
-                                borderRadius: 0.5,
-                                "&:hover": {
-                                    backgroundColor: colors.darkNavy,
-                                },
-                                "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
-                            }}
-                            fullWidth
-                            defaultValue={1}
-                            value={listingHours}
-                            onChange={(e) => {
-                                setListingHours(typeof e.target.value === "number" ? e.target.value : parseInt(e.target.value, 10))
-                            }}
-                            MenuProps={{
-                                variant: "menu",
-                                sx: {
-                                    "&& .Mui-selected": {
-                                        backgroundColor: colors.darkerNeonBlue,
-                                    },
-                                },
-                                PaperProps: {
-                                    sx: {
-                                        backgroundColor: colors.darkNavy,
-                                        borderRadius: 0.5,
-                                    },
-                                },
-                            }}
-                        >
-                            {Array(10)
-                                .fill(true)
-                                .map((_, i) => {
-                                    const value = i + 1
-                                    return <MenuItem key={`listing-option-option-${value}`} value={value}>{`${value} hour${value !== 1 ? "s" : ""}`}</MenuItem>
-                                })}
-                        </Select>
 
                         {saleType !== SaleType.Auction && (
                             <>
