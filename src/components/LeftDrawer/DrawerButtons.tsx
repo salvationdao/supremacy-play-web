@@ -48,8 +48,8 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {ROUTES_ARRAY.map((r) => {
                     if (!r.leftDrawer) return null
-                    const { enable, requireAuth, label } = r.leftDrawer
-                    const disable = requireAuth && !userID
+                    const { enable, requireAuth, requireFaction, label } = r.leftDrawer
+                    const disable = (requireAuth || requireFaction) && !userID
                     const navigateTo = r.path.split("/:")[0]
 
                     return (

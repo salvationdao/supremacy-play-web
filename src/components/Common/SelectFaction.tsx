@@ -1,12 +1,12 @@
 import { useSnackbar, useSupremacy } from "../../containers"
 import { Faction } from "../../types"
-import { ClipThing } from "../Common/ClipThing"
+import { ClipThing } from "./ClipThing"
 import { fonts } from "../../theme/theme"
 import { Box, Fade, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useState } from "react"
 import { GameServerKeys } from "../../keys"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
-import { FancyButton } from "../Common/FancyButton"
+import { FancyButton } from "./FancyButton"
 
 export const SelectFaction = () => {
     const { factionsAll } = useSupremacy()
@@ -15,7 +15,7 @@ export const SelectFaction = () => {
     if (Object.keys(factionsAll).length < 3) return null
 
     return (
-        <Stack alignItems="center">
+        <Stack alignItems="center" sx={{ my: "auto" }}>
             <Typography variant="h1" sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
                 Choose Your Syndicate
             </Typography>

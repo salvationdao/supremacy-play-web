@@ -3,6 +3,7 @@ import { useState, SyntheticEvent, useEffect, useCallback } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ConnectButton } from "../components"
+import { SelectFaction } from "../components/Common/SelectFaction"
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
 import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
@@ -18,7 +19,7 @@ export enum MARKETPLACE_TABS {
 }
 
 export const MarketplacePage = () => {
-    const { userID } = useAuth()
+    const { userID, factionID } = useAuth()
 
     return (
         <Stack
@@ -33,16 +34,18 @@ export const MarketplacePage = () => {
                 boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
-            {!userID ? (
+            {!userID && (
                 <Stack spacing="1.3rem" alignItems="center" sx={{ alignSelf: "center", my: "auto", px: "3.6rem", py: "2.8rem", backgroundColor: "#00000060" }}>
                     <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                         You need to be logged in to view this page.
                     </Typography>
                     <ConnectButton width="12rem" />
                 </Stack>
-            ) : (
-                <MarketplacePageInner />
             )}
+
+            {userID && !factionID && <SelectFaction />}
+
+            {userID && factionID && <MarketplacePageInner />}
         </Stack>
     )
 }

@@ -10,6 +10,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom"
 import { ROUTES_MAP } from "../routes"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
+import { SelectFaction } from "../components/Common/SelectFaction"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -18,7 +19,7 @@ export enum HANGAR_TABS {
 }
 
 export const HangarPage = () => {
-    const { userID } = useAuth()
+    const { userID, factionID } = useAuth()
 
     return (
         <Stack
@@ -33,16 +34,18 @@ export const HangarPage = () => {
                 boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
-            {!userID ? (
+            {!userID && (
                 <Stack spacing="1.3rem" alignItems="center" sx={{ alignSelf: "center", my: "auto", px: "3.6rem", py: "2.8rem", backgroundColor: "#00000060" }}>
                     <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                         You need to be logged in to view this page.
                     </Typography>
                     <ConnectButton width="12rem" />
                 </Stack>
-            ) : (
-                <HangarPageInner />
             )}
+
+            {userID && !factionID && <SelectFaction />}
+
+            {userID && factionID && <HangarPageInner />}
         </Stack>
     )
 }

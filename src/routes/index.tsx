@@ -14,6 +14,7 @@ interface RouteStruct {
         enable: boolean
         label: string
         requireAuth?: boolean
+        requireFaction?: boolean
     }
     matchLeftDrawerID?: string
 }
@@ -40,6 +41,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             enable: true,
             label: "Hangar",
             requireAuth: true,
+            requireFaction: true,
         },
         matchLeftDrawerID: "hangar",
     },
@@ -52,6 +54,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             enable: true,
             label: "Storefront",
             requireAuth: true,
+            requireFaction: true,
         },
         matchLeftDrawerID: "storefront",
     },
@@ -71,6 +74,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             enable: true,
             label: "Marketplace",
             requireAuth: true,
+            requireFaction: true,
         },
         matchLeftDrawerID: "marketplace",
     },
@@ -83,6 +87,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             enable: false,
             label: "Contracts",
             requireAuth: false,
+            requireFaction: false,
         },
         matchLeftDrawerID: "contracts",
     },

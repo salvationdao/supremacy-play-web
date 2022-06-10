@@ -1,6 +1,6 @@
 import { Fade, Stack } from "@mui/material"
 import { ConnectWallet } from "./ConnectWallet"
-import { SelectFaction } from "./SelectFaction"
+import { SelectFaction } from "../Common/SelectFaction"
 import { CodeRedemption } from "./CodeRedemption"
 import { ClaimedRewards } from "./ClaimedRewards"
 import { useAuth } from "../../containers"
