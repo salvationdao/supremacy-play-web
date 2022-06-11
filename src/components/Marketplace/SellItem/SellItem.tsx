@@ -1,11 +1,12 @@
 import { Box, MenuItem, Select, Stack, Typography } from "@mui/material"
-import { ReactNode, useState } from "react"
+import { useState } from "react"
 import { WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { colors, fonts } from "../../../theme/theme"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
+import { QuestionSection } from "./QuestionSection"
 
 const itemTypes: {
     label: string
@@ -179,39 +180,20 @@ export const SellItem = () => {
                                     </Stack>
                                 </ClipThing>
                             </QuestionSection>
+
+                            {/* Buy out price */}
+                            <QuestionSection
+                                primaryColor={primaryColor}
+                                question="Buy out price"
+                                description="You can choose to sell your war machines, keycards, and mystery crates."
+                            >
+                                aaa
+                            </QuestionSection>
                         </Stack>
                     </Box>
                 </Box>
             </Stack>
         </ClipThing>
-    )
-}
-
-const QuestionSection = ({
-    primaryColor,
-    question,
-    description,
-    children,
-}: {
-    primaryColor: string
-    question: string
-    description?: string
-    children: ReactNode
-}) => {
-    return (
-        <Stack direction="row" alignItems="flex-start" spacing="3rem">
-            <Box sx={{ width: "36rem" }}>
-                <Typography gutterBottom variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoHeavy }}>
-                    {question}
-                </Typography>
-                {description && (
-                    <Typography variant="h6" sx={{ color: colors.lightGrey }}>
-                        {description}
-                    </Typography>
-                )}
-            </Box>
-            {children}
-        </Stack>
     )
 }
 
