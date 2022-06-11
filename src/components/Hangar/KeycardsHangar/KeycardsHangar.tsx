@@ -2,7 +2,7 @@ import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
-import { SafePNG } from "../../../assets"
+import { KeycardPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
@@ -120,11 +120,11 @@ export const KeycardsHangar = () => {
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "43rem" }}>
                     <Box
                         sx={{
-                            width: "9rem",
-                            height: "9rem",
+                            width: "10rem",
+                            height: "10rem",
                             opacity: 0.6,
                             filter: "grayscale(100%)",
-                            background: `url(${SafePNG})`,
+                            background: `url(${KeycardPNG})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "top center",
                             backgroundSize: "contain",
