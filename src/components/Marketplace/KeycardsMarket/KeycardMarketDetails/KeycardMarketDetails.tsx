@@ -137,49 +137,50 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                 },
             }}
         >
-            <Box
-                sx={{
-                    maxHeight: 0,
-                    pt: "2rem",
-                    pb: "3.8rem",
-                    px: "3rem",
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
-                    gap: "3.5rem",
-                    justifyContent: "center",
-                }}
-            >
-                <ImagesPreview
-                    media={[
-                        {
-                            imageUrl: keycard?.image_url || SafePNG,
-                            videoUrl: keycard?.animation_url || SafePNG,
-                        },
-                    ]}
-                    primaryColor={primaryColor}
-                />
+            <Box sx={{ direction: "ltr", height: 0 }}>
+                <Box
+                    sx={{
+                        pt: "2rem",
+                        pb: "3.8rem",
+                        px: "3rem",
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
+                        gap: "3.5rem",
+                        justifyContent: "center",
+                    }}
+                >
+                    <ImagesPreview
+                        media={[
+                            {
+                                imageUrl: keycard?.image_url || SafePNG,
+                                videoUrl: keycard?.animation_url || SafePNG,
+                            },
+                        ]}
+                        primaryColor={primaryColor}
+                    />
 
-                <Stack spacing="2rem">
-                    <Box>
-                        <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
-                            KEYCARD
-                        </Typography>
+                    <Stack spacing="2rem">
+                        <Box>
+                            <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
+                                KEYCARD
+                            </Typography>
 
-                        <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            {keycard?.label || "KEYCARD"}
-                        </Typography>
-                    </Box>
+                            <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                {keycard?.label || "KEYCARD"}
+                            </Typography>
+                        </Box>
 
-                    <ListingType primaryColor={primaryColor} listingTypeLabel="BUY NOW" icon={<SvgWallet fill={primaryColor} />} />
+                        <ListingType primaryColor={primaryColor} listingTypeLabel="BUY NOW" icon={<SvgWallet fill={primaryColor} />} />
 
-                    <Owner owner={owner} />
+                        <Owner owner={owner} />
 
-                    <Dates createdAt={created_at} endAt={end_at} />
+                        <Dates createdAt={created_at} endAt={end_at} />
 
-                    {listingDetails}
-                </Stack>
+                        {listingDetails}
+                    </Stack>
 
-                <KeycardDetails keycard={keycard} primaryColor={primaryColor} />
+                    <KeycardDetails keycard={keycard} primaryColor={primaryColor} />
+                </Box>
             </Box>
         </Box>
     )

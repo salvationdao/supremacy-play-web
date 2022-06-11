@@ -85,22 +85,23 @@ export const KeycardsHangar = () => {
 
         if (keycards && keycards.length > 0) {
             return (
-                <Box
-                    sx={{
-                        width: "100%",
-                        pt: ".5rem",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
-                        gap: "2.4rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: 0,
-                        overflow: "visible",
-                    }}
-                >
-                    {keycards.map((keycard, index) => (
-                        <KeycardItem key={`storefront-keycard-${keycard.id}-${index}`} keycard={keycard} />
-                    ))}
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            pt: ".5rem",
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
+                            gap: "2.4rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                        }}
+                    >
+                        {keycards.map((keycard, index) => (
+                            <KeycardItem key={`storefront-keycard-${keycard.id}-${index}`} keycard={keycard} />
+                        ))}
+                    </Box>
                 </Box>
             )
         }

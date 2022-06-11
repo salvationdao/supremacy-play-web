@@ -103,22 +103,24 @@ export const MysteryCratesStore = () => {
 
         if (crates && crates.length > 0) {
             return (
-                <Box
-                    sx={{
-                        width: "100%",
-                        pt: ".5rem",
-                        display: "grid",
-                        gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(min-content, 40%))" : "repeat(auto-fill, minmax(32rem, 1fr))",
-                        gap: enlargedView ? "5rem" : "2.4rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: enlargedView ? "100%" : 0,
-                        overflow: "visible",
-                    }}
-                >
-                    {crates.map((crate, index) => (
-                        <MysteryCrateStoreItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
-                    ))}
+                <Box sx={{ direction: "ltr", height: enlargedView ? "100%" : 0 }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            pt: ".5rem",
+                            display: "grid",
+                            gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(min-content, 40%))" : "repeat(auto-fill, minmax(32rem, 1fr))",
+                            gap: enlargedView ? "5rem" : "2.4rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                            height: "100%",
+                        }}
+                    >
+                        {crates.map((crate, index) => (
+                            <MysteryCrateStoreItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
+                        ))}
+                    </Box>
                 </Box>
             )
         }

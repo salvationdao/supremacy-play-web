@@ -1,5 +1,6 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useHistory } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -9,16 +10,15 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
-import { SellItemModal } from "../Common/SellItemModal"
 import { ChipFilter, RangeFilter, SortAndFilters } from "../SortAndFilters"
 import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
 import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem/MysteryCrateMarketItem"
 
 export const MysteryCratesMarket = () => {
+    const history = useHistory()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
-    const [sellModalOpen, toggleSellModalOpen] = useToggle()
 
     // Items
     const [isLoading, setIsLoading] = useState(true)
@@ -129,22 +129,23 @@ export const MysteryCratesMarket = () => {
 
         if (crateItems && crateItems.length > 0) {
             return (
-                <Box
-                    sx={{
-                        width: "100%",
-                        py: "1rem",
-                        display: "grid",
-                        gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
-                        gap: "1.3rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: 0,
-                        overflow: "visible",
-                    }}
-                >
-                    {crateItems.map((item) => (
-                        <MysteryCrateMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
-                    ))}
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            py: "1rem",
+                            display: "grid",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
+                            gap: "1.3rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                        }}
+                    >
+                        {crateItems.map((item) => (
+                            <MysteryCrateMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
+                        ))}
+                    </Box>
                 </Box>
             )
         }
@@ -183,154 +184,150 @@ export const MysteryCratesMarket = () => {
     }, [loadError, crateItems, isLoading, theme.factionTheme.primary, isGridView])
 
     return (
-        <>
-            <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-                <SortAndFilters
-                    initialSearch={search}
-                    onSetSearch={setSearch}
-                    initialSort={sort}
-                    onSetSort={setSort}
-                    chipFilters={[listingTypeFilterSection.current]}
-                    rangeFilters={[priceRangeFilter.current]}
-                />
+        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                initialSort={sort}
+                onSetSort={setSort}
+                chipFilters={[listingTypeFilterSection.current]}
+                rangeFilters={[priceRangeFilter.current]}
+            />
 
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
-                    }}
-                    opacity={0.7}
-                    backgroundColor={theme.factionTheme.background}
-                    sx={{ height: "100%", flex: 1 }}
-                >
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <Stack sx={{ flex: 1 }}>
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-                                sx={{
-                                    px: "2rem",
-                                    py: "2.2rem",
-                                    backgroundColor: "#00000070",
-                                    borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        alignSelf: "flex-start",
-                                        flexShrink: 0,
-                                        mr: "1.2rem",
-                                        width: "7rem",
-                                        height: "5.2rem",
-                                        background: `url(${SafePNG})`,
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "center",
-                                        backgroundSize: "cover",
-                                    }}
-                                />
-                                <Box sx={{ mr: "2rem" }}>
-                                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                        MYSTERY CRATES
-                                    </Typography>
-                                    <Typography sx={{ fontSize: "1.85rem" }}>Explore what other citizens have to offer.</Typography>
-                                </Box>
-
-                                <FancyButton
-                                    excludeCaret
-                                    clipThingsProps={{
-                                        clipSize: "9px",
-                                        backgroundColor: colors.red,
-                                        opacity: 1,
-                                        border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                                        sx: { position: "relative", ml: "auto" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                    onClick={() => toggleSellModalOpen(true)}
-                                >
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            color: "#FFFFFF",
-                                            fontFamily: fonts.nostromoBlack,
-                                        }}
-                                    >
-                                        SELL ITEM
-                                    </Typography>
-                                </FancyButton>
-                            </Stack>
-
-                            <TotalAndPageSizeOptions
-                                countItems={crateItems?.length}
-                                totalItems={totalItems}
-                                pageSize={pageSize}
-                                setPageSize={setPageSize}
-                                changePage={changePage}
-                                isGridView={isGridView}
-                                toggleIsGridView={toggleIsGridView}
-                            />
-
-                            <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                                <Box
-                                    sx={{
-                                        ml: "1.9rem",
-                                        mr: ".5rem",
-                                        pr: "1.4rem",
-                                        my: "1rem",
-                                        flex: 1,
-                                        overflowY: "auto",
-                                        overflowX: "hidden",
-                                        direction: "ltr",
-
-                                        "::-webkit-scrollbar": {
-                                            width: ".4rem",
-                                        },
-                                        "::-webkit-scrollbar-track": {
-                                            background: "#FFFFFF15",
-                                            borderRadius: 3,
-                                        },
-                                        "::-webkit-scrollbar-thumb": {
-                                            background: theme.factionTheme.primary,
-                                            borderRadius: 3,
-                                        },
-                                    }}
-                                >
-                                    {content}
-                                </Box>
-                            </Stack>
-                        </Stack>
-
-                        {totalPages > 1 && (
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%", flex: 1 }}
+            >
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <Stack sx={{ flex: 1 }}>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            sx={{
+                                px: "2rem",
+                                py: "2.2rem",
+                                backgroundColor: "#00000070",
+                                borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                            }}
+                        >
                             <Box
                                 sx={{
-                                    px: "1rem",
-                                    py: ".7rem",
-                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                    backgroundColor: "#00000070",
+                                    alignSelf: "flex-start",
+                                    flexShrink: 0,
+                                    mr: "1.2rem",
+                                    width: "7rem",
+                                    height: "5.2rem",
+                                    background: `url(${SafePNG})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "cover",
+                                }}
+                            />
+                            <Box sx={{ mr: "2rem" }}>
+                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    MYSTERY CRATES
+                                </Typography>
+                                <Typography sx={{ fontSize: "1.85rem" }}>Explore what other citizens have to offer.</Typography>
+                            </Box>
+
+                            <FancyButton
+                                excludeCaret
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: colors.red,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
+                                    sx: { position: "relative", ml: "auto" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
+                                onClick={() => history.push("/marketplace/sell")}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: "#FFFFFF",
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    SELL ITEM
+                                </Typography>
+                            </FancyButton>
+                        </Stack>
+
+                        <TotalAndPageSizeOptions
+                            countItems={crateItems?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            setPageSize={setPageSize}
+                            changePage={changePage}
+                            isGridView={isGridView}
+                            toggleIsGridView={toggleIsGridView}
+                        />
+
+                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                            <Box
+                                sx={{
+                                    ml: "1.9rem",
+                                    mr: ".5rem",
+                                    pr: "1.4rem",
+                                    my: "1rem",
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: theme.factionTheme.primary,
+                                        borderRadius: 3,
+                                    },
                                 }}
                             >
-                                <Pagination
-                                    size="medium"
-                                    count={totalPages}
-                                    page={page}
-                                    sx={{
-                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                        ".Mui-selected": {
-                                            color: (theme) => theme.factionTheme.secondary,
-                                            backgroundColor: `${theme.factionTheme.primary} !important`,
-                                        },
-                                    }}
-                                    onChange={(e, p) => changePage(p)}
-                                    showFirstButton
-                                    showLastButton
-                                />
+                                {content}
                             </Box>
-                        )}
+                        </Stack>
                     </Stack>
-                </ClipThing>
-            </Stack>
 
-            {sellModalOpen && <SellItemModal onClose={() => toggleSellModalOpen(false)} />}
-        </>
+                    {totalPages > 1 && (
+                        <Box
+                            sx={{
+                                px: "1rem",
+                                py: ".7rem",
+                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                backgroundColor: "#00000070",
+                            }}
+                        >
+                            <Pagination
+                                size="medium"
+                                count={totalPages}
+                                page={page}
+                                sx={{
+                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                    ".Mui-selected": {
+                                        color: (theme) => theme.factionTheme.secondary,
+                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                                    },
+                                }}
+                                onChange={(e, p) => changePage(p)}
+                                showFirstButton
+                                showLastButton
+                            />
+                        </Box>
+                    )}
+                </Stack>
+            </ClipThing>
+        </Stack>
     )
 }

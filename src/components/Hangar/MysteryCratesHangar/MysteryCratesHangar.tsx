@@ -87,22 +87,23 @@ export const MysteryCratesHangar = () => {
 
         if (crates && crates.length > 0) {
             return (
-                <Box
-                    sx={{
-                        width: "100%",
-                        pt: ".5rem",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
-                        gap: "2.4rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: 0,
-                        overflow: "visible",
-                    }}
-                >
-                    {crates.map((crate, index) => (
-                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`} crate={crate} />
-                    ))}
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            pt: ".5rem",
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
+                            gap: "2.4rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                        }}
+                    >
+                        {crates.map((crate, index) => (
+                            <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`} crate={crate} />
+                        ))}
+                    </Box>
                 </Box>
             )
         }

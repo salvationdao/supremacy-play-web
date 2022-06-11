@@ -62,8 +62,10 @@ export const SellItem = () => {
                         },
                     }}
                 >
-                    <Box sx={{ direction: "ltr", height: 0, pt: "2rem", pb: "3.8rem", px: "3rem" }}>
-                        <Box sx={{ height: "1000rem", width: "30rem", backgroundColor: "red" }}></Box>
+                    <Box sx={{ direction: "ltr", height: 0 }}>
+                        <Box sx={{ pt: "2rem", pb: "3.8rem", px: "3rem" }}>
+                            <Box sx={{ height: "1000rem", width: "30rem", backgroundColor: "red" }}></Box>
+                        </Box>
                     </Box>
                 </Box>
             </Stack>

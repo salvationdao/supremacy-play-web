@@ -131,22 +131,24 @@ const WarMachinesHangarInner = ({
 
     const content = useMemo(() => {
         return (
-            <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem", height: 0 }}>
-                {mechs.map((mech, i) => (
-                    <WarMachineHangarItem
-                        key={`hangar-mech-${mech.id}`}
-                        index={i}
-                        mech={mech}
-                        isSelected={mech.id === selectedMechDetails?.id}
-                        setSelectedMechDetails={setSelectedMechDetails}
-                        setDeployMechModalOpen={setDeployMechModalOpen}
-                        setLeaveMechModalOpen={setLeaveMechModalOpen}
-                        setHistoryMechModalOpen={setHistoryMechModalOpen}
-                        setRentalMechModalOpen={setRentalMechModalOpen}
-                        setSellMechModalOpen={setSellMechModalOpen}
-                    />
-                ))}
-            </Stack>
+            <Box sx={{ direction: "ltr", height: 0 }}>
+                <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem" }}>
+                    {mechs.map((mech, i) => (
+                        <WarMachineHangarItem
+                            key={`hangar-mech-${mech.id}`}
+                            index={i}
+                            mech={mech}
+                            isSelected={mech.id === selectedMechDetails?.id}
+                            setSelectedMechDetails={setSelectedMechDetails}
+                            setDeployMechModalOpen={setDeployMechModalOpen}
+                            setLeaveMechModalOpen={setLeaveMechModalOpen}
+                            setHistoryMechModalOpen={setHistoryMechModalOpen}
+                            setRentalMechModalOpen={setRentalMechModalOpen}
+                            setSellMechModalOpen={setSellMechModalOpen}
+                        />
+                    ))}
+                </Stack>
+            </Box>
         )
     }, [
         mechs,
