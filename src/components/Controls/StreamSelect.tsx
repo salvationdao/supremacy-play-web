@@ -23,7 +23,11 @@ export const StreamSelect = () => {
                     "&:hover": {
                         backgroundColor: colors.darkNavy,
                     },
-                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
+                    ".MuiTypography-root": {
+                        px: ".8rem",
+                        pt: ".48rem",
+                    },
+                    "& .MuiSelect-outlined": { p: 0 },
                 }}
                 defaultValue={currentStream?.host}
                 value={currentStream ? currentStream.host : ""}
@@ -53,7 +57,9 @@ export const StreamSelect = () => {
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography variant="body2">{x.name}</Typography>
+                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                {x.name}
+                            </Typography>
                         </MenuItem>
                     )
                 })}

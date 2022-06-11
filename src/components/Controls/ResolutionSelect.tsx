@@ -25,7 +25,11 @@ export const ResolutionSelect = () => {
                     "&:hover": {
                         backgroundColor: colors.darkNavy,
                     },
-                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
+                    ".MuiTypography-root": {
+                        px: ".8rem",
+                        pt: ".48rem",
+                    },
+                    "& .MuiSelect-outlined": { p: 0 },
                 }}
                 defaultValue={streamResolutions[0]}
                 value={selectedResolution || streamResolutions[0] || -1}
@@ -57,7 +61,7 @@ export const ResolutionSelect = () => {
                                 },
                             }}
                         >
-                            <Typography textTransform="uppercase" variant="body2">
+                            <Typography textTransform="uppercase" variant="body2" sx={{ lineHeight: 1 }}>
                                 {x === 0 ? "Automatic" : `${x}P`}
                             </Typography>
                         </MenuItem>

@@ -146,11 +146,13 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                             <Select
                                 sx={{
                                     width: "100%",
-                                    px: "1rem",
-                                    py: ".5rem",
                                     borderRadius: 0.5,
                                     "&:hover": {
                                         backgroundColor: colors.darkNavy,
+                                    },
+                                    ".MuiTypography-root": {
+                                        px: "1rem",
+                                        py: ".5rem",
                                     },
                                     "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
                                     ".MuiOutlinedInput-notchedOutline": {
