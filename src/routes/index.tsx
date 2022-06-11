@@ -4,6 +4,7 @@ import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
+import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 
 interface RouteStruct {
     id: string
@@ -11,8 +12,8 @@ interface RouteStruct {
     exact: boolean
     Component?: () => JSX.Element | null
     requireAuth: boolean
-    authTitle?: string
-    authDescription?: string
+    authTitle?: string // If omitted, it'll have a default title
+    authDescription?: string // If omitted, it'll have a default description
     requireFaction: boolean
     leftDrawer?: {
         enable: boolean
@@ -35,6 +36,8 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchLeftDrawerID: "home",
     },
+
+    // Hangar
     hangar: {
         id: "hangar",
         path: "/hangar/:type?",
@@ -48,6 +51,8 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchLeftDrawerID: "hangar",
     },
+
+    // Storefront
     storefront: {
         id: "storefront",
         path: "/storefront/:type?",
@@ -60,6 +65,17 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Storefront",
         },
         matchLeftDrawerID: "storefront",
+    },
+
+    // Marketplace
+    marketplace_sell: {
+        id: "marketplace_sell",
+        path: "/marketplace/sell",
+        exact: true,
+        Component: MarketplaceSellPage,
+        requireAuth: true,
+        requireFaction: true,
+        matchLeftDrawerID: "marketplace",
     },
     marketplace_item: {
         id: "marketplace_item",
@@ -83,6 +99,8 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchLeftDrawerID: "marketplace",
     },
+
+    // Contract
     contracts: {
         id: "contracts",
         path: "/contracts",
@@ -96,6 +114,8 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchLeftDrawerID: "contracts",
     },
+
+    // Others
     claim: {
         id: "claim",
         path: "/claim",

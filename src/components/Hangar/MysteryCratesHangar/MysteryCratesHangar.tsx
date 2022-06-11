@@ -203,11 +203,10 @@ export const MysteryCratesHangar = () => {
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                mt: ".1rem",
-                                mb: ".8rem",
-                                ml: ".8rem",
-                                pl: "1rem",
-                                pr: "1.5rem",
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
                                 flex: 1,
                                 overflowY: "auto",
                                 overflowX: "hidden",

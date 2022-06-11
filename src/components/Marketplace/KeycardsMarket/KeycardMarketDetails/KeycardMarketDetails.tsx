@@ -118,9 +118,10 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                 flex: 1,
                 overflowY: "auto",
                 overflowX: "hidden",
+                ml: "2rem",
                 mr: "1rem",
-                mt: "1.2rem",
-                mb: "3rem",
+                pr: "1rem",
+                my: "2rem",
                 direction: "ltr",
                 scrollbarWidth: "none",
                 "::-webkit-scrollbar": {
@@ -139,8 +140,9 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
             <Box
                 sx={{
                     maxHeight: 0,
-                    px: "5rem",
-                    py: "2.8rem",
+                    pt: "2rem",
+                    pb: "3.8rem",
+                    px: "3rem",
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
                     gap: "3.5rem",

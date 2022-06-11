@@ -187,10 +187,10 @@ const WarMachinesHangarInner = ({
 
                     <Box
                         sx={{
-                            my: ".8rem",
-                            ml: ".8rem",
-                            mr: ".4rem",
-                            pr: ".4rem",
+                            ml: "1.2rem",
+                            mr: ".7rem",
+                            pr: ".5rem",
+                            my: "1rem",
                             flex: 1,
                             overflowY: "auto",
                             overflowX: "hidden",

@@ -85,12 +85,11 @@ const Content = ({
 
             <Box
                 sx={{
-                    my: ".8rem",
-                    ml: ".3rem",
-                    pl: ".5rem",
+                    flex: 1,
+                    ml: ".8rem",
                     mr: ".3rem",
                     pr: ".5rem",
-                    flex: 1,
+                    my: "1rem",
                     overflowY: "auto",
                     overflowX: "hidden",
                     direction: "ltr",

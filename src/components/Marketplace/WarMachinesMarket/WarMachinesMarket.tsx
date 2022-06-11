@@ -295,10 +295,10 @@ export const WarMachinesMarket = () => {
                             <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                                 <Box
                                     sx={{
-                                        my: ".8rem",
-                                        ml: ".8rem",
-                                        pl: "1rem",
-                                        pr: "1.5rem",
+                                        ml: "1.9rem",
+                                        mr: ".5rem",
+                                        pr: "1.4rem",
+                                        my: "1rem",
                                         flex: 1,
                                         overflowY: "auto",
                                         overflowX: "hidden",

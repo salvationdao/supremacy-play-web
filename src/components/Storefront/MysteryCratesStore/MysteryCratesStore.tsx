@@ -261,12 +261,11 @@ export const MysteryCratesStore = () => {
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                mt: ".1rem",
-                                mb: ".8rem",
-                                ml: ".8rem",
-                                pl: "1rem",
-                                pr: "1.5rem",
                                 flex: 1,
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 direction: "ltr",

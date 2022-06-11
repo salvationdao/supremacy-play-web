@@ -76,7 +76,7 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                                 border: { isFancy: true, borderColor: colors.neonBlue, borderThickness: "2px" },
                                 sx: { position: "relative", mt: "2.4rem" },
                             }}
-                            sx={{ px: "1.6rem", py: ".6rem", color: colors.neonBlue }}
+                            sx={{ px: "1.6rem", py: ".7rem", color: colors.neonBlue }}
                             onClick={() => {
                                 toggleClosed(true)
                                 onAcknowledged()

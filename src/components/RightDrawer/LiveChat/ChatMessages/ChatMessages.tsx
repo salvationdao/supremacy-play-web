@@ -113,10 +113,10 @@ const ChatMessagesInner = ({
                 sx={{
                     flex: 1,
                     position: "relative",
-                    my: ".6rem",
-                    mr: ".64rem",
-                    pl: "1.52rem",
+                    ml: "1.5rem",
+                    mr: ".8rem",
                     pr: "1.6rem",
+                    my: ".6rem",
                     overflowY: "auto",
                     overflowX: "hidden",
                     direction: "ltr",
