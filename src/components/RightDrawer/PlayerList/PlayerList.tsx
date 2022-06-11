@@ -1,8 +1,9 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { Dispatch, useState } from "react"
+import { Dispatch, useMemo, useState } from "react"
 import { PlayerListContent } from "../.."
 import { useAuth, useSupremacy } from "../../../containers"
-import { acronym } from "../../../helpers"
+import { useTheme } from "../../../containers/theme"
+import { acronym, shadeColor } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
 
@@ -31,6 +32,9 @@ const Content = ({
     activePlayers: User[]
     setActivePlayers: Dispatch<React.SetStateAction<User[]>>
 }) => {
+    const theme = useTheme()
+    const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -60), [theme.factionTheme.primary])
+
     return (
         <Stack sx={{ flex: 1 }}>
             <Stack
@@ -42,7 +46,7 @@ const Content = ({
                     pl: "2.2rem",
                     pr: "4.8rem",
                     height: `${5}rem`,
-                    background: (theme) => `${theme.factionTheme.primary}40`,
+                    background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
                     boxShadow: 1.5,
                 }}
             >
