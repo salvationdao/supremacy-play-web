@@ -56,7 +56,7 @@ export const SellItem = () => {
                         sx={{
                             alignSelf: "flex-start",
                             flexShrink: 0,
-                            mr: "1.2rem",
+                            mr: "1.6rem",
                             width: "7rem",
                             height: "5.2rem",
                             background: `url(${WarMachineIconPNG})`,
@@ -201,7 +201,7 @@ const QuestionSection = ({
     return (
         <Stack direction="row" alignItems="flex-start" spacing="3rem">
             <Box sx={{ width: "36rem" }}>
-                <Typography gutterBottom variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                <Typography gutterBottom variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoHeavy }}>
                     {question}
                 </Typography>
                 {description && (

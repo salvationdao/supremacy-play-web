@@ -242,7 +242,7 @@ export const WarMachinesMarket = () => {
                                 sx={{
                                     alignSelf: "flex-start",
                                     flexShrink: 0,
-                                    mr: "1.2rem",
+                                    mr: "1.6rem",
                                     width: "7rem",
                                     height: "5.2rem",
                                     background: `url(${WarMachineIconPNG})`,

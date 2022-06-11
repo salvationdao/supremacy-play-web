@@ -188,7 +188,7 @@ export const MysteryCratesStore = () => {
                         <Box
                             sx={{
                                 flexShrink: 0,
-                                mr: "1.2rem",
+                                mr: "1.6rem",
                                 width: "7rem",
                                 height: "6rem",
                                 background: `url(${SafePNG})`,
