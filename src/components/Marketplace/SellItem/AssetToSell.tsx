@@ -76,10 +76,9 @@ export const AssetToSell = ({
                 )}
             </QuestionSection>
 
-            {assetChooseModalOpen && itemType && (
+            {assetChooseModalOpen && itemType && !assetToSell && (
                 <AssetChooseModal
                     open={assetChooseModalOpen}
-                    question={question}
                     itemType={itemType}
                     setAssetToSell={setAssetToSell}
                     onClose={() => toggleAssetChooseModalOpen(false)}

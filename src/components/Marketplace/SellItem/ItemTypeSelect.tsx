@@ -5,9 +5,17 @@ import { colors } from "../../../theme/theme"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { QuestionSection } from "./QuestionSection"
-import { itemTypes } from "./SellItem"
+import { AssetToSellStruct, itemTypes } from "./SellItem"
 
-export const ItemTypeSelect = ({ itemType, setItemType }: { itemType?: ItemType; setItemType: React.Dispatch<React.SetStateAction<ItemType | undefined>> }) => {
+export const ItemTypeSelect = ({
+    itemType,
+    setItemType,
+    setAssetToSell,
+}: {
+    itemType?: ItemType
+    setItemType: React.Dispatch<React.SetStateAction<ItemType | undefined>>
+    setAssetToSell: React.Dispatch<React.SetStateAction<AssetToSellStruct | undefined>>
+}) => {
     const theme = useTheme()
 
     const itemTypeLabel = useMemo(() => itemTypes.find((i) => i.value === itemType)?.label, [itemType])
@@ -84,7 +92,13 @@ export const ItemTypeSelect = ({ itemType, setItemType }: { itemType?: ItemType;
                                 <MenuItem
                                     key={x.value + i}
                                     value={x.value}
-                                    onClick={() => setItemType(x.value)}
+                                    onClick={() => {
+                                        setItemType((prev) => {
+                                            if (prev === x.value) return prev
+                                            setAssetToSell(undefined)
+                                            return x.value
+                                        })
+                                    }}
                                     sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                 >
                                     <Typography textTransform="uppercase" variant="h6">

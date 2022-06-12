@@ -11,8 +11,10 @@ import { ItemTypeSelect } from "./ItemTypeSelect"
 
 export interface AssetToSellStruct {
     imageUrl: string
+    videoUrl: string
     label: string
-    subtitle: ReactNode
+    description?: string
+    tier?: string
 }
 
 export const itemTypes: {
@@ -111,7 +113,7 @@ export const SellItem = () => {
                     <Box sx={{ direction: "ltr", height: 0 }}>
                         <Stack spacing="3rem" sx={{ px: "3rem", py: "1.8rem" }}>
                             {/* Item type select */}
-                            <ItemTypeSelect itemType={itemType} setItemType={setItemType} />
+                            <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} />
 
                             {/* Asset to sell */}
                             <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
