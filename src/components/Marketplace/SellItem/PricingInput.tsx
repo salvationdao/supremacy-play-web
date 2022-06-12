@@ -5,14 +5,26 @@ import { colors } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 import { QuestionSection } from "./QuestionSection"
 
-export const BuyoutPricingInput = ({ buyoutPrice, setBuyoutPrice }: { buyoutPrice: string; setBuyoutPrice: React.Dispatch<React.SetStateAction<string>> }) => {
+export const PricingInput = ({
+    price,
+    setPrice,
+    question,
+    description,
+    placeholder,
+}: {
+    price: string
+    setPrice: React.Dispatch<React.SetStateAction<string>>
+    question: string
+    description: string
+    placeholder: string
+}) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
     return (
-        <QuestionSection primaryColor={primaryColor} question="Buyout Price" description="A buyer can pay this amount to immediately purchase your item.">
+        <QuestionSection primaryColor={primaryColor} question={question} description={description}>
             <ClipThing
                 clipSize="5px"
                 clipSlantSize="2px"
@@ -28,7 +40,7 @@ export const BuyoutPricingInput = ({ buyoutPrice, setBuyoutPrice }: { buyoutPric
                     <TextField
                         variant="outlined"
                         hiddenLabel
-                        placeholder={buyoutPrice || "Enter buyout price..."}
+                        placeholder={placeholder}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -38,7 +50,6 @@ export const BuyoutPricingInput = ({ buyoutPrice, setBuyoutPrice }: { buyoutPric
                         }}
                         sx={{
                             backgroundColor: "#00000090",
-                            // ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${primaryColor}CC .2rem solid` },
                             ".MuiOutlinedInput-input": {
                                 px: "1.5rem",
                                 py: "1.5rem",
@@ -52,9 +63,9 @@ export const BuyoutPricingInput = ({ buyoutPrice, setBuyoutPrice }: { buyoutPric
                             ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                         }}
                         type="number"
-                        value={buyoutPrice}
+                        value={price}
                         onChange={(e) => {
-                            setBuyoutPrice(e.target.value)
+                            setPrice(e.target.value)
                         }}
                     />
                 </Stack>

@@ -7,7 +7,7 @@ import { fonts } from "../../../theme/theme"
 import { ItemType, ListingType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
-import { BuyoutPricingInput } from "./BuyoutPricingInput"
+import { PricingInput } from "./PricingInput"
 import { ItemTypeSelect } from "./ItemTypeSelect"
 import { ListingTypeSelect } from "./ListingTypeSelect"
 
@@ -55,8 +55,6 @@ export const SellItem = () => {
 
     // Others
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
-    const backgroundColor = theme.factionTheme.background
 
     return (
         <ClipThing
@@ -130,7 +128,7 @@ export const SellItem = () => {
                     }}
                 >
                     <Box sx={{ direction: "ltr", height: 0 }}>
-                        <Stack spacing="3.6rem" sx={{ px: "3rem", py: "1.8rem" }}>
+                        <Stack spacing="4rem" sx={{ px: "3rem", py: "1.8rem" }}>
                             {/* Item type select */}
                             <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} setListingType={setListingType} />
 
@@ -141,7 +139,53 @@ export const SellItem = () => {
                             <ListingTypeSelect itemType={itemType} listingType={listingType} setListingType={setListingType} />
 
                             {/* Pricing inputs */}
-                            {listingType === ListingType.Buyout && <BuyoutPricingInput buyoutPrice={buyoutPrice} setBuyoutPrice={setBuyoutPrice} />}
+                            {(listingType === ListingType.Buyout || listingType === ListingType.Auction) && (
+                                <PricingInput
+                                    price={buyoutPrice}
+                                    setPrice={setBuyoutPrice}
+                                    question="Buyout Price"
+                                    description="A buyer can pay this amount to immediately purchase your item."
+                                    placeholder="Enter buyout price..."
+                                />
+                            )}
+
+                            {listingType === ListingType.Auction && (
+                                <>
+                                    <PricingInput
+                                        price={reservePrice}
+                                        setPrice={setReservePrice}
+                                        question="Reserve Price"
+                                        description="Set a minimum price that you will allow the item to sell. The item will not sell if it doesn't meet the reserve price."
+                                        placeholder="Enter reserve price..."
+                                    />
+                                </>
+                            )}
+
+                            {listingType === ListingType.DutchAuction && (
+                                <>
+                                    <PricingInput
+                                        price={startingPrice}
+                                        setPrice={setStartingPrice}
+                                        question="Starting Price"
+                                        description="The dutch auction will start at the set price and reduce every 24 hours until a user purchases the item."
+                                        placeholder="Enter starting price..."
+                                    />
+                                    <PricingInput
+                                        price={dropRate}
+                                        setPrice={setDropRate}
+                                        question="Drop Rate"
+                                        description="This is the amount to reduce by every 24 hours."
+                                        placeholder="Enter drop rate..."
+                                    />
+                                    <PricingInput
+                                        price={reservePrice}
+                                        setPrice={setReservePrice}
+                                        question="Reserve Price"
+                                        description="Set a minimum price that you will allow the item to sell. The item will not sell if it doesn't meet the reserve price."
+                                        placeholder="Enter reserve price..."
+                                    />
+                                </>
+                            )}
                         </Stack>
                     </Box>
                 </Box>
