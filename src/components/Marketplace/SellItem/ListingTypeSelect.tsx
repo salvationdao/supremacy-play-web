@@ -5,22 +5,20 @@ import { colors } from "../../../theme/theme"
 import { ItemType, ListingType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { QuestionSection } from "./QuestionSection"
-import { AssetToSellStruct, itemTypes } from "./SellItem"
+import { listingTypes } from "./SellItem"
 
-export const ItemTypeSelect = ({
+export const ListingTypeSelect = ({
     itemType,
-    setItemType,
-    setAssetToSell,
+    listingType,
     setListingType,
 }: {
     itemType?: ItemType
-    setItemType: React.Dispatch<React.SetStateAction<ItemType | undefined>>
-    setAssetToSell: React.Dispatch<React.SetStateAction<AssetToSellStruct | undefined>>
+    listingType?: ListingType
     setListingType: React.Dispatch<React.SetStateAction<ListingType | undefined>>
 }) => {
     const theme = useTheme()
 
-    const itemTypeLabel = useMemo(() => itemTypes.find((i) => i.value === itemType)?.label, [itemType])
+    const listingTypeLabel = useMemo(() => listingTypes.find((i) => i.value === listingType)?.label, [listingType])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -28,9 +26,10 @@ export const ItemTypeSelect = ({
 
     return (
         <QuestionSection
+            disabled={!itemType}
             primaryColor={primaryColor}
-            question="What are you selling?"
-            description="You can choose to sell your war machines, keycards, and mystery crates."
+            question="Listing Type"
+            description="You can list your item as a buyout, auction, or dutch auction."
         >
             <ClipThing
                 clipSize="5px"
@@ -44,6 +43,7 @@ export const ItemTypeSelect = ({
             >
                 <Stack sx={{ height: "100%", width: "40rem" }}>
                     <Select
+                        disabled={!itemType}
                         sx={{
                             width: "100%",
                             borderRadius: 0.5,
@@ -79,26 +79,25 @@ export const ItemTypeSelect = ({
                         renderValue={(x) => {
                             return (
                                 <Typography textTransform="uppercase" variant="h6" sx={{ opacity: x ? 1 : 0.7 }}>
-                                    {itemTypeLabel || "CHOOSE AN ITEM TYPE"}
+                                    {listingTypeLabel || "CHOOSE A LISTING TYPE"}
                                 </Typography>
                             )
                         }}
                     >
                         <MenuItem disabled value="">
                             <Typography textTransform="uppercase" variant="h6">
-                                CHOOSE AN ITEM TYPE
+                                CHOOSE A LISTING TYPE
                             </Typography>
                         </MenuItem>
-                        {itemTypes.map((x, i) => {
+                        {listingTypes.map((x, i) => {
+                            if (itemType === ItemType.Keycards && x.value !== ListingType.Buyout) return null
                             return (
                                 <MenuItem
                                     key={x.value + i}
                                     value={x.value}
                                     onClick={() => {
-                                        setItemType((prev) => {
+                                        setListingType((prev) => {
                                             if (prev === x.value) return prev
-                                            setAssetToSell(undefined)
-                                            setListingType(undefined)
                                             return x.value
                                         })
                                     }}

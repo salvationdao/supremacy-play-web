@@ -4,10 +4,11 @@ import { WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { fonts } from "../../../theme/theme"
-import { ItemType } from "../../../types/marketplace"
+import { ItemType, ListingType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
+import { ListingTypeSelect } from "./ListingTypeSelect"
 
 export interface AssetToSellStruct {
     imageUrl: string
@@ -26,6 +27,15 @@ export const itemTypes: {
     { label: "Mystery Crate", value: ItemType.MysteryCrate },
 ]
 
+export const listingTypes: {
+    label: string
+    value: ListingType
+}[] = [
+    { label: "Buyout", value: ListingType.Buyout },
+    { label: "Auction", value: ListingType.Auction },
+    { label: "Dutch Auction", value: ListingType.DutchAuction },
+]
+
 export const SellItem = () => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -33,6 +43,7 @@ export const SellItem = () => {
     // Form states
     const [itemType, setItemType] = useState<ItemType>()
     const [assetToSell, setAssetToSell] = useState<AssetToSellStruct>()
+    const [listingType, setListingType] = useState<ListingType>()
 
     // Others
     const primaryColor = theme.factionTheme.primary
@@ -111,12 +122,15 @@ export const SellItem = () => {
                     }}
                 >
                     <Box sx={{ direction: "ltr", height: 0 }}>
-                        <Stack spacing="3rem" sx={{ px: "3rem", py: "1.8rem" }}>
+                        <Stack spacing="3.6rem" sx={{ px: "3rem", py: "1.8rem" }}>
                             {/* Item type select */}
-                            <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} />
+                            <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} setListingType={setListingType} />
 
                             {/* Asset to sell */}
                             <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
+
+                            {/* Listing type select */}
+                            <ListingTypeSelect itemType={itemType} listingType={listingType} setListingType={setListingType} />
                         </Stack>
                     </Box>
                 </Box>
