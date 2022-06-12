@@ -1,14 +1,21 @@
-import { Box, MenuItem, Select, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { Box, Stack, Typography } from "@mui/material"
+import { ReactNode, useState } from "react"
 import { WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
-import { colors, fonts } from "../../../theme/theme"
+import { fonts } from "../../../theme/theme"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
-import { QuestionSection } from "./QuestionSection"
+import { AssetToSell } from "./AssetToSell"
+import { ItemTypeSelect } from "./ItemTypeSelect"
 
-const itemTypes: {
+export interface AssetToSellStruct {
+    imageUrl: string
+    label: string
+    subtitle: ReactNode
+}
+
+export const itemTypes: {
     label: string
     value: ItemType
 }[] = [
@@ -20,8 +27,12 @@ const itemTypes: {
 export const SellItem = () => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [itemType, setItemType] = useState<ItemType>()
 
+    // Form states
+    const [itemType, setItemType] = useState<ItemType>()
+    const [assetToSell, setAssetToSell] = useState<AssetToSellStruct>()
+
+    // Others
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
@@ -100,95 +111,10 @@ export const SellItem = () => {
                     <Box sx={{ direction: "ltr", height: 0 }}>
                         <Stack spacing="3rem" sx={{ px: "3rem", py: "1.8rem" }}>
                             {/* Item type select */}
-                            <QuestionSection
-                                primaryColor={primaryColor}
-                                question="What are you selling?"
-                                description="You can choose to sell your war machines, keycards, and mystery crates."
-                            >
-                                <ClipThing
-                                    clipSize="5px"
-                                    clipSlantSize="2px"
-                                    opacity={0.9}
-                                    border={{
-                                        borderColor: primaryColor,
-                                        borderThickness: "1px",
-                                    }}
-                                    backgroundColor={backgroundColor}
-                                >
-                                    <Stack sx={{ height: "100%", width: "40rem" }}>
-                                        <Select
-                                            sx={{
-                                                width: "100%",
-                                                borderRadius: 0.5,
-                                                "&:hover": {
-                                                    backgroundColor: colors.darkNavy,
-                                                },
-                                                ".MuiTypography-root": {
-                                                    px: "2.4rem",
-                                                    py: "1.1rem",
-                                                },
-                                                "& .MuiSelect-outlined": { p: 0 },
-                                                ".MuiOutlinedInput-notchedOutline": {
-                                                    border: "none !important",
-                                                },
-                                            }}
-                                            displayEmpty
-                                            value={itemType}
-                                            renderValue={(x) => {
-                                                return (
-                                                    <Typography textTransform="uppercase" variant="h6" sx={{ opacity: x ? 1 : 0.7 }}>
-                                                        {x || "CHOOSE AN ITEM TYPE"}
-                                                    </Typography>
-                                                )
-                                            }}
-                                            MenuProps={{
-                                                variant: "menu",
-                                                sx: {
-                                                    "&& .Mui-selected": {
-                                                        color: secondaryColor,
-                                                        backgroundColor: primaryColor,
-                                                    },
-                                                },
-                                                PaperProps: {
-                                                    sx: {
-                                                        backgroundColor: colors.darkNavy,
-                                                        borderRadius: 0.5,
-                                                    },
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem disabled value="">
-                                                <Typography textTransform="uppercase" variant="h6">
-                                                    CHOOSE AN ITEM TYPE
-                                                </Typography>
-                                            </MenuItem>
-                                            {itemTypes.map((x, i) => {
-                                                return (
-                                                    <MenuItem
-                                                        key={x.value + i}
-                                                        value={x.value}
-                                                        onClick={() => setItemType(x.value)}
-                                                        sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
-                                                    >
-                                                        <Typography textTransform="uppercase" variant="h6">
-                                                            {x.label}
-                                                        </Typography>
-                                                    </MenuItem>
-                                                )
-                                            })}
-                                        </Select>
-                                    </Stack>
-                                </ClipThing>
-                            </QuestionSection>
+                            <ItemTypeSelect itemType={itemType} setItemType={setItemType} />
 
-                            {/* Buy out price */}
-                            <QuestionSection
-                                primaryColor={primaryColor}
-                                question="Buy out price"
-                                description="You can choose to sell your war machines, keycards, and mystery crates."
-                            >
-                                aaa
-                            </QuestionSection>
+                            {/* Asset to sell */}
+                            <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
                         </Stack>
                     </Box>
                 </Box>
