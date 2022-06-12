@@ -1,13 +1,14 @@
 import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { ClipThing, FancyButton } from "../.."
-import { useTheme } from "../../../containers/theme"
-import { useToggle } from "../../../hooks"
-import { fonts } from "../../../theme/theme"
-import { ItemType } from "../../../types/marketplace"
+import { ClipThing, FancyButton } from "../../.."
+import { useTheme } from "../../../../containers/theme"
+import { useToggle } from "../../../../hooks"
+import { fonts } from "../../../../theme/theme"
+import { ItemType } from "../../../../types/marketplace"
+import { QuestionSection } from "../QuestionSection"
+import { AssetToSellStruct, itemTypes } from "../SellItem"
 import { AssetChooseModal } from "./AssetChooseModal"
-import { QuestionSection } from "./QuestionSection"
-import { AssetToSellStruct, itemTypes } from "./SellItem"
+import { AssetItem } from "./AssetItem"
 
 export const AssetToSell = ({
     itemType,
@@ -36,20 +37,22 @@ export const AssetToSell = ({
                 question={question}
                 description={`Choose which ${itemTypeLabel || "item"} you which to put onto the marketplace.`}
             >
-                {assetToSell ? (
-                    <ClipThing
-                        clipSize="10px"
-                        border={{
-                            isFancy: true,
-                            borderColor: primaryColor,
-                            borderThickness: ".2rem",
-                        }}
-                        opacity={0.7}
-                        backgroundColor={backgroundColor}
-                    >
-                        <Stack sx={{ height: "100%" }}>{assetToSell.label}</Stack>
-                    </ClipThing>
-                ) : (
+                <Stack alignItems="flex-start" spacing="1.2rem" sx={{ flex: 1 }}>
+                    {assetToSell && (
+                        <ClipThing
+                            clipSize="10px"
+                            border={{
+                                borderColor: primaryColor,
+                                borderThickness: ".2rem",
+                            }}
+                            opacity={0.7}
+                            backgroundColor={backgroundColor}
+                        >
+                            <Stack sx={{ height: "100%", px: ".9rem", py: ".9rem" }}>
+                                <AssetItem key={assetToSell.label} assetToSell={assetToSell} playVideo orientation="vertical" />
+                            </Stack>
+                        </ClipThing>
+                    )}
                     <FancyButton
                         excludeCaret
                         disabled={!itemType}
@@ -70,13 +73,13 @@ export const AssetToSell = ({
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            {question}
+                            {assetToSell ? "CHANGE" : question}
                         </Typography>
                     </FancyButton>
-                )}
+                </Stack>
             </QuestionSection>
 
-            {assetChooseModalOpen && itemType && !assetToSell && (
+            {assetChooseModalOpen && itemType && (
                 <AssetChooseModal
                     open={assetChooseModalOpen}
                     itemType={itemType}

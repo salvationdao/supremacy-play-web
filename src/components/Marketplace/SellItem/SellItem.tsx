@@ -6,7 +6,7 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { fonts } from "../../../theme/theme"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
-import { AssetToSell } from "./AssetToSell"
+import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
 
 export interface AssetToSellStruct {

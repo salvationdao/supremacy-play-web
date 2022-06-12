@@ -58,7 +58,7 @@ export const ItemTypeSelect = ({
                             },
                         }}
                         displayEmpty
-                        value={itemType}
+                        value={itemType || ""}
                         MenuProps={{
                             variant: "menu",
                             sx: {

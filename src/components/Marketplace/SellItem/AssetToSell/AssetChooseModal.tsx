@@ -1,17 +1,17 @@
 import { Box, CircularProgress, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { ClipThing } from "../.."
-import { KeycardPNG, SafePNG, SvgClose } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
-import { usePagination } from "../../../hooks"
-import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { Keycard, MechBasic, MechDetails, StorefrontMysteryCrate } from "../../../types"
-import { ItemType } from "../../../types/marketplace"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { AssetToSellStruct, itemTypes } from "./SellItem"
+import { ClipThing } from "../../.."
+import { KeycardPNG, SafePNG, SvgClose } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
+import { usePagination } from "../../../../hooks"
+import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { Keycard, MechBasic, MechDetails, StorefrontMysteryCrate } from "../../../../types"
+import { ItemType } from "../../../../types/marketplace"
+import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
+import { AssetToSellStruct, itemTypes } from "../SellItem"
+import { AssetItem } from "./AssetItem"
 
 interface GetAssetsResponse {
     mechs: MechBasic[]
@@ -38,7 +38,7 @@ export const AssetChooseModal = ({
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [ownedAssets, setOwnedAssets] = useState<MechBasic[] | Keycard[] | StorefrontMysteryCrate[]>()
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
 
     const itemTypeLabel = useMemo(() => itemTypes.find((i) => i.value === itemType)?.label, [itemType])
     const question = itemTypeLabel ? `Choose a ${itemTypeLabel}` : "Choose an item type"
@@ -121,7 +121,7 @@ export const AssetChooseModal = ({
                     <Stack
                         sx={{
                             position: "relative",
-                            height: "96rem",
+                            height: "65rem",
                             maxHeight: "calc(100vh - 18rem)",
                             overflow: "hidden",
                         }}
@@ -325,86 +325,14 @@ const OwnedAssetItem = ({
         return null
     }
 
-    const rarityDeets = assetToSell.tier ? getRarityDeets(assetToSell.tier) : undefined
-
     return (
-        <Stack
-            direction="row"
-            spacing="1.5rem"
-            alignItems="flex-start"
-            sx={{ position: "relative", py: "1rem", cursor: "pointer", ":hover": { backgroundColor: "#FFFFFF15" } }}
+        <AssetItem
+            assetToSell={assetToSell}
             onClick={() => {
                 setAssetToSell(assetToSell)
                 onClose()
             }}
-        >
-            <Box
-                component="video"
-                sx={{
-                    height: "7rem",
-                    width: "7rem",
-                    overflow: "hidden",
-                    objectFit: "contain",
-                    objectPosition: "center",
-                    borderRadius: 1,
-                    border: "#FFFFFF18 2px solid",
-                    boxShadow: "inset 0 0 12px 6px #00000040",
-                    background: `radial-gradient(#FFFFFF20 10px, #00000080)`,
-                }}
-                loop
-                muted
-                autoPlay
-                poster={`${assetToSell.imageUrl}`}
-            >
-                {<source src={assetToSell.videoUrl} type="video/mp4" />}
-            </Box>
-
-            <Stack spacing=".2rem">
-                {rarityDeets && (
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: rarityDeets.color,
-                            fontFamily: fonts.nostromoBlack,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {rarityDeets.label}
-                    </Typography>
-                )}
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {assetToSell.label}
-                </Typography>
-                <Typography
-                    sx={{
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {assetToSell.description}
-                </Typography>
-            </Stack>
-        </Stack>
+        />
     )
 }
 
