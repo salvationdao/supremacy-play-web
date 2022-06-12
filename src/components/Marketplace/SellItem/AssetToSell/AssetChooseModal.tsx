@@ -300,6 +300,7 @@ const OwnedAssetItem = ({
     if (isAssetMech(ownedAssetItem)) {
         const mech = ownedAssetItem as MechBasic
         assetToSell = {
+            id: mech.id,
             imageUrl: mechDetails?.chassis_skin?.large_image_url || "",
             videoUrl: mechDetails?.chassis_skin?.animation_url || "",
             label: mech?.name || mech?.label,
@@ -308,6 +309,7 @@ const OwnedAssetItem = ({
     } else if (isAssetMysteryCrate(ownedAssetItem)) {
         const crate = ownedAssetItem as StorefrontMysteryCrate
         assetToSell = {
+            id: crate.id,
             imageUrl: crate.large_image_url || SafePNG,
             videoUrl: crate.animation_url || "",
             label: crate.label,
@@ -316,6 +318,7 @@ const OwnedAssetItem = ({
     } else if (isAssetKeycard(ownedAssetItem)) {
         const keycard = ownedAssetItem as Keycard
         assetToSell = {
+            id: keycard.id,
             imageUrl: keycard.blueprints.image_url || KeycardPNG,
             videoUrl: keycard.blueprints.animation_url,
             label: keycard.blueprints.label,

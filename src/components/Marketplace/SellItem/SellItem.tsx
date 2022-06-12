@@ -1,17 +1,22 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { useCallback, useState } from "react"
+import { useHistory } from "react-router-dom"
+import { FancyButton } from "../.."
 import { WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
+import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
-import { fonts } from "../../../theme/theme"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
 import { ItemType, ListingType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
-import { PricingInput } from "./PricingInput"
 import { ItemTypeSelect } from "./ItemTypeSelect"
 import { ListingTypeSelect } from "./ListingTypeSelect"
+import { PricingInput } from "./PricingInput"
 
 export interface AssetToSellStruct {
+    id: string
     imageUrl: string
     videoUrl: string
     label: string
@@ -39,7 +44,10 @@ export const listingTypes: {
 
 export const SellItem = () => {
     const theme = useTheme()
+    const history = useHistory()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [submitting, toggleSubmitting] = useToggle()
+    const [submitError, setSubmitError] = useState<string>()
 
     // Form states
     const [itemType, setItemType] = useState<ItemType>()
@@ -55,6 +63,49 @@ export const SellItem = () => {
 
     // Others
     const primaryColor = theme.factionTheme.primary
+
+    const isFormReady = useCallback(() => {
+        return itemType && assetToSell && listingType && (buyoutPrice || reservePrice || (startingPrice && dropRate))
+    }, [assetToSell, buyoutPrice, dropRate, itemType, listingType, reservePrice, startingPrice])
+
+    const submitHandler = useCallback(async () => {
+        if (!isFormReady()) return
+
+        const isKeycard = itemType === ItemType.Keycards
+
+        const hasBuyout = listingType === ListingType.Buyout || (listingType === ListingType.Auction && !!buyoutPrice)
+        const hasAuction = listingType === ListingType.Auction
+        const hasDutchAuction = listingType === ListingType.DutchAuction
+
+        let itemTypePayload: string = ""
+        if (itemType === ItemType.WarMachine) {
+            itemTypePayload = "mech"
+        } else if (itemType === ItemType.MysteryCrate) {
+            itemTypePayload = "mystery_crate"
+        }
+
+        try {
+            toggleSubmitting(true)
+            await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
+                item_type: itemTypePayload,
+                item_id: assetToSell?.id,
+                has_buyout: hasBuyout,
+                has_auction: hasAuction,
+                has_dutch_auction: hasDutchAuction,
+                asking_price: hasBuyout ? buyoutPrice : hasDutchAuction ? startingPrice : undefined,
+                auction_reserved_price: (hasAuction || hasDutchAuction) && reservePrice ? reservePrice : undefined,
+                dutch_auction_drop_rate: hasDutchAuction && dropRate ? dropRate : undefined,
+            })
+            setSubmitError(undefined)
+            history.push("/marketplace")
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to purchase item."
+            setSubmitError(message)
+            console.error(err)
+        } finally {
+            toggleSubmitting(false)
+        }
+    }, [assetToSell?.id, buyoutPrice, dropRate, history, isFormReady, itemType, listingType, reservePrice, send, startingPrice, toggleSubmitting])
 
     return (
         <ClipThing
@@ -102,9 +153,49 @@ export const SellItem = () => {
                         </Typography>
                         <Typography sx={{ fontSize: "1.85rem" }}>Put your asset on the marketplace.</Typography>
                     </Box>
+
+                    <Stack alignItems="flex-end" spacing=".3rem" sx={{ ml: "auto" }}>
+                        <FancyButton
+                            loading={submitting}
+                            disabled={!isFormReady()}
+                            excludeCaret
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: colors.green,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: colors.green, borderThickness: "2px" },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "4rem", py: ".6rem", color: "#FFFFFF" }}
+                            onClick={submitHandler}
+                        >
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: "#FFFFFF",
+                                    fontFamily: fonts.nostromoHeavy,
+                                }}
+                            >
+                                SUBMIT
+                            </Typography>
+                        </FancyButton>
+
+                        {submitError && (
+                            <Typography
+                                sx={{
+                                    color: colors.red,
+                                    fontWeight: "fontWeightBold",
+                                }}
+                            >
+                                {submitError}
+                            </Typography>
+                        )}
+                    </Stack>
                 </Stack>
                 <Box
                     sx={{
+                        pointerEvents: submitting ? "none" : "unset",
+                        opacity: submitting ? 0.4 : 1,
                         flex: 1,
                         overflowY: "auto",
                         overflowX: "hidden",
