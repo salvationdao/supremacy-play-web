@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { ReactNode, useState } from "react"
+import { useState } from "react"
 import { WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -7,6 +7,7 @@ import { fonts } from "../../../theme/theme"
 import { ItemType, ListingType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
+import { BuyoutPricingInput } from "./BuyoutPricingInput"
 import { ItemTypeSelect } from "./ItemTypeSelect"
 import { ListingTypeSelect } from "./ListingTypeSelect"
 
@@ -44,6 +45,13 @@ export const SellItem = () => {
     const [itemType, setItemType] = useState<ItemType>()
     const [assetToSell, setAssetToSell] = useState<AssetToSellStruct>()
     const [listingType, setListingType] = useState<ListingType>()
+    // Buyout
+    const [buyoutPrice, setBuyoutPrice] = useState<string>("")
+    // Auction
+    const [reservePrice, setReservePrice] = useState<string>("")
+    // Dutch auction
+    const [startingPrice, setStartingPrice] = useState<string>("")
+    const [dropRate, setDropRate] = useState<string>("")
 
     // Others
     const primaryColor = theme.factionTheme.primary
@@ -131,6 +139,9 @@ export const SellItem = () => {
 
                             {/* Listing type select */}
                             <ListingTypeSelect itemType={itemType} listingType={listingType} setListingType={setListingType} />
+
+                            {/* Pricing inputs */}
+                            {listingType === ListingType.Buyout && <BuyoutPricingInput buyoutPrice={buyoutPrice} setBuyoutPrice={setBuyoutPrice} />}
                         </Stack>
                     </Box>
                 </Box>

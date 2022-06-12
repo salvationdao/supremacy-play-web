@@ -38,7 +38,7 @@ export const ItemTypeSelect = ({
                 opacity={0.9}
                 border={{
                     borderColor: primaryColor,
-                    borderThickness: "1px",
+                    borderThickness: "1.5px",
                 }}
                 backgroundColor={backgroundColor}
             >
