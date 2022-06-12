@@ -10,9 +10,9 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
-import { TotalAndPageSizeOptions } from "../../Marketplace/TotalAndPageSizeOptions"
 import { MysteryCrateItem } from "./MysteryCrateItem"
 import { useHistory } from "react-router-dom"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 
 interface GetCratesRequest {
     page: number

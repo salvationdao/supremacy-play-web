@@ -10,8 +10,8 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
-import { ChipFilter, RangeFilter, SortAndFilters } from "../SortAndFilters"
-import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
+import { ChipFilter, RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem/MysteryCrateMarketItem"
 
 export const MysteryCratesMarket = () => {

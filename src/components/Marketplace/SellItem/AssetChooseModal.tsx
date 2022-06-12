@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../keys"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { Keycard, MechBasic, StorefrontMysteryCrate } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
-import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { AssetToSellStruct } from "./SellItem"
 
 interface GetAssetsResponse {

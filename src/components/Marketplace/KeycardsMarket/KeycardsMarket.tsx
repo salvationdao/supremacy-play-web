@@ -10,8 +10,8 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyItem, SortType } from "../../../types/marketplace"
-import { RangeFilter, SortAndFilters } from "../SortAndFilters"
-import { TotalAndPageSizeOptions } from "../TotalAndPageSizeOptions"
+import { RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { KeycardMarketItem } from "./KeycardMarketItem/KeycardMarketItem"
 
 export const KeycardsMarket = () => {
