@@ -20,7 +20,7 @@ export const LeftDrawer = () => {
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
     let activeTabID = ""
-    if (match && location.pathname !== match.path) {
+    if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
         activeTabID = r?.matchLeftDrawerID || ""
     }
