@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { FancyButton } from "../.."
-import { WarMachineIconPNG } from "../../../assets"
+import { SvgSupToken, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -51,7 +51,15 @@ export const SellItem = () => {
     const [dropRate, setDropRate] = useState<string>("")
 
     // Others
+    const [listingFee, setListingFee] = useState<number>(10)
     const primaryColor = theme.factionTheme.primary
+
+    useEffect(() => {
+        let fee = 10
+        if (reservePrice) fee += 5
+        if (buyoutPrice && !dropRate) fee += 5
+        setListingFee(fee)
+    }, [buyoutPrice, reservePrice, dropRate])
 
     const isFormReady = useCallback(() => {
         return itemType && assetToSell && (buyoutPrice || startingPrice)
@@ -136,33 +144,6 @@ export const SellItem = () => {
                         </Typography>
                         <Typography sx={{ fontSize: "1.85rem" }}>Put your asset on the marketplace.</Typography>
                     </Box>
-
-                    <Stack alignItems="flex-end" spacing=".3rem" sx={{ ml: "auto" }}>
-                        <FancyButton
-                            loading={submitting}
-                            disabled={!isFormReady()}
-                            excludeCaret
-                            clipThingsProps={{
-                                clipSize: "9px",
-                                backgroundColor: colors.green,
-                                opacity: 1,
-                                border: { isFancy: true, borderColor: colors.green, borderThickness: "2px" },
-                                sx: { position: "relative" },
-                            }}
-                            sx={{ px: "4rem", py: ".6rem", color: "#FFFFFF" }}
-                            onClick={submitHandler}
-                        >
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    color: "#FFFFFF",
-                                    fontFamily: fonts.nostromoHeavy,
-                                }}
-                            >
-                                SUBMIT
-                            </Typography>
-                        </FancyButton>
-                    </Stack>
                 </Stack>
 
                 {submitError && (
@@ -172,6 +153,7 @@ export const SellItem = () => {
                             px: "5rem",
                             color: colors.red,
                             fontWeight: "fontWeightBold",
+                            userSelect: "text",
                         }}
                     >
                         {submitError}
@@ -249,6 +231,53 @@ export const SellItem = () => {
                         </Stack>
                     </Box>
                 </Box>
+
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    sx={{
+                        px: "5rem",
+                        py: "2rem",
+                        backgroundColor: "#00000070",
+                        borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                    }}
+                >
+                    <Stack>
+                        <Stack direction="row" alignItems="center">
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: ".8rem" }}>LISTING FEE:</Typography>
+                            <SvgSupToken size="2.2rem" fill={colors.yellow} />
+                            <Typography sx={{ fontFamily: fonts.nostromoBold }}>{listingFee}</Typography>
+                        </Stack>
+
+                        <Typography sx={{ color: colors.lightNeonBlue }}>There will be a 30% fee on the final sale value of your item.</Typography>
+                    </Stack>
+
+                    <FancyButton
+                        loading={submitting}
+                        disabled={!isFormReady()}
+                        excludeCaret
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: colors.green,
+                            opacity: 1,
+                            border: { isFancy: true, borderColor: colors.green, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "4rem", py: ".6rem", color: "#FFFFFF" }}
+                        onClick={submitHandler}
+                    >
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "#FFFFFF",
+                                fontFamily: fonts.nostromoHeavy,
+                            }}
+                        >
+                            SUBMIT
+                        </Typography>
+                    </FancyButton>
+                </Stack>
             </Stack>
         </ClipThing>
     )

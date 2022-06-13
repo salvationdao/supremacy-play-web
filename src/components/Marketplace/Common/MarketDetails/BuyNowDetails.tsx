@@ -3,23 +3,29 @@ import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgSupToken, SvgWallet } from "../../../../assets"
-import { useSnackbar } from "../../../../containers"
+import { useAuth, useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, numFormatter, timeDiff, timeSince } from "../../../../helpers"
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { ItemType, MarketUser } from "../../../../types/marketplace"
 
 interface BuyNowDetailsProps {
     id: string
+    itemType: ItemType
+    owner?: MarketUser
     itemName: string
     buyNowPrice: string
     dutchAuctionDropRate?: string
     createdAt: Date
+    isTimeEnded: boolean
 }
 
-export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate, createdAt }: BuyNowDetailsProps) => {
+export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutchAuctionDropRate, createdAt, isTimeEnded }: BuyNowDetailsProps) => {
+    const { userID } = useAuth()
+
     const calculateNewPrice = useCallback(() => {
         let newPrice = new BigNumber(buyNowPrice).shiftedBy(-18)
 
@@ -39,6 +45,8 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
     const secondaryColor = useMemo(() => theme.factionTheme.secondary, [theme.factionTheme])
     const backgroundColor = useMemo(() => theme.factionTheme.background, [theme.factionTheme])
     const formattedCommaPrice = useMemo(() => numberCommaFormatter(currentPrice.toNumber()), [currentPrice])
+
+    const isSelfItem = userID === owner?.id
 
     return (
         <>
@@ -89,6 +97,7 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
 
                         <FancyButton
                             excludeCaret
+                            disabled={isSelfItem || isTimeEnded}
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: primaryColor,
@@ -118,7 +127,9 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
                 </Stack>
             </Stack>
 
-            {confirmBuyModalOpen && <ConfirmBuyModal id={id} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmBuyModalOpen(false)} />}
+            {confirmBuyModalOpen && !isSelfItem && !isTimeEnded && (
+                <ConfirmBuyModal id={id} itemType={itemType} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmBuyModalOpen(false)} />
+            )}
         </>
     )
 }
@@ -149,7 +160,19 @@ const PriceDropper = ({
     return <>{timeLeft}</>
 }
 
-export const ConfirmBuyModal = ({ id, itemName, price, onClose }: { id: string; itemName: string; price: string; onClose: () => void }) => {
+export const ConfirmBuyModal = ({
+    id,
+    itemType,
+    itemName,
+    price,
+    onClose,
+}: {
+    id: string
+    itemType: ItemType
+    itemName: string
+    price: string
+    onClose: () => void
+}) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -161,7 +184,9 @@ export const ConfirmBuyModal = ({ id, itemName, price, onClose }: { id: string; 
     const confirmBuy = useCallback(async () => {
         try {
             setIsLoading(true)
-            const resp = await send(GameServerKeys.MarketplaceSalesBuy, {
+            const isKeycard = itemType === ItemType.Keycards
+
+            const resp = await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardBuy : GameServerKeys.MarketplaceSalesBuy, {
                 id,
             })
 
@@ -175,7 +200,7 @@ export const ConfirmBuyModal = ({ id, itemName, price, onClose }: { id: string; 
         } finally {
             setIsLoading(false)
         }
-    }, [id, newSnackbarMessage, onClose, send])
+    }, [id, itemType, newSnackbarMessage, onClose, send])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

@@ -2,10 +2,11 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
+import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
@@ -109,6 +110,7 @@ const WarMachineMarketDetailsInner = ({
     primaryColor: string
     backgroundColor: string
 }) => {
+    const [isTimeEnded, toggleIsTimeEnded] = useToggle()
     const { owner, mystery_crate, created_at, end_at } = marketItem
 
     return (
@@ -171,25 +173,31 @@ const WarMachineMarketDetailsInner = ({
 
                         <Owner owner={owner} />
 
-                        <Dates createdAt={created_at} endAt={end_at} />
+                        <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
 
                         {marketItem.buyout_price && (
                             <BuyNowDetails
                                 id={marketItem.id}
+                                itemType={ItemType.MysteryCrate}
+                                owner={marketItem.owner}
                                 itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
                                 buyNowPrice={marketItem.buyout_price}
                                 dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
                                 createdAt={marketItem.created_at}
+                                isTimeEnded={isTimeEnded}
                             />
                         )}
 
                         {marketItem.auction_current_price && (
                             <AuctionDetails
                                 id={marketItem.id}
+                                itemType={ItemType.MysteryCrate}
+                                owner={marketItem.owner}
                                 itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
                                 auctionCurrentPrice={marketItem.auction_current_price}
                                 auctionBidCount={marketItem.total_bids}
                                 auctionLastBid={marketItem.last_bid}
+                                isTimeEnded={isTimeEnded}
                             />
                         )}
                     </Stack>

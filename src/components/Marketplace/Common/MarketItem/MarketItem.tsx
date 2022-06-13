@@ -3,11 +3,9 @@ import BigNumber from "bignumber.js"
 import { ReactNode, useMemo } from "react"
 import { useHistory } from "react-router-dom"
 import { FancyButton } from "../../.."
-import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numFormatter, timeDiff } from "../../../../helpers"
 import { MARKETPLACE_TABS } from "../../../../pages"
-import { colors } from "../../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { AuctionPrice } from "../../Common/MarketItem/AuctionPrice"
 import { BuyoutPrice } from "../../Common/MarketItem/BuyoutPrice"
@@ -27,7 +25,6 @@ interface MarketItemProps {
 
 export const MarketItem = ({ imageUrl, animationUrl, backgroundImageUrl, item, isGridView, children, linkSubPath }: MarketItemProps) => {
     const history = useHistory()
-    const { userID } = useAuth()
     const theme = useTheme()
 
     const formattedBuyoutPrice = useMemo(() => {
@@ -57,9 +54,6 @@ export const MarketItem = ({ imageUrl, animationUrl, backgroundImageUrl, item, i
 
     if (!owner) return null
 
-    const { id: ownerID, username, gid } = owner
-    const isSelfItem = userID === ownerID
-
     return (
         <Box sx={{ position: "relative", overflow: "visible" }}>
             <FancyButton
@@ -75,10 +69,10 @@ export const MarketItem = ({ imageUrl, animationUrl, backgroundImageUrl, item, i
                     },
                     backgroundColor: backgroundColor,
                     opacity: 0.7,
-                    border: { isFancy: !isGridView && !isSelfItem, borderColor: isSelfItem ? colors.green : primaryColor, borderThickness: ".25rem" },
+                    border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative" },
                 }}
-                sx={{ color: isSelfItem ? colors.green : primaryColor, textAlign: "start" }}
+                sx={{ color: primaryColor, textAlign: "start" }}
                 onClick={() => history.push(`/marketplace/${linkSubPath}/${id}${location.hash}`)}
             >
                 <Box
@@ -100,7 +94,7 @@ export const MarketItem = ({ imageUrl, animationUrl, backgroundImageUrl, item, i
                 >
                     <Thumbnail isGridView={isGridView} imageUrl={imageUrl} animationUrl={animationUrl} />
                     {children}
-                    <SellerInfo isGridView={isGridView} username={username} gid={gid} />
+                    <SellerInfo isGridView={isGridView} owner={owner} />
                     <Timeframe isGridView={isGridView} endAt={end_at} />
                     <BuyoutPrice isGridView={isGridView} formattedPrice={formattedBuyoutPrice} formattedDropPrice={formattedDropPrice} />
                     <AuctionPrice isGridView={isGridView} formattedPrice={formattedAuctionPrice} totalBids={total_bids} />

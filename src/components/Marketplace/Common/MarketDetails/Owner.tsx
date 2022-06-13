@@ -1,16 +1,18 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { useSupremacy } from "../../../../containers"
+import { useAuth, useSupremacy } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
 
 export const Owner = ({ owner }: { owner?: MarketUser }) => {
+    const { userID } = useAuth()
     const { getFaction } = useSupremacy()
     const ownerFactionDeets = useMemo(() => getFaction(owner?.faction_id || ""), [owner, getFaction])
 
     if (!owner) return null
 
-    const { username, gid } = owner
+    const { id, username, gid } = owner
+    const isSelfItem = userID === id
 
     return (
         <Box>
@@ -38,6 +40,7 @@ export const Owner = ({ owner }: { owner?: MarketUser }) => {
                 <Typography variant="h5" sx={{ color: ownerFactionDeets.primary_color, fontWeight: "fontWeightBold" }}>
                     {username}
                     <span style={{ marginLeft: ".2rem", opacity: 0.8, fontFamily: "inherit" }}>{`#${gid}`}</span>
+                    <span style={{ color: colors.neonBlue, fontFamily: "inherit" }}>{isSelfItem ? " (YOU)" : ""}</span>
                 </Typography>
             </Stack>
         </Box>
