@@ -1,4 +1,4 @@
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { Box, Divider, IconButton, Modal, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
@@ -43,10 +43,12 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
     return (
         <>
             <Stack spacing="2rem">
+                <Divider />
+
                 {dutchAuctionDropRate && (
                     <Box>
                         <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                            NEXT PRICE DROP:
+                            PRICE DROP:
                         </Typography>
                         <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue, fontFamily: "inherit" } }}>
                             NEXT PRICE DROP IN{" "}
@@ -58,7 +60,7 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
 
                 <Stack>
                     <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                        FIXED PRICE:
+                        BUYOUT:
                     </Typography>
 
                     <Stack direction="row" alignItems="center" spacing="2rem">

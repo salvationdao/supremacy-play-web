@@ -33,7 +33,7 @@ export const MechThumbnail = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
                     lineHeight: 1,
                     fontFamily: fonts.nostromoBlack,
                     color: rarityDeets.color,
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: `${theme.factionTheme.background}DD`,
                 }}
             >
                 {rarityDeets.label}

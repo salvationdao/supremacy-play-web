@@ -1,16 +1,15 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { SafePNG, SvgWallet } from "../../../../assets"
+import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { MarketplaceBuyItem } from "../../../../types/marketplace"
+import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
-import { ListingType } from "../../Common/MarketDetails/ListingType"
 import { Owner } from "../../Common/MarketDetails/Owner"
 import { KeycardDetails } from "./KeycardDetails"
 
@@ -18,13 +17,13 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
-    const [marketItem, setMarketItem] = useState<MarketplaceBuyItem>()
+    const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
 
     // Get listing details
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<MarketplaceBuyItem>(GameServerKeys.GetKeycard, {
+                const resp = await send<MarketplaceBuyAuctionItem>(GameServerKeys.GetKeycard, {
                     id,
                 })
 
@@ -98,18 +97,7 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
     )
 }
 
-const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyItem; primaryColor: string }) => {
-    const listingDetails = useMemo(() => {
-        return (
-            <BuyNowDetails
-                id={marketItem.id}
-                itemName={marketItem.keycard?.label || "KEYCARD"}
-                buyNowPrice={marketItem.buyout_price}
-                createdAt={marketItem.created_at}
-            />
-        )
-    }, [marketItem])
-
+const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyAuctionItem; primaryColor: string }) => {
     const { owner, keycard, created_at, end_at } = marketItem
 
     return (
@@ -170,13 +158,16 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                             </Typography>
                         </Box>
 
-                        <ListingType primaryColor={primaryColor} listingTypeLabel="BUY NOW" icon={<SvgWallet fill={primaryColor} />} />
-
                         <Owner owner={owner} />
 
                         <Dates createdAt={created_at} endAt={end_at} />
 
-                        {listingDetails}
+                        <BuyNowDetails
+                            id={marketItem.id}
+                            itemName={marketItem.keycard?.label || "KEYCARD"}
+                            buyNowPrice={marketItem.buyout_price}
+                            createdAt={marketItem.created_at}
+                        />
                     </Stack>
 
                     <KeycardDetails keycard={keycard} primaryColor={primaryColor} />

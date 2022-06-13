@@ -1,7 +1,7 @@
 import { Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect, useState } from "react"
 import { ClipThing } from "../../.."
-import { SvgAssets, SvgProfile, SvgSettings, SvgShop, SvgSupport } from "../../../../assets"
+import { SvgAssets, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
@@ -62,13 +62,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                     sx={{ height: "100%" }}
                 >
                     <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
-                        <NavButton
-                            href={`${PASSPORT_WEB}collections/${user.username}`}
-                            startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}
-                            text="My Inventory"
-                        />
-
-                        <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />} text="Purchase Assets" />
+                        <NavButton href={`${PASSPORT_WEB}profile`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="My Inventory" />
 
                         <NavButton
                             href={`${PASSPORT_WEB}profile/${user.username}/edit`}

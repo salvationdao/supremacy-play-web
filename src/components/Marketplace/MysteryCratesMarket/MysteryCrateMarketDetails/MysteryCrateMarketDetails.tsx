@@ -2,7 +2,6 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { consolidateMarketItemDeets, MarketItemDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -12,7 +11,6 @@ import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
-import { ListingType } from "../../Common/MarketDetails/ListingType"
 import { Owner } from "../../Common/MarketDetails/Owner"
 import { CrateDetails } from "./CrateDetails"
 
@@ -21,8 +19,6 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
     const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
-
-    const marketItemDeets = useMemo(() => (marketItem ? consolidateMarketItemDeets(marketItem, theme) : undefined), [marketItem, theme])
 
     // Get listing details
     useEffect(() => {
@@ -68,7 +64,7 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
             )
         }
 
-        if (!marketItem || !marketItemDeets) {
+        if (!marketItem) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -79,20 +75,15 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
         }
 
         return (
-            <WarMachineMarketDetailsInner
-                marketItem={marketItem}
-                marketItemDeets={marketItemDeets}
-                primaryColor={marketItemDeets?.primaryColor || theme.factionTheme.primary}
-                backgroundColor={marketItemDeets?.backgroundColor || theme.factionTheme.background}
-            />
+            <WarMachineMarketDetailsInner marketItem={marketItem} primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} />
         )
-    }, [loadError, marketItem, marketItemDeets, theme.factionTheme.background, theme.factionTheme.primary])
+    }, [loadError, marketItem, theme.factionTheme.background, theme.factionTheme.primary])
 
     return (
         <ClipThing
             clipSize="10px"
             border={{
-                borderColor: marketItemDeets?.primaryColor || theme.factionTheme.primary,
+                borderColor: theme.factionTheme.primary,
                 borderThickness: ".3rem",
             }}
             corners={{
@@ -101,7 +92,7 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
                 bottomRight: true,
             }}
             opacity={0.7}
-            backgroundColor={marketItemDeets?.backgroundColor || theme.factionTheme.background}
+            backgroundColor={theme.factionTheme.background}
             sx={{ height: "100%" }}
         >
             <Stack sx={{ height: "100%" }}>{content}</Stack>
@@ -111,43 +102,13 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
 
 const WarMachineMarketDetailsInner = ({
     marketItem,
-    marketItemDeets,
     primaryColor,
     backgroundColor,
 }: {
     marketItem: MarketplaceBuyAuctionItem
-    marketItemDeets: MarketItemDeets
     primaryColor: string
     backgroundColor: string
 }) => {
-    const listingDetails = useMemo(() => {
-        const { buyout, auction, dutch_auction } = marketItem
-        if (auction) {
-            return (
-                <AuctionDetails
-                    id={marketItem.id}
-                    itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
-                    buyNowPrice={marketItem.buyout_price}
-                    auctionCurrentPrice={marketItem.auction_current_price}
-                    auctionBidCount={marketItem.total_bids}
-                    auctionLastBid={marketItem.last_bid}
-                />
-            )
-        }
-
-        if (buyout || dutch_auction) {
-            return (
-                <BuyNowDetails
-                    id={marketItem.id}
-                    itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
-                    buyNowPrice={marketItem.buyout_price}
-                    dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
-                    createdAt={marketItem.created_at}
-                />
-            )
-        }
-    }, [marketItem])
-
     const { owner, mystery_crate, created_at, end_at } = marketItem
 
     return (
@@ -194,7 +155,7 @@ const WarMachineMarketDetailsInner = ({
                                 videoUrl: marketItem?.collection_item?.animation_url || SafePNG,
                             },
                         ]}
-                        primaryColor={marketItemDeets.primaryColor}
+                        primaryColor={primaryColor}
                     />
 
                     <Stack spacing="2rem">
@@ -208,17 +169,29 @@ const WarMachineMarketDetailsInner = ({
                             </Typography>
                         </Box>
 
-                        <ListingType
-                            primaryColor={marketItemDeets.primaryColor}
-                            listingTypeLabel={marketItemDeets.listingTypeLabel}
-                            icon={<marketItemDeets.Icon fill={marketItemDeets.primaryColor} />}
-                        />
-
                         <Owner owner={owner} />
 
                         <Dates createdAt={created_at} endAt={end_at} />
 
-                        {listingDetails}
+                        {marketItem.buyout_price && (
+                            <BuyNowDetails
+                                id={marketItem.id}
+                                itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
+                                buyNowPrice={marketItem.buyout_price}
+                                dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
+                                createdAt={marketItem.created_at}
+                            />
+                        )}
+
+                        {marketItem.auction_current_price && (
+                            <AuctionDetails
+                                id={marketItem.id}
+                                itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
+                                auctionCurrentPrice={marketItem.auction_current_price}
+                                auctionBidCount={marketItem.total_bids}
+                                auctionLastBid={marketItem.last_bid}
+                            />
+                        )}
                     </Stack>
 
                     <CrateDetails crate={mystery_crate} primaryColor={primaryColor} backgroundColor={backgroundColor} />

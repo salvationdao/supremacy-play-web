@@ -41,8 +41,8 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
         <>
             <Box
                 sx={{
-                    height: enlargedView ? "88%" : "100%",
                     width: "100%",
+                    height: "100%",
                     transition: "all .15s",
                     ":hover": {
                         transform: "translateY(-.4rem)",
@@ -59,11 +59,10 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                     backgroundColor={backgroundColor}
                     sx={{ height: "100%" }}
                 >
-                    <Stack spacing={enlargedView ? "2.5rem" : "1.5rem"} justifyContent="center" sx={{ height: "100%", p: enlargedView ? "3rem" : "1.5rem" }}>
+                    <Stack spacing={enlargedView ? "2.5rem" : "1.5rem"} sx={{ height: "100%", p: enlargedView ? "3rem" : "1.5rem" }}>
                         <Box
                             sx={{
                                 position: "relative",
-                                flex: enlargedView ? 1 : "unset",
                                 px: enlargedView ? "5rem" : ".8rem",
                                 py: enlargedView ? "8rem" : "2rem",
                                 borderRadius: 1,
@@ -73,15 +72,21 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                             }}
                         >
                             <Box
+                                component="video"
                                 sx={{
                                     width: "100%",
-                                    height: enlargedView ? "100%" : "22rem",
-                                    background: `url(${mysteryCrate.image_url || SafePNG})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "contain",
+                                    height: enlargedView ? "30rem" : "22rem",
+                                    overflow: "hidden",
+                                    objectFit: "contain",
+                                    objectPosition: "center",
                                 }}
-                            />
+                                loop
+                                muted
+                                autoPlay
+                                poster={`${mysteryCrate.image_url || SafePNG}`}
+                            >
+                                <source src={mysteryCrate.animation_url} type="video/mp4" />
+                            </Box>
 
                             <Box
                                 sx={{
@@ -122,7 +127,10 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                             </Stack>
                         </Box>
 
-                        <Stack alignItems={enlargedView ? "center" : "flex-start"} sx={{ flex: enlargedView ? "unset" : 1, px: ".4rem", py: ".3rem" }}>
+                        <Stack
+                            alignItems={enlargedView ? "center" : "flex-start"}
+                            sx={{ flex: enlargedView ? "unset" : 1, px: ".4rem", py: ".3rem", flexShrink: 0 }}
+                        >
                             <Typography
                                 variant={enlargedView ? "h4" : "h6"}
                                 sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack, textAlign: enlargedView ? "center" : "start" }}

@@ -13,7 +13,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
 import { ChipFilter, RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { WarMachineMarketItem } from "./WarMachineMarketItem/WarMachineMarketItem"
+import { WarMachineMarketItem } from "./WarMachineMarketItem"
 
 export const WarMachinesMarket = () => {
     const history = useHistory()
@@ -40,8 +40,8 @@ export const WarMachinesMarket = () => {
         label: "LISTING TYPE",
         options: [
             { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
-            { value: "AUCTION", label: "AUCTION", color: colors.auction },
             { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
+            { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
         initialSelected: listingTypes,
         onSetSelected: setListingTypes,
