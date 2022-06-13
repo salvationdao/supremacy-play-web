@@ -164,7 +164,9 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                                     variant: "menu",
                                     sx: {
                                         "&& .Mui-selected": {
-                                            color: secondaryColor,
+                                            ".MuiTypography-root": {
+                                                color: secondaryColor,
+                                            },
                                             backgroundColor: primaryColor,
                                         },
                                     },

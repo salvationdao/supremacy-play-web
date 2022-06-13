@@ -66,7 +66,9 @@ export const ItemTypeSelect = ({
                             variant: "menu",
                             sx: {
                                 "&& .Mui-selected": {
-                                    color: secondaryColor,
+                                    ".MuiTypography-root": {
+                                        color: secondaryColor,
+                                    },
                                     backgroundColor: primaryColor,
                                 },
                             },

@@ -37,7 +37,9 @@ export const ResolutionSelect = () => {
                     variant: "menu",
                     sx: {
                         "&& .Mui-selected": {
-                            color: secondaryColor,
+                            ".MuiTypography-root": {
+                                color: secondaryColor,
+                            },
                             backgroundColor: primaryColor,
                         },
                     },

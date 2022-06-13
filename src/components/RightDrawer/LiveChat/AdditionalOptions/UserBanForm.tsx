@@ -275,7 +275,9 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                                         variant: "menu",
                                         sx: {
                                             "&& .Mui-selected": {
-                                                color: secondaryColor,
+                                                ".MuiTypography-root": {
+                                                    color: secondaryColor,
+                                                },
                                                 backgroundColor: primaryColor,
                                             },
                                         },

@@ -49,15 +49,21 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
                             }}
                         >
                             <Box
+                                component="video"
                                 sx={{
                                     height: "100%",
                                     width: "100%",
-                                    background: `url(${crate.image_url || SafePNG})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "contain",
+                                    overflow: "hidden",
+                                    objectFit: "contain",
+                                    objectPosition: "center",
                                 }}
-                            />
+                                loop
+                                muted
+                                autoPlay
+                                poster={`${crate.image_url || SafePNG}`}
+                            >
+                                <source src={crate.animation_url} type="video/mp4" />
+                            </Box>
 
                             <Stack
                                 alignItems="center"
