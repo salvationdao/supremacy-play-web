@@ -3,23 +3,27 @@ import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgSupToken, SvgWallet } from "../../../../assets"
-import { useSnackbar } from "../../../../containers"
+import { useAuth, useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, numFormatter, timeDiff, timeSince } from "../../../../helpers"
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { MarketUser } from "../../../../types/marketplace"
 
 interface BuyNowDetailsProps {
     id: string
+    owner?: MarketUser
     itemName: string
     buyNowPrice: string
     dutchAuctionDropRate?: string
     createdAt: Date
 }
 
-export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate, createdAt }: BuyNowDetailsProps) => {
+export const BuyNowDetails = ({ id, owner, itemName, buyNowPrice, dutchAuctionDropRate, createdAt }: BuyNowDetailsProps) => {
+    const { userID } = useAuth()
+
     const calculateNewPrice = useCallback(() => {
         let newPrice = new BigNumber(buyNowPrice).shiftedBy(-18)
 
@@ -39,6 +43,8 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
     const secondaryColor = useMemo(() => theme.factionTheme.secondary, [theme.factionTheme])
     const backgroundColor = useMemo(() => theme.factionTheme.background, [theme.factionTheme])
     const formattedCommaPrice = useMemo(() => numberCommaFormatter(currentPrice.toNumber()), [currentPrice])
+
+    const isSelfItem = userID === owner?.id
 
     return (
         <>
@@ -89,6 +95,7 @@ export const BuyNowDetails = ({ id, itemName, buyNowPrice, dutchAuctionDropRate,
 
                         <FancyButton
                             excludeCaret
+                            disabled={isSelfItem}
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: primaryColor,

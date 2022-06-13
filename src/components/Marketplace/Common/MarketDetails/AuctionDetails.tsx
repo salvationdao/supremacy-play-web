@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgHammer, SvgSupToken } from "../../../../assets"
-import { useSnackbar } from "../../../../containers"
+import { useAuth, useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, numFormatter, shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -14,13 +14,15 @@ import { MarketUser } from "../../../../types/marketplace"
 
 interface AuctionDetailsProps {
     id: string
+    owner?: MarketUser
     itemName: string
     auctionCurrentPrice: string
     auctionBidCount: number
     auctionLastBid?: MarketUser
 }
 
-export const AuctionDetails = ({ id, itemName, auctionCurrentPrice, auctionBidCount, auctionLastBid }: AuctionDetailsProps) => {
+export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, auctionBidCount, auctionLastBid }: AuctionDetailsProps) => {
+    const { userID } = useAuth()
     const [confirmBidModalOpen, toggleConfirmBidModalOpen] = useToggle()
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))
     const [bidCount, setBidCount] = useState<number>(auctionBidCount)
@@ -44,6 +46,8 @@ export const AuctionDetails = ({ id, itemName, auctionCurrentPrice, auctionBidCo
             setLastBidUser(payload.last_bid)
         },
     )
+
+    const isSelfItem = userID === owner?.id
 
     return (
         <>
@@ -101,6 +105,7 @@ export const AuctionDetails = ({ id, itemName, auctionCurrentPrice, auctionBidCo
                         <TextField
                             variant="outlined"
                             hiddenLabel
+                            disabled={isSelfItem}
                             placeholder={currentPrice ? currentPrice.plus(1).toString() : "Enter your bid..."}
                             InputProps={{
                                 startAdornment: (
@@ -132,7 +137,7 @@ export const AuctionDetails = ({ id, itemName, auctionCurrentPrice, auctionBidCo
                         />
                         <FancyButton
                             excludeCaret
-                            disabled={!currentPrice || !inputBidPrice || currentPrice.isGreaterThanOrEqualTo(inputBidPrice)}
+                            disabled={isSelfItem || !currentPrice || !inputBidPrice || currentPrice.isGreaterThanOrEqualTo(inputBidPrice)}
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: primaryColor,

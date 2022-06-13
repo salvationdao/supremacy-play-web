@@ -176,6 +176,7 @@ const WarMachineMarketDetailsInner = ({
                         {marketItem.buyout_price && (
                             <BuyNowDetails
                                 id={marketItem.id}
+                                owner={marketItem.owner}
                                 itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
                                 buyNowPrice={marketItem.buyout_price}
                                 dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
@@ -186,6 +187,7 @@ const WarMachineMarketDetailsInner = ({
                         {marketItem.auction_current_price && (
                             <AuctionDetails
                                 id={marketItem.id}
+                                owner={marketItem.owner}
                                 itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
                                 auctionCurrentPrice={marketItem.auction_current_price}
                                 auctionBidCount={marketItem.total_bids}

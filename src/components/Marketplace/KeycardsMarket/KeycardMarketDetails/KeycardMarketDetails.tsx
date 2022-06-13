@@ -164,6 +164,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
 
                         <BuyNowDetails
                             id={marketItem.id}
+                            owner={marketItem.owner}
                             itemName={marketItem.keycard?.label || "KEYCARD"}
                             buyNowPrice={marketItem.buyout_price}
                             createdAt={marketItem.created_at}
