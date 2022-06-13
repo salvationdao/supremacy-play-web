@@ -164,6 +164,20 @@ export const SellItem = () => {
                         </FancyButton>
                     </Stack>
                 </Stack>
+
+                {submitError && (
+                    <Typography
+                        sx={{
+                            pt: "2rem",
+                            px: "5rem",
+                            color: colors.red,
+                            fontWeight: "fontWeightBold",
+                        }}
+                    >
+                        {submitError}
+                    </Typography>
+                )}
+
                 <Box
                     sx={{
                         pointerEvents: submitting ? "none" : "unset",
@@ -192,17 +206,6 @@ export const SellItem = () => {
                 >
                     <Box sx={{ direction: "ltr", height: 0 }}>
                         <Stack spacing="4rem" sx={{ px: "3rem", py: "1.8rem" }}>
-                            {submitError && (
-                                <Typography
-                                    sx={{
-                                        color: colors.red,
-                                        fontWeight: "fontWeightBold",
-                                    }}
-                                >
-                                    {submitError}
-                                </Typography>
-                            )}
-
                             {/* Item type select */}
                             <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} />
 
@@ -220,9 +223,9 @@ export const SellItem = () => {
                             <PricingInput
                                 price={dropRate}
                                 setPrice={setDropRate}
-                                question="Drop Rate"
+                                question="Price Drop / min"
                                 description="The buyout price will reduce by this amount every minute until a buyer purchases the item."
-                                placeholder="Enter drop rate..."
+                                placeholder="Enter price drop..."
                             />
                             <PricingInput
                                 price={startingPrice}
