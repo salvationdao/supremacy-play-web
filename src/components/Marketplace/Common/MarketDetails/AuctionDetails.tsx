@@ -10,10 +10,11 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { MarketUser } from "../../../../types/marketplace"
+import { ItemType, MarketUser } from "../../../../types/marketplace"
 
 interface AuctionDetailsProps {
     id: string
+    itemType: ItemType
     owner?: MarketUser
     itemName: string
     auctionCurrentPrice: string

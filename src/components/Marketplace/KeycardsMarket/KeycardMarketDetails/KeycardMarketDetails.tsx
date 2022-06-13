@@ -5,7 +5,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
+import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
@@ -164,6 +164,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
 
                         <BuyNowDetails
                             id={marketItem.id}
+                            itemType={ItemType.Keycards}
                             owner={marketItem.owner}
                             itemName={marketItem.keycard?.label || "KEYCARD"}
                             buyNowPrice={marketItem.buyout_price}

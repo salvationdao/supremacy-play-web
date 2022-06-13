@@ -10,10 +10,11 @@ import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { MarketUser } from "../../../../types/marketplace"
+import { ItemType, MarketUser } from "../../../../types/marketplace"
 
 interface BuyNowDetailsProps {
     id: string
+    itemType: ItemType
     owner?: MarketUser
     itemName: string
     buyNowPrice: string
@@ -21,7 +22,7 @@ interface BuyNowDetailsProps {
     createdAt: Date
 }
 
-export const BuyNowDetails = ({ id, owner, itemName, buyNowPrice, dutchAuctionDropRate, createdAt }: BuyNowDetailsProps) => {
+export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutchAuctionDropRate, createdAt }: BuyNowDetailsProps) => {
     const { userID } = useAuth()
 
     const calculateNewPrice = useCallback(() => {
@@ -125,7 +126,9 @@ export const BuyNowDetails = ({ id, owner, itemName, buyNowPrice, dutchAuctionDr
                 </Stack>
             </Stack>
 
-            {confirmBuyModalOpen && <ConfirmBuyModal id={id} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmBuyModalOpen(false)} />}
+            {confirmBuyModalOpen && (
+                <ConfirmBuyModal id={id} itemType={itemType} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmBuyModalOpen(false)} />
+            )}
         </>
     )
 }
@@ -156,7 +159,19 @@ const PriceDropper = ({
     return <>{timeLeft}</>
 }
 
-export const ConfirmBuyModal = ({ id, itemName, price, onClose }: { id: string; itemName: string; price: string; onClose: () => void }) => {
+export const ConfirmBuyModal = ({
+    id,
+    itemType,
+    itemName,
+    price,
+    onClose,
+}: {
+    id: string
+    itemType: ItemType
+    itemName: string
+    price: string
+    onClose: () => void
+}) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -168,7 +183,9 @@ export const ConfirmBuyModal = ({ id, itemName, price, onClose }: { id: string; 
     const confirmBuy = useCallback(async () => {
         try {
             setIsLoading(true)
-            const resp = await send(GameServerKeys.MarketplaceSalesBuy, {
+            const isKeycard = itemType === ItemType.Keycards
+
+            const resp = await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardBuy : GameServerKeys.MarketplaceSalesBuy, {
                 id,
             })
 
@@ -182,7 +199,7 @@ export const ConfirmBuyModal = ({ id, itemName, price, onClose }: { id: string; 
         } finally {
             setIsLoading(false)
         }
-    }, [id, newSnackbarMessage, onClose, send])
+    }, [id, itemType, newSnackbarMessage, onClose, send])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

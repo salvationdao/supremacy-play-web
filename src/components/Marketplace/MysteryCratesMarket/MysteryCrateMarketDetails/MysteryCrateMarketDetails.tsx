@@ -5,7 +5,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
+import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
@@ -176,6 +176,7 @@ const WarMachineMarketDetailsInner = ({
                         {marketItem.buyout_price && (
                             <BuyNowDetails
                                 id={marketItem.id}
+                                itemType={ItemType.MysteryCrate}
                                 owner={marketItem.owner}
                                 itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
                                 buyNowPrice={marketItem.buyout_price}
@@ -187,6 +188,7 @@ const WarMachineMarketDetailsInner = ({
                         {marketItem.auction_current_price && (
                             <AuctionDetails
                                 id={marketItem.id}
+                                itemType={ItemType.MysteryCrate}
                                 owner={marketItem.owner}
                                 itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
                                 auctionCurrentPrice={marketItem.auction_current_price}
