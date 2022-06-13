@@ -38,8 +38,8 @@ export const MysteryCratesMarket = () => {
         label: "LISTING TYPE",
         options: [
             { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
-            { value: "AUCTION", label: "AUCTION", color: colors.auction },
             { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
+            { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
         initialSelected: listingTypes,
         onSetSelected: setListingTypes,

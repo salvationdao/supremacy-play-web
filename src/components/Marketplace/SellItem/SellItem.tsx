@@ -76,9 +76,9 @@ export const SellItem = () => {
                 item_type: itemTypePayload,
                 item_id: assetToSell?.id,
                 asking_price: buyoutPrice ? buyoutPrice : undefined,
-                dutch_auction_drop_rate: dropRate ? dropRate : undefined,
-                auction_current_price: startingPrice ? startingPrice : undefined,
-                auction_reserved_price: reservePrice ? reservePrice : undefined,
+                dutch_auction_drop_rate: !isKeycard && dropRate ? dropRate : undefined,
+                auction_current_price: !isKeycard && startingPrice ? startingPrice : undefined,
+                auction_reserved_price: !isKeycard && reservePrice ? reservePrice : undefined,
             })
             history.push("/marketplace")
         } catch (err) {
@@ -220,27 +220,32 @@ export const SellItem = () => {
                                 description="A buyer can pay this amount to immediately purchase your item."
                                 placeholder="Enter buyout price..."
                             />
-                            <PricingInput
-                                price={dropRate}
-                                setPrice={setDropRate}
-                                question="Price Drop / min"
-                                description="The buyout price will reduce by this amount every minute until a buyer purchases the item."
-                                placeholder="Enter price drop..."
-                            />
-                            <PricingInput
-                                price={startingPrice}
-                                setPrice={setStartingPrice}
-                                question="Auction Starting Price"
-                                description="This will allow buyers to bid on your item as an auction."
-                                placeholder="Enter auction starting price..."
-                            />
-                            <PricingInput
-                                price={reservePrice}
-                                setPrice={setReservePrice}
-                                question="Reserve Price"
-                                description="Set a minimum price that you are willing to sell the item. The item will not sell if it's lower than the reserve price."
-                                placeholder="Enter reserve price..."
-                            />
+
+                            {itemType !== ItemType.Keycards && (
+                                <>
+                                    <PricingInput
+                                        price={dropRate}
+                                        setPrice={setDropRate}
+                                        question="Price Drop / min"
+                                        description="The buyout price will reduce by this amount every minute until a buyer purchases the item."
+                                        placeholder="Enter price drop..."
+                                    />
+                                    <PricingInput
+                                        price={startingPrice}
+                                        setPrice={setStartingPrice}
+                                        question="Auction Starting Price"
+                                        description="This will allow buyers to bid on your item as an auction."
+                                        placeholder="Enter auction starting price..."
+                                    />
+                                    <PricingInput
+                                        price={reservePrice}
+                                        setPrice={setReservePrice}
+                                        question="Reserve Price"
+                                        description="Set a minimum price that you are willing to sell the item. The item will not sell if it's lower than the reserve price."
+                                        placeholder="Enter reserve price..."
+                                    />
+                                </>
+                            )}
                         </Stack>
                     </Box>
                 </Box>

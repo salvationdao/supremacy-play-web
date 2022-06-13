@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
-import { consolidateMarketItemDeets, getRarityDeets, MarketItemDeets } from "../../../../helpers"
+import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -12,7 +12,6 @@ import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
-import { ListingType } from "../../Common/MarketDetails/ListingType"
 import { Owner } from "../../Common/MarketDetails/Owner"
 import { MechStatsDetails } from "./MechStatsDetails"
 
@@ -22,8 +21,6 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const [loadError, setLoadError] = useState<string>()
     const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-
-    const marketItemDeets = useMemo(() => (marketItem ? consolidateMarketItemDeets(marketItem, theme) : undefined), [marketItem, theme])
 
     // Get listing details
     useEffect(() => {
@@ -88,7 +85,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
             )
         }
 
-        if (!marketItem || !marketItemDeets) {
+        if (!marketItem) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -102,18 +99,17 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
             <WarMachineMarketDetailsInner
                 marketItem={marketItem}
                 mechDetails={mechDetails}
-                marketItemDeets={marketItemDeets}
-                primaryColor={marketItemDeets?.primaryColor || theme.factionTheme.primary}
-                backgroundColor={marketItemDeets?.backgroundColor || theme.factionTheme.background}
+                primaryColor={theme.factionTheme.primary}
+                backgroundColor={theme.factionTheme.background}
             />
         )
-    }, [loadError, marketItem, marketItemDeets, mechDetails, theme.factionTheme.background, theme.factionTheme.primary])
+    }, [loadError, marketItem, mechDetails, theme.factionTheme.background, theme.factionTheme.primary])
 
     return (
         <ClipThing
             clipSize="10px"
             border={{
-                borderColor: marketItemDeets?.primaryColor || theme.factionTheme.primary,
+                borderColor: theme.factionTheme.primary,
                 borderThickness: ".3rem",
             }}
             corners={{
@@ -122,7 +118,7 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
                 bottomRight: true,
             }}
             opacity={0.7}
-            backgroundColor={marketItemDeets?.backgroundColor || theme.factionTheme.background}
+            backgroundColor={theme.factionTheme.background}
             sx={{ height: "100%" }}
         >
             <Stack sx={{ height: "100%" }}>{content}</Stack>
@@ -133,13 +129,11 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
 const WarMachineMarketDetailsInner = ({
     marketItem,
     mechDetails,
-    marketItemDeets,
     primaryColor,
     backgroundColor,
 }: {
     marketItem: MarketplaceBuyAuctionItem
     mechDetails?: MechDetails
-    marketItemDeets: MarketItemDeets
     primaryColor: string
     backgroundColor: string
 }) => {
@@ -169,34 +163,6 @@ const WarMachineMarketDetailsInner = ({
             },
         ]
     }, [mechDetails])
-
-    const listingDetails = useMemo(() => {
-        const { buyout, auction, dutch_auction } = marketItem
-        if (auction) {
-            return (
-                <AuctionDetails
-                    id={marketItem.id}
-                    itemName={marketItem.mech?.name || marketItem.mech?.label || "WAR MACHINE"}
-                    buyNowPrice={marketItem.buyout_price}
-                    auctionCurrentPrice={marketItem.auction_current_price}
-                    auctionBidCount={marketItem.total_bids}
-                    auctionLastBid={marketItem.last_bid}
-                />
-            )
-        }
-
-        if (buyout || dutch_auction) {
-            return (
-                <BuyNowDetails
-                    id={marketItem.id}
-                    itemName={marketItem.mech?.name || marketItem.mech?.label || "WAR MACHINE"}
-                    buyNowPrice={marketItem.buyout_price}
-                    dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
-                    createdAt={marketItem.created_at}
-                />
-            )
-        }
-    }, [marketItem])
 
     const { owner, mech, created_at, end_at } = marketItem
 
@@ -238,7 +204,7 @@ const WarMachineMarketDetailsInner = ({
                         justifyContent: "center",
                     }}
                 >
-                    <ImagesPreview media={media} primaryColor={marketItemDeets.primaryColor} />
+                    <ImagesPreview media={media} primaryColor={primaryColor} />
 
                     <Stack spacing="2rem">
                         <Box>
@@ -255,17 +221,30 @@ const WarMachineMarketDetailsInner = ({
                             </Typography>
                         </Box>
 
-                        <ListingType
-                            primaryColor={marketItemDeets.primaryColor}
-                            listingTypeLabel={marketItemDeets.listingTypeLabel}
-                            icon={<marketItemDeets.Icon fill={marketItemDeets.primaryColor} />}
-                        />
-
                         <Owner owner={owner} />
 
                         <Dates createdAt={created_at} endAt={end_at} />
 
-                        {listingDetails}
+                        {marketItem.auction_current_price && (
+                            <AuctionDetails
+                                id={marketItem.id}
+                                itemName={marketItem.mech?.name || marketItem.mech?.label || "WAR MACHINE"}
+                                buyNowPrice={marketItem.buyout_price}
+                                auctionCurrentPrice={marketItem.auction_current_price}
+                                auctionBidCount={marketItem.total_bids}
+                                auctionLastBid={marketItem.last_bid}
+                            />
+                        )}
+
+                        {marketItem.buyout_price && (
+                            <BuyNowDetails
+                                id={marketItem.id}
+                                itemName={marketItem.mech?.name || marketItem.mech?.label || "WAR MACHINE"}
+                                buyNowPrice={marketItem.buyout_price}
+                                dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
+                                createdAt={marketItem.created_at}
+                            />
+                        )}
                     </Stack>
 
                     <MechStatsDetails mechDetails={mechDetails} primaryColor={primaryColor} backgroundColor={backgroundColor} />

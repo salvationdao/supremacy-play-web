@@ -64,12 +64,9 @@ export interface MarketplaceBuyItem {
 export interface MarketplaceBuyAuctionItem {
     id: string
     item_id: string
-    auction: boolean
     auction_current_price: string
     auction_reserved_price: string
-    dutch_auction: boolean
     dutch_auction_drop_rate: string
-    buyout: boolean
     buyout_price: string
     faction_id: string
     created_at: Date
@@ -91,6 +88,7 @@ export interface MarketplaceBuyAuctionItem {
         label: string
         avatar_url: string
     }
+    keycard?: MarketKeycard
     mystery_crate?: MarketCrate
 }
 

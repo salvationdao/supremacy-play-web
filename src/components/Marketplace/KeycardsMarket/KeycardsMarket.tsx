@@ -9,7 +9,7 @@ import { usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceBuyItem, SortType } from "../../../types/marketplace"
+import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
 import { RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { KeycardMarketItem } from "./KeycardMarketItem/KeycardMarketItem"
@@ -23,7 +23,7 @@ export const KeycardsMarket = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [keycardItems, setKeycardItems] = useState<MarketplaceBuyItem[]>()
+    const [keycardItems, setKeycardItems] = useState<MarketplaceBuyAuctionItem[]>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
@@ -50,7 +50,7 @@ export const KeycardsMarket = () => {
 
             const [min_price, max_price] = price
 
-            const resp = await send<{ total: number; records: MarketplaceBuyItem[] }>(GameServerKeys.MarketplaceSalesKeycardList, {
+            const resp = await send<{ total: number; records: MarketplaceBuyAuctionItem[] }>(GameServerKeys.MarketplaceSalesKeycardList, {
                 page_number: page,
                 page_size: pageSize,
                 search: search,
