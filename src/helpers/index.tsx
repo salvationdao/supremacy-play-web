@@ -20,16 +20,12 @@ import {
     SafePNG,
     SvgCorporal,
     SvgGeneral,
-    SvgHammer,
     SvgNewRecruit,
     SvgPrivate,
-    SvgWallet,
     SvgWrapperProps,
 } from "../assets"
-import { ThemeState } from "../containers/theme"
 import { colors } from "../theme/theme"
 import { MysteryCrateType, UserRank } from "../types"
-import { MarketplaceBuyAuctionItem } from "../types/marketplace"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -493,67 +489,3 @@ export const equalsIgnoreOrder = (a: unknown[], b: unknown[]) => {
 export const numberCommaFormatter = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
-
-// export interface MarketItemDeets {
-//     primaryColor: string
-//     secondaryColor: string
-//     backgroundColor: string
-//     price: BigNumber
-//     priceLabel: string
-//     listingTypeLabel: string
-//     ctaLabel: string
-//     Icon: React.VoidFunctionComponent<SvgWrapperProps>
-// }
-
-// export const consolidateMarketItemDeets = (marketItem: MarketplaceBuyAuctionItem, theme: ThemeState): MarketItemDeets => {
-//     const { auction, dutch_auction, buyout, auction_current_price, dutch_auction_drop_rate, buyout_price, created_at } = marketItem
-
-//     const buyoutPrice = new BigNumber(buyout_price).shiftedBy(-18)
-//     const auctionCurrentPrice = new BigNumber(auction_current_price).shiftedBy(-18)
-//     const dutchAuctionDropBy = new BigNumber(dutch_auction_drop_rate).shiftedBy(-18)
-
-//     let primaryColor = theme.factionTheme.primary
-//     let secondaryColor = theme.factionTheme.secondary
-//     let backgroundColor = theme.factionTheme.background
-//     let price = buyoutPrice
-//     let priceLabel = "PRICE"
-//     let listingTypeLabel = "BUY NOW"
-//     let ctaLabel = "BUY NOW"
-//     let Icon = SvgWallet
-
-//     if (auction) {
-//         primaryColor = colors.auction
-//         secondaryColor = "#FFFFFF"
-//         backgroundColor = shadeColor(colors.auction, -97)
-//         price = auctionCurrentPrice
-//         priceLabel = "CURRENT BID"
-//         listingTypeLabel = "AUCTION"
-//         ctaLabel = "PLACE BID"
-//         Icon = SvgHammer
-//     }
-
-//     if (dutch_auction) {
-//         primaryColor = colors.dutchAuction
-//         secondaryColor = "#FFFFFF"
-//         backgroundColor = shadeColor(colors.dutchAuction, -97)
-//         price = buyoutPrice.minus(dutchAuctionDropBy.multipliedBy(timeDiff(created_at, new Date()).minutes))
-//         priceLabel = "CURRENT PRICE"
-//         listingTypeLabel = "DUTCH AUCTION"
-//         Icon = SvgHammer
-//     }
-
-//     if (buyout) {
-//         priceLabel = "FIXED PRICE"
-//     }
-
-//     return {
-//         primaryColor,
-//         secondaryColor,
-//         backgroundColor,
-//         price,
-//         priceLabel,
-//         ctaLabel,
-//         listingTypeLabel,
-//         Icon,
-//     }
-// }
