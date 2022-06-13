@@ -71,15 +71,15 @@ export const SellItem = () => {
 
         try {
             toggleSubmitting(true)
+            setSubmitError(undefined)
             await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 item_type: itemTypePayload,
                 item_id: assetToSell?.id,
                 asking_price: buyoutPrice,
                 dutch_auction_drop_rate: dropRate,
-                starting_price: startingPrice,
+                auction_current_price: startingPrice,
                 auction_reserved_price: reservePrice,
             })
-            setSubmitError(undefined)
             history.push("/marketplace")
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
@@ -162,17 +162,6 @@ export const SellItem = () => {
                                 SUBMIT
                             </Typography>
                         </FancyButton>
-
-                        {submitError && (
-                            <Typography
-                                sx={{
-                                    color: colors.red,
-                                    fontWeight: "fontWeightBold",
-                                }}
-                            >
-                                {submitError}
-                            </Typography>
-                        )}
                     </Stack>
                 </Stack>
                 <Box
@@ -203,6 +192,17 @@ export const SellItem = () => {
                 >
                     <Box sx={{ direction: "ltr", height: 0 }}>
                         <Stack spacing="4rem" sx={{ px: "3rem", py: "1.8rem" }}>
+                            {submitError && (
+                                <Typography
+                                    sx={{
+                                        color: colors.red,
+                                        fontWeight: "fontWeightBold",
+                                    }}
+                                >
+                                    {submitError}
+                                </Typography>
+                            )}
+
                             {/* Item type select */}
                             <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} />
 
