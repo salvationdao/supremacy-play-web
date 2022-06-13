@@ -12,7 +12,6 @@ import { ItemType, ListingType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
-import { ListingTypeSelect } from "./ListingTypeSelect"
 import { PricingInput } from "./PricingInput"
 
 export interface AssetToSellStruct {
@@ -227,56 +226,37 @@ export const SellItem = () => {
                             <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
                             {/* Listing type select */}
-                            <ListingTypeSelect itemType={itemType} listingType={listingType} setListingType={setListingType} />
+                            {/* <ListingTypeSelect itemType={itemType} listingType={listingType} setListingType={setListingType} /> */}
 
                             {/* Pricing inputs */}
-                            {(listingType === ListingType.Buyout || listingType === ListingType.Auction) && (
-                                <PricingInput
-                                    price={buyoutPrice}
-                                    setPrice={setBuyoutPrice}
-                                    question="Buyout Price"
-                                    description="A buyer can pay this amount to immediately purchase your item."
-                                    placeholder="Enter buyout price..."
-                                />
-                            )}
-
-                            {listingType === ListingType.Auction && (
-                                <>
-                                    <PricingInput
-                                        price={reservePrice}
-                                        setPrice={setReservePrice}
-                                        question="Reserve Price"
-                                        description="Set a minimum price that you will allow the item to sell. The item will not sell if it doesn't meet the reserve price."
-                                        placeholder="Enter reserve price..."
-                                    />
-                                </>
-                            )}
-
-                            {listingType === ListingType.DutchAuction && (
-                                <>
-                                    <PricingInput
-                                        price={startingPrice}
-                                        setPrice={setStartingPrice}
-                                        question="Starting Price"
-                                        description="The dutch auction will start at the set price and reduce every 24 hours until a user purchases the item."
-                                        placeholder="Enter starting price..."
-                                    />
-                                    <PricingInput
-                                        price={dropRate}
-                                        setPrice={setDropRate}
-                                        question="Drop Rate"
-                                        description="This is the amount to reduce by every 24 hours."
-                                        placeholder="Enter drop rate..."
-                                    />
-                                    <PricingInput
-                                        price={reservePrice}
-                                        setPrice={setReservePrice}
-                                        question="Reserve Price"
-                                        description="Set a minimum price that you will allow the item to sell. The item will not sell if it doesn't meet the reserve price."
-                                        placeholder="Enter reserve price..."
-                                    />
-                                </>
-                            )}
+                            <PricingInput
+                                price={buyoutPrice}
+                                setPrice={setBuyoutPrice}
+                                question="Buyout Price"
+                                description="A buyer can pay this amount to immediately purchase your item."
+                                placeholder="Enter buyout price..."
+                            />
+                            <PricingInput
+                                price={startingPrice}
+                                setPrice={setStartingPrice}
+                                question="Starting Price"
+                                description="The dutch auction will start at the set price and reduce every minute until a user purchases the item."
+                                placeholder="Enter starting price..."
+                            />
+                            <PricingInput
+                                price={dropRate}
+                                setPrice={setDropRate}
+                                question="Drop Rate"
+                                description="This is the amount to reduce by every minute."
+                                placeholder="Enter drop rate..."
+                            />
+                            <PricingInput
+                                price={reservePrice}
+                                setPrice={setReservePrice}
+                                question="Reserve Price"
+                                description="Set a minimum price that you will allow the item to sell. The item will not sell if it doesn't meet the reserve price."
+                                placeholder="Enter reserve price..."
+                            />
                         </Stack>
                     </Box>
                 </Box>
