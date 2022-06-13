@@ -2,6 +2,7 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -98,6 +99,7 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
 }
 
 const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyAuctionItem; primaryColor: string }) => {
+    const [isTimeEnded, toggleIsTimeEnded] = useToggle()
     const { owner, keycard, created_at, end_at } = marketItem
 
     return (
@@ -160,7 +162,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
 
                         <Owner owner={owner} />
 
-                        <Dates createdAt={created_at} endAt={end_at} />
+                        <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
 
                         <BuyNowDetails
                             id={marketItem.id}
@@ -169,6 +171,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                             itemName={marketItem.keycard?.label || "KEYCARD"}
                             buyNowPrice={marketItem.buyout_price}
                             createdAt={marketItem.created_at}
+                            isTimeEnded={isTimeEnded}
                         />
                     </Stack>
 

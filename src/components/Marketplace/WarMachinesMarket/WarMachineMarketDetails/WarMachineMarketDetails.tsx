@@ -2,6 +2,7 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
+import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -137,6 +138,7 @@ const WarMachineMarketDetailsInner = ({
     primaryColor: string
     backgroundColor: string
 }) => {
+    const [isTimeEnded, toggleIsTimeEnded] = useToggle()
     const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
 
     const media: MarketMedia[] = useMemo(() => {
@@ -223,7 +225,7 @@ const WarMachineMarketDetailsInner = ({
 
                         <Owner owner={owner} />
 
-                        <Dates createdAt={created_at} endAt={end_at} />
+                        <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
 
                         {marketItem.buyout_price && (
                             <BuyNowDetails
@@ -234,6 +236,7 @@ const WarMachineMarketDetailsInner = ({
                                 buyNowPrice={marketItem.buyout_price}
                                 dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
                                 createdAt={marketItem.created_at}
+                                isTimeEnded={isTimeEnded}
                             />
                         )}
 
@@ -246,6 +249,7 @@ const WarMachineMarketDetailsInner = ({
                                 auctionCurrentPrice={marketItem.auction_current_price}
                                 auctionBidCount={marketItem.total_bids}
                                 auctionLastBid={marketItem.last_bid}
+                                isTimeEnded={isTimeEnded}
                             />
                         )}
                     </Stack>

@@ -20,9 +20,10 @@ interface AuctionDetailsProps {
     auctionCurrentPrice: string
     auctionBidCount: number
     auctionLastBid?: MarketUser
+    isTimeEnded: boolean
 }
 
-export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, auctionBidCount, auctionLastBid }: AuctionDetailsProps) => {
+export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, auctionBidCount, auctionLastBid, isTimeEnded }: AuctionDetailsProps) => {
     const { userID } = useAuth()
     const [confirmBidModalOpen, toggleConfirmBidModalOpen] = useToggle()
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))
@@ -133,13 +134,13 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                             value={inputBidPrice}
                             onChange={(e) => {
                                 const value = parseInt(e.target.value)
-                                if (value < 0) return
+                                if (value <= 0) return
                                 setInputBidPrice(value)
                             }}
                         />
                         <FancyButton
                             excludeCaret
-                            disabled={isSelfItem || !currentPrice || !inputBidPrice || currentPrice.isGreaterThanOrEqualTo(inputBidPrice)}
+                            disabled={isSelfItem || isTimeEnded || !currentPrice || !inputBidPrice || currentPrice.isGreaterThanOrEqualTo(inputBidPrice)}
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: primaryColor,
@@ -169,7 +170,7 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                 </Box>
             </Stack>
 
-            {confirmBidModalOpen && inputBidPrice && (
+            {confirmBidModalOpen && inputBidPrice && !isSelfItem && !isTimeEnded && (
                 <ConfirmBidModal id={id} itemName={itemName} inputBidPrice={inputBidPrice} onClose={() => toggleConfirmBidModalOpen(false)} />
             )}
         </>

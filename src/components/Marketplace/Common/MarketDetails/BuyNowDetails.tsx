@@ -20,9 +20,10 @@ interface BuyNowDetailsProps {
     buyNowPrice: string
     dutchAuctionDropRate?: string
     createdAt: Date
+    isTimeEnded: boolean
 }
 
-export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutchAuctionDropRate, createdAt }: BuyNowDetailsProps) => {
+export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutchAuctionDropRate, createdAt, isTimeEnded }: BuyNowDetailsProps) => {
     const { userID } = useAuth()
 
     const calculateNewPrice = useCallback(() => {
@@ -96,7 +97,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
 
                         <FancyButton
                             excludeCaret
-                            disabled={isSelfItem}
+                            disabled={isSelfItem || isTimeEnded}
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: primaryColor,
@@ -126,7 +127,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                 </Stack>
             </Stack>
 
-            {confirmBuyModalOpen && (
+            {confirmBuyModalOpen && !isSelfItem && !isTimeEnded && (
                 <ConfirmBuyModal id={id} itemType={itemType} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmBuyModalOpen(false)} />
             )}
         </>
