@@ -5,7 +5,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { MarketplaceBuyItem } from "../../../../types/marketplace"
+import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
@@ -17,13 +17,13 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
-    const [marketItem, setMarketItem] = useState<MarketplaceBuyItem>()
+    const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
 
     // Get listing details
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<MarketplaceBuyItem>(GameServerKeys.GetKeycard, {
+                const resp = await send<MarketplaceBuyAuctionItem>(GameServerKeys.GetKeycard, {
                     id,
                 })
 
@@ -97,7 +97,7 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
     )
 }
 
-const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyItem; primaryColor: string }) => {
+const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyAuctionItem; primaryColor: string }) => {
     const { owner, keycard, created_at, end_at } = marketItem
 
     return (

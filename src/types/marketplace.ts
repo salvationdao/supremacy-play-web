@@ -21,6 +21,7 @@ export enum SortType {
 }
 
 export interface MarketUser {
+    id: string
     username: string
     gid: number
     public_address: string
@@ -44,21 +45,6 @@ export interface MarketCrate {
     id: string
     label: string
     description: string
-}
-
-export interface MarketplaceBuyItem {
-    id: string
-    item_id: string
-    buyout_price: string
-    created_at: Date
-    end_at: Date
-    owner?: {
-        username: string
-        gid: number
-        public_address: string
-        faction_id: string
-    }
-    keycard?: MarketKeycard
 }
 
 export interface MarketplaceBuyAuctionItem {
