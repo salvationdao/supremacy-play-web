@@ -1,26 +1,17 @@
 import { Stack, Typography } from "@mui/material"
-import { useCallback, useEffect } from "react"
-import { useHistory, useParams } from "react-router-dom"
-import { MARKETPLACE_TABS } from "."
+import { useCallback } from "react"
+import { useHistory } from "react-router-dom"
 import { HangarBg, SvgBack } from "../assets"
 import { FancyButton } from "../components"
-import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/KeycardMarketDetails/KeycardMarketDetails"
-import { MysteryCrateMarketDetails } from "../components/Marketplace/MysteryCratesMarket/MysteryCrateMarketDetails/MysteryCrateMarketDetails"
-import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMarket/WarMachineMarketDetails/WarMachineMarketDetails"
+import { SellItem } from "../components/Marketplace/SellItem/SellItem"
 import { fonts, siteZIndex } from "../theme/theme"
 
-export const MarketplaceItemPage = () => {
-    const { type, id } = useParams<{ type: MARKETPLACE_TABS; id: string }>()
+export const MarketplaceSellPage = () => {
     const history = useHistory()
 
     const goBack = useCallback(() => {
         history.goBack()
     }, [history])
-
-    // If invalid url, then redirect to marketplace page
-    useEffect(() => {
-        if (!Object.values(MARKETPLACE_TABS).includes(type) || !id) goBack()
-    }, [goBack, history, id, type])
 
     return (
         <Stack
@@ -61,26 +52,8 @@ export const MarketplaceItemPage = () => {
                     </Stack>
                 </FancyButton>
 
-                <MarketplaceItemPageInner />
+                <SellItem />
             </Stack>
         </Stack>
     )
-}
-
-const MarketplaceItemPageInner = () => {
-    const { type, id } = useParams<{ type: MARKETPLACE_TABS; id: string }>()
-
-    if (type === MARKETPLACE_TABS.WarMachines && !!id) {
-        return <WarMachineMarketDetails id={id} />
-    }
-
-    if (type === MARKETPLACE_TABS.Keycards && !!id) {
-        return <KeycardMarketDetails id={id} />
-    }
-
-    if (type === MARKETPLACE_TABS.MysteryCrates && !!id) {
-        return <MysteryCrateMarketDetails id={id} />
-    }
-
-    return null
 }

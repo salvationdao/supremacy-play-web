@@ -10,7 +10,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
-import { TotalAndPageSizeOptions } from "../../Marketplace/TotalAndPageSizeOptions"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { DeployModal } from "./DeployQueue/DeployModal"
 import { LeaveModal } from "./LeaveQueue/LeaveModal"
 import { HistoryModal } from "./MechHistory/HistoryModal"
@@ -131,22 +131,24 @@ const WarMachinesHangarInner = ({
 
     const content = useMemo(() => {
         return (
-            <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem", height: 0 }}>
-                {mechs.map((mech, i) => (
-                    <WarMachineHangarItem
-                        key={`hangar-mech-${mech.id}`}
-                        index={i}
-                        mech={mech}
-                        isSelected={mech.id === selectedMechDetails?.id}
-                        setSelectedMechDetails={setSelectedMechDetails}
-                        setDeployMechModalOpen={setDeployMechModalOpen}
-                        setLeaveMechModalOpen={setLeaveMechModalOpen}
-                        setHistoryMechModalOpen={setHistoryMechModalOpen}
-                        setRentalMechModalOpen={setRentalMechModalOpen}
-                        setSellMechModalOpen={setSellMechModalOpen}
-                    />
-                ))}
-            </Stack>
+            <Box sx={{ direction: "ltr", height: 0 }}>
+                <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem" }}>
+                    {mechs.map((mech, i) => (
+                        <WarMachineHangarItem
+                            key={`hangar-mech-${mech.id}`}
+                            index={i}
+                            mech={mech}
+                            isSelected={mech.id === selectedMechDetails?.id}
+                            setSelectedMechDetails={setSelectedMechDetails}
+                            setDeployMechModalOpen={setDeployMechModalOpen}
+                            setLeaveMechModalOpen={setLeaveMechModalOpen}
+                            setHistoryMechModalOpen={setHistoryMechModalOpen}
+                            setRentalMechModalOpen={setRentalMechModalOpen}
+                            setSellMechModalOpen={setSellMechModalOpen}
+                        />
+                    ))}
+                </Stack>
+            </Box>
         )
     }, [
         mechs,
@@ -187,10 +189,10 @@ const WarMachinesHangarInner = ({
 
                     <Box
                         sx={{
-                            my: ".8rem",
-                            ml: ".8rem",
-                            mr: ".4rem",
-                            pr: ".4rem",
+                            ml: "1.2rem",
+                            mr: ".7rem",
+                            pr: ".5rem",
+                            my: "1rem",
                             flex: 1,
                             overflowY: "auto",
                             overflowX: "hidden",

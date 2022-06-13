@@ -31,33 +31,39 @@ const TabbedLayout = () => {
 
     const faction = getFaction(factionID)
     const chatMessages = tabValue == 0 ? globalChatMessages : factionChatMessages
-    const isEnlisted = !!factionID
-    let faction_id
-    let primaryColor
-    let secondaryColor
-    let bannerBackgroundColor
 
-    if (tabValue == 0) {
-        faction_id = null
-        primaryColor = colors.globalChat
-        secondaryColor = "#FFFFFF"
-        bannerBackgroundColor = shadeColor(primaryColor, -30)
-    } else if (tabValue == 1 && isEnlisted) {
-        faction_id = factionID
-        primaryColor = theme.factionTheme.primary
-        secondaryColor = theme.factionTheme.secondary
-        // bannerBackgroundColor = `${primaryColor}25`
-        bannerBackgroundColor = shadeColor(primaryColor, -60)
-    } else {
-        return null
-    }
+    const data = useMemo(() => {
+        const isEnlisted = !!factionID
+        let faction_id = null
+        let primaryColor = colors.globalChat
+        let secondaryColor = "#FFFFFF"
+        let bannerBackgroundColor = shadeColor(primaryColor, -30)
+        let factionTabLabel = ""
 
-    let factionTabLabel = ""
-    if (isEnlisted) {
-        factionTabLabel = faction.label
-        if (factionTabLabel.length > 8) factionTabLabel = acronym(factionTabLabel)
-        factionTabLabel += " CHAT"
-    }
+        if (isEnlisted) {
+            factionTabLabel = faction.label
+            if (factionTabLabel.length > 8) factionTabLabel = acronym(factionTabLabel)
+            factionTabLabel += " CHAT"
+        }
+
+        if (tabValue == 1 && isEnlisted) {
+            faction_id = factionID
+            primaryColor = theme.factionTheme.primary
+            secondaryColor = theme.factionTheme.secondary
+            bannerBackgroundColor = shadeColor(primaryColor, -60)
+        }
+
+        return {
+            isEnlisted,
+            faction_id,
+            primaryColor,
+            secondaryColor,
+            bannerBackgroundColor,
+            factionTabLabel,
+        }
+    }, [faction.label, factionID, tabValue, theme.factionTheme.primary, theme.factionTheme.secondary])
+
+    const { isEnlisted, faction_id, primaryColor, secondaryColor, bannerBackgroundColor, factionTabLabel } = data
 
     return (
         <Stack
@@ -73,8 +79,7 @@ const TabbedLayout = () => {
                 variant="fullWidth"
                 sx={{
                     height: `${5}rem`,
-                    // background: bannerBackgroundColor,
-                    background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}90)`,
+                    background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}95)`,
                     boxShadow: 1,
                     zIndex: 9,
                     ".MuiButtonBase-root": {
@@ -190,16 +195,28 @@ const SplitLayout = () => {
     const { globalChatMessages, factionChatMessages, banProposal } = useChat()
 
     const faction = getFaction(factionID)
-    const isEnlisted = !!factionID
-    const factionTabLabel = useMemo(() => {
+
+    const data = useMemo(() => {
+        const isEnlisted = !!factionID
+        let factionTabLabel = ""
+        const globalChatBannerColor = shadeColor(colors.globalChat, -30)
+        const factionChatBannerColor = shadeColor(theme.factionTheme.primary, -60)
+
         if (isEnlisted) {
-            let aaa = faction.label
-            if (aaa.length > 8) aaa = acronym(aaa)
-            aaa += " CHAT"
-            return aaa
+            factionTabLabel = faction.label
+            if (factionTabLabel.length > 8) factionTabLabel = acronym(factionTabLabel)
+            factionTabLabel += " CHAT"
         }
-        return ""
-    }, [faction.label, isEnlisted])
+
+        return {
+            isEnlisted,
+            factionTabLabel,
+            globalChatBannerColor,
+            factionChatBannerColor,
+        }
+    }, [faction.label, factionID, theme.factionTheme.primary])
+
+    const { isEnlisted, factionTabLabel, globalChatBannerColor, factionChatBannerColor } = data
 
     return (
         <Stack sx={{ flex: 1, height: 0 }}>
@@ -218,7 +235,7 @@ const SplitLayout = () => {
                     sx={{
                         height: `${5}rem`,
                         px: "1.8rem",
-                        background: shadeColor(colors.globalChat, -30),
+                        background: `linear-gradient(${globalChatBannerColor} 26%, ${globalChatBannerColor}95)`,
                         boxShadow: 1,
                         zIndex: 9,
                     }}
@@ -249,7 +266,7 @@ const SplitLayout = () => {
                         sx={{
                             height: `${5}rem`,
                             px: "1.8rem",
-                            background: (theme) => `${theme.factionTheme.primary}25`,
+                            background: `linear-gradient(${factionChatBannerColor} 26%, ${factionChatBannerColor}95)`,
                             boxShadow: 1,
                             zIndex: 9,
                         }}

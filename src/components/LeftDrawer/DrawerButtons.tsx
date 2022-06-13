@@ -17,7 +17,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
     let activeTabID = ""
-    if (match && location.pathname !== match.path) {
+    if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
         activeTabID = r?.matchLeftDrawerID || ""
     }
@@ -48,7 +48,8 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {ROUTES_ARRAY.map((r) => {
                     if (!r.leftDrawer) return null
-                    const { enable, requireAuth, requireFaction, label } = r.leftDrawer
+                    const { requireAuth, requireFaction } = r
+                    const { enable, label } = r.leftDrawer
                     const disable = (requireAuth || requireFaction) && !userID
                     const navigateTo = r.path.split("/:")[0]
 

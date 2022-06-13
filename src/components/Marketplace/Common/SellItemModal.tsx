@@ -43,7 +43,7 @@ export const SellItemModal = ({ onClose }: Props) => {
 
     const askingPriceLabel = saleType === SaleType.DutchAuction ? "Starting Price" : "Buyout Price"
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 12, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 12, page: 0 })
     const { state: stateUser, send: sendUser } = useGameServerCommandsUser("/user_commander")
     const { state: stateFaction, send: sendFaction } = useGameServerCommandsFaction("/faction_commander")
 

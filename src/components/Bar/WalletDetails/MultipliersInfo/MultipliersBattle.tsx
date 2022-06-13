@@ -56,9 +56,10 @@ export const MultipliersBattle = ({ bm }: { bm: BattleMultipliers }) => {
                 <Box
                     sx={{
                         maxHeight: "16rem",
-                        mt: ".3rem",
-                        py: "0.5rem",
-                        px: ".8rem",
+                        ml: "1rem",
+                        mr: ".5rem",
+                        pr: ".5rem",
+                        my: ".8rem",
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",

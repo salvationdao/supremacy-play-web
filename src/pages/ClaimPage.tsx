@@ -5,14 +5,6 @@ import { ClaimsBg } from "../assets"
 
 export const ClaimPage = () => {
     return (
-        <Box sx={{ height: "100%" }}>
-            <ClaimPageInner />
-        </Box>
-    )
-}
-
-const ClaimPageInner = () => {
-    return (
         <Box
             sx={{
                 height: "100%",

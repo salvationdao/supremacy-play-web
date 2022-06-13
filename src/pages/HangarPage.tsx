@@ -1,16 +1,13 @@
-import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState, SyntheticEvent, useEffect, useCallback } from "react"
-import { HangarBg } from "../assets"
-import { ConnectButton } from "../components"
-import { useTheme } from "../containers/theme"
-import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
-import { useAuth } from "../containers"
-import { fonts, siteZIndex } from "../theme/theme"
+import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
+import { SyntheticEvent, useCallback, useEffect, useState } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
-import { ROUTES_MAP } from "../routes"
-import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { HangarBg } from "../assets"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
-import { SelectFaction } from "../components/Common/SelectFaction"
+import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
+import { useTheme } from "../containers/theme"
+import { ROUTES_MAP } from "../routes"
+import { siteZIndex } from "../theme/theme"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -19,38 +16,6 @@ export enum HANGAR_TABS {
 }
 
 export const HangarPage = () => {
-    const { userID, factionID } = useAuth()
-
-    return (
-        <Stack
-            alignItems="center"
-            sx={{
-                height: "100%",
-                zIndex: siteZIndex.RoutePage,
-                backgroundImage: `url(${HangarBg})`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-                boxShadow: `inset 0 0 50px 60px #00000090`,
-            }}
-        >
-            {!userID && (
-                <Stack spacing="1.3rem" alignItems="center" sx={{ alignSelf: "center", my: "auto", px: "3.6rem", py: "2.8rem", backgroundColor: "#00000060" }}>
-                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        You need to be logged in to view this page.
-                    </Typography>
-                    <ConnectButton width="12rem" />
-                </Stack>
-            )}
-
-            {userID && !factionID && <SelectFaction />}
-
-            {userID && factionID && <HangarPageInner />}
-        </Stack>
-    )
-}
-
-const HangarPageInner = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
@@ -74,7 +39,18 @@ const HangarPageInner = () => {
     if (!currentValue) return null
 
     return (
-        <>
+        <Stack
+            alignItems="center"
+            sx={{
+                height: "100%",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                boxShadow: `inset 0 0 50px 60px #00000090`,
+            }}
+        >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "193rem" }}>
                 <Box sx={{ maxWidth: "fit-content", mb: "1.1rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
                     <Tabs
@@ -110,7 +86,7 @@ const HangarPageInner = () => {
                     <MysteryCratesHangar />
                 </TabPanel>
             </Stack>
-        </>
+        </Stack>
     )
 }
 

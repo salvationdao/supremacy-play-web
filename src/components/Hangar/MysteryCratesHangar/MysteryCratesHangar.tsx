@@ -10,9 +10,9 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
-import { TotalAndPageSizeOptions } from "../../Marketplace/TotalAndPageSizeOptions"
 import { MysteryCrateItem } from "./MysteryCrateItem"
 import { useHistory } from "react-router-dom"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 
 interface GetCratesRequest {
     page: number
@@ -87,22 +87,23 @@ export const MysteryCratesHangar = () => {
 
         if (crates && crates.length > 0) {
             return (
-                <Box
-                    sx={{
-                        width: "100%",
-                        pt: ".5rem",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
-                        gap: "2.4rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: 0,
-                        overflow: "visible",
-                    }}
-                >
-                    {crates.map((crate, index) => (
-                        <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`} crate={crate} />
-                    ))}
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            pt: ".5rem",
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
+                            gap: "2.4rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                        }}
+                    >
+                        {crates.map((crate, index) => (
+                            <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`} crate={crate} />
+                        ))}
+                    </Box>
                 </Box>
             )
         }
@@ -203,11 +204,10 @@ export const MysteryCratesHangar = () => {
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                mt: ".1rem",
-                                mb: ".8rem",
-                                ml: ".8rem",
-                                pl: "1rem",
-                                pr: "1.5rem",
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
                                 flex: 1,
                                 overflowY: "auto",
                                 overflowX: "hidden",

@@ -103,22 +103,24 @@ export const MysteryCratesStore = () => {
 
         if (crates && crates.length > 0) {
             return (
-                <Box
-                    sx={{
-                        width: "100%",
-                        pt: ".5rem",
-                        display: "grid",
-                        gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(min-content, 40%))" : "repeat(auto-fill, minmax(32rem, 1fr))",
-                        gap: enlargedView ? "5rem" : "2.4rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: enlargedView ? "100%" : 0,
-                        overflow: "visible",
-                    }}
-                >
-                    {crates.map((crate, index) => (
-                        <MysteryCrateStoreItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
-                    ))}
+                <Box sx={{ direction: "ltr", height: enlargedView ? "100%" : 0 }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            pt: ".5rem",
+                            display: "grid",
+                            gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(min-content, 40%))" : "repeat(auto-fill, minmax(32rem, 1fr))",
+                            gap: enlargedView ? "5rem" : "2.4rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                            height: "100%",
+                        }}
+                    >
+                        {crates.map((crate, index) => (
+                            <MysteryCrateStoreItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
+                        ))}
+                    </Box>
                 </Box>
             )
         }
@@ -186,7 +188,7 @@ export const MysteryCratesStore = () => {
                         <Box
                             sx={{
                                 flexShrink: 0,
-                                mr: "1.2rem",
+                                mr: "1.6rem",
                                 width: "7rem",
                                 height: "6rem",
                                 background: `url(${SafePNG})`,
@@ -261,12 +263,11 @@ export const MysteryCratesStore = () => {
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                mt: ".1rem",
-                                mb: ".8rem",
-                                ml: ".8rem",
-                                pl: "1rem",
-                                pr: "1.5rem",
                                 flex: 1,
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 direction: "ltr",

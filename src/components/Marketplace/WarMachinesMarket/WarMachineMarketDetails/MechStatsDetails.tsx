@@ -40,7 +40,7 @@ export const MechStatsDetails = ({
                     color={primaryColor}
                     fontSize="1.3rem"
                     width="100%"
-                    spacing=".9rem"
+                    spacing="1.2rem"
                     barHeight=".8rem"
                 />
             </Stack>

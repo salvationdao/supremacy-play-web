@@ -1,5 +1,6 @@
 import { Box, SxProps } from "@mui/system"
 import React, { useMemo } from "react"
+import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 
 export interface ClipThingProps {
@@ -98,6 +99,11 @@ export const ClipThing: React.FC<ClipThingProps> = ({
         }
     }
 
+    const innerBackground = useMemo(
+        () => (backgroundColor ? `linear-gradient(${backgroundColor} 26%, ${shadeColor(backgroundColor, -20)})` : "unset"),
+        [backgroundColor],
+    )
+
     return (
         <Box
             sx={{
@@ -132,7 +138,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
                             ...innerSx,
                             ...innerClipStyles,
                             height: "100%",
-                            backgroundColor: backgroundColor || "unset",
+                            background: innerBackground,
                         } as Record<string, unknown>
                     }
                 />

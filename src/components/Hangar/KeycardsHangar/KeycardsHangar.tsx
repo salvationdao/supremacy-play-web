@@ -2,7 +2,7 @@ import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
-import { SafePNG } from "../../../assets"
+import { KeycardPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
@@ -10,7 +10,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
-import { TotalAndPageSizeOptions } from "../../Marketplace/TotalAndPageSizeOptions"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { KeycardItem } from "./KeycardItem"
 
@@ -85,22 +85,23 @@ export const KeycardsHangar = () => {
 
         if (keycards && keycards.length > 0) {
             return (
-                <Box
-                    sx={{
-                        width: "100%",
-                        pt: ".5rem",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
-                        gap: "2.4rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: 0,
-                        overflow: "visible",
-                    }}
-                >
-                    {keycards.map((keycard, index) => (
-                        <KeycardItem key={`storefront-keycard-${keycard.id}-${index}`} keycard={keycard} />
-                    ))}
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            pt: ".5rem",
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
+                            gap: "2.4rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                        }}
+                    >
+                        {keycards.map((keycard, index) => (
+                            <KeycardItem key={`storefront-keycard-${keycard.id}-${index}`} keycard={keycard} />
+                        ))}
+                    </Box>
                 </Box>
             )
         }
@@ -120,11 +121,11 @@ export const KeycardsHangar = () => {
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "43rem" }}>
                     <Box
                         sx={{
-                            width: "9rem",
-                            height: "9rem",
+                            width: "10rem",
+                            height: "10rem",
                             opacity: 0.6,
                             filter: "grayscale(100%)",
-                            background: `url(${SafePNG})`,
+                            background: `url(${KeycardPNG})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "top center",
                             backgroundSize: "contain",
@@ -201,11 +202,10 @@ export const KeycardsHangar = () => {
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                mt: ".1rem",
-                                mb: ".8rem",
-                                ml: ".8rem",
-                                pl: "1rem",
-                                pr: "1.5rem",
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
                                 flex: 1,
                                 overflowY: "auto",
                                 overflowX: "hidden",

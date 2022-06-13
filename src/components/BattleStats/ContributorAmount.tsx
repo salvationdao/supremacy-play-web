@@ -9,12 +9,12 @@ import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 
-export interface ContibutorAmountProps {
+export interface ContributorAmountProps {
     hideContributionTotal?: boolean
     hideContributorAmount?: boolean
 }
 
-export const ContributorAmount = (props: ContibutorAmountProps) => {
+export const ContributorAmount = (props: ContributorAmountProps) => {
     const { battleEndDetail } = useGame()
     const [contributor, setContributor] = useDebounce(0, 350)
     const [rate, setRate] = useState(0)
@@ -49,7 +49,7 @@ export const ContributorAmount = (props: ContibutorAmountProps) => {
     return <ContributorAmountInner rate={rate} contributor={contributor} {...props} />
 }
 
-interface InnerProps extends ContibutorAmountProps {
+interface InnerProps extends ContributorAmountProps {
     contributor: number
     rate: number
 }

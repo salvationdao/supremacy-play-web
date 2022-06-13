@@ -206,9 +206,10 @@ const WarMachineMarketDetailsInner = ({
                 flex: 1,
                 overflowY: "auto",
                 overflowX: "hidden",
+                ml: "2rem",
                 mr: "1rem",
-                mt: "1.2rem",
-                mb: "3rem",
+                pr: "1rem",
+                my: "2rem",
                 direction: "ltr",
                 scrollbarWidth: "none",
                 "::-webkit-scrollbar": {
@@ -224,48 +225,51 @@ const WarMachineMarketDetailsInner = ({
                 },
             }}
         >
-            <Box
-                sx={{
-                    maxHeight: 0,
-                    px: "5rem",
-                    py: "2.8rem",
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
-                    gap: "3.5rem",
-                    justifyContent: "center",
-                }}
-            >
-                <ImagesPreview media={media} primaryColor={marketItemDeets.primaryColor} />
+            <Box sx={{ direction: "ltr", height: 0 }}>
+                <Box
+                    sx={{
+                        pt: "2rem",
+                        pb: "3.8rem",
+                        px: "3rem",
 
-                <Stack spacing="2rem">
-                    <Box>
-                        <Typography
-                            gutterBottom
-                            variant="h5"
-                            sx={{ color: primaryColor, fontFamily: fonts.nostromoBold, span: { color: rarityDeets.color, fontFamily: "inherit" } }}
-                        >
-                            WAR MACHINE | <span>{rarityDeets.label}</span>
-                        </Typography>
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
+                        gap: "3.5rem",
+                        justifyContent: "center",
+                    }}
+                >
+                    <ImagesPreview media={media} primaryColor={marketItemDeets.primaryColor} />
 
-                        <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            {mech?.name || mech?.label}
-                        </Typography>
-                    </Box>
+                    <Stack spacing="2rem">
+                        <Box>
+                            <Typography
+                                gutterBottom
+                                variant="h5"
+                                sx={{ color: primaryColor, fontFamily: fonts.nostromoBold, span: { color: rarityDeets.color, fontFamily: "inherit" } }}
+                            >
+                                WAR MACHINE | <span>{rarityDeets.label}</span>
+                            </Typography>
 
-                    <ListingType
-                        primaryColor={marketItemDeets.primaryColor}
-                        listingTypeLabel={marketItemDeets.listingTypeLabel}
-                        icon={<marketItemDeets.Icon fill={marketItemDeets.primaryColor} />}
-                    />
+                            <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                {mech?.name || mech?.label}
+                            </Typography>
+                        </Box>
 
-                    <Owner owner={owner} />
+                        <ListingType
+                            primaryColor={marketItemDeets.primaryColor}
+                            listingTypeLabel={marketItemDeets.listingTypeLabel}
+                            icon={<marketItemDeets.Icon fill={marketItemDeets.primaryColor} />}
+                        />
 
-                    <Dates createdAt={created_at} endAt={end_at} />
+                        <Owner owner={owner} />
 
-                    {listingDetails}
-                </Stack>
+                        <Dates createdAt={created_at} endAt={end_at} />
 
-                <MechStatsDetails mechDetails={mechDetails} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+                        {listingDetails}
+                    </Stack>
+
+                    <MechStatsDetails mechDetails={mechDetails} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+                </Box>
             </Box>
         </Box>
     )

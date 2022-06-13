@@ -46,7 +46,7 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                         opacity: 1,
                         sx: { position: "relative", ml: "auto" },
                     }}
-                    sx={{ px: "1rem", py: ".1rem", color: "#FFFFFF" }}
+                    sx={{ px: "1rem", py: ".1rem", color: theme.factionTheme.primary }}
                     onClick={() => toggleBanModalOpen()}
                 >
                     <Typography
