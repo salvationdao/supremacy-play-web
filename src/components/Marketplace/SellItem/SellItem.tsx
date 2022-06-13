@@ -57,7 +57,7 @@ export const SellItem = () => {
     useEffect(() => {
         let fee = 10
         if (reservePrice) fee += 5
-        if (buyoutPrice && !dropRate) fee += 5
+        if (buyoutPrice) fee += 5
         setListingFee(fee)
     }, [buyoutPrice, reservePrice, dropRate])
 
@@ -195,6 +195,16 @@ export const SellItem = () => {
                             <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
                             {/* Pricing inputs */}
+                            {itemType !== ItemType.Keycards && (
+                                <PricingInput
+                                    price={startingPrice}
+                                    setPrice={setStartingPrice}
+                                    question="Auction Starting Price"
+                                    description="This will allow buyers to bid on your item as an auction."
+                                    placeholder="Enter auction starting price..."
+                                />
+                            )}
+
                             <PricingInput
                                 price={buyoutPrice}
                                 setPrice={setBuyoutPrice}
@@ -208,21 +218,14 @@ export const SellItem = () => {
                                     <PricingInput
                                         price={dropRate}
                                         setPrice={setDropRate}
-                                        question="Price Drop / min"
+                                        question="Price Drop / min (Optional)"
                                         description="The buyout price will reduce by this amount every minute until a buyer purchases the item."
                                         placeholder="Enter price drop..."
                                     />
                                     <PricingInput
-                                        price={startingPrice}
-                                        setPrice={setStartingPrice}
-                                        question="Auction Starting Price"
-                                        description="This will allow buyers to bid on your item as an auction."
-                                        placeholder="Enter auction starting price..."
-                                    />
-                                    <PricingInput
                                         price={reservePrice}
                                         setPrice={setReservePrice}
-                                        question="Reserve Price"
+                                        question="Reserve Price (Optional)"
                                         description="Set a minimum price that you are willing to sell the item. The item will not sell if it's lower than the reserve price."
                                         placeholder="Enter reserve price..."
                                     />
