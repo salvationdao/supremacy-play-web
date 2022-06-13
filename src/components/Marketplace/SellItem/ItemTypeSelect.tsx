@@ -2,7 +2,7 @@ import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { colors } from "../../../theme/theme"
-import { ItemType, ListingType } from "../../../types/marketplace"
+import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { QuestionSection } from "./QuestionSection"
 import { AssetToSellStruct, itemTypes } from "./SellItem"
@@ -11,12 +11,10 @@ export const ItemTypeSelect = ({
     itemType,
     setItemType,
     setAssetToSell,
-    setListingType,
 }: {
     itemType?: ItemType
     setItemType: React.Dispatch<React.SetStateAction<ItemType | undefined>>
     setAssetToSell: React.Dispatch<React.SetStateAction<AssetToSellStruct | undefined>>
-    setListingType: React.Dispatch<React.SetStateAction<ListingType | undefined>>
 }) => {
     const theme = useTheme()
 
@@ -101,7 +99,6 @@ export const ItemTypeSelect = ({
                                         setItemType((prev) => {
                                             if (prev === x.value) return prev
                                             setAssetToSell(undefined)
-                                            setListingType(undefined)
                                             return x.value
                                         })
                                     }}

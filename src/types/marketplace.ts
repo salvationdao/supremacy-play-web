@@ -6,12 +6,6 @@ export enum ItemType {
     MysteryCrate = "MYSTERY_CRATE",
 }
 
-export enum ListingType {
-    Buyout = "BUYOUT",
-    Auction = "AUCTION",
-    DutchAuction = "DUTCH_AUCTION",
-}
-
 export enum SaleType {
     Buyout = "BUYOUT",
     Auction = "AUCTION",

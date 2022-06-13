@@ -8,7 +8,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { ItemType, ListingType } from "../../../types/marketplace"
+import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
@@ -32,15 +32,6 @@ export const itemTypes: {
     { label: "Mystery Crate", value: ItemType.MysteryCrate },
 ]
 
-export const listingTypes: {
-    label: string
-    value: ListingType
-}[] = [
-    { label: "Buyout", value: ListingType.Buyout },
-    { label: "Auction", value: ListingType.Auction },
-    { label: "Dutch Auction", value: ListingType.DutchAuction },
-]
-
 export const SellItem = () => {
     const theme = useTheme()
     const history = useHistory()
@@ -51,7 +42,6 @@ export const SellItem = () => {
     // Form states
     const [itemType, setItemType] = useState<ItemType>()
     const [assetToSell, setAssetToSell] = useState<AssetToSellStruct>()
-    const [listingType, setListingType] = useState<ListingType>()
     // Buyout
     const [buyoutPrice, setBuyoutPrice] = useState<string>("")
     // Auction
@@ -64,17 +54,13 @@ export const SellItem = () => {
     const primaryColor = theme.factionTheme.primary
 
     const isFormReady = useCallback(() => {
-        return itemType && assetToSell && listingType && (buyoutPrice || reservePrice || (startingPrice && dropRate))
-    }, [assetToSell, buyoutPrice, dropRate, itemType, listingType, reservePrice, startingPrice])
+        return itemType && assetToSell && (buyoutPrice || startingPrice)
+    }, [assetToSell, buyoutPrice, itemType, startingPrice])
 
     const submitHandler = useCallback(async () => {
         if (!isFormReady()) return
 
         const isKeycard = itemType === ItemType.Keycards
-
-        const hasBuyout = listingType === ListingType.Buyout || (listingType === ListingType.Auction && !!buyoutPrice)
-        const hasAuction = listingType === ListingType.Auction
-        const hasDutchAuction = listingType === ListingType.DutchAuction
 
         let itemTypePayload: string = ""
         if (itemType === ItemType.WarMachine) {
@@ -88,12 +74,10 @@ export const SellItem = () => {
             await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 item_type: itemTypePayload,
                 item_id: assetToSell?.id,
-                has_buyout: hasBuyout,
-                has_auction: hasAuction,
-                has_dutch_auction: hasDutchAuction,
-                asking_price: hasBuyout ? buyoutPrice : hasDutchAuction ? startingPrice : undefined,
-                auction_reserved_price: (hasAuction || hasDutchAuction) && reservePrice ? reservePrice : undefined,
-                dutch_auction_drop_rate: hasDutchAuction && dropRate ? dropRate : undefined,
+                asking_price: buyoutPrice,
+                dutch_auction_drop_rate: dropRate,
+                starting_price: startingPrice,
+                auction_reserved_price: reservePrice,
             })
             setSubmitError(undefined)
             history.push("/marketplace")
@@ -104,7 +88,7 @@ export const SellItem = () => {
         } finally {
             toggleSubmitting(false)
         }
-    }, [assetToSell?.id, buyoutPrice, dropRate, history, isFormReady, itemType, listingType, reservePrice, send, startingPrice, toggleSubmitting])
+    }, [assetToSell?.id, buyoutPrice, dropRate, history, isFormReady, itemType, reservePrice, send, startingPrice, toggleSubmitting])
 
     return (
         <ClipThing
@@ -220,7 +204,7 @@ export const SellItem = () => {
                     <Box sx={{ direction: "ltr", height: 0 }}>
                         <Stack spacing="4rem" sx={{ px: "3rem", py: "1.8rem" }}>
                             {/* Item type select */}
-                            <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} setListingType={setListingType} />
+                            <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} />
 
                             {/* Asset to sell */}
                             <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
@@ -234,24 +218,24 @@ export const SellItem = () => {
                                 placeholder="Enter buyout price..."
                             />
                             <PricingInput
-                                price={startingPrice}
-                                setPrice={setStartingPrice}
-                                question="Auction Starting Price"
-                                description=""
-                                placeholder="Enter starting price..."
-                            />
-                            <PricingInput
                                 price={dropRate}
                                 setPrice={setDropRate}
                                 question="Drop Rate"
-                                description="The dutch auction will start at the set price and reduce every minute until a user purchases the item."
+                                description="The buyout price will reduce by this amount every minute until a buyer purchases the item."
                                 placeholder="Enter drop rate..."
+                            />
+                            <PricingInput
+                                price={startingPrice}
+                                setPrice={setStartingPrice}
+                                question="Auction Starting Price"
+                                description="This will allow buyers to bid on your item as an auction."
+                                placeholder="Enter auction starting price..."
                             />
                             <PricingInput
                                 price={reservePrice}
                                 setPrice={setReservePrice}
                                 question="Reserve Price"
-                                description="Set a minimum price that you will allow the item to sell. The item will not sell if it doesn't meet the reserve price."
+                                description="Set a minimum price that you are willing to sell the item. The item will not sell if it's lower than the reserve price."
                                 placeholder="Enter reserve price..."
                             />
                         </Stack>
@@ -261,18 +245,3 @@ export const SellItem = () => {
         </ClipThing>
     )
 }
-
-/**
- * What they're selling:
- * - war machines
- * - keycards
- * - mystery crates
- *
- * List the items and they choose
- *
- * Listing type:
- * - buyout					price
- * - auction				reserve price
- * - auction or buyout		price, reserve price
- * - dutch auction			starting price, reserve price, drop rate
- */
