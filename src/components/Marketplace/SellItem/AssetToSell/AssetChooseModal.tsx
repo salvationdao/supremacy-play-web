@@ -301,7 +301,8 @@ const OwnedAssetItem = ({
         const mech = ownedAssetItem as MechBasic
         assetToSell = {
             id: mech.id,
-            imageUrl: mech.avatar_url || mechDetails?.chassis_skin?.avatar_url || "",
+            avatarUrl: mech.avatar_url || mechDetails?.chassis_skin?.avatar_url || "",
+            imageUrl: mech.large_image_url || mechDetails?.chassis_skin?.large_image_url || "",
             videoUrl: mech.animation_url || mechDetails?.chassis_skin?.animation_url || "",
             label: mech?.name || mech?.label,
             tier: mech?.tier,
@@ -310,6 +311,7 @@ const OwnedAssetItem = ({
         const crate = ownedAssetItem as StorefrontMysteryCrate
         assetToSell = {
             id: crate.id,
+            avatarUrl: crate.avatar_url || SafePNG,
             imageUrl: crate.large_image_url || SafePNG,
             videoUrl: crate.animation_url || "",
             label: crate.label,
@@ -319,6 +321,7 @@ const OwnedAssetItem = ({
         const keycard = ownedAssetItem as Keycard
         assetToSell = {
             id: keycard.id,
+            avatarUrl: keycard.blueprints.image_url || KeycardPNG,
             imageUrl: keycard.blueprints.image_url || KeycardPNG,
             videoUrl: keycard.blueprints.animation_url,
             label: keycard.blueprints.label,
