@@ -12,7 +12,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
 import { RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { KeycardMarketItem } from "./KeycardMarketItem/KeycardMarketItem"
+import { KeycardMarketItem } from "./KeycardMarketItem"
 
 export const KeycardsMarket = () => {
     const history = useHistory()

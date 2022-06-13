@@ -173,17 +173,6 @@ const WarMachineMarketDetailsInner = ({
 
                         <Dates createdAt={created_at} endAt={end_at} />
 
-                        {marketItem.auction_current_price && (
-                            <AuctionDetails
-                                id={marketItem.id}
-                                itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
-                                buyNowPrice={marketItem.buyout_price}
-                                auctionCurrentPrice={marketItem.auction_current_price}
-                                auctionBidCount={marketItem.total_bids}
-                                auctionLastBid={marketItem.last_bid}
-                            />
-                        )}
-
                         {marketItem.buyout_price && (
                             <BuyNowDetails
                                 id={marketItem.id}
@@ -191,6 +180,16 @@ const WarMachineMarketDetailsInner = ({
                                 buyNowPrice={marketItem.buyout_price}
                                 dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
                                 createdAt={marketItem.created_at}
+                            />
+                        )}
+
+                        {marketItem.auction_current_price && (
+                            <AuctionDetails
+                                id={marketItem.id}
+                                itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
+                                auctionCurrentPrice={marketItem.auction_current_price}
+                                auctionBidCount={marketItem.total_bids}
+                                auctionLastBid={marketItem.last_bid}
                             />
                         )}
                     </Stack>

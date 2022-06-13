@@ -1,8 +1,8 @@
-import { Box, IconButton, InputAdornment, Modal, Stack, TextField, Typography } from "@mui/material"
+import { Box, Divider, IconButton, InputAdornment, Modal, Stack, TextField, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
-import { SvgClose, SvgHammer, SvgSupToken, SvgWallet } from "../../../../assets"
+import { SvgClose, SvgHammer, SvgSupToken } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, numFormatter, shadeColor } from "../../../../helpers"
@@ -11,21 +11,17 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
-import { ConfirmBuyModal } from "./BuyNowDetails"
 
 interface AuctionDetailsProps {
     id: string
     itemName: string
-    buyNowPrice?: string
     auctionCurrentPrice: string
     auctionBidCount: number
     auctionLastBid?: MarketUser
 }
 
-export const AuctionDetails = ({ id, itemName, buyNowPrice, auctionCurrentPrice, auctionBidCount, auctionLastBid }: AuctionDetailsProps) => {
-    const theme = useTheme()
+export const AuctionDetails = ({ id, itemName, auctionCurrentPrice, auctionBidCount, auctionLastBid }: AuctionDetailsProps) => {
     const [confirmBidModalOpen, toggleConfirmBidModalOpen] = useToggle()
-    const [confirmBuyModalOpen, toggleConfirmBuyModalOpen] = useToggle()
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))
     const [bidCount, setBidCount] = useState<number>(auctionBidCount)
     const [lastBidUser, setLastBidUser] = useState<MarketUser | undefined>(auctionLastBid)
@@ -35,10 +31,6 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, auctionCurrentPrice,
     const secondaryColor = useMemo(() => "#FFFFFF", [])
     const backgroundColor = useMemo(() => shadeColor(colors.auction, -97), [])
     const formattedCommaCurrentPrice = useMemo(() => (currentPrice ? numberCommaFormatter(currentPrice.toNumber()) : "-"), [currentPrice])
-    const formattedCommaBuyNowPrice = useMemo(
-        () => (buyNowPrice ? numberCommaFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber()) : undefined),
-        [buyNowPrice],
-    )
 
     useGameServerSubscriptionFaction<{ auction_current_price: string; total_bids: number; last_bid: MarketUser }>(
         {
@@ -56,66 +48,7 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, auctionCurrentPrice,
     return (
         <>
             <Stack spacing="2rem">
-                {formattedCommaBuyNowPrice && (
-                    <Stack>
-                        <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                            BUY NOW:
-                        </Typography>
-
-                        <Stack direction="row" alignItems="center" spacing="2rem">
-                            <ClipThing
-                                clipSize="10px"
-                                clipSlantSize="3px"
-                                border={{
-                                    isFancy: true,
-                                    borderColor: theme.factionTheme.primary,
-                                    borderThickness: ".2rem",
-                                }}
-                                corners={{
-                                    topRight: true,
-                                    bottomLeft: true,
-                                }}
-                                backgroundColor={backgroundColor}
-                                sx={{ alignSelf: "flex-start" }}
-                            >
-                                <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
-                                    <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
-                                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
-                                        {formattedCommaBuyNowPrice}
-                                    </Typography>
-                                </Stack>
-                            </ClipThing>
-
-                            <FancyButton
-                                excludeCaret
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: theme.factionTheme.primary,
-                                    opacity: 1,
-                                    border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                    sx: { position: "relative", width: "18rem" },
-                                }}
-                                sx={{ py: ".7rem", color: theme.factionTheme.secondary }}
-                                onClick={() => toggleConfirmBuyModalOpen(true)}
-                            >
-                                <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
-                                    <SvgWallet size="1.9rem" fill={theme.factionTheme.secondary} />
-
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            flexShrink: 0,
-                                            color: theme.factionTheme.secondary,
-                                            fontFamily: fonts.nostromoBlack,
-                                        }}
-                                    >
-                                        BUY NOW
-                                    </Typography>
-                                </Stack>
-                            </FancyButton>
-                        </Stack>
-                    </Stack>
-                )}
+                <Divider />
 
                 <Stack>
                     <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
@@ -231,10 +164,6 @@ export const AuctionDetails = ({ id, itemName, buyNowPrice, auctionCurrentPrice,
 
             {confirmBidModalOpen && inputBidPrice && (
                 <ConfirmBidModal id={id} itemName={itemName} inputBidPrice={inputBidPrice} onClose={() => toggleConfirmBidModalOpen(false)} />
-            )}
-
-            {confirmBuyModalOpen && buyNowPrice && (
-                <ConfirmBuyModal id={id} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmBuyModalOpen(false)} />
             )}
         </>
     )

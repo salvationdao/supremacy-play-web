@@ -12,7 +12,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
 import { ChipFilter, RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem/MysteryCrateMarketItem"
+import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem"
 
 export const MysteryCratesMarket = () => {
     const history = useHistory()
