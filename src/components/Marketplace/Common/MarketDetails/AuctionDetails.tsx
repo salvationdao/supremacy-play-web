@@ -132,6 +132,7 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                             value={inputBidPrice}
                             onChange={(e) => {
                                 const value = parseInt(e.target.value)
+                                if (value < 0) return
                                 setInputBidPrice(value)
                             }}
                         />
