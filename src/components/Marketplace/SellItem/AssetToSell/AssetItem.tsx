@@ -47,7 +47,7 @@ export const AssetItem = ({
                 loop
                 muted
                 autoPlay
-                poster={`${assetToSell.imageUrl}`}
+                poster={playVideo ? assetToSell.imageUrl : assetToSell.avatarUrl}
             >
                 {playVideo && <source src={assetToSell.videoUrl} type="video/mp4" />}
             </Box>

@@ -16,6 +16,7 @@ import { PricingInput } from "./PricingInput"
 
 export interface AssetToSellStruct {
     id: string
+    avatarUrl: string
     imageUrl: string
     videoUrl: string
     label: string
