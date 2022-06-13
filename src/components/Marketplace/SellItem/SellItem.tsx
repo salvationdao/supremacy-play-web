@@ -225,9 +225,6 @@ export const SellItem = () => {
                             {/* Asset to sell */}
                             <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
-                            {/* Listing type select */}
-                            {/* <ListingTypeSelect itemType={itemType} listingType={listingType} setListingType={setListingType} /> */}
-
                             {/* Pricing inputs */}
                             <PricingInput
                                 price={buyoutPrice}
@@ -239,15 +236,15 @@ export const SellItem = () => {
                             <PricingInput
                                 price={startingPrice}
                                 setPrice={setStartingPrice}
-                                question="Starting Price"
-                                description="The dutch auction will start at the set price and reduce every minute until a user purchases the item."
+                                question="Auction Starting Price"
+                                description=""
                                 placeholder="Enter starting price..."
                             />
                             <PricingInput
                                 price={dropRate}
                                 setPrice={setDropRate}
                                 question="Drop Rate"
-                                description="This is the amount to reduce by every minute."
+                                description="The dutch auction will start at the set price and reduce every minute until a user purchases the item."
                                 placeholder="Enter drop rate..."
                             />
                             <PricingInput
