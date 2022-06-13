@@ -37,7 +37,7 @@ export const BuyoutPrice = ({
                         <Typography variant="caption" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
                             &nbsp;-&nbsp;
                         </Typography>
-                        <SvgSupToken size="1.5rem" fill={primaryColor} sx={{ transform: "rotate(15deg)" }} />
+                        <SvgSupToken size="1.5rem" fill={primaryColor} sx={{ transform: "skew(-20deg)" }} />
                         <Typography variant="caption" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
                             {formattedDropPrice}/MIN
                         </Typography>
