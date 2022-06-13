@@ -44,18 +44,6 @@ export const BuyoutPrice = ({
                     </Stack>
                 )}
             </Stack>
-
-            {/* {formattedDropPrice && (
-                <Stack direction="row" alignItems="center">
-                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
-                        DROP: -
-                    </Typography>
-                    <SvgSupToken size="1.5rem" />
-                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
-                        {formattedDropPrice}/MIN
-                    </Typography>
-                </Stack>
-            )} */}
         </Stack>
     )
 }
