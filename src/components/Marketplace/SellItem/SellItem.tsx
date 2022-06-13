@@ -58,9 +58,9 @@ export const SellItem = () => {
     useEffect(() => {
         let fee = 10
         if (reservePrice) fee += 5
-        if (buyoutPrice) fee += 5
+        if (buyoutPrice && itemType !== ItemType.Keycards) fee += 5
         setListingFee(fee)
-    }, [buyoutPrice, reservePrice, dropRate])
+    }, [buyoutPrice, reservePrice, dropRate, itemType])
 
     const isFormReady = useCallback(() => {
         return itemType && assetToSell && (buyoutPrice || startingPrice)
