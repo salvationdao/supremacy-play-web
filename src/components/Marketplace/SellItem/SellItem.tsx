@@ -75,10 +75,10 @@ export const SellItem = () => {
             await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 item_type: itemTypePayload,
                 item_id: assetToSell?.id,
-                asking_price: buyoutPrice,
-                dutch_auction_drop_rate: dropRate,
-                auction_current_price: startingPrice,
-                auction_reserved_price: reservePrice,
+                asking_price: buyoutPrice ? buyoutPrice : undefined,
+                dutch_auction_drop_rate: dropRate ? dropRate : undefined,
+                auction_current_price: startingPrice ? startingPrice : undefined,
+                auction_reserved_price: reservePrice ? reservePrice : undefined,
             })
             history.push("/marketplace")
         } catch (err) {
