@@ -107,7 +107,7 @@ export const MysteryCratesStore = () => {
                     <Box
                         sx={{
                             width: "100%",
-                            pt: enlargedView ? "7rem" : ".5rem",
+                            pt: ".5rem",
                             display: "grid",
                             gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(min-content, 40%))" : "repeat(auto-fill, minmax(32rem, 1fr))",
                             gap: enlargedView ? "5rem" : "2.4rem",

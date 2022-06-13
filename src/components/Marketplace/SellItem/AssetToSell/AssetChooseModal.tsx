@@ -301,8 +301,8 @@ const OwnedAssetItem = ({
         const mech = ownedAssetItem as MechBasic
         assetToSell = {
             id: mech.id,
-            imageUrl: mechDetails?.chassis_skin?.large_image_url || "",
-            videoUrl: mechDetails?.chassis_skin?.animation_url || "",
+            imageUrl: mech.avatar_url || mechDetails?.chassis_skin?.avatar_url || "",
+            videoUrl: mech.animation_url || mechDetails?.chassis_skin?.animation_url || "",
             label: mech?.name || mech?.label,
             tier: mech?.tier,
         }
