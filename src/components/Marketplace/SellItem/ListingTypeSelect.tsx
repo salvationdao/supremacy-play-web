@@ -40,8 +40,9 @@ export const ListingTypeSelect = ({
                     borderThickness: "1.5px",
                 }}
                 backgroundColor={backgroundColor}
+                sx={{ flex: 1 }}
             >
-                <Stack sx={{ height: "100%", width: "40rem" }}>
+                <Stack sx={{ height: "100%" }}>
                     <Select
                         disabled={!itemType}
                         sx={{
@@ -60,7 +61,7 @@ export const ListingTypeSelect = ({
                             },
                         }}
                         displayEmpty
-                        value={itemType || ""}
+                        value={listingType || ""}
                         MenuProps={{
                             variant: "menu",
                             sx: {

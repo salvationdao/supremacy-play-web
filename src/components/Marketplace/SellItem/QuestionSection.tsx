@@ -16,7 +16,7 @@ export const QuestionSection = ({
     children: ReactNode
 }) => {
     return (
-        <Stack direction="row" alignItems="flex-start" spacing="4rem" sx={{ opacity: disabled ? 0.4 : 1, pointerEvents: disabled ? "none" : "unset" }}>
+        <Stack direction="row" alignItems="flex-start" spacing="5rem" sx={{ opacity: disabled ? 0.4 : 1, pointerEvents: disabled ? "none" : "unset" }}>
             <Box sx={{ width: "38rem" }}>
                 <Typography gutterBottom variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoHeavy }}>
                     {question}

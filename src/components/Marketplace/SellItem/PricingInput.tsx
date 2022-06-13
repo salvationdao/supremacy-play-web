@@ -34,7 +34,7 @@ export const PricingInput = ({
                 }}
                 opacity={0.9}
                 backgroundColor={backgroundColor}
-                sx={{ height: "100%" }}
+                sx={{ height: "100%", flex: 1 }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <TextField
@@ -54,7 +54,6 @@ export const PricingInput = ({
                                 px: "1.5rem",
                                 py: "1.5rem",
                                 fontSize: "2.2rem",
-                                width: "32rem",
                                 height: "unset",
                                 "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
                                     "-webkit-appearance": "none",

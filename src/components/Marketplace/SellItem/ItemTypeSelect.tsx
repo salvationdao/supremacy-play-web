@@ -41,8 +41,9 @@ export const ItemTypeSelect = ({
                     borderThickness: "1.5px",
                 }}
                 backgroundColor={backgroundColor}
+                sx={{ flex: 1 }}
             >
-                <Stack sx={{ height: "100%", width: "40rem" }}>
+                <Stack sx={{ height: "100%" }}>
                     <Select
                         sx={{
                             width: "100%",
