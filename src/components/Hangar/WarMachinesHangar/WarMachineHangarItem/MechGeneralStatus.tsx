@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -17,6 +17,8 @@ export const MechGeneralStatus = ({
 }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [text, setText] = useState("LOADING...")
+    const [color, setColour] = useState(theme.factionTheme.primary)
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
@@ -26,20 +28,41 @@ export const MechGeneralStatus = ({
         (payload) => {
             if (!payload) return
             setMechStatus(payload)
+            if (payload.status === "IDLE") {
+                setText("IDLE")
+                setColour(colors.green)
+            } else if (payload.status === "QUEUE") {
+                const queuePosition = payload.queue_position
+                setText(`IN QUEUE${queuePosition ? `: ${queuePosition}` : ""}`)
+                setColour(colors.yellow)
+            } else if (payload.status === "BATTLE") {
+                setText("IN BATTLE")
+                setColour(colors.red)
+            } else if (payload.status === "MARKET") {
+                setText("IN MARKETPLACE")
+                setColour(colors.orange)
+            } else if (payload.status === "SOLD") {
+                setText("SOLD")
+                setColour(colors.lightGrey)
+            }
         },
     )
 
     // Manually tell the server to update the mech status
-    const triggerStatusUpdate = useCallback(async () => {
-        try {
-            if (mechStatus?.status !== "QUEUE") return
-            await send(GameServerKeys.TriggerMechStatusUpdate, {
-                mech_id: mechID,
-            })
-        } catch (e) {
-            console.error(e)
-        }
-    }, [mechID, mechStatus?.status, send])
+    const triggerStatusUpdate = useCallback(
+        async (currentStatus: string) => {
+            try {
+                // TODO: status is not correct need to be fixed
+                // if (currentStatus !== "QUEUE") return
+                await send(GameServerKeys.TriggerMechStatusUpdate, {
+                    mech_id: mechID,
+                })
+            } catch (e) {
+                console.error(e)
+            }
+        },
+        [mechID, send],
+    )
 
     // When the battle queue is updated, tell the server to send the mech status to us again
     useGameServerSubscriptionFaction<boolean>(
@@ -49,30 +72,10 @@ export const MechGeneralStatus = ({
         },
         (payload) => {
             if (!payload) return
-            triggerStatusUpdate()
+
+            triggerStatusUpdate(text)
         },
     )
-
-    let text = "LOADING..."
-    let color = theme.factionTheme.primary
-
-    if (mechStatus?.status === "IDLE") {
-        text = "IDLE"
-        color = colors.green
-    } else if (mechStatus?.status === "QUEUE") {
-        const queuePosition = mechStatus?.queue_position
-        text = `IN QUEUE${queuePosition ? `: ${queuePosition}` : ""}`
-        color = colors.yellow
-    } else if (mechStatus?.status === "BATTLE") {
-        text = "IN BATTLE"
-        color = colors.red
-    } else if (mechStatus?.status === "MARKET") {
-        text = "IN MARKETPLACE"
-        color = colors.orange
-    } else if (mechStatus?.status === "SOLD") {
-        text = "SOLD"
-        color = colors.lightGrey
-    }
 
     return (
         <Box sx={{ px: "1.6rem", pt: ".9rem", pb: ".6rem", backgroundColor: `${color}10`, border: `${color} 1.5px dashed` }}>
