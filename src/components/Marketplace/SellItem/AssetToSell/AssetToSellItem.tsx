@@ -1,20 +1,77 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
+import { KeycardPNG, SafePNG } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
+import { MechDetails } from "../../../../types"
 import { AssetToSellStruct } from "../SellItem"
 
-export const AssetItem = ({
+export const AssetToSellItem = ({
     assetToSell,
     playVideo,
     onClick,
-    orientation = "horizontal",
+    orientation,
 }: {
     assetToSell: AssetToSellStruct
     playVideo?: boolean
     onClick?: () => void
     orientation?: "horizontal" | "vertical"
 }) => {
-    const rarityDeets = assetToSell.tier ? getRarityDeets(assetToSell.tier) : undefined
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    // Additional fetched data
+    const [mechDetails, setMechDetails] = useState<MechDetails>()
+
+    // Things for render
+    const [avatarUrl, setAvatarUrl] = useState<string>()
+    const [imageUrl, setImageUrl] = useState<string>()
+    const [videoUrl, setVideoUrl] = useState<string>()
+    const [label, setLabel] = useState<string>()
+    const [description, setDescription] = useState<string>()
+    const [rarityDeets, setRarityDeets] = useState<{
+        label: string
+        color: string
+    }>()
+
+    // Initial populate
+    useEffect(() => {
+        if (assetToSell.mech) {
+            setAvatarUrl(assetToSell.mech.avatar_url || mechDetails?.chassis_skin?.avatar_url)
+            setImageUrl(assetToSell.mech.large_image_url || mechDetails?.chassis_skin?.large_image_url)
+            setVideoUrl(assetToSell.mech.animation_url || mechDetails?.chassis_skin?.animation_url)
+            setLabel(assetToSell.mech.name || assetToSell.mech.label)
+            setRarityDeets(assetToSell.mech.tier ? getRarityDeets(assetToSell.mech.tier) : undefined)
+        } else if (assetToSell.mysteryCrate) {
+            setAvatarUrl(assetToSell.mysteryCrate.avatar_url || SafePNG)
+            setImageUrl(assetToSell.mysteryCrate.large_image_url || SafePNG)
+            setVideoUrl(assetToSell.mysteryCrate.animation_url)
+            setLabel(assetToSell.mysteryCrate.label)
+            setDescription(assetToSell.mysteryCrate.description)
+        } else if (assetToSell.keycard) {
+            setAvatarUrl(assetToSell.keycard.blueprints.image_url || KeycardPNG)
+            setImageUrl(assetToSell.keycard.blueprints.image_url || KeycardPNG)
+            setVideoUrl(assetToSell.keycard.blueprints.animation_url)
+            setLabel(assetToSell.keycard.blueprints.label)
+            setDescription(assetToSell.keycard.blueprints.description)
+        }
+    }, [assetToSell, mechDetails])
+
+    // Addition data to fetch
+    useEffect(() => {
+        if (!assetToSell.mech) return
+        ;(async () => {
+            try {
+                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
+                    mech_id: assetToSell.id,
+                })
+                if (!resp) return
+                setMechDetails(resp)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [assetToSell, send])
 
     return (
         <Stack
@@ -47,9 +104,9 @@ export const AssetItem = ({
                 loop
                 muted
                 autoPlay
-                poster={playVideo ? assetToSell.imageUrl : assetToSell.avatarUrl}
+                poster={playVideo ? imageUrl : avatarUrl}
             >
-                {playVideo && <source src={assetToSell.videoUrl} type="video/mp4" />}
+                {playVideo && <source src={videoUrl} type="video/mp4" />}
             </Box>
 
             <Stack spacing=".3rem">
@@ -82,7 +139,7 @@ export const AssetItem = ({
                         WebkitBoxOrient: "vertical",
                     }}
                 >
-                    {assetToSell.label}
+                    {label}
                 </Typography>
                 <Typography
                     sx={{
@@ -94,7 +151,7 @@ export const AssetItem = ({
                         WebkitBoxOrient: "vertical",
                     }}
                 >
-                    {assetToSell.description}
+                    {description}
                 </Typography>
             </Stack>
         </Stack>

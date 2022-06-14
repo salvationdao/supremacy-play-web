@@ -4,10 +4,11 @@ import { useHistory } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgSupToken, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { useToggle } from "../../../hooks"
+import { useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
+import { Keycard, MechBasic, StorefrontMysteryCrate } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
@@ -16,12 +17,9 @@ import { PricingInput } from "./PricingInput"
 
 export interface AssetToSellStruct {
     id: string
-    avatarUrl: string
-    imageUrl: string
-    videoUrl: string
-    label: string
-    description?: string
-    tier?: string
+    mech?: MechBasic
+    keycard?: Keycard
+    mysteryCrate?: StorefrontMysteryCrate
 }
 
 export const itemTypes: {
@@ -36,9 +34,12 @@ export const itemTypes: {
 export const SellItem = () => {
     const theme = useTheme()
     const history = useHistory()
+    const query = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [submitting, toggleSubmitting] = useToggle()
     const [submitError, setSubmitError] = useState<string>()
+
+    // const query
 
     // Form states
     const [itemType, setItemType] = useState<ItemType>()

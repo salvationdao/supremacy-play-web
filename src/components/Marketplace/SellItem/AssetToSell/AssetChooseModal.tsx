@@ -1,17 +1,17 @@
 import { Box, CircularProgress, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
-import { KeycardPNG, SafePNG, SvgClose } from "../../../../assets"
+import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
-import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { Keycard, MechBasic, MechDetails, StorefrontMysteryCrate } from "../../../../types"
+import { Keycard, MechBasic, StorefrontMysteryCrate } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
 import { AssetToSellStruct, itemTypes } from "../SellItem"
-import { AssetItem } from "./AssetItem"
+import { AssetToSellItem } from "./AssetToSellItem"
 
 interface GetAssetsResponse {
     mechs: MechBasic[]
@@ -37,7 +37,7 @@ export const AssetChooseModal = ({
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [ownedAssets, setOwnedAssets] = useState<MechBasic[] | Keycard[] | StorefrontMysteryCrate[]>()
+    const [ownedAssets, setOwnedAssets] = useState<AssetToSellStruct[]>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
 
     const itemTypeLabel = useMemo(() => itemTypes.find((i) => i.value === itemType)?.label, [itemType])
@@ -72,11 +72,26 @@ export const AssetChooseModal = ({
                 if (!resp) return
 
                 if (itemType === ItemType.WarMachine) {
-                    setOwnedAssets(resp.mechs)
+                    setOwnedAssets(
+                        resp.mechs.map((mech) => ({
+                            id: mech.id,
+                            mech: mech,
+                        })),
+                    )
                 } else if (itemType === ItemType.MysteryCrate) {
-                    setOwnedAssets(resp.mystery_crates)
+                    setOwnedAssets(
+                        resp.mystery_crates.map((crate) => ({
+                            id: crate.id,
+                            mysteryCrate: crate,
+                        })),
+                    )
                 } else {
-                    setOwnedAssets(resp.keycards)
+                    setOwnedAssets(
+                        resp.keycards.map((keycard) => ({
+                            id: keycard.id,
+                            keycard: keycard,
+                        })),
+                    )
                 }
                 setTotalItems(resp.total)
             } catch (err) {
@@ -203,8 +218,18 @@ export const AssetChooseModal = ({
                             >
                                 <Box sx={{ direction: "ltr", height: 0 }}>
                                     <Stack>
-                                        {ownedAssets.map((a) => {
-                                            return <OwnedAssetItem key={a.id} ownedAssetItem={a} setAssetToSell={setAssetToSell} onClose={onClose} />
+                                        {ownedAssets.map((ownedAsset) => {
+                                            return (
+                                                <AssetToSellItem
+                                                    key={ownedAsset.id}
+                                                    assetToSell={ownedAsset}
+                                                    onClick={() => {
+                                                        setAssetToSell(ownedAsset)
+                                                        onClose()
+                                                    }}
+                                                    orientation="horizontal"
+                                                />
+                                            )
                                         })}
                                     </Stack>
                                 </Box>
@@ -266,92 +291,4 @@ export const AssetChooseModal = ({
             </Box>
         </Modal>
     )
-}
-
-const OwnedAssetItem = ({
-    ownedAssetItem,
-    setAssetToSell,
-    onClose,
-}: {
-    ownedAssetItem: AssetItem
-    setAssetToSell: React.Dispatch<React.SetStateAction<AssetToSellStruct | undefined>>
-    onClose: () => void
-}) => {
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [mechDetails, setMechDetails] = useState<MechDetails>()
-
-    useEffect(() => {
-        if (!isAssetMech(ownedAssetItem)) return
-        ;(async () => {
-            try {
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: ownedAssetItem.id,
-                })
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [ownedAssetItem, send])
-
-    // Render
-    let assetToSell: AssetToSellStruct
-    if (isAssetMech(ownedAssetItem)) {
-        const mech = ownedAssetItem as MechBasic
-        assetToSell = {
-            id: mech.id,
-            avatarUrl: mech.avatar_url || mechDetails?.chassis_skin?.avatar_url || "",
-            imageUrl: mech.large_image_url || mechDetails?.chassis_skin?.large_image_url || "",
-            videoUrl: mech.animation_url || mechDetails?.chassis_skin?.animation_url || "",
-            label: mech?.name || mech?.label,
-            tier: mech?.tier,
-        }
-    } else if (isAssetMysteryCrate(ownedAssetItem)) {
-        const crate = ownedAssetItem as StorefrontMysteryCrate
-        assetToSell = {
-            id: crate.id,
-            avatarUrl: crate.avatar_url || SafePNG,
-            imageUrl: crate.large_image_url || SafePNG,
-            videoUrl: crate.animation_url || "",
-            label: crate.label,
-            description: crate.description,
-        }
-    } else if (isAssetKeycard(ownedAssetItem)) {
-        const keycard = ownedAssetItem as Keycard
-        assetToSell = {
-            id: keycard.id,
-            avatarUrl: keycard.blueprints.image_url || KeycardPNG,
-            imageUrl: keycard.blueprints.image_url || KeycardPNG,
-            videoUrl: keycard.blueprints.animation_url,
-            label: keycard.blueprints.label,
-            description: keycard.blueprints.description,
-        }
-    } else {
-        return null
-    }
-
-    return (
-        <AssetItem
-            assetToSell={assetToSell}
-            onClick={() => {
-                setAssetToSell(assetToSell)
-                onClose()
-            }}
-        />
-    )
-}
-
-type AssetItem = MechBasic | Keycard | StorefrontMysteryCrate
-
-const isAssetMech = (item: AssetItem): item is MechBasic => {
-    return (item as MechBasic).max_hitpoints !== undefined
-}
-
-const isAssetKeycard = (item: AssetItem): item is Keycard => {
-    return (item as Keycard).blueprint_keycard_id !== undefined
-}
-
-const isAssetMysteryCrate = (item: AssetItem): item is StorefrontMysteryCrate => {
-    return !isAssetMech(item) && !isAssetKeycard(item)
 }

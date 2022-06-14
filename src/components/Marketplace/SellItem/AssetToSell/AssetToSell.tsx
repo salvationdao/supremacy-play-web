@@ -8,7 +8,7 @@ import { ItemType } from "../../../../types/marketplace"
 import { QuestionSection } from "../QuestionSection"
 import { AssetToSellStruct, itemTypes } from "../SellItem"
 import { AssetChooseModal } from "./AssetChooseModal"
-import { AssetItem } from "./AssetItem"
+import { AssetToSellItem } from "./AssetToSellItem"
 
 export const AssetToSell = ({
     itemType,
@@ -49,7 +49,7 @@ export const AssetToSell = ({
                             backgroundColor={backgroundColor}
                         >
                             <Stack sx={{ height: "100%", px: ".9rem", py: ".9rem" }}>
-                                <AssetItem key={assetToSell.label} assetToSell={assetToSell} playVideo orientation="vertical" />
+                                <AssetToSellItem key={assetToSell.id} assetToSell={assetToSell} playVideo orientation="vertical" />
                             </Stack>
                         </ClipThing>
                     )}
