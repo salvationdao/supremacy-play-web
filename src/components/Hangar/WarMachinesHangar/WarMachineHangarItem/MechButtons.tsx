@@ -3,12 +3,12 @@ import { useHistory } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
+import { MechDetails, MechStatus } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 
 export const MechButtons = ({
     mechDetails,
-    mechQueuePosition,
+    mechStatus,
     setSelectedMechDetails,
     setDeployMechModalOpen,
     setLeaveMechModalOpen,
@@ -16,7 +16,7 @@ export const MechButtons = ({
     setRentalMechModalOpen,
 }: {
     mechDetails: MechDetails
-    mechQueuePosition: number
+    mechStatus?: MechStatus
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -28,12 +28,13 @@ export const MechButtons = ({
 
     return (
         <Stack direction="row" spacing=".8rem">
-            {mechQueuePosition === -1 && (
+            {/* Button 1 */}
+            {(!mechStatus?.status || mechStatus.status === "IDLE") && (
                 <ReusableButton
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
                     label="DEPLOY"
-                    disabled={!mechDetails}
+                    disabled={!mechDetails || !mechStatus?.status}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setDeployMechModalOpen(true)
@@ -41,11 +42,11 @@ export const MechButtons = ({
                 />
             )}
 
-            {mechQueuePosition === 0 && (
+            {mechStatus?.status === "BATTLE" && (
                 <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="UNDEPLOY" disabled={true} />
             )}
 
-            {mechQueuePosition > 0 && (
+            {mechStatus?.status === "QUEUE" && (
                 <ReusableButton
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
@@ -57,8 +58,10 @@ export const MechButtons = ({
                 />
             )}
 
+            {/* Button 2 */}
             <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechDetails} />
 
+            {/* Button 3 */}
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
@@ -70,6 +73,7 @@ export const MechButtons = ({
                 }}
             />
 
+            {/* Button 4 */}
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
@@ -81,12 +85,13 @@ export const MechButtons = ({
                 }}
             />
 
+            {/* Button 5 */}
             <ReusableButton
                 isFancy
                 primaryColor={colors.red}
                 backgroundColor={colors.red}
                 label="SELL"
-                disabled={!mechDetails}
+                disabled={!mechDetails || mechStatus?.status !== "IDLE"}
                 onClick={() => {
                     history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}`)
                 }}

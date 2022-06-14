@@ -1,5 +1,10 @@
 import { Battle, Faction, User, Vector2i } from "."
 
+export interface MechStatus {
+    status: "IDLE" | "QUEUE" | "BATTLE" | "MARKET" | "SOLD"
+    queue_position?: number
+}
+
 export interface AssetDurability {
     hash: string
     started_at: Date
