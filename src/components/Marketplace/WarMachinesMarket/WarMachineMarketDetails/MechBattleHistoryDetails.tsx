@@ -10,39 +10,6 @@ import { BattleMechHistory, BattleMechStats, MechDetails } from "../../../../typ
 import { HistoryEntry } from "../../../Hangar/WarMachinesHangar/MechHistory/HistoryEntry"
 import { PercentageDisplay, PercentageDisplaySkeleton } from "../../../Hangar/WarMachinesHangar/MechHistory/PercentageDisplay"
 
-export const test = {
-    battle_id: "string",
-    mech_id: "string",
-    owner_id: "string",
-    faction_id: "string",
-    killed: new Date(),
-    killed_by_id: "string",
-    kills: 2,
-    damage_taken: 500,
-    updated_at: new Date(),
-    created_at: new Date(),
-    faction_won: true,
-    mech_survived: true,
-    battle: {
-        id: "string",
-        game_map_id: "string",
-        started_at: new Date(),
-        ended_at: new Date(),
-        battle_number: 123,
-        game_map: {
-            name: "string",
-            image_url: "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/arctic_bay.jpg",
-            width: 5,
-            height: 5,
-            cells_x: 5,
-            cells_y: 5,
-            top_pixels: 5,
-            left_pixels: 5,
-            disabled_cells: [1, 2],
-        },
-    },
-}
-
 export const MechBattleHistoryDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
     const theme = useTheme()
     const { send } = useGameServerCommands("/public/commander")
@@ -66,7 +33,6 @@ export const MechBattleHistoryDetails = ({ mechDetails }: { mechDetails?: MechDe
                 mech_id: mechDetails.id,
             })
             setHistory(resp.battle_history)
-            // setHistory([test, test, test, test, test, test, test, test])
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to load mech battle history."
             setHistoryError(message)
