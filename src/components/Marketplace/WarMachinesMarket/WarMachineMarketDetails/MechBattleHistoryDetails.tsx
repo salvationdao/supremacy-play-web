@@ -185,7 +185,7 @@ export const MechBattleHistoryDetails = ({ mechDetails }: { mechDetails?: MechDe
                                 mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
                                 backgroundImage={h.battle?.game_map?.image_url}
                                 mechSurvived={!!h.mech_survived}
-                                status={!h.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
+                                status={!h.battle?.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
                                 kills={h.kills}
                                 date={h.created_at}
                             />

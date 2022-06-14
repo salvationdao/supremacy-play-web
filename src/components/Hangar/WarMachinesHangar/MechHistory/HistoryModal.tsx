@@ -176,7 +176,7 @@ export const HistoryModal = ({
                                 width: "calc(100% + 1rem)",
                                 overflowY: "auto",
                                 overflowX: "hidden",
-                                pr: ".6rem",
+                                pr: "1.5rem",
                                 py: ".16rem",
                                 direction: "ltr",
 
@@ -199,7 +199,7 @@ export const HistoryModal = ({
                                     mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
                                     backgroundImage={h.battle?.game_map?.image_url}
                                     mechSurvived={!!h.mech_survived}
-                                    status={!h.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
+                                    status={!h.battle?.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
                                     kills={h.kills}
                                     date={h.created_at}
                                 />
