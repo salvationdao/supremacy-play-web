@@ -2,7 +2,7 @@ import { Box, Skeleton, Stack } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MechBasic, MechDetails, MechStatus } from "../../../../types"
 import { MechBarStats } from "./MechBarStats"
@@ -36,7 +36,6 @@ export const WarMachineHangarItem = ({
 }: WarMachineHangarItemProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const [mechStatus, setMechStatus] = useState<MechStatus>()
 
     useEffect(() => {
         ;(async () => {
@@ -54,24 +53,12 @@ export const WarMachineHangarItem = ({
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
-    useGameServerSubscriptionFaction<MechStatus>(
-        {
-            URI: `/queue/${mech.id}`,
-            key: GameServerKeys.SubMechQueuePosition,
-        },
-        (payload) => {
-            if (!payload) return
-            setMechStatus(payload)
-        },
-    )
-
     return useMemo(
         () => (
             <WarMachineHangarItemInner
                 mech={mech}
                 isSelected={isSelected}
                 mechDetails={mechDetails}
-                mechStatus={mechStatus}
                 setSelectedMechDetails={setSelectedMechDetails}
                 setDeployMechModalOpen={setDeployMechModalOpen}
                 setLeaveMechModalOpen={setLeaveMechModalOpen}
@@ -79,17 +66,7 @@ export const WarMachineHangarItem = ({
                 setRentalMechModalOpen={setRentalMechModalOpen}
             />
         ),
-        [
-            mech,
-            isSelected,
-            mechDetails,
-            mechStatus,
-            setSelectedMechDetails,
-            setDeployMechModalOpen,
-            setLeaveMechModalOpen,
-            setHistoryMechModalOpen,
-            setRentalMechModalOpen,
-        ],
+        [mech, isSelected, mechDetails, setSelectedMechDetails, setDeployMechModalOpen, setLeaveMechModalOpen, setHistoryMechModalOpen, setRentalMechModalOpen],
     )
 }
 
@@ -98,13 +75,11 @@ const WarMachineHangarItemInner = ({
     mechDetails,
     isSelected,
     setSelectedMechDetails,
-    mechStatus,
     setDeployMechModalOpen,
     setLeaveMechModalOpen,
     setHistoryMechModalOpen,
     setRentalMechModalOpen,
 }: {
-    mechStatus?: MechStatus
     mech: MechBasic
     mechDetails?: MechDetails
     isSelected: boolean
@@ -115,6 +90,7 @@ const WarMachineHangarItemInner = ({
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const theme = useTheme()
+    const [mechStatus, setMechStatus] = useState<MechStatus>()
 
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl = skin?.large_image_url
@@ -142,7 +118,7 @@ const WarMachineHangarItemInner = ({
                 <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>
                     <Stack spacing="1rem" sx={{ height: "100%" }}>
                         <MechThumbnail mech={mech} mechDetails={mechDetails} />
-                        <MechGeneralStatus mechStatus={mechStatus} />
+                        <MechGeneralStatus mechID={mech.id} mechStatus={mechStatus} setMechStatus={setMechStatus} />
                     </Stack>
 
                     <Stack spacing="1.1rem" sx={{ flex: 1, height: "100%" }}>
