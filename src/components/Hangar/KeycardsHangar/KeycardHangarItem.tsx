@@ -11,7 +11,7 @@ interface MysteryCrateStoreItemProps {
     keycard: Keycard
 }
 
-export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
+export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
     const history = useHistory()
     const theme = useTheme()
 
@@ -23,6 +23,10 @@ export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
             sx={{
                 height: "100%",
                 width: "100%",
+                transition: "all .15s",
+                ":hover": {
+                    transform: "translateY(-.4rem)",
+                },
             }}
         >
             <ClipThing

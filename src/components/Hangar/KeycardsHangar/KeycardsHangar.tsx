@@ -12,7 +12,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
-import { KeycardItem } from "./KeycardItem"
+import { KeycardHangarItem } from "./KeycardHangarItem"
 
 interface GetPlayerKeycardsRequest {
     page: number
@@ -101,7 +101,7 @@ export const KeycardsHangar = () => {
                         }}
                     >
                         {keycards.map((keycard, index) => (
-                            <KeycardItem key={`storefront-keycard-${keycard.id}-${index}`} keycard={keycard} />
+                            <KeycardHangarItem key={`storefront-keycard-${keycard.id}-${index}`} keycard={keycard} />
                         ))}
                     </Box>
                 </Box>

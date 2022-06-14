@@ -13,7 +13,7 @@ interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
 }
 
-export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) => {
     const history = useHistory()
     const theme = useTheme()
 
@@ -27,6 +27,10 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
                 sx={{
                     height: "100%",
                     width: "100%",
+                    transition: "all .15s",
+                    ":hover": {
+                        transform: "translateY(-.4rem)",
+                    },
                 }}
             >
                 <ClipThing

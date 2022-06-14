@@ -10,7 +10,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
-import { MysteryCrateItem } from "./MysteryCrateItem"
+import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
 import { useHistory } from "react-router-dom"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 
@@ -103,7 +103,7 @@ export const MysteryCratesHangar = () => {
                         }}
                     >
                         {crates.map((crate, index) => (
-                            <MysteryCrateItem key={`storefront-mystery-crate-${crate.id}-${index}`} crate={crate} />
+                            <MysteryCrateHangarItem key={`storefront-mystery-crate-${crate.id}-${index}`} crate={crate} />
                         ))}
                     </Box>
                 </Box>
