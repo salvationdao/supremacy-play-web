@@ -15,6 +15,7 @@ export interface ChipFilter {
         label: string
         value: string
         color: string
+        textColor?: string
     }[]
     initialSelected: string[]
     onSetSelected: React.Dispatch<React.SetStateAction<string[]>>
@@ -301,7 +302,7 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
         <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton}>
             <Stack direction="row" flexWrap="wrap">
                 {options.map((o, i) => {
-                    const { label, value, color } = o
+                    const { label, value, color, textColor } = o
                     const isSelected = selectedOptionsInstant.includes(value)
                     return (
                         <Box key={i} sx={{ p: ".4rem" }}>
@@ -320,7 +321,7 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        color: isSelected ? "#FFFFFF" : color,
+                                        color: isSelected ? textColor || "#FFFFFF" : color,
                                         fontFamily: fonts.nostromoBold,
                                     }}
                                 >
