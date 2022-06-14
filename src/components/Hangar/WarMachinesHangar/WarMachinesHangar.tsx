@@ -22,6 +22,7 @@ import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./War
 interface GetMechsRequest {
     page: number
     page_size: number
+    include_market_listed: boolean
 }
 
 interface GetAssetsResponse {
@@ -113,6 +114,7 @@ const WarMachinesHangarInner = ({
                 const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                     page,
                     page_size: pageSize,
+                    include_market_listed: true,
                 })
 
                 if (!resp) return

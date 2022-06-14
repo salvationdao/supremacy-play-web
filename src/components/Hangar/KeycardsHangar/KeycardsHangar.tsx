@@ -17,6 +17,7 @@ import { KeycardItem } from "./KeycardItem"
 interface GetPlayerKeycardsRequest {
     page: number
     page_size: number
+    include_market_listed: boolean
 }
 
 interface GetAssetsResponse {
@@ -42,6 +43,7 @@ export const KeycardsHangar = () => {
                 const resp = await send<GetAssetsResponse, GetPlayerKeycardsRequest>(GameServerKeys.GetPlayerKeycards, {
                     page,
                     page_size: pageSize,
+                    include_market_listed: true,
                 })
 
                 if (!resp) return
