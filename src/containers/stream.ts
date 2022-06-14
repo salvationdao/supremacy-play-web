@@ -204,7 +204,7 @@ export const StreamContainer = createContainer(() => {
             }
 
             // Reverse the order for rendering so best is closer to user's mouse
-            setStreamOptions([...temp.reverse()])
+            setStreamOptions(temp.reverse())
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
