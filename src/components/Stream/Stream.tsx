@@ -36,7 +36,7 @@ export const Stream = () => {
     return (
         <>
             {currentStream?.name === OVENPLAYER_STREAM ? (
-                <OutputPlayerOven playerConfig="file" link="test" iframeDimensions={iframeDimensions} />
+                <OutputPlayerOven iframeDimensions={iframeDimensions} />
             ) : (
                 <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
                     {!isPlaying && <NoStreamScreen />}
@@ -146,9 +146,9 @@ const NoStreamScreen = () => {
     )
 }
 
-const OutputPlayerOven = (props: {
-    playerConfig: string
-    link: string
+const OutputPlayerOven = ({
+    iframeDimensions,
+}: {
     iframeDimensions: {
         width: string | number
         height: string | number
@@ -195,8 +195,8 @@ const OutputPlayerOven = (props: {
                     left: "50% !important",
                     transform: "translate(-50%, -50%) !important",
                     aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
-                    width: `${props.iframeDimensions.width} !important`,
-                    height: `${props.iframeDimensions.height} !important`,
+                    width: `${iframeDimensions.width} !important`,
+                    height: `${iframeDimensions.height} !important`,
                     zIndex: siteZIndex.Stream,
                 },
                 ".op-ui": {

@@ -101,4 +101,4 @@ export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
 export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https://t.me/SupremacyNotifyBot"
 
 // ovenplayer
-export const OVENPLAYER_STREAM = "ALPHA"
+export const OVENPLAYER_STREAM = "Experimental 🌟"

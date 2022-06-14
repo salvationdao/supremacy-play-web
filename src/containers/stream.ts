@@ -10,6 +10,24 @@ import { OVENPLAYER_STREAM } from "../constants"
 
 const MAX_OPTIONS = 10
 
+// using ovenplayer
+const ovenPlayerStream = {
+    host: OVENPLAYER_STREAM,
+    name: OVENPLAYER_STREAM,
+    url: "wss://stream2.supremacy.game:3334/app/stream2",
+    stream_id: OVENPLAYER_STREAM,
+    region: "",
+    resolution: "",
+    bit_rates_kbits: 100,
+    user_max: 100,
+    users_now: 100,
+    active: true,
+    status: "",
+    latitude: 100,
+    longitude: 100,
+    distance: 100,
+}
+
 interface StreamInfoEntry {
     audioBitrate: number
     streamHeight: number
@@ -185,25 +203,8 @@ export const StreamContainer = createContainer(() => {
                 }
             }
 
-            // using ovenplayer
-            const ovenPlayerStream = {
-                host: OVENPLAYER_STREAM,
-                name: OVENPLAYER_STREAM,
-                url: "wss://stream2.supremacy.game:3334/app/stream2",
-                stream_id: OVENPLAYER_STREAM,
-                region: "",
-                resolution: "",
-                bit_rates_kbits: 100,
-                user_max: 100,
-                users_now: 100,
-                active: true,
-                status: "",
-                latitude: 100,
-                longitude: 100,
-                distance: 100,
-            }
             // Reverse the order for rendering so best is closer to user's mouse
-            setStreamOptions([...temp.reverse(), ovenPlayerStream])
+            setStreamOptions([...temp.reverse()])
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
@@ -214,9 +215,12 @@ export const StreamContainer = createContainer(() => {
         if (!streams || streams.length <= 0) return
 
         // Filter for servers that have capacity and is onlnine
-        const availStreams = streams.filter((x) => {
-            return x.users_now < x.user_max && x.status === "online" && x.active
-        })
+        const availStreams = [
+            ...streams.filter((x) => {
+                return x.users_now < x.user_max && x.status === "online" && x.active
+            }),
+            ovenPlayerStream,
+        ]
 
         if (availStreams.length <= 0) return
 
