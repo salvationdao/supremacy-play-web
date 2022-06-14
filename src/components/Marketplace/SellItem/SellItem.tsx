@@ -39,11 +39,9 @@ export const SellItem = () => {
     const [submitting, toggleSubmitting] = useToggle()
     const [submitError, setSubmitError] = useState<string>()
 
-    // const query
-
     // Form states
-    const [itemType, setItemType] = useState<ItemType>()
-    const [assetToSell, setAssetToSell] = useState<AssetToSellStruct>()
+    const [itemType, setItemType] = useState<ItemType | undefined>(query.get("item-type") as ItemType)
+    const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("asset-id") || "" })
     // Buyout
     const [buyoutPrice, setBuyoutPrice] = useState<string>("")
     // Auction

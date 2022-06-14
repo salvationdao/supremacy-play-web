@@ -118,11 +118,11 @@ export enum GameServerKeys {
 
     // Mystery Crates
     GetPlayerMysteryCrates = "PLAYER:ASSET:MYSTERY_CRATE:LIST",
-    GetPlayerMysteryCrate = "XXXXXXXXX",
+    GetPlayerMysteryCrate = "PLAYER:ASSET:MYSTERY_CRATE:GET",
 
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
-    GetPlayerKeycard = "XXXXXXXXX",
+    GetPlayerKeycard = "PLAYER:ASSET:KEYCARD:GET",
 }
 
 export enum PassportServerKeys {

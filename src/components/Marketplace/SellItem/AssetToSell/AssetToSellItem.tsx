@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { KeycardPNG, SafePNG } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { Keycard, MechDetails, MysteryCrate } from "../../../../types"
@@ -21,6 +21,7 @@ export const AssetToSellItem = ({
     orientation?: "horizontal" | "vertical"
 }) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     // Additional fetched data
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>()
@@ -82,7 +83,7 @@ export const AssetToSellItem = ({
         ;(async () => {
             try {
                 if (!assetToSell.mysteryCrate) return
-                const resp = await send<MysteryCrate>(GameServerKeys.GetPlayerMysteryCrate, {
+                const resp = await sendUser<MysteryCrate>(GameServerKeys.GetPlayerMysteryCrate, {
                     id: assetToSell.id,
                 })
 
@@ -92,14 +93,14 @@ export const AssetToSellItem = ({
                 console.error(err)
             }
         })()
-    }, [assetToSell, send])
+    }, [assetToSell, sendUser])
 
     // Get additional keycard data
     useEffect(() => {
         ;(async () => {
             try {
                 if (!assetToSell.keycard) return
-                const resp = await send<Keycard>(GameServerKeys.GetPlayerKeycard, {
+                const resp = await sendUser<Keycard>(GameServerKeys.GetPlayerKeycard, {
                     id: assetToSell.id,
                 })
 
@@ -109,7 +110,7 @@ export const AssetToSellItem = ({
                 console.error(err)
             }
         })()
-    }, [assetToSell, send])
+    }, [assetToSell, sendUser])
 
     return (
         <Stack
