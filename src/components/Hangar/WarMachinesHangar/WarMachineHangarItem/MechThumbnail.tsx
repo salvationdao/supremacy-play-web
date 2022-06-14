@@ -26,17 +26,23 @@ export const MechThumbnail = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
             <Typography
                 sx={{
                     position: "absolute",
-                    bottom: ".2rem",
-                    left: ".2rem",
-                    px: ".6rem",
-                    py: ".3rem",
+                    bottom: "1px",
+                    left: "2px",
                     lineHeight: 1,
-                    fontFamily: fonts.nostromoBlack,
+                    fontFamily: fonts.nostromoHeavy,
                     color: rarityDeets.color,
-                    backgroundColor: `${theme.factionTheme.background}DD`,
                 }}
             >
-                {rarityDeets.label}
+                <span
+                    style={{
+                        padding: ".1rem .6rem",
+                        lineHeight: 1.5,
+                        backgroundColor: `${theme.factionTheme.background}DD`,
+                        fontFamily: "inherit",
+                    }}
+                >
+                    {rarityDeets.label}
+                </span>
             </Typography>
 
             <Box
