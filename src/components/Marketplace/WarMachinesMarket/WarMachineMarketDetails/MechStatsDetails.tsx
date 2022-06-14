@@ -54,9 +54,9 @@ export const MechStatsDetails = ({
                 </Stack>
 
                 {weapons.length > 0 ? (
-                    <Stack direction="row" spacing="1.6rem" flexWrap="wrap">
+                    <Stack direction="row" flexWrap="wrap">
                         {weapons.map((w) => {
-                            return <Card key={w.id} imageUrl={w.image_url} value={w.label} primaryColor={colors.weapons} backgroundColor={backgroundColor} />
+                            return <Card key={w.id} imageUrl={w.avatar_url} value={w.label} primaryColor={colors.weapons} backgroundColor={backgroundColor} />
                         })}
                     </Stack>
                 ) : (
@@ -73,7 +73,7 @@ export const MechStatsDetails = ({
                 </Stack>
 
                 {powerCore ? (
-                    <Card imageUrl={powerCore.image_url} value={powerCore.label} primaryColor={colors.powerCore} backgroundColor={backgroundColor} />
+                    <Card imageUrl={powerCore.avatar_url} value={powerCore.label} primaryColor={colors.powerCore} backgroundColor={backgroundColor} />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}
@@ -88,9 +88,9 @@ export const MechStatsDetails = ({
                 </Stack>
 
                 {utilities.length > 0 ? (
-                    <Stack direction="row" spacing="1.6rem" flexWrap="wrap">
+                    <Stack direction="row" flexWrap="wrap">
                         {utilities.map((w) => {
-                            return <Card key={w.id} imageUrl={w.image_url} value={w.label} primaryColor={colors.utilities} backgroundColor={backgroundColor} />
+                            return <Card key={w.id} imageUrl={w.avatar_url} value={w.label} primaryColor={colors.utilities} backgroundColor={backgroundColor} />
                         })}
                     </Stack>
                 ) : (
@@ -123,7 +123,7 @@ export const MechStatsDetails = ({
 
                 {introAnimation ? (
                     <Card
-                        imageUrl={introAnimation.image_url}
+                        imageUrl={introAnimation.avatar_url}
                         value={introAnimation.label}
                         primaryColor={colors.introAnimation}
                         backgroundColor={backgroundColor}
@@ -143,7 +143,7 @@ export const MechStatsDetails = ({
 
                 {outroAnimation ? (
                     <Card
-                        imageUrl={outroAnimation.image_url}
+                        imageUrl={outroAnimation.avatar_url}
                         value={outroAnimation.label}
                         primaryColor={colors.outroAnimation}
                         backgroundColor={backgroundColor}
@@ -158,46 +158,48 @@ export const MechStatsDetails = ({
 
 const Card = ({ imageUrl, value, primaryColor, backgroundColor }: { imageUrl?: string; value: string; primaryColor: string; backgroundColor: string }) => {
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: primaryColor,
-                borderThickness: ".2rem",
-            }}
-            opacity={0.6}
-            backgroundColor={backgroundColor}
-            sx={{ width: "16rem" }}
-        >
-            <Stack alignItems="center" sx={{ px: "1rem", py: "1rem", textAlign: "center" }}>
-                <Box
-                    sx={{
-                        mb: "1rem",
-                        height: "8rem",
-                        width: "100%",
-                        p: ".5rem",
-                        borderRadius: 1,
-                        boxShadow: "inset 0 0 12px 6px #00000040",
-                        background: `radial-gradient(${backgroundColor}05 10px, ${backgroundColor})`,
-                        border: `${primaryColor}06 2px solid`,
-                    }}
-                >
+        <Box sx={{ p: ".8rem" }}>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: ".2rem",
+                }}
+                opacity={0.6}
+                backgroundColor={backgroundColor}
+                sx={{ width: "16rem" }}
+            >
+                <Stack alignItems="center" sx={{ px: "1rem", py: "1rem", textAlign: "center" }}>
                     <Box
-                        component="img"
-                        src={imageUrl}
-                        alt={value}
                         sx={{
-                            height: "100%",
+                            mb: "1rem",
+                            height: "8rem",
                             width: "100%",
-                            objectFit: "contain",
-                            objectPosition: "center",
+                            p: ".5rem",
+                            borderRadius: 1,
+                            boxShadow: "inset 0 0 12px 6px #00000040",
+                            background: `radial-gradient(${backgroundColor}05 10px, ${backgroundColor})`,
+                            border: `${primaryColor}06 2px solid`,
                         }}
-                    />
-                </Box>
+                    >
+                        <Box
+                            component="img"
+                            src={imageUrl}
+                            alt={value}
+                            sx={{
+                                height: "100%",
+                                width: "100%",
+                                objectFit: "contain",
+                                objectPosition: "center",
+                            }}
+                        />
+                    </Box>
 
-                <Typography variant="body2" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
-                    {value}
-                </Typography>
-            </Stack>
-        </ClipThing>
+                    <Typography variant="body2" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
+                        {value}
+                    </Typography>
+                </Stack>
+            </ClipThing>
+        </Box>
     )
 }

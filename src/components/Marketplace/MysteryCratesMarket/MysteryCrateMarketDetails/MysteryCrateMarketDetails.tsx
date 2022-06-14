@@ -1,3 +1,4 @@
+import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../../assets"
@@ -145,67 +146,65 @@ const WarMachineMarketDetailsInner = ({
                         pt: "2rem",
                         pb: "3.8rem",
                         px: "3rem",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
-                        gap: "3.5rem",
-                        justifyContent: "center",
                     }}
                 >
-                    <ImagesPreview
-                        media={[
-                            {
-                                imageUrl: marketItem?.collection_item?.image_url || SafePNG,
-                                videoUrl: marketItem?.collection_item?.animation_url || SafePNG,
-                            },
-                        ]}
-                        primaryColor={primaryColor}
-                    />
+                    <Masonry columns={2} spacing={4}>
+                        <ImagesPreview
+                            media={[
+                                {
+                                    imageUrl: marketItem?.collection_item?.image_url || SafePNG,
+                                    videoUrl: marketItem?.collection_item?.animation_url || SafePNG,
+                                },
+                            ]}
+                            primaryColor={primaryColor}
+                        />
 
-                    <Stack spacing="2rem">
-                        <Box>
-                            <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
-                                MYSTERY CRATE
-                            </Typography>
+                        <Stack spacing="2rem">
+                            <Box>
+                                <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
+                                    MYSTERY CRATE
+                                </Typography>
 
-                            <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                {mystery_crate?.label || "MYSTERY CRATE"}
-                            </Typography>
-                        </Box>
+                                <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    {mystery_crate?.label || "MYSTERY CRATE"}
+                                </Typography>
+                            </Box>
 
-                        <Owner owner={owner} />
+                            <Owner owner={owner} />
 
-                        <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
+                            <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
 
-                        {marketItem.buyout_price && (
-                            <BuyNowDetails
-                                id={marketItem.id}
-                                itemType={ItemType.MysteryCrate}
-                                owner={marketItem.owner}
-                                itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
-                                buyNowPrice={marketItem.buyout_price}
-                                dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
-                                createdAt={marketItem.created_at}
-                                isTimeEnded={isTimeEnded}
-                            />
-                        )}
+                            {marketItem.buyout_price && (
+                                <BuyNowDetails
+                                    id={marketItem.id}
+                                    itemType={ItemType.MysteryCrate}
+                                    owner={marketItem.owner}
+                                    itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
+                                    buyNowPrice={marketItem.buyout_price}
+                                    dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
+                                    createdAt={marketItem.created_at}
+                                    isTimeEnded={isTimeEnded}
+                                />
+                            )}
 
-                        {marketItem.auction_current_price && (
-                            <AuctionDetails
-                                id={marketItem.id}
-                                itemType={ItemType.MysteryCrate}
-                                owner={marketItem.owner}
-                                itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
-                                auctionCurrentPrice={marketItem.auction_current_price}
-                                auctionBidCount={marketItem.total_bids}
-                                auctionLastBid={marketItem.last_bid}
-                                isTimeEnded={isTimeEnded}
-                            />
-                        )}
+                            {marketItem.auction_current_price && (
+                                <AuctionDetails
+                                    id={marketItem.id}
+                                    itemType={ItemType.MysteryCrate}
+                                    owner={marketItem.owner}
+                                    itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
+                                    auctionCurrentPrice={marketItem.auction_current_price}
+                                    auctionBidCount={marketItem.total_bids}
+                                    auctionLastBid={marketItem.last_bid}
+                                    isTimeEnded={isTimeEnded}
+                                />
+                            )}
 
-                        <ManageListing id={id} owner={owner} />
-                    </Stack>
+                            <ManageListing id={id} owner={owner} />
+                        </Stack>
 
-                    <CrateDetails crate={mystery_crate} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+                        <CrateDetails crate={mystery_crate} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+                    </Masonry>
                 </Box>
             </Box>
         </Box>

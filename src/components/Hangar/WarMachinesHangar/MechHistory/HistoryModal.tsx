@@ -79,7 +79,7 @@ export const HistoryModal = ({
                 setStatsLoading(false)
             }
 
-            // fetchHistory()
+            fetchHistory()
         })()
     }, [send, historyMechDetails?.id, fetchHistory])
 
@@ -162,7 +162,7 @@ export const HistoryModal = ({
                 >
                     <Stack direction="row" alignItems="center" spacing=".3rem" sx={{ pb: ".4rem" }}>
                         <Typography variant="body1" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            RECENT 10 MATCHES
+                            RECENT 10 BATTLES
                         </Typography>
                         <IconButton size="small" sx={{ opacity: 0.4, "&:hover": { cursor: "pointer", opacity: 1 } }} onClick={() => fetchHistory()}>
                             <SvgRefresh size="1.3rem" />

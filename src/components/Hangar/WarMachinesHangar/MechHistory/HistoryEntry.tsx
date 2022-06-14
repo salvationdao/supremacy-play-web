@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { ClipThing } from "../../.."
 import { SvgDeath, SvgGoldBars } from "../../../../assets"
 import { timeSinceInWords } from "../../../../helpers"
 import { fonts, colors } from "../../../../theme/theme"
@@ -29,56 +30,97 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
     }
 
     return (
-        <Stack
-            direction="row"
-            sx={{
-                flexShrink: 0,
-                p: "0.8rem 1.1rem",
-                background: `center center`,
-                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.8) 20%, ${statusColor}80), url(${backgroundImage})`,
-                backgroundSize: "cover",
+        <ClipThing
+            clipSize="10px"
+            border={{
+                isFancy: true,
+                borderColor: statusColor,
+                borderThickness: ".2rem",
             }}
+            corners={{
+                topRight: true,
+                bottomLeft: true,
+            }}
+            opacity={0.7}
+            backgroundColor="#000000"
+            sx={{ flexShrink: 0 }}
         >
-            <Box>
-                <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
-                    {mapName}
-                </Typography>
+            <Stack
+                direction="row"
+                sx={{
+                    position: "relative",
+                    p: "1rem 1.6rem",
+                }}
+            >
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        background: `linear-gradient(60deg, rgba(0, 0, 0, 0.6) 30%, ${statusColor}60)`,
+                        zIndex: -1,
+                    }}
+                />
 
-                <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                    {statusText}
-                </Typography>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        opacity: 0.2,
+                        background: `url(${backgroundImage})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        zIndex: -2,
+                    }}
+                />
 
-                {status !== "pending" && (
-                    <Stack direction="row" alignItems="center" spacing=".5rem">
+                <Box>
+                    <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
+                        {mapName}
+                    </Typography>
+
+                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        {statusText}
+                    </Typography>
+
+                    {status !== "pending" && (
+                        <Stack direction="row" alignItems="center" spacing=".5rem">
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    textTransform: "uppercase",
+                                    color: mechSurvived ? colors.neonBlue : colors.lightRed,
+                                }}
+                            >
+                                {mechSurvived ? "MECH SURVIVED" : "MECH DESTROYED"}
+                            </Typography>
+                            {mechSurvived && <SvgGoldBars size="1.5rem" />}
+                        </Stack>
+                    )}
+                </Box>
+
+                <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
+                    <Stack direction="row" spacing=".5rem" alignItems="center">
                         <Typography
-                            variant="body2"
                             sx={{
-                                textTransform: "uppercase",
-                                color: mechSurvived ? colors.neonBlue : colors.lightRed,
+                                fontFamily: fonts.nostromoBlack,
+                                color: kills > 0 ? colors.gold : colors.lightGrey,
                             }}
                         >
-                            {mechSurvived ? "MECH SURVIVED" : "MECH DESTROYED"}
+                            {kills > 0 ? `${kills} KILL${kills > 1 ? "S" : ""}` : "NO KILLS"}
                         </Typography>
-                        {mechSurvived && <SvgGoldBars size="1.5rem" />}
+                        <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
                     </Stack>
-                )}
-            </Box>
 
-            <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
-                <Stack direction="row" spacing=".5rem" alignItems="center">
-                    <Typography
-                        sx={{
-                            fontFamily: fonts.nostromoBlack,
-                            color: kills > 0 ? colors.gold : colors.lightGrey,
-                        }}
-                    >
-                        {kills > 0 ? `${kills} KILL${kills > 1 ? "S" : ""}` : "NO KILLS"}
-                    </Typography>
-                    <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
+                    <Typography sx={{ color: colors.offWhite }}>{timeSinceInWords(date, new Date())} ago</Typography>
                 </Stack>
-
-                <Typography sx={{ color: colors.offWhite }}>{timeSinceInWords(date, new Date())} AGO</Typography>
             </Stack>
-        </Stack>
+        </ClipThing>
     )
 }

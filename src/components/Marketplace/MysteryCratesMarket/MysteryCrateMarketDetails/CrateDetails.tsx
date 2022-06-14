@@ -7,6 +7,8 @@ export const CrateDetails = ({ crate, primaryColor }: { crate?: MarketCrate; pri
 
     const { description } = crate
 
+    if (!description) return null
+
     return (
         <Box>
             <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>

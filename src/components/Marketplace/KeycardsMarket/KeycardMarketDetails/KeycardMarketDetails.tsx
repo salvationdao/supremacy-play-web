@@ -1,3 +1,4 @@
+import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../../assets"
@@ -134,51 +135,49 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                         pt: "2rem",
                         pb: "3.8rem",
                         px: "3rem",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(50rem, 1fr))",
-                        gap: "3.5rem",
-                        justifyContent: "center",
                     }}
                 >
-                    <ImagesPreview
-                        media={[
-                            {
-                                imageUrl: keycard?.image_url || SafePNG,
-                                videoUrl: keycard?.animation_url || SafePNG,
-                            },
-                        ]}
-                        primaryColor={primaryColor}
-                    />
-
-                    <Stack spacing="2rem">
-                        <Box>
-                            <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
-                                KEYCARD
-                            </Typography>
-
-                            <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                {keycard?.label || "KEYCARD"}
-                            </Typography>
-                        </Box>
-
-                        <Owner owner={owner} />
-
-                        <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
-
-                        <BuyNowDetails
-                            id={marketItem.id}
-                            itemType={ItemType.Keycards}
-                            owner={marketItem.owner}
-                            itemName={marketItem.keycard?.label || "KEYCARD"}
-                            buyNowPrice={marketItem.buyout_price}
-                            createdAt={marketItem.created_at}
-                            isTimeEnded={isTimeEnded}
+                    <Masonry columns={2} spacing={4}>
+                        <ImagesPreview
+                            media={[
+                                {
+                                    imageUrl: keycard?.image_url || SafePNG,
+                                    videoUrl: keycard?.animation_url || SafePNG,
+                                },
+                            ]}
+                            primaryColor={primaryColor}
                         />
 
-                        <ManageListing id={id} owner={owner} isKeycard />
-                    </Stack>
+                        <Stack spacing="2rem">
+                            <Box>
+                                <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
+                                    KEYCARD
+                                </Typography>
 
-                    <KeycardDetails keycard={keycard} primaryColor={primaryColor} />
+                                <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    {keycard?.label || "KEYCARD"}
+                                </Typography>
+                            </Box>
+
+                            <Owner owner={owner} />
+
+                            <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
+
+                            <BuyNowDetails
+                                id={marketItem.id}
+                                itemType={ItemType.Keycards}
+                                owner={marketItem.owner}
+                                itemName={marketItem.keycard?.label || "KEYCARD"}
+                                buyNowPrice={marketItem.buyout_price}
+                                createdAt={marketItem.created_at}
+                                isTimeEnded={isTimeEnded}
+                            />
+
+                            <ManageListing id={id} owner={owner} isKeycard />
+                        </Stack>
+
+                        <KeycardDetails keycard={keycard} primaryColor={primaryColor} />
+                    </Masonry>
                 </Box>
             </Box>
         </Box>

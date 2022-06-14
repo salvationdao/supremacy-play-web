@@ -7,6 +7,8 @@ export const KeycardDetails = ({ keycard, primaryColor }: { keycard?: MarketKeyc
 
     const { description } = keycard
 
+    if (!description) return null
+
     return (
         <Box>
             <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
