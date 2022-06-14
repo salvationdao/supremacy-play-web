@@ -12,6 +12,7 @@ export const PricingInput = ({
     description,
     placeholder,
     error,
+    isOptional,
 }: {
     price?: number
     setPrice: React.Dispatch<React.SetStateAction<number | undefined>>
@@ -19,6 +20,7 @@ export const PricingInput = ({
     description: string
     placeholder: string
     error?: string
+    isOptional?: boolean
 }) => {
     const theme = useTheme()
 
@@ -26,7 +28,7 @@ export const PricingInput = ({
     const backgroundColor = theme.factionTheme.background
 
     return (
-        <QuestionSection primaryColor={primaryColor} question={question} description={description}>
+        <QuestionSection primaryColor={primaryColor} question={question} description={description} isOptional={isOptional}>
             <Stack sx={{ flex: 1 }}>
                 <ClipThing
                     clipSize="5px"
