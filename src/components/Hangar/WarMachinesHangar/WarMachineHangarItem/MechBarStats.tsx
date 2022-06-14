@@ -76,15 +76,15 @@ export const MechBarStats = ({
                     flexShrink: 0,
                 }}
             >
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="HEALTH" current={health} total={10000} />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SPEED" current={speed} total={10000} unit="M/S" />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="HEALTH" current={health} total={3000} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SPEED" current={speed} total={3000} unit="M/S" />
                 <BarStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
                     barHeight={barHeight}
                     label="Power Core CAPACITY"
                     current={powerCoreCapacity}
-                    total={1000}
+                    total={3000}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -92,10 +92,10 @@ export const MechBarStats = ({
                     barHeight={barHeight}
                     label="Power Core REGEN"
                     current={powerCoreRechargeRate}
-                    total={1000}
+                    total={500}
                     unit="/S"
                 />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SHIELD" current={totalShield} total={1000} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SHIELD" current={totalShield} total={3000} />
                 <BarStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
