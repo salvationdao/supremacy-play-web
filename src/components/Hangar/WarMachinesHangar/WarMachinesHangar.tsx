@@ -126,7 +126,7 @@ const WarMachinesHangarInner = ({
     const content = useMemo(() => {
         return (
             <Box sx={{ direction: "ltr", height: 0 }}>
-                <Stack spacing="2.4rem" sx={{ px: ".5rem", py: "1.5rem" }}>
+                <Stack spacing="3.2rem" sx={{ px: ".5rem", py: "1.5rem" }}>
                     {mechs.map((mech, i) => (
                         <WarMachineHangarItem
                             key={`hangar-mech-${mech.id}`}
@@ -217,7 +217,7 @@ const WarMachinesHangarInner = ({
                         )}
 
                         {isLoading && (
-                            <Stack spacing="1.6rem" sx={{ width: "100%", px: "1rem", py: ".8rem", height: 0 }}>
+                            <Stack spacing="2rem" sx={{ width: "100%", px: "1rem", py: ".8rem", height: 0 }}>
                                 {new Array(5).fill(0).map((_, index) => (
                                     <WarMachineHangarItemLoadingSkeleton key={index} />
                                 ))}
