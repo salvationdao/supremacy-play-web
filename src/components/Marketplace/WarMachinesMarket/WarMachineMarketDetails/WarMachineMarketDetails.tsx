@@ -10,6 +10,7 @@ import { MechDetails } from "../../../../types"
 import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
+import { ManageListing } from "../../Common/MarketDetails/ManageListing"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
@@ -166,7 +167,7 @@ const WarMachineMarketDetailsInner = ({
         ]
     }, [mechDetails])
 
-    const { owner, mech, created_at, end_at } = marketItem
+    const { id, owner, mech, created_at, end_at } = marketItem
 
     return (
         <Box
@@ -252,6 +253,8 @@ const WarMachineMarketDetailsInner = ({
                                 isTimeEnded={isTimeEnded}
                             />
                         )}
+
+                        <ManageListing id={id} owner={owner} />
                     </Stack>
 
                     <MechStatsDetails mechDetails={mechDetails} primaryColor={primaryColor} backgroundColor={backgroundColor} />

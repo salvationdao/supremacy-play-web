@@ -12,6 +12,7 @@ import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
+import { ManageListing } from "../../Common/MarketDetails/ManageListing"
 import { Owner } from "../../Common/MarketDetails/Owner"
 import { CrateDetails } from "./CrateDetails"
 
@@ -111,7 +112,7 @@ const WarMachineMarketDetailsInner = ({
     backgroundColor: string
 }) => {
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
-    const { owner, mystery_crate, created_at, end_at } = marketItem
+    const { id, owner, mystery_crate, created_at, end_at } = marketItem
 
     return (
         <Box
@@ -200,6 +201,8 @@ const WarMachineMarketDetailsInner = ({
                                 isTimeEnded={isTimeEnded}
                             />
                         )}
+
+                        <ManageListing id={id} owner={owner} />
                     </Stack>
 
                     <CrateDetails crate={mystery_crate} primaryColor={primaryColor} backgroundColor={backgroundColor} />
