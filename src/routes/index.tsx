@@ -174,13 +174,13 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
         enable: true,
         label: "Active Players",
     },
-    socials: {
-        id: "socials",
-        hash: RightDrawerHashes.Socials,
-        enable: true,
-        label: "Socials",
-        icon: "",
-    },
+    // socials: {
+    //     id: "socials",
+    //     hash: RightDrawerHashes.Socials,
+    //     enable: true,
+    //     label: "Socials",
+    //     icon: "",
+    // },
 }
 
 export const ROUTES_ARRAY: RouteStruct[] = []

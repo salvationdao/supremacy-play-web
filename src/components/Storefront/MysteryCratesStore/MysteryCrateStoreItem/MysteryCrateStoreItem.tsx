@@ -64,8 +64,8 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                         <Box
                             sx={{
                                 position: "relative",
-                                px: enlargedView ? "5rem" : ".8rem",
-                                py: enlargedView ? "8rem" : "2rem",
+                                px: enlargedView ? "4rem" : ".8rem",
+                                py: enlargedView ? "5rem" : "2rem",
                                 borderRadius: 1,
                                 boxShadow: "inset 0 0 12px 6px #00000040",
                                 background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,

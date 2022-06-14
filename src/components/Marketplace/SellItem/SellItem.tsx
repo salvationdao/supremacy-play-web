@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { FancyButton } from "../.."
@@ -220,6 +220,14 @@ export const SellItem = () => {
                             {/* Asset to sell */}
                             <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
+                            <Stack spacing="2.8rem">
+                                <Divider />
+                                <Typography variant="h6" sx={{ color: colors.grey, fontFamily: fonts.nostromoBlack }}>
+                                    PRICING
+                                </Typography>
+                                <Divider />
+                            </Stack>
+
                             {/* Pricing inputs */}
                             {itemType !== ItemType.Keycards && (
                                 <PricingInput
@@ -242,6 +250,14 @@ export const SellItem = () => {
 
                             {itemType !== ItemType.Keycards && (
                                 <>
+                                    <Stack spacing="2.8rem">
+                                        <Divider />
+                                        <Typography variant="h6" sx={{ color: colors.grey, fontFamily: fonts.nostromoBlack }}>
+                                            ADDITIONAL OPTIONS
+                                        </Typography>
+                                        <Divider />
+                                    </Stack>
+
                                     <PricingInput
                                         price={dropRate}
                                         setPrice={setDropRate}
@@ -254,7 +270,7 @@ export const SellItem = () => {
                                         price={reservePrice}
                                         setPrice={setReservePrice}
                                         question="Reserve Price (Optional)"
-                                        description="Set a minimum price that you are willing to sell the item. The item will not sell if it's lower than the reserve price."
+                                        description="Set a minimum price that you are willing to sell this item. The item will not sell if it's lower than the reserve price."
                                         placeholder="Enter reserve price..."
                                         error={checkReservePriceError()}
                                     />
