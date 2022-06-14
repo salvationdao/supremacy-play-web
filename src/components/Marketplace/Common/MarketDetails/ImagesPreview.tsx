@@ -28,7 +28,7 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
                 <Box
                     sx={{
                         position: "relative",
-                        height: "59rem",
+                        height: "56rem",
                         cursor: "zoom-in",
                         transition: "all .2s",
                         ":hover": {
