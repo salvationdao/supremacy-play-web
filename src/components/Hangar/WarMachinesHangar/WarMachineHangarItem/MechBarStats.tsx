@@ -77,7 +77,7 @@ export const MechBarStats = ({
                 }}
             >
                 <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="HEALTH" current={health} total={3000} />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SPEED" current={speed} total={3000} unit="M/S" />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SPEED" current={speed} total={5000} unit="M/S" />
                 <BarStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
