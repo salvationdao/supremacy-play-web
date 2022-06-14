@@ -164,6 +164,12 @@ export const StreamContainer = createContainer(() => {
 
     const changeStream = useCallback((s: Stream) => {
         if (!s) return
+
+        // replacing ant media
+        if (s.name === "newthing") {
+            console.log("using new thing", s);
+            
+        }
         setCurrentStream(s)
         localStorage.setItem("new_stream_props", JSON.stringify(s))
     }, [])
@@ -184,8 +190,24 @@ export const StreamContainer = createContainer(() => {
                 }
             }
 
+            const newthing = {
+                host: "",
+                name: "newthing",
+                url: "",
+                stream_id: "",
+                region: "",
+                resolution: "",
+                bit_rates_kbits: 100,
+                user_max: 100,
+                users_now: 100,
+                active: true,
+                status: "",
+                latitude: 100,
+                longitude: 100,
+                distance: 100,
+            }
             // Reverse the order for rendering so best is closer to user's mouse
-            setStreamOptions(temp.reverse())
+            setStreamOptions([...temp.reverse(),newthing])
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
