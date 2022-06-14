@@ -1,9 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useHistory } from "react-router-dom"
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
+import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 
@@ -12,9 +14,11 @@ interface MysteryCrateStoreItemProps {
 }
 
 export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
+    const history = useHistory()
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     return (
@@ -97,10 +101,29 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
                                         border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                                         sx: { position: "relative", mt: "1rem", width: "100%" },
                                     }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}
+                                >
+                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
+                                        OPEN
+                                    </Typography>
+                                </FancyButton>
+
+                                <FancyButton
+                                    excludeCaret
+                                    onClick={() => {
+                                        history.push(`/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}`)
+                                    }}
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: colors.red,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: colors.red, borderThickness: "1.5px" },
+                                        sx: { position: "relative", mt: "1rem", width: "100%" },
+                                    }}
                                     sx={{ px: "1.6rem", py: ".6rem" }}
                                 >
-                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
-                                        OPEN
+                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        SELL ITEM
                                     </Typography>
                                 </FancyButton>
                             </Stack>

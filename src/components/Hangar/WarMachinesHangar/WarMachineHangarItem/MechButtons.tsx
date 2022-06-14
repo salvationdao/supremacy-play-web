@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useHistory } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 
@@ -73,16 +73,6 @@ export const MechButtons = ({
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
-                label="SELL"
-                disabled={!mechDetails}
-                onClick={() => {
-                    history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}`)
-                }}
-            />
-
-            <ReusableButton
-                primaryColor={theme.factionTheme.primary}
-                backgroundColor={theme.factionTheme.background}
                 label="RENT"
                 disabled={true}
                 onClick={() => {
@@ -90,17 +80,30 @@ export const MechButtons = ({
                     setRentalMechModalOpen(true)
                 }}
             />
+
+            <ReusableButton
+                isFancy
+                primaryColor={colors.red}
+                backgroundColor={colors.red}
+                label="SELL"
+                disabled={!mechDetails}
+                onClick={() => {
+                    history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}`)
+                }}
+            />
         </Stack>
     )
 }
 
 const ReusableButton = ({
+    isFancy,
     primaryColor,
     backgroundColor,
     label,
     onClick,
     disabled,
 }: {
+    isFancy?: boolean
     primaryColor: string
     backgroundColor: string
     label: string
@@ -114,7 +117,7 @@ const ReusableButton = ({
             clipThingsProps={{
                 clipSize: "8px",
                 backgroundColor: backgroundColor,
-                border: { borderColor: primaryColor, borderThickness: "1.5px" },
+                border: { isFancy, borderColor: primaryColor, borderThickness: "1.5px" },
                 sx: { flex: 1, position: "relative" },
             }}
             sx={{ px: "1.3rem", py: ".3rem", color: primaryColor }}
