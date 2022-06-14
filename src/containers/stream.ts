@@ -6,7 +6,7 @@ import { Stream } from "../types"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useGameServerWebsocket, useSnackbar } from "."
 import { GameServerKeys } from "../keys"
-import OvenPlayer from "ovenplayer"
+import { OVENPLAYER_STREAM } from "../constants"
 
 const MAX_OPTIONS = 10
 
@@ -70,70 +70,6 @@ const blankOption: Stream = {
     distance: 0,
 }
 
-interface OvenPlayerInstance {
-    getVersion(): string
-    // getConfig(): OvenPlayerConfig
-    getContainerElement(): HTMLDivElement
-    getContainerId(): string
-    getMseInstance(): object | null
-    getProviderName(): string | null
-    load(sources: OvenPlayerSource[] | OvenPlayerPlayList): void
-    getMediaElement(): HTMLVideoElement
-    getState(): string
-    getBrowser(): object
-    setTimecodeMode(mode: boolean): void
-    isTimecodeMode(): boolean
-    getFramerate(): number
-    seekFrame(frame: number): void
-    getDuration(): number
-    getPosition(): number
-    getVolume(): number
-    setVolume(volume: number): void
-    getMute(): boolean
-    setMute(mute: boolean): void
-    play(): void
-    pause(): void
-    stop(): void
-    seek(position: number): void
-    getPlaybackRate(): number
-    setPlaybackRate(rate: number): void
-    getPlaylist(): OvenPlayerPlayList
-    getCurrentPlaylist(): number
-    setCurrentPlaylist(index: number): void
-    getSources(): OvenPlayerSource[] | OvenPlayerPlayList
-    getCurrentSource(): number
-    setCurrentSource(index: number): void
-    getQualityLevels(): object[]
-    getCurrentQuality(): number
-    setCurrentQuality(index: number): void
-    isAutoQuality(): boolean
-    setAutoQuality(auto: boolean): void
-    addCaption(track: object): void
-    getCaptionList(): object[]
-    getCurrentCaption(): number
-    setCurrentCaption(index: number): void
-    setCaption(caption: object): void
-    removeCaption(index: number): void
-    showControls(show: boolean): void
-    toggleFullScreen(): void
-    on(eventName: string, callback: OvenPlayerCallbackFunction): void
-    once(eventName: string, callback: OvenPlayerCallbackFunction): void
-    off(eventName: string): void
-    remove(): void
-}
-
-type OvenPlayerCallbackFunction = (...args: any[]) => void
-
-type OvenPlayerPlayList = OvenPlayerSource[][]
-
-interface OvenPlayerSource {
-    type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
-    file: string
-    label?: string
-    framerate?: number
-    sectionStart?: number
-    sectionEnd?: number
-}
 export const StreamContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
     const { state, subscribe } = useGameServerWebsocket()
@@ -229,11 +165,6 @@ export const StreamContainer = createContainer(() => {
 
     const changeStream = useCallback((s: Stream) => {
         if (!s) return
-
-        const _source: OvenPlayerSource = {
-            type: "webrtc",
-            file: s.url,
-        }
         setCurrentStream(s)
         localStorage.setItem("new_stream_props", JSON.stringify(s))
     }, [])
@@ -254,11 +185,12 @@ export const StreamContainer = createContainer(() => {
                 }
             }
 
-            const stream2 = {
-                host: "straem2",
-                name: "stream2",
+            // using ovenplayer
+            const ovenPlayerStream = {
+                host: OVENPLAYER_STREAM,
+                name: OVENPLAYER_STREAM,
                 url: "wss://stream2.supremacy.game:3334/app/stream2",
-                stream_id: "stream2",
+                stream_id: OVENPLAYER_STREAM,
                 region: "",
                 resolution: "",
                 bit_rates_kbits: 100,
@@ -271,7 +203,7 @@ export const StreamContainer = createContainer(() => {
                 distance: 100,
             }
             // Reverse the order for rendering so best is closer to user's mouse
-            setStreamOptions([...temp.reverse(), stream2])
+            setStreamOptions([...temp.reverse(), ovenPlayerStream])
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [],

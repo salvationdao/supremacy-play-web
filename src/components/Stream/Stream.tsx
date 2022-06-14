@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { useEffect, useState } from "react"
 import { SupBackground } from "../../assets"
-import { DEV_ONLY, STREAM_ASPECT_RATIO_W_H } from "../../constants"
+import { DEV_ONLY, OVENPLAYER_STREAM, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { Music } from "../Music/Music"
@@ -35,8 +35,8 @@ export const Stream = () => {
 
     return (
         <>
-            {currentStream?.name === "stream2" ? (
-                <OutputPlayerOven playerConfig="file" link="test" />
+            {currentStream?.name === OVENPLAYER_STREAM ? (
+                <OutputPlayerOven playerConfig="file" link="test" iframeDimensions={iframeDimensions} />
             ) : (
                 <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
                     {!isPlaying && <NoStreamScreen />}
@@ -146,9 +146,16 @@ const NoStreamScreen = () => {
     )
 }
 
-const OutputPlayerOven = (props: { playerConfig: string; link: string }) => {
+const OutputPlayerOven = (props: {
+    playerConfig: string
+    link: string
+    iframeDimensions: {
+        width: string | number
+        height: string | number
+    }
+}) => {
     const loadOvenPlayer = () => {
-        if (document.getElementById("player")) {
+        if (document.getElementById("oven-player")) {
             // load oven player
             const source: OvenPlayerSource = {
                 label: "label_for_webrtc",
@@ -156,7 +163,7 @@ const OutputPlayerOven = (props: { playerConfig: string; link: string }) => {
                 type: "webrtc",
                 file: "wss://stream2.supremacy.game:3334/app/stream2",
             }
-            const ovenPlayer = OvenPlayer.create("player", {
+            const ovenPlayer = OvenPlayer.create("oven-player", {
                 autoStart: true,
                 controls: false,
                 mute: false,
@@ -164,23 +171,8 @@ const OutputPlayerOven = (props: { playerConfig: string; link: string }) => {
                 autoFallback: true,
             })
 
-            // Reload OvenPlayer when error occured.
-            ovenPlayer.on("error", (error: any) => {
-                console.log("error =>", error)
-            })
-
             ovenPlayer.on("ready", () => {
-                console.log("oven ready")
-            })
-
-            ovenPlayer.on("metaChanged", (event: any) => {
-                console.log("metaChanged =>", event)
-            })
-
-            ovenPlayer.on("stateChanged", (event: any) => {
-                if (event.newstate === "playing") {
-                } else if (event.newstate === "complete") {
-                }
+                console.log("ovenplayer ready")
             })
         }
     }
@@ -189,8 +181,30 @@ const OutputPlayerOven = (props: { playerConfig: string; link: string }) => {
         loadOvenPlayer()
     }, [])
     return (
-        <Stack sx={{ width: "100%", height: "90%", zIndex: siteZIndex.Stream }}>
-            <div id="player" />
+        <Stack
+            sx={{
+                width: "100%",
+                height: "100%",
+                zIndex: siteZIndex.Stream,
+                div: {
+                    height: "100% !important",
+                },
+                video: {
+                    position: "absolute !important",
+                    top: "50% !important",
+                    left: "50% !important",
+                    transform: "translate(-50%, -50%) !important",
+                    aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
+                    width: `${props.iframeDimensions.width} !important`,
+                    height: `${props.iframeDimensions.height} !important`,
+                    zIndex: siteZIndex.Stream,
+                },
+                ".op-ui": {
+                    display: "none !important",
+                },
+            }}
+        >
+            <div id="oven-player" />
         </Stack>
     )
 }

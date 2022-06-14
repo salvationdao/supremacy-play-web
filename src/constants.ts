@@ -65,7 +65,6 @@ export const STREAM_ASPECT_RATIO_W_H = 16 / 9
 export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
 export const GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS = 2000
 
-
 // Game stuff
 export const VOTING_OPTION_COSTS = [
     {
@@ -100,3 +99,6 @@ export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
 
 // note: telegram notifications does not work on develop
 export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https://t.me/SupremacyNotifyBot"
+
+// ovenplayer
+export const OVENPLAYER_STREAM = "ALPHA"
