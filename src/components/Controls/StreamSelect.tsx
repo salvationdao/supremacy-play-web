@@ -1,4 +1,5 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
+import { OVENPLAYER_STREAM } from "../../constants"
 import { useStream } from "../../containers"
 import { colors } from "../../theme/theme"
 
@@ -46,12 +47,21 @@ export const StreamSelect = () => {
                                 changeStream(x)
                             }}
                             sx={{
+                                color: x.name === OVENPLAYER_STREAM ? "#E4E455" : "",
                                 "&:hover": {
                                     backgroundColor: colors.darkNavyBlue,
                                 },
                             }}
                         >
-                            <Typography variant="body2">{x.name}</Typography>
+                            <Typography
+                                sx={{
+                                    color: x.name === OVENPLAYER_STREAM ? "#E4E455" : "",
+                                    fontWeight: x.name === OVENPLAYER_STREAM ? "bold" : "",
+                                }}
+                                variant="body2"
+                            >
+                                {x.name}
+                            </Typography>
                         </MenuItem>
                     )
                 })}
