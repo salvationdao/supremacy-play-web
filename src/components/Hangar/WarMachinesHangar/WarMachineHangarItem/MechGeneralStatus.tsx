@@ -44,7 +44,7 @@ export const MechGeneralStatus = ({
     // When the battle queue is updated, tell the server to send the mech status to us again
     useGameServerSubscriptionFaction<boolean>(
         {
-            URI: "/xxxxxxxxx",
+            URI: "/queue-update",
             key: GameServerKeys.MechQueueUpdated,
         },
         (payload) => {
