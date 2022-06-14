@@ -43,12 +43,12 @@ export const SellItem = () => {
     const [itemType, setItemType] = useState<ItemType | undefined>(query.get("item-type") as ItemType)
     const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("asset-id") || "" })
     // Buyout
-    const [buyoutPrice, setBuyoutPrice] = useState<string>("")
+    const [buyoutPrice, setBuyoutPrice] = useState<number>()
     // Auction
-    const [startingPrice, setStartingPrice] = useState<string>("")
-    const [reservePrice, setReservePrice] = useState<string>("")
+    const [startingPrice, setStartingPrice] = useState<number>()
+    const [reservePrice, setReservePrice] = useState<number>()
     // Dutch auction
-    const [dropRate, setDropRate] = useState<string>("")
+    const [dropRate, setDropRate] = useState<number>()
 
     // Others
     const [listingFee, setListingFee] = useState<number>(10)
@@ -63,65 +63,32 @@ export const SellItem = () => {
     }, [buyoutPrice, reservePrice, dropRate, itemType])
 
     // Form validators
-    const checkAuctionStartingPriceError = useCallback((): string | undefined => {
-        if (!startingPrice) return
-        if (parseFloat(startingPrice) <= 0) {
-            return "Value has to be greater than 0."
-        }
-    }, [startingPrice])
-
     const checkBuyoutPriceError = useCallback((): string | undefined => {
         if (!buyoutPrice) return
-        if (parseFloat(buyoutPrice) <= 0) {
-            return "Value has to be greater than 0."
-        }
-        if (parseFloat(buyoutPrice) < parseFloat(startingPrice)) {
+        if (startingPrice && buyoutPrice < startingPrice) {
             return "Buyout price cannot be lower than the auction starting price."
         }
     }, [buyoutPrice, startingPrice])
 
     const checkPriceDropError = useCallback((): string | undefined => {
         if (!dropRate) return
-        if (parseFloat(dropRate) <= 0) {
-            return "Value has to be greater than 0."
-        }
-        if (parseFloat(buyoutPrice) < parseFloat(dropRate)) {
+        if (buyoutPrice && buyoutPrice < dropRate) {
             return "Price drop cannot be higher than the buyout price."
         }
     }, [buyoutPrice, dropRate])
 
     const checkReservePriceError = useCallback((): string | undefined => {
         if (!reservePrice) return
-        if (parseFloat(reservePrice) <= 0) {
-            return "Value has to be greater than 0."
-        }
-        if (parseFloat(reservePrice) < parseFloat(startingPrice)) {
+        if (startingPrice && reservePrice < startingPrice) {
             return "Reserve price cannot be lower than the auction starting price."
-        } else if (parseFloat(reservePrice) > parseFloat(buyoutPrice)) {
+        } else if (buyoutPrice && reservePrice > buyoutPrice) {
             return "Reserve price cannot be higher than the buyout price."
         }
     }, [buyoutPrice, reservePrice, startingPrice])
 
     const isFormReady = useCallback(() => {
-        return (
-            itemType &&
-            assetToSell?.id &&
-            (buyoutPrice || startingPrice) &&
-            !checkAuctionStartingPriceError() &&
-            !checkBuyoutPriceError() &&
-            !checkReservePriceError() &&
-            !checkPriceDropError()
-        )
-    }, [
-        assetToSell?.id,
-        buyoutPrice,
-        checkAuctionStartingPriceError,
-        checkBuyoutPriceError,
-        checkPriceDropError,
-        checkReservePriceError,
-        itemType,
-        startingPrice,
-    ])
+        return itemType && assetToSell?.id && (buyoutPrice || startingPrice) && !checkBuyoutPriceError() && !checkReservePriceError() && !checkPriceDropError()
+    }, [assetToSell?.id, buyoutPrice, checkBuyoutPriceError, checkPriceDropError, checkReservePriceError, itemType, startingPrice])
 
     // Submit form
     const submitHandler = useCallback(async () => {
@@ -142,10 +109,10 @@ export const SellItem = () => {
             await send<{ id: string }>(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 item_type: itemTypePayload,
                 item_id: assetToSell?.id,
-                asking_price: buyoutPrice ? buyoutPrice : undefined,
-                dutch_auction_drop_rate: !isKeycard && dropRate ? dropRate : undefined,
-                auction_current_price: !isKeycard && startingPrice ? startingPrice : undefined,
-                auction_reserved_price: !isKeycard && reservePrice ? reservePrice : undefined,
+                asking_price: buyoutPrice ? buyoutPrice.toString() : undefined,
+                dutch_auction_drop_rate: !isKeycard && dropRate ? dropRate.toString() : undefined,
+                auction_current_price: !isKeycard && startingPrice ? startingPrice.toString() : undefined,
+                auction_reserved_price: !isKeycard && reservePrice ? reservePrice.toString() : undefined,
             })
             history.push(`/marketplace`)
         } catch (err) {
@@ -261,7 +228,6 @@ export const SellItem = () => {
                                     question="Auction Starting Price"
                                     description="This will allow buyers to bid on your item as an auction."
                                     placeholder="Enter auction starting price..."
-                                    error={checkAuctionStartingPriceError()}
                                 />
                             )}
 
