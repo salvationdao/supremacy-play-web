@@ -15,10 +15,17 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
 
     if (!keycard) return null
 
-    const { label, image_url, animation_url, description } = keycard
+    const { label, image_url, animation_url, card_animation_url, description } = keycard
 
     return (
-        <MarketItem item={item} imageUrl={image_url} animationUrl={animation_url} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Keycards}>
+        <MarketItem
+            item={item}
+            imageUrl={image_url}
+            animationUrl={animation_url}
+            cardAnimationUrl={card_animation_url}
+            isGridView={isGridView}
+            linkSubPath={MARKETPLACE_TABS.Keycards}
+        >
             <KeycardInfo isGridView={isGridView} label={label} description={description} />
         </MarketItem>
     )

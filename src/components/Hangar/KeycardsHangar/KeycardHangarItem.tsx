@@ -68,6 +68,7 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                             poster={`${keycard.blueprints.image_url}`}
                         >
                             {keycard.blueprints.animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
+                            {keycard.blueprints.card_animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
                         </Box>
                     </Box>
 

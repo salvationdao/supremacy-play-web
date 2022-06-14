@@ -16,6 +16,7 @@ import { Timeframe } from "../../Common/MarketItem/Timeframe"
 interface MarketItemProps {
     imageUrl: string
     animationUrl?: string
+    cardAnimationUrl?: string
     backgroundImageUrl?: string
     item: MarketplaceBuyAuctionItem
     isGridView: boolean
@@ -23,7 +24,7 @@ interface MarketItemProps {
     linkSubPath: MARKETPLACE_TABS
 }
 
-export const MarketItem = ({ imageUrl, animationUrl, backgroundImageUrl, item, isGridView, children, linkSubPath }: MarketItemProps) => {
+export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroundImageUrl, item, isGridView, children, linkSubPath }: MarketItemProps) => {
     const history = useHistory()
     const theme = useTheme()
 
@@ -92,7 +93,7 @@ export const MarketItem = ({ imageUrl, animationUrl, backgroundImageUrl, item, i
                             : {}),
                     }}
                 >
-                    <Thumbnail isGridView={isGridView} imageUrl={imageUrl} animationUrl={animationUrl} />
+                    <Thumbnail isGridView={isGridView} imageUrl={imageUrl} animationUrl={animationUrl} cardAnimationUrl={cardAnimationUrl} />
                     {children}
                     <SellerInfo isGridView={isGridView} owner={owner} />
                     <Timeframe isGridView={isGridView} endAt={end_at} />

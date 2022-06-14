@@ -1,6 +1,16 @@
 import { Box } from "@mui/material"
 
-export const Thumbnail = ({ isGridView, imageUrl, animationUrl }: { isGridView: boolean; imageUrl: string; animationUrl?: string }) => {
+export const Thumbnail = ({
+    isGridView,
+    imageUrl,
+    animationUrl,
+    cardAnimationUrl,
+}: {
+    isGridView: boolean
+    imageUrl: string
+    animationUrl?: string
+    cardAnimationUrl?: string
+}) => {
     return (
         <Box
             sx={{
@@ -26,6 +36,7 @@ export const Thumbnail = ({ isGridView, imageUrl, animationUrl }: { isGridView: 
                 poster={`${imageUrl}`}
             >
                 {animationUrl && <source src={animationUrl} type="video/mp4" />}
+                {cardAnimationUrl && <source src={cardAnimationUrl} type="video/mp4" />}
             </Box>
         </Box>
     )

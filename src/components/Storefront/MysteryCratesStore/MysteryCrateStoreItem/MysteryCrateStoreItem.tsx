@@ -87,7 +87,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 poster={`${mysteryCrate.image_url || SafePNG}`}
                             >
                                 <source src={mysteryCrate.animation_url} type="video/mp4" />
-                                <source src={mysteryCrate.large_image_url} type="video/mp4" />
+                                <source src={mysteryCrate.card_animation_url} type="video/mp4" />
                             </Box>
 
                             <Stack

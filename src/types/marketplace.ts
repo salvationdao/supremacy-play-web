@@ -31,6 +31,7 @@ export interface MarketKeycard {
     label: string
     image_url: string
     animation_url: string
+    card_animation_url: string
     description: string
     collection: string
     keycard_token_id: string

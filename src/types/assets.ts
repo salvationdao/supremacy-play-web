@@ -372,6 +372,7 @@ export interface KeycardBlueprint {
     keycard_token_id: string
     image_url: string
     animation_url: string
+    card_animation_url: string
     keycard_group: string
     syndicate?: string | null
     created_at: Date
