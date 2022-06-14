@@ -31,11 +31,22 @@ export const WarMachinesMarket = () => {
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
+    const [ownedBy, setOwnedBy] = useState<string[]>(["others"])
     const [listingTypes, setListingTypes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
+    const ownedByFilterSection = useRef<ChipFilter>({
+        label: "OWNED BY",
+        options: [
+            { value: "self", label: "YOU", color: theme.factionTheme.primary },
+            { value: "others", label: "OTHERS", color: theme.factionTheme.primary },
+        ],
+        initialSelected: ownedBy,
+        onSetSelected: setOwnedBy,
+    })
+
     const listingTypeFilterSection = useRef<ChipFilter>({
         label: "LISTING TYPE",
         options: [
@@ -94,6 +105,7 @@ export const WarMachinesMarket = () => {
                 max_price,
                 sort_dir: sortDir,
                 sort_by: sortBy,
+                owned_by: ownedBy,
             })
 
             if (!resp) return
@@ -108,7 +120,7 @@ export const WarMachinesMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, send, page, pageSize, search, rarities, listingTypes, price, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, rarities, listingTypes, ownedBy, setTotalItems, newSnackbarMessage])
 
     // Initial load the mech listings
     useEffect(() => {
@@ -212,7 +224,7 @@ export const WarMachinesMarket = () => {
                 onSetSearch={setSearch}
                 initialSort={sort}
                 onSetSort={setSort}
-                chipFilters={[listingTypeFilterSection.current, rarityChipFilter.current]}
+                chipFilters={[ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
             />
 

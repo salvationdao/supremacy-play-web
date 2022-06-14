@@ -11,6 +11,7 @@ import { ClipThing } from "../../../Common/ClipThing"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
+import { ManageListing } from "../../Common/MarketDetails/ManageListing"
 import { Owner } from "../../Common/MarketDetails/Owner"
 import { KeycardDetails } from "./KeycardDetails"
 
@@ -100,7 +101,7 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
 
 const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyAuctionItem; primaryColor: string }) => {
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
-    const { owner, keycard, created_at, end_at } = marketItem
+    const { id, owner, keycard, created_at, end_at } = marketItem
 
     return (
         <Box
@@ -173,6 +174,8 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                             createdAt={marketItem.created_at}
                             isTimeEnded={isTimeEnded}
                         />
+
+                        <ManageListing id={id} owner={owner} isKeycard />
                     </Stack>
 
                     <KeycardDetails keycard={keycard} primaryColor={primaryColor} />

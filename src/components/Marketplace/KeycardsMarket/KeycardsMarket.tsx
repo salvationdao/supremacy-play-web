@@ -10,7 +10,7 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
-import { RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
+import { ChipFilter, RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { KeycardMarketItem } from "./KeycardMarketItem"
 
@@ -30,9 +30,20 @@ export const KeycardsMarket = () => {
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
+    const [ownedBy, setOwnedBy] = useState<string[]>(["others"])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
+    const ownedByFilterSection = useRef<ChipFilter>({
+        label: "OWNED BY",
+        options: [
+            { value: "self", label: "YOU", color: theme.factionTheme.primary },
+            { value: "others", label: "OTHERS", color: theme.factionTheme.primary },
+        ],
+        initialSelected: ownedBy,
+        onSetSelected: setOwnedBy,
+    })
+
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
@@ -58,6 +69,7 @@ export const KeycardsMarket = () => {
                 max_price,
                 sort_dir: sortDir,
                 sort_by: sortBy,
+                owned_by: ownedBy,
             })
 
             if (!resp) return
@@ -72,7 +84,7 @@ export const KeycardsMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, send, page, pageSize, search, price, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, ownedBy, setTotalItems, newSnackbarMessage])
 
     // Initial load the key card listings
     useEffect(() => {
@@ -171,7 +183,14 @@ export const KeycardsMarket = () => {
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters initialSearch={search} onSetSearch={setSearch} initialSort={sort} onSetSort={setSort} rangeFilters={[priceRangeFilter.current]} />
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                initialSort={sort}
+                onSetSort={setSort}
+                chipFilters={[ownedByFilterSection.current]}
+                rangeFilters={[priceRangeFilter.current]}
+            />
 
             <ClipThing
                 clipSize="10px"

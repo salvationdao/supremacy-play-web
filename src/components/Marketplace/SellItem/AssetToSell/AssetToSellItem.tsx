@@ -51,7 +51,7 @@ export const AssetToSellItem = ({
             const tier = assetToSell.mech?.tier || mechDetails?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (itemType === ItemType.MysteryCrate) {
-            setAvatarUrl(assetToSell.mysteryCrate?.avatar_url || mysteryCrate?.avatar_url || SafePNG)
+            setAvatarUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
             setImageUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
             setVideoUrl(assetToSell.mysteryCrate?.animation_url || mysteryCrate?.animation_url)
             setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)

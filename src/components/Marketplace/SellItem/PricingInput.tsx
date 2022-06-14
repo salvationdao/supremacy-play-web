@@ -13,8 +13,8 @@ export const PricingInput = ({
     placeholder,
     error,
 }: {
-    price: string
-    setPrice: React.Dispatch<React.SetStateAction<string>>
+    price?: number
+    setPrice: React.Dispatch<React.SetStateAction<number | undefined>>
     question: string
     description: string
     placeholder: string
@@ -65,9 +65,11 @@ export const PricingInput = ({
                                 ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                             }}
                             type="number"
-                            value={price}
+                            value={price || ""}
                             onChange={(e) => {
-                                setPrice(e.target.value)
+                                const newAmount = parseInt(e.target.value)
+                                if (newAmount <= 0) return
+                                setPrice(newAmount)
                             }}
                         />
                     </Stack>

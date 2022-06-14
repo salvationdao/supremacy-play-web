@@ -78,8 +78,11 @@ useEffect(() => {
 
 			if (!resp) return
 			setFactionsData(resp)
-		} catch (e) {
-			console.error(e)
+		} catch (err) {
+            const message = typeof err === "string" ? err : "Failed to get key card listings."
+            newSnackbarMessage(message, "error")
+            setLoadError(message)
+            console.error(err)
 		}
 	})()
 }, [send])
