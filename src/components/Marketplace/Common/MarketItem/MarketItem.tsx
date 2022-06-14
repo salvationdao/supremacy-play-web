@@ -32,7 +32,7 @@ export const MarketItem = ({ imageUrl, animationUrl, backgroundImageUrl, item, i
         let buyoutPrice = new BigNumber(item.buyout_price).shiftedBy(-18)
         const dropPrice = new BigNumber(item.dutch_auction_drop_rate).shiftedBy(-18)
         if (item.dutch_auction_drop_rate) {
-            buyoutPrice = buyoutPrice.minus(dropPrice.multipliedBy(timeDiff(item.created_at, new Date()).minutes))
+            buyoutPrice = BigNumber.max(buyoutPrice.minus(dropPrice.multipliedBy(timeDiff(item.created_at, new Date()).minutes)), new BigNumber(1))
         }
         return numFormatter(buyoutPrice.toNumber())
     }, [item.buyout_price, item.created_at, item.dutch_auction_drop_rate])

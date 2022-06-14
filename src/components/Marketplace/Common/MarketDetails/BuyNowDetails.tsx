@@ -32,7 +32,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
         // Drop price
         if (dutchAuctionDropRate) {
             const dropRate = new BigNumber(dutchAuctionDropRate).shiftedBy(-18)
-            newPrice = newPrice.minus(dropRate.multipliedBy(timeDiff(createdAt, new Date()).minutes))
+            newPrice = BigNumber.max(newPrice.minus(dropRate.multipliedBy(timeDiff(createdAt, new Date()).minutes)), new BigNumber(1))
         }
         return newPrice
     }, [buyNowPrice, createdAt, dutchAuctionDropRate])
