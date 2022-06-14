@@ -45,15 +45,16 @@ export const SellItem = () => {
     // Buyout
     const [buyoutPrice, setBuyoutPrice] = useState<string>("")
     // Auction
+    const [startingPrice, setStartingPrice] = useState<string>("")
     const [reservePrice, setReservePrice] = useState<string>("")
     // Dutch auction
-    const [startingPrice, setStartingPrice] = useState<string>("")
     const [dropRate, setDropRate] = useState<string>("")
 
     // Others
     const [listingFee, setListingFee] = useState<number>(10)
     const primaryColor = theme.factionTheme.primary
 
+    // Calculate fees
     useEffect(() => {
         let fee = 10
         if (reservePrice) fee += 5
@@ -61,10 +62,26 @@ export const SellItem = () => {
         setListingFee(fee)
     }, [buyoutPrice, reservePrice, dropRate, itemType])
 
-    const isFormReady = useCallback(() => {
-        return itemType && assetToSell && (buyoutPrice || startingPrice)
-    }, [assetToSell, buyoutPrice, itemType, startingPrice])
+    // Form validators
+    const checkBuyoutPriceError = useCallback((): string | undefined => {
+        if (!buyoutPrice) return
+        if (parseFloat(buyoutPrice) <= parseFloat(startingPrice)) {
+            return "Buyout price cannot be lower than the auction starting price."
+        }
+    }, [buyoutPrice, startingPrice])
 
+    const checkPriceDropError = useCallback((): string | undefined => {
+        if (!dropRate) return
+        if (parseFloat(buyoutPrice) <= parseFloat(dropRate)) {
+            return "Price drop cannot be more than the buyout price."
+        }
+    }, [buyoutPrice, dropRate])
+
+    const isFormReady = useCallback(() => {
+        return itemType && assetToSell?.id && (buyoutPrice || startingPrice) && !checkBuyoutPriceError() && !checkPriceDropError()
+    }, [assetToSell, buyoutPrice, checkBuyoutPriceError, checkPriceDropError, itemType, startingPrice])
+
+    // Submit form
     const submitHandler = useCallback(async () => {
         if (!isFormReady()) return
 
@@ -211,6 +228,7 @@ export const SellItem = () => {
                                 question="Buyout Price"
                                 description="A buyer can pay this amount to immediately purchase your item."
                                 placeholder="Enter buyout price..."
+                                error={checkBuyoutPriceError()}
                             />
 
                             {itemType !== ItemType.Keycards && (
@@ -219,8 +237,9 @@ export const SellItem = () => {
                                         price={dropRate}
                                         setPrice={setDropRate}
                                         question="Price Drop / min (Optional)"
-                                        description="The buyout price will reduce by this amount every minute until a buyer purchases the item."
+                                        description="The buyout price will reduce by this amount every minute until a buyer purchases the item. If you don't set a reserve price, the item can go down to 1 SUP."
                                         placeholder="Enter price drop..."
+                                        error={checkPriceDropError()}
                                     />
                                     <PricingInput
                                         price={reservePrice}
@@ -253,7 +272,7 @@ export const SellItem = () => {
                             <Typography sx={{ fontFamily: fonts.nostromoBold }}>{listingFee}</Typography>
                         </Stack>
 
-                        <Typography sx={{ color: colors.lightNeonBlue }}>There will be a 30% fee on the final sale value of your item.</Typography>
+                        <Typography sx={{ color: colors.lightNeonBlue }}>There will be a 10% fee on the final sale value of your item.</Typography>
                     </Stack>
 
                     <FancyButton

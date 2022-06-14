@@ -52,7 +52,7 @@ export const AssetToSellItem = ({
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (itemType === ItemType.MysteryCrate) {
             setAvatarUrl(assetToSell.mysteryCrate?.avatar_url || mysteryCrate?.avatar_url || SafePNG)
-            setImageUrl(assetToSell.mysteryCrate?.large_image_url || mysteryCrate?.large_image_url || SafePNG)
+            setImageUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
             setVideoUrl(assetToSell.mysteryCrate?.animation_url || mysteryCrate?.animation_url)
             setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
             setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)

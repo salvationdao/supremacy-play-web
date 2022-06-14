@@ -38,7 +38,7 @@ export const AssetToSell = ({
                 description={`Choose which ${itemTypeLabel || "item"} you which to put onto the marketplace.`}
             >
                 <Stack alignItems="flex-start" spacing="1.2rem" sx={{ flex: 1 }}>
-                    {assetToSell && assetToSell.id && itemType && (
+                    {assetToSell?.id && itemType && (
                         <ClipThing
                             clipSize="10px"
                             border={{
@@ -73,7 +73,7 @@ export const AssetToSell = ({
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            {assetToSell && assetToSell.id ? "CHANGE" : "CHOOSE ITEM"}
+                            {assetToSell?.id ? "CHANGE" : "CHOOSE ITEM"}
                         </Typography>
                     </FancyButton>
                 </Stack>

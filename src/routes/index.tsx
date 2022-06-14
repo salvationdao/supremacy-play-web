@@ -82,8 +82,8 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/marketplace/:type/:id",
         exact: true,
         Component: MarketplaceItemPage,
-        requireAuth: false,
-        requireFaction: false,
+        requireAuth: true,
+        requireFaction: true,
         matchLeftDrawerID: "marketplace",
     },
     marketplace: {
@@ -106,8 +106,8 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/contracts",
         exact: true,
         Component: undefined,
-        requireAuth: false,
-        requireFaction: false,
+        requireAuth: true,
+        requireFaction: true,
         leftDrawer: {
             enable: false,
             label: "Contracts",
