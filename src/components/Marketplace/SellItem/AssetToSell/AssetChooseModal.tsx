@@ -7,7 +7,7 @@ import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { Keycard, MechBasic, StorefrontMysteryCrate } from "../../../../types"
+import { Keycard, MechBasic, MysteryCrate } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
 import { AssetToSellStruct, itemTypes } from "../SellItem"
@@ -16,7 +16,7 @@ import { AssetToSellItem } from "./AssetToSellItem"
 interface GetAssetsResponse {
     mechs: MechBasic[]
     keycards: Keycard[]
-    mystery_crates: StorefrontMysteryCrate[]
+    mystery_crates: MysteryCrate[]
     total: number
 }
 
@@ -56,7 +56,7 @@ export const AssetChooseModal = ({
             } else if (itemType === ItemType.MysteryCrate) {
                 key = GameServerKeys.GetPlayerMysteryCrates
             } else {
-                key = GameServerKeys.GetKeycards
+                key = GameServerKeys.GetPlayerKeycards
             }
 
             try {

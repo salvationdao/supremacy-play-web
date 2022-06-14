@@ -174,7 +174,7 @@ const AddLoadoutItem = ({ primaryColor }: { primaryColor: string }) => {
                 }}
                 sx={{ height: "100%", color: primaryColor }}
                 innerSx={{ p: 0 }}
-                onClick={() => alert("TODO: open loadout menu modal.")}
+                // onClick={() => alert("TODO: open loadout menu modal.")}
             >
                 <Stack justifyContent="center" sx={{ height: "100%" }}>
                     <SvgPlus sx={{ opacity: 0.15 }} />

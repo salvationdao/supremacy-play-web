@@ -1,5 +1,3 @@
-import { snakeToSlug, snakeToTitle } from "../helpers"
-
 export enum ItemType {
     WarMachine = "WAR_MACHINE",
     Keycards = "KEY_CARDS",
@@ -77,12 +75,3 @@ export interface MarketplaceBuyAuctionItem {
     keycard?: MarketKeycard
     mystery_crate?: MarketCrate
 }
-
-// TODO: remove
-export const ItemTypeInfo = Object.values(ItemType).map((t) => {
-    return {
-        name: t,
-        slug: snakeToSlug(t),
-        label: snakeToTitle(t),
-    }
-})

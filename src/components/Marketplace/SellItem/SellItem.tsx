@@ -8,7 +8,7 @@ import { useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Keycard, MechBasic, StorefrontMysteryCrate } from "../../../types"
+import { Keycard, MechBasic, MysteryCrate } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
@@ -19,7 +19,7 @@ export interface AssetToSellStruct {
     id: string
     mech?: MechBasic
     keycard?: Keycard
-    mysteryCrate?: StorefrontMysteryCrate
+    mysteryCrate?: MysteryCrate
 }
 
 export const itemTypes: {

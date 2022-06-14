@@ -5,7 +5,7 @@ import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
+import { Keycard, MechDetails, MysteryCrate } from "../../../../types"
 import { MechLoadoutIcons } from "../../WarMachinesMarket/WarMachineMarketItem"
 import { AssetToSellStruct } from "../SellItem"
 
@@ -23,6 +23,8 @@ export const AssetToSellItem = ({
     const { send } = useGameServerCommandsFaction("/faction_commander")
     // Additional fetched data
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>()
+    const [keycard, setKeycard] = useState<Keycard>()
 
     // Things for render
     const [avatarUrl, setAvatarUrl] = useState<string>()
@@ -41,28 +43,29 @@ export const AssetToSellItem = ({
             setAvatarUrl(assetToSell.mech.avatar_url || mechDetails?.chassis_skin?.avatar_url)
             setImageUrl(assetToSell.mech.large_image_url || mechDetails?.chassis_skin?.large_image_url)
             setVideoUrl(assetToSell.mech.animation_url || mechDetails?.chassis_skin?.animation_url)
-            setLabel(assetToSell.mech.name || assetToSell.mech.label)
-            setRarityDeets(assetToSell.mech.tier ? getRarityDeets(assetToSell.mech.tier) : undefined)
+            setLabel(assetToSell.mech.name || assetToSell.mech.label || mechDetails?.name || mechDetails?.label)
+            const tier = assetToSell.mech.tier || mechDetails?.tier
+            setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (assetToSell.mysteryCrate) {
-            setAvatarUrl(assetToSell.mysteryCrate.avatar_url || SafePNG)
-            setImageUrl(assetToSell.mysteryCrate.large_image_url || SafePNG)
-            setVideoUrl(assetToSell.mysteryCrate.animation_url)
-            setLabel(assetToSell.mysteryCrate.label)
-            setDescription(assetToSell.mysteryCrate.description)
+            setAvatarUrl(assetToSell.mysteryCrate.avatar_url || mysteryCrate?.avatar_url || SafePNG)
+            setImageUrl(assetToSell.mysteryCrate.large_image_url || mysteryCrate?.large_image_url || SafePNG)
+            setVideoUrl(assetToSell.mysteryCrate.animation_url || mysteryCrate?.animation_url)
+            setLabel(assetToSell.mysteryCrate.label || mysteryCrate?.label)
+            setDescription(assetToSell.mysteryCrate.description || mysteryCrate?.description)
         } else if (assetToSell.keycard) {
-            setAvatarUrl(assetToSell.keycard.blueprints.image_url || KeycardPNG)
-            setImageUrl(assetToSell.keycard.blueprints.image_url || KeycardPNG)
-            setVideoUrl(assetToSell.keycard.blueprints.animation_url)
-            setLabel(assetToSell.keycard.blueprints.label)
-            setDescription(assetToSell.keycard.blueprints.description)
+            setAvatarUrl(assetToSell.keycard.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
+            setImageUrl(assetToSell.keycard.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
+            setVideoUrl(assetToSell.keycard.blueprints.animation_url || keycard?.blueprints.animation_url)
+            setLabel(assetToSell.keycard.blueprints.label || keycard?.blueprints.label)
+            setDescription(assetToSell.keycard.blueprints.description || keycard?.blueprints.description)
         }
-    }, [assetToSell, mechDetails])
+    }, [assetToSell, mechDetails, mysteryCrate, keycard])
 
-    // Addition data to fetch
+    // Get addition mech data
     useEffect(() => {
-        if (!assetToSell.mech) return
         ;(async () => {
             try {
+                if (!assetToSell.mech) return
                 const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
                     mech_id: assetToSell.id,
                 })
@@ -70,6 +73,40 @@ export const AssetToSellItem = ({
                 setMechDetails(resp)
             } catch (e) {
                 console.error(e)
+            }
+        })()
+    }, [assetToSell, send])
+
+    // Get additional mystery crate data
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (!assetToSell.mysteryCrate) return
+                const resp = await send<MysteryCrate>(GameServerKeys.GetPlayerMysteryCrate, {
+                    id: assetToSell.id,
+                })
+
+                if (!resp) return
+                setMysteryCrate(resp)
+            } catch (err) {
+                console.error(err)
+            }
+        })()
+    }, [assetToSell, send])
+
+    // Get additional keycard data
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (!assetToSell.keycard) return
+                const resp = await send<Keycard>(GameServerKeys.GetPlayerKeycard, {
+                    id: assetToSell.id,
+                })
+
+                if (!resp) return
+                setKeycard(resp)
+            } catch (err) {
+                console.error(err)
             }
         })()
     }, [assetToSell, send])
