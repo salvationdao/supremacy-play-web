@@ -109,14 +109,14 @@ export enum GameServerKeys {
     MarketplaceSalesBuy = "MARKETPLACE:SALES:BUY",
     MarketplaceSalesBid = "MARKETPLACE:SALES:BID",
     SubMarketplaceSalesItem = "MARKETPLACE:SALES:ITEM:UPDATE",
-    CancelMarketplaceListing = "MARKETPLACE:SALES:KEYCARD:ARCHIVE",
+    CancelMarketplaceListing = "MARKETPLACE:SALES:ARCHIVE",
 
     // Marketplace Keycards
     MarketplaceSalesKeycardList = "MARKETPLACE:SALES:KEYCARD:LIST",
     GetKeycard = "MARKETPLACE:SALES:KEYCARD:GET",
     MarketplaceSalesKeycardCreate = "MARKETPLACE:SALES:KEYCARD:CREATE",
     MarketplaceSalesKeycardBuy = "MARKETPLACE:SALES:KEYCARD:BUY",
-    CancelKeycardListing = "MARKETPLACE:SALES:ARCHIVE",
+    CancelKeycardListing = "MARKETPLACE:SALES:KEYCARD:ARCHIVE",
 
     // Mystery Crates
     GetPlayerMysteryCrates = "PLAYER:ASSET:MYSTERY_CRATE:LIST",
