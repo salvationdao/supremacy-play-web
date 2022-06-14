@@ -163,7 +163,7 @@ const Card = ({ imageUrl, value, primaryColor, backgroundColor }: { imageUrl?: s
                 clipSize="10px"
                 border={{
                     borderColor: primaryColor,
-                    borderThickness: ".2rem",
+                    borderThickness: ".3rem",
                 }}
                 opacity={0.6}
                 backgroundColor={backgroundColor}
