@@ -15,6 +15,7 @@ import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
 import { Owner } from "../../Common/MarketDetails/Owner"
+import Masonry from "@mui/lab/Masonry"
 import { MechStatsDetails } from "./MechStatsDetails"
 
 export const WarMachineMarketDetails = ({ id }: { id: string }) => {
@@ -195,7 +196,68 @@ const WarMachineMarketDetailsInner = ({
             }}
         >
             <Box sx={{ direction: "ltr", height: 0 }}>
-                <Box
+                <Masonry
+                    columns={2}
+                    // spacing="3.5rem"
+                    sx={{
+                        pt: "2rem",
+                        pb: "3.8rem",
+                        px: "3rem",
+                    }}
+                >
+                    <ImagesPreview media={media} primaryColor={primaryColor} />
+
+                    <Stack spacing="2rem">
+                        <Box>
+                            <Typography
+                                gutterBottom
+                                variant="h5"
+                                sx={{ color: primaryColor, fontFamily: fonts.nostromoBold, span: { color: rarityDeets.color, fontFamily: "inherit" } }}
+                            >
+                                WAR MACHINE | <span>{rarityDeets.label}</span>
+                            </Typography>
+
+                            <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                {mech?.name || mech?.label}
+                            </Typography>
+                        </Box>
+
+                        <Owner owner={owner} />
+
+                        <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
+
+                        {marketItem.buyout_price && (
+                            <BuyNowDetails
+                                id={marketItem.id}
+                                itemType={ItemType.WarMachine}
+                                owner={marketItem.owner}
+                                itemName={marketItem.mech?.name || marketItem.mech?.label || "WAR MACHINE"}
+                                buyNowPrice={marketItem.buyout_price}
+                                dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
+                                createdAt={marketItem.created_at}
+                                isTimeEnded={isTimeEnded}
+                            />
+                        )}
+
+                        {marketItem.auction_current_price && (
+                            <AuctionDetails
+                                id={marketItem.id}
+                                itemType={ItemType.WarMachine}
+                                owner={marketItem.owner}
+                                itemName={marketItem.mech?.name || marketItem.mech?.label || "WAR MACHINE"}
+                                auctionCurrentPrice={marketItem.auction_current_price}
+                                auctionBidCount={marketItem.total_bids}
+                                auctionLastBid={marketItem.last_bid}
+                                isTimeEnded={isTimeEnded}
+                            />
+                        )}
+
+                        <ManageListing id={id} owner={owner} />
+                    </Stack>
+
+                    <MechStatsDetails mechDetails={mechDetails} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+                </Masonry>
+                {/* <Box
                     sx={{
                         pt: "2rem",
                         pb: "3.8rem",
@@ -258,7 +320,7 @@ const WarMachineMarketDetailsInner = ({
                     </Stack>
 
                     <MechStatsDetails mechDetails={mechDetails} primaryColor={primaryColor} backgroundColor={backgroundColor} />
-                </Box>
+                </Box> */}
             </Box>
         </Box>
     )
