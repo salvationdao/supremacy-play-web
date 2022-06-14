@@ -128,7 +128,7 @@ const WarMachineHangarItemInner = ({
             <ClipThing
                 clipSize="10px"
                 border={{
-                    isFancy: isSelected,
+                    isFancy: !isSelected,
                     borderColor: theme.factionTheme.primary,
                     borderThickness: isSelected ? ".4rem" : ".2rem",
                 }}
