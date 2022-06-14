@@ -4,10 +4,11 @@ import { useHistory } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgSupToken, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { useToggle } from "../../../hooks"
+import { useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
+import { Keycard, MechBasic, MysteryCrate } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
@@ -16,12 +17,9 @@ import { PricingInput } from "./PricingInput"
 
 export interface AssetToSellStruct {
     id: string
-    avatarUrl: string
-    imageUrl: string
-    videoUrl: string
-    label: string
-    description?: string
-    tier?: string
+    mech?: MechBasic
+    keycard?: Keycard
+    mysteryCrate?: MysteryCrate
 }
 
 export const itemTypes: {
@@ -36,25 +34,27 @@ export const itemTypes: {
 export const SellItem = () => {
     const theme = useTheme()
     const history = useHistory()
+    const query = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [submitting, toggleSubmitting] = useToggle()
     const [submitError, setSubmitError] = useState<string>()
 
     // Form states
-    const [itemType, setItemType] = useState<ItemType>()
-    const [assetToSell, setAssetToSell] = useState<AssetToSellStruct>()
+    const [itemType, setItemType] = useState<ItemType | undefined>(query.get("item-type") as ItemType)
+    const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("asset-id") || "" })
     // Buyout
     const [buyoutPrice, setBuyoutPrice] = useState<string>("")
     // Auction
+    const [startingPrice, setStartingPrice] = useState<string>("")
     const [reservePrice, setReservePrice] = useState<string>("")
     // Dutch auction
-    const [startingPrice, setStartingPrice] = useState<string>("")
     const [dropRate, setDropRate] = useState<string>("")
 
     // Others
     const [listingFee, setListingFee] = useState<number>(10)
     const primaryColor = theme.factionTheme.primary
 
+    // Calculate fees
     useEffect(() => {
         let fee = 10
         if (reservePrice) fee += 5
@@ -62,10 +62,68 @@ export const SellItem = () => {
         setListingFee(fee)
     }, [buyoutPrice, reservePrice, dropRate, itemType])
 
-    const isFormReady = useCallback(() => {
-        return itemType && assetToSell && (buyoutPrice || startingPrice)
-    }, [assetToSell, buyoutPrice, itemType, startingPrice])
+    // Form validators
+    const checkAuctionStartingPriceError = useCallback((): string | undefined => {
+        if (!startingPrice) return
+        if (parseFloat(startingPrice) <= 0) {
+            return "Value has to be greater than 0."
+        }
+    }, [startingPrice])
 
+    const checkBuyoutPriceError = useCallback((): string | undefined => {
+        if (!buyoutPrice) return
+        if (parseFloat(buyoutPrice) <= 0) {
+            return "Value has to be greater than 0."
+        }
+        if (parseFloat(buyoutPrice) < parseFloat(startingPrice)) {
+            return "Buyout price cannot be lower than the auction starting price."
+        }
+    }, [buyoutPrice, startingPrice])
+
+    const checkPriceDropError = useCallback((): string | undefined => {
+        if (!dropRate) return
+        if (parseFloat(dropRate) <= 0) {
+            return "Value has to be greater than 0."
+        }
+        if (parseFloat(buyoutPrice) < parseFloat(dropRate)) {
+            return "Price drop cannot be higher than the buyout price."
+        }
+    }, [buyoutPrice, dropRate])
+
+    const checkReservePriceError = useCallback((): string | undefined => {
+        if (!reservePrice) return
+        if (parseFloat(reservePrice) <= 0) {
+            return "Value has to be greater than 0."
+        }
+        if (parseFloat(reservePrice) < parseFloat(startingPrice)) {
+            return "Reserve price cannot be lower than the auction starting price."
+        } else if (parseFloat(reservePrice) > parseFloat(buyoutPrice)) {
+            return "Reserve price cannot be higher than the buyout price."
+        }
+    }, [buyoutPrice, reservePrice, startingPrice])
+
+    const isFormReady = useCallback(() => {
+        return (
+            itemType &&
+            assetToSell?.id &&
+            (buyoutPrice || startingPrice) &&
+            !checkAuctionStartingPriceError() &&
+            !checkBuyoutPriceError() &&
+            !checkReservePriceError() &&
+            !checkPriceDropError()
+        )
+    }, [
+        assetToSell?.id,
+        buyoutPrice,
+        checkAuctionStartingPriceError,
+        checkBuyoutPriceError,
+        checkPriceDropError,
+        checkReservePriceError,
+        itemType,
+        startingPrice,
+    ])
+
+    // Submit form
     const submitHandler = useCallback(async () => {
         if (!isFormReady()) return
 
@@ -81,7 +139,7 @@ export const SellItem = () => {
         try {
             toggleSubmitting(true)
             setSubmitError(undefined)
-            await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
+            await send<{ id: string }>(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 item_type: itemTypePayload,
                 item_id: assetToSell?.id,
                 asking_price: buyoutPrice ? buyoutPrice : undefined,
@@ -89,7 +147,7 @@ export const SellItem = () => {
                 auction_current_price: !isKeycard && startingPrice ? startingPrice : undefined,
                 auction_reserved_price: !isKeycard && reservePrice ? reservePrice : undefined,
             })
-            history.push("/marketplace")
+            history.push(`/marketplace`)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setSubmitError(message)
@@ -203,6 +261,7 @@ export const SellItem = () => {
                                     question="Auction Starting Price"
                                     description="This will allow buyers to bid on your item as an auction."
                                     placeholder="Enter auction starting price..."
+                                    error={checkAuctionStartingPriceError()}
                                 />
                             )}
 
@@ -212,6 +271,7 @@ export const SellItem = () => {
                                 question="Buyout Price"
                                 description="A buyer can pay this amount to immediately purchase your item."
                                 placeholder="Enter buyout price..."
+                                error={checkBuyoutPriceError()}
                             />
 
                             {itemType !== ItemType.Keycards && (
@@ -220,8 +280,9 @@ export const SellItem = () => {
                                         price={dropRate}
                                         setPrice={setDropRate}
                                         question="Price Drop / min (Optional)"
-                                        description="The buyout price will reduce by this amount every minute until a buyer purchases the item."
+                                        description="The buyout price will reduce by this amount every minute until a buyer purchases the item. If you don't set a reserve price, the item can go down to 1 SUP."
                                         placeholder="Enter price drop..."
+                                        error={checkPriceDropError()}
                                     />
                                     <PricingInput
                                         price={reservePrice}
@@ -229,6 +290,7 @@ export const SellItem = () => {
                                         question="Reserve Price (Optional)"
                                         description="Set a minimum price that you are willing to sell the item. The item will not sell if it's lower than the reserve price."
                                         placeholder="Enter reserve price..."
+                                        error={checkReservePriceError()}
                                     />
                                 </>
                             )}
@@ -254,7 +316,7 @@ export const SellItem = () => {
                             <Typography sx={{ fontFamily: fonts.nostromoBold }}>{listingFee}</Typography>
                         </Stack>
 
-                        <Typography sx={{ color: colors.lightNeonBlue }}>There will be a 30% fee on the final sale value of your item.</Typography>
+                        <Typography sx={{ color: colors.lightNeonBlue }}>There will be a 10% fee on the final sale value of your item.</Typography>
                     </Stack>
 
                     <FancyButton

@@ -1,4 +1,5 @@
 import { Box, IconButton, Modal, Skeleton, Stack, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
 import { useCallback, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgClose, SvgSupToken } from "../../../../assets"
@@ -88,6 +89,40 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 <source src={mysteryCrate.animation_url} type="video/mp4" />
                             </Box>
 
+                            <Stack
+                                alignItems="flex-start"
+                                sx={{
+                                    position: "absolute",
+                                    left: enlargedView ? "1.4rem" : ".5rem",
+                                    bottom: enlargedView ? ".6rem" : ".2rem",
+                                }}
+                            >
+                                <Stack direction="row" alignItems="center" spacing=".1rem" sx={{ position: "relative", opacity: 0.8 }}>
+                                    <SvgSupToken size={enlargedView ? "2rem" : "1.3rem"} fill={colors.yellow} />
+                                    <Typography sx={{ fontSize: enlargedView ? "1.6rem" : "1.3rem", fontWeight: "fontWeightBold" }}>
+                                        {supFormatterNoFixed(new BigNumber(mysteryCrate.price).multipliedBy(2).toString(), 2)}
+                                    </Typography>
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            left: "-1px",
+                                            right: "-3px",
+                                            top: "50%",
+                                            transform: "translateY(-110%)",
+                                            height: "2px",
+                                            backgroundColor: colors.lightNeonBlue,
+                                        }}
+                                    />
+                                </Stack>
+
+                                <Stack direction="row" alignItems="center" spacing=".1rem">
+                                    <SvgSupToken size={enlargedView ? "2.6rem" : "1.9rem"} fill={colors.yellow} />
+                                    <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontWeight: "fontWeightBold" }}>
+                                        {supFormatterNoFixed(mysteryCrate.price, 2)}
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+
                             <Box
                                 sx={{
                                     position: "absolute",
@@ -113,18 +148,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                     {numberCommaFormatter(mysteryCrate.amount)}
                                 </Typography>
                             </Box>
-
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-                                spacing=".1rem"
-                                sx={{ position: "absolute", left: enlargedView ? "1.4rem" : ".5rem", bottom: enlargedView ? ".6rem" : ".2rem" }}
-                            >
-                                <SvgSupToken size={enlargedView ? "2.3rem" : "1.6rem"} fill={colors.yellow} />
-                                <Typography sx={{ fontSize: enlargedView ? "1.9rem" : "1.6rem", fontWeight: "fontWeightBold" }}>
-                                    {supFormatterNoFixed(mysteryCrate.price, 2)}
-                                </Typography>
-                            </Stack>
                         </Box>
 
                         <Stack

@@ -1,14 +1,18 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { useTheme } from "../../../containers/theme"
+import { FancyButton } from "../.."
+import { useHistory } from "react-router-dom"
+import { ItemType } from "../../../types/marketplace"
 
 interface MysteryCrateStoreItemProps {
     keycard: Keycard
 }
 
 export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
+    const history = useHistory()
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -69,6 +73,27 @@ export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                         </Typography>
 
                         <Typography variant="h6">{keycard.blueprints.description}</Typography>
+
+                        <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>
+                            <FancyButton
+                                excludeCaret
+                                onClick={() => {
+                                    history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}`)
+                                }}
+                                clipThingsProps={{
+                                    clipSize: "5px",
+                                    backgroundColor: colors.red,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "1.5px" },
+                                    sx: { position: "relative", mt: "1rem", width: "100%" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".6rem" }}
+                            >
+                                <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    SELL ITEM
+                                </Typography>
+                            </FancyButton>
+                        </Stack>
                     </Stack>
                 </Stack>
             </ClipThing>

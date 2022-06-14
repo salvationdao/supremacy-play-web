@@ -36,6 +36,16 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
     const backgroundColor = useMemo(() => shadeColor(colors.auction, -97), [])
     const formattedCommaCurrentPrice = useMemo(() => (currentPrice ? numberCommaFormatter(currentPrice.toNumber()) : "-"), [currentPrice])
 
+    const inputBidPriceError: string | undefined = useMemo(() => {
+        if (!inputBidPrice) return
+        if (inputBidPrice <= 0) {
+            return "Value has to be greater than 0."
+        }
+        if (inputBidPrice <= currentPrice.toNumber()) {
+            return "Your bid amount must be greater than the current bid price."
+        }
+    }, [currentPrice, inputBidPrice])
+
     useGameServerSubscriptionFaction<{ auction_current_price: string; total_bids: number; last_bid: MarketUser }>(
         {
             URI: `/marketplace/${id}`,
@@ -167,6 +177,20 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                             </Stack>
                         </FancyButton>
                     </Stack>
+
+                    {inputBidPriceError && (
+                        <Typography
+                            sx={{
+                                ml: ".3rem",
+                                mt: ".5rem",
+                                color: colors.red,
+                                fontWeight: "fontWeightBold",
+                                userSelect: "text",
+                            }}
+                        >
+                            {inputBidPriceError}
+                        </Typography>
+                    )}
                 </Box>
             </Stack>
 

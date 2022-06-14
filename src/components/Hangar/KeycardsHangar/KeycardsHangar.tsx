@@ -14,9 +14,10 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { KeycardItem } from "./KeycardItem"
 
-interface GetKeycardsRequest {
+interface GetPlayerKeycardsRequest {
     page: number
     page_size: number
+    include_market_listed: boolean
 }
 
 interface GetAssetsResponse {
@@ -39,9 +40,10 @@ export const KeycardsHangar = () => {
         ;(async () => {
             try {
                 setIsLoading(true)
-                const resp = await send<GetAssetsResponse, GetKeycardsRequest>(GameServerKeys.GetKeycards, {
+                const resp = await send<GetAssetsResponse, GetPlayerKeycardsRequest>(GameServerKeys.GetPlayerKeycards, {
                     page,
                     page_size: pageSize,
+                    include_market_listed: true,
                 })
 
                 if (!resp) return

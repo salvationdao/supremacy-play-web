@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material"
-import { useHistory } from "react-router"
+import { useHistory } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"

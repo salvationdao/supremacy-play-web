@@ -108,13 +108,21 @@ export enum GameServerKeys {
     MarketplaceSalesCreate = "MARKETPLACE:SALES:CREATE",
     MarketplaceSalesBuy = "MARKETPLACE:SALES:BUY",
     MarketplaceSalesBid = "MARKETPLACE:SALES:BID",
+    SubMarketplaceSalesItem = "MARKETPLACE:SALES:ITEM:UPDATE",
+
+    // Marketplace Keycards
     MarketplaceSalesKeycardList = "MARKETPLACE:SALES:KEYCARD:LIST",
+    GetKeycard = "MARKETPLACE:SALES:KEYCARD:GET",
     MarketplaceSalesKeycardCreate = "MARKETPLACE:SALES:KEYCARD:CREATE",
     MarketplaceSalesKeycardBuy = "MARKETPLACE:SALES:KEYCARD:BUY",
-    SubMarketplaceSalesItem = "MARKETPLACE:SALES:ITEM:UPDATE",
-    GetKeycard = "MARKETPLACE:SALES:KEYCARD:GET",
-    GetKeycards = "PLAYER:ASSET:KEYCARD:LIST",
+
+    // Mystery Crates
     GetPlayerMysteryCrates = "PLAYER:ASSET:MYSTERY_CRATE:LIST",
+    GetPlayerMysteryCrate = "PLAYER:ASSET:MYSTERY_CRATE:GET",
+
+    // Keycards
+    GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
+    GetPlayerKeycard = "PLAYER:ASSET:KEYCARD:GET",
 }
 
 export enum PassportServerKeys {

@@ -80,7 +80,7 @@ export const ClaimedRewards = ({ rewards }: ClaimedRewardsProps) => {
                     }}
                     sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
                     onClick={() => {
-                        history.push("/hangar/mystery-crates")
+                        history.push("/fleet/mystery-crates")
                     }}
                 >
                     <Typography

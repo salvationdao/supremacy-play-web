@@ -18,6 +18,7 @@ interface GetCratesRequest {
     page: number
     page_size: number
     exclude_opened: boolean
+    include_market_listed: boolean
 }
 
 interface GetAssetsResponse {
@@ -44,6 +45,7 @@ export const MysteryCratesHangar = () => {
                     page,
                     page_size: pageSize,
                     exclude_opened: true,
+                    include_market_listed: true,
                 })
 
                 if (!resp) return

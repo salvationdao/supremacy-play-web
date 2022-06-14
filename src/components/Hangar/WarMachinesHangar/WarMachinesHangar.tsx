@@ -1,6 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
-import { useHistory } from "react-router"
+import { useHistory } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useSnackbar } from "../../../containers"
@@ -15,13 +15,13 @@ import { DeployModal } from "./DeployQueue/DeployModal"
 import { LeaveModal } from "./LeaveQueue/LeaveModal"
 import { HistoryModal } from "./MechHistory/HistoryModal"
 import { RentalModal } from "./MechRental/RentalModal"
-import { SellModal } from "./MechSell/SellModal"
 import { MechViewer } from "./MechViewer/MechViewer"
 import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./WarMachineHangarItem/WarMachineHangarItem"
 
 interface GetMechsRequest {
     page: number
     page_size: number
+    include_market_listed: boolean
 }
 
 interface GetAssetsResponse {
@@ -35,7 +35,6 @@ export const WarMachinesHangar = () => {
     const [leaveMechModalOpen, setLeaveMechModalOpen] = useState<boolean>(false)
     const [historyMechModalOpen, setHistoryMechModalOpen] = useState<boolean>(false)
     const [rentalMechModalOpen, setRentalMechModalOpen] = useState<boolean>(false)
-    const [sellMechModalOpen, setSellMechModalOpen] = useState<boolean>(false)
 
     return (
         <>
@@ -46,7 +45,6 @@ export const WarMachinesHangar = () => {
                 setLeaveMechModalOpen={setLeaveMechModalOpen}
                 setHistoryMechModalOpen={setHistoryMechModalOpen}
                 setRentalMechModalOpen={setRentalMechModalOpen}
-                setSellMechModalOpen={setSellMechModalOpen}
             />
             {selectedMechDetails && (
                 <DeployModal
@@ -72,9 +70,6 @@ export const WarMachinesHangar = () => {
                     setRentalMechModalOpen={setRentalMechModalOpen}
                 />
             )}
-            {selectedMechDetails && (
-                <SellModal selectedMechDetails={selectedMechDetails} sellMechModalOpen={sellMechModalOpen} setSellMechModalOpen={setSellMechModalOpen} />
-            )}
         </>
     )
 }
@@ -86,7 +81,6 @@ const WarMachinesHangarInner = ({
     setLeaveMechModalOpen,
     setHistoryMechModalOpen,
     setRentalMechModalOpen,
-    setSellMechModalOpen,
 }: {
     selectedMechDetails?: MechDetails
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
@@ -94,7 +88,6 @@ const WarMachinesHangarInner = ({
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setSellMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const history = useHistory()
     const { newSnackbarMessage } = useSnackbar()
@@ -113,6 +106,7 @@ const WarMachinesHangarInner = ({
                 const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                     page,
                     page_size: pageSize,
+                    include_market_listed: true,
                 })
 
                 if (!resp) return
@@ -144,22 +138,12 @@ const WarMachinesHangarInner = ({
                             setLeaveMechModalOpen={setLeaveMechModalOpen}
                             setHistoryMechModalOpen={setHistoryMechModalOpen}
                             setRentalMechModalOpen={setRentalMechModalOpen}
-                            setSellMechModalOpen={setSellMechModalOpen}
                         />
                     ))}
                 </Stack>
             </Box>
         )
-    }, [
-        mechs,
-        selectedMechDetails,
-        setSelectedMechDetails,
-        setDeployMechModalOpen,
-        setLeaveMechModalOpen,
-        setHistoryMechModalOpen,
-        setRentalMechModalOpen,
-        setSellMechModalOpen,
-    ])
+    }, [mechs, selectedMechDetails, setSelectedMechDetails, setDeployMechModalOpen, setLeaveMechModalOpen, setHistoryMechModalOpen, setRentalMechModalOpen])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>

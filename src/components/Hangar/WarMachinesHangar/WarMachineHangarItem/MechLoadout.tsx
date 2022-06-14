@@ -48,12 +48,13 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
             <Stack sx={{ flexWrap: "wrap", height: "100%", width: "fit-content" }}>
                 {power_core_id && (
                     <LoadoutItem
-                        imageUrl={powerCore?.image_url}
+                        imageUrl={powerCore?.avatar_url}
                         Icon={<SvgPowerCore fill={colors.powerCore} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={powerCore?.label}
                     />
                 )}
+
                 {chassis_skin_id && (
                     <LoadoutItem
                         imageUrl={chassisSkin?.image_url}
@@ -62,41 +63,46 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                         tooltipText={chassisSkin?.label}
                     />
                 )}
+
                 {intro_animation_id && (
                     <LoadoutItem
-                        imageUrl={introAnimation?.image_url}
+                        imageUrl={introAnimation?.avatar_url}
                         Icon={<SvgIntroAnimation fill={colors.introAnimation} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={introAnimation?.label}
                     />
                 )}
+
                 {outro_animation_id && (
                     <LoadoutItem
-                        imageUrl={outroAnimation?.image_url}
+                        imageUrl={outroAnimation?.avatar_url}
                         Icon={<SvgOutroAnimation fill={colors.outroAnimation} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={outroAnimation?.label}
                     />
                 )}
+
                 {weapons?.map((w) => (
                     <LoadoutItem
                         key={`mech-loadout-weapon-${w.id}`}
-                        imageUrl={w?.image_url}
+                        imageUrl={w?.avatar_url}
                         Icon={<SvgWeapons fill={colors.weapons} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={w.label}
                     />
                 ))}
+
                 {utilities?.map((u) => (
                     <LoadoutItem
                         key={`mech-loadout-utility-${u.id}`}
-                        imageUrl={u?.image_url}
+                        imageUrl={u?.avatar_url}
                         Icon={<SvgUtilities fill={colors.utilities} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={u.label}
                     />
                 ))}
-                <AddLoadoutItem primaryColor={primaryColor} />
+
+                {/* <AddLoadoutItem primaryColor={primaryColor} /> */}
             </Stack>
         </Box>
     )
@@ -156,7 +162,7 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?:
     )
 }
 
-const AddLoadoutItem = ({ primaryColor }: { primaryColor: string }) => {
+export const AddLoadoutItem = ({ primaryColor }: { primaryColor: string }) => {
     return (
         <Box sx={{ flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".2rem" }}>
             <FancyButton
@@ -174,7 +180,7 @@ const AddLoadoutItem = ({ primaryColor }: { primaryColor: string }) => {
                 }}
                 sx={{ height: "100%", color: primaryColor }}
                 innerSx={{ p: 0 }}
-                onClick={() => alert("TODO: open loadout menu modal.")}
+                // onClick={() => alert("TODO: open loadout menu modal.")}
             >
                 <Stack justifyContent="center" sx={{ height: "100%" }}>
                     <SvgPlus sx={{ opacity: 0.15 }} />
