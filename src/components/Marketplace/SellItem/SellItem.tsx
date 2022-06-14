@@ -73,13 +73,22 @@ export const SellItem = () => {
     const checkPriceDropError = useCallback((): string | undefined => {
         if (!dropRate) return
         if (parseFloat(buyoutPrice) <= parseFloat(dropRate)) {
-            return "Price drop cannot be more than the buyout price."
+            return "Price drop cannot be higher than the buyout price."
         }
     }, [buyoutPrice, dropRate])
 
+    const checkReservePriceError = useCallback((): string | undefined => {
+        if (!reservePrice) return
+        if (parseFloat(reservePrice) < parseFloat(startingPrice)) {
+            return "Reserve price cannot be lower than the auction starting price."
+        } else if (parseFloat(buyoutPrice) > parseFloat(reservePrice)) {
+            return "Reserve price cannot be higher than the buyout price."
+        }
+    }, [buyoutPrice, reservePrice, startingPrice])
+
     const isFormReady = useCallback(() => {
-        return itemType && assetToSell?.id && (buyoutPrice || startingPrice) && !checkBuyoutPriceError() && !checkPriceDropError()
-    }, [assetToSell, buyoutPrice, checkBuyoutPriceError, checkPriceDropError, itemType, startingPrice])
+        return itemType && assetToSell?.id && (buyoutPrice || startingPrice) && !checkBuyoutPriceError() && !checkReservePriceError() && !checkPriceDropError()
+    }, [assetToSell?.id, buyoutPrice, checkBuyoutPriceError, checkPriceDropError, checkReservePriceError, itemType, startingPrice])
 
     // Submit form
     const submitHandler = useCallback(async () => {
@@ -97,7 +106,7 @@ export const SellItem = () => {
         try {
             toggleSubmitting(true)
             setSubmitError(undefined)
-            await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
+            await send<{ id: string }>(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 item_type: itemTypePayload,
                 item_id: assetToSell?.id,
                 asking_price: buyoutPrice ? buyoutPrice : undefined,
@@ -105,7 +114,7 @@ export const SellItem = () => {
                 auction_current_price: !isKeycard && startingPrice ? startingPrice : undefined,
                 auction_reserved_price: !isKeycard && reservePrice ? reservePrice : undefined,
             })
-            history.push("/marketplace")
+            history.push(`/marketplace`)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setSubmitError(message)
@@ -247,6 +256,7 @@ export const SellItem = () => {
                                         question="Reserve Price (Optional)"
                                         description="Set a minimum price that you are willing to sell the item. The item will not sell if it's lower than the reserve price."
                                         placeholder="Enter reserve price..."
+                                        error={checkReservePriceError()}
                                     />
                                 </>
                             )}
