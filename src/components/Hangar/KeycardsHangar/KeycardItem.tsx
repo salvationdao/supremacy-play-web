@@ -74,7 +74,7 @@ export const KeycardItem = ({ keycard }: MysteryCrateStoreItemProps) => {
 
                         <Typography variant="h6">{keycard.blueprints.description}</Typography>
 
-                        <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>
+                        <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
                                 excludeCaret
                                 onClick={() => {

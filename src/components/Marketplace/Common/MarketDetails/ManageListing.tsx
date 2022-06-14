@@ -59,7 +59,7 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            CANCEL LSITING
+                            CANCEL LISTING
                         </Typography>
                     </FancyButton>
                 </Stack>

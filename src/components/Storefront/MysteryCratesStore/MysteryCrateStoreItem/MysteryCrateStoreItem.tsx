@@ -64,8 +64,8 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                         <Box
                             sx={{
                                 position: "relative",
-                                px: enlargedView ? "5rem" : ".8rem",
-                                py: enlargedView ? "8rem" : "2rem",
+                                px: enlargedView ? "4rem" : ".8rem",
+                                py: enlargedView ? "5rem" : "2rem",
                                 borderRadius: 1,
                                 boxShadow: "inset 0 0 12px 6px #00000040",
                                 background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
@@ -150,10 +150,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                             </Box>
                         </Box>
 
-                        <Stack
-                            alignItems={enlargedView ? "center" : "flex-start"}
-                            sx={{ flex: enlargedView ? "unset" : 1, px: ".4rem", py: ".3rem", flexShrink: 0 }}
-                        >
+                        <Stack alignItems={enlargedView ? "center" : "flex-start"} sx={{ flex: 1, px: ".4rem", py: ".3rem", flexShrink: 0 }}>
                             <Typography
                                 variant={enlargedView ? "h4" : "h6"}
                                 sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack, textAlign: enlargedView ? "center" : "start" }}
@@ -165,7 +162,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 {mysteryCrate.description}
                             </Typography>
 
-                            <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>
+                            <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
                                     excludeCaret
                                     onClick={() => toggleConfirmModalOpen(true)}

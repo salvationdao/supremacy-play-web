@@ -86,7 +86,7 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
                                 {crate.description}
                             </Typography>
 
-                            <Stack alignItems="center" sx={{ mt: "auto", pt: ".8rem", alignSelf: "stretch" }}>
+                            <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
                                     disabled={new Date() < crate.locked_until}
                                     excludeCaret

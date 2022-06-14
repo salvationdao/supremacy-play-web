@@ -46,6 +46,10 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
         }
     }, [currentPrice, inputBidPrice])
 
+    const onConfirmBid = useCallback(() => {
+        setInputBidPrice(undefined)
+    }, [])
+
     useGameServerSubscriptionFaction<{ auction_current_price: string; total_bids: number; last_bid: MarketUser }>(
         {
             URI: `/marketplace/${id}`,
@@ -195,13 +199,31 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
             </Stack>
 
             {confirmBidModalOpen && inputBidPrice && !isSelfItem && !isTimeEnded && (
-                <ConfirmBidModal id={id} itemName={itemName} inputBidPrice={inputBidPrice} onClose={() => toggleConfirmBidModalOpen(false)} />
+                <ConfirmBidModal
+                    id={id}
+                    itemName={itemName}
+                    inputBidPrice={inputBidPrice}
+                    onConfirmSuccess={onConfirmBid}
+                    onClose={() => toggleConfirmBidModalOpen(false)}
+                />
             )}
         </>
     )
 }
 
-const ConfirmBidModal = ({ id, itemName, onClose, inputBidPrice }: { id: string; itemName: string; onClose: () => void; inputBidPrice: number }) => {
+const ConfirmBidModal = ({
+    id,
+    itemName,
+    onClose,
+    inputBidPrice,
+    onConfirmSuccess,
+}: {
+    id: string
+    itemName: string
+    onClose: () => void
+    inputBidPrice: number
+    onConfirmSuccess: () => void
+}) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -219,6 +241,7 @@ const ConfirmBidModal = ({ id, itemName, onClose, inputBidPrice }: { id: string;
             })
 
             if (!resp) return
+            onConfirmSuccess()
             newSnackbarMessage("Successfully placed your bid.", "success")
             onClose()
         } catch (err) {
@@ -228,7 +251,7 @@ const ConfirmBidModal = ({ id, itemName, onClose, inputBidPrice }: { id: string;
         } finally {
             setIsLoading(false)
         }
-    }, [inputBidPrice, id, newSnackbarMessage, onClose, send])
+    }, [send, id, inputBidPrice, onConfirmSuccess, newSnackbarMessage, onClose])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
