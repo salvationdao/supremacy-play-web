@@ -191,7 +191,7 @@ export const ConfirmBuyModal = ({
             })
 
             if (!resp) return
-            newSnackbarMessage("Successfully purchased war machine.", "success")
+            newSnackbarMessage(`Successfully purchased ${itemName}.`, "success")
             onClose()
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
@@ -200,7 +200,7 @@ export const ConfirmBuyModal = ({
         } finally {
             setIsLoading(false)
         }
-    }, [id, itemType, newSnackbarMessage, onClose, send])
+    }, [id, itemName, itemType, newSnackbarMessage, onClose, send])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
