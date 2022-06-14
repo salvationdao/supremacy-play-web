@@ -22,7 +22,6 @@ interface WarMachineHangarItemProps {
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setSellMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const WarMachineHangarItem = ({
@@ -34,7 +33,6 @@ export const WarMachineHangarItem = ({
     setLeaveMechModalOpen,
     setHistoryMechModalOpen,
     setRentalMechModalOpen,
-    setSellMechModalOpen,
 }: WarMachineHangarItemProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -79,7 +77,6 @@ export const WarMachineHangarItem = ({
                 setLeaveMechModalOpen={setLeaveMechModalOpen}
                 setHistoryMechModalOpen={setHistoryMechModalOpen}
                 setRentalMechModalOpen={setRentalMechModalOpen}
-                setSellMechModalOpen={setSellMechModalOpen}
             />
         ),
         [
@@ -92,7 +89,6 @@ export const WarMachineHangarItem = ({
             setLeaveMechModalOpen,
             setHistoryMechModalOpen,
             setRentalMechModalOpen,
-            setSellMechModalOpen,
         ],
     )
 }
@@ -107,7 +103,6 @@ const WarMachineHangarItemInner = ({
     setLeaveMechModalOpen,
     setHistoryMechModalOpen,
     setRentalMechModalOpen,
-    setSellMechModalOpen,
 }: {
     mechQueuePosition: number
     mech: MechBasic
@@ -118,7 +113,6 @@ const WarMachineHangarItemInner = ({
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setSellMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const theme = useTheme()
 
@@ -167,7 +161,6 @@ const WarMachineHangarItemInner = ({
                                 setLeaveMechModalOpen={setLeaveMechModalOpen}
                                 setHistoryMechModalOpen={setHistoryMechModalOpen}
                                 setRentalMechModalOpen={setRentalMechModalOpen}
-                                setSellMechModalOpen={setSellMechModalOpen}
                             />
                         ) : (
                             <Box sx={{ height: "3rem" }} />

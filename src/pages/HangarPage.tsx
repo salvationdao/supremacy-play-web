@@ -25,13 +25,13 @@ export const HangarPage = () => {
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
         if (Object.values(HANGAR_TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.hangar.path.replace(":type", HANGAR_TABS.WarMachines)}${location.hash}`)
+        history.replace(`${ROUTES_MAP.fleet.path.replace(":type", HANGAR_TABS.WarMachines)}${location.hash}`)
     }, [history, location.hash, location.pathname, type])
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: HANGAR_TABS) => {
             setCurrentValue(newValue)
-            history.push(`${ROUTES_MAP.hangar.path.replace(":type", newValue)}${location.hash}`)
+            history.push(`${ROUTES_MAP.fleet.path.replace(":type", newValue)}${location.hash}`)
         },
         [history, location.hash],
     )

@@ -37,19 +37,19 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchLeftDrawerID: "home",
     },
 
-    // Hangar
-    hangar: {
-        id: "hangar",
-        path: "/hangar/:type?",
+    // Fleet
+    fleet: {
+        id: "fleet",
+        path: "/fleet/:type?",
         exact: true,
         Component: HangarPage,
         requireAuth: true,
         requireFaction: true,
         leftDrawer: {
             enable: true,
-            label: "Hangar",
+            label: "fleet",
         },
-        matchLeftDrawerID: "hangar",
+        matchLeftDrawerID: "fleet",
     },
 
     // Storefront

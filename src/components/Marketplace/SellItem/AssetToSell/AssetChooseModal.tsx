@@ -222,6 +222,7 @@ export const AssetChooseModal = ({
                                             return (
                                                 <AssetToSellItem
                                                     key={ownedAsset.id}
+                                                    itemType={itemType}
                                                     assetToSell={ownedAsset}
                                                     onClick={() => {
                                                         setAssetToSell(ownedAsset)

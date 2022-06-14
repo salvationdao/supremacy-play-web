@@ -6,15 +6,18 @@ import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../.
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { Keycard, MechDetails, MysteryCrate } from "../../../../types"
+import { ItemType } from "../../../../types/marketplace"
 import { MechLoadoutIcons } from "../../WarMachinesMarket/WarMachineMarketItem"
 import { AssetToSellStruct } from "../SellItem"
 
 export const AssetToSellItem = ({
+    itemType,
     assetToSell,
     playVideo,
     onClick,
     orientation,
 }: {
+    itemType: ItemType
     assetToSell: AssetToSellStruct
     playVideo?: boolean
     onClick?: () => void
@@ -40,33 +43,33 @@ export const AssetToSellItem = ({
 
     // Initial populate
     useEffect(() => {
-        if (assetToSell.mech) {
-            setAvatarUrl(assetToSell.mech.avatar_url || mechDetails?.chassis_skin?.avatar_url)
-            setImageUrl(assetToSell.mech.large_image_url || mechDetails?.chassis_skin?.large_image_url)
-            setVideoUrl(assetToSell.mech.animation_url || mechDetails?.chassis_skin?.animation_url)
-            setLabel(assetToSell.mech.name || assetToSell.mech.label || mechDetails?.name || mechDetails?.label)
-            const tier = assetToSell.mech.tier || mechDetails?.tier
+        if (itemType === ItemType.WarMachine) {
+            setAvatarUrl(assetToSell.mech?.avatar_url || mechDetails?.chassis_skin?.avatar_url)
+            setImageUrl(assetToSell.mech?.large_image_url || mechDetails?.chassis_skin?.large_image_url)
+            setVideoUrl(assetToSell.mech?.animation_url || mechDetails?.chassis_skin?.animation_url)
+            setLabel(assetToSell.mech?.name || assetToSell.mech?.label || mechDetails?.name || mechDetails?.label)
+            const tier = assetToSell.mech?.tier || mechDetails?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
-        } else if (assetToSell.mysteryCrate) {
-            setAvatarUrl(assetToSell.mysteryCrate.avatar_url || mysteryCrate?.avatar_url || SafePNG)
-            setImageUrl(assetToSell.mysteryCrate.large_image_url || mysteryCrate?.large_image_url || SafePNG)
-            setVideoUrl(assetToSell.mysteryCrate.animation_url || mysteryCrate?.animation_url)
-            setLabel(assetToSell.mysteryCrate.label || mysteryCrate?.label)
-            setDescription(assetToSell.mysteryCrate.description || mysteryCrate?.description)
-        } else if (assetToSell.keycard) {
-            setAvatarUrl(assetToSell.keycard.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
-            setImageUrl(assetToSell.keycard.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
-            setVideoUrl(assetToSell.keycard.blueprints.animation_url || keycard?.blueprints.animation_url)
-            setLabel(assetToSell.keycard.blueprints.label || keycard?.blueprints.label)
-            setDescription(assetToSell.keycard.blueprints.description || keycard?.blueprints.description)
+        } else if (itemType === ItemType.MysteryCrate) {
+            setAvatarUrl(assetToSell.mysteryCrate?.avatar_url || mysteryCrate?.avatar_url || SafePNG)
+            setImageUrl(assetToSell.mysteryCrate?.large_image_url || mysteryCrate?.large_image_url || SafePNG)
+            setVideoUrl(assetToSell.mysteryCrate?.animation_url || mysteryCrate?.animation_url)
+            setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
+            setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)
+        } else if (itemType === ItemType.Keycards) {
+            setAvatarUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
+            setImageUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
+            setVideoUrl(assetToSell.keycard?.blueprints.animation_url || keycard?.blueprints.animation_url)
+            setLabel(assetToSell.keycard?.blueprints.label || keycard?.blueprints.label)
+            setDescription(assetToSell.keycard?.blueprints.description || keycard?.blueprints.description)
         }
-    }, [assetToSell, mechDetails, mysteryCrate, keycard])
+    }, [assetToSell, mechDetails, mysteryCrate, keycard, itemType])
 
     // Get addition mech data
     useEffect(() => {
         ;(async () => {
             try {
-                if (!assetToSell.mech) return
+                if (itemType !== ItemType.WarMachine) return
                 const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
                     mech_id: assetToSell.id,
                 })
@@ -76,13 +79,13 @@ export const AssetToSellItem = ({
                 console.error(e)
             }
         })()
-    }, [assetToSell, send])
+    }, [assetToSell, itemType, send])
 
     // Get additional mystery crate data
     useEffect(() => {
         ;(async () => {
             try {
-                if (!assetToSell.mysteryCrate) return
+                if (itemType !== ItemType.MysteryCrate) return
                 const resp = await sendUser<MysteryCrate>(GameServerKeys.GetPlayerMysteryCrate, {
                     id: assetToSell.id,
                 })
@@ -93,13 +96,13 @@ export const AssetToSellItem = ({
                 console.error(err)
             }
         })()
-    }, [assetToSell, sendUser])
+    }, [assetToSell, itemType, sendUser])
 
     // Get additional keycard data
     useEffect(() => {
         ;(async () => {
             try {
-                if (!assetToSell.keycard) return
+                if (itemType !== ItemType.Keycards) return
                 const resp = await sendUser<Keycard>(GameServerKeys.GetPlayerKeycard, {
                     id: assetToSell.id,
                 })
@@ -110,7 +113,7 @@ export const AssetToSellItem = ({
                 console.error(err)
             }
         })()
-    }, [assetToSell, sendUser])
+    }, [assetToSell, itemType, sendUser])
 
     return (
         <Stack

@@ -38,7 +38,7 @@ export const AssetToSell = ({
                 description={`Choose which ${itemTypeLabel || "item"} you which to put onto the marketplace.`}
             >
                 <Stack alignItems="flex-start" spacing="1.2rem" sx={{ flex: 1 }}>
-                    {assetToSell && assetToSell.id && (
+                    {assetToSell && assetToSell.id && itemType && (
                         <ClipThing
                             clipSize="10px"
                             border={{
@@ -49,7 +49,7 @@ export const AssetToSell = ({
                             backgroundColor={backgroundColor}
                         >
                             <Stack sx={{ height: "100%", px: ".9rem", py: ".9rem" }}>
-                                <AssetToSellItem key={assetToSell.id} assetToSell={assetToSell} playVideo orientation="vertical" />
+                                <AssetToSellItem key={assetToSell.id} itemType={itemType} assetToSell={assetToSell} playVideo orientation="vertical" />
                             </Stack>
                         </ClipThing>
                     )}
