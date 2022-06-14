@@ -3,11 +3,9 @@ import BigNumber from "bignumber.js"
 const USE_PROD = false
 
 // Envar stuff
-export const STAGING_OR_DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production"
-export const DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production" && process.env.REACT_APP_ENVIRONMENT !== "staging"
-
+export const DEV_ONLY = process.env.NODE_ENV === "development"
 const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
-const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/external/buy"
+const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/nosidebar/buy"
 const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
 const VIDEO_SERVER_WEBSOCKET = process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
 const VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
@@ -15,7 +13,6 @@ let GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.su
 let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "https://passport.xsyndev.io/"
 let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "passport.supremacygame.io"
 let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "https://api.supremacygame.io"
-
 if (USE_PROD) {
     GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacy.game"
     PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "https://passport.xsyn.io/"
@@ -59,11 +56,11 @@ export const MINI_MAP_DEFAULT_SIZE = 240 //px
 export const DRAWER_TRANSITION_DURATION = 250
 export const MESSAGES_BUFFER_SIZE = 500
 export const MAX_CHAT_MESSAGE_LENGTH = 280
+export const GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS = 2000
 export const NOTIFICATION_TIME = 30000
 export const NOTIFICATION_LINGER = 400
 export const STREAM_ASPECT_RATIO_W_H = 16 / 9
 export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
-export const GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS = 2000
 
 // Game stuff
 export const VOTING_OPTION_COSTS = [
@@ -99,6 +96,5 @@ export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
 
 // note: telegram notifications does not work on develop
 export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https://t.me/SupremacyNotifyBot"
-
 // ovenplayer
 export const OVENPLAYER_STREAM = "Experimental 🌟"
