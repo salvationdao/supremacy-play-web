@@ -101,7 +101,7 @@ export const HistoryModal = ({
 
     return (
         <MechModal open={historyMechModalOpen} mechDetails={historyMechDetails} onClose={onClose} width="50rem">
-            <Stack spacing="1.6rem" sx={{ pt: ".4rem" }}>
+            <Stack spacing="2rem" sx={{ pt: "1rem" }}>
                 <Stack direction="row" justifyContent="space-between" sx={{ px: "1.3rem" }}>
                     {statsLoading ? (
                         <>
@@ -160,7 +160,7 @@ export const HistoryModal = ({
                         maxHeight: "36rem",
                     }}
                 >
-                    <Stack direction="row" alignItems="center" spacing=".3rem" sx={{ pb: ".4rem" }}>
+                    <Stack direction="row" alignItems="center" spacing=".3rem" sx={{ pb: ".5rem" }}>
                         <Typography variant="body1" sx={{ fontFamily: fonts.nostromoBlack }}>
                             RECENT 10 BATTLES
                         </Typography>
