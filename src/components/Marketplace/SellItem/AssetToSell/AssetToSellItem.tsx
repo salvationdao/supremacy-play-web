@@ -6,6 +6,7 @@ import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
+import { MechLoadoutIcons } from "../../WarMachinesMarket/WarMachineMarketItem"
 import { AssetToSellStruct } from "../SellItem"
 
 export const AssetToSellItem = ({
@@ -127,32 +128,44 @@ export const AssetToSellItem = ({
                         {rarityDeets.label}
                     </Typography>
                 )}
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: orientation === "horizontal" ? 1 : 2,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {label}
-                </Typography>
-                <Typography
-                    sx={{
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: orientation === "horizontal" ? 1 : 2,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {description}
-                </Typography>
+
+                {label && (
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: orientation === "horizontal" ? 1 : 2,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {label}
+                    </Typography>
+                )}
+
+                {description && (
+                    <Typography
+                        sx={{
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: orientation === "horizontal" ? 1 : 2,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {description}
+                    </Typography>
+                )}
+
+                {mechDetails && (
+                    <Box sx={{ pt: ".4rem" }}>
+                        <MechLoadoutIcons mechDetails={mechDetails} />
+                    </Box>
+                )}
             </Stack>
         </Stack>
     )
