@@ -38,7 +38,7 @@ export const KeycardsMarket = () => {
         label: "OWNED BY",
         options: [
             { value: "self", label: "YOU", color: theme.factionTheme.primary },
-            { value: "others", label: "OTHERS", color: colors.darkNeonBlue },
+            { value: "others", label: "OTHERS", color: theme.factionTheme.primary },
         ],
         initialSelected: ownedBy,
         onSetSelected: setOwnedBy,

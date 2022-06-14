@@ -36,7 +36,7 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
 
             <Box>
                 <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                    MANAGE LISTING:
+                    MANAGE:
                 </Typography>
                 <Stack direction="row" alignItems="center" spacing=".7rem">
                     <FancyButton
