@@ -73,7 +73,7 @@ export const AssetToSell = ({
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            {assetToSell && assetToSell.id ? "CHANGE" : "CHOOSE"}
+                            {assetToSell && assetToSell.id ? "CHANGE" : "CHOOSE ITEM"}
                         </Typography>
                     </FancyButton>
                 </Stack>
