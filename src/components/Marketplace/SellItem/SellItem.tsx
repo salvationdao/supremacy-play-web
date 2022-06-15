@@ -1,4 +1,4 @@
-import { Box, Divider, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { FancyButton } from "../.."
@@ -220,14 +220,6 @@ export const SellItem = () => {
                             {/* Asset to sell */}
                             <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
-                            <Stack spacing="2.8rem">
-                                <Divider />
-                                <Typography variant="h6" sx={{ color: colors.grey, fontFamily: fonts.nostromoBlack }}>
-                                    PRICING
-                                </Typography>
-                                <Divider />
-                            </Stack>
-
                             {/* Pricing inputs */}
                             {itemType !== ItemType.Keycards && (
                                 <PricingInput
@@ -236,6 +228,7 @@ export const SellItem = () => {
                                     question="Auction Starting Price"
                                     description="This will allow buyers to bid on your item as an auction."
                                     placeholder="Enter auction starting price..."
+                                    isOptional={!!buyoutPrice}
                                 />
                             )}
 
@@ -246,33 +239,28 @@ export const SellItem = () => {
                                 description="A buyer can pay this amount to immediately purchase your item."
                                 placeholder="Enter buyout price..."
                                 error={checkBuyoutPriceError()}
+                                isOptional={!!startingPrice}
                             />
 
                             {itemType !== ItemType.Keycards && (
                                 <>
-                                    <Stack spacing="2.8rem">
-                                        <Divider />
-                                        <Typography variant="h6" sx={{ color: colors.grey, fontFamily: fonts.nostromoBlack }}>
-                                            ADDITIONAL OPTIONS
-                                        </Typography>
-                                        <Divider />
-                                    </Stack>
-
                                     <PricingInput
                                         price={dropRate}
                                         setPrice={setDropRate}
-                                        question="Price Drop / min (Optional)"
+                                        question="Price Drop / min"
                                         description="The buyout price will reduce by this amount every minute until a buyer purchases the item. If you don't set a reserve price, the item can go down to 1 SUP."
                                         placeholder="Enter price drop..."
                                         error={checkPriceDropError()}
+                                        isOptional
                                     />
                                     <PricingInput
                                         price={reservePrice}
                                         setPrice={setReservePrice}
-                                        question="Reserve Price (Optional)"
+                                        question="Reserve Price"
                                         description="Set a minimum price that you are willing to sell this item. The item will not sell if it's lower than the reserve price."
                                         placeholder="Enter reserve price..."
                                         error={checkReservePriceError()}
+                                        isOptional
                                     />
                                 </>
                             )}

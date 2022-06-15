@@ -25,7 +25,9 @@ export const MechTitle = ({ mech, mechDetails, isSelected }: { mech: MechBasic; 
                 py: ".2rem",
                 maxWidth: "70%",
                 overflow: "visible",
-                background: isSelected ? `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}CC)` : theme.factionTheme.background,
+                background: isSelected
+                    ? `linear-gradient(${theme.factionTheme.primary}FF 26%, ${theme.factionTheme.primary}BB)`
+                    : theme.factionTheme.background,
                 border: isSelected ? `${theme.factionTheme.primary} .3rem solid` : `${theme.factionTheme.primary}90 .2rem solid`,
                 zIndex: 9,
             }}

@@ -1,6 +1,7 @@
 import { CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { SvgRefresh } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
 import { camelToTitle } from "../../../../helpers"
 import { useGameServerCommands } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -19,6 +20,7 @@ export const HistoryModal = ({
     historyMechModalOpen: boolean
     setHistoryMechModalOpen: (close: boolean) => void
 }) => {
+    const theme = useTheme()
     const { send } = useGameServerCommands("/public/commander")
     // Mech stats
     const [stats, setStats] = useState<BattleMechStats>()
@@ -83,25 +85,11 @@ export const HistoryModal = ({
         })()
     }, [send, historyMechDetails?.id, fetchHistory])
 
-    const renderEmptyHistory = () => {
-        if (historyLoading) {
-            return <CircularProgress size="2rem" sx={{ mt: "2rem" }} />
-        }
-        if (historyError) {
-            return <Typography sx={{ color: colors.red, textTransform: "uppercase" }}>{historyError}</Typography>
-        }
-        return (
-            <Typography variant="body1" sx={{ color: colors.grey }}>
-                NO RECENT BATTLE HISTORY...
-            </Typography>
-        )
-    }
-
     if (!historyMechDetails) return null
 
     return (
         <MechModal open={historyMechModalOpen} mechDetails={historyMechDetails} onClose={onClose} width="50rem">
-            <Stack spacing="1.6rem" sx={{ pt: ".4rem" }}>
+            <Stack spacing="2.4rem" sx={{ pt: "1rem" }}>
                 <Stack direction="row" justifyContent="space-between" sx={{ px: "1.3rem" }}>
                     {statsLoading ? (
                         <>
@@ -159,8 +147,9 @@ export const HistoryModal = ({
                         minHeight: 0,
                         maxHeight: "36rem",
                     }}
+                    spacing=".8rem"
                 >
-                    <Stack direction="row" alignItems="center" spacing=".3rem" sx={{ pb: ".4rem" }}>
+                    <Stack direction="row" alignItems="center" spacing=".3rem">
                         <Typography variant="body1" sx={{ fontFamily: fonts.nostromoBlack }}>
                             RECENT 10 BATTLES
                         </Typography>
@@ -169,14 +158,26 @@ export const HistoryModal = ({
                         </IconButton>
                     </Stack>
 
-                    {history.length > 0 ? (
+                    {historyLoading && (
+                        <Stack justifyContent="center" alignItems="center" sx={{ height: "6rem" }}>
+                            <CircularProgress size="2rem" sx={{ mt: "2rem", color: theme.factionTheme.primary }} />
+                        </Stack>
+                    )}
+
+                    {!historyLoading && historyError && (
+                        <Stack sx={{ flex: 1, px: "1rem" }}>
+                            <Typography sx={{ color: colors.red, textTransform: "uppercase" }}>{historyError}</Typography>
+                        </Stack>
+                    )}
+
+                    {!historyLoading && !historyError && history.length > 0 && (
                         <Stack
                             spacing=".6rem"
                             sx={{
                                 width: "calc(100% + 1rem)",
                                 overflowY: "auto",
                                 overflowX: "hidden",
-                                pr: ".6rem",
+                                pr: "1.5rem",
                                 py: ".16rem",
                                 direction: "ltr",
 
@@ -199,14 +200,18 @@ export const HistoryModal = ({
                                     mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
                                     backgroundImage={h.battle?.game_map?.image_url}
                                     mechSurvived={!!h.mech_survived}
-                                    status={!h.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
+                                    status={!h.battle?.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
                                     kills={h.kills}
                                     date={h.created_at}
                                 />
                             ))}
                         </Stack>
-                    ) : (
-                        <Stack sx={{ flex: 1, px: "1rem" }}>{renderEmptyHistory()}</Stack>
+                    )}
+
+                    {!historyLoading && !historyError && history.length <= 0 && (
+                        <Typography variant="body2" sx={{ color: colors.grey, fontFamily: fonts.nostromoBold }}>
+                            NO RECENT BATTLE HISTORY...
+                        </Typography>
                     )}
                 </Stack>
             </Stack>

@@ -34,6 +34,7 @@ export const AssetToSellItem = ({
     const [avatarUrl, setAvatarUrl] = useState<string>()
     const [imageUrl, setImageUrl] = useState<string>()
     const [videoUrl, setVideoUrl] = useState<string>()
+    const [videoUrl2, setVideoUrl2] = useState<string>()
     const [label, setLabel] = useState<string>()
     const [description, setDescription] = useState<string>()
     const [rarityDeets, setRarityDeets] = useState<{
@@ -47,6 +48,7 @@ export const AssetToSellItem = ({
             setAvatarUrl(assetToSell.mech?.avatar_url || mechDetails?.chassis_skin?.avatar_url)
             setImageUrl(assetToSell.mech?.large_image_url || mechDetails?.chassis_skin?.large_image_url)
             setVideoUrl(assetToSell.mech?.animation_url || mechDetails?.chassis_skin?.animation_url)
+            setVideoUrl2(assetToSell.mech?.card_animation_url || mechDetails?.chassis_skin?.card_animation_url)
             setLabel(assetToSell.mech?.name || assetToSell.mech?.label || mechDetails?.name || mechDetails?.label)
             const tier = assetToSell.mech?.tier || mechDetails?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
@@ -54,12 +56,14 @@ export const AssetToSellItem = ({
             setAvatarUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
             setImageUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
             setVideoUrl(assetToSell.mysteryCrate?.animation_url || mysteryCrate?.animation_url)
+            setVideoUrl2(assetToSell.mysteryCrate?.card_animation_url || mysteryCrate?.card_animation_url)
             setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
             setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)
         } else if (itemType === ItemType.Keycards) {
             setAvatarUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
             setImageUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
             setVideoUrl(assetToSell.keycard?.blueprints.animation_url || keycard?.blueprints.animation_url)
+            setVideoUrl2(assetToSell.keycard?.blueprints.card_animation_url || keycard?.blueprints.card_animation_url)
             setLabel(assetToSell.keycard?.blueprints.label || keycard?.blueprints.label)
             setDescription(assetToSell.keycard?.blueprints.description || keycard?.blueprints.description)
         }
@@ -119,7 +123,7 @@ export const AssetToSellItem = ({
         <Stack
             direction={orientation === "horizontal" ? "row" : "column"}
             spacing="1.5rem"
-            alignItems="center"
+            alignItems={orientation === "horizontal" ? "center" : "flex-start"}
             sx={{
                 position: "relative",
                 py: "1rem",
@@ -149,6 +153,7 @@ export const AssetToSellItem = ({
                 poster={playVideo ? imageUrl : avatarUrl}
             >
                 {playVideo && <source src={videoUrl} type="video/mp4" />}
+                {playVideo && videoUrl2 && <source src={videoUrl2} type="video/mp4" />}
             </Box>
 
             <Stack spacing=".3rem">

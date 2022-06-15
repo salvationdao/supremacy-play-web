@@ -182,32 +182,32 @@ export const hexToRGB = (hex: string, alpha?: number): string => {
     else return "rgb(" + r + ", " + g + ", " + b + ")"
 }
 
-export const getRarityDeets = (rarityKey: string): { label: string; color: string } => {
+export const getRarityDeets = (rarityKey: string): { label: string; color: string; textColor: string } => {
     switch (rarityKey) {
         case "COLOSSAL":
-            return { label: "Colossal", color: colors.rarity.COLOSSAL }
+            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF" }
         case "RARE":
-            return { label: "Rare", color: colors.rarity.RARE }
+            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF" }
         case "LEGENDARY":
-            return { label: "Legendary", color: colors.rarity.LEGENDARY }
+            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF" }
         case "ELITE_LEGENDARY":
-            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY }
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF" }
         case "ULTRA_RARE":
-            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE }
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF" }
         case "EXOTIC":
-            return { label: "Exotic", color: colors.rarity.EXOTIC }
+            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF" }
         case "GUARDIAN":
-            return { label: "Guardian", color: colors.rarity.GUARDIAN }
+            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF" }
         case "MYTHIC":
-            return { label: "Mythic", color: colors.rarity.MYTHIC }
+            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000" }
         case "DEUS_EX":
-            return { label: "Deus Ex", color: colors.rarity.DEUS_EX }
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000" }
         case "TITAN":
-            return { label: "Titan", color: colors.rarity.TITAN }
+            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000" }
         case "MEGA":
-            return { label: "Mega", color: colors.rarity.MEGA }
+            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
         default:
-            return { label: "", color: colors.rarity.MEGA }
+            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
     }
 }
 

@@ -17,13 +17,14 @@ export const MysteryCrateMarketItem = ({ item, isGridView }: MysteryCratesMarket
     if (!mystery_crate || !collection_item) return null
 
     const { label, description } = mystery_crate
-    const { image_url, animation_url } = collection_item
+    const { image_url, animation_url, card_animation_url } = collection_item
 
     return (
         <MarketItem
             item={item}
             imageUrl={image_url || SafePNG}
             animationUrl={animation_url}
+            cardAnimationUrl={card_animation_url}
             isGridView={isGridView}
             linkSubPath={MARKETPLACE_TABS.MysteryCrates}
         >

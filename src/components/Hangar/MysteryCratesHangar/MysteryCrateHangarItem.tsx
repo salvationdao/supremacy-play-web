@@ -13,7 +13,7 @@ interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
 }
 
-export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) => {
     const history = useHistory()
     const theme = useTheme()
 
@@ -27,6 +27,10 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
                 sx={{
                     height: "100%",
                     width: "100%",
+                    transition: "all .15s",
+                    ":hover": {
+                        transform: "translateY(-.4rem)",
+                    },
                 }}
             >
                 <ClipThing
@@ -67,6 +71,7 @@ export const MysteryCrateItem = ({ crate }: MysteryCrateStoreItemProps) => {
                                 poster={`${crate.image_url || SafePNG}`}
                             >
                                 <source src={crate.animation_url} type="video/mp4" />
+                                <source src={crate.card_animation_url} type="video/mp4" />
                             </Box>
 
                             <Stack

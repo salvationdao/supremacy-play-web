@@ -111,11 +111,13 @@ export interface BattleAbilityProgress {
 }
 
 export interface Battle {
-    id: string
-    game_map_id: string
-    started_at: Date
-    ended_at?: Date
-    battle_number: number
+    battle: {
+        id: string
+        game_map_id: string
+        started_at: Date
+        ended_at?: Date
+        battle_number: number
+    }
     game_map?: Map
 }
 

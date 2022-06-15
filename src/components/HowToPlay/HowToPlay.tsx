@@ -135,6 +135,7 @@ const OptionButton = ({ text, onClick }: { text: string; onClick: () => void }) 
                 variant="caption"
                 sx={{
                     color: "#FFFFFF",
+                    textAlign: "start",
                     fontFamily: fonts.nostromoBlack,
                 }}
             >

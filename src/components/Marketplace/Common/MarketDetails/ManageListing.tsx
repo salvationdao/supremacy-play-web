@@ -1,5 +1,6 @@
 import { Box, Stack, Divider, Typography } from "@mui/material"
 import { useCallback } from "react"
+import { useHistory } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useAuth, useSnackbar } from "../../../../containers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
@@ -9,6 +10,7 @@ import { MarketUser } from "../../../../types/marketplace"
 
 export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: MarketUser; isKeycard?: boolean }) => {
     const { userID } = useAuth()
+    const history = useHistory()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -19,12 +21,13 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
             })
 
             newSnackbarMessage("Successfully cancel listing.", "success")
+            history.push(`/marketplace`)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to cancel listing."
             newSnackbarMessage(message, "error")
             console.error(err)
         }
-    }, [id, isKeycard, newSnackbarMessage, send])
+    }, [history, id, isKeycard, newSnackbarMessage, send])
 
     const isSelfItem = userID === owner?.id
 

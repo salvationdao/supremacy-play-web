@@ -8,6 +8,7 @@ export const MechViewer = ({ selectedMechDetails }: { selectedMechDetails: MechD
     const skin = selectedMechDetails.chassis_skin || selectedMechDetails.default_chassis_skin
     const imageUrl = skin?.large_image_url || selectedMechDetails.large_image_url
     const animationUrl = skin?.animation_url || selectedMechDetails.animation_url
+    const cardAnimationUrl = skin?.card_animation_url || selectedMechDetails.card_animation_url
 
     return (
         <Box sx={{ height: "100%", flex: 1, py: "1.5rem" }}>
@@ -51,6 +52,7 @@ export const MechViewer = ({ selectedMechDetails }: { selectedMechDetails: MechD
                         poster={`${imageUrl}`}
                     >
                         <source src={animationUrl} type="video/mp4" />
+                        <source src={cardAnimationUrl} type="video/mp4" />
                     </Box>
                 </Box>
             </Fade>
