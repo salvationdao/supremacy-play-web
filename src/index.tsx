@@ -1,26 +1,26 @@
 import { Box, Stack } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
-import ReactDOM from "react-dom"
 import { Buffer } from "buffer"
+import ReactDOM from "react-dom"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 import { Bar, EarlyAccessWarning, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, STAGING_OR_DEV_ONLY, UNDER_MAINTENANCE } from "./constants"
+import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import { BarProvider, SnackBarProvider, SupremacyProvider, useSupremacy, WalletProvider } from "./containers"
 import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
+import { FingerprintProvider } from "./containers/fingerprint"
 import { ThemeProvider } from "./containers/theme"
+import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
-import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
-import { colors } from "./theme/theme"
-import { LoginRedirect } from "./pages/LoginRedirect"
-import { ws } from "./containers/ws"
-import { FingerprintProvider } from "./containers/fingerprint"
 import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
+import { LoginRedirect } from "./pages/LoginRedirect"
+import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
+import { colors } from "./theme/theme"
 
 const AppInner = () => {
     const { isServerUp } = useSupremacy()
@@ -52,7 +52,7 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    {STAGING_OR_DEV_ONLY && <LeftDrawer />}
+                    <LeftDrawer />
 
                     <Box
                         sx={{

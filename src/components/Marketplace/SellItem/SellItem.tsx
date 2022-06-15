@@ -362,9 +362,19 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                     onLeftButton={toggleReset}
                     rightLabel="VIEW LISTING"
                     onRightButton={() => {
-                        let subPath = MARKETPLACE_TABS.WarMachines
-                        if (successPayload.mystery_crate) subPath = MARKETPLACE_TABS.MysteryCrates
-                        if (successPayload.keycard) subPath = MARKETPLACE_TABS.Keycards
+                        let subPath = ""
+                        switch (itemType) {
+                            case ItemType.WarMachine:
+                                subPath = MARKETPLACE_TABS.WarMachines
+                                break
+                            case ItemType.MysteryCrate:
+                                subPath = MARKETPLACE_TABS.MysteryCrates
+                                break
+                            case ItemType.Keycards:
+                                subPath = MARKETPLACE_TABS.Keycards
+                                break
+                        }
+
                         history.replace(`/marketplace/${subPath}/${successPayload.id}${location.hash}`)
                     }}
                 >

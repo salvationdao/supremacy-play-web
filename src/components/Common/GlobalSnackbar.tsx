@@ -1,10 +1,9 @@
-import { ReactNode, SyntheticEvent, useCallback, useMemo } from "react"
 import { Box, IconButton, Snackbar, SnackbarCloseReason, Stack, Typography } from "@mui/material"
+import { ReactNode, SyntheticEvent, useCallback, useMemo } from "react"
+import { ClipThing } from ".."
+import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { colors } from "../../theme/theme"
-import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
-import { ClipThing } from ".."
-import { STAGING_OR_DEV_ONLY } from "../../constants"
 
 export const GlobalSnackbar = () => {
     const { open, setOpen, messageInfo, setMessageInfo } = useSnackbar()
@@ -68,7 +67,7 @@ export const GlobalSnackbar = () => {
                     }}
                     sx={{
                         mb: "-1rem",
-                        ml: STAGING_OR_DEV_ONLY ? "1.9rem" : "-.9rem",
+                        ml: "1.9rem",
                     }}
                     backgroundColor={severityDeets.color}
                     opacity={0.9}

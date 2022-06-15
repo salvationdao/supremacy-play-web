@@ -2,7 +2,7 @@ import { Box, IconButton, Popover, Stack, Switch, Typography } from "@mui/materi
 import { SvgClose, SvgSupToken } from "../../../../assets"
 import { ClipThing, TransactionItem } from "../../.."
 import { Transaction } from "../../../../types"
-import { colors, siteZIndex } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useEffect, MutableRefObject } from "react"
 import BigNumber from "bignumber.js"
@@ -77,9 +77,9 @@ export const WalletPopover = ({
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
-                <Stack spacing="1.2rem" sx={{ position: "relative", minWidth: "35rem", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
+                <Stack spacing="1.4rem" sx={{ position: "relative", minWidth: "35rem", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
                     <Box>
-                        <Typography sx={{ mb: ".24rem", fontWeight: "bold", color: colors.offWhite }} variant="h6">
+                        <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
                             CURRENT SESSION:
                         </Typography>
 
@@ -107,7 +107,7 @@ export const WalletPopover = ({
                     </Box>
 
                     <Box>
-                        <Typography sx={{ mb: ".24rem", fontWeight: "bold", color: colors.offWhite }} variant="h6">
+                        <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
                             TOTAL SUPS:
                         </Typography>
 
@@ -119,7 +119,7 @@ export const WalletPopover = ({
 
                     {transactions.length > 0 && (
                         <Box>
-                            <Typography sx={{ fontWeight: "bold", color: colors.offWhite }} variant="h6">
+                            <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
                                 RECENT TRANSACTIONS:
                             </Typography>
 

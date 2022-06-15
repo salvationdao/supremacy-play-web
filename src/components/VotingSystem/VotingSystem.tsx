@@ -106,7 +106,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                             transition: "all .2s",
                         }}
                         border={{
-                            borderThickness: ".3rem",
+                            borderThickness: ".2rem",
                             borderColor: theme.factionTheme.primary,
                         }}
                         corners={{

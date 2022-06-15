@@ -234,10 +234,10 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                         <ClipThing
                             clipSize="10px"
                             border={{
-                                isFancy: true,
-                                borderThickness: ".3rem",
+                                borderThickness: ".2rem",
                                 borderColor: mainColor,
                             }}
+                            opacity={0.8}
                             backgroundColor={colors.darkNavy}
                         >
                             <Box

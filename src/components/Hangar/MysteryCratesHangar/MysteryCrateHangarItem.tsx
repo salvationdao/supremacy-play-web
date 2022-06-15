@@ -116,6 +116,7 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
 
                                 <FancyButton
                                     excludeCaret
+                                    disabled={crate.locked_to_marketplace}
                                     onClick={() => {
                                         history.push(`/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}${location.hash}`)
                                     }}

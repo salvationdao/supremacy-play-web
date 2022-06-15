@@ -64,10 +64,10 @@ export const TotalAndPageSizeOptions = ({
                         <IconButton size="small" onClick={() => toggleIsGridView(true)}>
                             <SvgGridView size="1.2rem" sx={{ opacity: isGridView ? 1 : 0.3 }} />
                         </IconButton>
+
+                        <Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />
                     </>
                 )}
-
-                <Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />
 
                 <IconButton
                     sx={{

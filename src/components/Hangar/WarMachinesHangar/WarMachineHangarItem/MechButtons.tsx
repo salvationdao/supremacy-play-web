@@ -43,32 +43,26 @@ export const MechButtons = ({
     return (
         <Stack direction="row" spacing=".8rem">
             {/* Button 1 */}
-            {mechState === undefined ||
-                (mechState === MechStatusEnum.Idle && (
-                    <ReusableButton
-                        primaryColor={theme.factionTheme.primary}
-                        backgroundColor={theme.factionTheme.background}
-                        label="DEPLOY"
-                        disabled={!mechDetails}
-                        onClick={() => {
-                            setSelectedMechDetails(mechDetails)
-                            setDeployMechModalOpen(true)
-                        }}
-                    />
-                ))}
-
-            {mechState === MechStatusEnum.Battle && (
-                <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="UNDEPLOY" disabled={true} />
-            )}
-
-            {mechState === MechStatusEnum.Queue && (
+            {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
                 <ReusableButton
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
                     label="UNDEPLOY"
+                    disabled={mechState === MechStatusEnum.Battle}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setLeaveMechModalOpen(true)
+                    }}
+                />
+            ) : (
+                <ReusableButton
+                    primaryColor={theme.factionTheme.primary}
+                    backgroundColor={theme.factionTheme.background}
+                    label="DEPLOY"
+                    disabled={mechState !== MechStatusEnum.Idle}
+                    onClick={() => {
+                        setSelectedMechDetails(mechDetails)
+                        setDeployMechModalOpen(true)
                     }}
                 />
             )}

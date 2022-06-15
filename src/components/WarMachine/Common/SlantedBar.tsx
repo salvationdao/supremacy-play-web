@@ -12,7 +12,7 @@ export const SlantedBar = ({ backgroundColor, progressPercent, costPercent }: { 
                 pointerEvents: "none",
             }}
         >
-            <Stack justifyContent="flex-end" style={{ position: "relative", height: "100%", width: "100%", backgroundColor: "#B1B1B399" }}>
+            <Stack justifyContent="flex-end" style={{ position: "relative", height: "100%", width: "100%", backgroundColor: "#555555" }}>
                 <Box
                     style={{
                         height: `${progressPercent}%`,

@@ -44,7 +44,7 @@ export const MechTitle = ({ mech, mechDetails, isSelected }: { mech: MechBasic; 
                     WebkitBoxOrient: "vertical",
                 }}
             >
-                {label || name}
+                {name || label}
             </Typography>
 
             {userID && hash && (
