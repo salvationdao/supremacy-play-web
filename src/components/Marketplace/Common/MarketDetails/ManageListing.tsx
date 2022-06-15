@@ -1,23 +1,24 @@
-import { Box, Stack, Divider, Typography } from "@mui/material"
+import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { FancyButton } from "../../.."
-import { useAuth, useSnackbar } from "../../../../containers"
+import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { SuccessModal } from "../../../Common/SuccessModal"
 
 export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: MarketUser; isKeycard?: boolean }) => {
     const { userID } = useAuth()
     const history = useHistory()
-    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Cancel listing
     const [confirmCancelModalOpen, toggleConfirmCancelModalOpen] = useToggle()
+    const [cancelSuccessModalOpen, toggleCancelSuccessModalOpen] = useToggle()
     const [cancelling, toggleCancelling] = useToggle()
     const [cancelError, setCancelError] = useState<string>()
 
@@ -29,10 +30,9 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
             })
 
             if (!resp) return
-            newSnackbarMessage("Successfully cancel listing.", "success")
             toggleConfirmCancelModalOpen(false)
+            toggleCancelSuccessModalOpen(true)
             setCancelError(undefined)
-            history.push(`/marketplace`)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to cancel listing."
             setCancelError(message)
@@ -40,7 +40,7 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
         } finally {
             toggleCancelling(false)
         }
-    }, [history, id, isKeycard, newSnackbarMessage, send, toggleCancelling, toggleConfirmCancelModalOpen])
+    }, [id, isKeycard, send, toggleCancelSuccessModalOpen, toggleCancelling, toggleConfirmCancelModalOpen])
 
     const isSelfItem = userID === owner?.id
 
@@ -91,8 +91,24 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
                     isLoading={cancelling}
                     error={cancelError}
                 >
-                    <Typography variant="h6">Do you wish to cancel the listing from the marketplace?</Typography>
+                    <Typography variant="h6">Do you wish to remove the listing from the marketplace?</Typography>
                 </ConfirmModal>
+            )}
+
+            {cancelSuccessModalOpen && (
+                <SuccessModal
+                    title="ITEM CANCELLED"
+                    leftLabel="SELL ANOTHER"
+                    onLeftButton={() => {
+                        history.push(`/marketplace/sell`)
+                    }}
+                    rightLabel="GO BACK TO MARKETPLACE"
+                    onRightButton={() => {
+                        history.push(`/marketplace`)
+                    }}
+                >
+                    <Typography variant="h6">Your item has been removed from the marketplace.</Typography>
+                </SuccessModal>
             )}
         </>
     )

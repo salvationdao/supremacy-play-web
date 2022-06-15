@@ -27,7 +27,6 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { userID } = useAuth()
-    const [confirmBidModalOpen, toggleConfirmBidModalOpen] = useToggle()
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))
     const [bidCount, setBidCount] = useState<number>(auctionBidCount)
     const [lastBidUser, setLastBidUser] = useState<MarketUser | undefined>(auctionLastBid)
@@ -36,6 +35,7 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
     // Bidding
     const [isLoading, setIsLoading] = useState(false)
     const [bidError, setBidError] = useState<string>()
+    const [confirmBidModalOpen, toggleConfirmBidModalOpen] = useToggle()
 
     const primaryColor = useMemo(() => colors.auction, [])
     const secondaryColor = useMemo(() => "#FFFFFF", [])

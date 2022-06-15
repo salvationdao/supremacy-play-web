@@ -1,33 +1,45 @@
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { Box, Modal, Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
 import { ClipThing, FancyButton } from ".."
-import { SvgClose } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
-interface ConfirmModalProps {
+interface SuccessModalProps {
     title: string
     children: ReactNode
-    onConfirm: () => void
-    onClose: () => void
-    isLoading?: boolean
-    error?: string
-    confirmPrefix?: ReactNode
-    confirmSuffix?: ReactNode
+
+    // Right button
+    rightLabel: string
+    rightColor?: string
+    onRightButton: () => void
+
+    // Left button
+    leftLabel: string
+    leftColor?: string
+    onLeftButton: () => void
 }
 
-export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, error, confirmPrefix, confirmSuffix }: ConfirmModalProps) => {
+export const SuccessModal = ({
+    title,
+    children,
+    onRightButton,
+    onLeftButton,
+    rightLabel,
+    leftLabel,
+    rightColor = colors.green,
+    leftColor = colors.red,
+}: SuccessModalProps) => {
     const theme = useTheme()
 
     return (
-        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal open sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "50rem",
+                    width: "60rem",
                     boxShadow: 6,
                     outline: "none",
                 }}
@@ -64,55 +76,35 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
                                 excludeCaret
                                 clipThingsProps={{
                                     clipSize: "5px",
-                                    backgroundColor: colors.red,
-                                    border: { borderColor: colors.red, borderThickness: "2px" },
+                                    backgroundColor: leftColor,
+                                    border: { borderColor: leftColor, borderThickness: "2px" },
                                     sx: { flex: 2, position: "relative" },
                                 }}
                                 sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                onClick={onClose}
+                                onClick={onLeftButton}
                             >
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    CANCEL
+                                    {leftLabel}
                                 </Typography>
                             </FancyButton>
 
                             <FancyButton
-                                loading={isLoading}
                                 excludeCaret
                                 clipThingsProps={{
                                     clipSize: "5px",
-                                    backgroundColor: colors.green,
-                                    border: { borderColor: colors.green, borderThickness: "2px" },
+                                    backgroundColor: rightColor,
+                                    border: { borderColor: rightColor, borderThickness: "2px" },
                                     sx: { flex: 2, position: "relative" },
                                 }}
                                 sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                onClick={onConfirm}
+                                onClick={onRightButton}
                             >
-                                <Stack direction="row" justifyContent="center">
-                                    {confirmPrefix}
-                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        CONFIRM
-                                    </Typography>
-                                    {confirmSuffix}
-                                </Stack>
+                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                    {rightLabel}
+                                </Typography>
                             </FancyButton>
                         </Stack>
-
-                        {error && (
-                            <Typography
-                                sx={{
-                                    mt: ".3rem",
-                                    color: "red",
-                                }}
-                            >
-                                {error}
-                            </Typography>
-                        )}
                     </Stack>
-
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
                 </ClipThing>
             </Box>
         </Modal>

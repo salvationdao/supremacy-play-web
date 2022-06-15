@@ -1,17 +1,20 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
+import { useHistory } from "react-router"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgSupToken, SvgWallet } from "../../../../assets"
-import { useAuth, useSnackbar } from "../../../../containers"
+import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, numFormatter, timeDiff, timeSince } from "../../../../helpers"
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { HANGAR_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
 import { ItemType, MarketUser } from "../../../../types/marketplace"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { SuccessModal } from "../../../Common/SuccessModal"
 
 interface BuyNowDetailsProps {
     id: string
@@ -39,14 +42,15 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
     }, [buyNowPrice, createdAt, dutchAuctionDropRate])
 
     const theme = useTheme()
+    const history = useHistory()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { newSnackbarMessage } = useSnackbar()
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(calculateNewPrice())
-    const [confirmBuyModalOpen, toggleConfirmBuyModalOpen] = useToggle()
 
     // Buying
     const [isLoading, setIsLoading] = useState(false)
     const [buyError, setBuyError] = useState<string>()
+    const [confirmBuyModalOpen, toggleConfirmBuyModalOpen] = useToggle()
+    const [successModalOpen, toggleSuccessModalOpen] = useToggle()
 
     const primaryColor = useMemo(() => theme.factionTheme.primary, [theme.factionTheme])
     const secondaryColor = useMemo(() => theme.factionTheme.secondary, [theme.factionTheme])
@@ -63,8 +67,8 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
             })
 
             if (!resp) return
-            newSnackbarMessage(`Successfully purchased ${itemName}.`, "success")
             toggleConfirmBuyModalOpen(false)
+            toggleSuccessModalOpen(true)
             setBuyError(undefined)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
@@ -73,7 +77,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
         } finally {
             setIsLoading(false)
         }
-    }, [id, itemName, itemType, newSnackbarMessage, send, toggleConfirmBuyModalOpen])
+    }, [id, itemType, send, toggleConfirmBuyModalOpen, toggleSuccessModalOpen])
 
     const isSelfItem = userID === owner?.id
 
@@ -180,6 +184,35 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                         <span>{numFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber())}</span> SUPS?
                     </Typography>
                 </ConfirmModal>
+            )}
+
+            {successModalOpen && (
+                <SuccessModal
+                    title="ITEM CANCELLED"
+                    leftLabel="GO BACK TO MARKETPLACE"
+                    onLeftButton={() => {
+                        history.push(`/marketplace`)
+                    }}
+                    rightLabel="GO TO FLEET"
+                    onRightButton={() => {
+                        let subPath = ""
+                        switch (itemType) {
+                            case ItemType.WarMachine:
+                                subPath = HANGAR_TABS.WarMachines
+                                break
+                            case ItemType.MysteryCrate:
+                                subPath = HANGAR_TABS.MysteryCrates
+                                break
+                            case ItemType.Keycards:
+                                subPath = HANGAR_TABS.Keycards
+                                break
+                        }
+
+                        history.push(`/fleet/${subPath}`)
+                    }}
+                >
+                    <Typography variant="h6">Your item has been removed from the marketplace.</Typography>
+                </SuccessModal>
             )}
         </>
     )

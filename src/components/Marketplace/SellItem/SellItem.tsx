@@ -8,11 +8,13 @@ import { numFormatter } from "../../../helpers"
 import { useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard, MechBasic, MysteryCrate } from "../../../types"
-import { ItemType } from "../../../types/marketplace"
+import { ItemType, MarketplaceBuyAuctionItem } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
+import { SuccessModal } from "../../Common/SuccessModal"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
 import { PricingInput } from "./PricingInput"
@@ -34,6 +36,12 @@ export const itemTypes: {
 ]
 
 export const SellItem = () => {
+    const [reset, toggleReset] = useToggle()
+
+    return <SellItemInner key={reset.toString()} toggleReset={toggleReset} />
+}
+
+export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const theme = useTheme()
     const history = useHistory()
     const query = useUrlQuery()
@@ -43,6 +51,9 @@ export const SellItem = () => {
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
     const [submitting, toggleSubmitting] = useToggle()
     const [submitError, setSubmitError] = useState<string>()
+
+    // Success
+    const [successPayload, setSuccessPayload] = useState<MarketplaceBuyAuctionItem>()
 
     // Form states
     const [itemType, setItemType] = useState<ItemType | undefined>(query.get("item-type") as ItemType)
@@ -111,19 +122,22 @@ export const SellItem = () => {
         try {
             toggleSubmitting(true)
             setSubmitError(undefined)
-            const resp = await send<{ id: string }>(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
-                item_type: itemTypePayload,
-                item_id: assetToSell?.id,
-                asking_price: buyoutPrice ? buyoutPrice.toString() : undefined,
-                dutch_auction_drop_rate: !isKeycard && dropRate ? dropRate.toString() : undefined,
-                auction_current_price: !isKeycard && startingPrice ? startingPrice.toString() : undefined,
-                auction_reserved_price: !isKeycard && reservePrice ? reservePrice.toString() : undefined,
-            })
+            const resp = await send<MarketplaceBuyAuctionItem>(
+                isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate,
+                {
+                    item_type: itemTypePayload,
+                    item_id: assetToSell?.id,
+                    asking_price: buyoutPrice ? buyoutPrice.toString() : undefined,
+                    dutch_auction_drop_rate: !isKeycard && dropRate ? dropRate.toString() : undefined,
+                    auction_current_price: !isKeycard && startingPrice ? startingPrice.toString() : undefined,
+                    auction_reserved_price: !isKeycard && reservePrice ? reservePrice.toString() : undefined,
+                },
+            )
 
             if (!resp) return
             toggleConfirmModalOpen(false)
             setSubmitError(undefined)
-            history.push(`/marketplace`)
+            setSuccessPayload(resp)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setSubmitError(message)
@@ -131,7 +145,7 @@ export const SellItem = () => {
         } finally {
             toggleSubmitting(false)
         }
-    }, [assetToSell?.id, buyoutPrice, dropRate, history, isFormReady, itemType, reservePrice, send, startingPrice, toggleSubmitting, toggleConfirmModalOpen])
+    }, [assetToSell?.id, buyoutPrice, dropRate, isFormReady, itemType, reservePrice, send, startingPrice, toggleSubmitting, toggleConfirmModalOpen])
 
     return (
         <>
@@ -338,6 +352,27 @@ export const SellItem = () => {
                         item.
                     </Typography>
                 </ConfirmModal>
+            )}
+
+            {successPayload && (
+                <SuccessModal
+                    title="ITEM LISTED!"
+                    leftLabel="SELL ANOTHER"
+                    onLeftButton={toggleReset}
+                    rightLabel="VIEW LISTING"
+                    onRightButton={() => {
+                        let subPath = MARKETPLACE_TABS.WarMachines
+                        if (successPayload.mystery_crate) subPath = MARKETPLACE_TABS.MysteryCrates
+                        if (successPayload.keycard) subPath = MARKETPLACE_TABS.Keycards
+                        history.push(`/marketplace/${subPath}/${successPayload.id}`)
+                    }}
+                >
+                    <Typography variant="h6">
+                        Congratulations! Your listing is now live on the marketplace.
+                        <br />
+                        You can sell another item for sale or view your listing on the marketplace.
+                    </Typography>
+                </SuccessModal>
             )}
         </>
     )
