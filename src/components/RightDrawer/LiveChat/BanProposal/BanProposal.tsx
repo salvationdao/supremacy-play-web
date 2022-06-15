@@ -1,15 +1,15 @@
 import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
-import { SvgCooldown, SvgInfoCircular } from "../../../../assets"
+import { SvgCooldown, SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { useAuth, useChat } from "../../../../containers"
-import { getUserRankDeets, snakeToTitle } from "../../../../helpers"
+import { getUserRankDeets, snakeToTitle, supFormatterNoFixed } from "../../../../helpers"
 import { useTimer, useToggle } from "../../../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { BanProposalStruct } from "../../../../types/chat"
-import { InstantPunishConfirmModal } from "./InstantPunishConfirmModal"
+import { ConfirmModal } from "../../../Common/ConfirmModal"
 
 export const BanProposal = () => {
     const { banProposal } = useChat()
@@ -53,29 +53,21 @@ const BanProposalInner = ({
     toggleOutOfTime: (value?: boolean | undefined) => void
 }) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { userStat, userRank } = useAuth()
-    const [submitted, setSubmitted] = useState(!!banProposal.decision)
+    const { userStat, userRank, userID } = useAuth()
+    const [submitted, setSubmitted] = useState(!!banProposal.decision || !!banProposal.instant_pass_user_ids.find((id) => id === userID))
     const [submittedVote, setSubmittedVote] = useState(banProposal.decision?.is_agreed)
-    const [error, setError] = useState("")
+    const [instantPassVoted, setInstantPassVoted] = useState(!!banProposal.instant_pass_user_ids.find((id) => id === userID))
+
     const [instantPunishModalOpen, toggleInstantPunishModalOpen] = useToggle()
-    const [commandOverrideCount, setCommandOverrideCount] = useState("---")
+    const [isLoading, toggleIsLoading] = useToggle()
+    const [error, setError] = useState("")
 
     const rankDeets = useMemo(() => getUserRankDeets("GENERAL", "1rem", "1.2rem"), [])
-
-    useGameServerSubscriptionFaction<string>(
-        {
-            URI: `/punish_vote/${banProposal.id}/command_override`,
-            key: GameServerKeys.SubBanProposalCommandOverrideCount,
-        },
-        (payload) => {
-            if (!payload) return
-            setCommandOverrideCount(payload)
-        },
-    )
 
     const submitVote = useCallback(
         async (isAgree: boolean) => {
             try {
+                toggleIsLoading(true)
                 const resp = await send<boolean, { punish_vote_id: string; is_agreed: boolean }>(GameServerKeys.SubmitBanVote, {
                     punish_vote_id: banProposal.id,
                     is_agreed: isAgree,
@@ -87,9 +79,11 @@ const BanProposalInner = ({
                 setError("")
             } catch (e) {
                 setError(typeof e === "string" ? e : "Failed to submit your vote.")
+            } finally {
+                toggleIsLoading(false)
             }
         },
-        [send, banProposal],
+        [toggleIsLoading, send, banProposal.id],
     )
 
     const submitInstantPunish = useCallback(async () => {
@@ -100,12 +94,13 @@ const BanProposalInner = ({
 
             if (!resp) return
             setSubmitted(true)
-            setSubmittedVote(true)
             setError("")
+            toggleInstantPunishModalOpen(false)
+            setInstantPassVoted(true)
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit your vote.")
         }
-    }, [send, banProposal.id])
+    }, [send, banProposal.id, toggleInstantPunishModalOpen])
 
     const bottomSection = useMemo(() => {
         if (!userStat || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && userRank !== "GENERAL")) {
@@ -120,7 +115,7 @@ const BanProposalInner = ({
             if (instantPassVoted) {
                 return (
                     <Typography>
-                        <i>You fired a command override with this proposal. {commandOverrideCount}</i>
+                        <i>You triggered a command override on this proposal.</i>
                     </Typography>
                 )
             }
@@ -146,7 +141,7 @@ const BanProposalInner = ({
                                 clipSize: "5px",
                                 backgroundColor: colors.darkNavyBlue,
                                 border: { borderColor: userRank !== "GENERAL" ? "#FFFFFF90" : "#FFFFFF", borderThickness: "2px" },
-                                sx: { flex: 1.6, position: "relative" },
+                                sx: { flex: 2, position: "relative" },
                             }}
                             sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                             onClick={() => toggleInstantPunishModalOpen(true)}
@@ -155,7 +150,7 @@ const BanProposalInner = ({
                             <Stack direction="row" justifyContent="center">
                                 {rankDeets?.icon}
                                 <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
-                                    OVERRIDE {commandOverrideCount}
+                                    COMMAND OVERRIDE
                                 </Typography>
                             </Stack>
                         </FancyButton>
@@ -197,7 +192,7 @@ const BanProposalInner = ({
                 )}
             </>
         )
-    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, toggleInstantPunishModalOpen, submitVote, commandOverrideCount])
+    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, toggleInstantPunishModalOpen, submitVote, instantPassVoted])
 
     return (
         <>
@@ -263,12 +258,29 @@ const BanProposalInner = ({
             </Grow>
 
             {instantPunishModalOpen && (
-                <InstantPunishConfirmModal
-                    submitInstantPunish={submitInstantPunish}
+                <ConfirmModal
+                    title="COMMAND OVERRIDE"
+                    onConfirm={submitInstantPunish}
                     onClose={() => toggleInstantPunishModalOpen(false)}
-                    cost={banProposal.instant_pass_fee}
-                    punishPlayer={`${banProposal.reported_player_username}#${banProposal.reported_player_gid}`}
-                />
+                    isLoading={isLoading}
+                    error={error}
+                    confirmSuffix={
+                        <Stack direction="row" sx={{ ml: ".4rem" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                (
+                            </Typography>
+                            <SvgSupToken size="1.8rem" />
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                {supFormatterNoFixed(banProposal.instant_pass_fee, 0)})
+                            </Typography>
+                        </Stack>
+                    }
+                >
+                    <Typography variant="h6">
+                        As a GENERAL, you have the privilege to issue a command override. With 2 command overrides, the player will be instantly punished. Do
+                        you wish to spend <span>{supFormatterNoFixed(banProposal.instant_pass_fee, 0)}</span> SUPS to issue a command override?
+                    </Typography>
+                </ConfirmModal>
             )}
         </>
     )
@@ -284,7 +296,7 @@ export const LineItem = ({ title, children, color }: { title: string; children: 
                     width: "7rem",
                     textAlign: "center",
                     lineHeight: 1,
-                    backgroundColor: `${color || colors.red}70`,
+                    backgroundColor: `${color || colors.red}BB`,
                 }}
             >
                 {title}
