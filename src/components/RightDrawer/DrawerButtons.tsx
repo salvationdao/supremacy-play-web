@@ -30,7 +30,7 @@ export const DrawerButtons = () => {
                     display: "none",
                 },
                 ".MuiSvgIcon-root": {
-                    fill: "#FFFFFF !important",
+                    fill: `#FFFFFF !important`,
                 },
             }}
         >

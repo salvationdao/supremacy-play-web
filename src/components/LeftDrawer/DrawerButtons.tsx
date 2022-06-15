@@ -151,6 +151,9 @@ export const TabButton = ({
                         height: `${DRAWER_BAR_WIDTH}rem`,
                         minHeight: `${DRAWER_BAR_WIDTH}rem`,
                     },
+                    "& svg": {
+                        fill: isActive ? secondaryColor : "#FFFFFF",
+                    },
                 }}
             />
         </Box>
