@@ -18,7 +18,7 @@ export const MechGeneralStatus = ({ mechID }: { mechID: string }) => {
             key: GameServerKeys.SubMechQueuePosition,
         },
         (payload) => {
-            if (!payload) return
+            if (!payload || text === "SOLD") return
             switch (payload.status) {
                 case "IDLE":
                     setText("IDLE")

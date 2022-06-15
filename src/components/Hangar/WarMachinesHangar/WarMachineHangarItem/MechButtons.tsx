@@ -34,7 +34,7 @@ export const MechButtons = ({
             key: GameServerKeys.SubMechQueuePosition,
         },
         (payload) => {
-            if (!payload) return
+            if (!payload || mechState === "SOLD") return
             setMechState(payload.status)
         },
     )
