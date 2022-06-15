@@ -188,7 +188,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
 
             {successModalOpen && (
                 <SuccessModal
-                    title="ITEM CANCELLED"
+                    title="PURCHASED ITEM"
                     leftLabel="GO BACK TO MARKETPLACE"
                     onLeftButton={() => {
                         history.push(`/marketplace`)
