@@ -31,11 +31,18 @@ export const MysteryCratesMarket = () => {
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
+    const [status, setStatus] = useState<string[]>([])
     const [ownedBy, setOwnedBy] = useState<string[]>(["others"])
     const [listingTypes, setListingTypes] = useState<string[]>([])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
+    const statusFilterSection = useRef<ChipFilter>({
+        label: "STATUS",
+        options: [{ value: "true", label: "SOLD", color: colors.green }],
+        initialSelected: status,
+        onSetSelected: setStatus,
+    })
     const ownedByFilterSection = useRef<ChipFilter>({
         label: "OWNED BY",
         options: [
@@ -85,6 +92,7 @@ export const MysteryCratesMarket = () => {
                 sort_dir: sortDir,
                 sort_by: sortBy,
                 owned_by: ownedBy,
+                sold: status.length > 0,
             })
 
             if (!resp) return
@@ -99,7 +107,7 @@ export const MysteryCratesMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, status.length, setTotalItems, newSnackbarMessage])
 
     useEffect(() => {
         getItems()
@@ -202,7 +210,7 @@ export const MysteryCratesMarket = () => {
                 onSetSearch={setSearch}
                 initialSort={sort}
                 onSetSort={setSort}
-                chipFilters={[ownedByFilterSection.current, listingTypeFilterSection.current]}
+                chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
             />
 
