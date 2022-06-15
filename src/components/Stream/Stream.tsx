@@ -23,7 +23,7 @@ export const Stream = () => {
                 <OutputPlayerOven iframeDimensions={iframeDimensions} />
             ) : (
                 <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
-                    {/* {!isPlaying && <NoStreamScreen />} */}
+                    {!isPlaying && <NoStreamScreen />}
 
                     <video
                         key={currentStream?.stream_id}
