@@ -1,4 +1,4 @@
-import { Box, Modal, Stack, Typography } from "@mui/material"
+import { Box, Zoom, Modal, Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
 import { ClipThing, FancyButton } from ".."
 import { useTheme } from "../../containers/theme"
@@ -44,68 +44,72 @@ export const SuccessModal = ({
                     outline: "none",
                 }}
             >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".2rem",
-                    }}
-                    sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
-                >
-                    <Stack
-                        spacing="1.2rem"
-                        sx={{
-                            position: "relative",
-                            px: "2.5rem",
-                            py: "2.4rem",
-                            span: {
-                                color: colors.neonBlue,
-                                fontWeight: "fontWeightBold",
-                            },
-                        }}
-                    >
-                        <Typography variant="h5" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
-                            {title}
-                        </Typography>
-
-                        {children}
-
-                        <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
-                            <FancyButton
-                                excludeCaret
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: leftColor,
-                                    border: { borderColor: leftColor, borderThickness: "2px" },
-                                    sx: { flex: 2, position: "relative" },
+                <Zoom in>
+                    <Box>
+                        <ClipThing
+                            clipSize="8px"
+                            border={{
+                                borderColor: theme.factionTheme.primary,
+                                borderThickness: ".2rem",
+                            }}
+                            sx={{ position: "relative" }}
+                            backgroundColor={theme.factionTheme.background}
+                        >
+                            <Stack
+                                spacing="1.2rem"
+                                sx={{
+                                    position: "relative",
+                                    px: "2.5rem",
+                                    py: "2.4rem",
+                                    span: {
+                                        color: colors.neonBlue,
+                                        fontWeight: "fontWeightBold",
+                                    },
                                 }}
-                                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                onClick={onLeftButton}
                             >
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    {leftLabel}
+                                <Typography variant="h5" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
+                                    {title}
                                 </Typography>
-                            </FancyButton>
 
-                            <FancyButton
-                                excludeCaret
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: rightColor,
-                                    border: { borderColor: rightColor, borderThickness: "2px" },
-                                    sx: { flex: 2, position: "relative" },
-                                }}
-                                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                onClick={onRightButton}
-                            >
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    {rightLabel}
-                                </Typography>
-                            </FancyButton>
-                        </Stack>
-                    </Stack>
-                </ClipThing>
+                                {children}
+
+                                <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
+                                    <FancyButton
+                                        excludeCaret
+                                        clipThingsProps={{
+                                            clipSize: "5px",
+                                            backgroundColor: leftColor,
+                                            border: { borderColor: leftColor, borderThickness: "2px" },
+                                            sx: { flex: 2, position: "relative" },
+                                        }}
+                                        sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
+                                        onClick={onLeftButton}
+                                    >
+                                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                            {leftLabel}
+                                        </Typography>
+                                    </FancyButton>
+
+                                    <FancyButton
+                                        excludeCaret
+                                        clipThingsProps={{
+                                            clipSize: "5px",
+                                            backgroundColor: rightColor,
+                                            border: { borderColor: rightColor, borderThickness: "2px" },
+                                            sx: { flex: 2, position: "relative" },
+                                        }}
+                                        sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
+                                        onClick={onRightButton}
+                                    >
+                                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                            {rightLabel}
+                                        </Typography>
+                                    </FancyButton>
+                                </Stack>
+                            </Stack>
+                        </ClipThing>
+                    </Box>
+                </Zoom>
             </Box>
         </Modal>
     )
