@@ -179,8 +179,6 @@ const OutputPlayerOven = ({
         loadOvenPlayer()
     }, [])
 
-    console.log("dims", `${iframeDimensions.height}px !important`)
-
     return (
         <Stack
             sx={{
@@ -194,7 +192,7 @@ const OutputPlayerOven = ({
                     position: "absolute !important",
                     top: "50% !important",
                     left: "50% !important",
-                    transform: "translate(-50%, -50%) !important",
+                    transform: "translate(-50%, -50%) ",
                     aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
                     width: `${iframeDimensions.width}${iframeDimensions.width == "unset" ? "" : "px "} !important`,
                     height: `${iframeDimensions.height}${iframeDimensions.height == "unset" ? "" : "px "} !important`,
@@ -202,6 +200,9 @@ const OutputPlayerOven = ({
                 },
                 ".op-ui": {
                     display: "none !important",
+                },
+                ".op-ratio": {
+                    paddingBottom: "0 !important",
                 },
             }}
         >
