@@ -11,6 +11,24 @@ import { OVENPLAYER_STREAM } from "../constants"
 
 const MAX_OPTIONS = 10
 
+// using ovenplayer
+const ovenPlayerStream: Stream = {
+    host: OVENPLAYER_STREAM,
+    name: OVENPLAYER_STREAM,
+    url: "wss://stream2.supremacy.game:3334/app/stream2",
+    stream_id: OVENPLAYER_STREAM,
+    region: "",
+    resolution: "",
+    bit_rates_kbits: 100,
+    user_max: 100,
+    users_now: 100,
+    active: true,
+    status: "",
+    latitude: 100,
+    longitude: 100,
+    distance: 100,
+}
+
 interface StreamInfoEntry {
     audioBitrate: number
     streamHeight: number
@@ -52,24 +70,6 @@ interface WebRTCAdaptorType {
     play: (stream_id: string, token_id: string) => void
     getStreamInfo: (stream_id: string) => void
     closeWebSocket: (stream_id: string) => void
-}
-
-// using ovenplayer
-const ovenPlayerStream: Stream = {
-    host: OVENPLAYER_STREAM,
-    name: OVENPLAYER_STREAM,
-    url: "wss://stream2.supremacy.game:3334/app/stream2",
-    stream_id: OVENPLAYER_STREAM,
-    region: "",
-    resolution: "",
-    bit_rates_kbits: 100,
-    user_max: 100,
-    users_now: 100,
-    active: true,
-    status: "",
-    latitude: 100,
-    longitude: 100,
-    distance: 100,
 }
 
 const blankOption: Stream = {

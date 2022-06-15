@@ -1,12 +1,21 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
+import OvenPlayer from "ovenplayer"
+import { useEffect } from "react"
 import { SupBackground } from "../../assets"
 import { DEV_ONLY, OVENPLAYER_STREAM, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { Music } from "../Music/Music"
-import OvenPlayer from "ovenplayer"
-import { useEffect } from "react"
+
+interface OvenPlayerSource {
+    type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
+    file: string
+    label?: string
+    framerate?: number
+    sectionStart?: number
+    sectionEnd?: number
+}
 
 export const Stream = () => {
     const { iframeDimensions } = useDimension()
@@ -170,7 +179,7 @@ const OutputPlayerOven = ({
             })
 
             ovenPlayer.on("error", (e: Error) => {
-                console.log("ovenplayer error: " + e)
+                console.log("ovenplayer error: ", e)
             })
         }
     }
@@ -178,7 +187,6 @@ const OutputPlayerOven = ({
     useEffect(() => {
         loadOvenPlayer()
     }, [])
-
     return (
         <Stack
             sx={{
@@ -192,7 +200,7 @@ const OutputPlayerOven = ({
                     position: "absolute !important",
                     top: "50% !important",
                     left: "50% !important",
-                    transform: "translate(-50%, -50%) ",
+                    transform: "translate(-50%, -50%) !important",
                     aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
                     width: `${iframeDimensions.width}${iframeDimensions.width == "unset" ? "" : "px "} !important`,
                     height: `${iframeDimensions.height}${iframeDimensions.height == "unset" ? "" : "px "} !important`,
