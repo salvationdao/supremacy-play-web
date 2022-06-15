@@ -201,7 +201,7 @@ export const WarMachinesMarket = () => {
                         sx={{
                             width: "80%",
                             height: "16rem",
-                            opacity: 0.6,
+                            opacity: 0.7,
                             filter: "grayscale(100%)",
                             background: `url(${EmptyWarMachinesPNG})`,
                             backgroundRepeat: "no-repeat",
