@@ -23,7 +23,7 @@ export const Stream = () => {
                 <OutputPlayerOven iframeDimensions={iframeDimensions} />
             ) : (
                 <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
-                    {!isPlaying && <NoStreamScreen />}
+                    {/* {!isPlaying && <NoStreamScreen />} */}
 
                     <video
                         key={currentStream?.stream_id}
@@ -178,6 +178,9 @@ const OutputPlayerOven = ({
     useEffect(() => {
         loadOvenPlayer()
     }, [])
+
+    console.log("dims", `${iframeDimensions.height}px !important`)
+
     return (
         <Stack
             sx={{
@@ -193,8 +196,8 @@ const OutputPlayerOven = ({
                     left: "50% !important",
                     transform: "translate(-50%, -50%) !important",
                     aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
-                    width: `${iframeDimensions.width} !important`,
-                    height: `${iframeDimensions.height} !important`,
+                    width: `${iframeDimensions.width}${iframeDimensions.width == "unset" ? "" : "px "} !important`,
+                    height: `${iframeDimensions.height}${iframeDimensions.height == "unset" ? "" : "px "} !important`,
                     zIndex: siteZIndex.Stream,
                 },
                 ".op-ui": {
