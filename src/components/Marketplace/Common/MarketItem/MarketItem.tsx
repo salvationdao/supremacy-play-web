@@ -52,7 +52,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const soldBackgroundColor = useMemo(() => shadeColor(colors.green, -90), [])
+    const soldBackgroundColor = useMemo(() => shadeColor(colors.green, -95), [])
 
     const { id, end_at, owner, total_bids, sold_at, sold_for } = item
 
