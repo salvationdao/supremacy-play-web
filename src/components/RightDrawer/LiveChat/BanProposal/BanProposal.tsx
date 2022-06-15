@@ -5,7 +5,7 @@ import { SvgCooldown, SvgInfoCircular } from "../../../../assets"
 import { useAuth, useChat } from "../../../../containers"
 import { getUserRankDeets, snakeToTitle } from "../../../../helpers"
 import { useTimer, useToggle } from "../../../../hooks"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { BanProposalStruct } from "../../../../types/chat"
@@ -59,8 +59,20 @@ const BanProposalInner = ({
     const [instantPassVoted, setInstantPassVoted] = useState(!!banProposal.instant_pass_user_ids.find((id) => id === userID))
     const [error, setError] = useState("")
     const [instantPunishModalOpen, toggleInstantPunishModalOpen] = useToggle()
+    const [commandOverrideCount, setCommandOverrideCount] = useState("---")
 
     const rankDeets = useMemo(() => getUserRankDeets("GENERAL", "1rem", "1.2rem"), [])
+
+    useGameServerSubscriptionFaction<string>(
+        {
+            URI: `/punish_vote/${banProposal.id}/command_override`,
+            key: GameServerKeys.SubBanProposalCommandOverrideCount,
+        },
+        (payload) => {
+            if (!payload) return
+            setCommandOverrideCount(payload)
+        },
+    )
 
     const submitVote = useCallback(
         async (isAgree: boolean) => {
@@ -110,7 +122,7 @@ const BanProposalInner = ({
             if (instantPassVoted) {
                 return (
                     <Typography>
-                        <i>You trigger a instant pass with this proposal.</i>
+                        <i>You fired a command override with this proposal. {commandOverrideCount}</i>
                     </Typography>
                 )
             }
@@ -145,7 +157,7 @@ const BanProposalInner = ({
                             <Stack direction="row" justifyContent="center">
                                 {rankDeets?.icon}
                                 <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
-                                    INSTANT PUNISH
+                                    OVERRIDE {commandOverrideCount}
                                 </Typography>
                             </Stack>
                         </FancyButton>
@@ -187,7 +199,7 @@ const BanProposalInner = ({
                 )}
             </>
         )
-    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, toggleInstantPunishModalOpen, submitVote, instantPassVoted])
+    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, toggleInstantPunishModalOpen, submitVote, instantPassVoted, commandOverrideCount])
 
     return (
         <>
